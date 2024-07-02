@@ -96,51 +96,7 @@ var TestAggregatorConsensusData = &types.ValidatorConsensusData{
 }
 var TestAggregatorConsensusDataByts, _ = TestAggregatorConsensusData.Encode()
 
-var TestAttesterWithJustificationsConsensusData = func(ks *TestKeySet) *types.ValidatorConsensusData {
-	justif := make([]*types.PartialSignatureMessages, 0)
-	for i := uint64(1); i <= ks.Threshold; i++ {
-		justif = append(justif, PreConsensusRandaoMsg(ks.Shares[i], i))
-	}
-
-	return &types.ValidatorConsensusData{
-		Duty:                       *TestingAttesterDuty.ValidatorDuties[0],
-		Version:                    spec.DataVersionDeneb,
-		PreConsensusJustifications: justif,
-		DataSSZ:                    TestingAttestationDataBytes,
-	}
-}
-
-var TestAggregatorWithJustificationsConsensusData = func(ks *TestKeySet) *types.ValidatorConsensusData {
-	justif := make([]*types.PartialSignatureMessages, 0)
-	for i := uint64(1); i <= ks.Threshold; i++ {
-		justif = append(justif, PreConsensusSelectionProofMsg(ks.Shares[i], ks.Shares[i], i, i))
-	}
-
-	return &types.ValidatorConsensusData{
-		Duty:                       TestingAggregatorDuty,
-		Version:                    spec.DataVersionBellatrix,
-		PreConsensusJustifications: justif,
-		DataSSZ:                    TestingAggregateAndProofBytes,
-	}
-
-}
-
 // ValidatorConsensusData - Sync Committee
-
-// TestSyncCommitteeWithJustificationsConsensusData is an invalid sync committee msg (doesn't have pre-consensus)
-var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *types.ValidatorConsensusData {
-	justif := make([]*types.PartialSignatureMessages, 0)
-	for i := uint64(0); i <= ks.Threshold; i++ {
-		justif = append(justif, PreConsensusRandaoMsg(ks.Shares[i+1], i+1))
-	}
-
-	return &types.ValidatorConsensusData{
-		Duty:                       *TestingSyncCommitteeDuty.ValidatorDuties[0],
-		Version:                    spec.DataVersionDeneb,
-		PreConsensusJustifications: justif,
-		DataSSZ:                    TestingSyncCommitteeBlockRoot[:],
-	}
-}
 
 var TestSyncCommitteeConsensusData = &types.ValidatorConsensusData{
 	Duty:    *TestingSyncCommitteeDuty.ValidatorDuties[0],
@@ -672,20 +628,6 @@ var PreConsensusWrongMsgSlotSelectionProofMsg = func(msgSK, beaconSK *bls.Secret
 	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot+1, 1, false)
 }
 
-var TestSelectionProofWithJustificationsConsensusData = func(ks *TestKeySet) *types.ValidatorConsensusData {
-	justif := make([]*types.PartialSignatureMessages, 0)
-	for i := uint64(0); i <= ks.Threshold; i++ {
-		justif = append(justif, PreConsensusSelectionProofMsg(ks.Shares[i+1], ks.Shares[i+1], i+1, i+1))
-	}
-
-	return &types.ValidatorConsensusData{
-		Duty:                       TestingAggregatorDuty,
-		Version:                    spec.DataVersionDeneb,
-		PreConsensusJustifications: justif,
-		DataSSZ:                    TestingAggregateAndProofBytes,
-	}
-}
-
 var selectionProofMsg = func(
 	sk *bls.SecretKey,
 	beaconsk *bls.SecretKey,
@@ -1111,19 +1053,6 @@ var PreConsensusWrongMsgSlotContributionProofMsg = func(msgSK, beaconSK *bls.Sec
 
 var PreConsensusWrongOrderContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *types.PartialSignatureMessages {
 	return contributionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlot, TestingDutySlot, true, false)
-}
-var TestContributionProofWithJustificationsConsensusData = func(ks *TestKeySet) *types.ValidatorConsensusData {
-	justif := make([]*types.PartialSignatureMessages, 0)
-	for i := uint64(0); i <= ks.Threshold; i++ {
-		justif = append(justif, PreConsensusContributionProofMsg(ks.Shares[i+1], ks.Shares[i+1], i+1, i+1))
-	}
-
-	return &types.ValidatorConsensusData{
-		Duty:                       TestingSyncCommitteeContributionDuty,
-		Version:                    spec.DataVersionDeneb,
-		PreConsensusJustifications: justif,
-		DataSSZ:                    TestingContributionsDataBytes,
-	}
 }
 
 var PreConsensusContributionProofTooManyRootsMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *types.PartialSignatureMessages {

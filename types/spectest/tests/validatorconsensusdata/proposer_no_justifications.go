@@ -11,7 +11,6 @@ func ProposerNoJustifications() *ValidatorConsensusDataTest {
 	// To-do: add error when pre-consensus justification check is added.
 
 	cd := testingutils.TestProposerConsensusDataV(spec.DataVersionCapella)
-	cd.PreConsensusJustifications = nil
 
 	return &ValidatorConsensusDataTest{
 		Name:          "proposer no justification",

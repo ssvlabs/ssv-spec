@@ -235,15 +235,16 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 			copy(specSig[:], sig)
 
 			// Get the beacon object related to root
-			if _, exists := beaconObjects[validator]; !exists {
+			validatorObjs, exists := beaconObjects[validator]
+            if !exists {
 				anyErr = errors.Wrap(err, "could not find beacon object for validator")
 				continue
 			}
-			if _, exists := beaconObjects[validator][root]; !exists {
+			sszObject, rexists := validatorObjs[root]
+            if !rexists {
 				anyErr = errors.Wrap(err, "could not find beacon object for validator")
 				continue
 			}
-			sszObject := beaconObjects[validator][root]
 
 			// Store objects for multiple submission
 			if role == types.BNRoleSyncCommittee {

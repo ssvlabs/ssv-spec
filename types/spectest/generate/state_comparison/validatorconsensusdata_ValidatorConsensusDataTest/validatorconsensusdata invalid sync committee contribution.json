@@ -17,7 +17,6 @@
 						]
 				},
 				"Version": "phase0",
-				"PreConsensusJustifications": null,
 				"DataSSZ": "DAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQI="
 		},
 		"ExpectedError": "could not unmarshal ssz: four"

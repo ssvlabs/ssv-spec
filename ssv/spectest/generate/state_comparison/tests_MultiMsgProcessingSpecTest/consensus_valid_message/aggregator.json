@@ -90,7 +90,7 @@
 										"ProposalAcceptedForCurrentRound": {
 												"SignedMessage": {
 														"Signatures": [
-																"slG/NoI5eHI6od7YWHOdoCUmvmi9D6JdkeDglrvsQyPDmtikPeIkX4Nio2cUsnQTtq+xJZu4PJ/vCn1SSRLuQIOym8u7/K442LImO+gyCcQTCApUDOdVRfgwdoqVN7tpBScmT5kTZqCS8GWxy0dIsv26VRtVkNvBVqbkGUvk6Ma1DT4Hhn04ukzR/VHupdIW4GvhK46FuSeKJ7IOO4a8BnGDKf4wttcyKOT145NS+/vN2ZzbQi9tFQeCNFwfxLieRsOxk8MVdd1aFuqfbG1gLUgfmMguivJFMmjnpzY3eqfvDSeGGPQ9e2nAYmyBdqF58pHYsIvn5GXtBiB7uoBjKA=="
+																"G5Ymy5MS4+MK3H3jkIx4BE/TGJpX/7RUinYSxnaiOEr1KzWmXc0eP6QT/supK0W07+QGywtov2vVsH9cgephNg+FGT16Yj9xD0Kbg4NOoM4XLrm31kmDu1fi5p+BmbzsUgVnzppcnrZe2AzRBiehqduPugkfbikWT3olj8YquGxe+qj+OOlFijm9iQgSRGfeaJDjOH8QvSU9STFVouitl7RK9tVjs6GufXfjqoStPpps0rdzp1wLX8+IQlomSiP1ePu5x6vyhVn+nbNsDiI3hWbbB4wGb1ku6wfeRgAyLkHPbS2nHhBkbttBuV55Qc+yw9oCr0vGDcV56PoYc46znw=="
 														],
 														"OperatorIDs": [
 																1
@@ -155,9 +155,9 @@
 																		11,
 																		192
 																],
-																"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAMPkm8hrRXiSHrQCFwCgPmzNxFdqXOrIFCwygeji2UOnAAAAAAAAAACEAAAAhAAAAAAAAwEBAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
+																"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAGgMNGIaMHmMEMjm15qXf8KmAsjgZgCPWfxfFhmgRIC5AAAAAAAAAACEAAAAhAAAAAAAAwEBAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 														},
-														"FullData": "FAAAAAEAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
+														"FullData": "EAAAAAEAAAAAAAAAfAAAAAEAAAAAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvADAAAAAAAAAABAAAAAAAAABYAAAAAAAAAgAAAAAAAAAAkAAAAAAAAAAsAAAAAAAAAbAAAAAEAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOQAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB"
 												},
 												"QBFTMessage": {
 														"MsgType": 0,
@@ -165,38 +165,38 @@
 														"Round": 1,
 														"Identifier": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
 														"Root": [
-																195,
-																228,
-																155,
+																104,
+																12,
+																52,
+																98,
+																26,
+																48,
+																121,
+																140,
+																16,
 																200,
-																107,
-																69,
-																120,
-																146,
-																30,
-																180,
+																230,
+																215,
+																154,
+																151,
+																127,
+																194,
+																166,
 																2,
-																23,
-																0,
-																160,
-																62,
-																108,
-																205,
-																196,
-																87,
-																106,
-																92,
-																234,
 																200,
-																20,
-																44,
-																50,
-																129,
-																232,
-																226,
-																217,
-																67,
-																167
+																224,
+																102,
+																0,
+																143,
+																89,
+																252,
+																95,
+																22,
+																25,
+																160,
+																68,
+																128,
+																185
 														],
 														"DataRound": 0,
 														"RoundChangeJustification": [],
@@ -211,7 +211,7 @@
 																{
 																		"SignedMessage": {
 																				"Signatures": [
-																						"slG/NoI5eHI6od7YWHOdoCUmvmi9D6JdkeDglrvsQyPDmtikPeIkX4Nio2cUsnQTtq+xJZu4PJ/vCn1SSRLuQIOym8u7/K442LImO+gyCcQTCApUDOdVRfgwdoqVN7tpBScmT5kTZqCS8GWxy0dIsv26VRtVkNvBVqbkGUvk6Ma1DT4Hhn04ukzR/VHupdIW4GvhK46FuSeKJ7IOO4a8BnGDKf4wttcyKOT145NS+/vN2ZzbQi9tFQeCNFwfxLieRsOxk8MVdd1aFuqfbG1gLUgfmMguivJFMmjnpzY3eqfvDSeGGPQ9e2nAYmyBdqF58pHYsIvn5GXtBiB7uoBjKA=="
+																						"G5Ymy5MS4+MK3H3jkIx4BE/TGJpX/7RUinYSxnaiOEr1KzWmXc0eP6QT/supK0W07+QGywtov2vVsH9cgephNg+FGT16Yj9xD0Kbg4NOoM4XLrm31kmDu1fi5p+BmbzsUgVnzppcnrZe2AzRBiehqduPugkfbikWT3olj8YquGxe+qj+OOlFijm9iQgSRGfeaJDjOH8QvSU9STFVouitl7RK9tVjs6GufXfjqoStPpps0rdzp1wLX8+IQlomSiP1ePu5x6vyhVn+nbNsDiI3hWbbB4wGb1ku6wfeRgAyLkHPbS2nHhBkbttBuV55Qc+yw9oCr0vGDcV56PoYc46znw=="
 																				],
 																				"OperatorIDs": [
 																						1
@@ -276,9 +276,9 @@
 																								11,
 																								192
 																						],
-																						"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAMPkm8hrRXiSHrQCFwCgPmzNxFdqXOrIFCwygeji2UOnAAAAAAAAAACEAAAAhAAAAAAAAwEBAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
+																						"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAGgMNGIaMHmMEMjm15qXf8KmAsjgZgCPWfxfFhmgRIC5AAAAAAAAAACEAAAAhAAAAAAAAwEBAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																				},
-																				"FullData": "FAAAAAEAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
+																				"FullData": "EAAAAAEAAAAAAAAAfAAAAAEAAAAAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvADAAAAAAAAAABAAAAAAAAABYAAAAAAAAAgAAAAAAAAAAkAAAAAAAAAAsAAAAAAAAAbAAAAAEAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOQAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB"
 																		},
 																		"QBFTMessage": {
 																				"MsgType": 0,
@@ -286,38 +286,38 @@
 																				"Round": 1,
 																				"Identifier": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
 																				"Root": [
-																						195,
-																						228,
-																						155,
+																						104,
+																						12,
+																						52,
+																						98,
+																						26,
+																						48,
+																						121,
+																						140,
+																						16,
 																						200,
-																						107,
-																						69,
-																						120,
-																						146,
-																						30,
-																						180,
+																						230,
+																						215,
+																						154,
+																						151,
+																						127,
+																						194,
+																						166,
 																						2,
-																						23,
-																						0,
-																						160,
-																						62,
-																						108,
-																						205,
-																						196,
-																						87,
-																						106,
-																						92,
-																						234,
 																						200,
-																						20,
-																						44,
-																						50,
-																						129,
-																						232,
-																						226,
-																						217,
-																						67,
-																						167
+																						224,
+																						102,
+																						0,
+																						143,
+																						89,
+																						252,
+																						95,
+																						22,
+																						25,
+																						160,
+																						68,
+																						128,
+																						185
 																				],
 																				"DataRound": 0,
 																				"RoundChangeJustification": [],
@@ -337,7 +337,7 @@
 												"Msgs": {}
 										}
 								},
-								"StartValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
+								"StartValue": "EAAAAAEAAAAAAAAAfAAAAAEAAAAAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvADAAAAAAAAAABAAAAAAAAABYAAAAAAAAAgAAAAAAAAAAkAAAAAAAAAAsAAAAAAAAAbAAAAAEAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOQAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB"
 						},
 						"DecidedValue": null,
 						"Finished": false,
@@ -533,7 +533,7 @@
 												"ProposalAcceptedForCurrentRound": {
 														"SignedMessage": {
 																"Signatures": [
-																		"slG/NoI5eHI6od7YWHOdoCUmvmi9D6JdkeDglrvsQyPDmtikPeIkX4Nio2cUsnQTtq+xJZu4PJ/vCn1SSRLuQIOym8u7/K442LImO+gyCcQTCApUDOdVRfgwdoqVN7tpBScmT5kTZqCS8GWxy0dIsv26VRtVkNvBVqbkGUvk6Ma1DT4Hhn04ukzR/VHupdIW4GvhK46FuSeKJ7IOO4a8BnGDKf4wttcyKOT145NS+/vN2ZzbQi9tFQeCNFwfxLieRsOxk8MVdd1aFuqfbG1gLUgfmMguivJFMmjnpzY3eqfvDSeGGPQ9e2nAYmyBdqF58pHYsIvn5GXtBiB7uoBjKA=="
+																		"G5Ymy5MS4+MK3H3jkIx4BE/TGJpX/7RUinYSxnaiOEr1KzWmXc0eP6QT/supK0W07+QGywtov2vVsH9cgephNg+FGT16Yj9xD0Kbg4NOoM4XLrm31kmDu1fi5p+BmbzsUgVnzppcnrZe2AzRBiehqduPugkfbikWT3olj8YquGxe+qj+OOlFijm9iQgSRGfeaJDjOH8QvSU9STFVouitl7RK9tVjs6GufXfjqoStPpps0rdzp1wLX8+IQlomSiP1ePu5x6vyhVn+nbNsDiI3hWbbB4wGb1ku6wfeRgAyLkHPbS2nHhBkbttBuV55Qc+yw9oCr0vGDcV56PoYc46znw=="
 																],
 																"OperatorIDs": [
 																		1
@@ -598,9 +598,9 @@
 																				11,
 																				192
 																		],
-																		"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAMPkm8hrRXiSHrQCFwCgPmzNxFdqXOrIFCwygeji2UOnAAAAAAAAAACEAAAAhAAAAAAAAwEBAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
+																		"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAGgMNGIaMHmMEMjm15qXf8KmAsjgZgCPWfxfFhmgRIC5AAAAAAAAAACEAAAAhAAAAAAAAwEBAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																},
-																"FullData": "FAAAAAEAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
+																"FullData": "EAAAAAEAAAAAAAAAfAAAAAEAAAAAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvADAAAAAAAAAABAAAAAAAAABYAAAAAAAAAgAAAAAAAAAAkAAAAAAAAAAsAAAAAAAAAbAAAAAEAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOQAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB"
 														},
 														"QBFTMessage": {
 																"MsgType": 0,
@@ -608,38 +608,38 @@
 																"Round": 1,
 																"Identifier": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
 																"Root": [
-																		195,
-																		228,
-																		155,
+																		104,
+																		12,
+																		52,
+																		98,
+																		26,
+																		48,
+																		121,
+																		140,
+																		16,
 																		200,
-																		107,
-																		69,
-																		120,
-																		146,
-																		30,
-																		180,
+																		230,
+																		215,
+																		154,
+																		151,
+																		127,
+																		194,
+																		166,
 																		2,
-																		23,
-																		0,
-																		160,
-																		62,
-																		108,
-																		205,
-																		196,
-																		87,
-																		106,
-																		92,
-																		234,
 																		200,
-																		20,
-																		44,
-																		50,
-																		129,
-																		232,
-																		226,
-																		217,
-																		67,
-																		167
+																		224,
+																		102,
+																		0,
+																		143,
+																		89,
+																		252,
+																		95,
+																		22,
+																		25,
+																		160,
+																		68,
+																		128,
+																		185
 																],
 																"DataRound": 0,
 																"RoundChangeJustification": [],
@@ -654,7 +654,7 @@
 																		{
 																				"SignedMessage": {
 																						"Signatures": [
-																								"slG/NoI5eHI6od7YWHOdoCUmvmi9D6JdkeDglrvsQyPDmtikPeIkX4Nio2cUsnQTtq+xJZu4PJ/vCn1SSRLuQIOym8u7/K442LImO+gyCcQTCApUDOdVRfgwdoqVN7tpBScmT5kTZqCS8GWxy0dIsv26VRtVkNvBVqbkGUvk6Ma1DT4Hhn04ukzR/VHupdIW4GvhK46FuSeKJ7IOO4a8BnGDKf4wttcyKOT145NS+/vN2ZzbQi9tFQeCNFwfxLieRsOxk8MVdd1aFuqfbG1gLUgfmMguivJFMmjnpzY3eqfvDSeGGPQ9e2nAYmyBdqF58pHYsIvn5GXtBiB7uoBjKA=="
+																								"G5Ymy5MS4+MK3H3jkIx4BE/TGJpX/7RUinYSxnaiOEr1KzWmXc0eP6QT/supK0W07+QGywtov2vVsH9cgephNg+FGT16Yj9xD0Kbg4NOoM4XLrm31kmDu1fi5p+BmbzsUgVnzppcnrZe2AzRBiehqduPugkfbikWT3olj8YquGxe+qj+OOlFijm9iQgSRGfeaJDjOH8QvSU9STFVouitl7RK9tVjs6GufXfjqoStPpps0rdzp1wLX8+IQlomSiP1ePu5x6vyhVn+nbNsDiI3hWbbB4wGb1ku6wfeRgAyLkHPbS2nHhBkbttBuV55Qc+yw9oCr0vGDcV56PoYc46znw=="
 																						],
 																						"OperatorIDs": [
 																								1
@@ -719,9 +719,9 @@
 																										11,
 																										192
 																								],
-																								"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAMPkm8hrRXiSHrQCFwCgPmzNxFdqXOrIFCwygeji2UOnAAAAAAAAAACEAAAAhAAAAAAAAwEBAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
+																								"Data": "AAAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAGgMNGIaMHmMEMjm15qXf8KmAsjgZgCPWfxfFhmgRIC5AAAAAAAAAACEAAAAhAAAAAAAAwEBAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
 																						},
-																						"FullData": "FAAAAAEAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
+																						"FullData": "EAAAAAEAAAAAAAAAfAAAAAEAAAAAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvADAAAAAAAAAABAAAAAAAAABYAAAAAAAAAgAAAAAAAAAAkAAAAAAAAAAsAAAAAAAAAbAAAAAEAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOQAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB"
 																				},
 																				"QBFTMessage": {
 																						"MsgType": 0,
@@ -729,38 +729,38 @@
 																						"Round": 1,
 																						"Identifier": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
 																						"Root": [
-																								195,
-																								228,
-																								155,
+																								104,
+																								12,
+																								52,
+																								98,
+																								26,
+																								48,
+																								121,
+																								140,
+																								16,
 																								200,
-																								107,
-																								69,
-																								120,
-																								146,
-																								30,
-																								180,
+																								230,
+																								215,
+																								154,
+																								151,
+																								127,
+																								194,
+																								166,
 																								2,
-																								23,
-																								0,
-																								160,
-																								62,
-																								108,
-																								205,
-																								196,
-																								87,
-																								106,
-																								92,
-																								234,
 																								200,
-																								20,
-																								44,
-																								50,
-																								129,
-																								232,
-																								226,
-																								217,
-																								67,
-																								167
+																								224,
+																								102,
+																								0,
+																								143,
+																								89,
+																								252,
+																								95,
+																								22,
+																								25,
+																								160,
+																								68,
+																								128,
+																								185
 																						],
 																						"DataRound": 0,
 																						"RoundChangeJustification": [],
@@ -780,7 +780,7 @@
 														"Msgs": {}
 												}
 										},
-										"StartValue": "FAAAAAEAAAAAAAAAgAAAAIAAAAABAAAAAAAAAI6ABmVRqBsxglhwntr33R9jzWhqDk24spu7es/mVghnevWlJ9lEjuR4NUheArULwAwAAAAAAAAAAQAAAAAAAAAWAAAAAAAAAIAAAAAAAAAAJAAAAAAAAAALAAAAAAAAAGwAAAABAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAADAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
+										"StartValue": "EAAAAAEAAAAAAAAAfAAAAAEAAAAAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvADAAAAAAAAAABAAAAAAAAABYAAAAAAAAAgAAAAAAAAAAkAAAAAAAAAAsAAAAAAAAAbAAAAAEAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOQAAAAMAAAAAAAAAAMAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB"
 								}
 						],
 						"CommitteeMember": {
