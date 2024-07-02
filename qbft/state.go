@@ -25,7 +25,6 @@ type IConfig interface {
 }
 
 type Config struct {
-	OperatorSigner    *types.OperatorSigner
 	SigningPK         []byte
 	Domain            types.DomainType
 	ValueCheckF       ProposedValueCheckF
@@ -34,11 +33,6 @@ type Config struct {
 	Timer             Timer
 	SignatureVerifier types.SignatureVerifier
 	CutOffRound       Round
-}
-
-// GetSigner returns a Signer instance
-func (c *Config) GetOperatorSigner() *types.OperatorSigner {
-	return c.OperatorSigner
 }
 
 // GetSigningPubKey returns the public key used to sign all QBFT messages
