@@ -9,8 +9,11 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
+type SigningRoot string
+
 type PartialSigContainer struct {
-	Signatures map[phase0.ValidatorIndex]map[string]map[types.OperatorID][]byte
+	// Signature map: validator index -> signing root -> operator id (signer) -> signature (from the signer for the validator's signing root)
+	Signatures map[phase0.ValidatorIndex]map[SigningRoot]map[types.OperatorID]types.Signature
 	// Quorum is the number of min signatures needed for quorum
 	Quorum uint64
 }
@@ -18,18 +21,18 @@ type PartialSigContainer struct {
 func NewPartialSigContainer(quorum uint64) *PartialSigContainer {
 	return &PartialSigContainer{
 		Quorum:     quorum,
-		Signatures: make(map[phase0.ValidatorIndex]map[string]map[types.OperatorID][]byte),
+		Signatures: make(map[phase0.ValidatorIndex]map[SigningRoot]map[types.OperatorID]types.Signature),
 	}
 }
 
 func (ps *PartialSigContainer) AddSignature(sigMsg *types.PartialSignatureMessage) {
 	if ps.Signatures[sigMsg.ValidatorIndex] == nil {
-		ps.Signatures[sigMsg.ValidatorIndex] = make(map[string]map[uint64][]byte)
+		ps.Signatures[sigMsg.ValidatorIndex] = make(map[SigningRoot]map[types.OperatorID]types.Signature)
 	}
-	if ps.Signatures[sigMsg.ValidatorIndex][rootHex(sigMsg.SigningRoot)] == nil {
-		ps.Signatures[sigMsg.ValidatorIndex][rootHex(sigMsg.SigningRoot)] = make(map[types.OperatorID][]byte)
+	if ps.Signatures[sigMsg.ValidatorIndex][signingRootHex(sigMsg.SigningRoot)] == nil {
+		ps.Signatures[sigMsg.ValidatorIndex][signingRootHex(sigMsg.SigningRoot)] = make(map[types.OperatorID]types.Signature)
 	}
-	m := ps.Signatures[sigMsg.ValidatorIndex][rootHex(sigMsg.SigningRoot)]
+	m := ps.Signatures[sigMsg.ValidatorIndex][signingRootHex(sigMsg.SigningRoot)]
 
 	if m[sigMsg.Signer] == nil {
 		m[sigMsg.Signer] = make([]byte, 96)
@@ -48,21 +51,21 @@ func (ps *PartialSigContainer) GetSignature(validatorIndex phase0.ValidatorIndex
 	if ps.Signatures[validatorIndex] == nil {
 		return nil, errors.New("Dont have signature for the given validator index")
 	}
-	if ps.Signatures[validatorIndex][rootHex(signingRoot)] == nil {
+	if ps.Signatures[validatorIndex][signingRootHex(signingRoot)] == nil {
 		return nil, errors.New("Dont have signature for the given signing root")
 	}
-	if ps.Signatures[validatorIndex][rootHex(signingRoot)][signer] == nil {
+	if ps.Signatures[validatorIndex][signingRootHex(signingRoot)][signer] == nil {
 		return nil, errors.New("Dont have signature on signing root for the given signer")
 	}
-	return ps.Signatures[validatorIndex][rootHex(signingRoot)][signer], nil
+	return ps.Signatures[validatorIndex][signingRootHex(signingRoot)][signer], nil
 }
 
 // Return signature map for given root
-func (ps *PartialSigContainer) GetSignatures(validatorIndex phase0.ValidatorIndex, signingRoot [32]byte) map[types.OperatorID][]byte {
+func (ps *PartialSigContainer) GetSignatures(validatorIndex phase0.ValidatorIndex, signingRoot [32]byte) map[types.OperatorID]types.Signature {
 	if ps.Signatures[validatorIndex] == nil {
 		return nil
 	}
-	return ps.Signatures[validatorIndex][rootHex(signingRoot)]
+	return ps.Signatures[validatorIndex][signingRootHex(signingRoot)]
 }
 
 // Remove signer from signature map
@@ -70,13 +73,13 @@ func (ps *PartialSigContainer) Remove(validatorIndex phase0.ValidatorIndex, sign
 	if ps.Signatures[validatorIndex] == nil {
 		return
 	}
-	if ps.Signatures[validatorIndex][rootHex(signingRoot)] == nil {
+	if ps.Signatures[validatorIndex][signingRootHex(signingRoot)] == nil {
 		return
 	}
-	if ps.Signatures[validatorIndex][rootHex(signingRoot)][signer] == nil {
+	if ps.Signatures[validatorIndex][signingRootHex(signingRoot)][signer] == nil {
 		return
 	}
-	delete(ps.Signatures[validatorIndex][rootHex(signingRoot)], signer)
+	delete(ps.Signatures[validatorIndex][signingRootHex(signingRoot)], signer)
 }
 
 func (ps *PartialSigContainer) ReconstructSignature(root [32]byte, validatorPubKey []byte, validatorIndex phase0.ValidatorIndex) ([]byte, error) {
@@ -84,10 +87,15 @@ func (ps *PartialSigContainer) ReconstructSignature(root [32]byte, validatorPubK
 	if ps.Signatures[validatorIndex] == nil {
 		return nil, errors.New("no signatures for the given validator index")
 	}
-	if ps.Signatures[validatorIndex][rootHex(root)] == nil {
+	if ps.Signatures[validatorIndex][signingRootHex(root)] == nil {
 		return nil, errors.New("no signatures for the given signing root")
 	}
-	signature, err := types.ReconstructSignatures(ps.Signatures[validatorIndex][rootHex(root)])
+
+	operatorsSignatures := make(map[uint64][]byte)
+	for operatorID, sig := range ps.Signatures[validatorIndex][signingRootHex(root)] {
+		operatorsSignatures[operatorID] = sig
+	}
+	signature, err := types.ReconstructSignatures(operatorsSignatures)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to reconstruct signatures")
 	}
@@ -103,9 +111,9 @@ func (ps *PartialSigContainer) ReconstructSignature(root [32]byte, validatorPubK
 }
 
 func (ps *PartialSigContainer) HasQuorum(validatorIndex phase0.ValidatorIndex, root [32]byte) bool {
-	return uint64(len(ps.Signatures[validatorIndex][rootHex(root)])) >= ps.Quorum
+	return uint64(len(ps.Signatures[validatorIndex][signingRootHex(root)])) >= ps.Quorum
 }
 
-func rootHex(r [32]byte) string {
-	return hex.EncodeToString(r[:])
+func signingRootHex(r [32]byte) SigningRoot {
+	return SigningRoot(hex.EncodeToString(r[:]))
 }
