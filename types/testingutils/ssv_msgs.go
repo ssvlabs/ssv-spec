@@ -308,6 +308,15 @@ var PostConsensusWrongValidatorIndexAttestationMsg = func(sk *bls.SecretKey, id 
 	return msg
 }
 
+var PostConsensusInvalidThenValidValidatorIndexAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+	invalidValidatorIndexMsg := PostConsensusWrongValidatorIndexAttestationMsg(sk, id, height)
+	validValidatorIndexMsg := postConsensusAttestationMsg(sk, id, height, false, false, TestingValidatorIndex)
+
+	invalidValidatorIndexMsg.Messages = append(invalidValidatorIndexMsg.Messages, validValidatorIndexMsg.Messages...)
+
+	return invalidValidatorIndexMsg
+}
+
 var PostConsensusWrongSigAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
 	return postConsensusAttestationMsg(sk, id, height, false, true, TestingValidatorIndex)
 }
@@ -496,6 +505,14 @@ var PostConsensusWrongValidatorIndexAttestationAndSyncCommitteeMsg = func(sk *bl
 		m.ValidatorIndex = TestingWrongValidatorIndex
 	}
 	return msg
+}
+
+var PostConsensusInvalidThenValidValidatorIndexAttestationAndSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
+	invalidValidatorIndexMsg := PostConsensusWrongValidatorIndexAttestationAndSyncCommitteeMsg(sk, id, height)
+	validValidatorIndexMsg := PostConsensusAttestationAndSyncCommitteeMsg(sk, id, height)
+
+	invalidValidatorIndexMsg.Messages = append(invalidValidatorIndexMsg.Messages, validValidatorIndexMsg.Messages...)
+	return invalidValidatorIndexMsg
 }
 
 var PostConsensusWrongSigAttestationAndSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
@@ -990,6 +1007,14 @@ var PostConsensusWrongValidatorIndexSyncCommitteeMsg = func(sk *bls.SecretKey, i
 		m.ValidatorIndex = TestingWrongValidatorIndex
 	}
 	return msg
+}
+
+var PostConsensusInvalidThenValidValidatorIndexSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
+	invalidIndexMsg := PostConsensusWrongValidatorIndexSyncCommitteeMsg(sk, id)
+	validIndexMsg := postConsensusSyncCommitteeMsg(sk, id, TestingDutySlot, false, false, TestingValidatorIndex)
+
+	invalidIndexMsg.Messages = append(invalidIndexMsg.Messages, validIndexMsg.Messages...)
+	return invalidIndexMsg
 }
 
 var PostConsensusWrongSigSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
