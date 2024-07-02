@@ -45,7 +45,7 @@ func fullHappyFlowSyncCommitteeContributionSC() *comparable.StateComparison {
 					Height:                          qbft.Height(testingutils.TestingDutySlot),
 					LastPreparedRound:               qbft.FirstRound,
 					LastPreparedValue:               cdBytes,
-					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes, qbft.Height(testingutils.TestingDutySlot)),
+					ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes, qbft.Height(testingutils.TestingDutySlot))),
 					Decided:                         true,
 					DecidedValue:                    cdBytes,
 				},
@@ -96,7 +96,7 @@ func fullHappyFlowAggregatorSC() *comparable.StateComparison {
 					Height:                          qbft.Height(testingutils.TestingDutySlot),
 					LastPreparedRound:               qbft.FirstRound,
 					LastPreparedValue:               cdBytes,
-					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes, qbft.Height(testingutils.TestingDutySlot)),
+					ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes, qbft.Height(testingutils.TestingDutySlot))),
 					Decided:                         true,
 					DecidedValue:                    cdBytes,
 				},
@@ -147,8 +147,8 @@ func fullHappyFlowProposerSC(version spec.DataVersion) *comparable.StateComparis
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
 					LastPreparedRound: qbft.FirstRound,
 					LastPreparedValue: cdBytes,
-					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes, qbft.Height(testingutils.TestingDutySlotV(version))),
+					ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithIdentifierAndFullData(
+						ks.OperatorKeys[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes, qbft.Height(testingutils.TestingDutySlotV(version)))),
 					Decided:      true,
 					DecidedValue: cdBytes,
 				},
@@ -199,8 +199,8 @@ func fullHappyFlowBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 					Height:            qbft.Height(testingutils.TestingDutySlotV(version)),
 					LastPreparedRound: qbft.FirstRound,
 					LastPreparedValue: cdBytes,
-					ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes, qbft.Height(testingutils.TestingDutySlotV(version))),
+					ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithIdentifierAndFullData(
+						ks.OperatorKeys[1], types.OperatorID(1), ret.GetBaseRunner().QBFTController.Identifier, cdBytes, qbft.Height(testingutils.TestingDutySlotV(version)))),
 					Decided:      true,
 					DecidedValue: cdBytes,
 				},

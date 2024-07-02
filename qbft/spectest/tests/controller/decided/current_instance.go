@@ -65,7 +65,7 @@ func currentInstanceStateComparison() *comparable.StateComparison {
 		State: &qbft.State{
 			CommitteeMember:                 testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 			ID:                              testingutils.TestingIdentifier,
-			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+			ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1))),
 			LastPreparedRound:               qbft.FirstRound,
 			LastPreparedValue:               testingutils.TestingQBFTFullData,
 			Decided:                         true,
