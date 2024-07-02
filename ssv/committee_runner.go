@@ -196,13 +196,11 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 		role, validators, found := findValidators(root, attestationMap, committeeMap)
 
 		if !found {
-			// Check if duty has terminated (runner has submitted for all duties)
-			if cr.HasSubmittedAllValidatorDuties(attestationMap, committeeMap) {
-				cr.BaseRunner.State.Finished = true
-			}
-			// All roots have quorum, so if we can't find validators for a root, it means we have a bug
-			// We assume it is safe to stop due to honest majority assumption
-			return errors.New("could not find validators for root")
+			// Edge case: since operators may have divergent sets of validators,
+			// it's possible that an operator doesn't have the validator associated to a root.
+			// In this case, we simply record this error and continue.
+			anyErr = errors.New("could not find validators for root")
+			continue
 		}
 
 		for _, validator := range validators {
@@ -236,12 +234,12 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 
 			// Get the beacon object related to root
 			validatorObjs, exists := beaconObjects[validator]
-            if !exists {
+			if !exists {
 				anyErr = errors.Wrap(err, "could not find beacon object for validator")
 				continue
 			}
 			sszObject, rexists := validatorObjs[root]
-            if !rexists {
+			if !rexists {
 				anyErr = errors.Wrap(err, "could not find beacon object for validator")
 				continue
 			}
