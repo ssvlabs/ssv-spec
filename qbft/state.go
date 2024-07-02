@@ -4,7 +4,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-type signing interface {
+type Signing interface {
 	// GetSigner returns an operator signer instance
 	GetOperatorSigner() *types.OperatorSigner
 	// GetSignatureVerifier returns the signature verifier for operator signatures
@@ -12,7 +12,6 @@ type signing interface {
 }
 
 type IConfig interface {
-	signing
 	// GetValueCheckF returns value check function
 	GetValueCheckF() ProposedValueCheckF
 	// GetProposerF returns func used to calculate proposer

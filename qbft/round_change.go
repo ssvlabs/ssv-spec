@@ -56,7 +56,7 @@ func (i *Instance) uponRoundChange(
 
 		proposal, err := CreateProposal(
 			i.State,
-			i.config,
+			i.signer,
 			valueToPropose,
 			roundChangeMsgContainer.MessagesForRound(i.State.Round), // TODO - might be optimized to include only necessary quorum
 			roundChangeJustification,
@@ -87,7 +87,7 @@ func (i *Instance) uponChangeRoundPartialQuorum(newRound Round, instanceStartVal
 	i.State.Round = newRound
 	i.State.ProposalAcceptedForCurrentRound = nil
 	i.config.GetTimer().TimeoutForRound(i.State.Round)
-	roundChange, err := CreateRoundChange(i.State, i.config, newRound, instanceStartValue)
+	roundChange, err := CreateRoundChange(i.State, i.signer, newRound, instanceStartValue)
 	if err != nil {
 		return errors.Wrap(err, "failed to create round change message")
 	}
@@ -331,7 +331,7 @@ func validRoundChangeForDataVerifySignature(
 	}
 
 	// Verify signature
-	if err := config.GetSignatureVerifier().Verify(signedMsg, state.CommitteeMember.Committee); err != nil {
+	if err := types.Verify(signedMsg, state.CommitteeMember.Committee); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 
@@ -383,9 +383,9 @@ func minRound(roundChangeMsgs []*types.SignedSSVMessage) Round {
 	return ret
 }
 
-func getRoundChangeData(state *State, config IConfig, instanceStartValue []byte) (Round, [32]byte, []byte, []*types.SignedSSVMessage, error) {
+func getRoundChangeData(state *State) (Round, [32]byte, []byte, []*types.SignedSSVMessage, error) {
 	if state.LastPreparedRound != NoRound && state.LastPreparedValue != nil {
-		justifications, err := getRoundChangeJustification(state, config, state.PrepareContainer)
+		justifications, err := getRoundChangeJustification(state, state.PrepareContainer)
 		if err != nil {
 			return NoRound, [32]byte{}, nil, nil, errors.Wrap(err, "could not get round change justification")
 		}
@@ -414,8 +414,8 @@ RoundChange(
            getRoundChangeJustification(current)
        )
 */
-func CreateRoundChange(state *State, config IConfig, newRound Round, instanceStartValue []byte) (*types.SignedSSVMessage, error) {
-	round, root, fullData, justifications, err := getRoundChangeData(state, config, instanceStartValue)
+func CreateRoundChange(state *State, signer *types.OperatorSigner, newRound Round, instanceStartValue []byte) (*types.SignedSSVMessage, error) {
+	round, root, fullData, justifications, err := getRoundChangeData(state)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not generate round change data")
 	}
@@ -434,7 +434,7 @@ func CreateRoundChange(state *State, config IConfig, newRound Round, instanceSta
 		DataRound:                round,
 		RoundChangeJustification: justificationsData,
 	}
-	signedMsg, err := Sign(msg, state.CommitteeMember.OperatorID, config.GetOperatorSigner())
+	signedMsg, err := Sign(msg, state.CommitteeMember.OperatorID, signer)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not sign round change message")
 	}

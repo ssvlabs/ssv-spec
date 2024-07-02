@@ -17,6 +17,7 @@ type ProposerF func(state *State, round Round) types.OperatorID
 type Instance struct {
 	State  *State
 	config IConfig
+	signer *types.OperatorSigner
 
 	processMsgF *types.ThreadSafeF
 	startOnce   sync.Once
@@ -30,6 +31,7 @@ func NewInstance(
 	committeeMember *types.CommitteeMember,
 	identifier []byte,
 	height Height,
+	signer *types.OperatorSigner,
 ) *Instance {
 	return &Instance{
 		State: &State{
@@ -44,6 +46,7 @@ func NewInstance(
 			RoundChangeContainer: NewMsgContainer(),
 		},
 		config:      config,
+		signer:      signer,
 		processMsgF: types.NewThreadSafeF(),
 	}
 }
@@ -63,7 +66,7 @@ func (i *Instance) Start(value []byte, height Height) {
 
 		// propose if this node is the proposer
 		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.CommitteeMember.OperatorID {
-			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
+			proposal, err := CreateProposal(i.State, i.signer, i.StartValue, nil, nil)
 			// nolint
 			if err != nil {
 				fmt.Printf("%s\n", err.Error())

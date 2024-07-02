@@ -18,6 +18,10 @@ var TestingQBFTRootData = func() [32]byte {
 
 var TestingCutOffRound = qbft.Round(15)
 
+var TestingOperatorSigner = func(keySet *TestKeySet) *types.OperatorSigner {
+	return NewOperatorSigner(keySet, 1)
+}
+
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
 		OperatorSigner: NewOperatorSigner(keySet, 1),
@@ -120,7 +124,8 @@ var ThirteenOperatorsInstance = func() *qbft.Instance {
 }
 
 var baseInstance = func(committeeMember *types.CommitteeMember, keySet *TestKeySet, identifier []byte) *qbft.Instance {
-	ret := qbft.NewInstance(TestingConfig(keySet), committeeMember, identifier, qbft.FirstHeight)
+	ret := qbft.NewInstance(TestingConfig(keySet), committeeMember, identifier, qbft.FirstHeight,
+		TestingOperatorSigner(keySet))
 	ret.StartValue = TestingQBFTFullData
 	return ret
 }
