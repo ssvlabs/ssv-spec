@@ -20,12 +20,14 @@ type Controller struct {
 	config          IConfig
 }
 
-func NewController(identifier []byte, committeeMember *types.CommitteeMember, config IConfig) *Controller {
+func NewController(identifier []byte, committeeMember *types.CommitteeMember, config IConfig,
+	signer *types.OperatorSigner) *Controller {
 	return &Controller{
 		Identifier:      identifier,
 		Height:          FirstHeight,
 		CommitteeMember: committeeMember,
 		StoredInstances: InstanceContainer{},
+		OperatorSigner:  signer,
 		config:          config,
 	}
 }

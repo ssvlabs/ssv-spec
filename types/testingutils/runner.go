@@ -94,14 +94,9 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 		return 1
 	}
 	config.Network = net
-	config.OperatorSigner = opSigner
 	config.SignatureVerifier = NewTestingVerifier()
 
-	contr := qbft.NewController(
-		identifier[:],
-		committeeMember,
-		config,
-	)
+	contr := qbft.NewController(identifier[:], committeeMember, config, opSigner)
 
 	switch role {
 	case types.RoleCommittee:
@@ -215,14 +210,9 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 		return 1
 	}
 	config.Network = net
-	config.OperatorSigner = opSigner
 	config.SignatureVerifier = NewTestingVerifier()
 
-	contr := qbft.NewController(
-		identifier[:],
-		committeeMember,
-		config,
-	)
+	contr := qbft.NewController(identifier[:], committeeMember, config, opSigner)
 
 	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
 	shareMap[share.ValidatorIndex] = share

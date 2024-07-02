@@ -25,7 +25,6 @@ type IConfig interface {
 }
 
 type Config struct {
-	SigningPK         []byte
 	Domain            types.DomainType
 	ValueCheckF       ProposedValueCheckF
 	ProposerF         ProposerF
@@ -33,11 +32,6 @@ type Config struct {
 	Timer             Timer
 	SignatureVerifier types.SignatureVerifier
 	CutOffRound       Round
-}
-
-// GetSigningPubKey returns the public key used to sign all QBFT messages
-func (c *Config) GetSigningPubKey() []byte {
-	return c.SigningPK
 }
 
 // GetSignatureDomainType returns the Domain type used for signatures
