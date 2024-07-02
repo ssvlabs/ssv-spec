@@ -38,7 +38,7 @@ func (ps *PartialSigContainer) AddSignature(sigMsg *types.PartialSignatureMessag
 }
 
 // HasSigner returns true if container has signature for signer and signing root, else it returns false
-func (ps *PartialSigContainer) HasSigner(validatorIndex phase0.ValidatorIndex, signer types.OperatorID, signingRoot [32]byte) bool {
+func (ps *PartialSigContainer) HasSignature(validatorIndex phase0.ValidatorIndex, signer types.OperatorID, signingRoot [32]byte) bool {
 	_, err := ps.GetSignature(validatorIndex, signer, signingRoot)
 	return err == nil
 }

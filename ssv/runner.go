@@ -184,7 +184,7 @@ func (b *BaseRunner) basePartialSigMsgProcessing(
 		prevQuorum := container.HasQuorum(msg.ValidatorIndex, msg.SigningRoot)
 
 		// Check if it has two signatures for the same signer
-		if container.HasSigner(msg.ValidatorIndex, msg.Signer, msg.SigningRoot) {
+		if container.HasSignature(msg.ValidatorIndex, msg.Signer, msg.SigningRoot) {
 			b.resolveDuplicateSignature(container, msg)
 		} else {
 			container.AddSignature(msg)
