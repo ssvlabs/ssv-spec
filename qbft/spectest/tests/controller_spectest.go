@@ -76,13 +76,14 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 
 func (test *ControllerSpecTest) generateController() *qbft.Controller {
 	identifier := []byte{1, 2, 3, 4}
-	keySet := testingutils.Testing4SharesSet()
-	config := testingutils.TestingConfig(keySet)
-	committeeMember := testingutils.TestingCommitteeMember(keySet)
+	ks := testingutils.Testing4SharesSet()
+	config := testingutils.TestingConfig(ks)
+	committeeMember := testingutils.TestingCommitteeMember(ks)
 	return testingutils.NewTestingQBFTController(
 		identifier[:],
 		committeeMember,
 		config,
+		testingutils.TestingOperatorSigner(ks),
 	)
 }
 
@@ -188,7 +189,15 @@ func (test *ControllerSpecTest) runInstanceWithData(
 	require.NoError(t, err)
 	if runData.ControllerPostRoot != hex.EncodeToString(r[:]) {
 		diff := typescomparable.PrintDiff(contr, runData.ControllerPostState)
-		require.Fail(t, fmt.Sprintf("post state not equal\nexpected: %s\nreceived: %s", runData.ControllerPostRoot, hex.EncodeToString(r[:])), diff)
+		require.Fail(
+			t,
+			fmt.Sprintf(
+				"post state not equal\nexpected: %s\nreceived: %s",
+				runData.ControllerPostRoot,
+				hex.EncodeToString(r[:]),
+			),
+			diff,
+		)
 	}
 
 	return lastErr

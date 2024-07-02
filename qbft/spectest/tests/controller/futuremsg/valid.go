@@ -13,7 +13,8 @@ func ValidMsg() tests.SpecTest {
 	identifier := []byte{1, 2, 3, 4}
 
 	msg := testingutils.TestingPrepareMessageWithParams(
-		ks.OperatorKeys[3], 3, 3, 10, identifier[:], testingutils.TestingQBFTRootData)
+		ks.OperatorKeys[3], 3, 3, 10, identifier[:], testingutils.TestingQBFTRootData,
+	)
 
 	// create base controller
 	contr := createBaseController()
@@ -33,10 +34,13 @@ func ValidMsg() tests.SpecTest {
 
 func createBaseController() *qbft.Controller {
 	id := []byte{1, 2, 3, 4}
-	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
+	ks := testingutils.Testing4SharesSet()
+	config := testingutils.TestingConfig(ks)
 	contr := testingutils.NewTestingQBFTController(
 		id[:],
-		testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
-		config)
+		testingutils.TestingCommitteeMember(ks),
+		config,
+		testingutils.TestingOperatorSigner(ks),
+	)
 	return contr
 }

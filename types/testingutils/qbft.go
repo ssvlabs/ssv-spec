@@ -24,9 +24,7 @@ var TestingOperatorSigner = func(keySet *TestKeySet) *types.OperatorSigner {
 
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
-		OperatorSigner: NewOperatorSigner(keySet, 1),
-		SigningPK:      keySet.Shares[1].GetPublicKey().Serialize(),
-		Domain:         TestingSSVDomainType,
+		Domain: TestingSSVDomainType,
 		ValueCheckF: func(data []byte) error {
 			if bytes.Equal(data, TestingInvalidValueCheck) {
 				return errors.New("invalid value")
@@ -81,10 +79,12 @@ var TestingCommitteeMember = func(keysSet *TestKeySet) *types.CommitteeMember {
 			panic(err)
 		}
 
-		operators = append(operators, &types.Operator{
-			OperatorID:        key.Signer,
-			SSVOperatorPubKey: pkBytes,
-		})
+		operators = append(
+			operators, &types.Operator{
+				OperatorID:        key.Signer,
+				SSVOperatorPubKey: pkBytes,
+			},
+		)
 	}
 
 	opIds := []types.OperatorID{}
@@ -124,20 +124,20 @@ var ThirteenOperatorsInstance = func() *qbft.Instance {
 }
 
 var baseInstance = func(committeeMember *types.CommitteeMember, keySet *TestKeySet, identifier []byte) *qbft.Instance {
-	ret := qbft.NewInstance(TestingConfig(keySet), committeeMember, identifier, qbft.FirstHeight,
-		TestingOperatorSigner(keySet))
+	ret := qbft.NewInstance(
+		TestingConfig(keySet), committeeMember, identifier, qbft.FirstHeight,
+		TestingOperatorSigner(keySet),
+	)
 	ret.StartValue = TestingQBFTFullData
 	return ret
 }
 
-func NewTestingQBFTController(
-	identifier []byte,
-	share *types.CommitteeMember,
-	config qbft.IConfig,
-) *qbft.Controller {
+func NewTestingQBFTController(identifier []byte, share *types.CommitteeMember, config qbft.IConfig,
+	signer *types.OperatorSigner) *qbft.Controller {
 	return qbft.NewController(
 		identifier,
 		share,
 		config,
+		signer,
 	)
 }
