@@ -12,6 +12,7 @@ import (
 type SigningRoot string
 
 type PartialSigContainer struct {
+	// Signature map: validator index -> signing root -> operator id (signer) -> signature (from the signer for the validator's signing root)
 	Signatures map[phase0.ValidatorIndex]map[SigningRoot]map[types.OperatorID]types.Signature
 	// Quorum is the number of min signatures needed for quorum
 	Quorum uint64
