@@ -61,7 +61,7 @@ func lateCommitStateComparison() *comparable.StateComparison {
 			ID:                              testingutils.TestingIdentifier,
 			Round:                           qbft.FirstRound,
 			Height:                          qbft.FirstHeight,
-			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+			ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1))),
 			LastPreparedRound:               qbft.FirstRound,
 			LastPreparedValue:               testingutils.TestingQBFTFullData,
 			Decided:                         true,
