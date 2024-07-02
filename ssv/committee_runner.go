@@ -238,8 +238,8 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 				anyErr = errors.Wrap(err, "could not find beacon object for validator")
 				continue
 			}
-			sszObject, rexists := validatorObjs[root]
-			if !rexists {
+			sszObject, exists := validatorObjs[root]
+			if !exists {
 				anyErr = errors.Wrap(err, "could not find beacon object for validator")
 				continue
 			}
