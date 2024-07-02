@@ -16,7 +16,7 @@ type Controller struct {
 	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
 	StoredInstances InstanceContainer
 	CommitteeMember *types.CommitteeMember
-	OperatorSigner  *types.OperatorSigner
+	OperatorSigner  *types.OperatorSigner `json:"-"`
 	config          IConfig
 }
 
