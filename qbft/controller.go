@@ -16,7 +16,7 @@ type Controller struct {
 	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
 	StoredInstances InstanceContainer
 	CommitteeMember *types.CommitteeMember
-	operatorSigner  *types.OperatorSigner
+	OperatorSigner  *types.OperatorSigner
 	config          IConfig
 }
 
@@ -154,7 +154,7 @@ func (c *Controller) isFutureMessage(msg *ProcessingMessage) (bool, error) {
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
 func (c *Controller) addAndStoreNewInstance() *Instance {
-	i := NewInstance(c.GetConfig(), c.CommitteeMember, c.Identifier, c.Height, c.operatorSigner)
+	i := NewInstance(c.GetConfig(), c.CommitteeMember, c.Identifier, c.Height, c.OperatorSigner)
 	c.StoredInstances.addNewInstance(i)
 	return i
 }

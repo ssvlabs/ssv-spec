@@ -30,7 +30,8 @@ func PostWrongDecided() tests.SpecTest {
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().QBFTController.CommitteeMember,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.FirstHeight)
+			qbft.FirstHeight,
+			r.GetBaseRunner().QBFTController.OperatorSigner)
 		r.GetBaseRunner().State.RunningInstance.State.Decided = true
 		storedInstances[1] = r.GetBaseRunner().State.RunningInstance
 
@@ -38,7 +39,8 @@ func PostWrongDecided() tests.SpecTest {
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().QBFTController.CommitteeMember,
 			r.GetBaseRunner().QBFTController.Identifier,
-			higherDecidedSlot)
+			higherDecidedSlot,
+			r.GetBaseRunner().QBFTController.OperatorSigner)
 		higherDecided.State.Decided = true
 		higherDecided.State.DecidedValue = []byte{1, 2, 3, 4}
 		storedInstances[0] = higherDecided

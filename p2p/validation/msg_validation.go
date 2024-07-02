@@ -111,7 +111,7 @@ func validateFutureMsg(
 	}
 
 	// verify signature
-	if err := config.GetSignatureVerifier().Verify(msg, committeeMember.Committee); err != nil {
+	if err := types.Verify(msg, committeeMember.Committee); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 

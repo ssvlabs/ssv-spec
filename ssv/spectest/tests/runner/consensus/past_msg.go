@@ -20,7 +20,8 @@ func PastMessage() tests.SpecTest {
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().QBFTController.CommitteeMember,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.FirstHeight))
+			qbft.FirstHeight,
+			r.GetBaseRunner().QBFTController.OperatorSigner))
 
 		r.GetBaseRunner().QBFTController.Height = 10
 		return r
