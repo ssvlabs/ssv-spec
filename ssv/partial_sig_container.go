@@ -27,7 +27,7 @@ func NewPartialSigContainer(quorum uint64) *PartialSigContainer {
 
 func (ps *PartialSigContainer) AddSignature(sigMsg *types.PartialSignatureMessage) {
 	if ps.Signatures[sigMsg.ValidatorIndex] == nil {
-		ps.Signatures[sigMsg.ValidatorIndex] = make(map[SigningRoot]map[uint64]types.Signature)
+		ps.Signatures[sigMsg.ValidatorIndex] = make(map[SigningRoot]map[types.OperatorID]types.Signature)
 	}
 	if ps.Signatures[sigMsg.ValidatorIndex][signingRootHex(sigMsg.SigningRoot)] == nil {
 		ps.Signatures[sigMsg.ValidatorIndex][signingRootHex(sigMsg.SigningRoot)] = make(map[types.OperatorID]types.Signature)
