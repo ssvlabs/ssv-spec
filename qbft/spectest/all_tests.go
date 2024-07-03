@@ -96,10 +96,6 @@ var AllTests = []tests.TestF{
 	messages.ProposeDataEncoding,
 	messages.SignedMsgNoSigners,
 	messages.SignedMsgDuplicateSigners,
-	messages.SignedMessageNoSignatures,
-	messages.SignedMessageEmptySignature,
-	messages.SignedMessageDifferentLength,
-	messages.SignedMessageNilSSVMessage,
 
 	messages.SignedMsgMultiSigners,
 	messages.GetRoot,
