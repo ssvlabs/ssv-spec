@@ -19,6 +19,10 @@ func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, psigMsgs *types.Part
 		return err
 	}
 
+	if err := b.validateValidatorIndexInPartialSigMsg(psigMsgs); err != nil {
+		return err
+	}
+
 	roots, domain, err := runner.expectedPreConsensusRootsAndDomain()
 	if err != nil {
 		return err
@@ -76,6 +80,11 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 		if err := b.validatePartialSigMsgForSlot(psigMsgs, decidedValue.Duty.Slot); err != nil {
 			return err
 		}
+
+		if err := b.validateValidatorIndexInPartialSigMsg(psigMsgs); err != nil {
+			return err
+		}
+
 		roots, domain, err := runner.expectedPostConsensusRootsAndDomain()
 		if err != nil {
 			return err
