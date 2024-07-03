@@ -22,12 +22,12 @@ func SetMessagesInContainer(container *ssv.PartialSigContainer, messages []*type
 			root := hex.EncodeToString(partialSigMsg.SigningRoot[:])
 
 			if container.Signatures[partialSigMsg.ValidatorIndex] == nil {
-				container.Signatures[partialSigMsg.ValidatorIndex] = make(map[string]map[uint64][]byte)
+				container.Signatures[partialSigMsg.ValidatorIndex] = make(map[ssv.SigningRoot]map[uint64]types.Signature)
 			}
-			if container.Signatures[partialSigMsg.ValidatorIndex][root] == nil {
-				container.Signatures[partialSigMsg.ValidatorIndex][root] = make(map[uint64][]byte)
+			if container.Signatures[partialSigMsg.ValidatorIndex][ssv.SigningRoot(root)] == nil {
+				container.Signatures[partialSigMsg.ValidatorIndex][ssv.SigningRoot(root)] = make(map[uint64]types.Signature)
 			}
-			container.Signatures[partialSigMsg.ValidatorIndex][root][partialSigMsg.Signer] = partialSigMsg.PartialSignature
+			container.Signatures[partialSigMsg.ValidatorIndex][ssv.SigningRoot(root)][partialSigMsg.Signer] = partialSigMsg.PartialSignature
 		}
 	}
 	return container
