@@ -21,7 +21,7 @@ var CommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
 var CommitteeRunnerWithShareMap = func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
 	var sharePubKeys = make([]types.ShareValidatorPK, len(shareMap))
 	for i, share := range shareMap {
-		sharePubKeys[i] = share.SharePubKey
+		sharePubKeys[i-1] = share.SharePubKey
 	}
 	return baseRunnerWithShareMap(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(),
 		TestingDutySlot, sharePubKeys, TestingDutyEpoch), shareMap)
