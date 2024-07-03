@@ -53,6 +53,8 @@ var AllTests = []tests.TestF{
 	postconsensus.InconsistentOperatorSigner,
 	postconsensus.NilSSVMessage,
 	postconsensus.InvalidValidatorIndex,
+	postconsensus.InvalidValidatorIndexQuorum,
+	postconsensus.InvalidAndValidValidatorIndexesQuorum,
 	postconsensus.PartialInvalidRootQuorumThenValidQuorum,
 	postconsensus.PartialInvalidSigQuorumThenValidQuorum,
 	postconsensus.MixedCommittees,
