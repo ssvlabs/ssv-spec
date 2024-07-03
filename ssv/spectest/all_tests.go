@@ -106,6 +106,13 @@ var AllTests = []tests.TestF{
 	consensus.ValidMessage,
 	consensus.InvalidSignature,
 	consensus.DecidedSlashableAttestation,
+	consensus.NoSigners,
+	consensus.NonUniqueSigners,
+	consensus.ZeroSigner,
+	consensus.NoSignatures,
+	consensus.EmptySignature,
+	consensus.SignersAndSignaturesWithDifferentLength,
+	consensus.NilSSVMessage,
 
 	synccommitteeaggregator.SomeAggregatorQuorum,
 	synccommitteeaggregator.NoneAggregatorQuorum,
