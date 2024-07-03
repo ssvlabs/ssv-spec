@@ -13,15 +13,24 @@ import (
 var TestingHighestDecidedSlot = phase0.Slot(0)
 
 var CommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), keySet)
+	sharePubKey := []types.ShareValidatorPK{TestingShare(keySet, TestingValidatorIndex).SharePubKey}
+	return baseRunner(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot,
+		sharePubKey, TestingDutyEpoch), keySet)
 }
 
 var CommitteeRunnerWithShareMap = func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
-	return baseRunnerWithShareMap(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), shareMap)
+	var sharePubKeys = make([]types.ShareValidatorPK, len(shareMap))
+	for i, share := range shareMap {
+		sharePubKeys[i] = share.SharePubKey
+	}
+	return baseRunnerWithShareMap(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(),
+		TestingDutySlot, sharePubKeys, TestingDutyEpoch), shareMap)
 }
 
 var AttesterRunner7Operators = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), keySet)
+	sharePubKey := []types.ShareValidatorPK{TestingShare(keySet, TestingValidatorIndex).SharePubKey}
+	return baseRunner(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, sharePubKey,
+		TestingDutyEpoch), keySet)
 }
 
 var ProposerRunner = func(keySet *TestKeySet) ssv.Runner {
