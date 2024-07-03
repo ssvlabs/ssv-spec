@@ -198,8 +198,7 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 		if !found {
 			// Edge case: since operators may have divergent sets of validators,
 			// it's possible that an operator doesn't have the validator associated to a root.
-			// In this case, we simply record this error and continue.
-			anyErr = errors.New("could not find validators for root")
+			// In this case, we simply continue.
 			continue
 		}
 
