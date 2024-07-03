@@ -33,7 +33,7 @@ func (i *Instance) uponPrepare(msg *ProcessingMessage, prepareMsgContainer *MsgC
 	i.State.LastPreparedValue = i.State.ProposalAcceptedForCurrentRound.SignedMessage.FullData
 	i.State.LastPreparedRound = i.State.Round
 
-	commitMsg, err := CreateCommit(i.State, i.config, proposedRoot)
+	commitMsg, err := CreateCommit(i.State, i.signer, proposedRoot)
 	if err != nil {
 		return errors.Wrap(err, "could not create commit msg")
 	}
@@ -47,7 +47,7 @@ func (i *Instance) uponPrepare(msg *ProcessingMessage, prepareMsgContainer *MsgC
 
 // getRoundChangeJustification returns the round change justification for the current round.
 // The justification is a quorum of signed prepare messages that agree on state.LastPreparedValue
-func getRoundChangeJustification(state *State, config IConfig, prepareMsgContainer *MsgContainer) ([]*ProcessingMessage, error) {
+func getRoundChangeJustification(state *State, prepareMsgContainer *MsgContainer) ([]*ProcessingMessage, error) {
 	if state.LastPreparedValue == nil {
 		return nil, nil
 	}
@@ -116,7 +116,6 @@ func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 }
 
 func validSignedPrepareForHeightRoundAndRootVerifySignature(
-	config IConfig,
 	msg *ProcessingMessage,
 	height Height,
 	round Round,
@@ -128,7 +127,7 @@ func validSignedPrepareForHeightRoundAndRootVerifySignature(
 	}
 
 	// Verify signature
-	if err := config.GetSignatureVerifier().Verify(msg.SignedMessage, operators); err != nil {
+	if err := types.Verify(msg.SignedMessage, operators); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 
@@ -147,7 +146,7 @@ Prepare(
                         )
                 );
 */
-func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) (*types.SignedSSVMessage, error) {
+func CreatePrepare(state *State, signer *types.OperatorSigner, newRound Round, root [32]byte) (*types.SignedSSVMessage, error) {
 	msg := &Message{
 		MsgType:    PrepareMsgType,
 		Height:     state.Height,
@@ -157,5 +156,5 @@ func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) 
 		Root: root,
 	}
 
-	return Sign(msg, state.CommitteeMember.OperatorID, config.GetOperatorSigner())
+	return Sign(msg, state.CommitteeMember.OperatorID, signer)
 }

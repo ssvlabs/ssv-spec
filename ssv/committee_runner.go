@@ -15,7 +15,7 @@ type CommitteeRunner struct {
 	beacon          BeaconNode
 	network         Network
 	signer          types.BeaconSigner
-	operatorSigner  types.OperatorSigner
+	operatorSigner  *types.OperatorSigner
 	valCheck        qbft.ProposedValueCheckF
 	submittedDuties map[types.BeaconRole]map[phase0.ValidatorIndex]struct{}
 }
@@ -26,7 +26,7 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 	beacon BeaconNode,
 	network Network,
 	signer types.BeaconSigner,
-	operatorSigner types.OperatorSigner,
+	operatorSigner *types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 ) Runner {
 	return &CommitteeRunner{
@@ -480,7 +480,7 @@ func (cr CommitteeRunner) GetSigner() types.BeaconSigner {
 	return cr.signer
 }
 
-func (cr CommitteeRunner) GetOperatorSigner() types.OperatorSigner {
+func (cr CommitteeRunner) GetOperatorSigner() *types.OperatorSigner {
 	return cr.operatorSigner
 }
 

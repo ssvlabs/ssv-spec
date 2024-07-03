@@ -16,7 +16,7 @@ type VoluntaryExitRunner struct {
 	beacon         BeaconNode
 	network        Network
 	signer         types.BeaconSigner
-	operatorSigner types.OperatorSigner
+	operatorSigner *types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 
 	voluntaryExit *phase0.VoluntaryExit
@@ -28,7 +28,7 @@ func NewVoluntaryExitRunner(
 	beacon BeaconNode,
 	network Network,
 	signer types.BeaconSigner,
-	operatorSigner types.OperatorSigner,
+	operatorSigner *types.OperatorSigner,
 ) Runner {
 	return &VoluntaryExitRunner{
 		BaseRunner: &BaseRunner{
@@ -211,6 +211,6 @@ func (r *VoluntaryExitRunner) GetSigner() types.BeaconSigner {
 	return r.signer
 }
 
-func (r *VoluntaryExitRunner) GetOperatorSigner() types.OperatorSigner {
+func (r *VoluntaryExitRunner) GetOperatorSigner() *types.OperatorSigner {
 	return r.operatorSigner
 }

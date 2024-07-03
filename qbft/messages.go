@@ -137,7 +137,7 @@ func MarshalJustifications(msgs []*types.SignedSSVMessage) ([][]byte, error) {
 	return ret, nil
 }
 
-func Sign(msg *Message, operatorID types.OperatorID, operatorSigner types.OperatorSigner) (*types.SignedSSVMessage, error) {
+func Sign(msg *Message, operatorID types.OperatorID, operatorSigner *types.OperatorSigner) (*types.SignedSSVMessage, error) {
 
 	byts, err := msg.Encode()
 	if err != nil {

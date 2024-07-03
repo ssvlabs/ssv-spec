@@ -13,39 +13,89 @@ import (
 var TestingHighestDecidedSlot = phase0.Slot(0)
 
 var CommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), keySet)
+	return baseRunner(
+		types.RoleCommittee,
+		ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch),
+		keySet,
+	)
 }
 
 var CommitteeRunnerWithShareMap = func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
-	return baseRunnerWithShareMap(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), shareMap)
+	return baseRunnerWithShareMap(
+		types.RoleCommittee,
+		ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch),
+		shareMap,
+	)
 }
 
 var AttesterRunner7Operators = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), keySet)
+	return baseRunner(
+		types.RoleCommittee,
+		ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch),
+		keySet,
+	)
 }
 
 var ProposerRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleProposer, ssv.ProposerValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, (types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, nil), keySet)
+	return baseRunner(
+		types.RoleProposer,
+		ssv.ProposerValueCheckF(
+			NewTestingKeyManager(),
+			types.BeaconTestNetwork,
+			(types.ValidatorPK)(TestingValidatorPubKey),
+			TestingValidatorIndex,
+			nil,
+		),
+		keySet,
+	)
 }
 
 var ProposerBlindedBlockRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(
 		types.RoleProposer,
-		ssv.ProposerValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, (types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, nil),
+		ssv.ProposerValueCheckF(
+			NewTestingKeyManager(),
+			types.BeaconTestNetwork,
+			(types.ValidatorPK)(TestingValidatorPubKey),
+			TestingValidatorIndex,
+			nil,
+		),
 		keySet,
 	)
 }
 
 var AggregatorRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleAggregator, ssv.AggregatorValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, (types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex), keySet)
+	return baseRunner(
+		types.RoleAggregator,
+		ssv.AggregatorValueCheckF(
+			NewTestingKeyManager(),
+			types.BeaconTestNetwork,
+			(types.ValidatorPK)(TestingValidatorPubKey),
+			TestingValidatorIndex,
+		),
+		keySet,
+	)
 }
 
 var SyncCommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch), keySet)
+	return baseRunner(
+		types.RoleCommittee,
+		ssv.BeaconVoteValueCheckF(NewTestingKeyManager(), TestingDutySlot, nil, TestingDutyEpoch),
+		keySet,
+	)
 }
 
 var SyncCommitteeContributionRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleSyncCommitteeContribution, ssv.SyncCommitteeContributionValueCheckF(NewTestingKeyManager(), types.BeaconTestNetwork, (types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex), keySet)
+	return baseRunner(
+		types.RoleSyncCommitteeContribution,
+		ssv.SyncCommitteeContributionValueCheckF(
+			NewTestingKeyManager(),
+			types.BeaconTestNetwork,
+			(types.ValidatorPK)(TestingValidatorPubKey),
+			TestingValidatorIndex,
+		),
+		keySet,
+	)
 }
 
 var ValidatorRegistrationRunner = func(keySet *TestKeySet) ssv.Runner {
@@ -86,7 +136,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 
 	km := NewTestingKeyManager()
 	committeeMember := TestingCommitteeMember(keySetInstance)
-	opSigner := NewTestingOperatorSigner(keySetInstance, committeeMember.OperatorID)
+	opSigner := NewOperatorSigner(keySetInstance, committeeMember.OperatorID)
 
 	config := TestingConfig(keySetInstance)
 	config.ValueCheckF = valCheck
@@ -94,14 +144,8 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 		return 1
 	}
 	config.Network = net
-	config.OperatorSigner = opSigner
-	config.SignatureVerifier = NewTestingVerifier()
 
-	contr := qbft.NewController(
-		identifier[:],
-		committeeMember,
-		config,
-	)
+	contr := qbft.NewController(identifier[:], committeeMember, config, opSigner)
 
 	switch role {
 	case types.RoleCommittee:
@@ -207,7 +251,7 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 	net := NewTestingNetwork(1, keySet.OperatorKeys[1])
 	km := NewTestingKeyManager()
 	committeeMember := TestingCommitteeMember(keySet)
-	opSigner := NewTestingOperatorSigner(keySet, committeeMember.OperatorID)
+	opSigner := NewOperatorSigner(keySet, committeeMember.OperatorID)
 
 	config := TestingConfig(keySet)
 	config.ValueCheckF = valCheck
@@ -215,14 +259,8 @@ var baseRunner = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, 
 		return 1
 	}
 	config.Network = net
-	config.OperatorSigner = opSigner
-	config.SignatureVerifier = NewTestingVerifier()
 
-	contr := qbft.NewController(
-		identifier[:],
-		committeeMember,
-		config,
-	)
+	contr := qbft.NewController(identifier[:], committeeMember, config, opSigner)
 
 	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
 	shareMap[share.ValidatorIndex] = share
@@ -373,35 +411,45 @@ var SSVDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifi
 	msgs := make([]*types.SignedSSVMessage, 0)
 
 	// proposal
-	s := SignQBFTMsg(keySet.OperatorKeys[1], 1, &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     height,
-		Round:      qbft.FirstRound,
-		Identifier: msgIdentifier,
-		Root:       root,
-	})
+	s := SignQBFTMsg(
+		keySet.OperatorKeys[1], 1, &qbft.Message{
+			MsgType:    qbft.ProposalMsgType,
+			Height:     height,
+			Round:      qbft.FirstRound,
+			Identifier: msgIdentifier,
+			Root:       root,
+		},
+	)
 	s.FullData = fullData
 	msgs = append(msgs, s)
 
 	// prepare
 	for i := uint64(1); i <= keySet.Threshold; i++ {
-		msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     height,
-			Round:      qbft.FirstRound,
-			Identifier: msgIdentifier,
-			Root:       root,
-		}))
+		msgs = append(
+			msgs, SignQBFTMsg(
+				keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+					MsgType:    qbft.PrepareMsgType,
+					Height:     height,
+					Round:      qbft.FirstRound,
+					Identifier: msgIdentifier,
+					Root:       root,
+				},
+			),
+		)
 	}
 	// commit
 	for i := uint64(1); i <= keySet.Threshold; i++ {
-		msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     height,
-			Round:      qbft.FirstRound,
-			Identifier: msgIdentifier,
-			Root:       root,
-		}))
+		msgs = append(
+			msgs, SignQBFTMsg(
+				keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+					MsgType:    qbft.CommitMsgType,
+					Height:     height,
+					Round:      qbft.FirstRound,
+					Identifier: msgIdentifier,
+					Root:       root,
+				},
+			),
+		)
 	}
 	return msgs
 }
@@ -410,35 +458,45 @@ var SSVExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msg
 	msgs := make([]*types.SignedSSVMessage, 0)
 
 	// proposal
-	s := SignQBFTMsg(keySet.OperatorKeys[1], 1, &qbft.Message{
-		MsgType:    qbft.ProposalMsgType,
-		Height:     height,
-		Round:      qbft.FirstRound,
-		Identifier: msgIdentifier,
-		Root:       root,
-	})
+	s := SignQBFTMsg(
+		keySet.OperatorKeys[1], 1, &qbft.Message{
+			MsgType:    qbft.ProposalMsgType,
+			Height:     height,
+			Round:      qbft.FirstRound,
+			Identifier: msgIdentifier,
+			Root:       root,
+		},
+	)
 	s.FullData = fullData
 	msgs = append(msgs, s)
 
 	// prepare
 	for i := uint64(1); i <= keySet.Threshold; i++ {
-		msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
-			MsgType:    qbft.PrepareMsgType,
-			Height:     height,
-			Round:      qbft.FirstRound,
-			Identifier: msgIdentifier,
-			Root:       root,
-		}))
+		msgs = append(
+			msgs, SignQBFTMsg(
+				keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+					MsgType:    qbft.PrepareMsgType,
+					Height:     height,
+					Round:      qbft.FirstRound,
+					Identifier: msgIdentifier,
+					Root:       root,
+				},
+			),
+		)
 	}
 	// commit
 	for i := uint64(1); i <= keySet.Threshold; i++ {
-		msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
-			MsgType:    qbft.CommitMsgType,
-			Height:     height,
-			Round:      qbft.FirstRound,
-			Identifier: msgIdentifier,
-			Root:       root,
-		}))
+		msgs = append(
+			msgs, SignQBFTMsg(
+				keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+					MsgType:    qbft.CommitMsgType,
+					Height:     height,
+					Round:      qbft.FirstRound,
+					Identifier: msgIdentifier,
+					Root:       root,
+				},
+			),
+		)
 	}
 	return msgs
 }
@@ -465,35 +523,45 @@ var DecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier 
 
 	for h := qbft.FirstHeight; h <= height; h++ {
 		// proposal
-		s := SignQBFTMsg(keySet.OperatorKeys[1], 1, &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
-			Height:     h,
-			Round:      qbft.FirstRound,
-			Identifier: msgIdentifier,
-			Root:       root,
-		})
+		s := SignQBFTMsg(
+			keySet.OperatorKeys[1], 1, &qbft.Message{
+				MsgType:    qbft.ProposalMsgType,
+				Height:     h,
+				Round:      qbft.FirstRound,
+				Identifier: msgIdentifier,
+				Root:       root,
+			},
+		)
 		s.FullData = fullData
 		msgs = append(msgs, s)
 
 		// prepare
 		for i := uint64(1); i <= keySet.Threshold; i++ {
-			msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
-				MsgType:    qbft.PrepareMsgType,
-				Height:     h,
-				Round:      qbft.FirstRound,
-				Identifier: msgIdentifier,
-				Root:       root,
-			}))
+			msgs = append(
+				msgs, SignQBFTMsg(
+					keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+						MsgType:    qbft.PrepareMsgType,
+						Height:     h,
+						Round:      qbft.FirstRound,
+						Identifier: msgIdentifier,
+						Root:       root,
+					},
+				),
+			)
 		}
 		// commit
 		for i := uint64(1); i <= keySet.Threshold; i++ {
-			msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
-				MsgType:    qbft.CommitMsgType,
-				Height:     h,
-				Round:      qbft.FirstRound,
-				Identifier: msgIdentifier,
-				Root:       root,
-			}))
+			msgs = append(
+				msgs, SignQBFTMsg(
+					keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+						MsgType:    qbft.CommitMsgType,
+						Height:     h,
+						Round:      qbft.FirstRound,
+						Identifier: msgIdentifier,
+						Root:       root,
+					},
+				),
+			)
 		}
 	}
 	return msgs
@@ -504,35 +572,45 @@ var ExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIde
 
 	for h := qbft.FirstHeight; h <= height; h++ {
 		// proposal
-		s := SignQBFTMsg(keySet.OperatorKeys[1], 1, &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
-			Height:     h,
-			Round:      qbft.FirstRound,
-			Identifier: msgIdentifier,
-			Root:       root,
-		})
+		s := SignQBFTMsg(
+			keySet.OperatorKeys[1], 1, &qbft.Message{
+				MsgType:    qbft.ProposalMsgType,
+				Height:     h,
+				Round:      qbft.FirstRound,
+				Identifier: msgIdentifier,
+				Root:       root,
+			},
+		)
 		s.FullData = fullData
 		msgs = append(msgs, s)
 
 		// prepare
 		for i := uint64(1); i <= keySet.Threshold; i++ {
-			msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
-				MsgType:    qbft.PrepareMsgType,
-				Height:     h,
-				Round:      qbft.FirstRound,
-				Identifier: msgIdentifier,
-				Root:       root,
-			}))
+			msgs = append(
+				msgs, SignQBFTMsg(
+					keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+						MsgType:    qbft.PrepareMsgType,
+						Height:     h,
+						Round:      qbft.FirstRound,
+						Identifier: msgIdentifier,
+						Root:       root,
+					},
+				),
+			)
 		}
 		// commit
 		for i := uint64(1); i <= keySet.Threshold; i++ {
-			msgs = append(msgs, SignQBFTMsg(keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
-				MsgType:    qbft.CommitMsgType,
-				Height:     h,
-				Round:      qbft.FirstRound,
-				Identifier: msgIdentifier,
-				Root:       root,
-			}))
+			msgs = append(
+				msgs, SignQBFTMsg(
+					keySet.OperatorKeys[types.OperatorID(i)], types.OperatorID(i), &qbft.Message{
+						MsgType:    qbft.CommitMsgType,
+						Height:     h,
+						Round:      qbft.FirstRound,
+						Identifier: msgIdentifier,
+						Root:       root,
+					},
+				),
+			)
 		}
 	}
 	return msgs

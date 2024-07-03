@@ -385,7 +385,6 @@
 						}
 				},
 				"BeaconNetwork": "now_test_network",
-				"RunnerRoleType": 3,
-				"OperatorSigner": null
+				"RunnerRoleType": 3
 		}
 }

@@ -54,7 +54,8 @@ func decideRunnerForData(r ssv.Runner, duty types.Duty, decidedValue []byte) ssv
 		r.GetBaseRunner().QBFTController.GetConfig(),
 		r.GetBaseRunner().QBFTController.CommitteeMember,
 		r.GetBaseRunner().QBFTController.Identifier,
-		qbft.Height(duty.DutySlot()))
+		qbft.Height(duty.DutySlot()),
+		r.GetBaseRunner().QBFTController.OperatorSigner)
 	r.GetBaseRunner().State.RunningInstance.State.Decided = true
 	r.GetBaseRunner().State.RunningInstance.State.DecidedValue = decidedValue
 	r.GetBaseRunner().State.DecidedValue = decidedValue

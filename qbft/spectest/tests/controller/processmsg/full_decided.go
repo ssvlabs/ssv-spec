@@ -19,8 +19,10 @@ func FullDecided() tests.SpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: testingutils.TestingQBFTFullData,
-				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
-					testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks),
+				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(
+					testingutils.TestingQBFTRootData,
+					testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks,
+				),
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
@@ -38,25 +40,37 @@ func FullDecided() tests.SpecTest {
 
 func fullDecidedStateComparison() *qbftcomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	msgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
+	msgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(
+		testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData,
+		testingutils.TestingIdentifier,
+		qbft.FirstHeight,
+		ks,
+	)
 
 	contr := testingutils.NewTestingQBFTController(
 		testingutils.TestingIdentifier,
 		testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
+		testingutils.TestingOperatorSigner(ks),
 	)
 
 	instance := &qbft.Instance{
 		StartValue: testingutils.TestingQBFTFullData,
 		State: &qbft.State{
-			CommitteeMember:                 testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
-			ID:                              testingutils.TestingIdentifier,
-			ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1))),
-			LastPreparedRound:               qbft.FirstRound,
-			LastPreparedValue:               testingutils.TestingQBFTFullData,
-			Decided:                         true,
-			DecidedValue:                    testingutils.TestingQBFTFullData,
-			Round:                           qbft.FirstRound,
+			CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+			ID:              testingutils.TestingIdentifier,
+			ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(
+				testingutils.TestingProposalMessage(
+					ks.OperatorKeys[1],
+					types.OperatorID(1),
+				),
+			),
+			LastPreparedRound: qbft.FirstRound,
+			LastPreparedValue: testingutils.TestingQBFTFullData,
+			Decided:           true,
+			DecidedValue:      testingutils.TestingQBFTFullData,
+			Round:             qbft.FirstRound,
 		},
 	}
 	qbftcomparable.SetSignedMessages(instance, msgs)

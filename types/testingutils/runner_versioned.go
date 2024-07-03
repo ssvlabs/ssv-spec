@@ -24,7 +24,7 @@ var SSVDecidingMsgsV = func(consensusData *types.ValidatorConsensusData, ks *Tes
 			Data:    byts,
 		}
 		signer := partialSigMsg.Messages[0].Signer
-		sig, err := NewTestingOperatorSigner(ks, signer).SignSSVMessage(ssvMsg)
+		sig, err := NewOperatorSigner(ks, signer).SignSSVMessage(ssvMsg)
 		if err != nil {
 			panic(err)
 		}
@@ -71,7 +71,7 @@ var ExpectedSSVDecidingMsgsV = func(consensusData *types.ValidatorConsensusData,
 			Data:    byts,
 		}
 		signer := partialSigMsg.Messages[0].Signer
-		sig, err := NewTestingOperatorSigner(ks, signer).SignSSVMessage(ssvMsg)
+		sig, err := NewOperatorSigner(ks, signer).SignSSVMessage(ssvMsg)
 		if err != nil {
 			panic(err)
 		}

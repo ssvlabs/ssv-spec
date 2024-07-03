@@ -2,7 +2,6 @@ package types
 
 import (
 	"bytes"
-
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 )
@@ -29,10 +28,4 @@ type BeaconSigner interface {
 	IsAttestationSlashable(pk ShareValidatorPK, data *spec.AttestationData) error
 	// IsBeaconBlockSlashable returns error if the given block is slashable
 	IsBeaconBlockSlashable(pk []byte, slot spec.Slot) error
-}
-
-// OperatorSigner used for to sign protocol messages
-type OperatorSigner interface {
-	SignSSVMessage(ssvMsg *SSVMessage) ([]byte, error)
-	GetOperatorID() OperatorID
 }

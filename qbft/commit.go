@@ -74,7 +74,7 @@ Commit(
                         )
                     );
 */
-func CreateCommit(state *State, config IConfig, root [32]byte) (*types.SignedSSVMessage, error) {
+func CreateCommit(state *State, signer *types.OperatorSigner, root [32]byte) (*types.SignedSSVMessage, error) {
 	msg := &Message{
 		MsgType:    CommitMsgType,
 		Height:     state.Height,
@@ -83,7 +83,7 @@ func CreateCommit(state *State, config IConfig, root [32]byte) (*types.SignedSSV
 
 		Root: root,
 	}
-	return Sign(msg, state.CommitteeMember.OperatorID, config.GetOperatorSigner())
+	return Sign(msg, state.CommitteeMember.OperatorID, signer)
 }
 
 func baseCommitValidationIgnoreSignature(
@@ -111,7 +111,6 @@ func baseCommitValidationIgnoreSignature(
 }
 
 func baseCommitValidationVerifySignature(
-	config IConfig,
 	msg *ProcessingMessage,
 	height Height,
 	operators []*types.Operator) error {
@@ -121,7 +120,7 @@ func baseCommitValidationVerifySignature(
 	}
 
 	// verify signature
-	if err := config.GetSignatureVerifier().Verify(msg.SignedMessage, operators); err != nil {
+	if err := types.Verify(msg.SignedMessage, operators); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 

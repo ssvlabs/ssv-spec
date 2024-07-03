@@ -29,15 +29,17 @@ func PreviousNotDecided() tests.SpecTest {
 
 func previousNotDecided1SC() *qbftcomparable.StateComparison {
 	identifier := []byte{1, 2, 3, 4}
-	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
+	ks := testingutils.Testing4SharesSet()
+	config := testingutils.TestingConfig(ks)
 	contr := testingutils.NewTestingQBFTController(
 		identifier[:],
-		testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+		testingutils.TestingCommitteeMember(ks),
 		config,
+		testingutils.TestingOperatorSigner(ks),
 	)
 	instance := &qbft.Instance{
 		State: &qbft.State{
-			CommitteeMember:   testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+			CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 			ID:                identifier,
 			Round:             qbft.FirstRound,
 			Height:            qbft.FirstHeight,
@@ -52,15 +54,17 @@ func previousNotDecided1SC() *qbftcomparable.StateComparison {
 
 func previousNotDecided2SC() *qbftcomparable.StateComparison {
 	identifier := []byte{1, 2, 3, 4}
-	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
+	ks := testingutils.Testing4SharesSet()
+	config := testingutils.TestingConfig(ks)
 	contr := testingutils.NewTestingQBFTController(
 		identifier[:],
-		testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+		testingutils.TestingCommitteeMember(ks),
 		config,
+		testingutils.TestingOperatorSigner(ks),
 	)
 	instance1 := &qbft.Instance{
 		State: &qbft.State{
-			CommitteeMember:   testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+			CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 			ID:                identifier,
 			Round:             qbft.FirstRound,
 			Height:            qbft.FirstHeight,
@@ -73,7 +77,7 @@ func previousNotDecided2SC() *qbftcomparable.StateComparison {
 
 	instance2 := &qbft.Instance{
 		State: &qbft.State{
-			CommitteeMember:   testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+			CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 			ID:                identifier,
 			Round:             qbft.FirstRound,
 			Height:            1,
