@@ -13,7 +13,6 @@ func InvalidValidatorIndexQuorum() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "failed processing post consensus message: invalid post-consensus message: unknown validator index"
-	committeeExpectedError := "could not find validators for root"
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus invalid validator index quorum",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -33,7 +32,7 @@ func InvalidValidatorIndexQuorum() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
-				ExpectedError:          committeeExpectedError,
+				// No error is expected for the CommitteeRunner since we don't assume that operators must be synced on the validators set
 			},
 			{
 				Name: "sync committee",
@@ -51,7 +50,7 @@ func InvalidValidatorIndexQuorum() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
-				ExpectedError:          committeeExpectedError,
+				// No error is expected for the CommitteeRunner since we don't assume that operators must be synced on the validators set
 			},
 			{
 				Name: "attester and sync committee",
@@ -69,7 +68,7 @@ func InvalidValidatorIndexQuorum() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
-				ExpectedError:          committeeExpectedError,
+				// No error is expected for the CommitteeRunner since we don't assume that operators must be synced on the validators set
 			},
 			{
 				Name: "sync committee contribution",

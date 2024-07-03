@@ -20,15 +20,15 @@
 												}
 										},
 										"100": {
-												"1ca961cb1436f22e2a67d2aa359f5308c710d17767424cb7e4cb07d06cb1da8c": {
-														"1": "hcvZ87OS4IvP3TIMf8vyIPvarcFFC9HkMa47sbpCotbkUG6bwZjn5lcf/VQhg3bpBKbBme49JyFEbakhxq0bhQZ0cAQfSkVEFc7uzEHuPwew2dw+pFnm2ce18p3AEgJf",
-														"2": "ssMbuxG70+0gYDNsiHR55vLKM0JAsCCNC5Drr2QZ3BglrjxeYX/1xxqkaRM3X3/BGTFbc11C88RXvI8ySvEMg0QWyCF2ubOAfRqWTZGlr8ScvQhUp8P3eLWbMWYbzdfP",
-														"3": "tBb6TxPaEPon3arSJVzXBeD59UN0zZ0irj9zkPu2inoV0/YNotzl6/6tUYKDfnVeElS7FSCuh8mRcDiKFcIKm16G+wQ7Q5+J7eLNuipepuBiInUU5liHvnHCnhkR/JIL"
+												"4ae32f48079745930bc24da670a6fe72052e13e3832728c6aa2580adc0307b83": {
+														"1": "iU3PPG+KB+22Rz9ypL5hfg0kr6EuyvsUfyT4yiA5GaQmSuT2Q8z+NSRY8HljYoz2GFhYqJef2QekHSie73s4Ygn6jPp2Rf5ISQ/JHpbUTORk/oOdEPZPGBUc/yCeNTrt",
+														"2": "gMXzIoe/QJBrH+ntuAoJ+kvr4qhj4VUmWphfsoLyOQ2VYjwvIOqDtLlXstFKbKXSCqNmxYecfX8xts3jWxcfHILOEgavz6rA8kiThsqlCSHWx3yDbjuBrISi9kU2a0a4",
+														"3": "ixo9S76Aot/jH4xVSQ+mWM9hXw0sU7YjMC0Q2dvgW38fhLN3fnXQs0mlzz6PNZwBD8isC5LcqhkTs5UKdCJNs0lEVEi5h4cG3I5+rd1SIzj/ZT9wrrutZjvnRkUF6Nxs"
 												},
-												"b04d4c832e3acfce1bdc8bd79b1ebf5a5b6f3cb4fc8041f4e0769e427b10fed6": {
-														"1": "sm9zOQS/fOSQSFo6RIcxcycGttReqMLK6b96+2qIPaWjypHApJ6ef6S9ynLsAGSDAHT6eJpiQBLAPGnTFyk58ygYxys5ND8FRwbZswjr9I7oWDNX7GnRajWZXy/xVd5d",
-														"2": "qPDBLTxUIyTWHwR+8GmlUaKqRY9F0dbaot+V/v0f5ztY0I8zxRMrjl0/xrZCxoCtB7k/nTe16yQJUr4X+iQmF0NhDpAdrLULGhZJG9jqgAJWvpULyHajDd1hevqfB6Em",
-														"3": "kMgjueMA3+nJB0rvWsqeVARaRFLiNivcj+USFs2heigSNJ/0wyLy7naMntHClHpDDJuZ+moFpxxtjxqSX35O+FZ2RtOROzCOTR038JplMTp7spcrD0gq8l2Yc9EtOS/S"
+												"85794142e7b2a4c66a79a68377705fb95f84197a4d2ca354d3b72580a0b7529e": {
+														"1": "pyyG8N2IyWA8Ffzt+ZQnWI0FaaxLlyaYuyA9tgVDWRMBuRCGomjtnAKMlbYIXRx6DyaAsNFkT8yZcVtBR0QYMiBUCnOFAAOLUznXS16y5R1kGwJ0TpIfvlcym3M/QqX6",
+														"2": "gfJwcjkKd72XrqH1PyfpL6g2zmLhvX99oMlpNc5C6WA1jATfEYuSPM3owCYPdiJ1FJxrFPA329rGf64xW1eMgrW18YZWOresqKvYkg4wk9jt9EQ6+tLUzi9oKiLHb/CI",
+														"3": "rOeX7b6mKw1pLe52wF1kzMz9lrvN/iTiGUenHb2ISLUyEhMxt1o7ZAdiR0LXX9IqGRg8VRykIK6AE391GwqCGtLsW/29zLhpmQf3nmjVqdHlHOffJP+A4ntb+cr0sHAF"
 												}
 										}
 								},
@@ -123,7 +123,7 @@
 								"StartValue": null
 						},
 						"DecidedValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
-						"Finished": false,
+						"Finished": true,
 						"CommitteeDuty": {
 								"Slot": "12",
 								"ValidatorDuties": [

@@ -153,6 +153,18 @@ var TestingSignedAttestation = func(ks *TestKeySet) *phase0.Attestation {
 	}
 }
 
+var TestingSignedAttestationForValidatorIndex = func(ks *TestKeySet, validatorIndex phase0.ValidatorIndex) *phase0.Attestation {
+	committeeDuty := TestingCommitteeAttesterDuty(TestingDutySlot, []int{int(validatorIndex)})
+	duty := committeeDuty.ValidatorDuties[0]
+	aggregationBitfield := bitfield.NewBitlist(duty.CommitteeLength)
+	aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
+	return &phase0.Attestation{
+		Data:            TestingAttestationData,
+		Signature:       signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
+		AggregationBits: aggregationBitfield,
+	}
+}
+
 var TestingSignedAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
 	ret := make([]string, 0)
 	for _, ks := range ksMap {
@@ -248,6 +260,15 @@ var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet) *altair.SyncCommi
 		Slot:            TestingDutySlot,
 		BeaconBlockRoot: TestingSyncCommitteeBlockRoot,
 		ValidatorIndex:  TestingValidatorIndex,
+		Signature:       signBeaconObject(types.SSZBytes(TestingSyncCommitteeBlockRoot[:]), types.DomainSyncCommittee, ks),
+	}
+}
+
+var TestingSignedSyncCommitteeBlockRootForValidatorIndex = func(ks *TestKeySet, validatorIndex phase0.ValidatorIndex) *altair.SyncCommitteeMessage {
+	return &altair.SyncCommitteeMessage{
+		Slot:            TestingDutySlot,
+		BeaconBlockRoot: TestingSyncCommitteeBlockRoot,
+		ValidatorIndex:  validatorIndex,
 		Signature:       signBeaconObject(types.SSZBytes(TestingSyncCommitteeBlockRoot[:]), types.DomainSyncCommittee, ks),
 	}
 }

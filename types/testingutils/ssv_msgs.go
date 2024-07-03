@@ -308,13 +308,17 @@ var PostConsensusWrongValidatorIndexAttestationMsg = func(sk *bls.SecretKey, id 
 	return msg
 }
 
-var PostConsensusInvalidThenValidValidatorIndexAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
-	invalidValidatorIndexMsg := PostConsensusWrongValidatorIndexAttestationMsg(sk, id, height)
-	validValidatorIndexMsg := postConsensusAttestationMsg(sk, id, height, false, false, TestingValidatorIndex)
-
-	invalidValidatorIndexMsg.Messages = append(invalidValidatorIndexMsg.Messages, validValidatorIndexMsg.Messages...)
-
-	return invalidValidatorIndexMsg
+var PostConsensusAttestationMsgForValidatorsIndex = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height, validatorIndexes []phase0.ValidatorIndex) *types.PartialSignatureMessages {
+	var msg *types.PartialSignatureMessages
+	for _, valIdx := range validatorIndexes {
+		valIdxMsg := postConsensusAttestationMsg(sk, id, height, false, false, valIdx)
+		if msg == nil {
+			msg = valIdxMsg
+		} else {
+			msg.Messages = append(msg.Messages, valIdxMsg.Messages...)
+		}
+	}
+	return msg
 }
 
 var PostConsensusWrongSigAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
@@ -507,12 +511,21 @@ var PostConsensusWrongValidatorIndexAttestationAndSyncCommitteeMsg = func(sk *bl
 	return msg
 }
 
-var PostConsensusInvalidThenValidValidatorIndexAttestationAndSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
-	invalidValidatorIndexMsg := PostConsensusWrongValidatorIndexAttestationAndSyncCommitteeMsg(sk, id, height)
-	validValidatorIndexMsg := PostConsensusAttestationAndSyncCommitteeMsg(sk, id, height)
+var PostConsensusAttestationAndSyncCommitteeMsgForValidatorsIndex = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height, validatorIndexes []phase0.ValidatorIndex) *types.PartialSignatureMessages {
+	var msg *types.PartialSignatureMessages
+	for _, valIdx := range validatorIndexes {
+		valIdxMsg := postConsensusAttestationAndSyncCommitteeMsg(sk, id, height, false, false)
+		for _, m := range valIdxMsg.Messages {
+			m.ValidatorIndex = valIdx
+		}
 
-	invalidValidatorIndexMsg.Messages = append(invalidValidatorIndexMsg.Messages, validValidatorIndexMsg.Messages...)
-	return invalidValidatorIndexMsg
+		if msg == nil {
+			msg = valIdxMsg
+		} else {
+			msg.Messages = append(msg.Messages, valIdxMsg.Messages...)
+		}
+	}
+	return msg
 }
 
 var PostConsensusWrongSigAttestationAndSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
@@ -1009,12 +1022,17 @@ var PostConsensusWrongValidatorIndexSyncCommitteeMsg = func(sk *bls.SecretKey, i
 	return msg
 }
 
-var PostConsensusInvalidThenValidValidatorIndexSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
-	invalidIndexMsg := PostConsensusWrongValidatorIndexSyncCommitteeMsg(sk, id)
-	validIndexMsg := postConsensusSyncCommitteeMsg(sk, id, TestingDutySlot, false, false, TestingValidatorIndex)
-
-	invalidIndexMsg.Messages = append(invalidIndexMsg.Messages, validIndexMsg.Messages...)
-	return invalidIndexMsg
+var PostConsensusSyncCommitteeMsgForValidatorsIndex = func(sk *bls.SecretKey, id types.OperatorID, validatorIndexes []phase0.ValidatorIndex) *types.PartialSignatureMessages {
+	var msg *types.PartialSignatureMessages
+	for _, valIdx := range validatorIndexes {
+		valIdxMsg := postConsensusSyncCommitteeMsg(sk, id, TestingDutySlot, false, false, valIdx)
+		if msg == nil {
+			msg = valIdxMsg
+		} else {
+			msg.Messages = append(msg.Messages, valIdxMsg.Messages...)
+		}
+	}
+	return msg
 }
 
 var PostConsensusWrongSigSyncCommitteeMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {

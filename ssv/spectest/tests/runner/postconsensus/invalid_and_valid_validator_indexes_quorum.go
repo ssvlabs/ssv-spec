@@ -1,6 +1,7 @@
 package postconsensus
 
 import (
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -10,7 +11,9 @@ import (
 func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "could not find validators for root"
+
+	validatorsIndex := []phase0.ValidatorIndex{testingutils.TestingWrongValidatorIndex, testingutils.TestingValidatorIndex}
+
 	return &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus invalid and valid validator index quorum",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -23,16 +26,15 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 				),
 				Duty: testingutils.TestingAttesterDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusInvalidThenValidValidatorIndexAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusInvalidThenValidValidatorIndexAttestationMsg(ks.Shares[2], 2, testingutils.TestingDutySlot))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusInvalidThenValidValidatorIndexAttestationMsg(ks.Shares[3], 3, testingutils.TestingDutySlot))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForValidatorsIndex(ks.Shares[1], 1, testingutils.TestingDutySlot, validatorsIndex))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForValidatorsIndex(ks.Shares[2], 2, testingutils.TestingDutySlot, validatorsIndex))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForValidatorsIndex(ks.Shares[3], 3, testingutils.TestingDutySlot, validatorsIndex))),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestationForValidatorIndex(ks, testingutils.TestingValidatorIndex)),
 				},
 				DontStartDuty: true,
-				ExpectedError: expectedError,
 			},
 			{
 				Name: "sync committee",
@@ -43,16 +45,15 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 				),
 				Duty: testingutils.TestingSyncCommitteeDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusInvalidThenValidValidatorIndexSyncCommitteeMsg(ks.Shares[1], 1))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusInvalidThenValidValidatorIndexSyncCommitteeMsg(ks.Shares[2], 2))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusInvalidThenValidValidatorIndexSyncCommitteeMsg(ks.Shares[3], 3))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsgForValidatorsIndex(ks.Shares[1], 1, validatorsIndex))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsgForValidatorsIndex(ks.Shares[2], 2, validatorsIndex))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsgForValidatorsIndex(ks.Shares[3], 3, validatorsIndex))),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRootForValidatorIndex(ks, testingutils.TestingValidatorIndex)),
 				},
 				DontStartDuty: true,
-				ExpectedError: expectedError,
 			},
 			{
 				Name: "attester and sync committee",
@@ -63,17 +64,16 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 				),
 				Duty: testingutils.TestingAttesterAndSyncCommitteeDuties,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusInvalidThenValidValidatorIndexAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusInvalidThenValidValidatorIndexAttestationAndSyncCommitteeMsg(ks.Shares[2], 2, testingutils.TestingDutySlot))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusInvalidThenValidValidatorIndexAttestationAndSyncCommitteeMsg(ks.Shares[3], 3, testingutils.TestingDutySlot))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsgForValidatorsIndex(ks.Shares[1], 1, testingutils.TestingDutySlot, validatorsIndex))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsgForValidatorsIndex(ks.Shares[2], 2, testingutils.TestingDutySlot, validatorsIndex))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsgForValidatorsIndex(ks.Shares[3], 3, testingutils.TestingDutySlot, validatorsIndex))),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestationForValidatorIndex(ks, testingutils.TestingValidatorIndex)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRootForValidatorIndex(ks, testingutils.TestingValidatorIndex)),
 				},
 				DontStartDuty: true,
-				ExpectedError: expectedError,
 			},
 		},
 	}
