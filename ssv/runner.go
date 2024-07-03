@@ -59,7 +59,7 @@ func NewBaseRunner(
 	share map[spec.ValidatorIndex]*types.Share,
 	controller *qbft.Controller,
 	beaconNetwork types.BeaconNetwork,
-	beaconRoleType types.RunnerRole,
+	runnerRoleType types.RunnerRole,
 	operatorSigner types.OperatorSigner,
 	highestDecidedSlot spec.Slot,
 ) *BaseRunner {
@@ -68,7 +68,7 @@ func NewBaseRunner(
 		Share:              share,
 		QBFTController:     controller,
 		BeaconNetwork:      beaconNetwork,
-		RunnerRoleType:     beaconRoleType,
+		RunnerRoleType:     runnerRoleType,
 		highestDecidedSlot: highestDecidedSlot,
 	}
 }
@@ -184,7 +184,7 @@ func (b *BaseRunner) basePartialSigMsgProcessing(
 		prevQuorum := container.HasQuorum(msg.ValidatorIndex, msg.SigningRoot)
 
 		// Check if it has two signatures for the same signer
-		if container.HasSigner(msg.ValidatorIndex, msg.Signer, msg.SigningRoot) {
+		if container.HasSignature(msg.ValidatorIndex, msg.Signer, msg.SigningRoot) {
 			b.resolveDuplicateSignature(container, msg)
 		} else {
 			container.AddSignature(msg)
