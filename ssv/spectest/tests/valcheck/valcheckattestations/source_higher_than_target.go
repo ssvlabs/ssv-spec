@@ -5,6 +5,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // SourceHigherThanTarget tests AttestationData.Source.Epoch higher than target
@@ -27,6 +28,7 @@ func SourceHigherThanTarget() tests.SpecTest {
 		Name:          "attestation value check source higher than target",
 		Network:       types.BeaconTestNetwork,
 		RunnerRole:    types.RoleCommittee,
+		DutySlot:      testingutils.TestingDutySlot,
 		Input:         input,
 		ExpectedError: "attestation data source >= target",
 	}

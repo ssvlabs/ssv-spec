@@ -5,6 +5,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // FarFutureTarget tests AttestationData.Target.Epoch higher than expected
@@ -27,6 +28,7 @@ func FarFutureTarget() tests.SpecTest {
 		Name:          "attestation value check far future target",
 		Network:       types.BeaconTestNetwork,
 		RunnerRole:    types.RoleCommittee,
+		DutySlot:      testingutils.TestingDutySlot,
 		Input:         input,
 		ExpectedError: "attestation data target epoch is into far future",
 	}
