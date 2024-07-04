@@ -123,10 +123,9 @@ func (c *Committee) GetRoot() ([32]byte, error) {
 func (c *Committee) MarshalJSON() ([]byte, error) {
 
 	type CommitteeAlias struct {
-		Runners            map[spec.Slot]*CommitteeRunner
-		CommitteeMember    types.CommitteeMember
-		Share              map[spec.ValidatorIndex]*types.Share
-		HighestDutySlotMap map[types.BeaconRole]map[spec.ValidatorIndex]spec.Slot
+		Runners         map[spec.Slot]*CommitteeRunner
+		CommitteeMember types.CommitteeMember
+		Share           map[spec.ValidatorIndex]*types.Share
 	}
 
 	// Create object and marshal
@@ -144,10 +143,9 @@ func (c *Committee) MarshalJSON() ([]byte, error) {
 func (c *Committee) UnmarshalJSON(data []byte) error {
 
 	type CommitteeAlias struct {
-		Runners            map[spec.Slot]*CommitteeRunner
-		CommitteeMember    types.CommitteeMember
-		Share              map[spec.ValidatorIndex]*types.Share
-		HighestDutySlotMap map[types.BeaconRole]map[spec.ValidatorIndex]spec.Slot
+		Runners         map[spec.Slot]*CommitteeRunner
+		CommitteeMember types.CommitteeMember
+		Share           map[spec.ValidatorIndex]*types.Share
 	}
 
 	// Unmarshal the JSON data into the auxiliary struct
