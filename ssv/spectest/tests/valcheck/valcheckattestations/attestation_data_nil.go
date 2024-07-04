@@ -4,6 +4,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // BeaconVoteDataNil tests consensus data != nil
@@ -18,6 +19,7 @@ func BeaconVoteDataNil() tests.SpecTest {
 		Name:          "consensus data value check nil",
 		Network:       types.PraterNetwork,
 		RunnerRole:    types.RoleCommittee,
+		DutySlot:      testingutils.TestingDutySlot,
 		Input:         input,
 		ExpectedError: "attestation data source >= target",
 	}

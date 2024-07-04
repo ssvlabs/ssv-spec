@@ -2,8 +2,8 @@ package valcheckattestations
 
 import (
 	"encoding/hex"
-	"math"
 
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
@@ -25,16 +25,6 @@ func MinoritySlashable() tests.SpecTest {
 		},
 	}
 
-	attestationData := &spec.AttestationData{
-		Slot:            testingutils.TestingDutySlot,
-		Index:           math.MaxUint64,
-		BeaconBlockRoot: data.BlockRoot,
-		Source:          data.Source,
-		Target:          data.Target,
-	}
-
-	r, _ := attestationData.HashTreeRoot()
-
 	input, _ := data.Encode()
 
 	// Get shares
@@ -48,19 +38,20 @@ func MinoritySlashable() tests.SpecTest {
 	}
 
 	// Make slashable map with minority
-	slashableMap := map[string][][]byte{
+	slashableMap := map[string][]phase0.Slot{
 		sharesPKString[0]: {
-			r[:],
+			testingutils.TestingDutySlot,
 		},
 	}
 
 	return &valcheck.SpecTest{
-		Name:               "attestation value check with slashable minority",
-		Network:            types.BeaconTestNetwork,
-		RunnerRole:         types.RoleCommittee,
-		Input:              input,
-		ExpectedError:      "slashable attestation",
-		SlashableDataRoots: slashableMap,
-		ShareValidatorsPK:  sharesPKBytes,
+		Name:              "attestation value check with slashable minority",
+		Network:           types.BeaconTestNetwork,
+		RunnerRole:        types.RoleCommittee,
+		DutySlot:          testingutils.TestingDutySlot,
+		Input:             input,
+		ExpectedError:     "slashable attestation",
+		SlashableSlots:    slashableMap,
+		ShareValidatorsPK: sharesPKBytes,
 	}
 }
