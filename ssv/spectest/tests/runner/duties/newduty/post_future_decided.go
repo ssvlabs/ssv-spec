@@ -25,14 +25,16 @@ func PostFutureDecided() tests.SpecTest {
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().QBFTController.CommitteeMember,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.DutySlot()))
+			qbft.Height(duty.DutySlot()),
+			r.GetBaseRunner().QBFTController.OperatorSigner)
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
 
 		futureDecidedInstance := qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().QBFTController.CommitteeMember,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.DutySlot()+50))
+			qbft.Height(duty.DutySlot()+50),
+			r.GetBaseRunner().QBFTController.OperatorSigner)
 		futureDecidedInstance.State.Decided = true
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, futureDecidedInstance)
 		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.DutySlot() + 50)

@@ -15,7 +15,7 @@ type ProposerRunner struct {
 	beacon         BeaconNode
 	network        Network
 	signer         types.BeaconSigner
-	operatorSigner types.OperatorSigner
+	operatorSigner *types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 }
 
@@ -26,7 +26,7 @@ func NewProposerRunner(
 	beacon BeaconNode,
 	network Network,
 	signer types.BeaconSigner,
-	operatorSigner types.OperatorSigner,
+	operatorSigner *types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
 ) Runner {
@@ -346,6 +346,6 @@ func (r *ProposerRunner) GetSigner() types.BeaconSigner {
 	return r.signer
 }
 
-func (r *ProposerRunner) GetOperatorSigner() types.OperatorSigner {
+func (r *ProposerRunner) GetOperatorSigner() *types.OperatorSigner {
 	return r.operatorSigner
 }

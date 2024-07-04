@@ -5500,8 +5500,7 @@
 										}
 								},
 								"BeaconNetwork": "now_test_network",
-								"RunnerRoleType": 0,
-								"OperatorSigner": null
+								"RunnerRoleType": 0
 						}
 				},
 				"13": {
@@ -11004,8 +11003,7 @@
 										}
 								},
 								"BeaconNetwork": "now_test_network",
-								"RunnerRoleType": 0,
-								"OperatorSigner": null
+								"RunnerRoleType": 0
 						}
 				}
 		},

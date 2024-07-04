@@ -15,7 +15,7 @@ type AggregatorRunner struct {
 	beacon         BeaconNode
 	network        Network
 	signer         types.BeaconSigner
-	operatorSigner types.OperatorSigner
+	operatorSigner *types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 }
 
@@ -26,7 +26,7 @@ func NewAggregatorRunner(
 	beacon BeaconNode,
 	network Network,
 	signer types.BeaconSigner,
-	operatorSigner types.OperatorSigner,
+	operatorSigner *types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
 ) Runner {
@@ -310,6 +310,6 @@ func (r *AggregatorRunner) GetSigner() types.BeaconSigner {
 	return r.signer
 }
 
-func (r *AggregatorRunner) GetOperatorSigner() types.OperatorSigner {
+func (r *AggregatorRunner) GetOperatorSigner() *types.OperatorSigner {
 	return r.operatorSigner
 }

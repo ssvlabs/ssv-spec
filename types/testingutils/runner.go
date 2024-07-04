@@ -87,7 +87,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 
 	km := NewTestingKeyManager()
 	committeeMember := TestingCommitteeMember(keySetInstance)
-	opSigner := NewTestingOperatorSigner(keySetInstance, committeeMember.OperatorID)
+	opSigner := NewOperatorSigner(keySetInstance, committeeMember.OperatorID)
 
 	config := TestingConfig(keySetInstance)
 	config.ValueCheckF = valCheck
@@ -95,14 +95,8 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 		return 1
 	}
 	config.Network = net
-	config.OperatorSigner = opSigner
-	config.SignatureVerifier = NewTestingVerifier()
 
-	contr := qbft.NewController(
-		identifier[:],
-		committeeMember,
-		config,
-	)
+	contr := qbft.NewController(identifier[:], committeeMember, config, opSigner)
 
 	switch role {
 	case types.RoleCommittee:
@@ -208,7 +202,7 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 	net := NewTestingNetwork(1, keySet.OperatorKeys[1])
 	km := NewTestingKeyManager()
 	committeeMember := TestingCommitteeMember(keySet)
-	opSigner := NewTestingOperatorSigner(keySet, committeeMember.OperatorID)
+	opSigner := NewOperatorSigner(keySet, committeeMember.OperatorID)
 
 	var valCheck qbft.ProposedValueCheckF
 	switch role {
@@ -233,14 +227,8 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 		return 1
 	}
 	config.Network = net
-	config.OperatorSigner = opSigner
-	config.SignatureVerifier = NewTestingVerifier()
 
-	contr := qbft.NewController(
-		identifier[:],
-		committeeMember,
-		config,
-	)
+	contr := qbft.NewController(identifier[:], committeeMember, config, opSigner)
 
 	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
 	shareMap[share.ValidatorIndex] = share

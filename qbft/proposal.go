@@ -33,7 +33,7 @@ func (i *Instance) uponProposal(msg *ProcessingMessage, proposeMsgContainer *Msg
 		return errors.Wrap(err, "could not hash input data")
 	}
 
-	prepare, err := CreatePrepare(i.State, i.config, newRound, r)
+	prepare, err := CreatePrepare(i.State, i.signer, newRound, r)
 	if err != nil {
 		return errors.Wrap(err, "could not create prepare msg")
 	}
@@ -200,7 +200,6 @@ func isProposalJustification(
 			// validate each prepare message against the highest previously prepared fullData and round
 			for _, pm := range prepareMsgs {
 				if err := validSignedPrepareForHeightRoundAndRootVerifySignature(
-					config,
 					pm,
 					height,
 					rcMsg.QBFTMessage.DataRound,
@@ -233,7 +232,8 @@ func proposer(state *State, config IConfig, round Round) types.OperatorID {
                         extractSignedRoundChanges(roundChanges),
                         extractSignedPrepares(prepares));
 */
-func CreateProposal(state *State, config IConfig, fullData []byte, roundChanges, prepares []*ProcessingMessage) (*types.SignedSSVMessage, error) {
+func CreateProposal(state *State, signer *types.OperatorSigner, fullData []byte, roundChanges,
+	prepares []*ProcessingMessage) (*types.SignedSSVMessage, error) {
 	r, err := HashDataRoot(fullData)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not hash input data")
@@ -268,7 +268,7 @@ func CreateProposal(state *State, config IConfig, fullData []byte, roundChanges,
 		PrepareJustification:     preparesData,
 	}
 
-	signedMsg, err := Sign(msg, state.CommitteeMember.OperatorID, config.GetOperatorSigner())
+	signedMsg, err := Sign(msg, state.CommitteeMember.OperatorID, signer)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create proposal message")
 	}

@@ -308,6 +308,19 @@ var PostConsensusWrongValidatorIndexAttestationMsg = func(sk *bls.SecretKey, id 
 	return msg
 }
 
+var PostConsensusAttestationMsgForValidatorsIndex = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height, validatorIndexes []phase0.ValidatorIndex) *types.PartialSignatureMessages {
+	var msg *types.PartialSignatureMessages
+	for _, valIdx := range validatorIndexes {
+		valIdxMsg := postConsensusAttestationMsg(sk, id, height, false, false, valIdx)
+		if msg == nil {
+			msg = valIdxMsg
+		} else {
+			msg.Messages = append(msg.Messages, valIdxMsg.Messages...)
+		}
+	}
+	return msg
+}
+
 var PostConsensusWrongSigAttestationMsg = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height) *types.PartialSignatureMessages {
 	return postConsensusAttestationMsg(sk, id, height, false, true, TestingValidatorIndex)
 }
@@ -494,6 +507,23 @@ var PostConsensusWrongValidatorIndexAttestationAndSyncCommitteeMsg = func(sk *bl
 	msg := postConsensusAttestationAndSyncCommitteeMsg(sk, id, height, true, false)
 	for _, m := range msg.Messages {
 		m.ValidatorIndex = TestingWrongValidatorIndex
+	}
+	return msg
+}
+
+var PostConsensusAttestationAndSyncCommitteeMsgForValidatorsIndex = func(sk *bls.SecretKey, id types.OperatorID, height qbft.Height, validatorIndexes []phase0.ValidatorIndex) *types.PartialSignatureMessages {
+	var msg *types.PartialSignatureMessages
+	for _, valIdx := range validatorIndexes {
+		valIdxMsg := postConsensusAttestationAndSyncCommitteeMsg(sk, id, height, false, false)
+		for _, m := range valIdxMsg.Messages {
+			m.ValidatorIndex = valIdx
+		}
+
+		if msg == nil {
+			msg = valIdxMsg
+		} else {
+			msg.Messages = append(msg.Messages, valIdxMsg.Messages...)
+		}
 	}
 	return msg
 }
@@ -988,6 +1018,19 @@ var PostConsensusWrongValidatorIndexSyncCommitteeMsg = func(sk *bls.SecretKey, i
 	msg := postConsensusSyncCommitteeMsg(sk, id, TestingDutySlot, true, false, TestingValidatorIndex)
 	for _, m := range msg.Messages {
 		m.ValidatorIndex = TestingWrongValidatorIndex
+	}
+	return msg
+}
+
+var PostConsensusSyncCommitteeMsgForValidatorsIndex = func(sk *bls.SecretKey, id types.OperatorID, validatorIndexes []phase0.ValidatorIndex) *types.PartialSignatureMessages {
+	var msg *types.PartialSignatureMessages
+	for _, valIdx := range validatorIndexes {
+		valIdxMsg := postConsensusSyncCommitteeMsg(sk, id, TestingDutySlot, false, false, valIdx)
+		if msg == nil {
+			msg = valIdxMsg
+		} else {
+			msg.Messages = append(msg.Messages, valIdxMsg.Messages...)
+		}
 	}
 	return msg
 }

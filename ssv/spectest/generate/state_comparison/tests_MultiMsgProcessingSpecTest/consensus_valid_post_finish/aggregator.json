@@ -2492,7 +2492,6 @@
 						}
 				},
 				"BeaconNetwork": "now_test_network",
-				"RunnerRoleType": 1,
-				"OperatorSigner": null
+				"RunnerRoleType": 1
 		}
 }

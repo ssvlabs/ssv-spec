@@ -14,7 +14,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssz"
-	validatorconsensusdata "github.com/ssvlabs/ssv-spec/types/spectest/tests/validatorconsensusdata"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/validatorconsensusdata"
 	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/validatorconsensusdata/proposer"
 )
 
@@ -91,6 +91,10 @@ var AllTests = []SpecTest{
 	signedssvmsg.NilSSVMessage(),
 	signedssvmsg.EmptySignature(),
 	signedssvmsg.ZeroSigner(),
+	signedssvmsg.NoSigners(),
+	signedssvmsg.NoSignatures(),
+	signedssvmsg.SignersAndSignaturesWithDifferentLength(),
+	signedssvmsg.NonUniqueSigner(),
 
 	duty.MapAttester(),
 	duty.MapProposer(),

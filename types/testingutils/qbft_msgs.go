@@ -57,7 +57,7 @@ var SignQBFTMsg = func(sk *rsa.PrivateKey, id types.OperatorID, msg *qbft.Messag
 		Data:    encodedMsg,
 	}
 
-	signature, err := SignSSVMessage(sk, ssvMsg)
+	signature, err := types.SignSSVMessage(sk, ssvMsg)
 	if err != nil {
 		panic(err)
 	}

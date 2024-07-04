@@ -81,9 +81,9 @@ func (test *CreateMsgSpecTest) createCommit() (*types.SignedSSVMessage, error) {
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
 		ID:              []byte{1, 2, 3, 4},
 	}
-	config := testingutils.TestingConfig(ks)
+	signer := testingutils.TestingOperatorSigner(ks)
 
-	return qbft.CreateCommit(state, config, test.Value)
+	return qbft.CreateCommit(state, signer, test.Value)
 }
 
 func (test *CreateMsgSpecTest) createPrepare() (*types.SignedSSVMessage, error) {
@@ -92,9 +92,9 @@ func (test *CreateMsgSpecTest) createPrepare() (*types.SignedSSVMessage, error) 
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
 		ID:              []byte{1, 2, 3, 4},
 	}
-	config := testingutils.TestingConfig(ks)
+	signer := testingutils.TestingOperatorSigner(ks)
 
-	return qbft.CreatePrepare(state, config, test.Round, test.Value)
+	return qbft.CreatePrepare(state, signer, test.Round, test.Value)
 }
 
 func (test *CreateMsgSpecTest) createProposal() (*types.SignedSSVMessage, error) {
@@ -103,9 +103,10 @@ func (test *CreateMsgSpecTest) createProposal() (*types.SignedSSVMessage, error)
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
 		ID:              []byte{1, 2, 3, 4},
 	}
-	config := testingutils.TestingConfig(ks)
+	signer := testingutils.TestingOperatorSigner(ks)
 
-	return qbft.CreateProposal(state, config, test.Value[:], testingutils.ToProcessingMessages(test.RoundChangeJustifications), testingutils.ToProcessingMessages(test.PrepareJustifications))
+	return qbft.CreateProposal(state, signer, test.Value[:], testingutils.ToProcessingMessages(test.
+		RoundChangeJustifications), testingutils.ToProcessingMessages(test.PrepareJustifications))
 }
 
 func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, error) {
@@ -115,7 +116,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 		ID:               []byte{1, 2, 3, 4},
 		PrepareContainer: qbft.NewMsgContainer(),
 	}
-	config := testingutils.TestingConfig(ks)
+	signer := testingutils.TestingOperatorSigner(ks)
 
 	if len(test.PrepareJustifications) > 0 {
 		prepareMsg, err := qbft.DecodeMessage(test.PrepareJustifications[0].SSVMessage.Data)
@@ -133,7 +134,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 		}
 	}
 
-	return qbft.CreateRoundChange(state, config, 1, test.Value[:])
+	return qbft.CreateRoundChange(state, signer, 1, test.Value[:])
 }
 
 func (test *CreateMsgSpecTest) TestName() string {

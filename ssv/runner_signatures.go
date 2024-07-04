@@ -43,27 +43,46 @@ func (b *BaseRunner) validatePartialSigMsgForSlot(
 		return errors.New("invalid partial sig slot")
 	}
 
-	for _, msg := range psigMsgs.Messages {
+	// Get signer
+	msgSigner := psigMsgs.Messages[0].Signer // signer is the same in all psigMsgs.Messages and len(psigMsgs.Messages) > 0 (guaranteed by psigMsgs.Validate())
 
-		// Check if knows it has the validator index share
-		validatorShare, ok := b.Share[msg.ValidatorIndex]
+	// Get committee (unique for runner)
+	var shareSample *types.Share
+	for _, share := range b.Share {
+		shareSample = share
+		break
+	}
+	if shareSample == nil {
+		return errors.New("can not get committee because there is no share in runner")
+	}
+	committee := shareSample.Committee
+
+	// Check if signer is in committee
+	signerInCommittee := false
+	for _, operator := range committee {
+		if operator.Signer == msgSigner {
+			signerInCommittee = true
+			break
+		}
+	}
+	if !signerInCommittee {
+		return errors.New("unknown signer")
+	}
+
+	return nil
+}
+
+// Validate if runner has a share for each ValidatorIndex in the PartialSignatureMessages.Messages
+func (b *BaseRunner) validateValidatorIndexInPartialSigMsg(
+	psigMsgs *types.PartialSignatureMessages,
+) error {
+	for _, msg := range psigMsgs.Messages {
+		// Check if it has the validator index share
+		_, ok := b.Share[msg.ValidatorIndex]
 		if !ok {
 			return errors.New("unknown validator index")
 		}
-
-		// Check if signer is in committee
-		signerInCommittee := false
-		for _, operator := range validatorShare.Committee {
-			if operator.Signer == msg.Signer {
-				signerInCommittee = true
-				break
-			}
-		}
-		if !signerInCommittee {
-			return errors.New("unknown signer")
-		}
 	}
-
 	return nil
 }
 

@@ -61,6 +61,7 @@ func invalidValCheckDataStateComparison() *comparable.StateComparison {
 		testingutils.TestingIdentifier,
 		testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
+		testingutils.TestingOperatorSigner(ks),
 	)
 
 	instance := &qbft.Instance{

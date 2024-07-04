@@ -23,7 +23,7 @@ func (c *Controller) UponDecided(msg *ProcessingMessage) (*types.SignedSSVMessag
 	isFutureDecided := msg.QBFTMessage.Height > c.Height
 
 	if inst == nil {
-		i := NewInstance(c.GetConfig(), c.CommitteeMember, c.Identifier, msg.QBFTMessage.Height)
+		i := NewInstance(c.GetConfig(), c.CommitteeMember, c.Identifier, msg.QBFTMessage.Height, c.OperatorSigner)
 		i.State.Round = msg.QBFTMessage.Round
 		i.State.Decided = true
 		i.State.DecidedValue = msg.SignedMessage.FullData
@@ -79,7 +79,7 @@ func ValidateDecided(
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	if err := baseCommitValidationVerifySignature(config, msg, msg.QBFTMessage.Height, share.Committee); err != nil {
+	if err := baseCommitValidationVerifySignature(msg, msg.QBFTMessage.Height, share.Committee); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
