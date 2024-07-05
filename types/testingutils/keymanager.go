@@ -1,13 +1,13 @@
 package testingutils
 
 import (
-	"bytes"
 	"crypto/ecdsa"
 	"crypto/rsa"
 	"encoding/hex"
 	"fmt"
 	"sync"
 
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
@@ -33,8 +33,8 @@ type TestingKeyStorage struct {
 }
 
 type TestingKeyManager struct {
-	keyStorage         *TestingKeyStorage
-	slashableDataRoots map[string][][]byte
+	keyStorage     *TestingKeyStorage
+	slashableSlots map[string][]phase0.Slot // Validator Key -> List of slots
 }
 
 var (
@@ -43,14 +43,14 @@ var (
 )
 
 func NewTestingKeyManager() *TestingKeyManager {
-	return NewTestingKeyManagerWithSlashableRoots(map[string][][]byte{})
+	return NewTestingKeyManagerWithSlashableSlots(map[string][]phase0.Slot{})
 }
 
-func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots map[string][][]byte) *TestingKeyManager {
+func NewTestingKeyManagerWithSlashableSlots(slashableSlots map[string][]phase0.Slot) *TestingKeyManager {
 
 	return &TestingKeyManager{
-		keyStorage:         NewTestingKeyStorage(),
-		slashableDataRoots: slashableDataRoots,
+		keyStorage:     NewTestingKeyStorage(),
+		slashableSlots: slashableSlots,
 	}
 }
 
@@ -97,21 +97,20 @@ func NewTestingKeyStorage() *TestingKeyStorage {
 	return keyStorageInstance
 }
 
-// AddSlashableDataRoot adds a slashable data root to the key manager
-func (km *TestingKeyManager) AddSlashableDataRoot(pk types.ShareValidatorPK, dataRoot []byte) {
+// AddSlashableDataRoot adds a slashable slot for the validator to the key manager
+func (km *TestingKeyManager) AddSlashableSlot(pk types.ShareValidatorPK, slot phase0.Slot) {
 	entry := hex.EncodeToString(pk)
-	if km.slashableDataRoots[entry] == nil {
-		km.slashableDataRoots[entry] = make([][]byte, 0)
+	if km.slashableSlots[entry] == nil {
+		km.slashableSlots[entry] = make([]spec.Slot, 0)
 	}
-	km.slashableDataRoots[entry] = append(km.slashableDataRoots[entry], dataRoot)
+	km.slashableSlots[entry] = append(km.slashableSlots[entry], slot)
 }
 
 // IsAttestationSlashable returns error if attestation is slashable
 func (km *TestingKeyManager) IsAttestationSlashable(pk types.ShareValidatorPK, data *spec.AttestationData) error {
 	entry := hex.EncodeToString(pk)
-	for _, r := range km.slashableDataRoots[entry] {
-		r2, _ := data.HashTreeRoot()
-		if bytes.Equal(r, r2[:]) {
+	for _, slot := range km.slashableSlots[entry] {
+		if slot == data.Slot {
 			return errors.New("slashable attestation")
 		}
 	}

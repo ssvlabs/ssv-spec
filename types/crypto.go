@@ -8,28 +8,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (s Signature) VerifyMultiPubKey(data Root, domain DomainType, sigType SignatureType, pks [][]byte) error {
-	var aggPK *bls.PublicKey
-	for _, pkByts := range pks {
-		pk := &bls.PublicKey{}
-		if err := pk.Deserialize(pkByts); err != nil {
-			return errors.Wrap(err, "failed to deserialize public key")
-		}
-
-		if aggPK == nil {
-			aggPK = pk
-		} else {
-			aggPK.Add(pk)
-		}
-	}
-
-	if aggPK == nil {
-		return errors.New("no public keys found")
-	}
-
-	return s.Verify(data, domain, sigType, aggPK.Serialize())
-}
-
 func (s Signature) Verify(data Root, domain DomainType, sigType SignatureType, pkByts []byte) error {
 	computedRoot, err := ComputeSigningRoot(data, ComputeSignatureDomain(domain, sigType))
 	if err != nil {
@@ -50,22 +28,6 @@ func (s Signature) Verify(data Root, domain DomainType, sigType SignatureType, p
 		return errors.New("failed to verify signature")
 	}
 	return nil
-}
-
-// Aggregate returns the aggregated signature for the provided messages
-func (s Signature) Aggregate(other Signature) (Signature, error) {
-	s1 := &bls.Sign{}
-	if err := s1.Deserialize(s); err != nil {
-		return nil, errors.Wrap(err, "failed to deserialize signature")
-	}
-
-	s2 := &bls.Sign{}
-	if err := s2.Deserialize(other); err != nil {
-		return nil, errors.Wrap(err, "failed to deserialize signature")
-	}
-
-	s1.Add(s2)
-	return s1.Serialize(), nil
 }
 
 // ComputeSigningRoot returns a singable/ verifiable root calculated from the a provided data and signature domain

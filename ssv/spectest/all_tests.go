@@ -171,6 +171,7 @@ var AllTests = []tests.TestF{
 	valcheckattestations.Valid,
 	valcheckattestations.MinoritySlashable,
 	valcheckattestations.MajoritySlashable,
+	valcheckattestations.ValidNonSlashableSlot,
 
 	valcheckproposer.BlindedBlock,
 

@@ -124,10 +124,14 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 				lastErr = err
 			}
 			if test.DecidedSlashable && IsQBFTProposalMessage(msg) {
-				dataRoot := testingutils.GetSlashableRootForBeaconVote(msg)
+				consensusMsg, err := qbft.DecodeMessage(msg.SSVMessage.Data)
+				if err != nil {
+					panic(err)
+				}
+				slot := phase0.Slot(consensusMsg.Height)
 				for _, validatorShare := range test.Runner.GetBaseRunner().Share {
-					test.Runner.GetSigner().(*testingutils.TestingKeyManager).AddSlashableDataRoot(validatorShare.
-						SharePubKey, dataRoot[:])
+					test.Runner.GetSigner().(*testingutils.TestingKeyManager).AddSlashableSlot(validatorShare.
+						SharePubKey, slot)
 				}
 			}
 		}

@@ -2,8 +2,8 @@ package valcheckattestations
 
 import (
 	"encoding/hex"
-	"math"
 
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
@@ -25,16 +25,6 @@ func Slashable() tests.SpecTest {
 		},
 	}
 
-	attestationData := &spec.AttestationData{
-		Slot:            testingutils.TestingDutySlot,
-		Index:           math.MaxUint64,
-		BeaconBlockRoot: data.BlockRoot,
-		Source:          data.Source,
-		Target:          data.Target,
-	}
-
-	r, _ := attestationData.HashTreeRoot()
-
 	input, _ := data.Encode()
 
 	keySet := testingutils.Testing4SharesSet()
@@ -45,11 +35,12 @@ func Slashable() tests.SpecTest {
 		Name:          "attestation value check slashable",
 		Network:       types.BeaconTestNetwork,
 		RunnerRole:    types.RoleCommittee,
+		DutySlot:      testingutils.TestingDutySlot,
 		Input:         input,
 		ExpectedError: "slashable attestation",
-		SlashableDataRoots: map[string][][]byte{
+		SlashableSlots: map[string][]phase0.Slot{
 			shareString: {
-				r[:],
+				testingutils.TestingDutySlot,
 			},
 		},
 		ShareValidatorsPK: []types.ShareValidatorPK{sharePKBytes},
