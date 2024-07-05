@@ -17,12 +17,7 @@ var CommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
 }
 
 var CommitteeRunnerWithShareMap = func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
-	var sharePubKeys = make([]types.ShareValidatorPK, len(shareMap))
-	for i, share := range shareMap {
-		sharePubKeys[i-1] = share.SharePubKey
-	}
-	return baseRunnerWithShareMap(types.RoleCommittee, ssv.BeaconVoteValueCheckF(NewTestingKeyManager(),
-		TestingDutySlot, sharePubKeys, TestingDutyEpoch), shareMap)
+	return baseRunnerWithShareMap(types.RoleCommittee, shareMap)
 }
 
 var AttesterRunner7Operators = func(keySet *TestKeySet) ssv.Runner {
@@ -61,12 +56,19 @@ var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(UnknownDutyType, keySet)
 }
 
-var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedValueCheckF, shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+var baseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
 
 	var keySetInstance *TestKeySet
+	var shareInstance *types.Share
 	for _, share := range shareMap {
 		keySetInstance = KeySetForShare(share)
+		shareInstance = TestingShare(keySetInstance, share.ValidatorIndex)
 		break
+	}
+
+	sharePubKeys := make([]types.ShareValidatorPK, 0)
+	for _, share := range shareMap {
+		sharePubKeys = append(sharePubKeys, share.SharePubKey)
 	}
 
 	// Identifier
@@ -89,6 +91,23 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, valCheck qbft.ProposedV
 	committeeMember := TestingCommitteeMember(keySetInstance)
 	opSigner := NewOperatorSigner(keySetInstance, committeeMember.OperatorID)
 
+	var valCheck qbft.ProposedValueCheckF
+	switch role {
+	case types.RoleCommittee:
+		valCheck = ssv.BeaconVoteValueCheckF(km, TestingDutySlot,
+			sharePubKeys, TestingDutyEpoch)
+	case types.RoleProposer:
+		valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
+			(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey)
+	case types.RoleAggregator:
+		valCheck = ssv.AggregatorValueCheckF(km, types.BeaconTestNetwork,
+			(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex)
+	case types.RoleSyncCommitteeContribution:
+		valCheck = ssv.SyncCommitteeContributionValueCheckF(km, types.BeaconTestNetwork,
+			(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex)
+	default:
+		valCheck = nil
+	}
 	config := TestingConfig(keySetInstance)
 	config.ValueCheckF = valCheck
 	config.ProposerF = func(state *qbft.State, round qbft.Round) types.OperatorID {
