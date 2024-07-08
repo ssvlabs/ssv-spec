@@ -2,14 +2,15 @@ package qbft
 
 import (
 	"bytes"
-	"github.com/bloxapp/ssv-spec/types"
+
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // uponPrepare process prepare message
 // Assumes prepare message is valid!
-func (i *Instance) uponPrepare(signedPrepare *SignedMessage, prepareMsgContainer *MsgContainer) error {
-	hasQuorumBefore := HasQuorum(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round))
+func (i *Instance) uponPrepare(signedPrepare *types.SignedSSVMessage, prepareMsgContainer *MsgContainer) error {
+	hasQuorumBefore := HasQuorum(i.State.CommitteeMember, prepareMsgContainer.MessagesForRound(i.State.Round))
 
 	addedMsg, err := prepareMsgContainer.AddFirstMsgForSignerAndRound(signedPrepare)
 	if err != nil {
@@ -23,11 +24,16 @@ func (i *Instance) uponPrepare(signedPrepare *SignedMessage, prepareMsgContainer
 		return nil // already moved to commit stage
 	}
 
-	if !HasQuorum(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round)) {
+	if !HasQuorum(i.State.CommitteeMember, prepareMsgContainer.MessagesForRound(i.State.Round)) {
 		return nil // no quorum yet
 	}
 
-	proposedRoot := i.State.ProposalAcceptedForCurrentRound.Message.Root
+	proposalMsgAccepted, err := DecodeMessage(i.State.ProposalAcceptedForCurrentRound.SSVMessage.Data)
+	if err != nil {
+		return err
+	}
+
+	proposedRoot := proposalMsgAccepted.Root
 
 	i.State.LastPreparedValue = i.State.ProposalAcceptedForCurrentRound.FullData
 	i.State.LastPreparedRound = i.State.Round
@@ -46,7 +52,7 @@ func (i *Instance) uponPrepare(signedPrepare *SignedMessage, prepareMsgContainer
 
 // getRoundChangeJustification returns the round change justification for the current round.
 // The justification is a quorum of signed prepare messages that agree on state.LastPreparedValue
-func getRoundChangeJustification(state *State, config IConfig, prepareMsgContainer *MsgContainer) ([]*SignedMessage, error) {
+func getRoundChangeJustification(state *State, config IConfig, prepareMsgContainer *MsgContainer) ([]*types.SignedSSVMessage, error) {
 	if state.LastPreparedValue == nil {
 		return nil, nil
 	}
@@ -57,21 +63,20 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 	}
 
 	prepareMsgs := prepareMsgContainer.MessagesForRound(state.LastPreparedRound)
-	ret := make([]*SignedMessage, 0)
+	ret := make([]*types.SignedSSVMessage, 0)
 	for _, msg := range prepareMsgs {
-		if err := validSignedPrepareForHeightRoundAndRoot(
-			config,
+		if err := validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 			msg,
 			state.Height,
 			state.LastPreparedRound,
 			r,
-			state.Share.Committee,
+			state.CommitteeMember.Committee,
 		); err == nil {
 			ret = append(ret, msg)
 		}
 	}
 
-	if !HasQuorum(state.Share, ret) {
+	if !HasQuorum(state.CommitteeMember, ret) {
 		return nil, nil
 	}
 	return ret, nil
@@ -79,20 +84,25 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 
 // validSignedPrepareForHeightRoundAndRoot known in dafny spec as validSignedPrepareForHeightRoundAndDigest
 // https://entethalliance.github.io/client-spec/qbft_spec.html#dfn-qbftspecification
-func validSignedPrepareForHeightRoundAndRoot(
-	config IConfig,
-	signedPrepare *SignedMessage,
+func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
+	signedPrepare *types.SignedSSVMessage,
 	height Height,
 	round Round,
 	root [32]byte,
 	operators []*types.Operator) error {
-	if signedPrepare.Message.MsgType != PrepareMsgType {
+
+	msg, err := DecodeMessage(signedPrepare.SSVMessage.Data)
+	if err != nil {
+		return err
+	}
+
+	if msg.MsgType != PrepareMsgType {
 		return errors.New("prepare msg type is wrong")
 	}
-	if signedPrepare.Message.Height != height {
+	if msg.Height != height {
 		return errors.New("wrong msg height")
 	}
-	if signedPrepare.Message.Round != round {
+	if msg.Round != round {
 		return errors.New("wrong msg round")
 	}
 
@@ -100,15 +110,35 @@ func validSignedPrepareForHeightRoundAndRoot(
 		return errors.Wrap(err, "prepareData invalid")
 	}
 
-	if !bytes.Equal(signedPrepare.Message.Root[:], root[:]) {
-		return errors.New("proposed data mistmatch")
+	if !bytes.Equal(msg.Root[:], root[:]) {
+		return errors.New("proposed data mismatch")
 	}
 
-	if len(signedPrepare.GetSigners()) != 1 {
+	if len(signedPrepare.GetOperatorIDs()) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
 
-	if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+	if !signedPrepare.CheckSignersInCommittee(operators) {
+		return errors.New("signer not in committee")
+	}
+
+	return nil
+}
+
+func validSignedPrepareForHeightRoundAndRootVerifySignature(
+	config IConfig,
+	signedPrepare *types.SignedSSVMessage,
+	height Height,
+	round Round,
+	root [32]byte,
+	operators []*types.Operator) error {
+
+	if err := validSignedPrepareForHeightRoundAndRootIgnoreSignature(signedPrepare, height, round, root, operators); err != nil {
+		return err
+	}
+
+	// Verify signature
+	if err := config.GetSignatureVerifier().Verify(signedPrepare, operators); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 
@@ -127,7 +157,7 @@ Prepare(
                         )
                 );
 */
-func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) (*SignedMessage, error) {
+func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) (*types.SignedSSVMessage, error) {
 	msg := &Message{
 		MsgType:    PrepareMsgType,
 		Height:     state.Height,
@@ -136,15 +166,6 @@ func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) 
 
 		Root: root,
 	}
-	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed signing prepare msg")
-	}
 
-	signedMsg := &SignedMessage{
-		Signature: sig,
-		Signers:   []types.OperatorID{state.Share.OperatorID},
-		Message:   *msg,
-	}
-	return signedMsg, nil
+	return Sign(msg, state.CommitteeMember.OperatorID, config.GetOperatorSigner())
 }

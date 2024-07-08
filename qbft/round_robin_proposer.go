@@ -1,6 +1,6 @@
 package qbft
 
-import "github.com/bloxapp/ssv-spec/types"
+import "github.com/ssvlabs/ssv-spec/types"
 
 // RoundRobinProposer returns the proposer for the round.
 // Each new height starts with the first proposer and increments by 1 with each following round.
@@ -9,9 +9,9 @@ import "github.com/bloxapp/ssv-spec/types"
 func RoundRobinProposer(state *State, round Round) types.OperatorID {
 	firstRoundIndex := 0
 	if state.Height != FirstHeight {
-		firstRoundIndex += int(state.Height) % len(state.Share.Committee)
+		firstRoundIndex += int(state.Height) % len(state.CommitteeMember.Committee)
 	}
 
-	index := (firstRoundIndex + int(round) - int(FirstRound)) % len(state.Share.Committee)
-	return state.Share.Committee[index].OperatorID
+	index := (firstRoundIndex + int(round) - int(FirstRound)) % len(state.CommitteeMember.Committee)
+	return state.CommitteeMember.Committee[index].OperatorID
 }

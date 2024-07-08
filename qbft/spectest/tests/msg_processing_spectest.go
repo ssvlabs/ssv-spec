@@ -9,10 +9,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 // ChangeProposerFuncInstanceHeight tests with this height will return proposer operator ID 2
@@ -23,8 +23,8 @@ type MsgProcessingSpecTest struct {
 	Pre                *qbft.Instance
 	PostRoot           string
 	PostState          types.Root `json:"-"` // Field is ignored by encoding/json
-	InputMessages      []*qbft.SignedMessage
-	OutputMessages     []*qbft.SignedMessage
+	InputMessages      []*types.SignedSSVMessage
+	OutputMessages     []*types.SignedSSVMessage
 	ExpectedError      string
 	ExpectedTimerState *testingutils.TimerState
 }
@@ -54,20 +54,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	require.NoError(t, err)
 
 	// test output message
-	broadcastedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
-	if len(test.OutputMessages) > 0 || len(broadcastedMsgs) > 0 {
-		require.Len(t, broadcastedMsgs, len(test.OutputMessages))
-
-		for i, msg := range test.OutputMessages {
-			r1, _ := msg.GetRoot()
-
-			msg2 := &qbft.SignedMessage{}
-			require.NoError(t, msg2.Decode(broadcastedMsgs[i].Data))
-			r2, _ := msg2.GetRoot()
-
-			require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
-		}
-	}
+	broadcastedSignedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+	testingutils.CompareSignedSSVMessageOutputMessages(t, test.OutputMessages, broadcastedSignedMsgs, test.Pre.State.CommitteeMember.Committee)
 
 	// test root
 	if test.PostRoot != hex.EncodeToString(postRoot[:]) {

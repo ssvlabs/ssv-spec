@@ -5,47 +5,51 @@ import (
 	"encoding/json"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
+
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
-// Duty runner for validator voluntary exit duty
+// BeaconDuty runner for validator voluntary exit duty
 type VoluntaryExitRunner struct {
 	BaseRunner *BaseRunner
 
-	beacon   BeaconNode
-	network  Network
-	signer   types.KeyManager
-	valCheck qbft.ProposedValueCheckF
+	beacon         BeaconNode
+	network        Network
+	signer         types.BeaconSigner
+	operatorSigner types.OperatorSigner
+	valCheck       qbft.ProposedValueCheckF
 
 	voluntaryExit *phase0.VoluntaryExit
 }
 
 func NewVoluntaryExitRunner(
 	beaconNetwork types.BeaconNetwork,
-	share *types.Share,
+	share map[phase0.ValidatorIndex]*types.Share,
 	beacon BeaconNode,
 	network Network,
-	signer types.KeyManager,
+	signer types.BeaconSigner,
+	operatorSigner types.OperatorSigner,
 ) Runner {
 	return &VoluntaryExitRunner{
 		BaseRunner: &BaseRunner{
-			BeaconRoleType: types.BNRoleVoluntaryExit,
+			RunnerRoleType: types.RoleVoluntaryExit,
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
 		},
 
-		beacon:  beacon,
-		network: network,
-		signer:  signer,
+		beacon:         beacon,
+		network:        network,
+		signer:         signer,
+		operatorSigner: operatorSigner,
 	}
 }
 
-func (r *VoluntaryExitRunner) StartNewDuty(duty *types.Duty) error {
+func (r *VoluntaryExitRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	// Note: Voluntary exit doesn't require any consensus, it can start a new duty even if previous one didn't finish
-	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty)
+	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty.(*types.BeaconDuty), quorum)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
@@ -55,7 +59,7 @@ func (r *VoluntaryExitRunner) HasRunningDuty() bool {
 
 // ProcessPreConsensus Check for quorum of partial signatures over VoluntaryExit and,
 // if has quorum, constructs SignedVoluntaryExit and submits to BeaconNode
-func (r *VoluntaryExitRunner) ProcessPreConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
+func (r *VoluntaryExitRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
 	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing voluntary exit message")
@@ -68,9 +72,12 @@ func (r *VoluntaryExitRunner) ProcessPreConsensus(signedMsg *types.SignedPartial
 
 	// only 1 root, verified in basePreConsensusMsgProcessing
 	root := roots[0]
-	fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey)
+	fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey[:], r.GetShare().ValidatorIndex)
 	if err != nil {
-		return errors.Wrap(err, "could not reconstruct voluntary exit sig")
+		// If the reconstructed signature verification failed, fall back to verifying each partial signature
+		r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PreConsensusContainer, root, r.GetShare().Committee,
+			r.GetShare().ValidatorIndex)
+		return errors.Wrap(err, "got pre-consensus quorum but it has invalid signatures")
 	}
 	specSig := phase0.BLSSignature{}
 	copy(specSig[:], fullSig)
@@ -89,11 +96,11 @@ func (r *VoluntaryExitRunner) ProcessPreConsensus(signedMsg *types.SignedPartial
 	return nil
 }
 
-func (r *VoluntaryExitRunner) ProcessConsensus(signedMsg *qbft.SignedMessage) error {
+func (r *VoluntaryExitRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
 	return errors.New("no consensus phase for voluntary exit")
 }
 
-func (r *VoluntaryExitRunner) ProcessPostConsensus(signedMsg *types.SignedPartialSignatureMessage) error {
+func (r *VoluntaryExitRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
 	return errors.New("no post consensus phase for voluntary exit")
 }
 
@@ -113,46 +120,32 @@ func (r *VoluntaryExitRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashR
 // Validator voluntary exit duty doesn't need consensus nor post-consensus.
 // It just performs pre-consensus with VoluntaryExitPartialSig over
 // a VoluntaryExit object to create a SignedVoluntaryExit
-func (r *VoluntaryExitRunner) executeDuty(duty *types.Duty) error {
+func (r *VoluntaryExitRunner) executeDuty(duty types.Duty) error {
 	voluntaryExit, err := r.calculateVoluntaryExit()
 	if err != nil {
 		return errors.Wrap(err, "could not calculate voluntary exit")
 	}
 
 	// get PartialSignatureMessage with voluntaryExit root and signature
-	msg, err := r.BaseRunner.signBeaconObject(r, voluntaryExit, duty.Slot, types.DomainVoluntaryExit)
+	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.BeaconDuty), voluntaryExit, duty.DutySlot(),
+		types.DomainVoluntaryExit)
 	if err != nil {
 		return errors.Wrap(err, "could not sign VoluntaryExit object")
 	}
 
-	msgs := types.PartialSignatureMessages{
+	msgs := &types.PartialSignatureMessages{
 		Type:     types.VoluntaryExitPartialSig,
-		Slot:     duty.Slot,
+		Slot:     duty.DutySlot(),
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	// sign PartialSignatureMessages object
-	signature, err := r.GetSigner().SignRoot(msgs, types.PartialSignatureType, r.GetShare().SharePubKey)
+	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
+	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.operatorSigner)
 	if err != nil {
-		return errors.Wrap(err, "could not sign randao msg")
-	}
-	signedPartialMsg := &types.SignedPartialSignatureMessage{
-		Message:   msgs,
-		Signature: signature,
-		Signer:    r.GetShare().OperatorID,
+		return errors.Wrap(err, "could not sign pre-consensus partial signature message")
 	}
 
-	// broadcast
-	data, err := signedPartialMsg.Encode()
-	if err != nil {
-		return errors.Wrap(err, "failed to encode signedPartialMsg with VoluntaryExit")
-	}
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.BeaconRoleType),
-		Data:    data,
-	}
-	if err := r.GetNetwork().Broadcast(msgToBroadcast); err != nil {
+	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast signedPartialMsg with VoluntaryExit")
 	}
 
@@ -164,8 +157,8 @@ func (r *VoluntaryExitRunner) executeDuty(duty *types.Duty) error {
 
 // Returns *phase0.VoluntaryExit object with current epoch and own validator index
 func (r *VoluntaryExitRunner) calculateVoluntaryExit() (*phase0.VoluntaryExit, error) {
-	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.Slot)
-	validatorIndex := r.GetState().StartingDuty.ValidatorIndex
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.DutySlot())
+	validatorIndex := r.GetState().StartingDuty.(*types.BeaconDuty).ValidatorIndex
 	return &phase0.VoluntaryExit{
 		Epoch:          epoch,
 		ValidatorIndex: validatorIndex,
@@ -185,7 +178,10 @@ func (r *VoluntaryExitRunner) GetBeaconNode() BeaconNode {
 }
 
 func (r *VoluntaryExitRunner) GetShare() *types.Share {
-	return r.BaseRunner.Share
+	for _, share := range r.BaseRunner.Share {
+		return share
+	}
+	return nil
 }
 
 func (r *VoluntaryExitRunner) GetState() *State {
@@ -196,8 +192,12 @@ func (r *VoluntaryExitRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	return r.valCheck
 }
 
-func (r *VoluntaryExitRunner) GetSigner() types.KeyManager {
+func (r *VoluntaryExitRunner) GetSigner() types.BeaconSigner {
 	return r.signer
+}
+
+func (r *VoluntaryExitRunner) GetOperatorSigner() types.OperatorSigner {
+	return r.operatorSigner
 }
 
 // Encode returns the encoded struct in bytes or error

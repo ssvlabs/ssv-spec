@@ -1,10 +1,10 @@
 package proposer
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // FourOperators tests round-robin proposer selection for 4 member committee
@@ -31,7 +31,7 @@ func FourOperators() tests.SpecTest {
 
 	return &tests.RoundRobinSpecTest{
 		Name:      "4 member committee",
-		Share:     testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		Share:     testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 		Heights:   heights,
 		Rounds:    rounds,
 		Proposers: proposers,

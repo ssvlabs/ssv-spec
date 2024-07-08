@@ -110,33 +110,18 @@ func (c Contributions) SizeSSZ() int {
 // ConsensusData holds all relevant duty and data Decided on by consensus
 type ConsensusData struct {
 	// Duty max size is
-	// 			8 + 48 + 6*8 + 13*8 = 208 ~= 2^8
-	Duty    Duty
+	// 			8 + 48 + 6*8 + 13*8 + 1 = 209
+	Duty    BeaconDuty
 	Version spec.DataVersion
 	// PreConsensusJustifications max size is
-	//			13*SignedPartialSignatureMessage(2^16) ~= 2^20
-	PreConsensusJustifications []*SignedPartialSignatureMessage `ssz-max:"13"`
-	// DataSSZ has max size as following
-	// Biggest object is a Deneb.BlockContents with:
-	// - KZGProofs: 6 * 48 = 288
-	// - Blobs: 6 * 131072 = 786432
-	// - A BeaconBlock: 2*32+2*8 + BeaconBlockBody
-	// BeaconBlockBody is
-	//			96 + ETH1Data(2*32+8) + 32 +
-	//			16*ProposerSlashing(2*SignedBeaconBlockHeader(96 + 3*32 + 2*8)) +
-	//			2*AttesterSlashing(2*IndexedAttestation(2048 + 96 + AttestationData(2*8 + 32 + 2*(8+32)))) +
-	//			128*Attestation(2048 + 96 + AttestationData(2*8 + 32 + 2*(8+32))) +
-	//			16*Deposit(33*32 + 48 + 32 + 8 + 96) +
-	//			16*SignedVoluntaryExit(96 + 2*8) +
-	//			SyncAggregate(64 + 96) +
-	//			ExecutionPayload(32 + 20 + 2*32 + 256 + 32 + 4*8 + 3*32 + 1048576*1073741824 + 16 * (2*8 + 20 + 8) + 8 + 8) +
-	//			BLSToExecutionChanges(16 * (96 + (8 + 48 + 20))) +
-	//			KZGCommitment(4096 * 48)
-	// = 1315964 (everything but transactions) + 2^50 (transaction list)
+	//			13*[pre-consensus]SignedPartialSignatureMessage(1888) = 24544
+	PreConsensusJustifications []*PartialSignatureMessages `ssz-max:"13"`
+	// DataSSZ's max size if the size of the biggest object Deneb.BlockContents.
+	// Per definition, Deneb.BlockContents has a field for transaction of size 2^50.
 	// We do not need to support such a big DataSSZ size as 2^50 represents 1000X the actual block gas limit
 	// Upcoming 40M gas limit produces 40M / 16 (call data cost) = 2,500,000 bytes (https://eips.ethereum.org/EIPS/eip-4488)
-	// Adding to the rest of the data, we have: 1,315,964 + 2,500,000  = 3,815,964 bytes ~<= 2^22
 	// Explanation on why transaction sizes are so big https://github.com/ethereum/consensus-specs/pull/2686
+	// Adding to the rest of the data (see script below), we have: 1,315,964 + 2,500,000  = 3,815,964 bytes ~<= 2^22
 	// Python script for Deneb.BlockContents without transactions:
 	// 		# Constants
 	// 		KZG_PROOFS_SIZE = 6 * 48  # KZGProofs size
@@ -164,15 +149,14 @@ type ConsensusData struct {
 	DataSSZ []byte `ssz-max:"4194304"` // 2^22
 }
 
+func CreateConsensusData(rawSSZ []byte) (*ConsensusData, error) {
+	cd := &ConsensusData{}
+	err := cd.Decode(rawSSZ)
+	return cd, err
+}
+
 func (cid *ConsensusData) Validate() error {
 	switch cid.Duty.Type {
-	case BNRoleAttester:
-		if _, err := cid.GetAttestationData(); err != nil {
-			return err
-		}
-		if len(cid.PreConsensusJustifications) > 0 {
-			return errors.New("attester invalid justifications")
-		}
 	case BNRoleAggregator:
 		if _, err := cid.GetAggregateAndProof(); err != nil {
 			return err
@@ -188,14 +172,6 @@ func (cid *ConsensusData) Validate() error {
 		if err1 == nil && err2 == nil {
 			return errors.New("no beacon data")
 		}
-	case BNRoleSyncCommittee:
-		if len(cid.PreConsensusJustifications) > 0 {
-			return errors.New("sync committee invalid justifications")
-		}
-		if _, err := cid.GetSyncCommitteeBlockRoot(); err != nil {
-			return err
-		}
-		return nil
 	case BNRoleSyncCommitteeContribution:
 		if _, err := cid.GetSyncCommitteeContributions(); err != nil {
 			return err
@@ -208,14 +184,6 @@ func (cid *ConsensusData) Validate() error {
 		return errors.New("unknown duty role")
 	}
 	return nil
-}
-
-func (ci *ConsensusData) GetAttestationData() (*phase0.AttestationData, error) {
-	ret := &phase0.AttestationData{}
-	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-		return nil, errors.Wrap(err, "could not unmarshal ssz")
-	}
-	return ret, nil
 }
 
 // GetBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
@@ -264,14 +232,6 @@ func (ci *ConsensusData) GetAggregateAndProof() (*phase0.AggregateAndProof, erro
 		return nil, errors.Wrap(err, "could not unmarshal ssz")
 	}
 	return ret, nil
-}
-
-func (ci *ConsensusData) GetSyncCommitteeBlockRoot() (phase0.Root, error) {
-	ret := SSZ32Bytes{}
-	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-		return phase0.Root{}, errors.Wrap(err, "could not unmarshal ssz")
-	}
-	return phase0.Root(ret), nil
 }
 
 func (ci *ConsensusData) GetSyncCommitteeContributions() (Contributions, error) {

@@ -1,9 +1,9 @@
 package partialsigmessage
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PartialSigValid tests PostConsensusMessage sig == 96 bytes
@@ -14,7 +14,7 @@ func PartialSigValid() *MsgSpecTest {
 
 	return &MsgSpecTest{
 		Name: "partial sig valid",
-		Messages: []*types.SignedPartialSignatureMessage{
+		Messages: []*types.PartialSignatureMessages{
 			msg,
 		},
 	}

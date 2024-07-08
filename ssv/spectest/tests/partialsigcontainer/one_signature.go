@@ -1,10 +1,10 @@
 package partialsigcontainer
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 func OneSignature() tests.SpecTest {
@@ -14,7 +14,7 @@ func OneSignature() tests.SpecTest {
 
 	// Create PartialSignatureMessage for testing
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
-	msgs := []*types.PartialSignatureMessage{msg.Message.Messages[0]}
+	msgs := []*types.PartialSignatureMessage{msg.Messages[0]}
 
 	// Verify the reconstructed signature
 	expectedSig, err := types.ReconstructSignatures(map[types.OperatorID][]byte{1: msgs[0].PartialSignature})

@@ -1,11 +1,11 @@
 package startinstance
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 // PreviousDecided tests starting an instance when the previous one decided
@@ -41,7 +41,7 @@ func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comp
 
 	contr := testingutils.NewTestingQBFTController(
 		testingutils.TestingIdentifier,
-		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
 	)
 
@@ -51,21 +51,21 @@ func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comp
 		instance := &qbft.Instance{
 			StartValue: []byte{1, 2, 3, 4},
 			State: &qbft.State{
-				Share:  testingutils.TestingShare(testingutils.Testing4SharesSet()),
-				ID:     testingutils.TestingIdentifier,
-				Round:  qbft.FirstRound,
-				Height: qbft.Height(i),
+				CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+				ID:              testingutils.TestingIdentifier,
+				Round:           qbft.FirstRound,
+				Height:          qbft.Height(i),
 			},
 		}
 
 		// last height
 		if !decidedState && qbft.Height(i) == height {
-			comparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
+			comparable.SetSignedMessages(instance, []*types.SignedSSVMessage{})
 			contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
 			break
 		}
 
-		instance.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
+		instance.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
 		instance.State.LastPreparedRound = qbft.FirstRound
 		instance.State.LastPreparedValue = testingutils.TestingQBFTFullData
 		instance.State.Decided = true

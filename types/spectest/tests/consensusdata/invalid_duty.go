@@ -2,15 +2,15 @@ package consensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // InvalidDuty tests an invalid consensus data with invalid duty
 func InvalidDuty() *ConsensusDataTest {
 
 	cd := &types.ConsensusData{
-		Duty: types.Duty{
+		Duty: types.BeaconDuty{
 			Type:   types.BeaconRole(100),
 			PubKey: testingutils.TestingValidatorPubKey,
 		},

@@ -5,10 +5,10 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // WrongValidatorIndex tests duty.ValidatorIndex wrong
@@ -30,39 +30,32 @@ func WrongValidatorIndex() tests.SpecTest {
 		Name: "wrong validator index",
 		Tests: []*valcheck.SpecTest{
 			{
-				Name:          "sync committee aggregator",
-				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleSyncCommitteeContribution,
-				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
-				ExpectedError: expectedErr,
+				Name:       "committee",
+				Network:    types.BeaconTestNetwork,
+				RunnerRole: types.RoleCommittee,
+				Input:      testingutils.TestBeaconVoteByts,
+				// No error since input doesn't contain validator index
 			},
 			{
-				Name:          "sync committee",
+				Name:          "sync committee aggregator",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleSyncCommittee,
-				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeConsensusData),
+				RunnerRole:    types.RoleSyncCommitteeContribution,
+				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
 				ExpectedError: expectedErr,
 			},
 			{
 				Name:          "aggregator",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleAggregator,
+				RunnerRole:    types.RoleAggregator,
 				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData),
 				ExpectedError: expectedErr,
 			},
 			{
 				Name:          "proposer",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleProposer,
+				RunnerRole:    types.RoleProposer,
 				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
 				ExpectedError: expectedErr,
-			},
-			{
-				Name:          "attester",
-				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleAttester,
-				Input:         consensusDataBytsF(testingutils.TestAttesterConsensusData),
-				ExpectedError: "duty invalid: wrong validator index",
 			},
 		},
 	}

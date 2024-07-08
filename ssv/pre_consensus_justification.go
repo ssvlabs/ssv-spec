@@ -2,30 +2,37 @@ package ssv
 
 import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // correctQBFTState returns true if QBFT controller state requires pre-consensus justification
-func (b *BaseRunner) correctQBFTState(msg *qbft.SignedMessage) bool {
+func (b *BaseRunner) correctQBFTState(msg *qbft.Message) bool {
 	inst := b.QBFTController.InstanceForHeight(b.QBFTController.Height)
 	decidedInstance := inst != nil && inst.State != nil && inst.State.Decided
 
 	// firstHeightNotDecided is true if height == 0 (special case) and did not start yet
-	firstHeightNotDecided := inst == nil && b.QBFTController.Height == msg.Message.Height && msg.Message.Height == qbft.FirstHeight
+	firstHeightNotDecided := inst == nil && b.QBFTController.Height == msg.Height && msg.Height == qbft.FirstHeight
 
 	// notFirstHeightDecided returns true if height != 0, height decided and the message is for next height
-	notFirstHeightDecided := decidedInstance && msg.Message.Height > qbft.FirstHeight && b.QBFTController.Height+1 == msg.Message.Height
+	notFirstHeightDecided := decidedInstance && msg.Height > qbft.FirstHeight && b.QBFTController.Height+1 == msg.Height
 
 	return firstHeightNotDecided || notFirstHeightDecided
 }
 
 // shouldProcessingJustificationsForHeight returns true if pre-consensus justification should be processed, false otherwise
-func (b *BaseRunner) shouldProcessingJustificationsForHeight(msg *qbft.SignedMessage) bool {
-	correctMsgTYpe := msg.Message.MsgType == qbft.ProposalMsgType || msg.Message.MsgType == qbft.RoundChangeMsgType
-	correctBeaconRole := b.BeaconRoleType == types.BNRoleProposer || b.BeaconRoleType == types.BNRoleAggregator || b.BeaconRoleType == types.BNRoleSyncCommitteeContribution
-	return b.correctQBFTState(msg) && correctMsgTYpe && correctBeaconRole
+func (b *BaseRunner) shouldProcessingJustificationsForHeight(signedMsg *types.SignedSSVMessage) (bool, error) {
+
+	msg, err := qbft.DecodeMessage(signedMsg.SSVMessage.Data)
+	if err != nil {
+		return false, err
+	}
+
+	correctMsgTYpe := msg.MsgType == qbft.ProposalMsgType || msg.MsgType == qbft.RoundChangeMsgType
+	correctBeaconRole := b.RunnerRoleType == types.RoleProposer || b.RunnerRoleType == types.RoleAggregator || b.
+		RunnerRoleType == types.RoleSyncCommitteeContribution
+	return b.correctQBFTState(msg) && correctMsgTYpe && correctBeaconRole, nil
 }
 
 // validatePreConsensusJustifications returns an error if pre-consensus justification is invalid, nil otherwise
@@ -35,7 +42,7 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 		return err
 	}
 
-	if b.BeaconRoleType != data.Duty.Type {
+	if b.RunnerRoleType != data.Duty.RunnerRole() {
 		return errors.New("wrong beacon role")
 	}
 
@@ -44,58 +51,71 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 	}
 
 	// validate justification quorum
-	if !b.Share.HasQuorum(len(data.PreConsensusJustifications)) {
+	if uint64(len(data.PreConsensusJustifications)) >= b.State.PreConsensusContainer.Quorum {
 		return errors.New("no quorum")
 	}
 
 	signers := make(map[types.OperatorID]bool)
 	roots := make(map[[32]byte]bool)
 	rootCount := 0
+	partialSigContainer := NewPartialSigContainer(b.State.PreConsensusContainer.Quorum)
 	for i, msg := range data.PreConsensusJustifications {
 		if err := msg.Validate(); err != nil {
 			return err
 		}
 
+		signer := msg.Messages[0].Signer
+
 		// check unique signers
-		if !signers[msg.Signer] {
-			signers[msg.Signer] = true
+		if !signers[signer] {
+			signers[signer] = true
 		} else {
 			return errors.New("duplicate signer")
 		}
 
 		// verify all justifications have the same root count
 		if i == 0 {
-			rootCount = len(msg.Message.Messages)
+			rootCount = len(msg.Messages)
 		} else {
-			if rootCount != len(msg.Message.Messages) {
+			if rootCount != len(msg.Messages) {
 				return errors.New("inconsistent root count")
 			}
 		}
 
 		// validate roots
-		for _, msgRoot := range msg.Message.Messages {
+		for _, partialSigMessage := range msg.Messages {
 			// validate roots
 			if i == 0 {
 				// check signer did not sign duplicate root
-				if roots[msgRoot.SigningRoot] {
+				if roots[partialSigMessage.SigningRoot] {
 					return errors.New("duplicate signed root")
 				}
 
 				// record roots
-				roots[msgRoot.SigningRoot] = true
+				roots[partialSigMessage.SigningRoot] = true
 			} else {
 				// compare roots
-				if !roots[msgRoot.SigningRoot] {
+				if !roots[partialSigMessage.SigningRoot] {
 					return errors.New("inconsistent roots")
 				}
 			}
+			partialSigContainer.AddSignature(partialSigMessage)
 		}
 
-		// verify sigs and duty.slot == msg.slot
+		// verify duty.slot == msg.slot
 		if err := b.validatePartialSigMsgForSlot(msg, data.Duty.Slot); err != nil {
 			return err
 		}
 	}
+
+	// Verify the reconstructed signature for each root
+	for root := range roots {
+		_, err := b.State.ReconstructBeaconSig(partialSigContainer, root, b.Share[data.Duty.ValidatorIndex].ValidatorPubKey[:], data.Duty.ValidatorIndex)
+		if err != nil {
+			return errors.Wrap(err, "wrong pre-consensus partial signature")
+		}
+	}
+
 	return nil
 }
 
@@ -110,8 +130,13 @@ func (b *BaseRunner) validatePreConsensusJustifications(data *types.ConsensusDat
 5) add pre-consensus sigs to container
 6) decided on duty
 */
-func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDecidedDutySlot phase0.Slot, msg *qbft.SignedMessage) error {
-	if !b.shouldProcessingJustificationsForHeight(msg) {
+func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDecidedDutySlot phase0.Slot, msg *types.SignedSSVMessage) error {
+
+	shouldProcess, err := b.shouldProcessingJustificationsForHeight(msg)
+	if err != nil {
+		return err
+	}
+	if !shouldProcess {
 		return nil
 	}
 
@@ -126,7 +151,7 @@ func (b *BaseRunner) processPreConsensusJustification(runner Runner, highestDeci
 
 	// if no duty is running start one
 	if !b.hasRunningDuty() {
-		b.baseSetupForNewDuty(&cd.Duty)
+		b.baseSetupForNewDuty(&cd.Duty, b.State.PreConsensusContainer.Quorum)
 	}
 
 	// add pre-consensus sigs to state container

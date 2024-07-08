@@ -1,6 +1,7 @@
 package types
 
 import (
+	"math"
 	"time"
 
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -38,7 +39,6 @@ const DefaultGasLimit = 30_000_000
 // BeaconRole type of the validator role for a specific duty
 type BeaconRole uint64
 
-// List of roles
 const (
 	BNRoleAttester BeaconRole = iota
 	BNRoleAggregator
@@ -48,6 +48,8 @@ const (
 
 	BNRoleValidatorRegistration
 	BNRoleVoluntaryExit
+
+	BNRoleUnknown = math.MaxUint64
 )
 
 // String returns name of the role
@@ -72,8 +74,13 @@ func (r BeaconRole) String() string {
 	}
 }
 
-// Duty represent data regarding the duty type with the duty data
-type Duty struct {
+type Duty interface {
+	DutySlot() spec.Slot
+	RunnerRole() RunnerRole
+}
+
+// BeaconDuty represent data regarding the duty type with the duty data
+type BeaconDuty struct {
 	// Type is the duty type (attest, propose)
 	Type BeaconRole
 	// PubKey is the public key of the validator that should attest.
@@ -93,6 +100,77 @@ type Duty struct {
 	// ValidatorSyncCommitteeIndices is the index of the validator in the list of validators in the committee.
 	ValidatorSyncCommitteeIndices []uint64 `ssz-max:"13"`
 }
+
+func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
+	switch dutyRole {
+	case BNRoleAttester, BNRoleSyncCommittee:
+		return RoleCommittee
+	case BNRoleProposer:
+		return RoleProposer
+	case BNRoleAggregator:
+		return RoleAggregator
+	case BNRoleSyncCommitteeContribution:
+		return RoleSyncCommitteeContribution
+	case BNRoleValidatorRegistration:
+		return RoleValidatorRegistration
+	case BNRoleVoluntaryExit:
+		return RoleVoluntaryExit
+	}
+	return RoleUnknown
+}
+
+type BeaconVote struct {
+	BlockRoot spec.Root `ssz-size:"32"`
+	Source    *spec.Checkpoint
+	Target    *spec.Checkpoint
+}
+
+// NewBeaconVote creates a new BeaconVote object
+func NewBeaconVote(rawSSZ []byte) (*BeaconVote, error) {
+	vote := &BeaconVote{}
+	if err := vote.Decode(rawSSZ); err != nil {
+		return nil, err
+	}
+	return vote, nil
+}
+
+// Encode the BeaconVote object
+func (b *BeaconVote) Encode() ([]byte, error) {
+	return b.MarshalSSZ()
+}
+
+// Decode the BeaconVote object
+func (b *BeaconVote) Decode(data []byte) error {
+	return b.UnmarshalSSZ(data)
+}
+
+func (bd *BeaconDuty) DutySlot() spec.Slot {
+	return bd.Slot
+}
+
+func (bd *BeaconDuty) RunnerRole() RunnerRole {
+	return MapDutyToRunnerRole(bd.Type)
+}
+
+// GetValidatorIndex returns the validator index
+func (bd *BeaconDuty) GetValidatorIndex() spec.ValidatorIndex {
+	return bd.ValidatorIndex
+}
+
+type CommitteeDuty struct {
+	Slot         spec.Slot
+	BeaconDuties []*BeaconDuty
+}
+
+func (cd *CommitteeDuty) DutySlot() spec.Slot {
+	return cd.Slot
+}
+
+func (cd *CommitteeDuty) RunnerRole() RunnerRole {
+	return RoleCommittee
+}
+
+//
 
 // Available networks.
 const (

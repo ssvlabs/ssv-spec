@@ -9,16 +9,23 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/maxmsgsize"
+
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
+
 	"github.com/stretchr/testify/require"
 
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/beacon"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata"
-	consensusdataproposer "github.com/bloxapp/ssv-spec/types/spectest/tests/consensusdata/proposer"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/encryption"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/partialsigmessage"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/share"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssvmsg"
-	"github.com/bloxapp/ssv-spec/types/spectest/tests/ssz"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata"
+	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata/proposer"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/share"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssz"
 )
 
 func TestAll(t *testing.T) {
@@ -96,6 +103,18 @@ func TestJson(t *testing.T) {
 				typedTest := &beacon.DepositDataSpecTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
+			case reflect.TypeOf(&signedssvmsg.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &signedssvmsg.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&signedssvmsg.SignedSSVMessageTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &signedssvmsg.SignedSSVMessageTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
 			case reflect.TypeOf(&consensusdata.ConsensusDataTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
@@ -114,10 +133,34 @@ func TestJson(t *testing.T) {
 				typedTest := &share.ShareTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
+			case reflect.TypeOf(&committeemember.CommitteeMemberTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &committeemember.CommitteeMemberTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
 			case reflect.TypeOf(&ssvmsg.SSVMessageTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &ssvmsg.SSVMessageTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&duty.DutySpecTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &duty.DutySpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&beaconvote.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &beaconvote.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&maxmsgsize.StructureSizeTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &maxmsgsize.StructureSizeTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			default:

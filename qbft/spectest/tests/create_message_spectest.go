@@ -2,14 +2,16 @@ package tests
 
 import (
 	"encoding/hex"
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
-	"github.com/pkg/errors"
-	"github.com/stretchr/testify/require"
+	"fmt"
 	"reflect"
 	"testing"
+
+	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+	"github.com/stretchr/testify/require"
 )
 
 const (
@@ -26,7 +28,7 @@ type CreateMsgSpecTest struct {
 	// ISSUE 217: rename to value
 	StateValue                                       []byte
 	Round                                            qbft.Round
-	RoundChangeJustifications, PrepareJustifications []*qbft.SignedMessage
+	RoundChangeJustifications, PrepareJustifications []*types.SignedSSVMessage
 	CreateType                                       string
 	ExpectedRoot                                     string
 	ExpectedState                                    types.Root `json:"-"` // Field is ignored by encoding/json"
@@ -34,7 +36,7 @@ type CreateMsgSpecTest struct {
 }
 
 func (test *CreateMsgSpecTest) Run(t *testing.T) {
-	var msg *qbft.SignedMessage
+	var msg *types.SignedSSVMessage
 	var err error
 	switch test.CreateType {
 	case CreateProposal:
@@ -63,58 +65,64 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	require.NoError(t, err2)
 
 	if test.ExpectedRoot != hex.EncodeToString(r[:]) {
-		diff := typescomparable.PrintDiff(test.ExpectedState, msg)
-		require.Fail(t, "post state not equal", diff)
+		fmt.Printf("expected: %v\n", test.ExpectedRoot)
+		fmt.Printf("actuak: %v\n", hex.EncodeToString(r[:]))
+		// diff := typescomparable.PrintDiff(test.ExpectedState, msg)
+		require.Fail(t, "post state not equal", "")
 	}
 	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r[:]))
 
 	typescomparable.CompareWithJson(t, test, test.TestName(), reflect.TypeOf(test).String())
 }
 
-func (test *CreateMsgSpecTest) createCommit() (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createCommit() (*types.SignedSSVMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
-		Share: testingutils.TestingShare(ks),
-		ID:    []byte{1, 2, 3, 4},
+		CommitteeMember: testingutils.TestingCommitteeMember(ks),
+		ID:              []byte{1, 2, 3, 4},
 	}
 	config := testingutils.TestingConfig(ks)
 
 	return qbft.CreateCommit(state, config, test.Value)
 }
 
-func (test *CreateMsgSpecTest) createPrepare() (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createPrepare() (*types.SignedSSVMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
-		Share: testingutils.TestingShare(ks),
-		ID:    []byte{1, 2, 3, 4},
+		CommitteeMember: testingutils.TestingCommitteeMember(ks),
+		ID:              []byte{1, 2, 3, 4},
 	}
 	config := testingutils.TestingConfig(ks)
 
 	return qbft.CreatePrepare(state, config, test.Round, test.Value)
 }
 
-func (test *CreateMsgSpecTest) createProposal() (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createProposal() (*types.SignedSSVMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
-		Share: testingutils.TestingShare(ks),
-		ID:    []byte{1, 2, 3, 4},
+		CommitteeMember: testingutils.TestingCommitteeMember(ks),
+		ID:              []byte{1, 2, 3, 4},
 	}
 	config := testingutils.TestingConfig(ks)
 
 	return qbft.CreateProposal(state, config, test.Value[:], test.RoundChangeJustifications, test.PrepareJustifications)
 }
 
-func (test *CreateMsgSpecTest) createRoundChange() (*qbft.SignedMessage, error) {
+func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
-		Share:            testingutils.TestingShare(ks),
+		CommitteeMember:  testingutils.TestingCommitteeMember(ks),
 		ID:               []byte{1, 2, 3, 4},
 		PrepareContainer: qbft.NewMsgContainer(),
 	}
 	config := testingutils.TestingConfig(ks)
 
 	if len(test.PrepareJustifications) > 0 {
-		state.LastPreparedRound = test.PrepareJustifications[0].Message.Round
+		prepareMsg, err := qbft.DecodeMessage(test.PrepareJustifications[0].SSVMessage.Data)
+		if err != nil {
+			return nil, err
+		}
+		state.LastPreparedRound = prepareMsg.Round
 		state.LastPreparedValue = test.StateValue
 
 		for _, msg := range test.PrepareJustifications {

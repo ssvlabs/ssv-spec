@@ -2,16 +2,16 @@ package spectest
 
 import (
 	"encoding/json"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/timeout"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/timeout"
 	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	tests2 "github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	tests2 "github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 )
 
@@ -53,8 +53,8 @@ func TestJson(t *testing.T) {
 				// a little trick we do to instantiate all the internal instance params
 				preByts, _ := typedTest.Pre.Encode()
 				pre := qbft.NewInstance(
-					testingutils.TestingConfig(testingutils.KeySetForShare(typedTest.Pre.State.Share)),
-					typedTest.Pre.State.Share,
+					testingutils.TestingConfig(testingutils.KeySetForCommitteeMember(typedTest.Pre.State.CommitteeMember)),
+					typedTest.Pre.State.CommitteeMember,
 					typedTest.Pre.State.ID,
 					typedTest.Pre.State.Height,
 				)
@@ -106,8 +106,8 @@ func TestJson(t *testing.T) {
 				// a little trick we do to instantiate all the internal instance params
 				preByts, _ := typedTest.Pre.Encode()
 				pre := qbft.NewInstance(
-					testingutils.TestingConfig(testingutils.KeySetForShare(typedTest.Pre.State.Share)),
-					typedTest.Pre.State.Share,
+					testingutils.TestingConfig(testingutils.KeySetForCommitteeMember(typedTest.Pre.State.CommitteeMember)),
+					typedTest.Pre.State.CommitteeMember,
 					typedTest.Pre.State.ID,
 					typedTest.Pre.State.Height,
 				)
