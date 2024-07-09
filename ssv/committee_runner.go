@@ -453,22 +453,31 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 }
 
 func (cr CommitteeRunner) executeDuty(duty types.Duty) error {
-	slot := duty.DutySlot()
-	attData, _, err := cr.GetBeaconNode().GetAttestationData(slot, phase0.CommitteeIndex(0))
-	if err != nil {
-		return errors.Wrap(err, "failed to get attestation data")
-	}
 
-	vote := &types.BeaconVote{
-		BlockRoot: attData.BeaconBlockRoot,
-		Source:    attData.Source,
-		Target:    attData.Target,
-	}
+	attestationFetcher := beaconVoteFetcher(&cr, duty)
 
-	if err := cr.BaseRunner.decide(cr, duty.DutySlot(), vote); err != nil {
+	if err := cr.BaseRunner.decide(cr, duty.DutySlot(), attestationFetcher); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 	return nil
+}
+
+func beaconVoteFetcher(cr *CommitteeRunner, duty types.Duty) *types.DataFetcher {
+	return &types.DataFetcher{
+		GetConsensusData: func() ([]byte, error) {
+			attData, _, err := cr.GetBeaconNode().GetAttestationData(duty.DutySlot(), phase0.CommitteeIndex(0))
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to get attestation data")
+			}
+
+			cd := types.BeaconVote{
+				BlockRoot: attData.BeaconBlockRoot,
+				Source:    attData.Source,
+				Target:    attData.Target,
+			}
+			return cd.Encode()
+		},
+	}
 }
 
 func (cr CommitteeRunner) GetSigner() types.BeaconSigner {
