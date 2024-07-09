@@ -18,14 +18,14 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata"
-	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/consensusdata/proposer"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/share"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssz"
+	validatorconsensusdata "github.com/ssvlabs/ssv-spec/types/spectest/tests/validatorconsensusdata"
+	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/validatorconsensusdata/proposer"
 )
 
 func TestAll(t *testing.T) {
@@ -67,10 +67,10 @@ func TestJson(t *testing.T) {
 				typedTest := &consensusdataproposer.ProposerSpecTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
-			case reflect.TypeOf(&consensusdata.EncodingTest{}).String():
+			case reflect.TypeOf(&validatorconsensusdata.EncodingTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
-				typedTest := &consensusdata.EncodingTest{}
+				typedTest := &validatorconsensusdata.EncodingTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			case reflect.TypeOf(&partialsigmessage.EncodingTest{}).String():
@@ -115,10 +115,10 @@ func TestJson(t *testing.T) {
 				typedTest := &signedssvmsg.SignedSSVMessageTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
-			case reflect.TypeOf(&consensusdata.ConsensusDataTest{}).String():
+			case reflect.TypeOf(&validatorconsensusdata.ValidatorConsensusDataTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
-				typedTest := &consensusdata.ConsensusDataTest{}
+				typedTest := &validatorconsensusdata.ValidatorConsensusDataTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			case reflect.TypeOf(&partialsigmessage.MsgSpecTest{}).String():

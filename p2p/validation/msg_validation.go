@@ -51,7 +51,12 @@ func validateConsensusMsg(runner ssv.Runner, signedMsg *types.SignedSSVMessage) 
 
 	contr := runner.GetBaseRunner().QBFTController
 
-	if err := contr.BaseMsgValidation(signedMsg); err != nil {
+	msg, err := qbft.NewProcessingMessage(signedMsg)
+	if err != nil {
+		return errors.Wrap(err, "could not get ProcessingMessage from signed message")
+	}
+
+	if err := contr.BaseMsgValidation(msg); err != nil {
 		return err
 	}
 
@@ -62,25 +67,20 @@ func validateConsensusMsg(runner ssv.Runner, signedMsg *types.SignedSSVMessage) 
 	All valid future msgs are saved in a container and can trigger highest decided futuremsg
 	All other msgs (not future or decided) are processed normally by an existing instance (if found)
 	*/
-	isDecided, err := qbft.IsDecidedMsg(contr.CommitteeMember, signedMsg)
+	isDecided, err := qbft.IsDecidedMsg(contr.CommitteeMember, msg)
 	if err != nil {
 		return err
 	}
 	if isDecided {
-		return qbft.ValidateDecided(contr.GetConfig(), signedMsg, contr.CommitteeMember)
+		return qbft.ValidateDecided(contr.GetConfig(), msg, contr.CommitteeMember)
 	}
 
-	msg, err := qbft.DecodeMessage(signedMsg.SSVMessage.Data)
-	if err != nil {
-		return err
-	}
-
-	if msg.Height > contr.Height {
+	if msg.QBFTMessage.Height > contr.Height {
 		return validateFutureMsg(contr.GetConfig(), signedMsg, contr.CommitteeMember)
 	}
 
-	if inst := contr.StoredInstances.FindInstance(msg.Height); inst != nil {
-		return inst.BaseMsgValidation(signedMsg)
+	if inst := contr.StoredInstances.FindInstance(msg.QBFTMessage.Height); inst != nil {
+		return inst.BaseMsgValidation(msg)
 	}
 	return errors.New("unknown instance")
 }
@@ -106,12 +106,12 @@ func validateFutureMsg(
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	if len(msg.GetOperatorIDs()) != 1 {
+	if len(msg.OperatorIDs) != 1 {
 		return errors.New("allows 1 signer")
 	}
 
 	// verify signature
-	if err := config.GetSignatureVerifier().Verify(msg, committeeMember.Committee); err != nil {
+	if err := types.Verify(msg, committeeMember.Committee); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 

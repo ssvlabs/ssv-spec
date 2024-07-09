@@ -1,9 +1,6 @@
 package ssv
 
 import (
-	"crypto/sha256"
-	"encoding/json"
-
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -18,7 +15,7 @@ type AggregatorRunner struct {
 	beacon         BeaconNode
 	network        Network
 	signer         types.BeaconSigner
-	operatorSigner types.OperatorSigner
+	operatorSigner *types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 }
 
@@ -29,7 +26,7 @@ func NewAggregatorRunner(
 	beacon BeaconNode,
 	network Network,
 	signer types.BeaconSigner,
-	operatorSigner types.OperatorSigner,
+	operatorSigner *types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
 ) Runner {
@@ -81,10 +78,10 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *types.PartialSignature
 		return errors.Wrap(err, "got pre-consensus quorum but it has invalid signatures")
 	}
 
-	// TODO waitToSlotTwoThirds
-
+	duty := r.GetState().StartingDuty
 	aggregationFetcher := aggregationFetcher(r, fullSig)
-	if err := r.BaseRunner.decide(r, aggregationFetcher); err != nil {
+
+	if err := r.BaseRunner.decide(r, duty.DutySlot(), aggregationFetcher); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 
@@ -92,7 +89,7 @@ func (r *AggregatorRunner) ProcessPreConsensus(signedMsg *types.PartialSignature
 }
 
 func aggregationFetcher(r *AggregatorRunner, fullSig []byte) *types.DataFetcher {
-	duty := r.GetState().StartingDuty.(*types.BeaconDuty)
+	duty := r.GetState().StartingDuty.(*types.ValidatorDuty)
 	return &types.DataFetcher{
 		GetConsensusData: func() ([]byte, error) {
 			aggData, ver, err := r.GetBeaconNode().SubmitAggregateSelectionProof(duty.Slot, duty.CommitteeIndex,
@@ -107,7 +104,7 @@ func aggregationFetcher(r *AggregatorRunner, fullSig []byte) *types.DataFetcher 
 				return nil, errors.Wrap(err, "could not marshal aggregate and proof")
 			}
 
-			cd := types.ConsensusData{
+			cd := types.ValidatorConsensusData{
 				Duty:    *duty,
 				Version: ver,
 				DataSSZ: aggDataByts,
@@ -128,29 +125,47 @@ func (r *AggregatorRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) e
 		return nil
 	}
 
-	aggregateAndProof, err := decidedValue.(*types.ConsensusData).GetAggregateAndProof()
+	aggregateAndProof, err := decidedValue.(*types.ValidatorConsensusData).GetAggregateAndProof()
 	if err != nil {
 		return errors.Wrap(err, "could not get aggregate and proof")
 	}
 
 	// specific duty sig
-	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.BeaconDuty),
+	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.ValidatorDuty),
 		aggregateAndProof,
-		decidedValue.(*types.ConsensusData).Duty.Slot,
+		decidedValue.(*types.ValidatorConsensusData).Duty.Slot,
 		types.DomainAggregateAndProof)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
-		Slot:     decidedValue.(*types.ConsensusData).Duty.Slot,
+		Slot:     decidedValue.(*types.ValidatorConsensusData).Duty.Slot,
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(postConsensusMsg, msgID, r.operatorSigner)
+
+	encodedMsg, err := postConsensusMsg.Encode()
 	if err != nil {
-		return errors.Wrap(err, "could not sign post-consensus partial signature message")
+		return err
+	}
+
+	ssvMsg := &types.SSVMessage{
+		MsgType: types.SSVPartialSignatureMsgType,
+		MsgID:   msgID,
+		Data:    encodedMsg,
+	}
+
+	sig, err := r.operatorSigner.SignSSVMessage(ssvMsg)
+	if err != nil {
+		return errors.Wrap(err, "could not sign SSVMessage")
+	}
+
+	msgToBroadcast := &types.SignedSSVMessage{
+		Signatures:  [][]byte{sig},
+		OperatorIDs: []types.OperatorID{r.operatorSigner.GetOperatorID()},
+		SSVMessage:  ssvMsg,
 	}
 
 	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
@@ -182,7 +197,8 @@ func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *types.PartialSignatur
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
-		cd, err := types.CreateConsensusData(r.GetState().DecidedValue)
+		cd := &types.ValidatorConsensusData{}
+		err = cd.Decode(r.GetState().DecidedValue)
 		if err != nil {
 			return errors.Wrap(err, "could not create consensus data")
 		}
@@ -209,7 +225,8 @@ func (r *AggregatorRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot,
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *AggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	cd, err := types.CreateConsensusData(r.GetState().DecidedValue)
+	cd := &types.ValidatorConsensusData{}
+	err := cd.Decode(r.GetState().DecidedValue)
 	if err != nil {
 		return nil, types.DomainError, errors.Wrap(err, "could not create consensus data")
 	}
@@ -229,7 +246,7 @@ func (r *AggregatorRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot
 // 5) collect 2f+1 partial sigs, reconstruct and broadcast valid SignedAggregateSubmitRequest sig to the BN
 func (r *AggregatorRunner) executeDuty(duty types.Duty) error {
 	// sign selection proof
-	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.BeaconDuty), types.SSZUint64(duty.DutySlot()), duty.DutySlot(),
+	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.ValidatorDuty), types.SSZUint64(duty.DutySlot()), duty.DutySlot(),
 		types.DomainSelectionProof)
 	if err != nil {
 		return errors.Wrap(err, "could not sign randao")
@@ -241,9 +258,27 @@ func (r *AggregatorRunner) executeDuty(duty types.Duty) error {
 	}
 
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.operatorSigner)
+
+	encodedMsg, err := msgs.Encode()
 	if err != nil {
-		return errors.Wrap(err, "could not sign pre-consensus partial signature message")
+		return err
+	}
+
+	ssvMsg := &types.SSVMessage{
+		MsgType: types.SSVPartialSignatureMsgType,
+		MsgID:   msgID,
+		Data:    encodedMsg,
+	}
+
+	sig, err := r.operatorSigner.SignSSVMessage(ssvMsg)
+	if err != nil {
+		return errors.Wrap(err, "could not sign SSVMessage")
+	}
+
+	msgToBroadcast := &types.SignedSSVMessage{
+		Signatures:  [][]byte{sig},
+		OperatorIDs: []types.OperatorID{r.operatorSigner.GetOperatorID()},
+		SSVMessage:  ssvMsg,
 	}
 
 	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
@@ -284,26 +319,6 @@ func (r *AggregatorRunner) GetSigner() types.BeaconSigner {
 	return r.signer
 }
 
-func (r *AggregatorRunner) GetOperatorSigner() types.OperatorSigner {
+func (r *AggregatorRunner) GetOperatorSigner() *types.OperatorSigner {
 	return r.operatorSigner
-}
-
-// Encode returns the encoded struct in bytes or error
-func (r *AggregatorRunner) Encode() ([]byte, error) {
-	return json.Marshal(r)
-}
-
-// Decode returns error if decoding failed
-func (r *AggregatorRunner) Decode(data []byte) error {
-	return json.Unmarshal(data, &r)
-}
-
-// GetRoot returns the root used for signing and verification
-func (r *AggregatorRunner) GetRoot() ([32]byte, error) {
-	marshaledRoot, err := r.Encode()
-	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode DutyRunnerState")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret, nil
 }

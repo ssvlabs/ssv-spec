@@ -11,13 +11,14 @@ type CommitteeMember struct {
 	// FaultyNodes is the number of nodes that are considered faulty or malicious in the operator's committee
 	FaultyNodes uint64
 	// All the members of the committee
-	Committee []*Operator `ssz-max:"13"`
+	Committee  []*Operator `ssz-max:"13"`
+	DomainType DomainType  `ssz-size:"4"`
 }
 
 // Operator represents a node in the network that holds an ID and a public key
 type Operator struct {
 	OperatorID        OperatorID
-	SSVOperatorPubKey []byte `ssz-size:"294"`
+	SSVOperatorPubKey []byte `ssz-size:"459"`
 }
 
 // HasQuorum returns true if at least 2f+1 items are present (cnt is the number of items). It assumes nothing about those items, not their type or structure

@@ -14,8 +14,10 @@ import (
 func LateRoundChangePastInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
-		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 1, ks)
+	allMsgs := testingutils.DecidingMsgsForHeightWithRoot(
+		testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 1, ks,
+	)
 
 	msgPerHeight := make(map[qbft.Height][]*types.SignedSSVMessage)
 	msgPerHeight[qbft.FirstHeight] = allMsgs[0:7]
@@ -40,7 +42,11 @@ func LateRoundChangePastInstance() tests.SpecTest {
 		}
 	}
 
-	lateMsg := testingutils.TestingMultiSignerRoundChangeMessageWithHeight([]*rsa.PrivateKey{ks.OperatorKeys[4]}, []types.OperatorID{4}, qbft.FirstHeight)
+	lateMsg := testingutils.TestingMultiSignerRoundChangeMessageWithHeight(
+		[]*rsa.PrivateKey{ks.OperatorKeys[4]},
+		[]types.OperatorID{4},
+		qbft.FirstHeight,
+	)
 	sc := lateRoundChangePastInstanceStateComparison(2, lateMsg)
 
 	return &tests.ControllerSpecTest{
@@ -69,13 +75,20 @@ func LateRoundChangePastInstance() tests.SpecTest {
 // lateMsg will be added to the rc container of the instance at the proper height.
 func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *types.SignedSSVMessage) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	allMsgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, 1, ks)
+	allMsgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(
+		testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData,
+		testingutils.TestingIdentifier,
+		1,
+		ks,
+	)
 	offset := 7 // 7 messages per height (1 propose + 3 prepare + 3 commit)
 
 	contr := testingutils.NewTestingQBFTController(
 		testingutils.TestingIdentifier,
 		testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
+		testingutils.TestingOperatorSigner(ks),
 	)
 
 	for i := 0; i <= int(height); i++ {
@@ -98,7 +111,17 @@ func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *typ
 			break
 		}
 
-		instance.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
+		instance.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(
+			testingutils.TestingProposalMessageWithParams(
+				ks.OperatorKeys[1],
+				types.OperatorID(1),
+				qbft.FirstRound,
+				qbft.Height(i),
+				testingutils.TestingQBFTRootData,
+				nil,
+				nil,
+			),
+		)
 		instance.State.LastPreparedRound = qbft.FirstRound
 		instance.State.LastPreparedValue = testingutils.TestingQBFTFullData
 		instance.State.Decided = true

@@ -79,8 +79,8 @@ type Duty interface {
 	RunnerRole() RunnerRole
 }
 
-// BeaconDuty represent data regarding the duty type with the duty data
-type BeaconDuty struct {
+// ValidatorDuty represent data regarding the duty type with the duty data
+type ValidatorDuty struct {
 	// Type is the duty type (attest, propose)
 	Type BeaconRole
 	// PubKey is the public key of the validator that should attest.
@@ -119,47 +119,22 @@ func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
 	return RoleUnknown
 }
 
-type BeaconVote struct {
-	BlockRoot spec.Root `ssz-size:"32"`
-	Source    *spec.Checkpoint
-	Target    *spec.Checkpoint
-}
-
-// NewBeaconVote creates a new BeaconVote object
-func NewBeaconVote(rawSSZ []byte) (*BeaconVote, error) {
-	vote := &BeaconVote{}
-	if err := vote.Decode(rawSSZ); err != nil {
-		return nil, err
-	}
-	return vote, nil
-}
-
-// Encode the BeaconVote object
-func (b *BeaconVote) Encode() ([]byte, error) {
-	return b.MarshalSSZ()
-}
-
-// Decode the BeaconVote object
-func (b *BeaconVote) Decode(data []byte) error {
-	return b.UnmarshalSSZ(data)
-}
-
-func (bd *BeaconDuty) DutySlot() spec.Slot {
+func (bd *ValidatorDuty) DutySlot() spec.Slot {
 	return bd.Slot
 }
 
-func (bd *BeaconDuty) RunnerRole() RunnerRole {
+func (bd *ValidatorDuty) RunnerRole() RunnerRole {
 	return MapDutyToRunnerRole(bd.Type)
 }
 
 // GetValidatorIndex returns the validator index
-func (bd *BeaconDuty) GetValidatorIndex() spec.ValidatorIndex {
+func (bd *ValidatorDuty) GetValidatorIndex() spec.ValidatorIndex {
 	return bd.ValidatorIndex
 }
 
 type CommitteeDuty struct {
-	Slot         spec.Slot
-	BeaconDuties []*BeaconDuty
+	Slot            spec.Slot
+	ValidatorDuties []*ValidatorDuty
 }
 
 func (cd *CommitteeDuty) DutySlot() spec.Slot {

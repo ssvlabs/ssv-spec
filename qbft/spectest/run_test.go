@@ -52,11 +52,13 @@ func TestJson(t *testing.T) {
 
 				// a little trick we do to instantiate all the internal instance params
 				preByts, _ := typedTest.Pre.Encode()
+				ks := testingutils.KeySetForCommitteeMember(typedTest.Pre.State.CommitteeMember)
 				pre := qbft.NewInstance(
-					testingutils.TestingConfig(testingutils.KeySetForCommitteeMember(typedTest.Pre.State.CommitteeMember)),
+					testingutils.TestingConfig(ks),
 					typedTest.Pre.State.CommitteeMember,
 					typedTest.Pre.State.ID,
 					typedTest.Pre.State.Height,
+					testingutils.TestingOperatorSigner(ks),
 				)
 				pre.CdFetcher = testingutils.CdFetcher(testingutils.TestingQBFTFullData)
 				err = pre.Decode(preByts)
@@ -105,11 +107,13 @@ func TestJson(t *testing.T) {
 
 				// a little trick we do to instantiate all the internal instance params
 				preByts, _ := typedTest.Pre.Encode()
+				ks := testingutils.KeySetForCommitteeMember(typedTest.Pre.State.CommitteeMember)
 				pre := qbft.NewInstance(
-					testingutils.TestingConfig(testingutils.KeySetForCommitteeMember(typedTest.Pre.State.CommitteeMember)),
+					testingutils.TestingConfig(ks),
 					typedTest.Pre.State.CommitteeMember,
 					typedTest.Pre.State.ID,
 					typedTest.Pre.State.Height,
+					testingutils.TestingOperatorSigner(ks),
 				)
 				err = pre.Decode(preByts)
 				require.NoError(t, err)

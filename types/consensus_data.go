@@ -75,7 +75,7 @@ func (c *Contributions) UnmarshalSSZ(buf []byte) error {
 func (c *Contributions) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	if size := len(*c); size > 13 {
-		return nil, ssz.ErrListTooBigFn("ConsensusData.SyncCommitteeContribution", size, 13)
+		return nil, ssz.ErrListTooBigFn("ValidatorConsensusData.SyncCommitteeContribution", size, 13)
 	}
 
 	offset := 4 * len(*c)
@@ -107,15 +107,29 @@ func (c Contributions) SizeSSZ() int {
 	return size
 }
 
-// ConsensusData holds all relevant duty and data Decided on by consensus
-type ConsensusData struct {
+// BeaconVote is used as the data to be agreed on consensus for the CommitteeRunner
+type BeaconVote struct {
+	BlockRoot phase0.Root `ssz-size:"32"`
+	Source    *phase0.Checkpoint
+	Target    *phase0.Checkpoint
+}
+
+// Encode the BeaconVote object
+func (b *BeaconVote) Encode() ([]byte, error) {
+	return b.MarshalSSZ()
+}
+
+// Decode the BeaconVote object
+func (b *BeaconVote) Decode(data []byte) error {
+	return b.UnmarshalSSZ(data)
+}
+
+// ValidatorConsensusData holds all relevant duty and data Decided on by consensus
+type ValidatorConsensusData struct {
 	// Duty max size is
 	// 			8 + 48 + 6*8 + 13*8 + 1 = 209
-	Duty    BeaconDuty
+	Duty    ValidatorDuty
 	Version spec.DataVersion
-	// PreConsensusJustifications max size is
-	//			13*[pre-consensus]SignedPartialSignatureMessage(1888) = 24544
-	PreConsensusJustifications []*PartialSignatureMessages `ssz-max:"13"`
 	// DataSSZ's max size if the size of the biggest object Deneb.BlockContents.
 	// Per definition, Deneb.BlockContents has a field for transaction of size 2^50.
 	// We do not need to support such a big DataSSZ size as 2^50 represents 1000X the actual block gas limit
@@ -149,13 +163,7 @@ type ConsensusData struct {
 	DataSSZ []byte `ssz-max:"4194304"` // 2^22
 }
 
-func CreateConsensusData(rawSSZ []byte) (*ConsensusData, error) {
-	cd := &ConsensusData{}
-	err := cd.Decode(rawSSZ)
-	return cd, err
-}
-
-func (cid *ConsensusData) Validate() error {
+func (cid *ValidatorConsensusData) Validate() error {
 	switch cid.Duty.Type {
 	case BNRoleAggregator:
 		if _, err := cid.GetAggregateAndProof(); err != nil {
@@ -187,7 +195,7 @@ func (cid *ConsensusData) Validate() error {
 }
 
 // GetBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
-func (ci *ConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot ssz.HashRoot, err error) {
+func (ci *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot ssz.HashRoot, err error) {
 	switch ci.Version {
 	case spec.DataVersionCapella:
 		ret := &capella.BeaconBlock{}
@@ -207,7 +215,7 @@ func (ci *ConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot
 }
 
 // GetBlindedBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
-func (ci *ConsensusData) GetBlindedBlockData() (*api.VersionedBlindedProposal, ssz.HashRoot, error) {
+func (ci *ValidatorConsensusData) GetBlindedBlockData() (*api.VersionedBlindedProposal, ssz.HashRoot, error) {
 	switch ci.Version {
 	case spec.DataVersionCapella:
 		ret := &apiv1capella.BlindedBeaconBlock{}
@@ -226,7 +234,7 @@ func (ci *ConsensusData) GetBlindedBlockData() (*api.VersionedBlindedProposal, s
 	}
 }
 
-func (ci *ConsensusData) GetAggregateAndProof() (*phase0.AggregateAndProof, error) {
+func (ci *ValidatorConsensusData) GetAggregateAndProof() (*phase0.AggregateAndProof, error) {
 	ret := &phase0.AggregateAndProof{}
 	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
 		return nil, errors.Wrap(err, "could not unmarshal ssz")
@@ -234,7 +242,7 @@ func (ci *ConsensusData) GetAggregateAndProof() (*phase0.AggregateAndProof, erro
 	return ret, nil
 }
 
-func (ci *ConsensusData) GetSyncCommitteeContributions() (Contributions, error) {
+func (ci *ValidatorConsensusData) GetSyncCommitteeContributions() (Contributions, error) {
 	ret := Contributions{}
 	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
 		return nil, errors.Wrap(err, "could not unmarshal ssz")
@@ -242,10 +250,10 @@ func (ci *ConsensusData) GetSyncCommitteeContributions() (Contributions, error) 
 	return ret, nil
 }
 
-func (cid *ConsensusData) Encode() ([]byte, error) {
+func (cid *ValidatorConsensusData) Encode() ([]byte, error) {
 	return cid.MarshalSSZ()
 }
 
-func (cid *ConsensusData) Decode(data []byte) error {
+func (cid *ValidatorConsensusData) Decode(data []byte) error {
 	return cid.UnmarshalSSZ(data)
 }

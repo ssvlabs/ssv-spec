@@ -30,7 +30,7 @@ func InvalidValidatorIndex() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
-				ExpectedError:          expectedError,
+				// No error is expected for the CommitteeRunner since we don't assume that operators must be synced on the validators set
 			},
 			{
 				Name: "sync committee",
@@ -46,7 +46,7 @@ func InvalidValidatorIndex() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
-				ExpectedError:          expectedError,
+				// No error is expected for the CommitteeRunner since we don't assume that operators must be synced on the validators set
 			},
 			{
 				Name: "attester and sync committee",
@@ -62,7 +62,7 @@ func InvalidValidatorIndex() tests.SpecTest {
 				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				DontStartDuty:          true,
-				ExpectedError:          expectedError,
+				// No error is expected for the CommitteeRunner since we don't assume that operators must be synced on the validators set
 			},
 			{
 				Name: "sync committee contribution",

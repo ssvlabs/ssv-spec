@@ -17,8 +17,8 @@ func PostInvalidDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	consensusDataByts := func() []byte {
-		cd := &types.ConsensusData{
-			Duty: types.BeaconDuty{
+		cd := &types.ValidatorConsensusData{
+			Duty: types.ValidatorDuty{
 				Type:                    100, // invalid
 				PubKey:                  testingutils.TestingValidatorPubKey,
 				Slot:                    testingutils.TestingDutySlot,
@@ -42,7 +42,8 @@ func PostInvalidDecided() tests.SpecTest {
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().QBFTController.CommitteeMember,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.DutySlot()))
+			qbft.Height(duty.DutySlot()),
+			r.GetBaseRunner().QBFTController.OperatorSigner)
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
 		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.DutySlot())
 

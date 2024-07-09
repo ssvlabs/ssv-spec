@@ -29,7 +29,10 @@ func CurrentInstance() tests.SpecTest {
 
 					testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 					testingutils.TestingCommitMessage(ks.OperatorKeys[2], 2),
-					testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 2, 3}),
+					testingutils.TestingCommitMultiSignerMessage(
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+						[]types.OperatorID{1, 2, 3},
+					),
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt: 1,
@@ -51,26 +54,35 @@ func currentInstanceStateComparison() *comparable.StateComparison {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 		testingutils.TestingCommitMessage(ks.OperatorKeys[2], types.OperatorID(2)),
-		testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 2, 3}),
+		testingutils.TestingCommitMultiSignerMessage(
+			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+			[]types.OperatorID{1, 2, 3},
+		),
 	}
 
 	contr := testingutils.NewTestingQBFTController(
 		testingutils.TestingIdentifier,
 		testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
+		testingutils.TestingOperatorSigner(ks),
 	)
 
 	instance := &qbft.Instance{
 		StartValue: []byte{1, 2, 3, 4},
 		State: &qbft.State{
-			CommitteeMember:                 testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
-			ID:                              testingutils.TestingIdentifier,
-			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-			LastPreparedRound:               qbft.FirstRound,
-			LastPreparedValue:               testingutils.TestingQBFTFullData,
-			Decided:                         true,
-			DecidedValue:                    testingutils.TestingQBFTFullData,
-			Round:                           qbft.FirstRound,
+			CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+			ID:              testingutils.TestingIdentifier,
+			ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(
+				testingutils.TestingProposalMessage(
+					ks.OperatorKeys[1],
+					types.OperatorID(1),
+				),
+			),
+			LastPreparedRound: qbft.FirstRound,
+			LastPreparedValue: testingutils.TestingQBFTFullData,
+			Decided:           true,
+			DecidedValue:      testingutils.TestingQBFTFullData,
+			Round:             qbft.FirstRound,
 		},
 	}
 	comparable.SetSignedMessages(instance, msgs)

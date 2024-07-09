@@ -81,9 +81,9 @@ func (test *CreateMsgSpecTest) createCommit() (*types.SignedSSVMessage, error) {
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
 		ID:              []byte{1, 2, 3, 4},
 	}
-	config := testingutils.TestingConfig(ks)
+	signer := testingutils.TestingOperatorSigner(ks)
 
-	return qbft.CreateCommit(state, config, test.Value)
+	return qbft.CreateCommit(state, signer, test.Value)
 }
 
 func (test *CreateMsgSpecTest) createPrepare() (*types.SignedSSVMessage, error) {
@@ -92,9 +92,9 @@ func (test *CreateMsgSpecTest) createPrepare() (*types.SignedSSVMessage, error) 
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
 		ID:              []byte{1, 2, 3, 4},
 	}
-	config := testingutils.TestingConfig(ks)
+	signer := testingutils.TestingOperatorSigner(ks)
 
-	return qbft.CreatePrepare(state, config, test.Round, test.Value)
+	return qbft.CreatePrepare(state, signer, test.Round, test.Value)
 }
 
 func (test *CreateMsgSpecTest) createProposal() (*types.SignedSSVMessage, error) {
@@ -103,9 +103,10 @@ func (test *CreateMsgSpecTest) createProposal() (*types.SignedSSVMessage, error)
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
 		ID:              []byte{1, 2, 3, 4},
 	}
-	config := testingutils.TestingConfig(ks)
+	signer := testingutils.TestingOperatorSigner(ks)
 
-	return qbft.CreateProposal(state, config, test.Value[:], test.RoundChangeJustifications, test.PrepareJustifications)
+	return qbft.CreateProposal(state, signer, test.Value[:], testingutils.ToProcessingMessages(test.
+		RoundChangeJustifications), testingutils.ToProcessingMessages(test.PrepareJustifications))
 }
 
 func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, error) {
@@ -115,7 +116,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 		ID:               []byte{1, 2, 3, 4},
 		PrepareContainer: qbft.NewMsgContainer(),
 	}
-	config := testingutils.TestingConfig(ks)
+	signer := testingutils.TestingOperatorSigner(ks)
 
 	if len(test.PrepareJustifications) > 0 {
 		prepareMsg, err := qbft.DecodeMessage(test.PrepareJustifications[0].SSVMessage.Data)
@@ -126,14 +127,14 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 		state.LastPreparedValue = test.StateValue
 
 		for _, msg := range test.PrepareJustifications {
-			_, err := state.PrepareContainer.AddFirstMsgForSignerAndRound(msg)
+			_, err := state.PrepareContainer.AddFirstMsgForSignerAndRound(testingutils.ToProcessingMessage(msg))
 			if err != nil {
 				return nil, errors.Wrap(err, "could not add first message for signer")
 			}
 		}
 	}
 
-	return qbft.CreateRoundChange(state, config, 1)
+	return qbft.CreateRoundChange(state, signer, 1)
 }
 
 func (test *CreateMsgSpecTest) TestName() string {

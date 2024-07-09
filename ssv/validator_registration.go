@@ -1,9 +1,6 @@
 package ssv
 
 import (
-	"crypto/sha256"
-	"encoding/json"
-
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
@@ -19,7 +16,7 @@ type ValidatorRegistrationRunner struct {
 	beacon         BeaconNode
 	network        Network
 	signer         types.BeaconSigner
-	operatorSigner types.OperatorSigner
+	operatorSigner *types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 }
 
@@ -29,7 +26,7 @@ func NewValidatorRegistrationRunner(
 	beacon BeaconNode,
 	network Network,
 	signer types.BeaconSigner,
-	operatorSigner types.OperatorSigner,
+	operatorSigner *types.OperatorSigner,
 ) Runner {
 	return &ValidatorRegistrationRunner{
 		BaseRunner: &BaseRunner{
@@ -47,7 +44,7 @@ func NewValidatorRegistrationRunner(
 
 func (r *ValidatorRegistrationRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	// Note: Validator registration doesn't require any consensus, it can start a new duty even if previous one didn't finish
-	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty.(*types.BeaconDuty), quorum)
+	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty.(*types.ValidatorDuty), quorum)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
@@ -79,13 +76,9 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Parti
 	copy(specSig[:], fullSig)
 
 	// Get share
-	if len(r.BaseRunner.Share) == 0 {
+	share := r.GetShare()
+	if share == nil {
 		return errors.New("no share to get validator public key")
-	}
-	var share *types.Share
-	for _, shareInstance := range r.BaseRunner.Share {
-		share = shareInstance
-		break
 	}
 
 	if err := r.beacon.SubmitValidatorRegistration(share.ValidatorPubKey[:],
@@ -128,7 +121,7 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 	}
 
 	// sign partial randao
-	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.BeaconDuty), vr, duty.DutySlot(),
+	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.ValidatorDuty), vr, duty.DutySlot(),
 		types.DomainApplicationBuilder)
 	if err != nil {
 		return errors.Wrap(err, "could not sign validator registration")
@@ -140,9 +133,27 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 	}
 
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], types.RunnerRole(r.BaseRunner.RunnerRoleType))
-	msgToBroadcast, err := types.PartialSignatureMessagesToSignedSSVMessage(msgs, msgID, r.operatorSigner)
+
+	encodedMsg, err := msgs.Encode()
 	if err != nil {
-		return errors.Wrap(err, "could not sign pre-consensus partial signature message")
+		return err
+	}
+
+	ssvMsg := &types.SSVMessage{
+		MsgType: types.SSVPartialSignatureMsgType,
+		MsgID:   msgID,
+		Data:    encodedMsg,
+	}
+
+	sig, err := r.operatorSigner.SignSSVMessage(ssvMsg)
+	if err != nil {
+		return errors.Wrap(err, "could not sign SSVMessage")
+	}
+
+	msgToBroadcast := &types.SignedSSVMessage{
+		Signatures:  [][]byte{sig},
+		OperatorIDs: []types.OperatorID{r.operatorSigner.GetOperatorID()},
+		SSVMessage:  ssvMsg,
 	}
 
 	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
@@ -153,13 +164,9 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 
 func (r *ValidatorRegistrationRunner) calculateValidatorRegistration(duty types.Duty) (*v1.ValidatorRegistration, error) {
 
-	if len(r.BaseRunner.Share) == 0 {
+	share := r.GetShare()
+	if share == nil {
 		return nil, errors.New("no share to get validator public key")
-	}
-	var share *types.Share
-	for _, shareInstance := range r.BaseRunner.Share {
-		share = shareInstance
-		break
 	}
 
 	pk := phase0.BLSPubKey{}
@@ -206,26 +213,6 @@ func (r *ValidatorRegistrationRunner) GetSigner() types.BeaconSigner {
 	return r.signer
 }
 
-func (r *ValidatorRegistrationRunner) GetOperatorSigner() types.OperatorSigner {
+func (r *ValidatorRegistrationRunner) GetOperatorSigner() *types.OperatorSigner {
 	return r.operatorSigner
-}
-
-// Encode returns the encoded struct in bytes or error
-func (r *ValidatorRegistrationRunner) Encode() ([]byte, error) {
-	return json.Marshal(r)
-}
-
-// Decode returns error if decoding failed
-func (r *ValidatorRegistrationRunner) Decode(data []byte) error {
-	return json.Unmarshal(data, &r)
-}
-
-// GetRoot returns the root used for signing and verification
-func (r *ValidatorRegistrationRunner) GetRoot() ([32]byte, error) {
-	marshaledRoot, err := r.Encode()
-	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode DutyRunnerState")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret, nil
 }

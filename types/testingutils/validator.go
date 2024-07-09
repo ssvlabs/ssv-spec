@@ -12,7 +12,7 @@ var BaseValidator = func(keySet *TestKeySet) *ssv.Validator {
 		TestingCommitteeMember(keySet),
 		TestingShare(keySet, TestingValidatorIndex),
 		NewTestingKeyManager(),
-		NewTestingOperatorSigner(keySet, 1),
+		NewOperatorSigner(keySet, 1),
 		map[types.RunnerRole]ssv.Runner{
 			types.RoleCommittee:                 CommitteeRunner(keySet),
 			types.RoleProposer:                  ProposerRunner(keySet),
@@ -21,6 +21,5 @@ var BaseValidator = func(keySet *TestKeySet) *ssv.Validator {
 			types.RoleValidatorRegistration:     ValidatorRegistrationRunner(keySet),
 			types.RoleVoluntaryExit:             VoluntaryExitRunner(keySet),
 		},
-		NewTestingVerifier(),
 	)
 }

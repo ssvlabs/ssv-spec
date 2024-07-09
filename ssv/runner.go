@@ -13,7 +13,7 @@ type Getters interface {
 	GetBeaconNode() BeaconNode
 	GetValCheckF() qbft.ProposedValueCheckF
 	GetSigner() types.BeaconSigner
-	GetOperatorSigner() types.OperatorSigner
+	GetOperatorSigner() *types.OperatorSigner
 	GetNetwork() Network
 }
 
@@ -47,7 +47,7 @@ type BaseRunner struct {
 	QBFTController *qbft.Controller
 	BeaconNetwork  types.BeaconNetwork
 	RunnerRoleType types.RunnerRole
-	types.OperatorSigner
+	*types.OperatorSigner
 
 	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
 	highestDecidedSlot spec.Slot
@@ -58,8 +58,7 @@ func NewBaseRunner(
 	share map[spec.ValidatorIndex]*types.Share,
 	controller *qbft.Controller,
 	beaconNetwork types.BeaconNetwork,
-	beaconRoleType types.RunnerRole,
-	operatorSigner types.OperatorSigner,
+	runnerRoleType types.RunnerRole,
 	highestDecidedSlot spec.Slot,
 ) *BaseRunner {
 	return &BaseRunner{
@@ -67,7 +66,7 @@ func NewBaseRunner(
 		Share:              share,
 		QBFTController:     controller,
 		BeaconNetwork:      beaconNetwork,
-		RunnerRoleType:     beaconRoleType,
+		RunnerRoleType:     runnerRoleType,
 		highestDecidedSlot: highestDecidedSlot,
 	}
 }
@@ -94,7 +93,7 @@ func (b *BaseRunner) baseStartNewDuty(runner Runner, duty types.Duty, quorum uin
 }
 
 // baseStartNewBeaconDuty is a base func that all runner implementation can call to start a non-beacon duty
-func (b *BaseRunner) baseStartNewNonBeaconDuty(runner Runner, duty *types.BeaconDuty, quorum uint64) error {
+func (b *BaseRunner) baseStartNewNonBeaconDuty(runner Runner, duty *types.ValidatorDuty, quorum uint64) error {
 	if err := b.ShouldProcessNonBeaconDuty(duty); err != nil {
 		return errors.Wrap(err, "can't start non-beacon duty")
 	}
@@ -120,13 +119,6 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 		prevDecided, _ = b.State.RunningInstance.IsDecided()
 	}
 
-	// TODO: revert `if false` after pre-consensus justification is fixed.
-	if false {
-		if err := b.processPreConsensusJustification(runner, b.highestDecidedSlot, msg); err != nil {
-			return false, nil, errors.Wrap(err, "invalid pre-consensus justification")
-		}
-	}
-
 	decidedSignedMsg, err := b.QBFTController.ProcessMsg(msg)
 	if err != nil {
 		return false, nil, err
@@ -147,14 +139,14 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 	case CommitteeRunner:
 		decidedValue = &types.BeaconVote{}
 	default:
-		decidedValue = &types.ConsensusData{}
+		decidedValue = &types.ValidatorConsensusData{}
 	}
 	if err := decidedValue.Decode(decidedSignedMsg.FullData); err != nil {
-		return true, nil, errors.Wrap(err, "failed to parse decided value to ConsensusData")
+		return true, nil, errors.Wrap(err, "failed to parse decided value to ValidatorConsensusData")
 	}
 
 	if err := b.validateDecidedConsensusData(runner, decidedValue); err != nil {
-		return true, nil, errors.Wrap(err, "decided ConsensusData invalid")
+		return true, nil, errors.Wrap(err, "decided ValidatorConsensusData invalid")
 	}
 
 	runner.GetBaseRunner().State.DecidedValue, err = decidedValue.Encode()
@@ -190,7 +182,7 @@ func (b *BaseRunner) basePartialSigMsgProcessing(
 		prevQuorum := container.HasQuorum(msg.ValidatorIndex, msg.SigningRoot)
 
 		// Check if it has two signatures for the same signer
-		if container.HasSigner(msg.ValidatorIndex, msg.Signer, msg.SigningRoot) {
+		if container.HasSignature(msg.ValidatorIndex, msg.Signer, msg.SigningRoot) {
 			b.resolveDuplicateSignature(container, msg)
 		} else {
 			container.AddSignature(msg)
@@ -243,9 +235,9 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, signedMessage *types.S
 	return true, nil
 }
 
-func (b *BaseRunner) decide(runner Runner, cdFetcher *types.DataFetcher) error {
+func (b *BaseRunner) decide(runner Runner, slot spec.Slot, cdFetcher *types.DataFetcher) error {
 	if err := runner.GetBaseRunner().QBFTController.StartNewInstance(
-		qbft.Height(runner.GetBaseRunner().State.StartingDuty.DutySlot()),
+		qbft.Height(slot),
 		cdFetcher,
 	); err != nil {
 		return errors.Wrap(err, "could not start new QBFT instance")

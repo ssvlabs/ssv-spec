@@ -24,7 +24,7 @@
 						"RunningInstance": null,
 						"DecidedValue": null,
 						"Finished": true,
-						"BeaconDuty": {
+						"ValidatorDuty": {
 								"Type": 6,
 								"PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
 								"Slot": "12",
@@ -165,7 +165,6 @@
 				},
 				"QBFTController": null,
 				"BeaconNetwork": "now_test_network",
-				"RunnerRoleType": 5,
-				"OperatorSigner": null
+				"RunnerRoleType": 5
 		}
 }

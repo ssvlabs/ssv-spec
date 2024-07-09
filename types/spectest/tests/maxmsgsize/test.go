@@ -73,7 +73,7 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 		&types.PartialSignatureMessages{},
 		&types.SSVMessage{},
 		&types.SignedSSVMessage{},
-		&types.ConsensusData{},
+		&types.ValidatorConsensusData{},
 		&types.BeaconVote{},
 	}
 

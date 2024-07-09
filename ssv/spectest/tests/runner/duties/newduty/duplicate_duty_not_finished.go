@@ -24,7 +24,8 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().QBFTController.CommitteeMember,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.DutySlot()))
+			qbft.Height(duty.DutySlot()),
+			r.GetBaseRunner().QBFTController.OperatorSigner)
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
 		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.DutySlot())
 		return r
@@ -32,7 +33,7 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 
 	// notFinishTaskRunner is a helper function that finishes a task runner and returns it
 	// task is an operation that isn't a beacon duty, e.g. validator registration
-	notFinishTaskRunner := func(r ssv.Runner, duty *types.BeaconDuty) ssv.Runner {
+	notFinishTaskRunner := func(r ssv.Runner, duty *types.ValidatorDuty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		return r
 	}

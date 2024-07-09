@@ -20,7 +20,8 @@ func PastMessage() tests.SpecTest {
 			r.GetBaseRunner().QBFTController.GetConfig(),
 			r.GetBaseRunner().QBFTController.CommitteeMember,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.FirstHeight))
+			qbft.FirstHeight,
+			r.GetBaseRunner().QBFTController.OperatorSigner))
 
 		r.GetBaseRunner().QBFTController.Height = 10
 		return r
@@ -93,7 +94,7 @@ func PastMessage() tests.SpecTest {
 				Runner: bumpHeight(testingutils.SyncCommitteeContributionRunner(ks)),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
-					pastMsgF(testingutils.TestContributionProofWithJustificationsConsensusData(ks), testingutils.SyncCommitteeContributionMsgID),
+					pastMsgF(testingutils.TestSyncCommitteeContributionConsensusData, testingutils.SyncCommitteeContributionMsgID),
 				},
 				PostDutyRunnerStateRoot: "d1ba71cab348c80ebb7b4533c9c482eaba407f6a73864ee742aab93e73b94dab",
 				OutputMessages:          []*types.PartialSignatureMessages{},
@@ -104,7 +105,7 @@ func PastMessage() tests.SpecTest {
 				Runner: bumpHeight(testingutils.AggregatorRunner(ks)),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: []*types.SignedSSVMessage{
-					pastMsgF(testingutils.TestSelectionProofWithJustificationsConsensusData(ks), testingutils.AggregatorMsgID),
+					pastMsgF(testingutils.TestAggregatorConsensusData, testingutils.AggregatorMsgID),
 				},
 				PostDutyRunnerStateRoot: "5a1a9b9fb21682ea854f919be531a692fe5c3a6c5302214dbf3421faed57cff8",
 				OutputMessages:          []*types.PartialSignatureMessages{},
@@ -115,7 +116,7 @@ func PastMessage() tests.SpecTest {
 				Runner: bumpHeight(testingutils.ProposerRunner(ks)),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: []*types.SignedSSVMessage{
-					pastMsgF(testingutils.TestProposerWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID),
+					pastMsgF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				},
 				PostDutyRunnerStateRoot: "1c939726a237c02013fab61901e819e34ec99e2ef62dadb6c847e5ad118fc4e7",
 				OutputMessages:          []*types.PartialSignatureMessages{},
@@ -126,7 +127,7 @@ func PastMessage() tests.SpecTest {
 				Runner: bumpHeight(testingutils.ProposerBlindedBlockRunner(ks)),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 				Messages: []*types.SignedSSVMessage{
-					pastMsgF(testingutils.TestProposerBlindedWithJustificationsConsensusDataV(ks, spec.DataVersionDeneb), testingutils.ProposerMsgID),
+					pastMsgF(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				},
 				PostDutyRunnerStateRoot: "49edaab0d759ba8a35a37ab26416ae04962d77ec088b87c4f1e65f781c1ed96f",
 				OutputMessages:          []*types.PartialSignatureMessages{},

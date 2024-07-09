@@ -2,8 +2,6 @@ package qbft
 
 import (
 	"bytes"
-	"crypto/sha256"
-	"encoding/json"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -18,15 +16,18 @@ type Controller struct {
 	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
 	StoredInstances InstanceContainer
 	CommitteeMember *types.CommitteeMember
+	OperatorSigner  *types.OperatorSigner `json:"-"`
 	config          IConfig
 }
 
-func NewController(identifier []byte, committeeMember *types.CommitteeMember, config IConfig) *Controller {
+func NewController(identifier []byte, committeeMember *types.CommitteeMember, config IConfig,
+	signer *types.OperatorSigner) *Controller {
 	return &Controller{
 		Identifier:      identifier,
 		Height:          FirstHeight,
 		CommitteeMember: committeeMember,
 		StoredInstances: InstanceContainer{},
+		OperatorSigner:  signer,
 		config:          config,
 	}
 }
@@ -54,7 +55,13 @@ func (c *Controller) StartNewInstance(height Height, cdFetcher *types.DataFetche
 }
 
 // ProcessMsg processes a new msg, returns decided message or error
-func (c *Controller) ProcessMsg(msg *types.SignedSSVMessage) (*types.SignedSSVMessage, error) {
+func (c *Controller) ProcessMsg(signedMessage *types.SignedSSVMessage) (*types.SignedSSVMessage, error) {
+
+	msg, err := NewProcessingMessage(signedMessage)
+	if err != nil {
+		return nil, errors.New("could not create ProcessingMessage from signed message")
+	}
+
 	if err := c.BaseMsgValidation(msg); err != nil {
 		return nil, errors.Wrap(err, "invalid msg")
 	}
@@ -86,21 +93,16 @@ func (c *Controller) ProcessMsg(msg *types.SignedSSVMessage) (*types.SignedSSVMe
 
 }
 
-func (c *Controller) UponExistingInstanceMsg(signedMsg *types.SignedSSVMessage) (*types.SignedSSVMessage, error) {
+func (c *Controller) UponExistingInstanceMsg(msg *ProcessingMessage) (*types.SignedSSVMessage, error) {
 
-	msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
-	if err != nil {
-		return nil, err
-	}
-
-	inst := c.InstanceForHeight(msg.Height)
+	inst := c.InstanceForHeight(msg.QBFTMessage.Height)
 	if inst == nil {
 		return nil, errors.New("instance not found")
 	}
 
 	prevDecided, _ := inst.IsDecided()
 
-	decided, _, decidedMsg, err := inst.ProcessMsg(signedMsg)
+	decided, _, decidedMsg, err := inst.ProcessMsg(msg)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not process msg")
 	}
@@ -123,18 +125,11 @@ func (c *Controller) UponExistingInstanceMsg(signedMsg *types.SignedSSVMessage) 
 }
 
 // BaseMsgValidation returns error if msg is invalid (base validation)
-func (c *Controller) BaseMsgValidation(signedMsg *types.SignedSSVMessage) error {
-
-	msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
-	if err != nil {
-		return err
-	}
-
+func (c *Controller) BaseMsgValidation(msg *ProcessingMessage) error {
 	// verify msg belongs to controller
-	if !bytes.Equal(c.Identifier, msg.Identifier) {
+	if !bytes.Equal(c.Identifier, msg.QBFTMessage.Identifier) {
 		return errors.New("message doesn't belong to Identifier")
 	}
-
 	return nil
 }
 
@@ -149,22 +144,16 @@ func (c *Controller) GetIdentifier() []byte {
 
 // isFutureMessage returns true if message height is from a future instance.
 // It takes into consideration a special case where FirstHeight didn't start but  c.Height == FirstHeight (since we bump height on start instance)
-func (c *Controller) isFutureMessage(signedMsg *types.SignedSSVMessage) (bool, error) {
+func (c *Controller) isFutureMessage(msg *ProcessingMessage) (bool, error) {
 	if c.Height == FirstHeight && c.StoredInstances.FindInstance(c.Height) == nil {
 		return true, nil
 	}
-
-	msg, err := DecodeMessage(signedMsg.SSVMessage.Data)
-	if err != nil {
-		return false, err
-	}
-
-	return msg.Height > c.Height, nil
+	return msg.QBFTMessage.Height > c.Height, nil
 }
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
 func (c *Controller) addAndStoreNewInstance() *Instance {
-	i := NewInstance(c.GetConfig(), c.CommitteeMember, c.Identifier, c.Height)
+	i := NewInstance(c.GetConfig(), c.CommitteeMember, c.Identifier, c.Height, c.OperatorSigner)
 	c.StoredInstances.addNewInstance(i)
 	return i
 }
@@ -175,37 +164,6 @@ func (c *Controller) forceStopAllInstanceExceptCurrent() {
 			i.ForceStop()
 		}
 	}
-}
-
-// GetRoot returns the state's deterministic root
-func (c *Controller) GetRoot() ([32]byte, error) {
-	marshaledRoot, err := json.Marshal(c)
-	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode state")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret, nil
-}
-
-// Encode implementation
-func (c *Controller) Encode() ([]byte, error) {
-	return json.Marshal(c)
-}
-
-// Decode implementation
-func (c *Controller) Decode(data []byte) error {
-	err := json.Unmarshal(data, &c)
-	if err != nil {
-		return errors.Wrap(err, "could not decode controller")
-	}
-
-	config := c.GetConfig()
-	for _, i := range c.StoredInstances {
-		if i != nil {
-			i.config = config
-		}
-	}
-	return nil
 }
 
 func (c *Controller) broadcastDecided(aggregatedCommit *types.SignedSSVMessage) error {

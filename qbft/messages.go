@@ -14,10 +14,10 @@ func HashDataRoot(data []byte) ([32]byte, error) {
 }
 
 // HasQuorum returns true if a unique set of signers has quorum
-func HasQuorum(share *types.CommitteeMember, msgs []*types.SignedSSVMessage) bool {
+func HasQuorum(share *types.CommitteeMember, msgs []*ProcessingMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
-		for _, signer := range msg.GetOperatorIDs() {
+		for _, signer := range msg.SignedMessage.OperatorIDs {
 			uniqueSigners[signer] = true
 		}
 	}
@@ -25,10 +25,10 @@ func HasQuorum(share *types.CommitteeMember, msgs []*types.SignedSSVMessage) boo
 }
 
 // HasPartialQuorum returns true if a unique set of signers has partial quorum
-func HasPartialQuorum(share *types.CommitteeMember, msgs []*types.SignedSSVMessage) bool {
+func HasPartialQuorum(share *types.CommitteeMember, msgs []*ProcessingMessage) bool {
 	uniqueSigners := make(map[types.OperatorID]bool)
 	for _, msg := range msgs {
-		for _, signer := range msg.GetOperatorIDs() {
+		for _, signer := range msg.SignedMessage.OperatorIDs {
 			uniqueSigners[signer] = true
 		}
 	}
@@ -137,7 +137,7 @@ func MarshalJustifications(msgs []*types.SignedSSVMessage) ([][]byte, error) {
 	return ret, nil
 }
 
-func Sign(msg *Message, operatorID types.OperatorID, operatorSigner types.OperatorSigner) (*types.SignedSSVMessage, error) {
+func Sign(msg *Message, operatorID types.OperatorID, operatorSigner *types.OperatorSigner) (*types.SignedSSVMessage, error) {
 
 	byts, err := msg.Encode()
 	if err != nil {
@@ -153,9 +153,47 @@ func Sign(msg *Message, operatorID types.OperatorID, operatorSigner types.Operat
 		Data:    byts,
 	}
 
-	signedSSVMessage, err := types.SSVMessageToSignedSSVMessage(ssvMsg, operatorID, operatorSigner.SignSSVMessage)
+	sig, err := operatorSigner.SignSSVMessage(ssvMsg)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
+		return nil, errors.Wrap(err, "could not sign SSVMessage")
 	}
+
+	signedSSVMessage := &types.SignedSSVMessage{
+		Signatures:  [][]byte{sig},
+		OperatorIDs: []types.OperatorID{operatorID},
+		SSVMessage:  ssvMsg,
+	}
+
 	return signedSSVMessage, nil
+}
+
+// ProcessingMessage stores the network-exchanged signed message and the decoded SignedMessage.SSVMessage.Data (qbft message)
+// The signed message is used at the qbft level since it's used for qbft justifications
+type ProcessingMessage struct {
+	SignedMessage *types.SignedSSVMessage
+	QBFTMessage   *Message
+}
+
+// NewProcessingMessage creates a ProcessingMessage with the decoded qbft message
+func NewProcessingMessage(signedMessage *types.SignedSSVMessage) (*ProcessingMessage, error) {
+	msg := &Message{}
+	err := msg.Decode(signedMessage.SSVMessage.Data)
+	if err != nil {
+		return nil, err
+	}
+	return &ProcessingMessage{
+		SignedMessage: signedMessage,
+		QBFTMessage:   msg,
+	}, nil
+}
+
+// Validate checks the signed message and qbft message validation
+func (msg *ProcessingMessage) Validate() error {
+	if err := msg.SignedMessage.Validate(); err != nil {
+		return errors.Wrap(err, "invalid SignedSSVMessage")
+	}
+	if err := msg.QBFTMessage.Validate(); err != nil {
+		return errors.Wrap(err, "invalid Message")
+	}
+	return nil
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-func finishRunner(r ssv.Runner, duty types.Duty, decidedValue *types.ConsensusData) ssv.Runner {
+func finishRunner(r ssv.Runner, duty types.Duty, decidedValue *types.ValidatorConsensusData) ssv.Runner {
 	ret := decideRunner(r, duty, decidedValue)
 	ret.GetBaseRunner().State.Finished = true
 	return ret
@@ -29,7 +29,7 @@ func decideCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) 
 	return decideRunnerForData(r, duty, bvBytes)
 }
 
-func decideRunner(r ssv.Runner, duty types.Duty, cd *types.ConsensusData) ssv.Runner {
+func decideRunner(r ssv.Runner, duty types.Duty, cd *types.ValidatorConsensusData) ssv.Runner {
 	cdBytes, err := cd.Encode()
 	if err != nil {
 		panic(err)
@@ -54,7 +54,8 @@ func decideRunnerForData(r ssv.Runner, duty types.Duty, decidedValue []byte) ssv
 		r.GetBaseRunner().QBFTController.GetConfig(),
 		r.GetBaseRunner().QBFTController.CommitteeMember,
 		r.GetBaseRunner().QBFTController.Identifier,
-		qbft.Height(duty.DutySlot()))
+		qbft.Height(duty.DutySlot()),
+		r.GetBaseRunner().QBFTController.OperatorSigner)
 	r.GetBaseRunner().State.RunningInstance.State.Decided = true
 	r.GetBaseRunner().State.RunningInstance.State.DecidedValue = decidedValue
 	r.GetBaseRunner().State.DecidedValue = decidedValue

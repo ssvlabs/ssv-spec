@@ -1,8 +1,6 @@
 package ssv
 
 import (
-	"crypto/sha256"
-	"encoding/json"
 	"fmt"
 
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -14,33 +12,30 @@ import (
 type CreateRunnerFn func(shareMap map[spec.ValidatorIndex]*types.Share) *CommitteeRunner
 
 type Committee struct {
-	Runners           map[spec.Slot]*CommitteeRunner
-	CommitteeMember   types.CommitteeMember
-	SignatureVerifier types.SignatureVerifier
-	CreateRunnerFn    CreateRunnerFn
-	Share             map[spec.ValidatorIndex]*types.Share
+	Runners         map[spec.Slot]*CommitteeRunner
+	CommitteeMember types.CommitteeMember
+	CreateRunnerFn  CreateRunnerFn
+	Share           map[spec.ValidatorIndex]*types.Share
 }
 
 // NewCommittee creates a new cluster
 func NewCommittee(
 	committeeMember types.CommitteeMember,
-	verifier types.SignatureVerifier,
 	share map[spec.ValidatorIndex]*types.Share,
 	createRunnerFn CreateRunnerFn,
 ) *Committee {
 	c := &Committee{
-		Runners:           make(map[spec.Slot]*CommitteeRunner),
-		CommitteeMember:   committeeMember,
-		SignatureVerifier: verifier,
-		CreateRunnerFn:    createRunnerFn,
-		Share:             share,
+		Runners:         make(map[spec.Slot]*CommitteeRunner),
+		CommitteeMember: committeeMember,
+		CreateRunnerFn:  createRunnerFn,
+		Share:           share,
 	}
 	return c
 }
 
 // StartDuty starts a new duty for the given slot
 func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
-	if len(duty.BeaconDuties) == 0 {
+	if len(duty.ValidatorDuties) == 0 {
 		return errors.New("no beacon duties")
 	}
 	if _, exists := c.Runners[duty.Slot]; exists {
@@ -58,7 +53,7 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	}
 
 	// Verify SignedSSVMessage's signature
-	if err := c.SignatureVerifier.Verify(signedSSVMessage, c.CommitteeMember.Committee); err != nil {
+	if err := types.Verify(signedSSVMessage, c.CommitteeMember.Committee); err != nil {
 		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
 	}
 
@@ -110,68 +105,6 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	}
 	return nil
 
-}
-
-func (c *Committee) Encode() ([]byte, error) {
-	return json.Marshal(c)
-}
-
-func (c *Committee) Decode(data []byte) error {
-	return json.Unmarshal(data, &c)
-}
-
-// GetRoot returns the state's deterministic root
-func (c *Committee) GetRoot() ([32]byte, error) {
-	marshaledRoot, err := c.Encode()
-	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode state")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret, nil
-}
-
-func (c *Committee) MarshalJSON() ([]byte, error) {
-
-	type CommitteeAlias struct {
-		Runners            map[spec.Slot]*CommitteeRunner
-		CommitteeMember    types.CommitteeMember
-		Share              map[spec.ValidatorIndex]*types.Share
-		HighestDutySlotMap map[types.BeaconRole]map[spec.ValidatorIndex]spec.Slot
-	}
-
-	// Create object and marshal
-	alias := &CommitteeAlias{
-		Runners:         c.Runners,
-		CommitteeMember: c.CommitteeMember,
-		Share:           c.Share,
-	}
-
-	byts, err := json.Marshal(alias)
-
-	return byts, err
-}
-
-func (c *Committee) UnmarshalJSON(data []byte) error {
-
-	type CommitteeAlias struct {
-		Runners            map[spec.Slot]*CommitteeRunner
-		CommitteeMember    types.CommitteeMember
-		Share              map[spec.ValidatorIndex]*types.Share
-		HighestDutySlotMap map[types.BeaconRole]map[spec.ValidatorIndex]spec.Slot
-	}
-
-	// Unmarshal the JSON data into the auxiliary struct
-	aux := &CommitteeAlias{}
-	if err := json.Unmarshal(data, &aux); err != nil {
-		return err
-	}
-
-	// Assign fields
-	c.Runners = aux.Runners
-	c.CommitteeMember = aux.CommitteeMember
-	c.Share = aux.Share
-
-	return nil
 }
 
 func (c *Committee) validateMessage(msg *types.SSVMessage) error {

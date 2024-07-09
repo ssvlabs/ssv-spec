@@ -17,11 +17,13 @@ var TestingQBFTRootData = func() [32]byte {
 
 var TestingCutOffRound = qbft.Round(15)
 
+var TestingOperatorSigner = func(keySet *TestKeySet) *types.OperatorSigner {
+	return NewOperatorSigner(keySet, 1)
+}
+
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
-		OperatorSigner: NewTestingOperatorSigner(keySet, 1),
-		SigningPK:      keySet.Shares[1].GetPublicKey().Serialize(),
-		Domain:         TestingSSVDomainType,
+		Domain: TestingSSVDomainType,
 		ValueCheckF: func(data []byte) error {
 			if bytes.Equal(data, TestingInvalidValueCheck) {
 				return errors.New("invalid value")
@@ -36,10 +38,9 @@ var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 		ProposerF: func(state *qbft.State, round qbft.Round) types.OperatorID {
 			return 1
 		},
-		Network:           NewTestingNetwork(1, keySet.OperatorKeys[1]),
-		Timer:             NewTestingTimer(),
-		SignatureVerifier: NewTestingVerifier(),
-		CutOffRound:       TestingCutOffRound,
+		Network:     NewTestingNetwork(1, keySet.OperatorKeys[1]),
+		Timer:       NewTestingTimer(),
+		CutOffRound: TestingCutOffRound,
 	}
 }
 
@@ -71,15 +72,17 @@ var TestingCommitteeMember = func(keysSet *TestKeySet) *types.CommitteeMember {
 	for _, key := range keysSet.Committee() {
 
 		// Encode member's public key
-		pkBytes, err := types.MarshalPublicKey(keysSet.OperatorKeys[key.Signer])
+		pkBytes, err := types.GetPublicKeyPem(keysSet.OperatorKeys[key.Signer])
 		if err != nil {
 			panic(err)
 		}
 
-		operators = append(operators, &types.Operator{
-			OperatorID:        key.Signer,
-			SSVOperatorPubKey: pkBytes,
-		})
+		operators = append(
+			operators, &types.Operator{
+				OperatorID:        key.Signer,
+				SSVOperatorPubKey: pkBytes,
+			},
+		)
 	}
 
 	opIds := []types.OperatorID{}
@@ -87,7 +90,7 @@ var TestingCommitteeMember = func(keysSet *TestKeySet) *types.CommitteeMember {
 		opIds = append(opIds, key.Signer)
 	}
 
-	operatorPubKeyBytes, err := types.MarshalPublicKey(keysSet.OperatorKeys[1])
+	operatorPubKeyBytes, err := types.GetPublicKeyPem(keysSet.OperatorKeys[1])
 	if err != nil {
 		panic(err)
 	}
@@ -98,6 +101,7 @@ var TestingCommitteeMember = func(keysSet *TestKeySet) *types.CommitteeMember {
 		SSVOperatorPubKey: operatorPubKeyBytes,
 		FaultyNodes:       (keysSet.Threshold - 1) / 2,
 		Committee:         operators,
+		DomainType:        TestingSSVDomainType,
 	}
 }
 
@@ -118,21 +122,22 @@ var ThirteenOperatorsInstance = func() *qbft.Instance {
 }
 
 var baseInstance = func(committeeMember *types.CommitteeMember, keySet *TestKeySet, identifier []byte) *qbft.Instance {
-	ret := qbft.NewInstance(TestingConfig(keySet), committeeMember, identifier, qbft.FirstHeight)
+	ret := qbft.NewInstance(
+		TestingConfig(keySet), committeeMember, identifier, qbft.FirstHeight,
+		TestingOperatorSigner(keySet),
+	)
 	ret.StartValue = TestingQBFTFullData
 	ret.CdFetcher = CdFetcher(TestingQBFTFullData)
 	return ret
 }
 
-func NewTestingQBFTController(
-	identifier []byte,
-	share *types.CommitteeMember,
-	config qbft.IConfig,
-) *qbft.Controller {
+func NewTestingQBFTController(identifier []byte, share *types.CommitteeMember, config qbft.IConfig,
+	signer *types.OperatorSigner) *qbft.Controller {
 	return qbft.NewController(
 		identifier,
 		share,
 		config,
+		signer,
 	)
 }
 

@@ -12,7 +12,7 @@ import (
 )
 
 func dutyValueCheck(
-	duty *types.BeaconDuty,
+	duty *types.ValidatorDuty,
 	network types.BeaconNetwork,
 	expectedType types.BeaconRole,
 	validatorPK types.ValidatorPK,
@@ -85,7 +85,7 @@ func ProposerValueCheckF(
 	sharePublicKey []byte,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
-		cd := &types.ConsensusData{}
+		cd := &types.ValidatorConsensusData{}
 		if err := cd.Decode(data); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
@@ -123,7 +123,7 @@ func AggregatorValueCheckF(
 	validatorIndex phase0.ValidatorIndex,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
-		cd := &types.ConsensusData{}
+		cd := &types.ValidatorConsensusData{}
 		if err := cd.Decode(data); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
@@ -145,7 +145,7 @@ func SyncCommitteeContributionValueCheckF(
 	validatorIndex phase0.ValidatorIndex,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
-		cd := &types.ConsensusData{}
+		cd := &types.ValidatorConsensusData{}
 		if err := cd.Decode(data); err != nil {
 			return errors.Wrap(err, "failed decoding consensus data")
 		}

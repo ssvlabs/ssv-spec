@@ -9,10 +9,10 @@ import (
 
 // uponPrepare process prepare message
 // Assumes prepare message is valid!
-func (i *Instance) uponPrepare(signedPrepare *types.SignedSSVMessage, prepareMsgContainer *MsgContainer) error {
+func (i *Instance) uponPrepare(msg *ProcessingMessage, prepareMsgContainer *MsgContainer) error {
 	hasQuorumBefore := HasQuorum(i.State.CommitteeMember, prepareMsgContainer.MessagesForRound(i.State.Round))
 
-	addedMsg, err := prepareMsgContainer.AddFirstMsgForSignerAndRound(signedPrepare)
+	addedMsg, err := prepareMsgContainer.AddFirstMsgForSignerAndRound(msg)
 	if err != nil {
 		return errors.Wrap(err, "could not add prepare msg to container")
 	}
@@ -28,17 +28,12 @@ func (i *Instance) uponPrepare(signedPrepare *types.SignedSSVMessage, prepareMsg
 		return nil // no quorum yet
 	}
 
-	proposalMsgAccepted, err := DecodeMessage(i.State.ProposalAcceptedForCurrentRound.SSVMessage.Data)
-	if err != nil {
-		return err
-	}
+	proposedRoot := i.State.ProposalAcceptedForCurrentRound.QBFTMessage.Root
 
-	proposedRoot := proposalMsgAccepted.Root
-
-	i.State.LastPreparedValue = i.State.ProposalAcceptedForCurrentRound.FullData
+	i.State.LastPreparedValue = i.State.ProposalAcceptedForCurrentRound.SignedMessage.FullData
 	i.State.LastPreparedRound = i.State.Round
 
-	commitMsg, err := CreateCommit(i.State, i.config, proposedRoot)
+	commitMsg, err := CreateCommit(i.State, i.signer, proposedRoot)
 	if err != nil {
 		return errors.Wrap(err, "could not create commit msg")
 	}
@@ -52,7 +47,7 @@ func (i *Instance) uponPrepare(signedPrepare *types.SignedSSVMessage, prepareMsg
 
 // getRoundChangeJustification returns the round change justification for the current round.
 // The justification is a quorum of signed prepare messages that agree on state.LastPreparedValue
-func getRoundChangeJustification(state *State, config IConfig, prepareMsgContainer *MsgContainer) ([]*types.SignedSSVMessage, error) {
+func getRoundChangeJustification(state *State, prepareMsgContainer *MsgContainer) ([]*ProcessingMessage, error) {
 	if state.LastPreparedValue == nil {
 		return nil, nil
 	}
@@ -63,7 +58,7 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 	}
 
 	prepareMsgs := prepareMsgContainer.MessagesForRound(state.LastPreparedRound)
-	ret := make([]*types.SignedSSVMessage, 0)
+	ret := make([]*ProcessingMessage, 0)
 	for _, msg := range prepareMsgs {
 		if err := validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 			msg,
@@ -85,40 +80,35 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 // validSignedPrepareForHeightRoundAndRoot known in dafny spec as validSignedPrepareForHeightRoundAndDigest
 // https://entethalliance.github.io/client-spec/qbft_spec.html#dfn-qbftspecification
 func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
-	signedPrepare *types.SignedSSVMessage,
+	msg *ProcessingMessage,
 	height Height,
 	round Round,
 	root [32]byte,
 	operators []*types.Operator) error {
 
-	msg, err := DecodeMessage(signedPrepare.SSVMessage.Data)
-	if err != nil {
-		return err
-	}
-
-	if msg.MsgType != PrepareMsgType {
+	if msg.QBFTMessage.MsgType != PrepareMsgType {
 		return errors.New("prepare msg type is wrong")
 	}
-	if msg.Height != height {
+	if msg.QBFTMessage.Height != height {
 		return errors.New("wrong msg height")
 	}
-	if msg.Round != round {
+	if msg.QBFTMessage.Round != round {
 		return errors.New("wrong msg round")
 	}
 
-	if err := signedPrepare.Validate(); err != nil {
+	if err := msg.Validate(); err != nil {
 		return errors.Wrap(err, "prepareData invalid")
 	}
 
-	if !bytes.Equal(msg.Root[:], root[:]) {
+	if !bytes.Equal(msg.QBFTMessage.Root[:], root[:]) {
 		return errors.New("proposed data mismatch")
 	}
 
-	if len(signedPrepare.GetOperatorIDs()) != 1 {
+	if len(msg.SignedMessage.OperatorIDs) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
 
-	if !signedPrepare.CheckSignersInCommittee(operators) {
+	if !msg.SignedMessage.CheckSignersInCommittee(operators) {
 		return errors.New("signer not in committee")
 	}
 
@@ -126,19 +116,18 @@ func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 }
 
 func validSignedPrepareForHeightRoundAndRootVerifySignature(
-	config IConfig,
-	signedPrepare *types.SignedSSVMessage,
+	msg *ProcessingMessage,
 	height Height,
 	round Round,
 	root [32]byte,
 	operators []*types.Operator) error {
 
-	if err := validSignedPrepareForHeightRoundAndRootIgnoreSignature(signedPrepare, height, round, root, operators); err != nil {
+	if err := validSignedPrepareForHeightRoundAndRootIgnoreSignature(msg, height, round, root, operators); err != nil {
 		return err
 	}
 
 	// Verify signature
-	if err := config.GetSignatureVerifier().Verify(signedPrepare, operators); err != nil {
+	if err := types.Verify(msg.SignedMessage, operators); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 
@@ -157,7 +146,7 @@ Prepare(
                         )
                 );
 */
-func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) (*types.SignedSSVMessage, error) {
+func CreatePrepare(state *State, signer *types.OperatorSigner, newRound Round, root [32]byte) (*types.SignedSSVMessage, error) {
 	msg := &Message{
 		MsgType:    PrepareMsgType,
 		Height:     state.Height,
@@ -167,5 +156,5 @@ func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) 
 		Root: root,
 	}
 
-	return Sign(msg, state.CommitteeMember.OperatorID, config.GetOperatorSigner())
+	return Sign(msg, state.CommitteeMember.OperatorID, signer)
 }
