@@ -6,6 +6,7 @@ import (
 )
 
 // InvalidValue tests a starting an instance for an invalid value (not passing value check)
+// Instance starts but with an empty value and no proposal gets broadcasted
 func InvalidValue() tests.SpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "start instance invalid value",
@@ -14,6 +15,5 @@ func InvalidValue() tests.SpecTest {
 				InputValue: testingutils.TestingInvalidValueCheck,
 			},
 		},
-		ExpectedError: "value invalid: invalid value",
 	}
 }

@@ -46,6 +46,12 @@ func (c *Contributions) HashTreeRootWith(hh ssz.HashWalker) error {
 	return nil
 }
 
+// DataFetcher asynchronusly fetches data from the beacon node upon instantiation
+type DataFetcher struct {
+	// GetConsensusData returns the consensus data
+	GetConsensusData func() ([]byte, error)
+}
+
 // UnmarshalSSZ --
 func (c *Contributions) UnmarshalSSZ(buf []byte) error {
 	num, err := ssz.DecodeDynamicLength(buf, 13)

@@ -114,28 +114,38 @@ func (r *SyncCommitteeAggregatorRunner) ProcessPreConsensus(signedMsg *types.Par
 	}
 
 	duty := r.GetState().StartingDuty.(*types.ValidatorDuty)
+	syncCommitteeContributionFetcher := syncCommitteeContributionFetcher(r, selectionProofs, subnets)
 
-	// fetch contributions
-	contributions, ver, err := r.GetBeaconNode().GetSyncCommitteeContribution(duty.DutySlot(), selectionProofs, subnets)
-	if err != nil {
-		return errors.Wrap(err, "could not get sync committee contribution")
-	}
-	byts, err := contributions.MarshalSSZ()
-	if err != nil {
-		return errors.Wrap(err, "could not marshal contributions")
-	}
+	if err := r.BaseRunner.decide(r, duty.DutySlot(), syncCommitteeContributionFetcher); err != nil {
 
-	// create consensus object
-	input := &types.ValidatorConsensusData{
-		Duty:    *duty,
-		Version: ver,
-		DataSSZ: byts,
-	}
-
-	if err := r.BaseRunner.decide(r, input.Duty.DutySlot(), input); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 	return nil
+}
+
+// syncCommitteeContributionFetcher returns a data fetcher for sync committee contribution duty
+func syncCommitteeContributionFetcher(r *SyncCommitteeAggregatorRunner, selectionProofs []phase0.BLSSignature, subnets []uint64) *types.DataFetcher {
+	duty := r.GetState().StartingDuty.(*types.ValidatorDuty)
+
+	return &types.DataFetcher{
+		GetConsensusData: func() ([]byte, error) {
+			contributions, ver, err := r.GetBeaconNode().GetSyncCommitteeContribution(duty.DutySlot(), selectionProofs, subnets)
+			if err != nil {
+				return nil, errors.Wrap(err, "could not get sync committee contribution")
+			}
+			byts, err := contributions.MarshalSSZ()
+			if err != nil {
+				return nil, errors.Wrap(err, "could not marshal contributions")
+			}
+
+			cd := types.ValidatorConsensusData{
+				Duty:    *duty,
+				Version: ver,
+				DataSSZ: byts,
+			}
+			return cd.Encode()
+		},
+	}
 }
 
 func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {

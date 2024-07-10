@@ -3,7 +3,6 @@ package testingutils
 import (
 	"bytes"
 	"crypto/sha256"
-
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 
@@ -128,6 +127,7 @@ var baseInstance = func(committeeMember *types.CommitteeMember, keySet *TestKeyS
 		TestingOperatorSigner(keySet),
 	)
 	ret.StartValue = TestingQBFTFullData
+	ret.CdFetcher = CdFetcher(TestingQBFTFullData)
 	return ret
 }
 
@@ -139,4 +139,11 @@ func NewTestingQBFTController(identifier []byte, share *types.CommitteeMember, c
 		config,
 		signer,
 	)
+}
+
+func CdFetcher(value []byte) *types.DataFetcher {
+	return &types.DataFetcher{
+		GetConsensusData: func() ([]byte, error) {
+			return value, nil
+		}}
 }

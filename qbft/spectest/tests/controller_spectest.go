@@ -170,7 +170,7 @@ func (test *ControllerSpecTest) runInstanceWithData(
 	contr *qbft.Controller,
 	runData *RunInstanceData,
 ) error {
-	err := contr.StartNewInstance(height, runData.InputValue)
+	err := contr.StartNewInstance(height, testingutils.CdFetcher(runData.InputValue))
 	var lastErr error
 	if err != nil {
 		lastErr = err
@@ -237,7 +237,7 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 		if runData.Height != nil {
 			height = *runData.Height
 		}
-		err := contr.StartNewInstance(height, runData.InputValue)
+		err := contr.StartNewInstance(height, testingutils.CdFetcher(runData.InputValue))
 		if err != nil && len(test.ExpectedError) == 0 {
 			return nil, err
 		}

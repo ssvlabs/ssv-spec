@@ -1,6 +1,7 @@
 package ssv
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -78,30 +79,44 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 		return errors.Wrap(err, "got pre-consensus quorum but it has invalid signatures")
 	}
 
-	duty := r.GetState().StartingDuty.(*types.ValidatorDuty)
+	duty := r.GetState().StartingDuty
+	beaconBlockFetcher := beaconBlockFetcher(r, fullSig)
 
-	// get block data
-	obj, ver, err := r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
-	if err != nil {
-		return errors.Wrap(err, "failed to get Beacon block")
-	}
-
-	byts, err := obj.MarshalSSZ()
-	if err != nil {
-		return errors.Wrap(err, "could not marshal beacon block")
-	}
-
-	input := &types.ValidatorConsensusData{
-		Duty:    *duty,
-		Version: ver,
-		DataSSZ: byts,
-	}
-
-	if err := r.BaseRunner.decide(r, input.Duty.DutySlot(), input); err != nil {
+	if err := r.BaseRunner.decide(r, duty.DutySlot(), beaconBlockFetcher); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 
 	return nil
+}
+
+func beaconBlockFetcher(r *ProposerRunner, fullSig []byte) *types.DataFetcher {
+	return &types.DataFetcher{
+		GetConsensusData: func() ([]byte, error) {
+			duty := r.GetState().StartingDuty.(*types.ValidatorDuty)
+
+			var ver spec.DataVersion
+			var obj ssz.Marshaler
+			var err error
+
+			// get block data
+			obj, ver, err = r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to get Beacon block")
+			}
+
+			byts, err := obj.MarshalSSZ()
+			if err != nil {
+				return nil, errors.Wrap(err, "could not marshal beacon block")
+			}
+
+			cd := types.ValidatorConsensusData{
+				Duty:    *duty,
+				Version: ver,
+				DataSSZ: byts,
+			}
+			return cd.Encode()
+		},
+	}
 }
 
 func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {

@@ -5,6 +5,7 @@ import (
 )
 
 // NilValue tests a starting an instance for a nil value (not passing value check)
+// Instance starts but with an empty value and no proposal gets broadcasted
 func NilValue() tests.SpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "start instance nil value",
@@ -13,6 +14,5 @@ func NilValue() tests.SpecTest {
 				InputValue: nil,
 			},
 		},
-		ExpectedError: "value invalid: invalid value",
 	}
 }

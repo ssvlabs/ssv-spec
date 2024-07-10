@@ -5,6 +5,7 @@ import (
 )
 
 // EmptyValue tests a starting an instance for an empty value (not passing value check)
+// Instance starts but with an empty value and no proposal gets broadcasted
 func EmptyValue() tests.SpecTest {
 	return &tests.ControllerSpecTest{
 		Name: "start instance empty value",
@@ -13,6 +14,5 @@ func EmptyValue() tests.SpecTest {
 				InputValue: []byte{},
 			},
 		},
-		ExpectedError: "value invalid: invalid value",
 	}
 }

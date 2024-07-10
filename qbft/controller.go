@@ -33,10 +33,7 @@ func NewController(identifier []byte, committeeMember *types.CommitteeMember, co
 }
 
 // StartNewInstance will start a new QBFT instance, if can't will return error
-func (c *Controller) StartNewInstance(height Height, value []byte) error {
-	if err := c.GetConfig().GetValueCheckF()(value); err != nil {
-		return errors.Wrap(err, "value invalid")
-	}
+func (c *Controller) StartNewInstance(height Height, cdFetcher *types.DataFetcher) error {
 
 	// can't use <= because of height == 0 case
 	if height < c.Height {
@@ -50,7 +47,7 @@ func (c *Controller) StartNewInstance(height Height, value []byte) error {
 
 	c.Height = height
 	newInstance := c.addAndStoreNewInstance()
-	newInstance.Start(value, height)
+	newInstance.Start(cdFetcher, height, c.GetConfig().GetValueCheckF())
 
 	c.forceStopAllInstanceExceptCurrent()
 

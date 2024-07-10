@@ -134,7 +134,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 		}
 	}
 
-	return qbft.CreateRoundChange(state, signer, 1, test.Value[:])
+	return qbft.CreateRoundChange(state, signer, 1)
 }
 
 func (test *CreateMsgSpecTest) TestName() string {
