@@ -113,8 +113,7 @@ func (b *BaseRunner) basePreConsensusMsgProcessing(runner Runner, psigMsgs *type
 }
 
 // baseConsensusMsgProcessing is a base func that all runner implementation can call for processing a consensus msg
-func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.SignedSSVMessage) (decided bool,
-	decidedValue types.Encoder, err error) {
+func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.SignedSSVMessage, decidedValue types.Encoder) (bool, types.Encoder, error) {
 	prevDecided := false
 	if b.hasRunningDuty() && b.State != nil && b.State.RunningInstance != nil {
 		prevDecided, _ = b.State.RunningInstance.IsDecided()
@@ -135,13 +134,6 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 		return false, nil, err
 	}
 
-	// decode consensus data
-	switch runner.(type) {
-	case CommitteeRunner:
-		decidedValue = &types.BeaconVote{}
-	default:
-		decidedValue = &types.ValidatorConsensusData{}
-	}
 	if err := decidedValue.Decode(decidedSignedMsg.FullData); err != nil {
 		return true, nil, errors.Wrap(err, "failed to parse decided value to ValidatorConsensusData")
 	}

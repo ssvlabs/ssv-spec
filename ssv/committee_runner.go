@@ -80,7 +80,7 @@ func (cr CommitteeRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureM
 }
 
 func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
-	decided, decidedValue, err := cr.BaseRunner.baseConsensusMsgProcessing(cr, msg)
+	decided, decidedValue, err := cr.BaseRunner.baseConsensusMsgProcessing(cr, msg, &types.BeaconVote{})
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
 	}
