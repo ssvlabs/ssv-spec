@@ -359,12 +359,12 @@ func findValidators(
 	return types.BNRoleUnknown, nil, false
 }
 
-// unneeded
+// Unneeded since no preconsensus phase
 func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	panic("not in use")
 }
 
-// This function signature returns only one domain type
+// This function signature returns only one domain type... but we can have mixed domains
 // instead we rely on expectedPostConsensusRootsAndBeaconObjects that is called later
 func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	panic("not in use")
