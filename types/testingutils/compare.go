@@ -31,8 +31,7 @@ func ComparePartialSignatureOutputMessages(t *testing.T, expectedMessages []*typ
 	broadcastedMsgs = filterPartialSigs(broadcastedMsgs)
 	require.Len(t, broadcastedMsgs, len(expectedMessages))
 
-	index := 0
-	for _, msg := range broadcastedMsgs {
+	for index, msg := range broadcastedMsgs {
 
 		msg1 := &types.PartialSignatureMessages{}
 		require.NoError(t, msg1.Decode(msg.Data))
@@ -41,8 +40,6 @@ func ComparePartialSignatureOutputMessages(t *testing.T, expectedMessages []*typ
 
 		err := ComparePartialSignatureMessages(msg1, msg2)
 		require.NoError(t, err)
-
-		index++
 	}
 }
 
@@ -54,40 +51,59 @@ func ComparePartialSignatureOutputMessagesInAsynchronousOrder(t *testing.T, expe
 	broadcastedMsgs := ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
 	broadcastedMsgs = filterPartialSigs(broadcastedMsgs)
 
-	// Require same length
+	// Require that:
+	// - the broadcasted and expected messages have equal length
+	// - every broadcasted message is linked (equal) to an expected message
+	// - two broadcasted messages are not linked to the same expected message
+	// i.e. a bijection between the lists
 	require.Len(t, broadcastedMsgs, len(expectedMessages))
 
-	// Require that every broadcasted message belongs to the set of expected messages
+	expectedMsgAlreadyLinked := make([]bool, len(expectedMessages))
+	for i := range expectedMsgAlreadyLinked {
+		expectedMsgAlreadyLinked[i] = false
+	}
 	for _, msg := range broadcastedMsgs {
 		msg1 := &types.PartialSignatureMessages{}
 		require.NoError(t, msg1.Decode(msg.Data))
 
 		found := false
-		for _, msg2 := range expectedMessages {
+		for expectedMsgIndex, msg2 := range expectedMessages {
+			if expectedMsgAlreadyLinked[expectedMsgIndex] {
+				continue
+			}
 			err := ComparePartialSignatureMessages(msg1, msg2)
 			if err == nil {
 				found = true
+				expectedMsgAlreadyLinked[expectedMsgIndex] = true
 				break
 			}
 		}
 		require.True(t, found)
 	}
 
-	// Require that every expected message belongs to the set of broadcasted messages
-	for _, msg1 := range expectedMessages {
-		found := false
-		for _, msg := range broadcastedMsgs {
-			msg2 := &types.PartialSignatureMessages{}
-			require.NoError(t, msg2.Decode(msg.Data))
-
-			err := ComparePartialSignatureMessages(msg1, msg2)
-			if err == nil {
-				found = true
-				break
-			}
-		}
-		require.True(t, found)
+	// Assert that all expected messages are linked.
+	// An expected message not linked should be an impossible state (i.e. an error should be triggered by the above checks)
+	for _, linked := range expectedMsgAlreadyLinked {
+		require.True(t, linked)
 	}
+}
+
+func RootCountMapForPartialSignatureMessages(msg *types.PartialSignatureMessages) map[string]int {
+	roots := make(map[string]int)
+
+	for _, partialSigMessage := range msg.Messages {
+		root, err := partialSigMessage.GetRoot()
+		if err != nil {
+			panic(err)
+		}
+		rootStr := hex.EncodeToString(root[:])
+		if _, found := roots[rootStr]; !found {
+			roots[rootStr] = 0
+		}
+		roots[rootStr] += 1
+	}
+
+	return roots
 }
 
 func ComparePartialSignatureMessages(msg1 *types.PartialSignatureMessages, msg2 *types.PartialSignatureMessages) error {
@@ -96,33 +112,23 @@ func ComparePartialSignatureMessages(msg1 *types.PartialSignatureMessages, msg2 
 		return errors.New("different messages length")
 	}
 
-	// messages are not guaranteed to be in order so we map them and then test all roots to be equal
-	roots := make(map[string]string)
-	for i, partialSigMsg2 := range msg2.Messages {
-		r2, err := partialSigMsg2.GetRoot()
-		if err != nil {
-			return err
-		}
-		if _, found := roots[hex.EncodeToString(r2[:])]; !found {
-			roots[hex.EncodeToString(r2[:])] = ""
-		} else {
-			roots[hex.EncodeToString(r2[:])] = hex.EncodeToString(r2[:])
-		}
+	// messages are not guaranteed to be in order so we map their roots and then test all roots to match and have the same multiplicity
+	roots1 := RootCountMapForPartialSignatureMessages(msg1)
+	roots2 := RootCountMapForPartialSignatureMessages(msg2)
 
-		partialSigMsg1 := msg1.Messages[i]
-		r1, err := partialSigMsg1.GetRoot()
-		if err != nil {
-			return err
-		}
-
-		if _, found := roots[hex.EncodeToString(r1[:])]; !found {
-			roots[hex.EncodeToString(r1[:])] = ""
-		} else {
-			roots[hex.EncodeToString(r1[:])] = hex.EncodeToString(r1[:])
-		}
+	// Compare roots and their multiplicity
+	if len(roots1) != len(roots2) {
+		return errors.New("messages have different sets of roots")
 	}
-	for k, v := range roots {
-		if k != v {
+	for r1, r1Count := range roots1 {
+		foundSameRootAndSameCount := false
+		for r2, r2Count := range roots2 {
+			if r1 == r2 {
+				foundSameRootAndSameCount = (r1Count == r2Count)
+				break
+			}
+		}
+		if !foundSameRootAndSameCount {
 			return errors.New("missing output msg")
 		}
 	}
@@ -147,7 +153,7 @@ func CompareSignedSSVMessageOutputMessages(t *testing.T, expectedMessages []*typ
 	for index, msg := range broadcastedSignedMsgs {
 		r1, _ := msg.GetRoot()
 
-		msg2 := broadcastedSignedMsgs[index]
+		msg2 := expectedMessages[index]
 		r2, _ := msg2.GetRoot()
 
 		require.EqualValues(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", index))
@@ -156,11 +162,22 @@ func CompareSignedSSVMessageOutputMessages(t *testing.T, expectedMessages []*typ
 
 func CompareBroadcastedBeaconMsgs(t *testing.T, expectedRoots []string, broadcastedRoots []phase0.Root) {
 	require.Len(t, broadcastedRoots, len(expectedRoots))
+
+	// broadcastedRootAlreadyLinked has to purpose of not using the same
+	// broadcasted root twice when confirming that an expected root exists
+	broadcastedRootAlreadyLinked := make([]bool, len(broadcastedRoots))
+	for i := range broadcastedRootAlreadyLinked {
+		broadcastedRootAlreadyLinked[i] = false
+	}
 	for _, r1 := range expectedRoots {
 		found := false
-		for _, r2 := range broadcastedRoots {
+		for index2, r2 := range broadcastedRoots {
+			if broadcastedRootAlreadyLinked[index2] {
+				continue
+			}
 			if r1 == hex.EncodeToString(r2[:]) {
 				found = true
+				broadcastedRootAlreadyLinked[index2] = true
 				break
 			}
 		}
