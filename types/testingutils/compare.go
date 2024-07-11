@@ -88,6 +88,24 @@ func ComparePartialSignatureOutputMessagesInAsynchronousOrder(t *testing.T, expe
 	}
 }
 
+func RootCountMapForPartialSignatureMessages(msg *types.PartialSignatureMessages) map[string]int {
+	roots := make(map[string]int)
+
+	for _, partialSigMessage := range msg.Messages {
+		root, err := partialSigMessage.GetRoot()
+		if err != nil {
+			panic(err)
+		}
+		rootStr := hex.EncodeToString(root[:])
+		if _, found := roots[rootStr]; !found {
+			roots[rootStr] = 0
+		}
+		roots[rootStr] += 1
+	}
+
+	return roots
+}
+
 func ComparePartialSignatureMessages(msg1 *types.PartialSignatureMessages, msg2 *types.PartialSignatureMessages) error {
 
 	if len(msg1.Messages) != len(msg2.Messages) {
@@ -95,35 +113,8 @@ func ComparePartialSignatureMessages(msg1 *types.PartialSignatureMessages, msg2 
 	}
 
 	// messages are not guaranteed to be in order so we map their roots and then test all roots to match and have the same multiplicity
-	roots1 := make(map[string]int)
-	roots2 := make(map[string]int)
-
-	// Count roots from msg1
-	for _, partialSigMessage := range msg1.Messages {
-		r1, err := partialSigMessage.GetRoot()
-		if err != nil {
-			return err
-		}
-		root := hex.EncodeToString(r1[:])
-		if _, found := roots1[root]; !found {
-			roots1[root] = 0
-		}
-		roots1[root] += 1
-	}
-
-	// Count roots from msg2
-	for _, partialSigMessage := range msg2.Messages {
-		r2, err := partialSigMessage.GetRoot()
-		if err != nil {
-			return err
-		}
-
-		root := hex.EncodeToString(r2[:])
-		if _, found := roots2[root]; !found {
-			roots2[root] = 0
-		}
-		roots2[root] += 1
-	}
+	roots1 := RootCountMapForPartialSignatureMessages(msg1)
+	roots2 := RootCountMapForPartialSignatureMessages(msg2)
 
 	// Compare roots and their multiplicity
 	if len(roots1) != len(roots2) {
