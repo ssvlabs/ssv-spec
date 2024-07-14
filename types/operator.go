@@ -7,7 +7,7 @@ type OperatorID = uint64
 type CommitteeMember struct {
 	OperatorID        OperatorID
 	CommitteeID       CommitteeID `ssz-size:"32"`
-	SSVOperatorPubKey []byte      `ssz-size:"294"`
+	SSVOperatorPubKey []byte      `ssz-size:"459"`
 	// FaultyNodes is the number of nodes that are considered faulty or malicious in the operator's committee
 	FaultyNodes uint64
 	// All the members of the committee
