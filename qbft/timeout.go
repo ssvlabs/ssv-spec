@@ -10,15 +10,7 @@ var (
 	quickTimeout          = 2 * time.Second //nolint
 	slowTimeout           = 2 * time.Minute //nolint
 	// CutoffRound which round the instance should stop its timer and progress no further
-	CutoffRound = 15 // stop processing instances after 8*2+120*6 = 14.2 min (~ 2 epochs)
-)
-
-const (
-	// AttestationCutOffRound is the round after which the instance will stop processing attestations
-	AttestationCutOffRound = 12 // stop processing attestations after 8*2+120*3 = 6.2 min (~ 1 epoch)
-
-	// SyncCommitteeCutOffRound is the round after which the instance will stop processing sync committee messages
-	SyncCommitteeCutOffRound = 4 // stop processing sync committee messages after one slot
+	CutoffRound = 12 // stop processing attestations after 8*2+120*3 = 6.2 min (~ 1 epoch)
 )
 
 func (i *Instance) UponRoundTimeout() error {
