@@ -3,16 +3,15 @@ package comparable
 import (
 	"encoding/json"
 	"fmt"
-	"os"
-	"path/filepath"
-	"strings"
-	"testing"
-
 	spec2 "github.com/attestantio/go-eth2-client/spec"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/google/go-cmp/cmp"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
 )
 
 func NoErrorEncoding(obj ssz.Marshaler) []byte {
@@ -27,12 +26,12 @@ func NoErrorEncoding(obj ssz.Marshaler) []byte {
 // If we change the fields in ssv_msgs.go it will break a lot of roots, we're slowly fixing them
 // SHOULD BE REMOVED once all tests are fixes
 // see https://github.com/ssvlabs/ssv-spec/issues/178
-func FixIssue178(input *types.ConsensusData, version spec2.DataVersion) *types.ConsensusData {
+func FixIssue178(input *types.ValidatorConsensusData, version spec2.DataVersion) *types.ValidatorConsensusData {
 	byts, err := input.Encode()
 	if err != nil {
 		panic(err.Error())
 	}
-	ret := &types.ConsensusData{}
+	ret := &types.ValidatorConsensusData{}
 	if err := ret.Decode(byts); err != nil {
 		panic(err.Error())
 	}

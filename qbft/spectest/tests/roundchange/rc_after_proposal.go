@@ -13,30 +13,29 @@ func AfterProposal() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 2
 
-	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+	rcMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
 
-	msgs := append(rcMsgs, []*qbft.SignedMessage{
-		testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
+	msgs := append(rcMsgs, []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), nil,
 		),
 
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[4], types.OperatorID(4), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[4], types.OperatorID(4), 2),
 	}...)
 
 	return &tests.MsgProcessingSpecTest{
 		Name:          "round change after proposal accepted",
 		Pre:           pre,
-		PostRoot:      "47c00aa37311b5dedadac5dd302e9b23635a7bbbe1166f221ee2e8773df49e4d",
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingProposalMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingProposalMessageWithRoundAndRC(ks.OperatorKeys[1], types.OperatorID(1), 2,
 				testingutils.MarshalJustifications(rcMsgs)),
-			testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
+			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 		},
 	}
 }

@@ -2,12 +2,12 @@ package beacon
 
 import (
 	"encoding/hex"
-	"reflect"
-	"testing"
-
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
+	"reflect"
+	"testing"
 )
 
 type DepositDataSpecTest struct {
@@ -26,7 +26,7 @@ func (test *DepositDataSpecTest) Run(t *testing.T) {
 	validatorPK, _ := hex.DecodeString(test.ValidatorPK)
 	withdrawalCredentials, _ := hex.DecodeString(test.WithdrawalCredentials)
 
-	r, _, err := types.GenerateETHDepositData(
+	r, _, err := testingutils.GenerateETHDepositData(
 		validatorPK,
 		withdrawalCredentials,
 		test.ForkVersion,

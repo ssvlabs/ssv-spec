@@ -1,38 +1,38 @@
 # SSV Specifications - Networking
 
 | Contributors                               | Status | Last Revision |
-| :----------------------------------------- | :----- | :------------ |
-| [@amir-blox](https://github.com/amir-blox) | DRAFT  | SEP 22        |
+|:-------------------------------------------|:-------|:--------------|
+| [@amir-blox](https://github.com/amir-blox) | DRAFT  | SEP  22        |
 
 This document contains the networking specification for `SSV.Network`.
 
 ## Overview
 
 - [Fundamentals](#fundamentals)
-  - [Stack](#stack)
-  - [Transport](#transport)
-  - [Messaging](#messaging)
-  - [Network Peers](#network-peers)
-  - [Identity](#identity)
-  - [Network Discovery](#network-discovery)
-  - [Peer Scoring](#peer-scoring)
+    - [Stack](#stack)
+    - [Transport](#transport)
+    - [Messaging](#messaging)
+    - [Network Peers](#network-peers)
+    - [Identity](#identity)
+    - [Network Discovery](#network-discovery)
+    - [Peer Scoring](#peer-scoring)
 - [Wire](#wire)
-  - [Consensus](#consensus-protocol)
-  - [Sync](#sync-protocols)
-  - [Handshake](#handshake-protocol)
+    - [Consensus](#consensus-protocol)
+    - [Sync](#sync-protocols)
+    - [Handshake](#handshake-protocol)
 - [Network Layer ](#networking)
-  - [PubSub](#pubsub)
-  - [PubSub Scoring](#pubsub-scoring)
-  - [Message Validation](#pubsub-validation)
-  - [Discovery](#discovery)
-  - [Subnets](#subnets)
-  - [Peers Connectivity](#peers-connectivity)
-  - [Peers Balancing](#peers-balancing)
-  - [Connection Gating](#connection-gating)
-  - [Security](#security)
-  - [Configurations](#configurations)
-  - [Forks](#forks)
-  - [Relayers](#relayers)
+    - [PubSub](#pubsub)
+    - [PubSub Scoring](#pubsub-scoring)
+    - [Message Validation](#pubsub-validation)
+    - [Discovery](#discovery)
+    - [Subnets](#subnets)
+    - [Peers Connectivity](#peers-connectivity)
+    - [Peers Balancing](#peers-balancing)
+    - [Connection Gating](#connection-gating)
+    - [Security](#security)
+    - [Configurations](#configurations)
+    - [Forks](#forks)
+    - [Relayers](#relayers)
 
 ## Fundamentals
 
@@ -47,7 +47,6 @@ a modular framework for P2P networking that is used by multiple decentralized pr
 ### Transport
 
 Network peers must support the following transports:
-
 - `TCP` is used by libp2p for setting up communication channels between peers.
   default port: `12001`
 - `UDP` is used for discovery by [discv5](https://github.com/ethereum/devp2p/blob/master/discv5/discv5.md).
@@ -58,6 +57,7 @@ is used to secure transport, for more details see [noise protocol](https://noise
 and [libp2p spec](https://github.com/libp2p/specs/blob/master/noise/README.md).
 
 Multiplexing of protocols over channels is achieved using [yamux](https://github.com/libp2p/go-libp2p-yamux) protocol.
+
 
 ### Messaging
 
@@ -79,6 +79,7 @@ is the pubsub protocol used in `SSV.Network`
 The main purpose is for broadcasting messages to a group (AKA subnet) of nodes. \
 In addition, the machinery helps to determine liveliness and maintain peers scoring.
 
+
 ### Network Peers
 
 There are several types of nodes in the network:
@@ -92,6 +93,7 @@ It collects registry data and consensus data (decided messages) of all the valid
 `Bootnode` is a public peer which is responsible for helping new peers to find other peers in the network.
 It has a stable ENR that is provided with default configuration, so other peers could join the network easily.
 
+
 ### Identity
 
 Identity in the network is based on two types of keys:
@@ -104,12 +106,14 @@ and can be revoked in case it was compromised.
 `Operator Key` is used for decryption of share's keys that are used for signing/verifying consensus messages and duties. \
 Exporter and Bootnode does not hold this key.
 
+
 ### Network Discovery
 
 [discv5](https://github.com/ethereum/devp2p/blob/master/discv5/discv5.md)
 is used in `SSV.Network` as the discovery component.
 
 More information is available in [Discovery section](#discovery)
+
 
 ### Peer Scoring
 
@@ -118,7 +122,9 @@ by scoring them according to a predefined set of scores.
 
 For more info please refer to [Pubsub Scoring](#pubsub-scoring) section
 
----
+
+------
+
 
 ## Wire
 
@@ -127,34 +133,32 @@ All the messages that are being transmitted over the network are wrapped with th
 <details>
   <summary><b>protobuf</b></summary>
 
-```protobuf
+  ```protobuf
 syntax = "proto3";
 import "gogo.proto";
 
 // SignedMessage holds a message and it's corresponding signature
 message SSVMessage {
-// type of the message
-MsgType msg_type = 1 [(gogoproto.nullable) = false];
-// id of the message
-bytes msg_id     = 2 [(gogoproto.nullable) = false];
-// message data (encoded)
-bytes data      = 3 [(gogoproto.nullable) = false];
+  // type of the message
+  MsgType msg_type = 1 [(gogoproto.nullable) = false];
+  // id of the message
+  bytes msg_id     = 2 [(gogoproto.nullable) = false];
+  // message data (encoded)
+  bytes data      = 3 [(gogoproto.nullable) = false];
 }
 
-// MsgType is an enum that represents the type of message
+// MsgType is an enum that represents the type of message 
 enum MsgType {
-// consensus/QBFT messages
-Consensus              = 0;
-// sync messages
-Sync                   = 1;
-// partial signatures sent post consensus
-Signature = 2;
+  // consensus/QBFT messages
+  Consensus              = 0;
+  // partial signatures sent post consensus
+  Signature = 1;
 }
 ```
 
 </details>
 
-Note that all pubsub messages in the network are wrapped with libp2p's message structure
+Note that all pubsub messages in the network are wrapped with libp2p's message structure 
 ([see pubsub RPC](https://github.com/libp2p/specs/blob/master/pubsub/README.md#the-rpc)).
 
 ## Consensus Protocol
@@ -172,235 +176,8 @@ More information regarding the protocol can be found in [iBFT annotated paper (B
 
 ### Message Structure
 
-Messages structure and more information can be found in
+Messages structure and more information can be found in 
 [ssv-spec/types](https://github.com/ssvlabs/ssv-spec/blob/main/types/messages.go).
-
----
-
-## Sync Protocols
-
-There are several sync protocols,
-tha main purpose is to enable operator nodes to sync past decided message or to catch up with round changes.
-
-In order to participate in some validator's consensus, a peer will first use sync protocols to align on past information.
-
-Sync is done over streams as pubsub is not suitable in this case due to several reasons such as:
-
-- API nature is request/response, unlike broadcasting in consensus messages
-- Bandwidth - only one peer (usually) needs the data, it would be a waste to send redundant messages across the network.
-
-### Message Structure
-
-`SyncMessage` structure is used by all sync protocols, the type of message is specified in a dedicated field:
-
-<details>
-  <summary><b>protobuf</b></summary>
-
-```protobuf
-syntax = "proto3";
-
-message SyncMessage {
-  // protocol is the type of sync message
-  string protocol       = 1;
-  // params holds the requests parameters
-  repeated bytes params = 3;
-  // data holds the results
-  repeated bytes data   = 4;
-  // status code of the operation
-  uint32 status_code  = 5;
-}
-
-enum StatusCode {
-  Success = 0;
-  // no results were found
-  NotFound = 1;
-  // failed due to bad request
-  BadRequest = 2;
-  // failed due to internal error
-  InternalError = 3;
-  // limits were exceeded
-  Backoff = 4;
-}
-```
-
-</details>
-
-A successful response message usually includes a list of results in `data` field:
-
-```
-{
-  "protocol": "<protocol>",
-  "data": [ ... ],
-  "statusCode": 0,
-}
-```
-
-An error response has an empty `data` field, and the `statusCode` field
-contains the actual error code (see protobuf enum above):
-
-```
-{
-  "protocol": "<protocol>",
-  "data": [],
-  "statusCode": 1, // not found
-}
-```
-
-### Protocols
-
-SSV nodes use the following stream protocols:
-
-### 1. Highest Decided
-
-This protocol is used by a node to find out what is the highest decided message for a specific QBFT instance.
-All the nodes in the network should support this protocol.
-
-`/ssv/sync/decided/highest/0.0.1`
-
-<details>
-  <summary>examples</summary>
-
-Request:
-
-```json
-{
-  "protocol": "/ssv/sync/decided/highest/0.0.1",
-  "identifier": "..."
-}
-```
-
-Response:
-
-```json
-{
-  "protocol": "/ssv/sync/decided/highest/0.0.1",
-  "identifier": "...",
-  "statusCode": 0,
-  "data": [
-    {
-      "message": {
-        "type": 3,
-        "round": 1,
-        "identifier": "...",
-        "height": 7943,
-        "value": "Xmcg...sPM="
-      },
-      "signature": "g5y....7Dv",
-      "signer_ids": [1, 2, 4]
-    }
-  ]
-}
-```
-
-</details>
-
-### 2. Decided History
-
-This protocol enables to sync historical decided messages in some specific range.
-
-The request should specify the desired range, while the response will include all
-the found messages for that range.
-
-**NOTE** that this protocol is optional. by default nodes won't save history,
-only those who turn on the corresponding flag will support this protocol.
-
-`/ssv/sync/decided/history/0.0.1`
-
-<details>
-  <summary>examples</summary>
-
-Request:
-
-```json
-{
-  "protocol": "/ssv/sync/decided/history/0.0.1",
-  "identifier": "...",
-  "params": ["1200", "1225"]
-}
-```
-
-Response:
-
-```json
-{
-"protocol": "/ssv/sync/decided/history/0.0.1",
-"identifier": "...",
-"params": ["1200", "1225"]
-"statusCode": 0,
-"data": [{
-    "message": {
-      "type": 3,
-      "round": 1,
-      "identifier": "...",
-      "height": 1200,
-      "value": "Xmcg...sPM="
-    },
-    "signature": "g5y....7Dv",
-    "signer_ids": [1,2,4]
-  },
-  // ... 1201-1224
-  {
-    "message": {
-      "type": 3,
-      "round": 1,
-      "identifier": "...",
-      "height": 1225,
-      "value": "Xmcg...sPM="
-    },
-    "signature": "g5y....7Dv",
-    "signer_ids": [1,2,4]
-  }
-]
-}
-```
-
-</details>
-
-### 3. Last Change Round
-
-This protocol enables a node to catch up with change round messages.
-All the nodes in the network should support this protocol.
-
-`/ssv/sync/last_change_round/0.0.1`
-
-<details>
-  <summary>examples</summary>
-
-Request:
-
-```json
-{
-  "protocol": "/ssv/sync/decided/history/0.0.1",
-  "identifier": "...",
-  "params": ["7554"]
-}
-```
-
-Response:
-
-```json
-{
-  "protocol": "/ssv/sync/decided/history/0.0.1",
-  "identifier": "...",
-  "params": ["7554"],
-  "statusCode": 0,
-  "data": [
-    {
-      "message": {
-        "type": 4,
-        "round": 6,
-        "identifier": "...",
-        "seq_number": 7554,
-        "value": "Xmcg...sPM="
-      },
-      "signature": "g5y....7Dv",
-      "signer_ids": [1]
-    }
-  ]
-}
-```
-
-</details>
 
 ---
 
@@ -414,40 +191,39 @@ It must be performed for every connection, and check that the other node is on t
 [go-libp2p-core/record.Record](https://github.com/libp2p/go-libp2p-core/blob/master/record/record.go) and
 [go-libp2p-core/record.Envelope](https://github.com/libp2p/go-libp2p-core/blob/master/record/envelope.go)
 are a common utilities that libp2p provides for these cases,
-therefore they are used for signing and verification of `NodeInfo` messages in SSV.
+therefore they are used for signing and verification of `NodeInfo` messages in SSV. 
 
 <details>
   <summary><b>protobuf</b></summary>
 
-```protobuf
-syntax = "proto3";
-import "gogo.proto";
+  ```protobuf
+  syntax = "proto3";
+  import "gogo.proto";
 
-// NodeInfo contains node's information
-message NodeInfo {
-  // network_id is the id of the node's network
-  bytes network_id   = 1 [(gogoproto.nullable) = false];
-  // fork_version is the current fork used by the nodee
-  bytes fork_version = 2 [(gogoproto.nullable) = true];
-  // metadata of the node
-  Metadata metadata  = 3;
-}
-
-// Metadata holds node's general information
-message Metadata {
-  // operator_id of the node
-  string operator_id     = 1;
-  // subnets is an hex string that represents subnets with interest
-  string subnets         = 2;
-  // node_version is the current ssv-node version
-  string node_version    = 3;
-  // execution_node is the eth1 node used by the node
-  string execution_node  = 4;
-  // consensus_node is the eth2 node used by the node
-  string consensus_node = 5;
-}
-```
-
+  // NodeInfo contains node's information
+  message NodeInfo {
+    // network_id is the id of the node's network
+    bytes network_id   = 1 [(gogoproto.nullable) = false];
+    // fork_version is the current fork used by the nodee
+    bytes fork_version = 2 [(gogoproto.nullable) = true];
+    // metadata of the node
+    Metadata metadata  = 3;
+  }
+  
+  // Metadata holds node's general information
+  message Metadata {
+    // operator_id of the node
+    string operator_id     = 1;
+    // subnets is an hex string that represents subnets with interest
+    string subnets         = 2;
+    // node_version is the current ssv-node version
+    string node_version    = 3;
+    // execution_node is the eth1 node used by the node
+    string execution_node  = 4;
+    // consensus_node is the eth2 node used by the node
+    string consensus_node = 5;
+  }
+  ```
 </details>
 
 <br />
@@ -455,9 +231,10 @@ message Metadata {
 
 ## Networking
 
+
 ### Pubsub
 
-The main purpose is for broadcasting messages to a group (AKA subnet) of nodes,
+The main purpose is for broadcasting messages to a group (AKA subnet) of nodes, 
 using a gossip approach to avoid the overhead of maintaining multiple direct connections. \
 In addition, the following are achieved as well:
 
@@ -467,14 +244,16 @@ In addition, the following are achieved as well:
 The following sections details on how pubsub is used in `SSV.network`.
 In addition, parameters configuration is described [here](./CONFIG.md#pubsub-parameters).
 
+
 ### Pubsub Scoring
 
 `gossipsub v1.1` introduced pubsub [scoring](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#peer-scoring),
 the idea is that each individual peer maintains a score for other peers.
 The score is locally computed by each individual peer based on observed behaviour and is not shared.
 
-**NOTE** that [topic scores](./SCORING.md#topic-score-params), [peer scores](./SCORING.md#peer-score-params)
-and [thresholds](./SCORING.md#peer-score-thresholds) are detailed in the sibling scoring spec document.
+**NOTE** that [topic scores](./SCORING.md#topic-score-params), [peer scores](./SCORING.md#peer-score-params) 
+and [thresholds](./SCORING.md#peer-score-thresholds) are detailed in the sibling scoring spec document. 
+
 
 ### Pubsub Validation
 
@@ -497,7 +276,7 @@ This validation pipeline is the baseline and will be applied for all pubsub topi
 **NOTE** any message will be decoded only once as part of the basic validation.
 
 **NOTE** As of the time this spec was written, additional validation is performed by QBFT components in an async way.
-As messages might pass the base validation but fail at a later point, signing policy of pubsub is turned on
+As messages might pass the base validation but fail at a later point, signing policy of pubsub is turned on 
 to ensure authenticity of pubsub message senders. Once a more complete validation is added, we will reduce
 the signing policy as it becomes redundant.
 
@@ -517,18 +296,15 @@ of all the committees in the subnets they participate.
 that should store the last decided message of each committee in the network.
 Having such redundancy of decided messages helps to maintain the multiple states (per validator) across the network.
 
-**Validators Mapping**
+**Committee Mapping**
 
-Validator's public key is mapped to a subnet using a hash function,
-which helps to distribute validators across subnets in a balanced, distributed way:
+The committee ID is a hash of the operators IDs.
+This helps to distribute committees across subnets in a balanced, distributed way:
 
-`hash(validatiorPubKey) % num_of_subnets`
+`committee_id % num_of_subnets`
 
 Deterministic mapping is ensured as long as the number of subnets doesn't change,
 therefore it's a fixed number.
-
-A dynamic number of subnets (e.g. `log(numOfValidators)`) was also considered,
-but requires consistent hashing technics that can be investigated if we need so in the future.
 
 <br />
 
@@ -561,16 +337,17 @@ Records contain a signature, sequence (for republishing record) and arbitrary ke
 
 `ENR` structure in `SSV.Network` consists of the following key/value pairs:
 
-| Key         | Description                                                  |
-| :---------- | :----------------------------------------------------------- |
-| `id`        | name of identity scheme, e.g. "v4"                           |
-| `secp256k1` | compressed secp256k1 public key of the network key, 33 bytes |
-| `ip`        | IPv4 address, 4 bytes                                        |
-| `tcp`       | TCP port, big endian integer                                 |
-| `udp`       | UDP port, big endian integer                                 |
-| `type`      | node type, integer; 1 (operator), 2 (exporter), 3 (bootnode) |
-| `forkv`     | fork version, integer                                        |
-| `subnets`   | bitlist, 0 for irrelevant and 1 for assigned subnet          |
+| Key         | Description                                                    |
+|:------------|:---------------------------------------------------------------|
+| `id`        | name of identity scheme, e.g. "v4"                             |
+| `secp256k1` | compressed secp256k1 public key of the network key, 33 bytes   |
+| `ip`        | IPv4 address, 4 bytes                                          |
+| `tcp`       | TCP port, big endian integer                                   |
+| `udp`       | UDP port, big endian integer                                   |
+| `type`      | node type, integer; 1 (operator), 2 (exporter), 3 (bootnode)   |
+| `forkv`     | fork version, integer                                          |
+| `subnets`   | bitlist, 0 for irrelevant and 1 for assigned subnet            |
+
 
 #### Subnets Discovery
 
@@ -587,7 +364,6 @@ Similar to how it implemented in Ethereum 2.0
 [Topic Index](https://github.com/ethereum/devp2p/blob/master/discv5/discv5-rationale.md#the-topic-index)
 which helps to lookup nodes by their advertised topics. In SSV these topics would be the operator's subnets. \
 For more information:
-
 - [DiscV5 Theory > Topic Advertisement](https://github.com/ethereum/devp2p/blob/master/discv5/discv5-theory.md#topic-advertisement)
 - [discv5: topic index design thread](https://github.com/ethereum/devp2p/issues/136)
 
@@ -601,14 +377,14 @@ for details on why discv5 was chosen over libp2p Kad DHT in Ethereum.
 In a fully-connected network, where each peer is connected to all other peers in the network,
 running nodes will consume many resources to process all network related tasks e.g. parsing, peers management etc.
 
-Limiting connected peers count should reduce the network throughput and resource consumption,
+Limiting connected peers count should reduce the network throughput and resource consumption, 
 while the node still receives messages via gossiping.
 
 #### Peers Balancing
 
 Once reached to peer limit, the node will stop looking for new nodes,
 and won't accept incoming connections from relevant peers. \
-Instead, there is a peer balancing procedure that ensures (over time) that connections are being replaced,
+Instead, there is a peer balancing procedure that ensures (over time) that connections are being replaced, 
 and we'll try form a balanced set of peers across all the subnets of our interest.
 
 Tagging is done using `go-libp2p-core/connmgr.ConnManager` interface to protect / unprotect peers. \
@@ -621,14 +397,14 @@ and on the internal state of connected peers (provided by libp2p's host and pubs
 
 1. continue if we reached peers limit in the node level, or stop otherwise.
 2. tag best `n` peers where `n = maxPeers - 1`
-3. calculate scores for subnets:
-4. subnet w/o peers - `2`
-5. subnet w/ less than the minimum (<= 2) - `1`
-6. subnet w/ overflow of peers (>= 5) - `-1`
-7. calculate peers scores according to their subnets,
-   by a counting the subnets scores and giving bonus score for peers with multiple shared subnets.
-8. **TBD** pubsub scoring will be taken into account (once added)
-9. trim untagged peers
+  1. calculate scores for subnets:
+    1. subnet w/o peers - `2`
+    2. subnet w/ less than the minimum (<= 2) - `1`
+    3. subnet w/ overflow of peers (>= 5) - `-1`
+  2. calculate peers scores according to their subnets,
+     by a counting the subnets scores and giving bonus score for peers with multiple shared subnets.
+  3. **TBD** pubsub scoring will be taken into account (once added)
+3. trim untagged peers
 
 #### Connection Gating
 

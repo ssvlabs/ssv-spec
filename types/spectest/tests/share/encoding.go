@@ -5,8 +5,7 @@ import "github.com/ssvlabs/ssv-spec/types/testingutils"
 // Encoding tests encoding of a ssv message
 func Encoding() *EncodingTest {
 	ks := testingutils.Testing4SharesSet()
-	share := testingutils.TestingShare(ks)
-	share.Graffiti = []byte{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	share := testingutils.TestingShare(ks, testingutils.TestingValidatorIndex)
 
 	byts, err := share.Encode()
 	if err != nil {

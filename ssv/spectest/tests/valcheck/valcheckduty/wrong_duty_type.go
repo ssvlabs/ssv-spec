@@ -11,7 +11,7 @@ import (
 
 // WrongDutyType tests duty.Type not attester
 func WrongDutyType() tests.SpecTest {
-	consensusDataBytsF := func(cd *types.ConsensusData) []byte {
+	consensusDataBytsF := func(cd *types.ValidatorConsensusData) []byte {
 		input, _ := cd.Encode()
 		return input
 	}
@@ -20,38 +20,31 @@ func WrongDutyType() tests.SpecTest {
 		Name: "wrong duty type",
 		Tests: []*valcheck.SpecTest{
 			{
+				Name:       "committee",
+				Network:    types.BeaconTestNetwork,
+				RunnerRole: types.RoleCommittee,
+				Input:      testingutils.TestBeaconVoteByts,
+				// No error since input doesn't contain duty type
+			},
+			{
 				Name:          "sync committee aggregator",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleSyncCommitteeContribution,
+				RunnerRole:    types.RoleSyncCommitteeContribution,
 				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
 				ExpectedError: "duty invalid: wrong beacon role type",
 			},
 			{
-				Name:          "sync committee",
-				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleSyncCommittee,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
-				ExpectedError: "duty invalid: wrong beacon role type", // it passes ConsensusData validation since  SyncCommitteeBlockRoot can't be nil, it's [32]byte
-			},
-			{
 				Name:          "aggregator",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleAggregator,
+				RunnerRole:    types.RoleAggregator,
 				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
 				ExpectedError: "duty invalid: wrong beacon role type",
 			},
 			{
 				Name:          "proposer",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleProposer,
-				Input:         consensusDataBytsF(testingutils.TestAttesterConsensusData),
-				ExpectedError: "duty invalid: wrong beacon role type",
-			},
-			{
-				Name:          "attester",
-				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleAttester,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
+				RunnerRole:    types.RoleProposer,
+				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData),
 				ExpectedError: "duty invalid: wrong beacon role type",
 			},
 		},

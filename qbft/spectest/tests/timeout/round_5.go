@@ -15,15 +15,15 @@ func Round5() tests.SpecTest {
 
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 5
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithRound(ks.Shares[1], types.OperatorID(1), 5)
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 5))
 
 	return &SpecTest{
 		Name:      "round 5",
 		Pre:       pre,
 		PostRoot:  sc.Root(),
 		PostState: sc.ExpectedState,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.SignQBFTMsg(ks.OperatorKeys[1], types.OperatorID(1), &qbft.Message{
 				MsgType:                  qbft.RoundChangeMsgType,
 				Height:                   qbft.FirstHeight,
 				Round:                    6,

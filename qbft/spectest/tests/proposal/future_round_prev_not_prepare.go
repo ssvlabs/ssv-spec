@@ -13,14 +13,14 @@ func FutureRoundPrevNotPrepared() tests.SpecTest {
 	pre.State.Round = qbft.FirstRound
 	ks := testingutils.Testing4SharesSet()
 
-	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 10),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 10),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 10),
+	rcMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 10),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 10),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 10),
 	}
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 10, qbft.FirstHeight,
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), nil,
 		),
@@ -28,10 +28,9 @@ func FutureRoundPrevNotPrepared() tests.SpecTest {
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal future round prev not prepared",
 		Pre:           pre,
-		PostRoot:      "31701b87888acfdc3955c04778da1b43ad2a241f2cf275502f7f801558790fa1",
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 10),
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 10),
 		},
 		ExpectedTimerState: &testingutils.TimerState{
 			Timeouts: 1,

@@ -8,6 +8,6 @@ func CreateRoundChange() tests.SpecTest {
 		CreateType:   tests.CreateRoundChange,
 		Name:         "create round change",
 		Value:        [32]byte{1, 2, 3, 4},
-		ExpectedRoot: "e08923100c9970e713651b4ff2ce0308b0c761e97eb009b93beefc0b923828f5",
+		ExpectedRoot: "78b5a214f4b2c83afe7dc739b317327a6fe8a29e14c27293fbd8a5522543dbf7",
 	}
 }

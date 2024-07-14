@@ -17,8 +17,10 @@ func PreviousDecided() tests.SpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
-					testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks),
+				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(
+					testingutils.TestingQBFTRootData,
+					testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks,
+				),
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
@@ -37,12 +39,19 @@ func PreviousDecided() tests.SpecTest {
 
 func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	msgs := testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
+	msgs := testingutils.DecidingMsgsForHeightWithRoot(
+		testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData,
+		testingutils.TestingIdentifier,
+		qbft.FirstHeight,
+		ks,
+	)
 
 	contr := testingutils.NewTestingQBFTController(
 		testingutils.TestingIdentifier,
-		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
+		testingutils.TestingOperatorSigner(ks),
 	)
 
 	for i := 0; i <= int(height); i++ {
@@ -51,21 +60,31 @@ func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comp
 		instance := &qbft.Instance{
 			StartValue: []byte{1, 2, 3, 4},
 			State: &qbft.State{
-				Share:  testingutils.TestingShare(testingutils.Testing4SharesSet()),
-				ID:     testingutils.TestingIdentifier,
-				Round:  qbft.FirstRound,
-				Height: qbft.Height(i),
+				CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+				ID:              testingutils.TestingIdentifier,
+				Round:           qbft.FirstRound,
+				Height:          qbft.Height(i),
 			},
 		}
 
 		// last height
 		if !decidedState && qbft.Height(i) == height {
-			comparable.SetSignedMessages(instance, []*qbft.SignedMessage{})
+			comparable.SetSignedMessages(instance, []*types.SignedSSVMessage{})
 			contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)
 			break
 		}
 
-		instance.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), qbft.FirstRound, qbft.Height(i), testingutils.TestingQBFTRootData, nil, nil)
+		instance.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(
+			testingutils.TestingProposalMessageWithParams(
+				ks.OperatorKeys[1],
+				types.OperatorID(1),
+				qbft.FirstRound,
+				qbft.Height(i),
+				testingutils.TestingQBFTRootData,
+				nil,
+				nil,
+			),
+		)
 		instance.State.LastPreparedRound = qbft.FirstRound
 		instance.State.LastPreparedValue = testingutils.TestingQBFTFullData
 		instance.State.Decided = true

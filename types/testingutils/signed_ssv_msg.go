@@ -7,13 +7,12 @@ import (
 	"crypto/sha256"
 
 	"github.com/herumi/bls-eth-go-binary/bls"
-	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-var TestingSignedSSVMessageSignature = [256]byte{1, 2, 3, 4}
+var TestingSignedSSVMessageSignature = []byte{1, 2, 3, 4}
 
-var TestingMessageID = types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.BNRoleAttester)
+var TestingMessageID = types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee)
 
 var TestingSignedSSVMessage = func(sk *bls.SecretKey, operatorID types.OperatorID, rsaSK *rsa.PrivateKey) *types.SignedSSVMessage {
 	// SignedPartialSigMessage
@@ -40,65 +39,43 @@ var TestingSignedSSVMessage = func(sk *bls.SecretKey, operatorID types.OperatorI
 	if err != nil {
 		panic(err.Error())
 	}
-	sig := [256]byte{}
-	copy(sig[:], signature)
 
 	//SignedSSVMessage
 	return &types.SignedSSVMessage{
-		OperatorID: operatorID,
-		Signature:  sig,
-		Data:       ssvMsgByts,
+		OperatorIDs: []types.OperatorID{operatorID},
+		Signatures:  [][]byte{signature},
+		SSVMessage:  &ssvMsg,
 	}
 }
 
-var SignedSSVMessageListF = func(ks *TestKeySet, ssvMessages []*types.SSVMessage) []*types.SignedSSVMessage {
+var SignedSSVMessageListF = func(ks *TestKeySet, signers []types.OperatorID, ssvMessages []*types.SSVMessage) []*types.SignedSSVMessage {
 	ret := make([]*types.SignedSSVMessage, 0)
-	for _, msg := range ssvMessages {
-		ret = append(ret, SignedSSVMessageF(ks, msg))
+	for i, msg := range ssvMessages {
+		ret = append(ret, SignedSSVMessageWithSigner(signers[i], ks.OperatorKeys[signers[i]], msg))
 	}
 	return ret
 }
 
-var SignedSSVMessageF = func(ks *TestKeySet, msg *types.SSVMessage) *types.SignedSSVMessage {
+var SignPartialSigSSVMessage = func(ks *TestKeySet, msg *types.SSVMessage) *types.SignedSSVMessage {
 
 	// Discover message's signer
-	signer := types.OperatorID(1)
-	if msg.MsgType == types.SSVConsensusMsgType {
-		signedMsg := &qbft.SignedMessage{}
-		if err := signedMsg.Decode(msg.Data); err != nil {
-			panic(err)
-		}
-		signer = signedMsg.Signers[0]
-	} else if msg.MsgType == types.SSVPartialSignatureMsgType {
-		signedPartial := &types.SignedPartialSignatureMessage{}
-		if err := signedPartial.Decode(msg.Data); err != nil {
-			panic(err)
-		}
-		signer = signedPartial.Signer
+	if msg.MsgType != types.SSVPartialSignatureMsgType {
+		panic("type different than SSVPartialSignatureMsgType to sign partial signature ssv message")
+	}
+
+	psigMsgs := &types.PartialSignatureMessages{}
+	if err := psigMsgs.Decode(msg.Data); err != nil {
+		panic(err)
+	}
+	var signer types.OperatorID
+	if len(psigMsgs.Messages) == 0 {
+		signer = 1
 	} else {
-		panic("unknown type")
+		signer = psigMsgs.Messages[0].Signer
 	}
 
 	// Convert SSVMessage to SignedSSVMessage
 	return SignedSSVMessageWithSigner(signer, ks.OperatorKeys[signer], msg)
-}
-
-var SignedSSVMessageOnData = func(operatorID types.OperatorID, rsaSK *rsa.PrivateKey, data []byte) *types.SignedSSVMessage {
-	hash := sha256.Sum256(data)
-
-	signature, err := rsa.SignPKCS1v15(rand.Reader, rsaSK, crypto.SHA256, hash[:])
-	if err != nil {
-		panic(err)
-	}
-
-	sig := [256]byte{}
-	copy(sig[:], signature)
-
-	return &types.SignedSSVMessage{
-		OperatorID: operatorID,
-		Signature:  sig,
-		Data:       data,
-	}
 }
 
 var SignedSSVMessageWithSigner = func(operatorID types.OperatorID, rsaSK *rsa.PrivateKey, ssvMessage *types.SSVMessage) *types.SignedSSVMessage {
@@ -114,12 +91,10 @@ var SignedSSVMessageWithSigner = func(operatorID types.OperatorID, rsaSK *rsa.Pr
 	if err != nil {
 		panic(err)
 	}
-	sig := [256]byte{}
-	copy(sig[:], signature)
 
 	return &types.SignedSSVMessage{
-		OperatorID: operatorID,
-		Signature:  sig,
-		Data:       data,
+		OperatorIDs: []types.OperatorID{operatorID},
+		Signatures:  [][]byte{signature},
+		SSVMessage:  ssvMessage,
 	}
 }

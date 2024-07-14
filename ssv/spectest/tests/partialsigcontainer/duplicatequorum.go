@@ -17,7 +17,7 @@ func DuplicateQuorum() tests.SpecTest {
 	msg12 := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
 	msg2 := testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)
 	msg3 := testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight)
-	msgs := []*types.PartialSignatureMessage{msg1.Message.Messages[0], msg12.Message.Messages[0], msg2.Message.Messages[0], msg3.Message.Messages[0]}
+	msgs := []*types.PartialSignatureMessage{msg1.Messages[0], msg12.Messages[0], msg2.Messages[0], msg3.Messages[0]}
 
 	// Verify the reconstructed signature
 	expectedSig, err := types.ReconstructSignatures(map[types.OperatorID][]byte{1: msgs[0].PartialSignature, 2: msgs[2].PartialSignature, 3: msgs[3].PartialSignature})

@@ -1,7 +1,6 @@
 package messages
 
 import (
-	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,11 +13,11 @@ func CreateProposalNotPreviouslyPrepared() tests.SpecTest {
 		CreateType: tests.CreateProposal,
 		Name:       "create proposal not previously prepared",
 		Value:      [32]byte{1, 2, 3, 4},
-		RoundChangeJustifications: []*qbft.SignedMessage{
-			testingutils.TestingProposalMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-			testingutils.TestingProposalMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-			testingutils.TestingProposalMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		RoundChangeJustifications: []*types.SignedSSVMessage{
+			testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
+			testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
+			testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 		},
-		ExpectedRoot: "45f15e2dc3a0c1bd13aa977ead44abfabab094864db4a77dcd0cd9a30e87c3bb",
+		ExpectedRoot: "b6e2b2b60655bed0f127e41d2af790fdb7d44a52282dba4888dcc9057db02353",
 	}
 }

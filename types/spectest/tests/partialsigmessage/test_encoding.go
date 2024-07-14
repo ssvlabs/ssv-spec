@@ -21,7 +21,7 @@ func (test *EncodingTest) TestName() string {
 
 func (test *EncodingTest) Run(t *testing.T) {
 	// decode
-	decoded := &types.SignedPartialSignatureMessage{}
+	decoded := &types.PartialSignatureMessages{}
 	require.NoError(t, decoded.Decode(test.Data))
 
 	// encode

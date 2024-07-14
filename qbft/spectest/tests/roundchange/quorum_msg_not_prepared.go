@@ -15,16 +15,16 @@ func QuorumMsgNotPrepared() tests.SpecTest {
 	pre.State.Round = 2
 	sc := quorumMsgNotPreparedStateComparison()
 
-	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
-		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
+	prepareMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 	}
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.OperatorKeys[1], types.OperatorID(1), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
 
 	return &tests.MsgProcessingSpecTest{
@@ -33,8 +33,8 @@ func QuorumMsgNotPrepared() tests.SpecTest {
 		PostRoot:      sc.Root(),
 		PostState:     sc.ExpectedState,
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingProposalMessageWithParams(ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight,
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 				testingutils.TestingQBFTRootData,
 				testingutils.MarshalJustifications(msgs), testingutils.MarshalJustifications(prepareMsgs)),
 		},
@@ -44,24 +44,24 @@ func QuorumMsgNotPrepared() tests.SpecTest {
 func quorumMsgNotPreparedStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
-	prepareMsgs := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
-		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
+	prepareMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 	}
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.Shares[1], types.OperatorID(1), 2,
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.OperatorKeys[1], types.OperatorID(1), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
 
 	instance := &qbft.Instance{
 		State: &qbft.State{
-			Share: testingutils.TestingShare(testingutils.Testing4SharesSet()),
-			ID:    testingutils.TestingIdentifier,
-			Round: 2,
+			CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+			ID:              testingutils.TestingIdentifier,
+			Round:           2,
 		},
 	}
 	comparable.SetSignedMessages(instance, msgs)

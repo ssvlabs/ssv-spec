@@ -3,8 +3,6 @@ package qbft_test
 import (
 	"testing"
 
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,33 +17,16 @@ func TestInstance_Marshaling(t *testing.T) {
 		Identifier: []byte{1, 2, 3, 4},
 		Root:       testingutils.TestingQBFTRootData,
 	}
-	TestingSK := func() *bls.SecretKey {
-		types.InitBLS()
-		ret := &bls.SecretKey{}
-		ret.SetByCSPRNG()
-		return ret
-	}()
-	testingSignedMsg := func() *qbft.SignedMessage {
-		return testingutils.SignQBFTMsg(TestingSK, 1, TestingMessage)
-	}()
-	testingValidatorPK := spec.BLSPubKey{1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4}
-	testingShare := &types.Share{
-		OperatorID:      1,
-		ValidatorPubKey: testingValidatorPK[:],
-		SharePubKey:     TestingSK.GetPublicKey().Serialize(),
-		DomainType:      types.PrimusTestnet,
-		Quorum:          3,
-		PartialQuorum:   2,
-		Committee: []*types.Operator{
-			{
-				OperatorID:  1,
-				SharePubKey: TestingSK.GetPublicKey().Serialize(),
-			},
-		},
-	}
+	keySet := testingutils.Testing4SharesSet()
+	TestingRSASK := keySet.OperatorKeys[1]
+	testingSignedMsg := testingutils.ToProcessingMessage(func() *types.SignedSSVMessage {
+		return testingutils.SignQBFTMsg(TestingRSASK, 1, TestingMessage)
+	}())
+	testingCommitteeMember := testingutils.TestingCommitteeMember(keySet)
+
 	i := &qbft.Instance{
 		State: &qbft.State{
-			Share:                           testingShare,
+			CommitteeMember:                 testingCommitteeMember,
 			ID:                              []byte{1, 2, 3, 4},
 			Round:                           1,
 			Height:                          1,
@@ -56,28 +37,28 @@ func TestInstance_Marshaling(t *testing.T) {
 			DecidedValue:                    []byte{1, 2, 3, 4},
 
 			ProposeContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*qbft.SignedMessage{
+				Msgs: map[qbft.Round][]*qbft.ProcessingMessage{
 					1: {
 						testingSignedMsg,
 					},
 				},
 			},
 			PrepareContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*qbft.SignedMessage{
+				Msgs: map[qbft.Round][]*qbft.ProcessingMessage{
 					1: {
 						testingSignedMsg,
 					},
 				},
 			},
 			CommitContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*qbft.SignedMessage{
+				Msgs: map[qbft.Round][]*qbft.ProcessingMessage{
 					1: {
 						testingSignedMsg,
 					},
 				},
 			},
 			RoundChangeContainer: &qbft.MsgContainer{
-				Msgs: map[qbft.Round][]*qbft.SignedMessage{
+				Msgs: map[qbft.Round][]*qbft.ProcessingMessage{
 					1: {
 						testingSignedMsg,
 					},

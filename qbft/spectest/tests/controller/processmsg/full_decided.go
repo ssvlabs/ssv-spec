@@ -1,7 +1,7 @@
 package processmsg
 
 import (
-	"github.com/herumi/bls-eth-go-binary/bls"
+	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
@@ -19,13 +19,15 @@ func FullDecided() tests.SpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: testingutils.TestingQBFTFullData,
-				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData,
-					testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks),
+				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(
+					testingutils.TestingQBFTRootData,
+					testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks,
+				),
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
 					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessage(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 						[]types.OperatorID{1, 2, 3},
 					),
 				},
@@ -38,25 +40,37 @@ func FullDecided() tests.SpecTest {
 
 func fullDecidedStateComparison() *qbftcomparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	msgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(testingutils.TestingQBFTRootData, testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks)
+	msgs := testingutils.ExpectedDecidingMsgsForHeightWithRoot(
+		testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData,
+		testingutils.TestingIdentifier,
+		qbft.FirstHeight,
+		ks,
+	)
 
 	contr := testingutils.NewTestingQBFTController(
 		testingutils.TestingIdentifier,
-		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
+		testingutils.TestingOperatorSigner(ks),
 	)
 
 	instance := &qbft.Instance{
 		StartValue: testingutils.TestingQBFTFullData,
 		State: &qbft.State{
-			Share:                           testingutils.TestingShare(testingutils.Testing4SharesSet()),
-			ID:                              testingutils.TestingIdentifier,
-			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
-			LastPreparedRound:               qbft.FirstRound,
-			LastPreparedValue:               testingutils.TestingQBFTFullData,
-			Decided:                         true,
-			DecidedValue:                    testingutils.TestingQBFTFullData,
-			Round:                           qbft.FirstRound,
+			CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+			ID:              testingutils.TestingIdentifier,
+			ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(
+				testingutils.TestingProposalMessage(
+					ks.OperatorKeys[1],
+					types.OperatorID(1),
+				),
+			),
+			LastPreparedRound: qbft.FirstRound,
+			LastPreparedValue: testingutils.TestingQBFTFullData,
+			Decided:           true,
+			DecidedValue:      testingutils.TestingQBFTFullData,
+			Round:             qbft.FirstRound,
 		},
 	}
 	qbftcomparable.SetSignedMessages(instance, msgs)

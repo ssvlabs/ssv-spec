@@ -13,37 +13,36 @@ func JustificationsNotHeighest() tests.SpecTest {
 	pre.State.Round = 3
 	ks := testingutils.Testing4SharesSet()
 
-	prepareMsgs1 := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
-		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
+	prepareMsgs1 := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 	}
-	prepareMsgs2 := []*qbft.SignedMessage{
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+	prepareMsgs2 := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
-	rcMsgs := []*qbft.SignedMessage{
+	rcMsgs := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithParams(
-			ks.Shares[1], types.OperatorID(1), 3, qbft.FirstHeight, testingutils.TestingQBFTRootData,
+			ks.OperatorKeys[1], types.OperatorID(1), 3, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 			qbft.FirstRound, testingutils.MarshalJustifications(prepareMsgs1)),
 		testingutils.TestingRoundChangeMessageWithParams(
-			ks.Shares[2], types.OperatorID(2), 3, qbft.FirstHeight, testingutils.TestingQBFTRootData,
+			ks.OperatorKeys[2], types.OperatorID(2), 3, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 			2, testingutils.MarshalJustifications(prepareMsgs2)),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 3),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 3),
 	}
 
-	msgs := []*qbft.SignedMessage{
+	msgs := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessageWithParams(
-			ks.Shares[1], types.OperatorID(1), 3, qbft.FirstHeight, testingutils.TestingQBFTRootData,
+			ks.OperatorKeys[1], types.OperatorID(1), 3, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs1)),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:           "proposal justification not highest",
 		Pre:            pre,
-		PostRoot:       "6132d45da295feb3cd42ceac63653b2251f252da1fc80d425eb85216fc4d636b",
 		InputMessages:  msgs,
-		OutputMessages: []*qbft.SignedMessage{},
+		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: signed prepare not valid",
 	}
 }

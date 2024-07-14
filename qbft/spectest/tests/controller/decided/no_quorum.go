@@ -1,7 +1,8 @@
 package decided
 
 import (
-	"github.com/herumi/bls-eth-go-binary/bls"
+	"crypto/rsa"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -17,9 +18,9 @@ func NoQuorum() tests.SpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*qbft.SignedMessage{
+				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingCommitMultiSignerMessageWithHeight(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2]},
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2]},
 						[]types.OperatorID{1, 2},
 						qbft.FirstHeight,
 					),

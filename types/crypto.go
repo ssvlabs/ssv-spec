@@ -1,79 +1,12 @@
 package types
 
 import (
-	"bytes"
 	"crypto/sha256"
 	"fmt"
 
-	"github.com/decred/dcrd/dcrec/secp256k1/v4"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 )
-
-// VerifyByOperators verifies signature by the provided operators
-func (s Signature) VerifyByOperators(data MessageSignature, domain DomainType, sigType SignatureType, operators []*Operator) error {
-	// decode sig
-	sign := &bls.Sign{}
-	if err := sign.Deserialize(s); err != nil {
-		return errors.Wrap(err, "failed to deserialize signature")
-	}
-
-	// find operators
-	pks := make([]bls.PublicKey, 0)
-	for _, id := range data.GetSigners() {
-		found := false
-		for _, n := range operators {
-			if id == n.GetID() {
-				pk := bls.PublicKey{}
-				if err := pk.Deserialize(n.GetSharePublicKey()); err != nil {
-					return errors.Wrap(err, "failed to deserialize public key")
-				}
-
-				pks = append(pks, pk)
-				found = true
-			}
-		}
-		if !found {
-			return errors.New("unknown signer")
-		}
-	}
-
-	// compute root
-	computedRoot, err := ComputeSigningRoot(data, ComputeSignatureDomain(domain, sigType))
-	if err != nil {
-		return errors.Wrap(err, "could not compute signing root")
-	}
-
-	// verify
-	if res := sign.FastAggregateVerify(pks, computedRoot[:]); !res {
-		return errors.New("failed to verify signature")
-	}
-	return nil
-}
-
-func (s Signature) VerifyMultiPubKey(data Root, domain DomainType, sigType SignatureType, pks [][]byte) error {
-	var aggPK *bls.PublicKey
-	for _, pkByts := range pks {
-		pk := &bls.PublicKey{}
-		if err := pk.Deserialize(pkByts); err != nil {
-			return errors.Wrap(err, "failed to deserialize public key")
-		}
-
-		if aggPK == nil {
-			aggPK = pk
-		} else {
-			aggPK.Add(pk)
-		}
-	}
-
-	if aggPK == nil {
-		return errors.New("no public keys found")
-	}
-
-	return s.Verify(data, domain, sigType, aggPK.Serialize())
-}
 
 func (s Signature) Verify(data Root, domain DomainType, sigType SignatureType, pkByts []byte) error {
 	computedRoot, err := ComputeSigningRoot(data, ComputeSignatureDomain(domain, sigType))
@@ -95,46 +28,6 @@ func (s Signature) Verify(data Root, domain DomainType, sigType SignatureType, p
 		return errors.New("failed to verify signature")
 	}
 	return nil
-}
-
-func (s Signature) ECRecover(data Root, domain DomainType, sigType SignatureType, address common.Address) error {
-	computedRoot, err := ComputeSigningRoot(data, ComputeSignatureDomain(domain, sigType))
-	if err != nil {
-		return errors.Wrap(err, "could not compute signing root")
-	}
-
-	recoveredUncompressedPubKey, err := crypto.Ecrecover(computedRoot[:], s)
-	if err != nil {
-		return errors.Wrap(err, "could not recover ethereum address")
-	}
-
-	pk, err := secp256k1.ParsePubKey(recoveredUncompressedPubKey)
-	if err != nil {
-		return errors.Wrap(err, "could not parse ecdsa pubkey")
-	}
-
-	recoveredAdd := crypto.PubkeyToAddress(*pk.ToECDSA())
-
-	if !bytes.Equal(address[:], recoveredAdd[:]) {
-		return errors.Wrap(err, "message EC recover doesn't match address")
-	}
-	return nil
-}
-
-// Aggregate returns the aggregated signature for the provided messages
-func (s Signature) Aggregate(other Signature) (Signature, error) {
-	s1 := &bls.Sign{}
-	if err := s1.Deserialize(s); err != nil {
-		return nil, errors.Wrap(err, "failed to deserialize signature")
-	}
-
-	s2 := &bls.Sign{}
-	if err := s2.Deserialize(other); err != nil {
-		return nil, errors.Wrap(err, "failed to deserialize signature")
-	}
-
-	s1.Add(s2)
-	return s1.Serialize(), nil
 }
 
 // ComputeSigningRoot returns a singable/ verifiable root calculated from the a provided data and signature domain

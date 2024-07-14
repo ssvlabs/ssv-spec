@@ -1,10 +1,10 @@
 package consensus
 
 import (
+	"crypto/rsa"
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
@@ -14,34 +14,95 @@ import (
 
 // PostFinish tests a valid commit msg after runner finished
 func PostFinish() tests.SpecTest {
+
 	ks := testingutils.Testing4SharesSet()
 
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid post finish",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
+				Name:   "attester",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterDuty,
+				Messages: append(
+					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+					// post consensus
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, testingutils.TestingDutySlot))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, testingutils.TestingDutySlot))),
+					// commit msg
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData([]*rsa.PrivateKey{ks.OperatorKeys[4]}, []types.OperatorID{4}, qbft.Height(testingutils.TestingDutySlot), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
+				),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
+				},
+			},
+			{
+				Name:   "sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeDuty,
+				Messages: append(
+					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+					// post consensus
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3))),
+					// commit msg
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData([]*rsa.PrivateKey{ks.OperatorKeys[4]}, []types.OperatorID{4}, qbft.Height(testingutils.TestingDutySlot), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
+				),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
+				},
+			},
+			{
+				Name:   "attester and sync committee",
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
+				Messages: append(
+					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+					// post consensus
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[2], 2, testingutils.TestingDutySlot))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[3], 3, testingutils.TestingDutySlot))),
+					// commit msg
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData([]*rsa.PrivateKey{ks.OperatorKeys[4]}, []types.OperatorID{4}, qbft.Height(testingutils.TestingDutySlot), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
+				),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
+				},
+			},
+			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
-					testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.BNRoleSyncCommitteeContribution)),
+					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.RoleSyncCommitteeContribution),
 					// post consensus
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks))),
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks))),
 					// commit msg
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommitteeContribution(
-						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[4]},
-							[]types.OperatorID{4},
-							qbft.Height(testingutils.TestingDutySlot),
-							testingutils.SyncCommitteeContributionMsgID,
-							testingutils.TestSyncCommitteeContributionConsensusDataByts,
-						), nil)),
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+						[]*rsa.PrivateKey{ks.OperatorKeys[4]},
+						[]types.OperatorID{4},
+						qbft.Height(testingutils.TestingDutySlot),
+						testingutils.SyncCommitteeContributionMsgID,
+						testingutils.TestSyncCommitteeContributionConsensusDataByts,
+					),
 				),
 				PostDutyRunnerStateRoot: postFinishSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     postFinishSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
 				},
@@ -52,91 +113,32 @@ func PostFinish() tests.SpecTest {
 				},
 			},
 			{
-				Name:   "sync committee",
-				Runner: testingutils.SyncCommitteeRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeDuty,
-				Messages: append(
-					testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeConsensusData, ks, types.BNRoleSyncCommittee)),
-					// post consensus
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2))),
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3))),
-					// commit msg
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgSyncCommittee(
-						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[4]},
-							[]types.OperatorID{4},
-							qbft.Height(testingutils.TestingDutySlot),
-							testingutils.SyncCommitteeMsgID,
-							testingutils.TestSyncCommitteeConsensusDataByts,
-						), nil)),
-				),
-				PostDutyRunnerStateRoot: postFinishSyncCommitteeSC().Root(),
-				PostDutyRunnerState:     postFinishSyncCommitteeSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
-				},
-			},
-			{
 				Name:   "aggregator",
 				Runner: testingutils.AggregatorRunner(ks),
 				Duty:   &testingutils.TestingAggregatorDuty,
 				Messages: append(
-					testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.BNRoleAggregator)),
+					testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.RoleAggregator),
 					// post consensus
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1))),
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2))),
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3))),
 					// commit msg
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAggregator(
-						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[4]},
-							[]types.OperatorID{4},
-							qbft.Height(testingutils.TestingDutySlot),
-							testingutils.AggregatorMsgID,
-							testingutils.TestAggregatorConsensusDataByts,
-						), nil)),
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+						[]*rsa.PrivateKey{ks.OperatorKeys[4]},
+						[]types.OperatorID{4},
+						qbft.Height(testingutils.TestingDutySlot),
+						testingutils.AggregatorMsgID,
+						testingutils.TestAggregatorConsensusDataByts,
+					),
 				),
 				PostDutyRunnerStateRoot: postFinishAggregatorSC().Root(),
 				PostDutyRunnerState:     postFinishAggregatorSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
 				},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
-				},
-			},
-			{
-				Name:   "attester",
-				Runner: testingutils.AttesterRunner(ks),
-				Duty:   &testingutils.TestingAttesterDuty,
-				Messages: append(
-					testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestAttesterConsensusData, ks, types.BNRoleAttester)),
-					// post consensus
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, testingutils.TestingDutySlot))),
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, testingutils.TestingDutySlot))),
-					// commit msg
-					testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgAttester(
-						testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-							[]*bls.SecretKey{ks.Shares[4]},
-							[]types.OperatorID{4},
-							qbft.Height(testingutils.TestingDutySlot),
-							testingutils.AttesterMsgID,
-							testingutils.TestAttesterConsensusDataByts,
-						), nil)),
-				),
-				PostDutyRunnerStateRoot: postFinishAttesterSC().Root(),
-				PostDutyRunnerState:     postFinishAttesterSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
 				},
 			},
 		},
@@ -149,28 +151,27 @@ func PostFinish() tests.SpecTest {
 			Runner: testingutils.ProposerRunner(ks),
 			Duty:   testingutils.TestingProposerDutyV(version),
 			Messages: append(
-				testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(
+				testingutils.SSVDecidingMsgsV(
 					testingutils.TestProposerConsensusDataV(version),
 					ks,
-					types.BNRoleProposer,
-				)), // consensus
+					types.RoleProposer,
+				), // consensus
 				// post consensus
-				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
-				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version))),
-				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 				// commit msg
-				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(
-					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-						[]*bls.SecretKey{ks.Shares[4]},
-						[]types.OperatorID{4},
-						qbft.Height(testingutils.TestingDutySlotV(version)),
-						testingutils.ProposerMsgID,
-						testingutils.TestProposerConsensusDataBytsV(version),
-					), nil)),
+				testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+					[]*rsa.PrivateKey{ks.OperatorKeys[4]},
+					[]types.OperatorID{4},
+					qbft.Height(testingutils.TestingDutySlotV(version)),
+					testingutils.ProposerMsgID,
+					testingutils.TestProposerConsensusDataBytsV(version),
+				),
 			),
 			PostDutyRunnerStateRoot: postFinishProposerSC(version).Root(),
 			PostDutyRunnerState:     postFinishProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
@@ -187,24 +188,23 @@ func PostFinish() tests.SpecTest {
 			Runner: testingutils.ProposerBlindedBlockRunner(ks),
 			Duty:   testingutils.TestingProposerDutyV(version),
 			Messages: append(
-				testingutils.SignedSSVMessageListF(ks, testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.BNRoleProposer)), // consensus
+				testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.RoleProposer), // consensus
 				// post consensus
-				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
-				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version))),
-				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 				// commit msg
-				testingutils.SignedSSVMessageF(ks, testingutils.SSVMsgProposer(
-					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-						[]*bls.SecretKey{ks.Shares[4]},
-						[]types.OperatorID{4},
-						qbft.Height(testingutils.TestingDutySlotV(version)),
-						testingutils.ProposerMsgID,
-						testingutils.TestProposerBlindedBlockConsensusDataBytsV(version),
-					), nil)),
+				testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+					[]*rsa.PrivateKey{ks.OperatorKeys[4]},
+					[]types.OperatorID{4},
+					qbft.Height(testingutils.TestingDutySlotV(version)),
+					testingutils.ProposerMsgID,
+					testingutils.TestProposerBlindedBlockConsensusDataBytsV(version),
+				),
 			),
 			PostDutyRunnerStateRoot: postFinishBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     postFinishBlindedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},

@@ -9,8 +9,9 @@ import (
 
 // UponCommit returns true if a quorum of commit messages was received.
 // Assumes commit message is valid!
-func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *MsgContainer) (bool, []byte, *SignedMessage, error) {
-	addMsg, err := commitMsgContainer.AddFirstMsgForSignerAndRound(signedCommit)
+func (i *Instance) UponCommit(msg *ProcessingMessage, commitMsgContainer *MsgContainer) (bool, []byte, *types.SignedSSVMessage, error) {
+
+	addMsg, err := commitMsgContainer.AddFirstMsgForSignerAndRound(msg)
 	if err != nil {
 		return false, nil, nil, errors.Wrap(err, "could not add commit msg to container")
 	}
@@ -19,12 +20,12 @@ func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *M
 	}
 
 	// calculate commit quorum and act upon it
-	quorum, commitMsgs, err := commitQuorumForRoundRoot(i.State, commitMsgContainer, signedCommit.Message.Root, signedCommit.Message.Round)
+	quorum, commitMsgs, err := commitQuorumForRoundRoot(i.State, commitMsgContainer, msg.QBFTMessage.Root, msg.QBFTMessage.Round)
 	if err != nil {
 		return false, nil, nil, errors.Wrap(err, "could not calculate commit quorum")
 	}
 	if quorum {
-		fullData := i.State.ProposalAcceptedForCurrentRound.FullData /* must have value there, checked on validateCommit */
+		fullData := i.State.ProposalAcceptedForCurrentRound.SignedMessage.FullData /* must have value there, checked on validateCommit */
 
 		agg, err := aggregateCommitMsgs(commitMsgs, fullData)
 		if err != nil {
@@ -36,22 +37,22 @@ func (i *Instance) UponCommit(signedCommit *SignedMessage, commitMsgContainer *M
 }
 
 // returns true if there is a quorum for the current round for this provided value
-func commitQuorumForRoundRoot(state *State, commitMsgContainer *MsgContainer, root [32]byte, round Round) (bool, []*SignedMessage, error) {
+func commitQuorumForRoundRoot(state *State, commitMsgContainer *MsgContainer, root [32]byte, round Round) (bool, []*ProcessingMessage, error) {
 	signers, msgs := commitMsgContainer.LongestUniqueSignersForRoundAndRoot(round, root)
-	return state.Share.HasQuorum(len(signers)), msgs, nil
+	return state.CommitteeMember.HasQuorum(len(signers)), msgs, nil
 }
 
-func aggregateCommitMsgs(msgs []*SignedMessage, fullData []byte) (*SignedMessage, error) {
+func aggregateCommitMsgs(msgs []*ProcessingMessage, fullData []byte) (*types.SignedSSVMessage, error) {
 	if len(msgs) == 0 {
 		return nil, errors.New("can't aggregate zero commit msgs")
 	}
 
-	var ret *SignedMessage
+	var ret *types.SignedSSVMessage
 	for _, m := range msgs {
 		if ret == nil {
-			ret = m.DeepCopy()
+			ret = m.SignedMessage.DeepCopy()
 		} else {
-			if err := ret.Aggregate(m); err != nil {
+			if err := ret.Aggregate(m.SignedMessage); err != nil {
 				return nil, errors.Wrap(err, "could not aggregate commit msg")
 			}
 		}
@@ -73,7 +74,7 @@ Commit(
                         )
                     );
 */
-func CreateCommit(state *State, config IConfig, root [32]byte) (*SignedMessage, error) {
+func CreateCommit(state *State, signer *types.OperatorSigner, root [32]byte) (*types.SignedSSVMessage, error) {
 	msg := &Message{
 		MsgType:    CommitMsgType,
 		Height:     state.Height,
@@ -82,36 +83,27 @@ func CreateCommit(state *State, config IConfig, root [32]byte) (*SignedMessage, 
 
 		Root: root,
 	}
-	sig, err := config.GetShareSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed signing commit msg")
-	}
-
-	signedMsg := &SignedMessage{
-		Signature: sig,
-		Signers:   []types.OperatorID{state.Share.OperatorID},
-		Message:   *msg,
-	}
-	return signedMsg, nil
+	return Sign(msg, state.CommitteeMember.OperatorID, signer)
 }
 
 func baseCommitValidationIgnoreSignature(
-	signedCommit *SignedMessage,
+	msg *ProcessingMessage,
 	height Height,
 	operators []*types.Operator,
 ) error {
-	if signedCommit.Message.MsgType != CommitMsgType {
-		return errors.New("commit msg type is wrong")
-	}
-	if signedCommit.Message.Height != height {
-		return errors.New("wrong msg height")
-	}
 
-	if err := signedCommit.Validate(); err != nil {
+	if err := msg.Validate(); err != nil {
 		return errors.Wrap(err, "signed commit invalid")
 	}
 
-	if !signedCommit.CheckSignersInCommittee(operators) {
+	if msg.QBFTMessage.MsgType != CommitMsgType {
+		return errors.New("commit msg type is wrong")
+	}
+	if msg.QBFTMessage.Height != height {
+		return errors.New("wrong msg height")
+	}
+
+	if !msg.SignedMessage.CheckSignersInCommittee(operators) {
 		return errors.New("signer not in committee")
 	}
 
@@ -119,18 +111,16 @@ func baseCommitValidationIgnoreSignature(
 }
 
 func baseCommitValidationVerifySignature(
-	config IConfig,
-	signedCommit *SignedMessage,
+	msg *ProcessingMessage,
 	height Height,
-	operators []*types.Operator,
-) error {
+	operators []*types.Operator) error {
 
-	if err := baseCommitValidationIgnoreSignature(signedCommit, height, operators); err != nil {
+	if err := baseCommitValidationIgnoreSignature(msg, height, operators); err != nil {
 		return err
 	}
 
 	// verify signature
-	if err := signedCommit.Signature.VerifyByOperators(signedCommit, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+	if err := types.Verify(msg.SignedMessage, operators); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 
@@ -138,26 +128,26 @@ func baseCommitValidationVerifySignature(
 }
 
 func validateCommit(
-	signedCommit *SignedMessage,
+	msg *ProcessingMessage,
 	height Height,
 	round Round,
-	proposedMsg *SignedMessage,
+	proposedMsg *ProcessingMessage,
 	operators []*types.Operator,
 ) error {
-	if err := baseCommitValidationIgnoreSignature(signedCommit, height, operators); err != nil {
+	if err := baseCommitValidationIgnoreSignature(msg, height, operators); err != nil {
 		return err
 	}
 
-	if len(signedCommit.Signers) != 1 {
+	if len(msg.SignedMessage.OperatorIDs) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
 
-	if signedCommit.Message.Round != round {
+	if msg.QBFTMessage.Round != round {
 		return errors.New("wrong msg round")
 	}
 
-	if !bytes.Equal(proposedMsg.Message.Root[:], signedCommit.Message.Root[:]) {
-		return errors.New("proposed data mistmatch")
+	if !bytes.Equal(proposedMsg.QBFTMessage.Root[:], msg.QBFTMessage.Root[:]) {
+		return errors.New("proposed data mismatch")
 	}
 
 	return nil

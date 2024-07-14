@@ -48,13 +48,26 @@ type TestKeySet struct {
 }
 
 func KeySetForShare(share *types.Share) *TestKeySet {
-	if share.Quorum == 5 {
+	if len(share.Committee) == 7 {
 		return Testing7SharesSet()
 	}
-	if share.Quorum == 7 {
+	if len(share.Committee) == 10 {
 		return Testing10SharesSet()
 	}
-	if share.Quorum == 9 {
+	if len(share.Committee) == 13 {
+		return Testing13SharesSet()
+	}
+	return Testing4SharesSet()
+}
+
+func KeySetForCommitteeMember(committeeMember *types.CommitteeMember) *TestKeySet {
+	if committeeMember.GetQuorum() == 5 {
+		return Testing7SharesSet()
+	}
+	if committeeMember.GetQuorum() == 7 {
+		return Testing10SharesSet()
+	}
+	if committeeMember.GetQuorum() == 9 {
 		return Testing13SharesSet()
 	}
 	return Testing4SharesSet()
@@ -435,17 +448,12 @@ var pkFromHex = func(str string) *bls.PublicKey {
 	return ret
 }
 
-func (ks *TestKeySet) Committee() []*types.Operator {
-	committee := make([]*types.Operator, len(ks.Shares))
+func (ks *TestKeySet) Committee() []*types.ShareMember {
+	committee := make([]*types.ShareMember, len(ks.Shares))
 	for i, s := range ks.Shares {
-		rsaPublicKeyBytes, err := x509.MarshalPKIXPublicKey(&ks.OperatorKeys[i].PublicKey)
-		if err != nil {
-			panic(err)
-		}
-		committee[i-1] = &types.Operator{
-			OperatorID:        i,
-			SharePubKey:       s.GetPublicKey().Serialize(),
-			SSVOperatorPubKey: rsaPublicKeyBytes,
+		committee[i-1] = &types.ShareMember{
+			Signer:      i,
+			SharePubKey: s.GetPublicKey().Serialize(),
 		}
 	}
 	return committee

@@ -235,8 +235,8 @@ var VersionBySlot = func(slot phase0.Slot) spec.DataVersion {
 	return spec.DataVersionDeneb
 }
 
-var TestingProposerDutyV = func(version spec.DataVersion) *types.Duty {
-	duty := &types.Duty{
+var TestingProposerDutyV = func(version spec.DataVersion) *types.ValidatorDuty {
+	duty := &types.ValidatorDuty{
 		Type:           types.BNRoleProposer,
 		PubKey:         TestingValidatorPubKey,
 		Slot:           TestingDutySlotV(version),
@@ -251,8 +251,8 @@ var TestingProposerDutyV = func(version spec.DataVersion) *types.Duty {
 	return duty
 }
 
-var TestingProposerDutyNextEpochV = func(version spec.DataVersion) *types.Duty {
-	duty := &types.Duty{
+var TestingProposerDutyNextEpochV = func(version spec.DataVersion) *types.ValidatorDuty {
+	duty := &types.ValidatorDuty{
 		Type:           types.BNRoleProposer,
 		PubKey:         TestingValidatorPubKey,
 		ValidatorIndex: TestingValidatorIndex,

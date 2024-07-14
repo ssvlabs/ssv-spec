@@ -13,9 +13,9 @@ func DuplicateMsgDifferentRoot() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 	sc := duplicateMsgDifferentRootStateComparison()
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingProposalMessageDifferentRoot(ks.Shares[1], types.OperatorID(1)),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingProposalMessageDifferentRoot(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "proposal duplicate message different value",
@@ -23,8 +23,8 @@ func DuplicateMsgDifferentRoot() tests.SpecTest {
 		PostRoot:      sc.Root(),
 		PostState:     sc.ExpectedState,
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 		},
 		ExpectedError: "invalid signed message: proposal is not valid with current state",
 	}
@@ -32,14 +32,14 @@ func DuplicateMsgDifferentRoot() tests.SpecTest {
 
 func duplicateMsgDifferentRootStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
 	instance := &qbft.Instance{
 		State: &qbft.State{
-			Share:                           testingutils.TestingShare(testingutils.Testing4SharesSet()),
-			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
+			CommitteeMember:                 testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+			ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1))),
 			ID:                              testingutils.TestingIdentifier,
 			Round:                           qbft.FirstRound,
 		},

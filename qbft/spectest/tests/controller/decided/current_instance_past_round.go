@@ -1,8 +1,8 @@
 package decided
 
 import (
-	"github.com/herumi/bls-eth-go-binary/bls"
-	"github.com/ssvlabs/ssv-spec/qbft"
+	"crypto/rsa"
+
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -12,30 +12,30 @@ import (
 func CurrentInstancePastRound() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], 1, 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], 2, 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], 3, 2),
+	rcMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], 1, 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], 2, 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], 3, 2),
 	}
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessage(ks.Shares[1], 1),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1),
 
-		testingutils.TestingPrepareMessage(ks.Shares[1], 1),
-		testingutils.TestingPrepareMessage(ks.Shares[2], 2),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], 2),
 	}
 	msgs = append(msgs, rcMsgs...)
-	msgs = append(msgs, []*qbft.SignedMessage{
-		testingutils.TestingProposalMessageWithRoundAndRC(ks.Shares[1], 1, 2,
+	msgs = append(msgs, []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessageWithRoundAndRC(ks.OperatorKeys[1], 1, 2,
 			testingutils.MarshalJustifications(rcMsgs)),
 
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[1], 1, 2),
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[2], 2, 2),
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[3], 3, 2),
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], 1, 2),
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[2], 2, 2),
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[3], 3, 2),
 
-		testingutils.TestingCommitMessageWithRound(ks.Shares[1], 1, 2),
-		testingutils.TestingCommitMessageWithRound(ks.Shares[2], 2, 2),
-		testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}),
+		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[1], 1, 2),
+		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[2], 2, 2),
+		testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 2, 3}),
 	}...)
 
 	return &tests.ControllerSpecTest{
@@ -48,7 +48,6 @@ func CurrentInstancePastRound() tests.SpecTest {
 					DecidedCnt: 1,
 					DecidedVal: testingutils.TestingQBFTFullData,
 				},
-				ControllerPostRoot: "a96bbf6034a156f6a7196c255e60b5f6a592ab30130cab0d3b4ac2cbc1dd9ac4",
 			},
 		},
 	}

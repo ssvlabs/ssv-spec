@@ -10,8 +10,7 @@ func NilValue() tests.SpecTest {
 		Name: "start instance nil value",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
-				InputValue:         nil,
-				ControllerPostRoot: "baf3ccea443a6c639b76dccf2d9c4fb5e48318473797de9b55e4d8de48fccc6b",
+				InputValue: nil,
 			},
 		},
 		ExpectedError: "value invalid: invalid value",

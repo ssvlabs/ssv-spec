@@ -1,7 +1,8 @@
 package decided
 
 import (
-	"github.com/herumi/bls-eth-go-binary/bls"
+	"crypto/rsa"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -16,14 +17,13 @@ func WrongMsgType() tests.SpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*qbft.SignedMessage{
+				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingMultiSignerProposalMessageWithHeight(
-						[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 						[]types.OperatorID{1, 2, 3},
 						qbft.FirstHeight,
 					),
 				},
-				ControllerPostRoot: "47713c38fe74ce55959980781287886c603c2117a14dc8abce24dcb9be0093af",
 			},
 		},
 		ExpectedError: "could not process msg: invalid signed message: msg allows 1 signer",

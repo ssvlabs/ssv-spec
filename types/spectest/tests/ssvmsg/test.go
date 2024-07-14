@@ -27,7 +27,7 @@ func (test *SSVMessageTest) Run(t *testing.T) {
 
 	// For each message ID, test if MessageIDBelongs returns the expected value
 	for _, msgID := range test.MessageIDs {
-		belongs := testingutils.TestingShare(ks).ValidatorPubKey.MessageIDBelongs(msgID)
+		belongs := testingutils.TestingShare(ks, testingutils.TestingValidatorIndex).ValidatorPubKey.MessageIDBelongs(msgID)
 		require.Equal(t, test.BelongsToValidator, belongs)
 	}
 

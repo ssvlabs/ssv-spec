@@ -2,8 +2,6 @@ package qbft
 
 import (
 	"bytes"
-	"crypto/sha256"
-	"encoding/json"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -17,20 +15,19 @@ type Controller struct {
 	Height     Height // incremental Height for InstanceContainer
 	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
 	StoredInstances InstanceContainer
-	Share           *types.Share
+	CommitteeMember *types.CommitteeMember
+	OperatorSigner  *types.OperatorSigner `json:"-"`
 	config          IConfig
 }
 
-func NewController(
-	identifier []byte,
-	share *types.Share,
-	config IConfig,
-) *Controller {
+func NewController(identifier []byte, committeeMember *types.CommitteeMember, config IConfig,
+	signer *types.OperatorSigner) *Controller {
 	return &Controller{
 		Identifier:      identifier,
 		Height:          FirstHeight,
-		Share:           share,
+		CommitteeMember: committeeMember,
 		StoredInstances: InstanceContainer{},
+		OperatorSigner:  signer,
 		config:          config,
 	}
 }
@@ -61,7 +58,13 @@ func (c *Controller) StartNewInstance(height Height, value []byte) error {
 }
 
 // ProcessMsg processes a new msg, returns decided message or error
-func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
+func (c *Controller) ProcessMsg(signedMessage *types.SignedSSVMessage) (*types.SignedSSVMessage, error) {
+
+	msg, err := NewProcessingMessage(signedMessage)
+	if err != nil {
+		return nil, errors.New("could not create ProcessingMessage from signed message")
+	}
+
 	if err := c.BaseMsgValidation(msg); err != nil {
 		return nil, errors.Wrap(err, "invalid msg")
 	}
@@ -73,17 +76,29 @@ func (c *Controller) ProcessMsg(msg *SignedMessage) (*SignedMessage, error) {
 	All valid future msgs are saved in a container and can trigger highest decided futuremsg
 	All other msgs (not future or decided) are processed normally by an existing instance (if found)
 	*/
-	if IsDecidedMsg(c.Share, msg) {
+	isDecided, err := IsDecidedMsg(c.CommitteeMember, msg)
+	if err != nil {
+		return nil, err
+	}
+	if isDecided {
 		return c.UponDecided(msg)
-	} else if c.isFutureMessage(msg) {
+	}
+
+	isFuture, err := c.isFutureMessage(msg)
+	if err != nil {
+		return nil, err
+	}
+	if isFuture {
 		return nil, fmt.Errorf("future msg from height, could not process")
 	}
+
 	return c.UponExistingInstanceMsg(msg)
 
 }
 
-func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage, error) {
-	inst := c.InstanceForHeight(msg.Message.Height)
+func (c *Controller) UponExistingInstanceMsg(msg *ProcessingMessage) (*types.SignedSSVMessage, error) {
+
+	inst := c.InstanceForHeight(msg.QBFTMessage.Height)
 	if inst == nil {
 		return nil, errors.New("instance not found")
 	}
@@ -113,12 +128,11 @@ func (c *Controller) UponExistingInstanceMsg(msg *SignedMessage) (*SignedMessage
 }
 
 // BaseMsgValidation returns error if msg is invalid (base validation)
-func (c *Controller) BaseMsgValidation(msg *SignedMessage) error {
+func (c *Controller) BaseMsgValidation(msg *ProcessingMessage) error {
 	// verify msg belongs to controller
-	if !bytes.Equal(c.Identifier, msg.Message.Identifier) {
+	if !bytes.Equal(c.Identifier, msg.QBFTMessage.Identifier) {
 		return errors.New("message doesn't belong to Identifier")
 	}
-
 	return nil
 }
 
@@ -133,16 +147,16 @@ func (c *Controller) GetIdentifier() []byte {
 
 // isFutureMessage returns true if message height is from a future instance.
 // It takes into consideration a special case where FirstHeight didn't start but  c.Height == FirstHeight (since we bump height on start instance)
-func (c *Controller) isFutureMessage(msg *SignedMessage) bool {
+func (c *Controller) isFutureMessage(msg *ProcessingMessage) (bool, error) {
 	if c.Height == FirstHeight && c.StoredInstances.FindInstance(c.Height) == nil {
-		return true
+		return true, nil
 	}
-	return msg.Message.Height > c.Height
+	return msg.QBFTMessage.Height > c.Height, nil
 }
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
 func (c *Controller) addAndStoreNewInstance() *Instance {
-	i := NewInstance(c.GetConfig(), c.Share, c.Identifier, c.Height)
+	i := NewInstance(c.GetConfig(), c.CommitteeMember, c.Identifier, c.Height, c.OperatorSigner)
 	c.StoredInstances.addNewInstance(i)
 	return i
 }
@@ -155,57 +169,9 @@ func (c *Controller) forceStopAllInstanceExceptCurrent() {
 	}
 }
 
-// GetRoot returns the state's deterministic root
-func (c *Controller) GetRoot() ([32]byte, error) {
-	marshaledRoot, err := json.Marshal(c)
-	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode state")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret, nil
-}
+func (c *Controller) broadcastDecided(aggregatedCommit *types.SignedSSVMessage) error {
 
-// Encode implementation
-func (c *Controller) Encode() ([]byte, error) {
-	return json.Marshal(c)
-}
-
-// Decode implementation
-func (c *Controller) Decode(data []byte) error {
-	err := json.Unmarshal(data, &c)
-	if err != nil {
-		return errors.Wrap(err, "could not decode controller")
-	}
-
-	config := c.GetConfig()
-	for _, i := range c.StoredInstances {
-		if i != nil {
-			i.config = config
-		}
-	}
-	return nil
-}
-
-func (c *Controller) broadcastDecided(aggregatedCommit *SignedMessage) error {
-	// Broadcast Decided msg
-	byts, err := aggregatedCommit.Encode()
-	if err != nil {
-		return errors.Wrap(err, "could not encode decided message")
-	}
-
-	ssvMsg := &types.SSVMessage{
-		MsgType: types.SSVConsensusMsgType,
-		MsgID:   ControllerIdToMessageID(c.Identifier),
-		Data:    byts,
-	}
-
-	operatorSigner := c.GetConfig().GetOperatorSigner()
-	msgToBroadcast, err := types.SSVMessageToSignedSSVMessage(ssvMsg, c.Share.OperatorID, operatorSigner.SignSSVMessage)
-	if err != nil {
-		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
-	}
-
-	if err := c.GetConfig().GetNetwork().Broadcast(ssvMsg.GetID(), msgToBroadcast); err != nil {
+	if err := c.GetConfig().GetNetwork().Broadcast(aggregatedCommit.SSVMessage.GetID(), aggregatedCommit); err != nil {
 		// We do not return error here, just Log broadcasting error.
 		return errors.Wrap(err, "could not broadcast decided")
 	}

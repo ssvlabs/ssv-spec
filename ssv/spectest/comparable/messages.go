@@ -9,25 +9,25 @@ import (
 
 func SetMessagesInContainer(container *ssv.PartialSigContainer, messages []*types.SignedSSVMessage) *ssv.PartialSigContainer {
 	for _, signedSSVMsg := range messages {
-		ssvMsg := &types.SSVMessage{}
-		if err := ssvMsg.Decode(signedSSVMsg.Data); err != nil {
-			panic(err)
-		}
-		if ssvMsg.MsgType != types.SSVPartialSignatureMsgType {
+		if signedSSVMsg.SSVMessage.MsgType != types.SSVPartialSignatureMsgType {
 			continue
 		}
 
-		msg := &types.SignedPartialSignatureMessage{}
-		if err := msg.Decode(ssvMsg.Data); err != nil {
+		msg := &types.PartialSignatureMessages{}
+		if err := msg.Decode(signedSSVMsg.SSVMessage.Data); err != nil {
 			panic(err.Error())
 		}
 
-		for _, partialSigMsg := range msg.Message.Messages {
+		for _, partialSigMsg := range msg.Messages {
 			root := hex.EncodeToString(partialSigMsg.SigningRoot[:])
-			if container.Signatures[root] == nil {
-				container.Signatures[root] = map[types.OperatorID][]byte{}
+
+			if container.Signatures[partialSigMsg.ValidatorIndex] == nil {
+				container.Signatures[partialSigMsg.ValidatorIndex] = make(map[ssv.SigningRoot]map[uint64]types.Signature)
 			}
-			container.Signatures[root][partialSigMsg.Signer] = partialSigMsg.PartialSignature
+			if container.Signatures[partialSigMsg.ValidatorIndex][ssv.SigningRoot(root)] == nil {
+				container.Signatures[partialSigMsg.ValidatorIndex][ssv.SigningRoot(root)] = make(map[uint64]types.Signature)
+			}
+			container.Signatures[partialSigMsg.ValidatorIndex][ssv.SigningRoot(root)][partialSigMsg.Signer] = partialSigMsg.PartialSignature
 		}
 	}
 	return container
