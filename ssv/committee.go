@@ -41,7 +41,14 @@ func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 	if _, exists := c.Runners[duty.Slot]; exists {
 		return errors.New(fmt.Sprintf("CommitteeRunner for slot %d already exists", duty.Slot))
 	}
-	c.Runners[duty.Slot] = c.CreateRunnerFn(c.Share)
+	dutyShares := make(map[spec.ValidatorIndex]*types.Share)
+	for _, bduty := range duty.ValidatorDuties {
+		if _, exists := c.Share[bduty.ValidatorIndex]; !exists {
+			return fmt.Errorf("no share for validator %d", bduty.ValidatorIndex)
+		}
+		dutyShares[bduty.ValidatorIndex] = c.Share[bduty.ValidatorIndex]
+	}
+	c.Runners[duty.Slot] = c.CreateRunnerFn(dutyShares)
 	return c.Runners[duty.Slot].StartNewDuty(duty, c.CommitteeMember.GetQuorum())
 }
 
