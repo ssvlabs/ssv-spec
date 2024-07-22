@@ -12,8 +12,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// SharesWithFractionOfDutyValidators performs a complete duty execution for a runner that only has a fraction of the shares for the duty's validators
-func SharesWithFractionOfDutyValidators() tests.SpecTest {
+// MissingSomeShares performs a complete duty execution for a runner that only has a fraction of the shares for the duty's validators
+func MissingSomeShares() tests.SpecTest {
 
 	// Message ID
 	ks := testingutils.TestingKeySetMap[phase0.ValidatorIndex(1)]
@@ -29,7 +29,7 @@ func SharesWithFractionOfDutyValidators() tests.SpecTest {
 	dutyValidators := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 
 	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name: "shares with fraction of duty validators",
+		Name: "start committee duty with missing shares",
 		Tests: []*committee.CommitteeSpecTest{
 			{
 				Name:      "attestation",

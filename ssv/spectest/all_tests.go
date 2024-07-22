@@ -87,7 +87,7 @@ var AllTests = []tests.TestF{
 	committeesingleduty.ProposalWithConsensusData,
 	committeesingleduty.WrongMessageID,
 	committeesingleduty.StartWithNoSharesForDuty,
-	committeesingleduty.SharesWithFractionOfDutyValidators,
+	committeesingleduty.MissingSomeShares,
 
 	committeemultipleduty.SequencedDecidedDuties,
 	committeemultipleduty.SequencedHappyFlowDuties,
