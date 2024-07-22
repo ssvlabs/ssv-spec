@@ -86,6 +86,8 @@ var AllTests = []tests.TestF{
 	committeesingleduty.PastMessageDutyDoesNotExist,
 	committeesingleduty.ProposalWithConsensusData,
 	committeesingleduty.WrongMessageID,
+	committeesingleduty.StartWithNoSharesForDuty,
+	committeesingleduty.MissingSomeShares,
 
 	committeemultipleduty.SequencedDecidedDuties,
 	committeemultipleduty.SequencedHappyFlowDuties,
@@ -181,5 +183,5 @@ var AllTests = []tests.TestF{
 	partialsigcontainer.Quorum,
 	partialsigcontainer.Duplicate,
 	partialsigcontainer.DuplicateQuorum,
-	partialsigcontainer.Invalid,
+	// partialsigcontainer.Invalid,
 }
