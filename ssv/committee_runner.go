@@ -257,29 +257,34 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 	}
 
 	// Submit multiple attestations
-	attestations := make([]*phase0.Attestation, 0)
+	attestations := make([]*phase0.Attestation, 0, len(attestationsToSubmit))
 	for _, att := range attestationsToSubmit {
 		attestations = append(attestations, att)
 	}
-	if err := cr.beacon.SubmitAttestations(attestations); err != nil {
-		return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")
-	}
-	// Record successful submissions
-	for validator := range attestationsToSubmit {
-		cr.RecordSubmission(types.BNRoleAttester, validator)
+	
+	if len(attestations) > 0 {
+		if err := cr.beacon.SubmitAttestations(attestations); err != nil {
+			return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")
+		}
+		// Record successful submissions
+		for validator := range attestationsToSubmit {
+			cr.RecordSubmission(types.BNRoleAttester, validator)
+		}
 	}
 
 	// Submit multiple sync committee
-	syncCommitteeMessages := make([]*altair.SyncCommitteeMessage, 0)
+	syncCommitteeMessages := make([]*altair.SyncCommitteeMessage, 0, len(syncCommitteeMessagesToSubmit))
 	for _, syncMsg := range syncCommitteeMessagesToSubmit {
 		syncCommitteeMessages = append(syncCommitteeMessages, syncMsg)
 	}
-	if err := cr.beacon.SubmitSyncMessages(syncCommitteeMessages); err != nil {
-		return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed sync committee")
-	}
-	// Record successful submissions
-	for validator := range syncCommitteeMessagesToSubmit {
-		cr.RecordSubmission(types.BNRoleSyncCommittee, validator)
+	if len(syncCommitteeMessages) > 0 {
+		if err := cr.beacon.SubmitSyncMessages(syncCommitteeMessages); err != nil {
+			return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed sync committee")
+		}
+		// Record successful submissions
+		for validator := range syncCommitteeMessagesToSubmit {
+			cr.RecordSubmission(types.BNRoleSyncCommittee, validator)
+		}
 	}
 
 	if anyErr != nil {
