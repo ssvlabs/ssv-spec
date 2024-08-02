@@ -25,6 +25,16 @@ func (net *TestingNetwork) Broadcast(msgID types.MessageID, message *types.Signe
 	return nil
 }
 
+func (net *TestingNetwork) BroadcastRaw(topics []string, encodedMsg []byte) error {
+	var message types.SignedSSVMessage
+	err := message.Decode(encodedMsg)
+	if err != nil {
+		return err
+	}
+	net.BroadcastedMsgs = append(net.BroadcastedMsgs, &message)
+	return nil
+}
+
 func ConvertBroadcastedMessagesToSSVMessages(signedMessages []*types.SignedSSVMessage) []*types.SSVMessage {
 	ret := make([]*types.SSVMessage, 0)
 	for _, msg := range signedMessages {
