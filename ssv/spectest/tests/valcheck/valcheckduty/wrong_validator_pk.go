@@ -2,7 +2,6 @@ package valcheckduty
 
 import (
 	"encoding/json"
-
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
@@ -29,13 +28,7 @@ func WrongValidatorPK() tests.SpecTest {
 	return &valcheck.MultiSpecTest{
 		Name: "wrong validator PK",
 		Tests: []*valcheck.SpecTest{
-			{
-				Name:       "committee",
-				Network:    types.BeaconTestNetwork,
-				RunnerRole: types.RoleCommittee,
-				Input:      testingutils.TestBeaconVoteByts,
-				// No error since input doesn't contain validator public key
-			},
+			// For committee duty we can't feed a wrong validator PK with the consensus data input, so we don't test it here
 			{
 				Name:          "sync committee aggregator",
 				Network:       types.BeaconTestNetwork,

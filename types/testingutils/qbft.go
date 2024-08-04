@@ -67,6 +67,38 @@ var TestingShare = func(keysSet *TestKeySet, valIdx phase0.ValidatorIndex) *type
 	}
 }
 
+var TestingShareForValidator = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, valIdx phase0.ValidatorIndex) *types.Share {
+	keysSet := keySetMap[valIdx]
+	// Decode validator public key
+	pkBytesSlice := keysSet.ValidatorPK.Serialize()
+	pkBytesArray := [48]byte{}
+	copy(pkBytesArray[:], pkBytesSlice)
+
+	return &types.Share{
+		ValidatorIndex:      valIdx,
+		ValidatorPubKey:     pkBytesArray,
+		SharePubKey:         keysSet.Shares[1].GetPublicKey().Serialize(),
+		Committee:           keysSet.Committee(),
+		DomainType:          TestingSSVDomainType,
+		FeeRecipientAddress: TestingFeeRecipient,
+		Graffiti:            TestingGraffiti[:],
+	}
+}
+
+var TestingSingleValidatorShareMap = TestingValidatorShareMap([]phase0.ValidatorIndex{1})
+
+var Testing4ValidatorsShareMap = TestingValidatorShareMap(ValidatorIndexList(4))
+
+var TestingValidatorShareMap = func(valIDs []phase0.ValidatorIndex) map[phase0.ValidatorIndex]*types.Share {
+	keySetMap := KeySetMapForValidatorIndexList(valIDs)
+	var valShareMap = make(map[phase0.ValidatorIndex]*types.Share)
+	for _, valID := range valIDs {
+		share := TestingShareForValidator(keySetMap, valID)
+		valShareMap[valID] = share
+	}
+	return valShareMap
+}
+
 var TestingCommitteeMember = func(keysSet *TestKeySet) *types.CommitteeMember {
 	operators := []*types.Operator{}
 

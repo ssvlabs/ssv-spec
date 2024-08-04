@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
@@ -66,11 +67,6 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.Val
 		break
 	}
 
-	sharePubKeys := make([]types.ShareValidatorPK, 0)
-	for _, share := range shareMap {
-		sharePubKeys = append(sharePubKeys, share.SharePubKey)
-	}
-
 	// Identifier
 	var ownerID []byte
 	if role == types.RoleCommittee {
@@ -94,17 +90,25 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.Val
 	var valCheck qbft.ProposedValueCheckF
 	switch role {
 	case types.RoleCommittee:
-		valCheck = ssv.BeaconVoteValueCheckF(km, TestingDutySlot,
-			sharePubKeys, TestingDutyEpoch)
+		validators := []phase0.ValidatorIndex{}
+		for vIndex := range shareMap {
+			validators = append(validators, vIndex)
+		}
+		duty := TestingCommitteeDuty(TestingDutySlot, validators, validators)
+		var err error
+		valCheck, err = ssv.BeaconVoteValueCheckF(duty, km, types.BeaconTestNetwork, shareMap)
+		if err != nil {
+			panic(fmt.Sprintf("failed to create beacon vote value check: %v", err))
+		}
 	case types.RoleProposer:
 		valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
-			(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey)
+			shareInstance.ValidatorPubKey, shareInstance.ValidatorIndex, shareInstance.SharePubKey)
 	case types.RoleAggregator:
 		valCheck = ssv.AggregatorValueCheckF(km, types.BeaconTestNetwork,
-			(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex)
+			(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex)
 	case types.RoleSyncCommitteeContribution:
 		valCheck = ssv.SyncCommitteeContributionValueCheckF(km, types.BeaconTestNetwork,
-			(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex)
+			(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex)
 	default:
 		valCheck = nil
 	}
@@ -226,8 +230,17 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 	var valCheck qbft.ProposedValueCheckF
 	switch role {
 	case types.RoleCommittee:
-		valCheck = ssv.BeaconVoteValueCheckF(km, TestingDutySlot,
-			[]types.ShareValidatorPK{share.SharePubKey}, TestingDutyEpoch)
+		validators := []phase0.ValidatorIndex{}
+		shareMap := map[phase0.ValidatorIndex]*types.Share{share.ValidatorIndex: share}
+		for vIndex := range shareMap {
+			validators = append(validators, vIndex)
+		}
+		duty := TestingCommitteeDuty(TestingDutySlot, validators, validators)
+		var err error
+		valCheck, err = ssv.BeaconVoteValueCheckF(duty, km, types.BeaconTestNetwork, shareMap)
+		if err != nil {
+			panic(fmt.Sprintf("failed to create beacon vote value check: %v", err))
+		}
 	case types.RoleProposer:
 		valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
 			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, share.SharePubKey)

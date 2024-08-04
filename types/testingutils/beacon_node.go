@@ -154,7 +154,7 @@ var TestingSignedAttestation = func(ks *TestKeySet) *phase0.Attestation {
 }
 
 var TestingSignedAttestationForValidatorIndex = func(ks *TestKeySet, validatorIndex phase0.ValidatorIndex) *phase0.Attestation {
-	committeeDuty := TestingCommitteeAttesterDuty(TestingDutySlot, []int{int(validatorIndex)})
+	committeeDuty := TestingCommitteeAttesterDuty(TestingDutySlot, []phase0.ValidatorIndex{validatorIndex})
 	duty := committeeDuty.ValidatorDuties[0]
 	aggregationBitfield := bitfield.NewBitlist(duty.CommitteeLength)
 	aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
@@ -418,15 +418,15 @@ var TestingProposerDutyFirstSlot = types.ValidatorDuty{
 	ValidatorIndex: TestingValidatorIndex,
 }
 
-func getValPubKeyByValIdx(valIdx int) phase0.BLSPubKey {
-	return TestingValidatorPubKeyForValidatorIndex(phase0.ValidatorIndex(valIdx))
+func getValPubKeyByValIdx(valIdx phase0.ValidatorIndex) phase0.BLSPubKey {
+	return TestingValidatorPubKeyForValidatorIndex(valIdx)
 }
 
-func TestingCommitteeDuty(slot phase0.Slot, attestationValidatorIds []int, syncCommitteeValidatorIds []int) *types.CommitteeDuty {
+func TestingCommitteeDuty(slot phase0.Slot, attestationValidatorIds []phase0.ValidatorIndex, syncCommitteeValidatorIds []phase0.ValidatorIndex) *types.CommitteeDuty {
 	return TestingCommitteeDutyWithParams(slot, attestationValidatorIds, syncCommitteeValidatorIds, TestingCommitteeIndex, TestingCommitteesAtSlot, TestingCommitteeLenght, TestingValidatorCommitteeIndex)
 }
 
-func TestingCommitteeDutyWithMixedCommitteeIndexes(slot phase0.Slot, attestationValidatorIds []int, syncCommitteeValidatorIds []int) *types.CommitteeDuty {
+func TestingCommitteeDutyWithMixedCommitteeIndexes(slot phase0.Slot, attestationValidatorIds []phase0.ValidatorIndex, syncCommitteeValidatorIds []phase0.ValidatorIndex) *types.CommitteeDuty {
 	sort.Slice(attestationValidatorIds, func(i, j int) bool {
 		return attestationValidatorIds[i] < attestationValidatorIds[j]
 	})
@@ -435,9 +435,9 @@ func TestingCommitteeDutyWithMixedCommitteeIndexes(slot phase0.Slot, attestation
 	for i, valIdx := range attestationValidatorIds {
 		var duty *types.CommitteeDuty
 		if i < len(attestationValidatorIds)/2 {
-			duty = TestingCommitteeDuty(slot, []int{valIdx}, nil)
+			duty = TestingCommitteeDuty(slot, []phase0.ValidatorIndex{valIdx}, nil)
 		} else {
-			duty = TestingCommitteeDutyWithParams(slot, []int{valIdx}, nil, TestingDifferentCommitteeIndex, TestingCommitteesAtSlot, TestingCommitteeLenght, TestingValidatorCommitteeIndex)
+			duty = TestingCommitteeDutyWithParams(slot, []phase0.ValidatorIndex{valIdx}, nil, TestingDifferentCommitteeIndex, TestingCommitteesAtSlot, TestingCommitteeLenght, TestingValidatorCommitteeIndex)
 		}
 		if ret == nil {
 			ret = duty
@@ -453,9 +453,9 @@ func TestingCommitteeDutyWithMixedCommitteeIndexes(slot phase0.Slot, attestation
 	for i, valIdx := range syncCommitteeValidatorIds {
 		var duty *types.CommitteeDuty
 		if i < len(syncCommitteeValidatorIds)/2 {
-			duty = TestingCommitteeDuty(slot, nil, []int{valIdx})
+			duty = TestingCommitteeDuty(slot, nil, []phase0.ValidatorIndex{valIdx})
 		} else {
-			duty = TestingCommitteeDutyWithParams(slot, nil, []int{valIdx}, TestingDifferentCommitteeIndex, TestingCommitteesAtSlot, TestingCommitteeLenght, TestingValidatorCommitteeIndex)
+			duty = TestingCommitteeDutyWithParams(slot, nil, []phase0.ValidatorIndex{valIdx}, TestingDifferentCommitteeIndex, TestingCommitteesAtSlot, TestingCommitteeLenght, TestingValidatorCommitteeIndex)
 		}
 		if ret == nil {
 			ret = duty
@@ -467,7 +467,8 @@ func TestingCommitteeDutyWithMixedCommitteeIndexes(slot phase0.Slot, attestation
 	return ret
 }
 
-func TestingCommitteeDutyWithParams(slot phase0.Slot, attestationValidatorIds []int, syncCommitteeValidatorIds []int,
+func TestingCommitteeDutyWithParams(slot phase0.Slot, attestationValidatorIds []phase0.ValidatorIndex,
+	syncCommitteeValidatorIds []phase0.ValidatorIndex,
 	committeeIndex phase0.CommitteeIndex,
 	committeesAtSlot uint64,
 	committeeLenght uint64,
@@ -507,36 +508,37 @@ func TestingCommitteeDutyWithParams(slot phase0.Slot, attestationValidatorIds []
 	return &types.CommitteeDuty{Slot: slot, ValidatorDuties: duties}
 }
 
-func TestingCommitteeAttesterDuty(slot phase0.Slot, validatorIds []int) *types.CommitteeDuty {
+func TestingCommitteeAttesterDuty(slot phase0.Slot, validatorIds []phase0.ValidatorIndex) *types.CommitteeDuty {
 	return TestingCommitteeDuty(slot, validatorIds, nil)
 }
 
-func TestingCommitteeSyncCommitteeDuty(slot phase0.Slot, validatorIds []int) *types.CommitteeDuty {
+func TestingCommitteeSyncCommitteeDuty(slot phase0.Slot, validatorIds []phase0.ValidatorIndex) *types.CommitteeDuty {
 	return TestingCommitteeDuty(slot, nil, validatorIds)
 }
 
 // Committee duty - Attestation only
-var TestingAttesterDuty = TestingCommitteeAttesterDuty(TestingDutySlot, []int{TestingValidatorIndex})
+var TestingAttesterDuty = TestingCommitteeAttesterDuty(TestingDutySlot, []phase0.ValidatorIndex{TestingValidatorIndex})
 
-var TestingAttesterDutyNextEpoch = TestingCommitteeAttesterDuty(TestingDutySlot2, []int{TestingValidatorIndex})
+var TestingAttesterDutyNextEpoch = TestingCommitteeAttesterDuty(TestingDutySlot2, []phase0.ValidatorIndex{TestingValidatorIndex})
 
-var TestingAttesterDutyFirstSlot = TestingCommitteeAttesterDuty(0, []int{TestingValidatorIndex})
+var TestingAttesterDutyFirstSlot = TestingCommitteeAttesterDuty(0, []phase0.ValidatorIndex{TestingValidatorIndex})
 
 // Committee duty - Sync Committee only
 
-var TestingSyncCommitteeDuty = TestingCommitteeSyncCommitteeDuty(TestingDutySlot, []int{TestingValidatorIndex})
+var TestingSyncCommitteeDuty = TestingCommitteeSyncCommitteeDuty(TestingDutySlot, []phase0.ValidatorIndex{TestingValidatorIndex})
 
-var TestingSyncCommitteeDutyNextEpoch = TestingCommitteeSyncCommitteeDuty(TestingDutySlot2, []int{TestingValidatorIndex})
+var TestingSyncCommitteeDutyNextEpoch = TestingCommitteeSyncCommitteeDuty(TestingDutySlot2, []phase0.ValidatorIndex{TestingValidatorIndex})
 
-var TestingSyncCommitteeDutyFirstSlot = TestingCommitteeSyncCommitteeDuty(0, []int{TestingValidatorIndex})
+var TestingSyncCommitteeDutyFirstSlot = TestingCommitteeSyncCommitteeDuty(0, []phase0.ValidatorIndex{TestingValidatorIndex})
 
 // Committee duty - Attestation and Sync Committee
 
-var TestingAttesterAndSyncCommitteeDuties = TestingCommitteeDuty(TestingDutySlot, []int{TestingValidatorIndex}, []int{TestingValidatorIndex})
+var TestingAttesterAndSyncCommitteeDuties = TestingCommitteeDuty(TestingDutySlot, []phase0.ValidatorIndex{TestingValidatorIndex},
+	[]phase0.ValidatorIndex{TestingValidatorIndex})
 
-var TestingAttesterAndSyncCommitteeDutiesNextEpoch = TestingCommitteeDuty(TestingDutySlot2, []int{TestingValidatorIndex}, []int{TestingValidatorIndex})
+var TestingAttesterAndSyncCommitteeDutiesNextEpoch = TestingCommitteeDuty(TestingDutySlot2, []phase0.ValidatorIndex{TestingValidatorIndex}, []phase0.ValidatorIndex{TestingValidatorIndex})
 
-var TestingAttesterAndSyncCommitteeDutiesFirstSlot = TestingCommitteeDuty(0, []int{TestingValidatorIndex}, []int{TestingValidatorIndex})
+var TestingAttesterAndSyncCommitteeDutiesFirstSlot = TestingCommitteeDuty(0, []phase0.ValidatorIndex{TestingValidatorIndex}, []phase0.ValidatorIndex{TestingValidatorIndex})
 
 var TestingAggregatorDutyFirstSlot = types.ValidatorDuty{
 	Type:                    types.BNRoleAggregator,
