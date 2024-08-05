@@ -117,17 +117,19 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 
 				typedTest.Run(t)
 			case reflect.TypeOf(&valcheck.SpecTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &valcheck.SpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-
+				typedTest := valueCheckSpecTestFromMap(t, test.(map[string]interface{}))
 				typedTest.Run(t)
 			case reflect.TypeOf(&valcheck.MultiSpecTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &valcheck.MultiSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				subtests := test.(map[string]interface{})["Tests"].([]interface{})
+				typedTests := make([]*valcheck.SpecTest, 0)
+				for _, subtest := range subtests {
+					typedTests = append(typedTests, valueCheckSpecTestFromMap(t, subtest.(map[string]interface{})))
+				}
+
+				typedTest := &valcheck.MultiSpecTest{
+					Name:  test.(map[string]interface{})["Name"].(string),
+					Tests: typedTests,
+				}
 
 				typedTest.Run(t)
 			case reflect.TypeOf(&synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}).String():
@@ -250,31 +252,9 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	runnerMap := m["Runner"].(map[string]interface{})
 	baseRunnerMap := runnerMap["BaseRunner"].(map[string]interface{})
 
-	var testDuty types.Duty
-	if _, ok := m["CommitteeDuty"]; ok {
-		byts, err := json.Marshal(m["CommitteeDuty"])
-		if err != nil {
-			panic("cant marshal committee duty")
-		}
-		committeeDuty := &types.CommitteeDuty{}
-		err = json.Unmarshal(byts, committeeDuty)
-		if err != nil {
-			panic("cant unmarshal committee duty")
-		}
-		testDuty = committeeDuty
-	} else if _, ok := m["ValidatorDuty"]; ok {
-		byts, err := json.Marshal(m["ValidatorDuty"])
-		if err != nil {
-			panic("cant marshal beacon duty")
-		}
-		duty := &types.ValidatorDuty{}
-		err = json.Unmarshal(byts, duty)
-		if err != nil {
-			panic("cant unmarshal beacon duty")
-		}
-		testDuty = duty
-	} else {
-		panic("no beacon or committee duty")
+	testDuty := fetchTestDuty(m)
+	if testDuty == nil {
+		panic("no committee or beacon duty")
 	}
 
 	msgs := make([]*types.SignedSSVMessage, 0)
@@ -330,6 +310,34 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		OutputMessages:          outputMsgs,
 		BeaconBroadcastedRoots:  beaconBroadcastedRoots,
 	}
+}
+
+func fetchTestDuty(m map[string]interface{}) types.Duty {
+	var testDuty types.Duty
+	if _, ok := m["CommitteeDuty"]; ok {
+		byts, err := json.Marshal(m["CommitteeDuty"])
+		if err != nil {
+			panic("cant marshal committee duty")
+		}
+		committeeDuty := &types.CommitteeDuty{}
+		err = json.Unmarshal(byts, committeeDuty)
+		if err != nil {
+			panic("cant unmarshal committee duty")
+		}
+		testDuty = committeeDuty
+	} else if _, ok := m["ValidatorDuty"]; ok {
+		byts, err := json.Marshal(m["ValidatorDuty"])
+		if err != nil {
+			panic("cant marshal beacon duty")
+		}
+		duty := &types.ValidatorDuty{}
+		err = json.Unmarshal(byts, duty)
+		if err != nil {
+			panic("cant unmarshal beacon duty")
+		}
+		testDuty = duty
+	}
+	return testDuty
 }
 
 func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee.CommitteeSpecTest {
@@ -398,6 +406,33 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 		OutputMessages:         outputMsgs,
 		BeaconBroadcastedRoots: beaconBroadcastedRoots,
 		ExpectedError:          m["ExpectedError"].(string),
+	}
+}
+
+func valueCheckSpecTestFromMap(t *testing.T, m map[string]interface{}) *valcheck.SpecTest {
+	testDuty := fetchTestDuty(m)
+
+	byts, _ := json.Marshal(m["Input"])
+	var input []byte
+	require.NoError(t, json.Unmarshal(byts, &input))
+
+	byts, _ = json.Marshal(m["SlashableSlots"])
+	slashableSlots := make(map[string][]phase0.Slot)
+	require.NoError(t, json.Unmarshal(byts, &slashableSlots))
+
+	byts, _ = json.Marshal(m["ValidatorsShares"])
+	validatorShares := make(map[phase0.ValidatorIndex]*types.Share)
+	require.NoError(t, json.Unmarshal(byts, &validatorShares))
+
+	return &valcheck.SpecTest{
+		Name:             m["Name"].(string),
+		Network:          types.BeaconNetwork(m["Network"].(string)),
+		Duty:             testDuty,
+		Input:            input,
+		SlashableSlots:   slashableSlots,
+		ValidatorsShares: validatorShares,
+		ExpectedError:    m["ExpectedError"].(string),
+		AnyError:         m["AnyError"].(bool),
 	}
 }
 
