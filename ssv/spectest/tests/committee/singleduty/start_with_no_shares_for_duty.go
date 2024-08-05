@@ -1,6 +1,7 @@
 package committeesingleduty
 
 import (
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -18,7 +19,7 @@ func StartWithNoSharesForDuty() tests.SpecTest {
 		Committee: testingutils.BaseCommittee(ksMapFor1Validator),
 		Input: []interface{}{
 			// Duty for validator of index 2
-			testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, []int{2}),
+			testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, []phase0.ValidatorIndex{2}),
 		},
 		ExpectedError:  "no shares for duty's validators",
 		OutputMessages: []*types.PartialSignatureMessages{},

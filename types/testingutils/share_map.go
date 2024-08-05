@@ -11,18 +11,18 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-func ValidatorIndexList(limit int) []int {
-	ret := make([]int, limit)
+func ValidatorIndexList(limit int) []phase0.ValidatorIndex {
+	ret := make([]phase0.ValidatorIndex, limit)
 	for i := 0; i < limit; i++ {
-		ret[i] = i + 1
+		ret[i] = phase0.ValidatorIndex(i + 1)
 	}
 	return ret
 }
 
-func KeySetMapForValidatorIndexList(valIndexes []int) map[phase0.ValidatorIndex]*TestKeySet {
+func KeySetMapForValidatorIndexList(valIndexes []phase0.ValidatorIndex) map[phase0.ValidatorIndex]*TestKeySet {
 	ret := make(map[phase0.ValidatorIndex]*TestKeySet)
 	for _, valIdx := range valIndexes {
-		ks, exists := TestingKeySetMap[phase0.ValidatorIndex(valIdx)]
+		ks, exists := TestingKeySetMap[valIdx]
 		if !exists {
 			panic(fmt.Sprintf("Validator index %v does not exist in TestingKeySetMap", valIdx))
 		}

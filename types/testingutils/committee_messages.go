@@ -10,7 +10,7 @@ import (
 )
 
 // This function return the validators that should be assigned to the duties
-func selectValidatorsForDuties(numAttestingValidators int, numSyncCommitteeValidators int, numSequencedDuties int, currDutyIncrement int, diffValidatorsForDuties bool) ([]int, []int) {
+func selectValidatorsForDuties(numAttestingValidators int, numSyncCommitteeValidators int, numSequencedDuties int, currDutyIncrement int, diffValidatorsForDuties bool) ([]phase0.ValidatorIndex, []phase0.ValidatorIndex) {
 
 	// Attestation validators
 	attValidatorsIndexList := ValidatorIndexList(numAttestingValidators)
@@ -19,8 +19,8 @@ func selectValidatorsForDuties(numAttestingValidators int, numSyncCommitteeValid
 	scValidatorsIndexList := ValidatorIndexList(numSyncCommitteeValidators)
 
 	// Return variables
-	var attValidatorsForDuty []int
-	var scValidatorsForDuty []int
+	var attValidatorsForDuty []phase0.ValidatorIndex
+	var scValidatorsForDuty []phase0.ValidatorIndex
 
 	if diffValidatorsForDuties {
 		// If not using the same validators, equally partition the validators list per duty

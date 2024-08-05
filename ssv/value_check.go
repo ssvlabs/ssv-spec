@@ -11,6 +11,29 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
+// BeaconVoteValueCheckF creates a value check function for a beacon vote
+// It filters out the slashable public keys from the shares and creates a value check function
+// that checks if the beacon vote is slashable by the filtered public keys
+// It also does sanity checks on the beacon vote data
+// It returns an error if shares assigned to the duty are missing
+func BeaconVoteValueCheckF(duty *types.CommitteeDuty, signer types.BeaconSigner, beaconNetwork types.BeaconNetwork,
+	availableShares map[phase0.ValidatorIndex]*types.Share) (qbft.ProposedValueCheckF, error) {
+	duties := duty.ValidatorDuties
+	slashablePublicKeys := []types.ShareValidatorPK{}
+	for _, duty := range duties {
+		if duty.Type == types.BNRoleAttester {
+			share, ok := availableShares[duty.ValidatorIndex]
+			if !ok {
+				return nil, errors.New("assigned validator duty doesn't have a validator share")
+			}
+			slashablePublicKeys = append(slashablePublicKeys, share.SharePubKey)
+		}
+	}
+	valueCheckF := createBeaconVoteValueCheckF(signer, duty.DutySlot(), slashablePublicKeys,
+		beaconNetwork.EstimatedCurrentEpoch())
+	return valueCheckF, nil
+}
+
 func dutyValueCheck(
 	duty *types.ValidatorDuty,
 	network types.BeaconNetwork,
@@ -37,7 +60,7 @@ func dutyValueCheck(
 	return nil
 }
 
-func BeaconVoteValueCheckF(
+func createBeaconVoteValueCheckF(
 	signer types.BeaconSigner,
 	slot phase0.Slot,
 	sharePublicKeys []types.ShareValidatorPK,
