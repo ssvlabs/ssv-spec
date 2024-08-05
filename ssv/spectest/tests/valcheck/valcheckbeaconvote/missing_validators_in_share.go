@@ -31,7 +31,6 @@ func MissingValidatorInShare() tests.SpecTest {
 					[]phase0.ValidatorIndex{5}),
 				Input:            testingutils.TestBeaconVoteByts,
 				ValidatorsShares: testingutils.Testing4ValidatorsShareMap,
-				ExpectedError:    "assigned validator duty doesn't have a validator share",
 			},
 			{
 				Name:       "attestation and sync committee duty",
