@@ -25,7 +25,7 @@ func SourceHigherThanTarget() tests.SpecTest {
 	input, _ := data.Encode()
 
 	return &valcheck.MultiSpecTest{
-		Name: "attestation value check source higher than target",
+		Name: "beacon vote check source higher than target",
 		Tests: []*valcheck.SpecTest{
 			{
 				Name:             "attestation duty",
@@ -43,6 +43,9 @@ func SourceHigherThanTarget() tests.SpecTest {
 				Duty:             testingutils.TestingSyncCommitteeDuty,
 				Input:            input,
 				ValidatorsShares: testingutils.TestingSingleValidatorShareMap,
+				// Note that this error is not strictly necessary for sync committee duties
+				// To avoid unnecessary bugs and complexity, we keep the same error message
+				ExpectedError: "attestation data source >= target",
 			},
 			{
 				Name:             "attestation and sync committee duty",
