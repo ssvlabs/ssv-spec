@@ -39,7 +39,7 @@ func MinoritySlashable() tests.SpecTest {
 	}
 
 	return &valcheck.MultiSpecTest{
-		Name: "attestation value check with slashable minority",
+		Name: "beacon vote value check with slashable minority",
 		Tests: []*valcheck.SpecTest{
 			{
 				Name:             "attestation duty",

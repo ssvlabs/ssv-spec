@@ -11,7 +11,7 @@ import (
 // MissingValidatorInShare tests creation of a value check from a duty that has unknown validator shares
 func MissingValidatorInShare() tests.SpecTest {
 	return &valcheck.MultiSpecTest{
-		Name: "attestation value check with missing validators in share",
+		Name: "beacon voteccrename  value check with missing validators in share",
 		Tests: []*valcheck.SpecTest{
 			{
 				Name:       "attestation duty",

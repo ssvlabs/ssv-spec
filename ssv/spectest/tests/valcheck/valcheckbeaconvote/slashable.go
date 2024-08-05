@@ -31,7 +31,7 @@ func Slashable() tests.SpecTest {
 	shareString := hex.EncodeToString(sharePKBytes)
 
 	return &valcheck.MultiSpecTest{
-		Name: "attestation value check slashable",
+		Name: "beacon vote value check slashable",
 		Tests: []*valcheck.SpecTest{
 			{
 				Name:             "attestation duty",
