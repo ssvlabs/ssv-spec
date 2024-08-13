@@ -117,9 +117,11 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.Val
 
 	contr := qbft.NewController(identifier[:], committeeMember, config, opSigner)
 
+	var runner ssv.Runner
+	var err error
 	switch role {
 	case types.RoleCommittee:
-		return ssv.NewCommitteeRunner(
+		runner = ssv.NewCommitteeRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
@@ -130,7 +132,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.Val
 			valCheck,
 		)
 	case types.RoleAggregator:
-		return ssv.NewAggregatorRunner(
+		runner, err = ssv.NewAggregatorRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
@@ -142,7 +144,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.Val
 			TestingHighestDecidedSlot,
 		)
 	case types.RoleProposer:
-		return ssv.NewProposerRunner(
+		runner, err = ssv.NewProposerRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
@@ -154,7 +156,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.Val
 			TestingHighestDecidedSlot,
 		)
 	case types.RoleSyncCommitteeContribution:
-		return ssv.NewSyncCommitteeAggregatorRunner(
+		runner, err = ssv.NewSyncCommitteeAggregatorRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
@@ -166,7 +168,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.Val
 			TestingHighestDecidedSlot,
 		)
 	case types.RoleValidatorRegistration:
-		return ssv.NewValidatorRegistrationRunner(
+		runner, err = ssv.NewValidatorRegistrationRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			NewTestingBeaconNode(),
@@ -175,7 +177,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.Val
 			opSigner,
 		)
 	case types.RoleVoluntaryExit:
-		return ssv.NewVoluntaryExitRunner(
+		runner, err = ssv.NewVoluntaryExitRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			NewTestingBeaconNode(),
@@ -199,6 +201,10 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.Val
 	default:
 		panic("unknown role type")
 	}
+	if err != nil {
+		panic(err)
+	}
+	return runner
 }
 
 var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
@@ -252,9 +258,11 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
 	shareMap[share.ValidatorIndex] = share
 
+	var runner ssv.Runner
+	var err error
 	switch role {
 	case types.RoleCommittee:
-		return ssv.NewCommitteeRunner(
+		runner = ssv.NewCommitteeRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
@@ -265,7 +273,7 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 			valCheck,
 		)
 	case types.RoleAggregator:
-		return ssv.NewAggregatorRunner(
+		runner, err = ssv.NewAggregatorRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
@@ -277,7 +285,7 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 			TestingHighestDecidedSlot,
 		)
 	case types.RoleProposer:
-		return ssv.NewProposerRunner(
+		runner, err = ssv.NewProposerRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
@@ -289,7 +297,7 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 			TestingHighestDecidedSlot,
 		)
 	case types.RoleSyncCommitteeContribution:
-		return ssv.NewSyncCommitteeAggregatorRunner(
+		runner, err = ssv.NewSyncCommitteeAggregatorRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
@@ -301,7 +309,7 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 			TestingHighestDecidedSlot,
 		)
 	case types.RoleValidatorRegistration:
-		return ssv.NewValidatorRegistrationRunner(
+		runner, err = ssv.NewValidatorRegistrationRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			NewTestingBeaconNode(),
@@ -310,7 +318,7 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 			opSigner,
 		)
 	case types.RoleVoluntaryExit:
-		return ssv.NewVoluntaryExitRunner(
+		runner, err = ssv.NewVoluntaryExitRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			NewTestingBeaconNode(),
@@ -334,6 +342,10 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 	default:
 		panic("unknown role type")
 	}
+	if err != nil {
+		panic(err)
+	}
+	return runner
 }
 
 var DecidedRunner = func(keySet *TestKeySet) ssv.Runner {
