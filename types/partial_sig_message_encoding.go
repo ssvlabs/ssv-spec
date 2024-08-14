@@ -26,6 +26,7 @@ func (p *PartialSignatureMessages) MarshalSSZTo(buf []byte) (dst []byte, err err
 
 	// Offset (2) 'Messages'
 	dst = ssz.WriteOffset(dst, offset)
+	offset += len(p.Messages) * 144
 
 	// Field (2) 'Messages'
 	if size := len(p.Messages); size > 1000 {
@@ -63,7 +64,7 @@ func (p *PartialSignatureMessages) UnmarshalSSZ(buf []byte) error {
 		return ssz.ErrOffset
 	}
 
-	if o2 != 20 {
+	if o2 < 20 {
 		return ssz.ErrInvalidVariableOffset
 	}
 

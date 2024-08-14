@@ -203,6 +203,7 @@ func (v *ValidatorConsensusData) MarshalSSZTo(buf []byte) (dst []byte, err error
 
 	// Offset (2) 'DataSSZ'
 	dst = ssz.WriteOffset(dst, offset)
+	offset += len(v.DataSSZ)
 
 	// Field (0) 'Duty'
 	if dst, err = v.Duty.MarshalSSZTo(dst); err != nil {
@@ -235,7 +236,7 @@ func (v *ValidatorConsensusData) UnmarshalSSZ(buf []byte) error {
 		return ssz.ErrOffset
 	}
 
-	if o0 != 16 {
+	if o0 < 16 {
 		return ssz.ErrInvalidVariableOffset
 	}
 

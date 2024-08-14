@@ -25,6 +25,7 @@ func (s *SSVMessage) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 
 	// Offset (2) 'Data'
 	dst = ssz.WriteOffset(dst, offset)
+	offset += len(s.Data)
 
 	// Field (2) 'Data'
 	if size := len(s.Data); size > 722412 {
@@ -58,7 +59,7 @@ func (s *SSVMessage) UnmarshalSSZ(buf []byte) error {
 		return ssz.ErrOffset
 	}
 
-	if o2 != 68 {
+	if o2 < 68 {
 		return ssz.ErrInvalidVariableOffset
 	}
 
@@ -152,6 +153,7 @@ func (s *SignedSSVMessage) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 
 	// Offset (3) 'FullData'
 	dst = ssz.WriteOffset(dst, offset)
+	offset += len(s.FullData)
 
 	// Field (0) 'Signatures'
 	if size := len(s.Signatures); size > 13 {
@@ -213,7 +215,7 @@ func (s *SignedSSVMessage) UnmarshalSSZ(buf []byte) error {
 		return ssz.ErrOffset
 	}
 
-	if o0 != 16 {
+	if o0 < 16 {
 		return ssz.ErrInvalidVariableOffset
 	}
 
