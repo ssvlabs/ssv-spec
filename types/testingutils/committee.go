@@ -68,7 +68,7 @@ var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.Validat
 	}
 
 	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) *ssv.CommitteeRunner {
-		return ssv.NewCommitteeRunner(
+		runner, err := ssv.NewCommitteeRunner(
 			runnerSample.BaseRunner.BeaconNetwork,
 			shareMap,
 			qbft.NewController(
@@ -82,7 +82,11 @@ var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.Validat
 			runnerSample.GetSigner(),
 			runnerSample.GetOperatorSigner(),
 			runnerSample.GetValCheckF(),
-		).(*ssv.CommitteeRunner)
+		)
+		if err != nil {
+			panic(err)
+		}
+		return runner.(*ssv.CommitteeRunner)
 	}
 
 	return ssv.NewCommittee(

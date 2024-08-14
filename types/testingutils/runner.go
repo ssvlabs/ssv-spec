@@ -4,6 +4,7 @@ import (
 	"bytes"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
@@ -57,71 +58,96 @@ var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 }
 
 var baseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
-
-	var keySetInstance *TestKeySet
-	var shareInstance *types.Share
-	for _, share := range shareMap {
-		keySetInstance = KeySetForShare(share)
-		shareInstance = TestingShare(keySetInstance, share.ValidatorIndex)
-		break
+	runner, err := ConstructBaseRunnerWithShareMap(role, shareMap)
+	if err != nil {
+		panic(err)
 	}
+	return runner
+}
 
-	sharePubKeys := make([]types.ShareValidatorPK, 0)
-	for _, share := range shareMap {
-		sharePubKeys = append(sharePubKeys, share.SharePubKey)
-	}
+var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.ValidatorIndex]*types.Share) (ssv.Runner, error) {
 
-	// Identifier
-	var ownerID []byte
-	if role == types.RoleCommittee {
-		committee := make([]uint64, 0)
-		for _, op := range keySetInstance.Committee() {
-			committee = append(committee, op.Signer)
-		}
-		committeeID := types.GetCommitteeID(committee)
-		ownerID = bytes.Clone(committeeID[:])
-	} else {
-		ownerID = TestingValidatorPubKey[:]
-	}
-	identifier := types.NewMsgID(TestingSSVDomainType, ownerID, role)
-
-	net := NewTestingNetwork(1, keySetInstance.OperatorKeys[1])
+	var identifier types.MessageID
+	var net *TestingNetwork
+	var opSigner *types.OperatorSigner
+	var valCheck qbft.ProposedValueCheckF
+	var contr *qbft.Controller
 
 	km := NewTestingKeyManager()
-	committeeMember := TestingCommitteeMember(keySetInstance)
-	opSigner := NewOperatorSigner(keySetInstance, committeeMember.OperatorID)
 
-	var valCheck qbft.ProposedValueCheckF
-	switch role {
-	case types.RoleCommittee:
-		valCheck = ssv.BeaconVoteValueCheckF(km, TestingDutySlot,
-			sharePubKeys, TestingDutyEpoch)
-	case types.RoleProposer:
-		valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
-			(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey)
-	case types.RoleAggregator:
-		valCheck = ssv.AggregatorValueCheckF(km, types.BeaconTestNetwork,
-			(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex)
-	case types.RoleSyncCommitteeContribution:
-		valCheck = ssv.SyncCommitteeContributionValueCheckF(km, types.BeaconTestNetwork,
-			(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex)
-	default:
-		valCheck = nil
-	}
-	config := TestingConfig(keySetInstance)
-	config.ValueCheckF = valCheck
-	config.ProposerF = func(state *qbft.State, round qbft.Round) types.OperatorID {
-		return 1
-	}
-	config.Network = net
+	if len(shareMap) > 0 {
+		// Get sample instance for share and key set
+		var keySetInstance *TestKeySet
+		var shareInstance *types.Share
+		for _, share := range shareMap {
+			keySetInstance = KeySetForShare(share)
+			shareInstance = TestingShare(keySetInstance, share.ValidatorIndex)
+			break
+		}
 
-	contr := qbft.NewController(identifier[:], committeeMember, config, opSigner)
+		// Get list of shares' pub keys
+		sharePubKeys := make([]types.ShareValidatorPK, 0)
+		for _, share := range shareMap {
+			sharePubKeys = append(sharePubKeys, share.SharePubKey)
+		}
+
+		// Identifier
+		var ownerID []byte
+		if role == types.RoleCommittee {
+			committee := make([]uint64, 0)
+			for _, op := range keySetInstance.Committee() {
+				committee = append(committee, op.Signer)
+			}
+			committeeID := types.GetCommitteeID(committee)
+			ownerID = bytes.Clone(committeeID[:])
+		} else {
+			ownerID = TestingValidatorPubKey[:]
+		}
+		identifier = types.NewMsgID(TestingSSVDomainType, ownerID, role)
+
+		// Network
+		net = NewTestingNetwork(1, keySetInstance.OperatorKeys[1])
+
+		// Create CommitteeMember
+		committeeMember := TestingCommitteeMember(keySetInstance)
+
+		// Create OperatorSigner
+		opSigner = NewOperatorSigner(keySetInstance, committeeMember.OperatorID)
+
+		// Create ValueCheck
+		switch role {
+		case types.RoleCommittee:
+			valCheck = ssv.BeaconVoteValueCheckF(km, TestingDutySlot,
+				sharePubKeys, TestingDutyEpoch)
+		case types.RoleProposer:
+			valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
+				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey)
+		case types.RoleAggregator:
+			valCheck = ssv.AggregatorValueCheckF(km, types.BeaconTestNetwork,
+				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex)
+		case types.RoleSyncCommitteeContribution:
+			valCheck = ssv.SyncCommitteeContributionValueCheckF(km, types.BeaconTestNetwork,
+				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex)
+		default:
+			valCheck = nil
+		}
+
+		// Create qbft.Controller
+		config := TestingConfig(keySetInstance)
+		config.ValueCheckF = valCheck
+		config.ProposerF = func(state *qbft.State, round qbft.Round) types.OperatorID {
+			return 1
+		}
+		config.Network = net
+
+		contr = qbft.NewController(identifier[:], committeeMember, config, opSigner)
+	}
 
 	var runner ssv.Runner
 	var err error
 	switch role {
 	case types.RoleCommittee:
-		runner = ssv.NewCommitteeRunner(
+		runner, err = ssv.NewCommitteeRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
@@ -186,7 +212,7 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.Val
 			opSigner,
 		)
 	case UnknownDutyType:
-		ret := ssv.NewCommitteeRunner(
+		runner, err = ssv.NewCommitteeRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
@@ -196,19 +222,26 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.Val
 			opSigner,
 			valCheck,
 		)
-		ret.(*ssv.CommitteeRunner).BaseRunner.RunnerRoleType = UnknownDutyType
-		return ret
+		if runner != nil {
+			runner.(*ssv.CommitteeRunner).BaseRunner.RunnerRoleType = UnknownDutyType
+		}
 	default:
-		panic("unknown role type")
+		return nil, errors.New("unknown role type")
 	}
+	return runner, err
+}
+
+var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
+	runner, err := ConstructBaseRunner(role, keySet)
 	if err != nil {
 		panic(err)
 	}
 	return runner
 }
 
-var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
+var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.Runner, error) {
 	share := TestingShare(keySet, TestingValidatorIndex)
+	km := NewTestingKeyManager()
 
 	// Identifier
 	var ownerID []byte
@@ -224,11 +257,16 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 	}
 	identifier := types.NewMsgID(TestingSSVDomainType, ownerID[:], role)
 
+	// Network
 	net := NewTestingNetwork(1, keySet.OperatorKeys[1])
-	km := NewTestingKeyManager()
+
+	// Create CommitteeMember
 	committeeMember := TestingCommitteeMember(keySet)
+
+	// Create OperatorSigner
 	opSigner := NewOperatorSigner(keySet, committeeMember.OperatorID)
 
+	// Create ValueCheck
 	var valCheck qbft.ProposedValueCheckF
 	switch role {
 	case types.RoleCommittee:
@@ -246,6 +284,8 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 	default:
 		valCheck = nil
 	}
+
+	// Create qbft.Controller
 	config := TestingConfig(keySet)
 	config.ValueCheckF = valCheck
 	config.ProposerF = func(state *qbft.State, round qbft.Round) types.OperatorID {
@@ -255,6 +295,7 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 
 	contr := qbft.NewController(identifier[:], committeeMember, config, opSigner)
 
+	// Build share map
 	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
 	shareMap[share.ValidatorIndex] = share
 
@@ -262,7 +303,7 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 	var err error
 	switch role {
 	case types.RoleCommittee:
-		runner = ssv.NewCommitteeRunner(
+		runner, err = ssv.NewCommitteeRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
@@ -327,7 +368,7 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 			opSigner,
 		)
 	case UnknownDutyType:
-		ret := ssv.NewCommitteeRunner(
+		runner, err = ssv.NewCommitteeRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
@@ -337,15 +378,13 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 			opSigner,
 			valCheck,
 		)
-		ret.(*ssv.CommitteeRunner).BaseRunner.RunnerRoleType = UnknownDutyType
-		return ret
+		if runner != nil {
+			runner.(*ssv.CommitteeRunner).BaseRunner.RunnerRoleType = UnknownDutyType
+		}
 	default:
-		panic("unknown role type")
+		return nil, errors.New("unknown role type")
 	}
-	if err != nil {
-		panic(err)
-	}
-	return runner
+	return runner, err
 }
 
 var DecidedRunner = func(keySet *TestKeySet) ssv.Runner {
