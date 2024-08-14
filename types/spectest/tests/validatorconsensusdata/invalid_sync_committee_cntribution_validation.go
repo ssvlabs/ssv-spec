@@ -11,6 +11,6 @@ func InvalidSyncCommitteeContributionValidation() *ValidatorConsensusDataTest {
 	return &ValidatorConsensusDataTest{
 		Name:          "invalid sync committee contribution",
 		ConsensusData: *cd,
-		ExpectedError: "could not unmarshal ssz: four",
+		ExpectedError: "could not unmarshal ssz: incorrect end of offset: 12 0",
 	}
 }
