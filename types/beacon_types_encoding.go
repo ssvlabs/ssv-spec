@@ -44,7 +44,6 @@ func (v *ValidatorDuty) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 
 	// Offset (8) 'ValidatorSyncCommitteeIndices'
 	dst = ssz.WriteOffset(dst, offset)
-	offset += len(v.ValidatorSyncCommitteeIndices) * 8
 
 	// Field (8) 'ValidatorSyncCommitteeIndices'
 	if size := len(v.ValidatorSyncCommitteeIndices); size > 13 {
@@ -98,7 +97,7 @@ func (v *ValidatorDuty) UnmarshalSSZ(buf []byte) error {
 		return ssz.ErrOffset
 	}
 
-	if o8 < 108 {
+	if o8 != 108 {
 		return ssz.ErrInvalidVariableOffset
 	}
 
