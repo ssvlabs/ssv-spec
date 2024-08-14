@@ -32,7 +32,7 @@ func NewAggregatorRunner(
 ) (Runner, error) {
 
 	if len(share) != 1 {
-		return nil, errors.New("must have only one share")
+		return nil, errors.New("must have one share")
 	}
 
 	return &AggregatorRunner{
