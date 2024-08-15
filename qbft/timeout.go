@@ -6,6 +6,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+// At the moment, these variables are useful for the node implementation
+// TODO: It's usage should be updated in the PR https://github.com/ssvlabs/ssv-spec/pull/352
 var (
 	QuickTimeoutThreshold = Round(8)
 	QuickTimeout          = 2 * time.Second
