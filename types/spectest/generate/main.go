@@ -82,7 +82,7 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 
 	file := filepath.Join(scDir, fmt.Sprintf("%s.json", name))
 	log.Printf("writing state comparison json: %s\n", file)
-	if err := os.WriteFile(file, byts, 0600); err != nil {
+	if err := os.WriteFile(file, byts, 0444); err != nil {
 		panic(err.Error())
 	}
 }
@@ -109,7 +109,7 @@ func writeJson(data []byte) {
 	file := filepath.Join(basedir, "tests.json")
 
 	fmt.Printf("writing spec tests json to: %s\n", file)
-	if err := os.WriteFile(file, data, 0600); err != nil {
+	if err := os.WriteFile(file, data, 0444); err != nil {
 		panic(err.Error())
 	}
 }
