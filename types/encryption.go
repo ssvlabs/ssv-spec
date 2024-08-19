@@ -20,10 +20,7 @@ func GenerateKey() ([]byte, []byte, error) {
 	}
 
 	// convert to bytes
-	skPem, err := PrivateKeyToPem(sk)
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "Failed to encode private key to pem")
-	}
+	skPem := PrivateKeyToPem(sk)
 	pkPem, err := GetPublicKeyPem(sk)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "Failed to marshal public key")
@@ -56,19 +53,13 @@ func PemToPrivateKey(skPem []byte) (*rsa.PrivateKey, error) {
 		return nil, errors.New("failed to decode PEM")
 	}
 
-	// Parse key as PKCS8
-	parsedSk, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+	// Parse key as PKCS1
+	parsedSk, err := x509.ParsePKCS1PrivateKey(block.Bytes)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to parse private key")
 	}
 
-	// Type assert to *rsa.PrivateKey
-	ret, ok := parsedSk.(*rsa.PrivateKey)
-	if !ok {
-		return nil, errors.New("Failed to parse private key")
-	}
-
-	return ret, nil
+	return parsedSk, nil
 }
 
 // PemToPublicKey return rsa public key from pem
@@ -88,17 +79,14 @@ func PemToPublicKey(pkPem []byte) (*rsa.PublicKey, error) {
 }
 
 // PrivateKeyToPem converts privateKey to pem encoded
-func PrivateKeyToPem(sk *rsa.PrivateKey) ([]byte, error) {
-	pemBytes, err := x509.MarshalPKCS8PrivateKey(sk)
-	if err != nil {
-		return nil, err
-	}
+func PrivateKeyToPem(sk *rsa.PrivateKey) []byte {
+	pemBytes := x509.MarshalPKCS1PrivateKey(sk)
 	return pem.EncodeToMemory(
 		&pem.Block{
 			Type:  "RSA PRIVATE KEY",
 			Bytes: pemBytes,
 		},
-	), nil
+	)
 }
 
 // GetPublicKeyPem get public key from private key and return []byte represent the public key
