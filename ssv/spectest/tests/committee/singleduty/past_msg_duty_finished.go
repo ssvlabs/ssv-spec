@@ -101,7 +101,7 @@ func PastMessageDutyFinished() tests.SpecTest {
 		return signed
 	}
 
-	expectedError := "failed processing consensus message: could not process msg: invalid signed message: proposal is not valid with current state"
+	expectedError := "failed processing consensus message: not processing consensus message since instance is already decided"
 
 	multiSpecTest := &committee.MultiCommitteeSpecTest{
 		Name: "past msg duty finished",
