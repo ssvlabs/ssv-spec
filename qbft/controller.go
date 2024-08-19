@@ -34,9 +34,6 @@ func NewController(identifier []byte, committeeMember *types.CommitteeMember, co
 
 // StartNewInstance will start a new QBFT instance, if can't will return error
 func (c *Controller) StartNewInstance(height Height, value []byte) error {
-	if err := c.GetConfig().GetValueCheckF()(value); err != nil {
-		return errors.Wrap(err, "value invalid")
-	}
 
 	// can't use <= because of height == 0 case
 	if height < c.Height {

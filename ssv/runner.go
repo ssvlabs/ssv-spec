@@ -234,6 +234,11 @@ func (b *BaseRunner) decide(runner Runner, slot phase0.Slot, input types.Encoder
 	if err != nil {
 		return errors.Wrap(err, "could not encode input data for consensus")
 	}
+
+	if len(byts) == 0 {
+		return errors.Wrap(err, "empty input data")
+	}
+
 	if err := runner.GetValCheckF()(byts); err != nil {
 		return errors.Wrap(err, "input data invalid")
 	}
