@@ -29,13 +29,7 @@ func FarFutureDutySlot() tests.SpecTest {
 	return &valcheck.MultiSpecTest{
 		Name: "far future duty slot",
 		Tests: []*valcheck.SpecTest{
-			{
-				Name:       "committee",
-				Network:    types.BeaconTestNetwork,
-				RunnerRole: types.RoleCommittee,
-				Input:      testingutils.TestBeaconVoteByts,
-				// No error since input doesn't contain slot
-			},
+			// For committee duty we can't feed a wrong duty slot with the consensus data input, so we don't test it here
 			{
 				Name:          "sync committee aggregator",
 				Network:       types.BeaconTestNetwork,

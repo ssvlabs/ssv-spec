@@ -19,13 +19,7 @@ func WrongDutyType() tests.SpecTest {
 	return &valcheck.MultiSpecTest{
 		Name: "wrong duty type",
 		Tests: []*valcheck.SpecTest{
-			{
-				Name:       "committee",
-				Network:    types.BeaconTestNetwork,
-				RunnerRole: types.RoleCommittee,
-				Input:      testingutils.TestBeaconVoteByts,
-				// No error since input doesn't contain duty type
-			},
+			// For Committee duty we can't feed a wrong duty type with the consensus data input, so we don't test it here
 			{
 				Name:          "sync committee aggregator",
 				Network:       types.BeaconTestNetwork,

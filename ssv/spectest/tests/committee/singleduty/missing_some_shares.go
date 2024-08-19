@@ -20,13 +20,13 @@ func MissingSomeShares() tests.SpecTest {
 	msgID := testingutils.CommitteeMsgID(ks)
 
 	// Committee's validator indexes
-	committeeShareValidators := []int{1, 3, 5, 7, 9}
+	committeeShareValidators := []phase0.ValidatorIndex{1, 3, 5, 7, 9}
 	// KeySet and Share map for Committee
 	committeeShareKSMap := testingutils.KeySetMapForValidatorIndexList(committeeShareValidators)
 	committeeShareMap := testingutils.ShareMapFromKeySetMap(committeeShareKSMap)
 
 	// Duty's validator indexes
-	dutyValidators := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	dutyValidators := []phase0.ValidatorIndex{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 
 	multiSpecTest := &committee.MultiCommitteeSpecTest{
 		Name: "start committee duty with missing shares",

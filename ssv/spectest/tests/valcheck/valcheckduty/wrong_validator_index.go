@@ -2,7 +2,6 @@ package valcheckduty
 
 import (
 	"encoding/json"
-
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
@@ -29,13 +28,7 @@ func WrongValidatorIndex() tests.SpecTest {
 	return &valcheck.MultiSpecTest{
 		Name: "wrong validator index",
 		Tests: []*valcheck.SpecTest{
-			{
-				Name:       "committee",
-				Network:    types.BeaconTestNetwork,
-				RunnerRole: types.RoleCommittee,
-				Input:      testingutils.TestBeaconVoteByts,
-				// No error since input doesn't contain validator index
-			},
+			// For committee duty we can't feed a wrong validator index with the consensus data input, so we don't test it here
 			{
 				Name:          "sync committee aggregator",
 				Network:       types.BeaconTestNetwork,
