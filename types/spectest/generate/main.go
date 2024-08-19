@@ -3,8 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/bloxapp/ssv-spec/types/spectest"
-	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/types/spectest"
+	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"log"
 	"os"
 	"path/filepath"

@@ -2,81 +2,96 @@ package qbft
 
 import (
 	"bytes"
-	"github.com/bloxapp/ssv-spec/types"
+
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // UponDecided returns decided msg if decided, nil otherwise
-func (c *Controller) UponDecided(msg *SignedMessage) (*SignedMessage, error) {
+func (c *Controller) UponDecided(msg *ProcessingMessage) (*types.SignedSSVMessage, error) {
 	if err := ValidateDecided(
 		c.config,
 		msg,
-		c.Share,
+		c.CommitteeMember,
 	); err != nil {
 		return nil, errors.Wrap(err, "invalid decided msg")
 	}
 
 	// try to find instance
-	inst := c.InstanceForHeight(msg.Message.Height)
+	inst := c.InstanceForHeight(msg.QBFTMessage.Height)
 	prevDecided := inst != nil && inst.State.Decided
-	isFutureDecided := msg.Message.Height > c.Height
+	isFutureDecided := msg.QBFTMessage.Height > c.Height
 
 	if inst == nil {
-		i := NewInstance(c.GetConfig(), c.Share, c.Identifier, msg.Message.Height)
-		i.State.Round = msg.Message.Round
+		i := NewInstance(c.GetConfig(), c.CommitteeMember, c.Identifier, msg.QBFTMessage.Height, c.OperatorSigner)
+		i.State.Round = msg.QBFTMessage.Round
 		i.State.Decided = true
-		i.State.DecidedValue = msg.FullData
-		i.State.CommitContainer.AddMsg(msg)
+		i.State.DecidedValue = msg.SignedMessage.FullData
+		err := i.State.CommitContainer.AddMsg(msg)
+		if err != nil {
+			return nil, err
+		}
 		c.StoredInstances.addNewInstance(i)
 	} else if decided, _ := inst.IsDecided(); !decided {
+		err := inst.State.CommitContainer.AddMsg(msg)
+		if err != nil {
+			return nil, err
+		}
 		inst.State.Decided = true
-		inst.State.Round = msg.Message.Round
-		inst.State.DecidedValue = msg.FullData
-		inst.State.CommitContainer.AddMsg(msg)
+		inst.State.Round = msg.QBFTMessage.Round
+		inst.State.DecidedValue = msg.SignedMessage.FullData
 	} else { // decide previously, add if has more signers
-		signers, _ := inst.State.CommitContainer.LongestUniqueSignersForRoundAndRoot(msg.Message.Round, msg.Message.Root)
-		if len(msg.Signers) > len(signers) {
-			inst.State.CommitContainer.AddMsg(msg)
+		signers, _ := inst.State.CommitContainer.LongestUniqueSignersForRoundAndRoot(msg.QBFTMessage.Round, msg.QBFTMessage.Root)
+		if len(msg.SignedMessage.OperatorIDs) > len(signers) {
+			err := inst.State.CommitContainer.AddMsg(msg)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
 	if isFutureDecided {
 		// bump height
-		c.Height = msg.Message.Height
+		c.Height = msg.QBFTMessage.Height
 	}
 
 	if !prevDecided {
-		return msg, nil
+		return msg.SignedMessage, nil
 	}
 	return nil, nil
 }
 
 func ValidateDecided(
 	config IConfig,
-	signedDecided *SignedMessage,
-	share *types.Share,
+	msg *ProcessingMessage,
+	share *types.CommitteeMember,
 ) error {
-	if !IsDecidedMsg(share, signedDecided) {
+
+	isDecided, err := IsDecidedMsg(share, msg)
+	if err != nil {
+		return err
+	}
+	if !isDecided {
 		return errors.New("not a decided msg")
 	}
 
-	if err := signedDecided.Validate(); err != nil {
+	if err := msg.Validate(); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	if err := baseCommitValidation(config, signedDecided, signedDecided.Message.Height, share.Committee); err != nil {
+	if err := baseCommitValidationVerifySignature(msg, msg.QBFTMessage.Height, share.Committee); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
 	}
 
-	if err := signedDecided.Validate(); err != nil {
+	if err := msg.Validate(); err != nil {
 		return errors.Wrap(err, "invalid decided")
 	}
 
-	r, err := HashDataRoot(signedDecided.FullData)
+	r, err := HashDataRoot(msg.SignedMessage.FullData)
 	if err != nil {
 		return errors.Wrap(err, "could not hash input data")
 	}
-	if !bytes.Equal(r[:], signedDecided.Message.Root[:]) {
+	if !bytes.Equal(r[:], msg.QBFTMessage.Root[:]) {
 		return errors.New("H(data) != root")
 	}
 
@@ -84,6 +99,6 @@ func ValidateDecided(
 }
 
 // IsDecidedMsg returns true if signed commit has all quorum sigs
-func IsDecidedMsg(share *types.Share, signedDecided *SignedMessage) bool {
-	return share.HasQuorum(len(signedDecided.Signers)) && signedDecided.Message.MsgType == CommitMsgType
+func IsDecidedMsg(share *types.CommitteeMember, msg *ProcessingMessage) (bool, error) {
+	return share.HasQuorum(len(msg.SignedMessage.OperatorIDs)) && msg.QBFTMessage.MsgType == CommitMsgType, nil
 }

@@ -1,9 +1,9 @@
 package partialsigmessage
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PartialRootValid tests PostConsensusMessage root == 32 bytes
@@ -14,7 +14,7 @@ func PartialRootValid() *MsgSpecTest {
 
 	return &MsgSpecTest{
 		Name: "partial root valid",
-		Messages: []*types.SignedPartialSignatureMessage{
+		Messages: []*types.PartialSignatureMessages{
 			msg,
 		},
 	}

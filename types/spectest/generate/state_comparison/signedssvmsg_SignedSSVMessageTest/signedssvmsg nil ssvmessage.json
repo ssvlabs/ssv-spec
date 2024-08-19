@@ -1,0 +1,17 @@
+{
+		"Name": "nil ssvmessage",
+		"Messages": [
+				{
+						"Signatures": [
+								"AQIDBA=="
+						],
+						"OperatorIDs": [
+								1
+						],
+						"SSVMessage": null,
+						"FullData": null
+				}
+		],
+		"ExpectedError": "nil SSVMessage",
+		"RSAPublicKey": null
+}

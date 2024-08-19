@@ -1,17 +1,18 @@
 package partialsigmessage
 
 import (
-	comparable2 "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	reflect2 "reflect"
 	"testing"
 
-	"github.com/bloxapp/ssv-spec/types"
+	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+
+	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
 )
 
 type MsgSpecTest struct {
 	Name            string
-	Messages        []*types.SignedPartialSignatureMessage
+	Messages        []*types.PartialSignatureMessages
 	EncodedMessages [][]byte
 	ExpectedRoots   [][32]byte
 	ExpectedError   string
@@ -36,7 +37,7 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 			require.NoError(t, err)
 			require.EqualValues(t, test.EncodedMessages[i], byts)
 
-			decoded := &types.SignedPartialSignatureMessage{}
+			decoded := &types.PartialSignatureMessages{}
 			require.NoError(t, decoded.Decode(byts))
 			decodedRoot, err := decoded.GetRoot()
 			require.NoError(t, err)

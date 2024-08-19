@@ -1,11 +1,11 @@
 package timeout
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 // Round1 tests calling UponRoundTimeout for round 1, testing state and broadcasted msgs
@@ -14,15 +14,15 @@ func Round1() tests.SpecTest {
 	sc := round1StateComparison()
 
 	pre := testingutils.BaseInstance()
-	pre.State.ProposalAcceptedForCurrentRound = testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1))
+	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)))
 
 	return &SpecTest{
 		Name:      "round 1",
 		Pre:       pre,
 		PostRoot:  sc.Root(),
 		PostState: sc.ExpectedState,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.SignQBFTMsg(ks.OperatorKeys[1], types.OperatorID(1), &qbft.Message{
 				MsgType:                  qbft.RoundChangeMsgType,
 				Height:                   qbft.FirstHeight,
 				Round:                    2,

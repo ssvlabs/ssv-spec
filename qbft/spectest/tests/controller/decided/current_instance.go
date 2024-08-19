@@ -1,13 +1,13 @@
 package decided
 
 import (
-	"github.com/herumi/bls-eth-go-binary/bls"
+	"crypto/rsa"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 // CurrentInstance tests a decided msg received for current running instance
@@ -20,16 +20,19 @@ func CurrentInstance() tests.SpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
-				InputMessages: []*qbft.SignedMessage{
-					testingutils.TestingProposalMessage(ks.Shares[1], 1),
+				InputMessages: []*types.SignedSSVMessage{
+					testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1),
 
-					testingutils.TestingPrepareMessage(ks.Shares[1], 1),
-					testingutils.TestingPrepareMessage(ks.Shares[2], 2),
-					testingutils.TestingPrepareMessage(ks.Shares[3], 3),
+					testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+					testingutils.TestingPrepareMessage(ks.OperatorKeys[2], 2),
+					testingutils.TestingPrepareMessage(ks.OperatorKeys[3], 3),
 
-					testingutils.TestingCommitMessage(ks.Shares[1], 1),
-					testingutils.TestingCommitMessage(ks.Shares[2], 2),
-					testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}),
+					testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
+					testingutils.TestingCommitMessage(ks.OperatorKeys[2], 2),
+					testingutils.TestingCommitMultiSignerMessage(
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+						[]types.OperatorID{1, 2, 3},
+					),
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt: 1,
@@ -44,33 +47,42 @@ func CurrentInstance() tests.SpecTest {
 
 func currentInstanceStateComparison() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
-		testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
-		testingutils.TestingCommitMessage(ks.Shares[1], types.OperatorID(1)),
-		testingutils.TestingCommitMessage(ks.Shares[2], types.OperatorID(2)),
-		testingutils.TestingCommitMultiSignerMessage([]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]}, []types.OperatorID{1, 2, 3}),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[2], types.OperatorID(2)),
+		testingutils.TestingCommitMultiSignerMessage(
+			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+			[]types.OperatorID{1, 2, 3},
+		),
 	}
 
 	contr := testingutils.NewTestingQBFTController(
 		testingutils.TestingIdentifier,
-		testingutils.TestingShare(testingutils.Testing4SharesSet()),
+		testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 		testingutils.TestingConfig(testingutils.Testing4SharesSet()),
+		testingutils.TestingOperatorSigner(ks),
 	)
 
 	instance := &qbft.Instance{
 		StartValue: []byte{1, 2, 3, 4},
 		State: &qbft.State{
-			Share:                           testingutils.TestingShare(testingutils.Testing4SharesSet()),
-			ID:                              testingutils.TestingIdentifier,
-			ProposalAcceptedForCurrentRound: testingutils.TestingProposalMessage(ks.Shares[1], types.OperatorID(1)),
-			LastPreparedRound:               qbft.FirstRound,
-			LastPreparedValue:               testingutils.TestingQBFTFullData,
-			Decided:                         true,
-			DecidedValue:                    testingutils.TestingQBFTFullData,
-			Round:                           qbft.FirstRound,
+			CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
+			ID:              testingutils.TestingIdentifier,
+			ProposalAcceptedForCurrentRound: testingutils.ToProcessingMessage(
+				testingutils.TestingProposalMessage(
+					ks.OperatorKeys[1],
+					types.OperatorID(1),
+				),
+			),
+			LastPreparedRound: qbft.FirstRound,
+			LastPreparedValue: testingutils.TestingQBFTFullData,
+			Decided:           true,
+			DecidedValue:      testingutils.TestingQBFTFullData,
+			Round:             qbft.FirstRound,
 		},
 	}
 	comparable.SetSignedMessages(instance, msgs)

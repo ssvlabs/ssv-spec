@@ -1,9 +1,9 @@
 package prepare
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // PrepareQuorumTriggeredTwiceLateCommit tests triggering prepare quorum twice by sending > 2f+1 prepare messages.
@@ -13,15 +13,15 @@ func PrepareQuorumTriggeredTwiceLateCommit() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	sc := prepareQuorumTriggeredTwiceStateComparison()
 
-	msgs := []*qbft.SignedMessage{
-		testingutils.TestingProposalMessage(ks.Shares[1], 1),
+	msgs := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1),
 
-		testingutils.TestingPrepareMessage(ks.Shares[1], 1),
-		testingutils.TestingPrepareMessage(ks.Shares[2], 2),
-		testingutils.TestingPrepareMessage(ks.Shares[3], 3),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], 2),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], 3),
 
-		testingutils.TestingPrepareMessage(ks.Shares[4], 4),
-		testingutils.TestingCommitMessage(ks.Shares[1], 1),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[4], 4),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 	return &tests.MsgProcessingSpecTest{
 		Name:          "prepared quorum committed twice late commit",
@@ -29,9 +29,9 @@ func PrepareQuorumTriggeredTwiceLateCommit() tests.SpecTest {
 		PostRoot:      sc.Root(),
 		PostState:     sc.ExpectedState,
 		InputMessages: msgs,
-		OutputMessages: []*qbft.SignedMessage{
-			testingutils.TestingPrepareMessage(ks.Shares[1], 1),
-			testingutils.TestingCommitMessage(ks.Shares[1], 1),
+		OutputMessages: []*types.SignedSSVMessage{
+			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 		},
 	}
 }

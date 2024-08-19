@@ -7,10 +7,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	typescomparable "github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 type SpecTest struct {
@@ -18,7 +18,7 @@ type SpecTest struct {
 	Pre                *qbft.Instance
 	PostRoot           string
 	PostState          types.Root `json:"-"` // Field is ignored by encoding/json
-	OutputMessages     []*qbft.SignedMessage
+	OutputMessages     []*types.SignedSSVMessage
 	ExpectedTimerState *testingutils.TimerState
 	ExpectedError      string
 }
@@ -43,15 +43,15 @@ func (test *SpecTest) Run(t *testing.T) {
 	require.Equal(t, test.ExpectedTimerState.Round, timer.State.Round)
 
 	// test output message
-	broadcastedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
-	if len(test.OutputMessages) > 0 || len(broadcastedMsgs) > 0 {
-		require.Len(t, broadcastedMsgs, len(test.OutputMessages))
+	broadcastedSignedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, test.Pre.State.CommitteeMember.Committee))
+	if len(test.OutputMessages) > 0 || len(broadcastedSignedMsgs) > 0 {
+		require.Len(t, broadcastedSignedMsgs, len(test.OutputMessages))
 
 		for i, msg := range test.OutputMessages {
 			r1, _ := msg.GetRoot()
 
-			msg2 := &qbft.SignedMessage{}
-			require.NoError(t, msg2.Decode(broadcastedMsgs[i].Data))
+			msg2 := broadcastedSignedMsgs[i]
 			r2, _ := msg2.GetRoot()
 
 			require.EqualValuesf(t, r1, r2, fmt.Sprintf("output msg %d roots not equal", i))
