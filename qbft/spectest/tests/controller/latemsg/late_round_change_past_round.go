@@ -42,7 +42,7 @@ func LateRoundChangePastRound() tests.SpecTest {
 
 	return &tests.ControllerSpecTest{
 		Name:          "late round change past round",
-		ExpectedError: "could not process msg: invalid signed message: past round",
+		ExpectedError: "not processing consensus message since instance is already decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue:    []byte{1, 2, 3, 4},

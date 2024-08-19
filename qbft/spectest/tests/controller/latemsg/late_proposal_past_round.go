@@ -57,6 +57,6 @@ func LateProposalPastRound() tests.SpecTest {
 				},
 			},
 		},
-		ExpectedError: "could not process msg: invalid signed message: past round",
+		ExpectedError: "not processing consensus message since instance is already decided",
 	}
 }
