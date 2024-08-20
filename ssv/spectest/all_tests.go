@@ -8,6 +8,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/consensus"
+	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
@@ -183,5 +184,9 @@ var AllTests = []tests.TestF{
 	partialsigcontainer.Quorum,
 	partialsigcontainer.Duplicate,
 	partialsigcontainer.DuplicateQuorum,
-	// partialsigcontainer.Invalid,
+	partialsigcontainer.Invalid,
+
+	runnerconstruction.OneShare,
+	runnerconstruction.NoShares,
+	runnerconstruction.ManyShares,
 }

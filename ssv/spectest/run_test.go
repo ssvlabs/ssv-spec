@@ -20,6 +20,7 @@ import (
 	tests2 "github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
+	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
@@ -171,6 +172,13 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 					Name:  test.(map[string]interface{})["Name"].(string),
 					Tests: typedTests,
 				}
+
+				typedTest.Run(t)
+			case reflect.TypeOf(&runnerconstruction.RunnerConstructionSpecTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &runnerconstruction.RunnerConstructionSpecTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
 
 				typedTest.Run(t)
 			default:

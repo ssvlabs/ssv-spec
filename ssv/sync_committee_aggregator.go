@@ -32,7 +32,12 @@ func NewSyncCommitteeAggregatorRunner(
 	operatorSigner *types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
-) Runner {
+) (Runner, error) {
+
+	if len(share) != 1 {
+		return nil, errors.New("must have one share")
+	}
+
 	return &SyncCommitteeAggregatorRunner{
 		BaseRunner: &BaseRunner{
 			RunnerRoleType:     types.RoleSyncCommitteeContribution,
@@ -47,7 +52,7 @@ func NewSyncCommitteeAggregatorRunner(
 		signer:         signer,
 		operatorSigner: operatorSigner,
 		valCheck:       valCheck,
-	}
+	}, nil
 }
 
 func (r *SyncCommitteeAggregatorRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
