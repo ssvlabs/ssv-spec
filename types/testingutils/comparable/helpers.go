@@ -3,15 +3,16 @@ package comparable
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+
 	spec2 "github.com/attestantio/go-eth2-client/spec"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/google/go-cmp/cmp"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
-	"os"
-	"path/filepath"
-	"strings"
-	"testing"
 )
 
 func NoErrorEncoding(obj ssz.Marshaler) []byte {
@@ -46,7 +47,8 @@ func UnmarshalStateComparison[T types.Root](basedir string, testName string, tes
 	basedir = filepath.Join(basedir, "generate")
 	scDir := GetSCDir(basedir, testType)
 	path := filepath.Join(scDir, fmt.Sprintf("%s.json", testName))
-	byteValue, err := os.ReadFile(path)
+
+	byteValue, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
 		return nilT, err
 	}
@@ -64,7 +66,7 @@ func readStateComparison(basedir string, testName string, testType string) (map[
 	basedir = filepath.Join(basedir, "generate")
 	scDir := GetSCDir(basedir, testType)
 	path := filepath.Join(scDir, fmt.Sprintf("%s.json", testName))
-	byteValue, err := os.ReadFile(path)
+	byteValue, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
 		return nil, err
 	}

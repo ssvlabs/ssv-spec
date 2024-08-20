@@ -28,7 +28,7 @@ func getNonEmptyListsIndices(lists [][]interface{}) []int {
 func MergeListsWithRandomPick(lists [][]interface{}) []interface{} {
 
 	seed := int64(42)
-	rand := rand.New(rand.NewSource(seed))
+	rand := rand.New(rand.NewSource(seed)) // #nosec G404 --This PRNG is only used for testing. No cryptographically secure one allows seeding, which is useful so tests won't change
 	result := make([]interface{}, 0)
 
 	// Continue until all lists are empty
