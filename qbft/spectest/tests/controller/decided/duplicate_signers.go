@@ -25,6 +25,6 @@ func DuplicateSigners() tests.SpecTest {
 				},
 			},
 		},
-		ExpectedError: "invalid decided msg: invalid decided msg: invalid SignedSSVMessage: non unique signer",
+		ExpectedError: "invalid decided msg: invalid decided msg: signed commit invalid: invalid SignedSSVMessage: non unique signer",
 	}
 }
