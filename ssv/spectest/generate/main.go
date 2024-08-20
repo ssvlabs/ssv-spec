@@ -5,16 +5,17 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
-	"github.com/ssvlabs/ssv-spec/types"
-	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"strings"
+
+	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest"
 )
@@ -112,7 +113,7 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 	}
 
 	log.Printf("writing state comparison json: %s\n", file)
-	if err := os.WriteFile(file, byts, 0644); err != nil {
+	if err := os.WriteFile(file, byts, 0400); err != nil {
 		panic(err.Error())
 	}
 }
@@ -156,7 +157,7 @@ func writeJson(data []byte) {
 	}
 
 	// Write the gzipped data to a file
-	if err := os.WriteFile(file, buf.Bytes(), 0644); err != nil {
+	if err := os.WriteFile(file, buf.Bytes(), 0400); err != nil {
 		panic(err.Error())
 	}
 }

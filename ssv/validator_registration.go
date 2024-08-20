@@ -27,7 +27,12 @@ func NewValidatorRegistrationRunner(
 	network Network,
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
-) Runner {
+) (Runner, error) {
+
+	if len(share) != 1 {
+		return nil, errors.New("must have one share")
+	}
+
 	return &ValidatorRegistrationRunner{
 		BaseRunner: &BaseRunner{
 			RunnerRoleType: types.RoleValidatorRegistration,
@@ -39,7 +44,7 @@ func NewValidatorRegistrationRunner(
 		network:        network,
 		signer:         signer,
 		operatorSigner: operatorSigner,
-	}
+	}, nil
 }
 
 func (r *ValidatorRegistrationRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
