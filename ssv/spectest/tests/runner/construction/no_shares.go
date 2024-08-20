@@ -10,7 +10,6 @@ func NoShares() tests.SpecTest {
 
 	shares := map[phase0.ValidatorIndex]*types.Share{}
 
-	// No errors since one share must be valid for all runners
 	expectedErrors := map[types.RunnerRole]string{
 		types.RoleCommittee:                 "no shares",
 		types.RoleProposer:                  "must have one share",

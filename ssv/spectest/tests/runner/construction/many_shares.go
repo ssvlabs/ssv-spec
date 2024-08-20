@@ -11,9 +11,8 @@ func ManyShares() tests.SpecTest {
 	ks := testingutils.KeySetMapForValidators(10)
 	shares := testingutils.ShareMapFromKeySetMap(ks)
 
-	// No errors since one share must be valid for all runners
 	expectedErrors := map[types.RunnerRole]string{
-		types.RoleCommittee:                 "",
+		types.RoleCommittee:                 "", // No errors since it can handle multiple shares
 		types.RoleProposer:                  "must have one share",
 		types.RoleAggregator:                "must have one share",
 		types.RoleSyncCommitteeContribution: "must have one share",
