@@ -51,5 +51,6 @@ func FullFlowAfterDecided() tests.SpecTest {
 				},
 			},
 		},
+		ExpectedError: "not processing consensus message since instance is already decided",
 	}
 }

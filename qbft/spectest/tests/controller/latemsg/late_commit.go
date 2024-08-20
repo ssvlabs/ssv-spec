@@ -39,6 +39,7 @@ func LateCommit() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
+		ExpectedError: "not processing consensus message since instance is already decided",
 	}
 }
 
