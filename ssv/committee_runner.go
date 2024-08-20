@@ -28,7 +28,10 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
-) Runner {
+) (Runner, error) {
+	if len(share) == 0 {
+		return nil, errors.New("no shares")
+	}
 	return &CommitteeRunner{
 		BaseRunner: &BaseRunner{
 			RunnerRoleType: types.RoleCommittee,
@@ -42,7 +45,7 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 		operatorSigner:  operatorSigner,
 		valCheck:        valCheck,
 		submittedDuties: make(map[types.BeaconRole]map[phase0.ValidatorIndex]struct{}),
-	}
+	}, nil
 }
 
 func (cr CommitteeRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
@@ -261,7 +264,7 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 	for _, att := range attestationsToSubmit {
 		attestations = append(attestations, att)
 	}
-	
+
 	if len(attestations) > 0 {
 		if err := cr.beacon.SubmitAttestations(attestations); err != nil {
 			return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")

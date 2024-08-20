@@ -15,8 +15,6 @@ import (
 func PostFinish() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	// TODO: check errors
-	// nolint
 	finishRunner := func(runner ssv.Runner, duty *types.ValidatorDuty) ssv.Runner {
 		runner.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		runner.GetBaseRunner().State.Finished = true

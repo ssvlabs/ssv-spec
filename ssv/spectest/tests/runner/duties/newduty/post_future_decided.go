@@ -17,8 +17,6 @@ import (
 func PostFutureDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	// TODO: check error
-	// nolint
 	futureDecide := func(r ssv.Runner, duty types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
