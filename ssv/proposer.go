@@ -29,7 +29,12 @@ func NewProposerRunner(
 	operatorSigner *types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
-) Runner {
+) (Runner, error) {
+
+	if len(share) != 1 {
+		return nil, errors.New("must have one share")
+	}
+
 	return &ProposerRunner{
 		BaseRunner: &BaseRunner{
 			RunnerRoleType:     types.RoleProposer,
@@ -44,7 +49,7 @@ func NewProposerRunner(
 		signer:         signer,
 		operatorSigner: operatorSigner,
 		valCheck:       valCheck,
-	}
+	}, nil
 }
 
 func (r *ProposerRunner) StartNewDuty(duty types.Duty, quorum uint64) error {

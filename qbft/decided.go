@@ -75,16 +75,8 @@ func ValidateDecided(
 		return errors.New("not a decided msg")
 	}
 
-	if err := msg.Validate(); err != nil {
-		return errors.Wrap(err, "invalid decided msg")
-	}
-
 	if err := baseCommitValidationVerifySignature(msg, msg.QBFTMessage.Height, committeeMember.Committee); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
-	}
-
-	if err := msg.Validate(); err != nil {
-		return errors.Wrap(err, "invalid decided")
 	}
 
 	r, err := HashDataRoot(msg.SignedMessage.FullData)

@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+	"sort"
 
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -58,6 +59,32 @@ func aggregateCommitMsgs(msgs []*ProcessingMessage, fullData []byte) (*types.Sig
 		}
 	}
 	ret.FullData = fullData
+
+	// Sort the OperatorIDs and Signatures in the SignedSSVMessage
+
+	pairs := make([]struct {
+		OpID types.OperatorID
+		Sig  types.Signature
+	}, len(ret.OperatorIDs))
+
+	for i, id := range ret.OperatorIDs {
+		pairs[i] = struct {
+			OpID types.OperatorID
+			Sig  types.Signature
+		}{OpID: id, Sig: ret.Signatures[i]}
+	}
+
+	// Sort the slice of pairs
+	sort.Slice(pairs, func(i, j int) bool {
+		return pairs[i].OpID < pairs[j].OpID
+	})
+
+	// Extract the sorted IDs and Signatures back into separate slices
+	for i, pair := range pairs {
+		ret.OperatorIDs[i] = pair.OpID
+		ret.Signatures[i] = pair.Sig
+	}
+
 	return ret, nil
 }
 

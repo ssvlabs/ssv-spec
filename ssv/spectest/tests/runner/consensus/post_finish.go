@@ -39,6 +39,7 @@ func PostFinish() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
 				},
+				ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
 			},
 			{
 				Name:   "sync committee",
@@ -59,6 +60,7 @@ func PostFinish() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
 				},
+				ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
 			},
 			{
 				Name:   "attester and sync committee",
@@ -80,6 +82,7 @@ func PostFinish() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
 				},
+				ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
 			},
 			{
 				Name:   "sync committee contribution",
@@ -111,6 +114,7 @@ func PostFinish() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
 				},
+				ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
 			},
 			{
 				Name:   "aggregator",
@@ -140,6 +144,7 @@ func PostFinish() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
 				},
+				ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
 			},
 		},
 	}
@@ -178,6 +183,7 @@ func PostFinish() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
+			ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
 		}
 	}
 
@@ -211,6 +217,7 @@ func PostFinish() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
 			},
+			ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
 		}
 	}
 

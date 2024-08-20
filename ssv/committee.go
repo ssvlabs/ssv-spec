@@ -41,8 +41,28 @@ func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 	if _, exists := c.Runners[duty.Slot]; exists {
 		return errors.New(fmt.Sprintf("CommitteeRunner for slot %d already exists", duty.Slot))
 	}
-	c.Runners[duty.Slot] = c.CreateRunnerFn(c.Share)
-	return c.Runners[duty.Slot].StartNewDuty(duty, c.CommitteeMember.GetQuorum())
+
+	// Filter duty and create share map according validators that belong to c.Share
+	dutyShares := make(map[spec.ValidatorIndex]*types.Share)
+	filteredDuty := &types.CommitteeDuty{
+		Slot: duty.Slot,
+	}
+
+	for _, bduty := range duty.ValidatorDuties {
+		if _, exists := c.Share[bduty.ValidatorIndex]; !exists {
+			continue
+		}
+		dutyShares[bduty.ValidatorIndex] = c.Share[bduty.ValidatorIndex]
+		filteredDuty.ValidatorDuties = append(filteredDuty.ValidatorDuties, bduty)
+	}
+
+	if len(dutyShares) == 0 {
+		return errors.New("no shares for duty's validators")
+	}
+
+	c.Runners[filteredDuty.Slot] = c.CreateRunnerFn(dutyShares)
+
+	return c.Runners[filteredDuty.Slot].StartNewDuty(filteredDuty, c.CommitteeMember.GetQuorum())
 }
 
 // ProcessMessage processes Network Message of all types

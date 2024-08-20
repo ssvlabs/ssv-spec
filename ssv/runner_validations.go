@@ -50,7 +50,7 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 	}
 
 	// TODO https://github.com/ssvlabs/ssv-spec/issues/142 need to fix with this issue solution instead.
-	if b.State.DecidedValue == nil || len(b.State.DecidedValue) == 0 {
+	if len(b.State.DecidedValue) == 0 {
 		return errors.New("no decided value")
 	}
 

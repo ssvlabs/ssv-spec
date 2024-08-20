@@ -63,7 +63,7 @@ func LatePreparePastInstance() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-		ExpectedError: "could not process msg: instance stopped processing messages",
+		ExpectedError: "not processing consensus message since instance is already decided",
 	}
 }
 

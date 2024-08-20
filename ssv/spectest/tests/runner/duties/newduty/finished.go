@@ -14,8 +14,6 @@ import (
 func Finished() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	// TODO: check error
-	// nolint
 	finishRunner := func(r ssv.Runner, duty types.Duty, finishController bool) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 

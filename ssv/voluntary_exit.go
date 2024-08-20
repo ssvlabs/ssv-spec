@@ -29,7 +29,12 @@ func NewVoluntaryExitRunner(
 	network Network,
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
-) Runner {
+) (Runner, error) {
+
+	if len(share) != 1 {
+		return nil, errors.New("must have one share")
+	}
+
 	return &VoluntaryExitRunner{
 		BaseRunner: &BaseRunner{
 			RunnerRoleType: types.RoleVoluntaryExit,
@@ -41,7 +46,7 @@ func NewVoluntaryExitRunner(
 		network:        network,
 		signer:         signer,
 		operatorSigner: operatorSigner,
-	}
+	}, nil
 }
 
 func (r *VoluntaryExitRunner) StartNewDuty(duty types.Duty, quorum uint64) error {

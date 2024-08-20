@@ -16,6 +16,8 @@ func PostDecided() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
+	expectedErr := "failed processing consensus message: not processing consensus message since consensus has already finished"
+
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid post decided",
 		Tests: []*tests.MsgProcessingSpecTest{
@@ -30,6 +32,7 @@ func PostDecided() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "sync committee",
@@ -42,6 +45,7 @@ func PostDecided() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "attester and sync committee",
@@ -54,6 +58,7 @@ func PostDecided() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "sync committee contribution",
@@ -69,6 +74,7 @@ func PostDecided() tests.SpecTest {
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
 				},
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   "aggregator",
@@ -84,6 +90,7 @@ func PostDecided() tests.SpecTest {
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
 				},
+				ExpectedError: expectedErr,
 			},
 		},
 	}
@@ -106,6 +113,7 @@ func PostDecided() tests.SpecTest {
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
+			ExpectedError: expectedErr,
 		}
 	}
 
@@ -127,6 +135,7 @@ func PostDecided() tests.SpecTest {
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
+			ExpectedError: expectedErr,
 		}
 	}
 

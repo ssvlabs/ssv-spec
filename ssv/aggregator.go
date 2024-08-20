@@ -29,7 +29,12 @@ func NewAggregatorRunner(
 	operatorSigner *types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
 	highestDecidedSlot phase0.Slot,
-) Runner {
+) (Runner, error) {
+
+	if len(share) != 1 {
+		return nil, errors.New("must have one share")
+	}
+
 	return &AggregatorRunner{
 		BaseRunner: &BaseRunner{
 			RunnerRoleType:     types.RoleAggregator,
@@ -44,7 +49,7 @@ func NewAggregatorRunner(
 		signer:         signer,
 		operatorSigner: operatorSigner,
 		valCheck:       valCheck,
-	}
+	}, nil
 }
 
 func (r *AggregatorRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
