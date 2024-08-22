@@ -74,7 +74,7 @@ var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.Validat
 			qbft.NewController(
 				runnerSample.BaseRunner.QBFTController.Identifier,
 				runnerSample.BaseRunner.QBFTController.CommitteeMember,
-				runnerSample.BaseRunner.QBFTController.GetConfig(),
+				runnerSample.BaseRunner.QBFTController.Config,
 				TestingOperatorSigner(keySetSample),
 			),
 			NewTestingBeaconNode(),

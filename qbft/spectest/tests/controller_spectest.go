@@ -176,13 +176,13 @@ func (test *ControllerSpecTest) runInstanceWithData(
 		lastErr = err
 	}
 
-	test.testTimer(t, contr.GetConfig(), runData)
+	test.testTimer(t, contr.Config, runData)
 
-	if err := test.testProcessMsg(t, contr, contr.GetConfig(), runData); err != nil {
+	if err := test.testProcessMsg(t, contr, contr.Config, runData); err != nil {
 		lastErr = err
 	}
 
-	test.testBroadcastedDecided(t, contr.GetConfig(), contr.Identifier, runData, contr.CommitteeMember.Committee)
+	test.testBroadcastedDecided(t, contr.Config, contr.Identifier, runData, contr.CommitteeMember.Committee)
 
 	// test root
 	r, err := contr.GetRoot()

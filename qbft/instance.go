@@ -16,7 +16,7 @@ type ProposerF func(state *State, round Round) types.OperatorID
 // Every new msg the ProcessMsg function needs to be called
 type Instance struct {
 	State  *State
-	config IConfig
+	Config IConfig
 	signer *types.OperatorSigner
 
 	processMsgF *types.ThreadSafeF
@@ -45,7 +45,7 @@ func NewInstance(
 			CommitContainer:      NewMsgContainer(),
 			RoundChangeContainer: NewMsgContainer(),
 		},
-		config:      config,
+		Config:      config,
 		signer:      signer,
 		processMsgF: types.NewThreadSafeF(),
 	}
@@ -62,10 +62,10 @@ func (i *Instance) Start(value []byte, height Height) {
 		i.State.Round = FirstRound
 		i.State.Height = height
 
-		i.config.GetTimer().TimeoutForRound(FirstRound)
+		i.Config.GetTimer().TimeoutForRound(FirstRound)
 
 		// propose if this node is the proposer
-		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.CommitteeMember.OperatorID {
+		if proposer(i.State, i.Config, FirstRound) == i.State.CommitteeMember.OperatorID {
 			proposal, err := CreateProposal(i.State, i.signer, i.StartValue, nil, nil)
 			if err != nil {
 				fmt.Printf("%s\n", err.Error())
@@ -82,7 +82,7 @@ func (i *Instance) Broadcast(msg *types.SignedSSVMessage) error {
 		return errors.New("instance stopped processing messages")
 	}
 
-	return i.GetConfig().GetNetwork().Broadcast(msg.SSVMessage.GetID(), msg)
+	return i.Config.GetNetwork().Broadcast(msg.SSVMessage.GetID(), msg)
 }
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error
@@ -109,7 +109,7 @@ func (i *Instance) ProcessMsg(msg *ProcessingMessage) (decided bool, decidedValu
 			}
 			return err
 		case RoundChangeMsgType:
-			return i.uponRoundChange(i.StartValue, msg, i.State.RoundChangeContainer, i.config.GetValueCheckF())
+			return i.uponRoundChange(i.StartValue, msg, i.State.RoundChangeContainer, i.Config.GetValueCheckF())
 		default:
 			return errors.New("signed message type not supported")
 		}
@@ -133,9 +133,9 @@ func (i *Instance) BaseMsgValidation(msg *ProcessingMessage) error {
 	case ProposalMsgType:
 		return isValidProposal(
 			i.State,
-			i.config,
+			i.Config,
 			msg,
-			i.config.GetValueCheckF(),
+			i.Config.GetValueCheckF(),
 		)
 	case PrepareMsgType:
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
@@ -162,7 +162,7 @@ func (i *Instance) BaseMsgValidation(msg *ProcessingMessage) error {
 			i.State.CommitteeMember.Committee,
 		)
 	case RoundChangeMsgType:
-		return validRoundChangeForDataIgnoreSignature(i.State, i.config, msg, i.State.Height, msg.QBFTMessage.Round, msg.SignedMessage.FullData)
+		return validRoundChangeForDataIgnoreSignature(i.State, i.Config, msg, i.State.Height, msg.QBFTMessage.Round, msg.SignedMessage.FullData)
 	default:
 		return errors.New("signed message type not supported")
 	}
@@ -176,17 +176,7 @@ func (i *Instance) IsDecided() (bool, []byte) {
 	return false, nil
 }
 
-// GetConfig returns the instance config
-func (i *Instance) GetConfig() IConfig {
-	return i.config
-}
-
-// GetHeight interface implementation
-func (i *Instance) GetHeight() Height {
-	return i.State.Height
-}
-
 // CanProcessMessages will return true if instance can process messages
 func (i *Instance) CanProcessMessages() bool {
-	return !i.forceStop && i.State.Round < i.config.GetCutOffRound()
+	return !i.forceStop && i.State.Round < i.Config.GetCutOffRound()
 }

@@ -17,7 +17,7 @@ type Controller struct {
 	StoredInstances InstanceContainer
 	CommitteeMember *types.CommitteeMember
 	OperatorSigner  *types.OperatorSigner `json:"-"`
-	config          IConfig
+	Config          IConfig
 }
 
 func NewController(identifier []byte, committeeMember *types.CommitteeMember, config IConfig,
@@ -28,13 +28,13 @@ func NewController(identifier []byte, committeeMember *types.CommitteeMember, co
 		CommitteeMember: committeeMember,
 		StoredInstances: InstanceContainer{},
 		OperatorSigner:  signer,
-		config:          config,
+		Config:          config,
 	}
 }
 
 // StartNewInstance will start a new QBFT instance, if can't will return error
 func (c *Controller) StartNewInstance(height Height, value []byte) error {
-	if err := c.GetConfig().GetValueCheckF()(value); err != nil {
+	if err := c.Config.GetValueCheckF()(value); err != nil {
 		return errors.Wrap(err, "value invalid")
 	}
 
@@ -140,11 +140,6 @@ func (c *Controller) InstanceForHeight(height Height) *Instance {
 	return c.StoredInstances.FindInstance(height)
 }
 
-// GetIdentifier returns QBFT Identifier, used to identify messages
-func (c *Controller) GetIdentifier() []byte {
-	return c.Identifier
-}
-
 // isFutureMessage returns true if message height is from a future instance.
 // It takes into consideration a special case where FirstHeight didn't start but  c.Height == FirstHeight (since we bump height on start instance)
 func (c *Controller) isFutureMessage(msg *ProcessingMessage) (bool, error) {
@@ -156,7 +151,7 @@ func (c *Controller) isFutureMessage(msg *ProcessingMessage) (bool, error) {
 
 // addAndStoreNewInstance returns creates a new QBFT instance, stores it in an array and returns it
 func (c *Controller) addAndStoreNewInstance() *Instance {
-	i := NewInstance(c.GetConfig(), c.CommitteeMember, c.Identifier, c.Height, c.OperatorSigner)
+	i := NewInstance(c.Config, c.CommitteeMember, c.Identifier, c.Height, c.OperatorSigner)
 	c.StoredInstances.addNewInstance(i)
 	return i
 }
@@ -171,13 +166,9 @@ func (c *Controller) forceStopAllInstanceExceptCurrent() {
 
 func (c *Controller) broadcastDecided(aggregatedCommit *types.SignedSSVMessage) error {
 
-	if err := c.GetConfig().GetNetwork().Broadcast(aggregatedCommit.SSVMessage.GetID(), aggregatedCommit); err != nil {
+	if err := c.Config.GetNetwork().Broadcast(aggregatedCommit.SSVMessage.GetID(), aggregatedCommit); err != nil {
 		// We do not return error here, just Log broadcasting error.
 		return errors.Wrap(err, "could not broadcast decided")
 	}
 	return nil
-}
-
-func (c *Controller) GetConfig() IConfig {
-	return c.config
 }

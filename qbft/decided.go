@@ -10,7 +10,7 @@ import (
 // UponDecided returns decided msg if decided, nil otherwise
 func (c *Controller) UponDecided(msg *ProcessingMessage) (*types.SignedSSVMessage, error) {
 	if err := ValidateDecided(
-		c.config,
+		c.Config,
 		msg,
 		c.CommitteeMember,
 	); err != nil {
@@ -23,7 +23,7 @@ func (c *Controller) UponDecided(msg *ProcessingMessage) (*types.SignedSSVMessag
 	isFutureDecided := msg.QBFTMessage.Height > c.Height
 
 	if inst == nil {
-		i := NewInstance(c.GetConfig(), c.CommitteeMember, c.Identifier, msg.QBFTMessage.Height, c.OperatorSigner)
+		i := NewInstance(c.Config, c.CommitteeMember, c.Identifier, msg.QBFTMessage.Height, c.OperatorSigner)
 		i.State.Round = msg.QBFTMessage.Round
 		i.State.Decided = true
 		i.State.DecidedValue = msg.SignedMessage.FullData

@@ -36,7 +36,7 @@ type InstanceContainer []*Instance
 func (i InstanceContainer) FindInstance(height Height) *Instance {
 	for _, inst := range i {
 		if inst != nil {
-			if inst.GetHeight() == height {
+			if inst.State.Height == height {
 				return inst
 			}
 		}
@@ -48,7 +48,7 @@ func (i InstanceContainer) FindInstance(height Height) *Instance {
 func (i *InstanceContainer) addNewInstance(instance *Instance) {
 	indexToInsert := len(*i)
 	for index, existingInstance := range *i {
-		if existingInstance.GetHeight() < instance.GetHeight() {
+		if existingInstance.State.Height < instance.State.Height {
 			indexToInsert = index
 			break
 		}

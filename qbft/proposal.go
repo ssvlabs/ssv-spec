@@ -23,7 +23,7 @@ func (i *Instance) uponProposal(msg *ProcessingMessage, proposeMsgContainer *Msg
 
 	// A future justified proposal should bump us into future round and reset timer
 	if msg.QBFTMessage.Round > i.State.Round {
-		i.config.GetTimer().TimeoutForRound(msg.QBFTMessage.Round)
+		i.Config.GetTimer().TimeoutForRound(msg.QBFTMessage.Round)
 	}
 	i.State.Round = newRound
 
