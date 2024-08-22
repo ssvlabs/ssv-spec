@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	maxSizeSSVMessageFromQBFTMessage              = 722480
+	MaxSizeSSVMessageFromQBFTMessage              = 722480
 	maxSizeSSVMessageFromPartialSignatureMessages = 144088
 )
 
@@ -41,7 +41,7 @@ func MaxSSVMessageFromQBFTMessage() *StructureSizeTest {
 	return &StructureSizeTest{
 		Name:                  "max SSVMessage from qbftMessage",
 		Object:                maxSSVMessageFromQBFTMessage(),
-		ExpectedEncodedLength: maxSizeSSVMessageFromQBFTMessage,
+		ExpectedEncodedLength: MaxSizeSSVMessageFromQBFTMessage,
 		IsMaxSize:             true,
 	}
 }
