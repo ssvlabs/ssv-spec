@@ -1,12 +1,17 @@
-# Message Validation Rules
+# Message Validation
+
+> [!NOTE]
+> For implementation details, access the module's [code documentation]().
+
 
 GossipSub allows the application to define a validation function to be applied to a message before it reaches the application.
-
 
 The output of the validation may be one of the following types:
 - `ValidationAccept`: for a message which is considered valid and can be forwarded to the application. 
 - `ValidationReject`: for a message that is considered malicious regarding the protocol rules. This message is dropped and the peer is punished according to the scoring parametrs.
 - `ValidationIgnore`: for a message that is either irrelevant or doesn't contribute for the state progression of the application.
+
+## Rules
 
 For our case, we defined a list of rules that a message should follow, which can be divided into the following categories:
 - PubSub: regards the validity of the pubsub message.
@@ -15,7 +20,6 @@ For our case, we defined a list of rules that a message should follow, which can
 - QBFT logic: regards the validity of a message or a sequence of messages considering the QBFT rules.
 - Duty logic: regards the validity of a message or a sequence of messages considering the duty rules.
 
-## Rules
 
 ### PubSub
 

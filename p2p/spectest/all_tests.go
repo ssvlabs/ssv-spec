@@ -101,5 +101,6 @@ var AllTests = []tests.TestF{
 	validation.WrongSignatureConsensusMessage,
 	validation.WrongSignaturePartialSignatureMessage,
 
+	// Valid cases
 	validation.HappyFlow,
 }
