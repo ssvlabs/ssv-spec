@@ -121,16 +121,22 @@ func (i *Instance) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON is a custom JSON unmarshaller for Instance
 func (i *Instance) UnmarshalJSON(data []byte) error {
-	type Alias Instance
-	aux := &struct {
-		ForceStop *bool `json:"forceStop,omitempty"`
-		*Alias
-	}{
-		Alias: (*Alias)(i),
+
+	// Create alias without config due to custom marshalling error
+	type InstanceAlias struct {
+		State      *State
+		ForceStop  *bool `json:"forceStop,omitempty"`
+		StartValue []byte
 	}
+
+	aux := &InstanceAlias{}
 	if err := json.Unmarshal(data, &aux); err != nil {
 		return err
 	}
+
+	i.State = aux.State
+	i.StartValue = aux.StartValue
+
 	if aux.ForceStop != nil {
 		i.forceStop = *aux.ForceStop
 	}
