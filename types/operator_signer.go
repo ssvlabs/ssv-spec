@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
+
 	"github.com/pkg/errors"
 )
 
@@ -15,11 +16,6 @@ type OperatorSigner struct {
 
 func (km *OperatorSigner) SignSSVMessage(ssvMsg *SSVMessage) ([]byte, error) {
 	return SignSSVMessage(km.SSVOperatorSK, ssvMsg)
-}
-
-// GetOperatorID returns the operator ID
-func (km *OperatorSigner) GetOperatorID() OperatorID {
-	return km.OperatorID
 }
 
 func SignSSVMessage(sk *rsa.PrivateKey, ssvMsg *SSVMessage) ([]byte, error) {

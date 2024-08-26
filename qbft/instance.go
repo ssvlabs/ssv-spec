@@ -82,7 +82,7 @@ func (i *Instance) Broadcast(msg *types.SignedSSVMessage) error {
 		return errors.New("instance stopped processing messages")
 	}
 
-	return i.Config.GetNetwork().Broadcast(msg.SSVMessage.GetID(), msg)
+	return i.Config.GetNetwork().Broadcast(msg.SSVMessage.MsgID, msg)
 }
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error

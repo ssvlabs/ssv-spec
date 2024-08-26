@@ -168,11 +168,11 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 
 	msgToBroadcast := &types.SignedSSVMessage{
 		Signatures:  [][]byte{sig},
-		OperatorIDs: []types.OperatorID{r.operatorSigner.GetOperatorID()},
+		OperatorIDs: []types.OperatorID{r.operatorSigner.OperatorID},
 		SSVMessage:  ssvMsg,
 	}
 
-	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
+	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.MsgID, msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial post consensus sig")
 	}
 	return nil
@@ -309,11 +309,11 @@ func (r *ProposerRunner) executeDuty(duty types.Duty) error {
 
 	msgToBroadcast := &types.SignedSSVMessage{
 		Signatures:  [][]byte{sig},
-		OperatorIDs: []types.OperatorID{r.operatorSigner.GetOperatorID()},
+		OperatorIDs: []types.OperatorID{r.operatorSigner.OperatorID},
 		SSVMessage:  ssvMsg,
 	}
 
-	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
+	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.MsgID, msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial randao sig")
 	}
 	return nil

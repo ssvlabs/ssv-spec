@@ -82,10 +82,10 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 		return errors.Wrap(err, "Message invalid")
 	}
 
-	switch msg.GetType() {
+	switch msg.MsgType {
 	case types.SSVConsensusMsgType:
 		qbftMsg := &qbft.Message{}
-		if err := qbftMsg.Decode(msg.GetData()); err != nil {
+		if err := qbftMsg.Decode(msg.Data); err != nil {
 			return errors.Wrap(err, "could not get consensus Message from network Message")
 		}
 
@@ -100,7 +100,7 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 		return runner.ProcessConsensus(signedSSVMessage)
 	case types.SSVPartialSignatureMsgType:
 		pSigMessages := &types.PartialSignatureMessages{}
-		if err := pSigMessages.Decode(msg.GetData()); err != nil {
+		if err := pSigMessages.Decode(msg.Data); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
 
@@ -128,11 +128,11 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 }
 
 func (c *Committee) validateMessage(msg *types.SSVMessage) error {
-	if !(c.CommitteeMember.CommitteeID.MessageIDBelongs(msg.GetID())) {
+	if !(c.CommitteeMember.CommitteeID.MessageIDBelongs(msg.MsgID)) {
 		return errors.New("msg ID doesn't match committee ID")
 	}
 
-	if len(msg.GetData()) == 0 {
+	if len(msg.Data) == 0 {
 		return errors.New("msg data is invalid")
 	}
 

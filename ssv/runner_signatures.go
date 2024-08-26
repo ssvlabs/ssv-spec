@@ -26,7 +26,7 @@ func (b *BaseRunner) signBeaconObject(runner Runner, duty *types.ValidatorDuty,
 	return &types.PartialSignatureMessage{
 		PartialSignature: sig,
 		SigningRoot:      r,
-		Signer:           runner.GetOperatorSigner().GetOperatorID(),
+		Signer:           runner.GetOperatorSigner().OperatorID,
 		ValidatorIndex:   duty.ValidatorIndex,
 	}, nil
 }

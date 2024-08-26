@@ -166,7 +166,7 @@ func (c *Controller) forceStopAllInstanceExceptCurrent() {
 
 func (c *Controller) broadcastDecided(aggregatedCommit *types.SignedSSVMessage) error {
 
-	if err := c.Config.GetNetwork().Broadcast(aggregatedCommit.SSVMessage.GetID(), aggregatedCommit); err != nil {
+	if err := c.Config.GetNetwork().Broadcast(aggregatedCommit.SSVMessage.MsgID, aggregatedCommit); err != nil {
 		// We do not return error here, just Log broadcasting error.
 		return errors.Wrap(err, "could not broadcast decided")
 	}

@@ -64,7 +64,7 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	msg := signedSSVMessage.SSVMessage
 
 	// Get runner
-	dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.GetID())
+	dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.MsgID)
 	if dutyRunner == nil {
 		return errors.Errorf("could not get duty runner for msg ID")
 	}
@@ -74,11 +74,11 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 		return errors.Wrap(err, "Message invalid")
 	}
 
-	switch msg.GetType() {
+	switch msg.MsgType {
 	case types.SSVConsensusMsgType:
 		// Decode
 		qbftMsg := &qbft.Message{}
-		if err := qbftMsg.Decode(msg.GetData()); err != nil {
+		if err := qbftMsg.Decode(msg.Data); err != nil {
 			return errors.Wrap(err, "could not get consensus Message from network Message")
 		}
 
@@ -91,7 +91,7 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	case types.SSVPartialSignatureMsgType:
 		// Decode
 		psigMsgs := &types.PartialSignatureMessages{}
-		if err := psigMsgs.Decode(msg.GetData()); err != nil {
+		if err := psigMsgs.Decode(msg.Data); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
 
@@ -115,11 +115,11 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 }
 
 func (v *Validator) validateMessage(msg *types.SSVMessage) error {
-	if !v.Share.ValidatorPubKey.MessageIDBelongs(msg.GetID()) {
+	if !v.Share.ValidatorPubKey.MessageIDBelongs(msg.MsgID) {
 		return errors.New("msg ID doesn't match validator ID")
 	}
 
-	if len(msg.GetData()) == 0 {
+	if len(msg.Data) == 0 {
 		return errors.New("msg data is invalid")
 	}
 
