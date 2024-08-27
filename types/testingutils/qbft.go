@@ -102,7 +102,6 @@ var TestingCommitteeMember = func(keysSet *TestKeySet) *types.CommitteeMember {
 		SSVOperatorPubKey: operatorPubKeyBytes,
 		FaultyNodes:       (keysSet.Threshold - 1) / 2,
 		Committee:         operators,
-		DomainType:        TestingSSVDomainType,
 	}
 }
 

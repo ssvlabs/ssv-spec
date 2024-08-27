@@ -5,6 +5,8 @@ import (
 )
 
 type IConfig interface {
+	// GetSignatureDomainType returns the Domain type used for signatures
+	GetSignatureDomainType() types.DomainType
 	// GetValueCheckF returns value check function
 	GetValueCheckF() ProposedValueCheckF
 	// GetProposerF returns func used to calculate proposer
