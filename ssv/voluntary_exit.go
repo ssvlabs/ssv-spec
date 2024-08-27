@@ -141,7 +141,8 @@ func (r *VoluntaryExitRunner) executeDuty(duty types.Duty) error {
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
+	domainType := r.BaseRunner.QBFTController.GetConfig().GetSignatureDomainType()
+	msgID := types.NewMsgID(domainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
 
 	encodedMsg, err := msgs.Encode()
 	if err != nil {

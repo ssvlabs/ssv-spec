@@ -61,7 +61,6 @@ var TestingShare = func(keysSet *TestKeySet, valIdx phase0.ValidatorIndex) *type
 		ValidatorPubKey:     pkBytesArray,
 		SharePubKey:         keysSet.Shares[1].GetPublicKey().Serialize(),
 		Committee:           keysSet.Committee(),
-		DomainType:          TestingSSVDomainType,
 		FeeRecipientAddress: TestingFeeRecipient,
 		Graffiti:            TestingGraffiti[:],
 	}

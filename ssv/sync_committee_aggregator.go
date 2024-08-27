@@ -183,7 +183,8 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *types.Signed
 		Messages: msgs,
 	}
 
-	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
+	domainType := r.BaseRunner.QBFTController.GetConfig().GetSignatureDomainType()
+	msgID := types.NewMsgID(domainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
 
 	encodedMsg, err := postConsensusMsg.Encode()
 	if err != nil {
@@ -367,7 +368,8 @@ func (r *SyncCommitteeAggregatorRunner) executeDuty(duty types.Duty) error {
 		msgs.Messages = append(msgs.Messages, msg)
 	}
 
-	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
+	domainType := r.BaseRunner.QBFTController.GetConfig().GetSignatureDomainType()
+	msgID := types.NewMsgID(domainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
 
 	encodedMsg, err := msgs.Encode()
 	if err != nil {
