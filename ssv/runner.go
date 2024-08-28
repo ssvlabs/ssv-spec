@@ -42,6 +42,49 @@ type Runner interface {
 	executeDuty(duty types.Duty) error
 }
 
+// RunnerProcessMessage calls the runner's appropriate method to process a message
+func RunnerProcessMessage(runner Runner, msg *types.SignedSSVMessage) error {
+
+	switch msg.SSVMessage.MsgType {
+	case types.SSVConsensusMsgType:
+		// Decode
+		qbftMsg := &qbft.Message{}
+		if err := qbftMsg.Decode(msg.SSVMessage.Data); err != nil {
+			return errors.Wrap(err, "could not get consensus message")
+		}
+
+		// Validate consensus message
+		if err := qbftMsg.Validate(); err != nil {
+			return errors.Wrap(err, "invalid qbft Message")
+		}
+
+		// Process
+		return runner.ProcessConsensus(msg)
+	case types.SSVPartialSignatureMsgType:
+		// Decode
+		psigMsgs := &types.PartialSignatureMessages{}
+		if err := psigMsgs.Decode(msg.SSVMessage.Data); err != nil {
+			return errors.Wrap(err, "could not get partial signature message")
+		}
+
+		// Validate partial signature message
+		if len(msg.OperatorIDs) != 1 {
+			return errors.New("PartialSignatureMessage has more than 1 signer")
+		}
+		if err := psigMsgs.ValidateForSigner(msg.OperatorIDs[0]); err != nil {
+			return errors.Wrap(err, "invalid PartialSignatureMessages")
+		}
+
+		// Process
+		if psigMsgs.Type == types.PostConsensusPartialSig {
+			return runner.ProcessPostConsensus(psigMsgs)
+		}
+		return runner.ProcessPreConsensus(psigMsgs)
+	default:
+		return errors.New("unknown msg type")
+	}
+}
+
 type BaseRunner struct {
 	State          *State
 	Share          map[spec.ValidatorIndex]*types.Share

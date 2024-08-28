@@ -12,33 +12,53 @@ import (
 type CreateRunnerFn func(shareMap map[spec.ValidatorIndex]*types.Share) *CommitteeRunner
 
 type Committee struct {
-	Runners         map[spec.Slot]*CommitteeRunner
-	CommitteeMember types.CommitteeMember
-	CreateRunnerFn  CreateRunnerFn
-	Share           map[spec.ValidatorIndex]*types.Share
+	CommitteeRunners map[spec.Slot]*CommitteeRunner
+	CommitteeMember  types.CommitteeMember
+	CreateRunnerFn   CreateRunnerFn
+	Validators       map[spec.ValidatorIndex]*Validator
 }
 
 // NewCommittee creates a new cluster
 func NewCommittee(
 	committeeMember types.CommitteeMember,
-	share map[spec.ValidatorIndex]*types.Share,
+	validators map[spec.ValidatorIndex]*Validator,
 	createRunnerFn CreateRunnerFn,
 ) *Committee {
 	c := &Committee{
-		Runners:         make(map[spec.Slot]*CommitteeRunner),
-		CommitteeMember: committeeMember,
-		CreateRunnerFn:  createRunnerFn,
-		Share:           share,
+		CommitteeRunners: make(map[spec.Slot]*CommitteeRunner),
+		CommitteeMember:  committeeMember,
+		CreateRunnerFn:   createRunnerFn,
+		Validators:       validators,
 	}
 	return c
 }
 
-// StartDuty starts a new duty for the given slot
-func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
+// StartDuty starts a duty redirecting it according to its type (committee / validator duty)
+func (c *Committee) StartDuty(duty types.Duty) error {
+	switch duty := duty.(type) {
+	case *types.CommitteeDuty:
+		return c.StartCommitteeDuty(duty)
+	case *types.ValidatorDuty:
+		return c.StartValidatorDuty(duty)
+	default:
+		return errors.New("unknown duty object")
+	}
+}
+
+// StartCommitteeDuty starts a new validator duty
+func (c *Committee) StartValidatorDuty(duty *types.ValidatorDuty) error {
+	if _, exists := c.Validators[duty.ValidatorIndex]; !exists {
+		return errors.New("unknown duty's validator")
+	}
+	return c.Validators[duty.ValidatorIndex].StartDuty(duty)
+}
+
+// StartCommitteeDuty starts a new committee duty for the given slot
+func (c *Committee) StartCommitteeDuty(duty *types.CommitteeDuty) error {
 	if len(duty.ValidatorDuties) == 0 {
 		return errors.New("no beacon duties")
 	}
-	if _, exists := c.Runners[duty.Slot]; exists {
+	if _, exists := c.CommitteeRunners[duty.Slot]; exists {
 		return errors.New(fmt.Sprintf("CommitteeRunner for slot %d already exists", duty.Slot))
 	}
 
@@ -49,10 +69,10 @@ func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 	}
 
 	for _, bduty := range duty.ValidatorDuties {
-		if _, exists := c.Share[bduty.ValidatorIndex]; !exists {
+		if _, exists := c.Validators[bduty.ValidatorIndex]; !exists {
 			continue
 		}
-		dutyShares[bduty.ValidatorIndex] = c.Share[bduty.ValidatorIndex]
+		dutyShares[bduty.ValidatorIndex] = c.Validators[bduty.ValidatorIndex].Share
 		filteredDuty.ValidatorDuties = append(filteredDuty.ValidatorDuties, bduty)
 	}
 
@@ -60,81 +80,73 @@ func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 		return errors.New("no shares for duty's validators")
 	}
 
-	c.Runners[filteredDuty.Slot] = c.CreateRunnerFn(dutyShares)
+	c.CommitteeRunners[filteredDuty.Slot] = c.CreateRunnerFn(dutyShares)
 
-	return c.Runners[filteredDuty.Slot].StartNewDuty(filteredDuty, c.CommitteeMember.GetQuorum())
+	return c.CommitteeRunners[filteredDuty.Slot].StartNewDuty(filteredDuty, c.CommitteeMember.GetQuorum())
 }
 
 // ProcessMessage processes Network Message of all types
-func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error {
+func (c *Committee) ProcessMessage(msg *types.SignedSSVMessage) error {
+
 	// Validate message
-	if err := signedSSVMessage.Validate(); err != nil {
+	if err := msg.Validate(); err != nil {
 		return errors.Wrap(err, "invalid SignedSSVMessage")
 	}
 
 	// Verify SignedSSVMessage's signature
-	if err := types.Verify(signedSSVMessage, c.CommitteeMember.Committee); err != nil {
+	if err := types.Verify(msg, c.CommitteeMember.Committee); err != nil {
 		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
 	}
 
-	msg := signedSSVMessage.SSVMessage
-	if err := c.validateMessage(msg); err != nil {
-		return errors.Wrap(err, "Message invalid")
+	// Process message
+	if c.isMessageForCommittee(msg) {
+		return c.ProcessMessageForCommitteeDuty(msg)
+	} else {
+		for _, validator := range c.Validators {
+			if validator.isMessageForValidator(msg) {
+				return validator.ProcessMessage(msg)
+			}
+		}
 	}
+	return errors.New("message doesn't belong to committee or one of its validators")
+}
 
-	switch msg.GetType() {
+// ProcessMessage processes a message of all types for a committee duty
+func (c *Committee) ProcessMessageForCommitteeDuty(msg *types.SignedSSVMessage) error {
+
+	switch msg.SSVMessage.MsgType {
 	case types.SSVConsensusMsgType:
+		// Get inner message to get slot
 		qbftMsg := &qbft.Message{}
-		if err := qbftMsg.Decode(msg.GetData()); err != nil {
+		if err := qbftMsg.Decode(msg.SSVMessage.Data); err != nil {
 			return errors.Wrap(err, "could not get consensus Message from network Message")
 		}
-
-		if err := qbftMsg.Validate(); err != nil {
-			return errors.Wrap(err, "invalid qbft Message")
-		}
-
-		runner, exists := c.Runners[spec.Slot(qbftMsg.Height)]
+		// Get runner
+		runner, exists := c.CommitteeRunners[spec.Slot(qbftMsg.Height)]
 		if !exists {
 			return errors.New("no runner found for message's slot")
 		}
-		return runner.ProcessConsensus(signedSSVMessage)
+		// Process message
+		return RunnerProcessMessage(runner, msg)
 	case types.SSVPartialSignatureMsgType:
+		// Get inner message to get slot
 		pSigMessages := &types.PartialSignatureMessages{}
-		if err := pSigMessages.Decode(msg.GetData()); err != nil {
+		if err := pSigMessages.Decode(msg.SSVMessage.Data); err != nil {
 			return errors.Wrap(err, "could not get post consensus Message from network Message")
 		}
-
-		// Validate
-		if len(signedSSVMessage.OperatorIDs) != 1 {
-			return errors.New("PartialSignatureMessage has more than 1 signer")
+		// Get runner
+		runner, exists := c.CommitteeRunners[pSigMessages.Slot]
+		if !exists {
+			return errors.New("no runner found for message's slot")
 		}
-
-		if err := pSigMessages.ValidateForSigner(signedSSVMessage.OperatorIDs[0]); err != nil {
-			return errors.Wrap(err, "invalid PartialSignatureMessages")
-		}
-
-		if pSigMessages.Type == types.PostConsensusPartialSig {
-			runner, exists := c.Runners[pSigMessages.Slot]
-			if !exists {
-				return errors.New("no runner found for message's slot")
-			}
-			return runner.ProcessPostConsensus(pSigMessages)
-		}
+		// Process message
+		return RunnerProcessMessage(runner, msg)
 	default:
 		return errors.New("unknown msg")
 	}
-	return nil
-
 }
 
-func (c *Committee) validateMessage(msg *types.SSVMessage) error {
-	if !(c.CommitteeMember.CommitteeID.MessageIDBelongs(msg.GetID())) {
-		return errors.New("msg ID doesn't match committee ID")
-	}
-
-	if len(msg.GetData()) == 0 {
-		return errors.New("msg data is invalid")
-	}
-
-	return nil
+// Returns true if message is intended to the committee according to its MessageID
+func (c *Committee) isMessageForCommittee(msg *types.SignedSSVMessage) bool {
+	return c.CommitteeMember.CommitteeID.MessageIDBelongs(msg.SSVMessage.MsgID)
 }

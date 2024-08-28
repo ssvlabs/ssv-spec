@@ -83,6 +83,18 @@ const (
 	DKGMsgType
 )
 
+// ValidMsgType validates a MsgType
+// Only the SSVConsensusMsgType and SSVPartialSignatureMsgType are considered valid
+func ValidMsgType(msgType MsgType) bool {
+	switch msgType {
+	case SSVConsensusMsgType,
+		SSVPartialSignatureMsgType:
+		return true
+	default:
+		return false
+	}
+}
+
 // MessageSignature includes all functions relevant for a signed message (QBFT message, post consensus msg, etc)
 type MessageSignature interface {
 	Root
@@ -123,6 +135,22 @@ func (msg *SSVMessage) Decode(data []byte) error {
 	return msg.UnmarshalSSZ(data)
 }
 
+// Validate checks the following:
+// - Data must not be empty
+// - MsgType must be valid
+func (msg *SSVMessage) Validate() error {
+	// Validate OperatorID field
+	if len(msg.Data) == 0 {
+		return errors.New("empty msg data")
+	}
+
+	if !ValidMsgType(msg.MsgType) {
+		return errors.New("invalid msg type")
+	}
+
+	return nil
+}
+
 // SignedSSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
 type SignedSSVMessage struct {
 	Signatures  [][]byte     `ssz-max:"13,256"` // Created by the operators' key
@@ -153,6 +181,7 @@ func (msg *SignedSSVMessage) GetRoot() ([32]byte, error) {
 // - The number of signatures and OperatorIDs must be the same
 // - Any signature must not have length 0
 // - SSVMessage must not be nil
+// - SSVMessage must be valid
 func (msg *SignedSSVMessage) Validate() error {
 	// Validate OperatorID field
 	if len(msg.OperatorIDs) == 0 {
@@ -188,7 +217,7 @@ func (msg *SignedSSVMessage) Validate() error {
 		return errors.New("nil SSVMessage")
 	}
 
-	return nil
+	return msg.SSVMessage.Validate()
 }
 
 // DeepCopy returns a new instance of SignedMessage, deep copied
