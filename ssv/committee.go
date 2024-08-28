@@ -48,7 +48,7 @@ func (c *Committee) StartDuty(duty types.Duty) error {
 // StartCommitteeDuty starts a new validator duty
 func (c *Committee) StartValidatorDuty(duty *types.ValidatorDuty) error {
 	if _, exists := c.Validators[duty.ValidatorIndex]; !exists {
-		return errors.New("unknown duty's validator")
+		return errors.New("unknown validator for duty")
 	}
 	return c.Validators[duty.ValidatorIndex].StartDuty(duty)
 }
