@@ -43,7 +43,7 @@ func (test *MsgProcessingSpecTest) TestName() string {
 
 // RunAsPartOfMultiTest runs the test as part of a MultiMsgProcessingSpecTest
 func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
-	v, c, lastErr := test.runPreTesting()
+	c, lastErr := test.runPreTesting()
 
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, lastErr, test.ExpectedError)
@@ -57,7 +57,7 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	switch test.Runner.(type) {
 	case *ssv.CommitteeRunner:
 		var runnerInstance *ssv.CommitteeRunner
-		for _, runner := range c.Runners {
+		for _, runner := range c.CommitteeRunners {
 			runnerInstance = runner
 			break
 		}
@@ -65,8 +65,8 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 		beaconNetwork = runnerInstance.GetBeaconNode().(*testingutils.TestingBeaconNode)
 		committee = c.CommitteeMember.Committee
 	default:
-		network = v.Network.(*testingutils.TestingNetwork)
-		committee = v.CommitteeMember.Committee
+		network = test.Runner.GetNetwork().(*testingutils.TestingNetwork)
+		committee = c.CommitteeMember.Committee
 		beaconNetwork = test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode)
 	}
 
@@ -91,31 +91,25 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	test.RunAsPartOfMultiTest(t)
 }
 
-func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committee, error) {
-	var share *types.Share
-	ketSetMap := make(map[phase0.ValidatorIndex]*testingutils.TestKeySet)
+func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Committee, error) {
+	keySetMap := make(map[phase0.ValidatorIndex]*testingutils.TestKeySet)
 	if len(test.Runner.GetBaseRunner().Share) == 0 {
 		panic("No share in base runner for tests")
 	}
-	for _, validatorShare := range test.Runner.GetBaseRunner().Share {
-		share = validatorShare
-		break
-	}
 	for valIdx, validatorShare := range test.Runner.GetBaseRunner().Share {
-		ketSetMap[valIdx] = testingutils.KeySetForShare(validatorShare)
+		keySetMap[valIdx] = testingutils.KeySetForShare(validatorShare)
 	}
 
-	var v *ssv.Validator
 	var c *ssv.Committee
 	var lastErr error
 	switch test.Runner.(type) {
 	case *ssv.CommitteeRunner:
-		c = testingutils.BaseCommitteeWithRunner(ketSetMap, test.Runner.(*ssv.CommitteeRunner))
+		c = testingutils.BaseCommitteeWithRunner(keySetMap, test.Runner.(*ssv.CommitteeRunner))
 
 		if !test.DontStartDuty {
 			lastErr = c.StartDuty(test.Duty.(*types.CommitteeDuty))
 		} else {
-			c.Runners[test.Duty.DutySlot()] = test.Runner.(*ssv.CommitteeRunner)
+			c.CommitteeRunners[test.Duty.DutySlot()] = test.Runner.(*ssv.CommitteeRunner)
 		}
 
 		for _, msg := range test.Messages {
@@ -137,22 +131,25 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 		}
 
 	default:
-		v = testingutils.BaseValidator(testingutils.KeySetForShare(share))
-		v.DutyRunners[test.Runner.GetBaseRunner().RunnerRoleType] = test.Runner
-		v.Network = test.Runner.GetNetwork()
+		c = testingutils.BaseCommittee(keySetMap)
+		for valIdx, keySet := range keySetMap {
+			validator := testingutils.BaseValidator(keySet)
+			validator.DutyRunners[test.Runner.GetBaseRunner().RunnerRoleType] = test.Runner
+			c.Validators[valIdx] = validator
+		}
 
 		if !test.DontStartDuty {
-			lastErr = v.StartDuty(test.Duty)
+			lastErr = c.StartDuty(test.Duty)
 		}
 		for _, msg := range test.Messages {
-			err := v.ProcessMessage(msg)
+			err := c.ProcessMessage(msg)
 			if err != nil {
 				lastErr = err
 			}
 		}
 	}
 
-	return v, c, lastErr
+	return c, lastErr
 }
 
 // IsQBFTProposalMessage checks if the message is a QBFT proposal message
@@ -205,7 +202,7 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 }
 
 func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
-	_, _, lastErr := test.runPreTesting()
+	_, lastErr := test.runPreTesting()
 	if lastErr != nil && len(test.ExpectedError) == 0 {
 		return nil, lastErr
 	}
