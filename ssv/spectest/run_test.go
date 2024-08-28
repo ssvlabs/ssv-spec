@@ -419,20 +419,20 @@ func fixCommitteeForRun(t *testing.T, committeeMap map[string]interface{}) *ssv.
 		return testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)
 	}
 
-	for slot := range c.Runners {
+	for slot := range c.CommitteeRunners {
 
 		var shareInstance *types.Share
-		for _, share := range c.Runners[slot].BaseRunner.Share {
+		for _, share := range c.CommitteeRunners[slot].BaseRunner.Share {
 			shareInstance = share
 			break
 		}
 
 		fixedRunner := fixRunnerForRun(
 			t,
-			committeeMap["Runners"].(map[string]interface{})[fmt.Sprintf("%v", slot)].(map[string]interface{}),
+			committeeMap["CommitteeRunners"].(map[string]interface{})[fmt.Sprintf("%v", slot)].(map[string]interface{}),
 			testingutils.KeySetForShare(shareInstance),
 		)
-		c.Runners[slot] = fixedRunner.(*ssv.CommitteeRunner)
+		c.CommitteeRunners[slot] = fixedRunner.(*ssv.CommitteeRunner)
 	}
 
 	return c

@@ -46,7 +46,7 @@ func (test *CommitteeSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 
 	broadcastedMsgs := make([]*types.SignedSSVMessage, 0)
 	broadcastedRoots := make([]phase0.Root, 0)
-	for _, runner := range test.Committee.Runners {
+	for _, runner := range test.Committee.CommitteeRunners {
 		network := runner.GetNetwork().(*testingutils.TestingNetwork)
 		beaconNetwork := runner.GetBeaconNode().(*testingutils.TestingBeaconNode)
 		broadcastedMsgs = append(broadcastedMsgs, network.BroadcastedMsgs...)

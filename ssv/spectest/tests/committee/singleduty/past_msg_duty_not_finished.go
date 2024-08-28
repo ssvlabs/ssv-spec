@@ -52,7 +52,7 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 		}
 
 		// Erase broadcasted messages due to test setup
-		c.Runners[previousDuty.DutySlot()].GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs = make([]*types.SignedSSVMessage, 0)
+		c.CommitteeRunners[previousDuty.DutySlot()].GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs = make([]*types.SignedSSVMessage, 0)
 
 		return c
 	}
