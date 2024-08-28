@@ -123,16 +123,16 @@ func (c *Committee) GetRoot() ([32]byte, error) {
 func (c *Committee) MarshalJSON() ([]byte, error) {
 
 	type CommitteeAlias struct {
-		Runners         map[spec.Slot]*CommitteeRunner
-		CommitteeMember types.CommitteeMember
-		Share           map[spec.ValidatorIndex]*types.Share
+		CommitteeRunners map[spec.Slot]*CommitteeRunner
+		CommitteeMember  types.CommitteeMember
+		Validators       map[spec.ValidatorIndex]*Validator
 	}
 
 	// Create object and marshal
 	alias := &CommitteeAlias{
-		Runners:         c.Runners,
-		CommitteeMember: c.CommitteeMember,
-		Share:           c.Share,
+		CommitteeRunners: c.CommitteeRunners,
+		CommitteeMember:  c.CommitteeMember,
+		Validators:       c.Validators,
 	}
 
 	byts, err := json.Marshal(alias)
@@ -143,9 +143,9 @@ func (c *Committee) MarshalJSON() ([]byte, error) {
 func (c *Committee) UnmarshalJSON(data []byte) error {
 
 	type CommitteeAlias struct {
-		Runners         map[spec.Slot]*CommitteeRunner
-		CommitteeMember types.CommitteeMember
-		Share           map[spec.ValidatorIndex]*types.Share
+		CommitteeRunners map[spec.Slot]*CommitteeRunner
+		CommitteeMember  types.CommitteeMember
+		Validators       map[spec.ValidatorIndex]*Validator
 	}
 
 	// Unmarshal the JSON data into the auxiliary struct
@@ -155,9 +155,9 @@ func (c *Committee) UnmarshalJSON(data []byte) error {
 	}
 
 	// Assign fields
-	c.Runners = aux.Runners
+	c.CommitteeRunners = aux.CommitteeRunners
 	c.CommitteeMember = aux.CommitteeMember
-	c.Share = aux.Share
+	c.Validators = aux.Validators
 
 	return nil
 }
@@ -270,4 +270,85 @@ func (r *VoluntaryExitRunner) GetRoot() ([32]byte, error) {
 	}
 	ret := sha256.Sum256(marshaledRoot)
 	return ret, nil
+}
+
+func (dr DutyRunners) MarshalJSON() ([]byte, error) {
+
+	type DutyRunnersAlias struct {
+		CommitteeRunner               *CommitteeRunner               `json:"-"`
+		ProposerRunner                *ProposerRunner                `json:"-"`
+		AggregatorRunner              *AggregatorRunner              `json:"-"`
+		SyncCommitteeAggregatorRunner *SyncCommitteeAggregatorRunner `json:"-"`
+		ValidatorRegistrationRunner   *ValidatorRegistrationRunner   `json:"-"`
+		VoluntaryExitRunner           *VoluntaryExitRunner           `json:"-"`
+	}
+
+	// Create object and marshal
+	alias := &DutyRunnersAlias{}
+
+	if runner, exists := dr[types.RoleCommittee]; exists {
+		alias.CommitteeRunner = runner.(*CommitteeRunner)
+	}
+	if runner, exists := dr[types.RoleProposer]; exists {
+		alias.ProposerRunner = runner.(*ProposerRunner)
+	}
+	if runner, exists := dr[types.RoleAggregator]; exists {
+		alias.AggregatorRunner = runner.(*AggregatorRunner)
+	}
+	if runner, exists := dr[types.RoleSyncCommitteeContribution]; exists {
+		alias.SyncCommitteeAggregatorRunner = runner.(*SyncCommitteeAggregatorRunner)
+	}
+	if runner, exists := dr[types.RoleValidatorRegistration]; exists {
+		alias.ValidatorRegistrationRunner = runner.(*ValidatorRegistrationRunner)
+	}
+	if runner, exists := dr[types.RoleVoluntaryExit]; exists {
+		alias.VoluntaryExitRunner = runner.(*VoluntaryExitRunner)
+	}
+
+	byts, err := json.Marshal(alias)
+
+	return byts, err
+}
+
+func (dr DutyRunners) UnmarshalJSON(data []byte) error {
+
+	type DutyRunnersAlias struct {
+		CommitteeRunner               *CommitteeRunner
+		ProposerRunner                *ProposerRunner
+		AggregatorRunner              *AggregatorRunner
+		SyncCommitteeAggregatorRunner *SyncCommitteeAggregatorRunner
+		ValidatorRegistrationRunner   *ValidatorRegistrationRunner
+		VoluntaryExitRunner           *VoluntaryExitRunner
+	}
+
+	// Create object and marshal
+	aux := &DutyRunnersAlias{}
+
+	// Unmarshal the JSON data into the auxiliary struct
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	dr = make(DutyRunners)
+
+	if aux.CommitteeRunner != nil {
+		dr[types.RoleCommittee] = aux.CommitteeRunner
+	}
+	if aux.ProposerRunner != nil {
+		dr[types.RoleProposer] = aux.ProposerRunner
+	}
+	if aux.AggregatorRunner != nil {
+		dr[types.RoleAggregator] = aux.AggregatorRunner
+	}
+	if aux.SyncCommitteeAggregatorRunner != nil {
+		dr[types.RoleSyncCommitteeContribution] = aux.SyncCommitteeAggregatorRunner
+	}
+	if aux.ValidatorRegistrationRunner != nil {
+		dr[types.RoleValidatorRegistration] = aux.ValidatorRegistrationRunner
+	}
+	if aux.VoluntaryExitRunner != nil {
+		dr[types.RoleVoluntaryExit] = aux.VoluntaryExitRunner
+	}
+
+	return nil
 }
