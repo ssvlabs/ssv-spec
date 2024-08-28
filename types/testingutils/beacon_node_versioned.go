@@ -236,11 +236,15 @@ var VersionBySlot = func(slot phase0.Slot) spec.DataVersion {
 }
 
 var TestingProposerDutyV = func(version spec.DataVersion) *types.ValidatorDuty {
+	return TestingProposerDutyWithValidatorIndexV(TestingValidatorIndex, version)
+}
+
+var TestingProposerDutyWithValidatorIndexV = func(validatorIndex phase0.ValidatorIndex, version spec.DataVersion) *types.ValidatorDuty {
 	duty := &types.ValidatorDuty{
 		Type:           types.BNRoleProposer,
 		PubKey:         TestingValidatorPubKey,
 		Slot:           TestingDutySlotV(version),
-		ValidatorIndex: TestingValidatorIndex,
+		ValidatorIndex: validatorIndex,
 		// ISSUE 233: We are initializing unused struct fields here
 		CommitteeIndex:          3,
 		CommitteesAtSlot:        36,

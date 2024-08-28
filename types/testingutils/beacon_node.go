@@ -549,15 +549,19 @@ var TestingAggregatorDutyFirstSlot = types.ValidatorDuty{
 	ValidatorCommitteeIndex: 11,
 }
 
-var TestingAggregatorDuty = types.ValidatorDuty{
-	Type:                    types.BNRoleAggregator,
-	PubKey:                  TestingValidatorPubKey,
-	Slot:                    TestingDutySlot,
-	ValidatorIndex:          TestingValidatorIndex,
-	CommitteeIndex:          22,
-	CommitteesAtSlot:        36,
-	CommitteeLength:         128,
-	ValidatorCommitteeIndex: 11,
+var TestingAggregatorDuty = *TestingAggregatorDutyWithValidatorIndex(TestingValidatorIndex)
+
+var TestingAggregatorDutyWithValidatorIndex = func(validatorIndex phase0.ValidatorIndex) *types.ValidatorDuty {
+	return &types.ValidatorDuty{
+		Type:                    types.BNRoleAggregator,
+		PubKey:                  TestingValidatorPubKey,
+		Slot:                    TestingDutySlot,
+		ValidatorIndex:          validatorIndex,
+		CommitteeIndex:          22,
+		CommitteesAtSlot:        36,
+		CommitteeLength:         128,
+		ValidatorCommitteeIndex: 11,
+	}
 }
 
 // TestingAggregatorDutyNextEpoch testing for a second duty start
@@ -585,16 +589,20 @@ var TestingSyncCommitteeContributionDutyFirstSlot = types.ValidatorDuty{
 	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
 }
 
-var TestingSyncCommitteeContributionDuty = types.ValidatorDuty{
-	Type:                          types.BNRoleSyncCommitteeContribution,
-	PubKey:                        TestingValidatorPubKey,
-	Slot:                          TestingDutySlot,
-	ValidatorIndex:                TestingValidatorIndex,
-	CommitteeIndex:                3,
-	CommitteesAtSlot:              36,
-	CommitteeLength:               128,
-	ValidatorCommitteeIndex:       11,
-	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
+var TestingSyncCommitteeContributionDuty = *TestingSyncCommitteeContributionDutyWithValidatorIndex(TestingValidatorIndex)
+
+var TestingSyncCommitteeContributionDutyWithValidatorIndex = func(validatorIndex phase0.ValidatorIndex) *types.ValidatorDuty {
+	return &types.ValidatorDuty{
+		Type:                          types.BNRoleSyncCommitteeContribution,
+		PubKey:                        TestingValidatorPubKey,
+		Slot:                          TestingDutySlot,
+		ValidatorIndex:                validatorIndex,
+		CommitteeIndex:                3,
+		CommitteesAtSlot:              36,
+		CommitteeLength:               128,
+		ValidatorCommitteeIndex:       11,
+		ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
+	}
 }
 
 // TestingSyncCommitteeContributionNexEpochDuty testing for a second duty start
