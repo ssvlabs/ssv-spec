@@ -156,6 +156,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			km,
 			opSigner,
 			valCheck,
+			&ssv.Config{Domain: TestingSSVDomainType},
 		)
 	case types.RoleAggregator:
 		runner, err = ssv.NewAggregatorRunner(
@@ -168,6 +169,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			opSigner,
 			valCheck,
 			TestingHighestDecidedSlot,
+			&ssv.Config{Domain: TestingSSVDomainType},
 		)
 	case types.RoleProposer:
 		runner, err = ssv.NewProposerRunner(
@@ -180,6 +182,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			opSigner,
 			valCheck,
 			TestingHighestDecidedSlot,
+			&ssv.Config{Domain: TestingSSVDomainType},
 		)
 	case types.RoleSyncCommitteeContribution:
 		runner, err = ssv.NewSyncCommitteeAggregatorRunner(
@@ -192,6 +195,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			opSigner,
 			valCheck,
 			TestingHighestDecidedSlot,
+			&ssv.Config{Domain: TestingSSVDomainType},
 		)
 	case types.RoleValidatorRegistration:
 		runner, err = ssv.NewValidatorRegistrationRunner(
@@ -201,6 +205,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			net,
 			km,
 			opSigner,
+			&ssv.Config{Domain: TestingSSVDomainType},
 		)
 	case types.RoleVoluntaryExit:
 		runner, err = ssv.NewVoluntaryExitRunner(
@@ -210,6 +215,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			net,
 			km,
 			opSigner,
+			&ssv.Config{Domain: TestingSSVDomainType},
 		)
 	case UnknownDutyType:
 		runner, err = ssv.NewCommitteeRunner(
@@ -221,6 +227,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			km,
 			opSigner,
 			valCheck,
+			&ssv.Config{Domain: TestingSSVDomainType},
 		)
 		if runner != nil {
 			runner.(*ssv.CommitteeRunner).BaseRunner.RunnerRoleType = UnknownDutyType
@@ -299,6 +306,9 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
 	shareMap[share.ValidatorIndex] = share
 
+	// Create ssv config
+	ssvConfig := &ssv.Config{Domain: TestingSSVDomainType}
+
 	var runner ssv.Runner
 	var err error
 	switch role {
@@ -312,6 +322,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			km,
 			opSigner,
 			valCheck,
+			ssvConfig,
 		)
 	case types.RoleAggregator:
 		runner, err = ssv.NewAggregatorRunner(
@@ -324,6 +335,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			opSigner,
 			valCheck,
 			TestingHighestDecidedSlot,
+			ssvConfig,
 		)
 	case types.RoleProposer:
 		runner, err = ssv.NewProposerRunner(
@@ -336,6 +348,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			opSigner,
 			valCheck,
 			TestingHighestDecidedSlot,
+			ssvConfig,
 		)
 	case types.RoleSyncCommitteeContribution:
 		runner, err = ssv.NewSyncCommitteeAggregatorRunner(
@@ -348,6 +361,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			opSigner,
 			valCheck,
 			TestingHighestDecidedSlot,
+			ssvConfig,
 		)
 	case types.RoleValidatorRegistration:
 		runner, err = ssv.NewValidatorRegistrationRunner(
@@ -357,6 +371,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			net,
 			km,
 			opSigner,
+			ssvConfig,
 		)
 	case types.RoleVoluntaryExit:
 		runner, err = ssv.NewVoluntaryExitRunner(
@@ -366,6 +381,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			net,
 			km,
 			opSigner,
+			ssvConfig,
 		)
 	case UnknownDutyType:
 		runner, err = ssv.NewCommitteeRunner(
@@ -377,6 +393,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			km,
 			opSigner,
 			valCheck,
+			ssvConfig,
 		)
 		if runner != nil {
 			runner.(*ssv.CommitteeRunner).BaseRunner.RunnerRoleType = UnknownDutyType

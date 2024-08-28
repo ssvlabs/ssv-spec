@@ -1146,12 +1146,6 @@
 																"Signer": 4
 														}
 												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
-												],
 												"FeeRecipientAddress": [
 														83,
 														89,
@@ -1246,12 +1240,6 @@
 																"SharePubKey": "hrAN+rdxvyWBA0xXwn35OSp48WlrIAySilDI04aOniDTSol4aEMhYFbOOjdTeTD4",
 																"Signer": 4
 														}
-												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
 												],
 												"FeeRecipientAddress": [
 														83,
@@ -2360,7 +2348,15 @@
 										}
 								},
 								"BeaconNetwork": "now_test_network",
-								"RunnerRoleType": 0
+								"RunnerRoleType": 0,
+								"Config": {
+										"Domain": [
+												0,
+												0,
+												3,
+												1
+										]
+								}
 						}
 				},
 				"13": {
@@ -3509,12 +3505,6 @@
 																"Signer": 4
 														}
 												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
-												],
 												"FeeRecipientAddress": [
 														83,
 														89,
@@ -3609,12 +3599,6 @@
 																"SharePubKey": "gbN+DF6u/2ee0b+bkdZOEQsCWRJ8fERL6rpP6XJzQXBssk/2cc3QPGaDYhZly4es",
 																"Signer": 4
 														}
-												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
 												],
 												"FeeRecipientAddress": [
 														83,
@@ -4723,7 +4707,15 @@
 										}
 								},
 								"BeaconNetwork": "now_test_network",
-								"RunnerRoleType": 0
+								"RunnerRoleType": 0,
+								"Config": {
+										"Domain": [
+												0,
+												0,
+												3,
+												1
+										]
+								}
 						}
 				},
 				"14": {
@@ -5872,12 +5864,6 @@
 																"Signer": 4
 														}
 												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
-												],
 												"FeeRecipientAddress": [
 														83,
 														89,
@@ -5972,12 +5958,6 @@
 																"SharePubKey": "rzXb9zreo+J1R+PZTobdrr0sy05CaNkuUpmnH+kaweVG60WnXOy20V9TjyVsS5gT",
 																"Signer": 4
 														}
-												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
 												],
 												"FeeRecipientAddress": [
 														83,
@@ -7086,7 +7066,15 @@
 										}
 								},
 								"BeaconNetwork": "now_test_network",
-								"RunnerRoleType": 0
+								"RunnerRoleType": 0,
+								"Config": {
+										"Domain": [
+												0,
+												0,
+												3,
+												1
+										]
+								}
 						}
 				},
 				"15": {
@@ -8235,12 +8223,6 @@
 																"Signer": 4
 														}
 												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
-												],
 												"FeeRecipientAddress": [
 														83,
 														89,
@@ -8335,12 +8317,6 @@
 																"SharePubKey": "tHLM2nSnwMF9LKvZ1FGX9C7H+bgUrEgxcME/wg6hAOy2NqFkVE1q+Ts2B3mJ0LZx",
 																"Signer": 4
 														}
-												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
 												],
 												"FeeRecipientAddress": [
 														83,
@@ -9449,7 +9425,15 @@
 										}
 								},
 								"BeaconNetwork": "now_test_network",
-								"RunnerRoleType": 0
+								"RunnerRoleType": 0,
+								"Config": {
+										"Domain": [
+												0,
+												0,
+												3,
+												1
+										]
+								}
 						}
 				}
 		},
@@ -9582,12 +9566,6 @@
 										"Signer": 4
 								}
 						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
-						],
 						"FeeRecipientAddress": [
 								83,
 								89,
@@ -9682,12 +9660,6 @@
 										"SharePubKey": "hrAN+rdxvyWBA0xXwn35OSp48WlrIAySilDI04aOniDTSol4aEMhYFbOOjdTeTD4",
 										"Signer": 4
 								}
-						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
 						],
 						"FeeRecipientAddress": [
 								83,
@@ -9784,12 +9756,6 @@
 										"Signer": 4
 								}
 						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
-						],
 						"FeeRecipientAddress": [
 								83,
 								89,
@@ -9884,12 +9850,6 @@
 										"SharePubKey": "gbN+DF6u/2ee0b+bkdZOEQsCWRJ8fERL6rpP6XJzQXBssk/2cc3QPGaDYhZly4es",
 										"Signer": 4
 								}
-						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
 						],
 						"FeeRecipientAddress": [
 								83,
@@ -9986,12 +9946,6 @@
 										"Signer": 4
 								}
 						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
-						],
 						"FeeRecipientAddress": [
 								83,
 								89,
@@ -10086,12 +10040,6 @@
 										"SharePubKey": "rzXb9zreo+J1R+PZTobdrr0sy05CaNkuUpmnH+kaweVG60WnXOy20V9TjyVsS5gT",
 										"Signer": 4
 								}
-						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
 						],
 						"FeeRecipientAddress": [
 								83,
@@ -10188,12 +10136,6 @@
 										"Signer": 4
 								}
 						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
-						],
 						"FeeRecipientAddress": [
 								83,
 								89,
@@ -10288,12 +10230,6 @@
 										"SharePubKey": "tHLM2nSnwMF9LKvZ1FGX9C7H+bgUrEgxcME/wg6hAOy2NqFkVE1q+Ts2B3mJ0LZx",
 										"Signer": 4
 								}
-						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
 						],
 						"FeeRecipientAddress": [
 								83,

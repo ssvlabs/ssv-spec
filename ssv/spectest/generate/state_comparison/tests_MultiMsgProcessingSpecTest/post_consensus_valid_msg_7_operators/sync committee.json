@@ -216,12 +216,6 @@
 												"Signer": 7
 										}
 								],
-								"DomainType": [
-										0,
-										0,
-										3,
-										1
-								],
 								"FeeRecipientAddress": [
 										83,
 										89,
@@ -417,6 +411,14 @@
 						}
 				},
 				"BeaconNetwork": "now_test_network",
-				"RunnerRoleType": 0
+				"RunnerRoleType": 0,
+				"Config": {
+						"Domain": [
+								0,
+								0,
+								3,
+								1
+						]
+				}
 		}
 }

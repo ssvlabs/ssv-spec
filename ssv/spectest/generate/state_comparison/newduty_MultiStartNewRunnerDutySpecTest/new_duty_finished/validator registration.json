@@ -96,12 +96,6 @@
 												"Signer": 4
 										}
 								],
-								"DomainType": [
-										0,
-										0,
-										3,
-										1
-								],
 								"FeeRecipientAddress": [
 										83,
 										89,
@@ -129,6 +123,14 @@
 				},
 				"QBFTController": null,
 				"BeaconNetwork": "now_test_network",
-				"RunnerRoleType": 4
+				"RunnerRoleType": 4,
+				"Config": {
+						"Domain": [
+								0,
+								0,
+								3,
+								1
+						]
+				}
 		}
 }

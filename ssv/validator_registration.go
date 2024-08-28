@@ -27,6 +27,7 @@ func NewValidatorRegistrationRunner(
 	network Network,
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
+	config IConfig,
 ) (Runner, error) {
 
 	if len(share) != 1 {
@@ -38,6 +39,7 @@ func NewValidatorRegistrationRunner(
 			RunnerRoleType: types.RoleValidatorRegistration,
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
+			Config:         config,
 		},
 
 		beacon:         beacon,
@@ -137,8 +139,7 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	domainType := r.BaseRunner.QBFTController.GetConfig().GetSignatureDomainType()
-	msgID := types.NewMsgID(domainType, r.GetShare().ValidatorPubKey[:], types.RunnerRole(r.BaseRunner.RunnerRoleType))
+	msgID := types.NewMsgID(r.BaseRunner.Config.GetDomainType(), r.GetShare().ValidatorPubKey[:], types.RunnerRole(r.BaseRunner.RunnerRoleType))
 
 	encodedMsg, err := msgs.Encode()
 	if err != nil {

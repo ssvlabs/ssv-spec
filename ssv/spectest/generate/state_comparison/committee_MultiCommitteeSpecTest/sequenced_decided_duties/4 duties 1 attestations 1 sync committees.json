@@ -1135,12 +1135,6 @@
 																"Signer": 4
 														}
 												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
-												],
 												"FeeRecipientAddress": [
 														83,
 														89,
@@ -2248,7 +2242,15 @@
 										}
 								},
 								"BeaconNetwork": "now_test_network",
-								"RunnerRoleType": 0
+								"RunnerRoleType": 0,
+								"Config": {
+										"Domain": [
+												0,
+												0,
+												3,
+												1
+										]
+								}
 						}
 				},
 				"13": {
@@ -3386,12 +3388,6 @@
 																"Signer": 4
 														}
 												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
-												],
 												"FeeRecipientAddress": [
 														83,
 														89,
@@ -4499,7 +4495,15 @@
 										}
 								},
 								"BeaconNetwork": "now_test_network",
-								"RunnerRoleType": 0
+								"RunnerRoleType": 0,
+								"Config": {
+										"Domain": [
+												0,
+												0,
+												3,
+												1
+										]
+								}
 						}
 				},
 				"14": {
@@ -5637,12 +5641,6 @@
 																"Signer": 4
 														}
 												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
-												],
 												"FeeRecipientAddress": [
 														83,
 														89,
@@ -6750,7 +6748,15 @@
 										}
 								},
 								"BeaconNetwork": "now_test_network",
-								"RunnerRoleType": 0
+								"RunnerRoleType": 0,
+								"Config": {
+										"Domain": [
+												0,
+												0,
+												3,
+												1
+										]
+								}
 						}
 				},
 				"15": {
@@ -7888,12 +7894,6 @@
 																"Signer": 4
 														}
 												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
-												],
 												"FeeRecipientAddress": [
 														83,
 														89,
@@ -9001,7 +9001,15 @@
 										}
 								},
 								"BeaconNetwork": "now_test_network",
-								"RunnerRoleType": 0
+								"RunnerRoleType": 0,
+								"Config": {
+										"Domain": [
+												0,
+												0,
+												3,
+												1
+										]
+								}
 						}
 				}
 		},
@@ -9133,12 +9141,6 @@
 										"SharePubKey": "qSfP2ES1E+nhWm1nLFCjwkxS/oJVaEx6oEqBykh30NU62WvfsWvj+q1xYDjBBgxi",
 										"Signer": 4
 								}
-						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
 						],
 						"FeeRecipientAddress": [
 								83,
