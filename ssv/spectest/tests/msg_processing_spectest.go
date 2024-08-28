@@ -107,7 +107,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Committee, error) {
 		c = testingutils.BaseCommitteeWithRunner(keySetMap, test.Runner.(*ssv.CommitteeRunner))
 
 		if !test.DontStartDuty {
-			lastErr = c.StartDuty(test.Duty.(*types.CommitteeDuty))
+			lastErr = c.StartDuty(test.Duty)
 		} else {
 			c.CommitteeRunners[test.Duty.DutySlot()] = test.Runner.(*ssv.CommitteeRunner)
 		}
@@ -223,8 +223,9 @@ type MsgProcessingSpecTestAlias struct {
 	BeaconBroadcastedRoots  []string
 	DontStartDuty           bool
 	ExpectedError           string
-	ValidatorDuty           *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
-	CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+	ValidatorDuty           *types.ValidatorDuty      `json:"ValidatorDuty,omitempty"`
+	CommitteeDuty           *types.CommitteeDuty      `json:"CommitteeDuty,omitempty"`
+	UnknownDuty             *testingutils.UnknownDuty `json:"UnknownDuty,omitempty"`
 }
 
 func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
@@ -244,10 +245,12 @@ func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
 	if t.Duty != nil {
 		if duty, ok := t.Duty.(*types.ValidatorDuty); ok {
 			alias.ValidatorDuty = duty
-		} else if committeeDuty, ok := t.Duty.(*types.CommitteeDuty); ok {
-			alias.CommitteeDuty = committeeDuty
+		} else if duty, ok := t.Duty.(*types.CommitteeDuty); ok {
+			alias.CommitteeDuty = duty
+		} else if duty, ok := t.Duty.(*testingutils.UnknownDuty); ok {
+			alias.UnknownDuty = duty
 		} else {
-			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't ValidatorDuty or CommitteeDuty")
+			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't ValidatorDuty, CommitteeDuty or UnknownDuty")
 		}
 	}
 	byts, err := json.Marshal(alias)
@@ -279,6 +282,8 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 		t.Duty = aux.ValidatorDuty
 	} else if aux.CommitteeDuty != nil {
 		t.Duty = aux.CommitteeDuty
+	} else if aux.UnknownDuty != nil {
+		t.Duty = aux.UnknownDuty
 	}
 
 	return nil

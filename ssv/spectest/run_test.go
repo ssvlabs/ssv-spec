@@ -215,6 +215,17 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 			panic("cant unmarshal beacon duty")
 		}
 		testDuty = duty
+	} else if _, ok := m["UnknownDuty"]; ok {
+		byts, err := json.Marshal(m["UnknownDuty"])
+		if err != nil {
+			panic("cant marshal beacon duty")
+		}
+		duty := &testingutils.UnknownDuty{}
+		err = json.Unmarshal(byts, duty)
+		if err != nil {
+			panic("cant unmarshal beacon duty")
+		}
+		testDuty = duty
 	} else {
 		panic("no beacon or committee duty")
 	}
@@ -276,6 +287,17 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 			panic("cant marshal beacon duty")
 		}
 		duty := &types.ValidatorDuty{}
+		err = json.Unmarshal(byts, duty)
+		if err != nil {
+			panic("cant unmarshal beacon duty")
+		}
+		testDuty = duty
+	} else if _, ok := m["UnknownDuty"]; ok {
+		byts, err := json.Marshal(m["UnknownDuty"])
+		if err != nil {
+			panic("cant marshal beacon duty")
+		}
+		duty := &testingutils.UnknownDuty{}
 		err = json.Unmarshal(byts, duty)
 		if err != nil {
 			panic("cant unmarshal beacon duty")
