@@ -6,7 +6,23 @@
 
 ## Message
 
-`Message` represents a QBFT message. It contains:
+`Message` represents a QBFT message.
+
+```go
+type Message struct {
+	MsgType    MessageType
+	Height     Height
+	Round      Round
+	Identifier []byte
+
+	Root                     [32]byte
+	DataRound                Round
+	RoundChangeJustification [][]byte
+	PrepareJustification     [][]byte
+}
+```
+
+It contains:
 - `MsgType`: that represents one of the possible types of messages (Proposal, Prepare, Commit, or Round-Change).
 - `Height`: the height of the associated QBFT execution.
 - `Round`: the message round.
