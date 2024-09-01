@@ -16,20 +16,19 @@ import (
 // that checks if the beacon vote is slashable by the filtered public keys
 // It also does sanity checks on the beacon vote data
 // It returns an error if shares assigned to the duty are missing
-func BeaconVoteValueCheckF(duty *types.CommitteeDuty, signer types.BeaconSigner, beaconNetwork types.BeaconNetwork,
+func BeaconVoteValueCheckF(cDuty *types.CommitteeDuty, signer types.BeaconSigner, beaconNetwork types.BeaconNetwork,
 	availableShares map[phase0.ValidatorIndex]*types.Share) (qbft.ProposedValueCheckF, error) {
-	duties := duty.ValidatorDuties
 	slashablePublicKeys := []types.ShareValidatorPK{}
-	for _, duty := range duties {
-		if duty.Type == types.BNRoleAttester {
-			share, ok := availableShares[duty.ValidatorIndex]
+	for _, vDuty := range cDuty.ValidatorDuties {
+		if vDuty.Type == types.BNRoleAttester {
+			share, ok := availableShares[vDuty.ValidatorIndex]
 			if !ok {
 				return nil, errors.New("assigned validator duty doesn't have a validator share")
 			}
 			slashablePublicKeys = append(slashablePublicKeys, share.SharePubKey)
 		}
 	}
-	valueCheckF := createBeaconVoteValueCheckF(signer, duty.DutySlot(), slashablePublicKeys,
+	valueCheckF := createBeaconVoteValueCheckF(signer, cDuty.DutySlot(), slashablePublicKeys,
 		beaconNetwork.EstimatedCurrentEpoch())
 	return valueCheckF, nil
 }
