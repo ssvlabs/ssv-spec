@@ -4,12 +4,14 @@
 > For implementation details, access the module's [code documentation]().
 
 
-GossipSub allows the application to define a validation function to be applied to a message before it reaches the application.
+Through the [Extended Validators](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#extended-validators) feature, GossipSub allows the application to define a validation function to be applied to a message before it reaches the application.
 
 The output of the validation may be one of the following types:
 - `ValidationAccept`: for a message which is considered valid and can be forwarded to the application. 
 - `ValidationReject`: for a message that is considered malicious regarding the protocol rules. This message is dropped and the peer is punished according to the scoring parametrs.
 - `ValidationIgnore`: for a message that is either irrelevant or doesn't contribute for the state progression of the application.
+
+In case the validation function returns `ValidationIgnore` or `ValidationReject`, the message is dropped so that the node doesn't overlay bad messages to the network.
 
 ## Rules
 
