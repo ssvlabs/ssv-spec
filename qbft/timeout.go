@@ -25,7 +25,7 @@ func (i *Instance) UponRoundTimeout() error {
 	defer func() {
 		i.State.Round = newRound
 		i.State.ProposalAcceptedForCurrentRound = nil
-		i.config.GetTimer().TimeoutForRound(i.State.Round)
+		i.Config.GetTimer().TimeoutForRound(i.State.Round)
 	}()
 
 	roundChange, err := CreateRoundChange(i.State, i.signer, newRound, i.StartValue)

@@ -125,7 +125,7 @@ Content hash is used:
 
 ```go
 func MsgID(msg) string {
-    return string(sha256(msg.GetData())[:20])
+    return string(sha256(msg.Data)[:20])
 }
 ```
 **Default Value (ETH2):**

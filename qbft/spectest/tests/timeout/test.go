@@ -37,13 +37,13 @@ func (test *SpecTest) Run(t *testing.T) {
 	}
 
 	// test calling timeout
-	timer, ok := test.Pre.GetConfig().GetTimer().(*testingutils.TestQBFTTimer)
+	timer, ok := test.Pre.Config.GetTimer().(*testingutils.TestQBFTTimer)
 	require.True(t, ok)
 	require.Equal(t, test.ExpectedTimerState.Timeouts, timer.State.Timeouts)
 	require.Equal(t, test.ExpectedTimerState.Round, timer.State.Round)
 
 	// test output message
-	broadcastedSignedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+	broadcastedSignedMsgs := test.Pre.Config.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
 	require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, test.Pre.State.CommitteeMember.Committee))
 	if len(test.OutputMessages) > 0 || len(broadcastedSignedMsgs) > 0 {
 		require.Len(t, broadcastedSignedMsgs, len(test.OutputMessages))

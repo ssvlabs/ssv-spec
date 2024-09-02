@@ -32,7 +32,7 @@ func (i *Instance) uponRoundChange(
 
 	justifiedRoundChangeMsg, valueToPropose, err := hasReceivedProposalJustificationForLeadingRound(
 		i.State,
-		i.config,
+		i.Config,
 		instanceStartValue,
 		msg,
 		roundChangeMsgContainer,
@@ -86,7 +86,7 @@ func (i *Instance) uponRoundChange(
 func (i *Instance) uponChangeRoundPartialQuorum(newRound Round, instanceStartValue []byte) error {
 	i.State.Round = newRound
 	i.State.ProposalAcceptedForCurrentRound = nil
-	i.config.GetTimer().TimeoutForRound(i.State.Round)
+	i.Config.GetTimer().TimeoutForRound(i.State.Round)
 	roundChange, err := CreateRoundChange(i.State, i.signer, newRound, instanceStartValue)
 	if err != nil {
 		return errors.Wrap(err, "failed to create round change message")

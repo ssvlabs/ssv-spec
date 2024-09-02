@@ -99,20 +99,6 @@ type SSVMessage struct {
 	Data []byte `ssz-max:"722412"`
 }
 
-func (msg *SSVMessage) GetType() MsgType {
-	return msg.MsgType
-}
-
-// GetID returns a unique msg ID that is used to identify to which validator should the message be sent for processing
-func (msg *SSVMessage) GetID() MessageID {
-	return msg.MsgID
-}
-
-// GetData returns message Data as byte slice
-func (msg *SSVMessage) GetData() []byte {
-	return msg.Data
-}
-
 // Encode returns a msg encoded bytes or error
 func (msg *SSVMessage) Encode() ([]byte, error) {
 	return msg.MarshalSSZ()

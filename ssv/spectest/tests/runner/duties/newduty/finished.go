@@ -20,7 +20,7 @@ func Finished() tests.SpecTest {
 		// for duties with a consensus controller
 		if finishController {
 			r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
-				r.GetBaseRunner().QBFTController.GetConfig(),
+				r.GetBaseRunner().QBFTController.Config,
 				r.GetBaseRunner().QBFTController.CommitteeMember,
 				r.GetBaseRunner().QBFTController.Identifier,
 				qbft.Height(duty.DutySlot()),

@@ -17,7 +17,7 @@ func PastMessage() tests.SpecTest {
 
 	bumpHeight := func(r ssv.Runner) ssv.Runner {
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, qbft.NewInstance(
-			r.GetBaseRunner().QBFTController.GetConfig(),
+			r.GetBaseRunner().QBFTController.Config,
 			r.GetBaseRunner().QBFTController.CommitteeMember,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.FirstHeight,

@@ -219,7 +219,7 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, signedMessage *types.S
 		return false, errors.New("decided wrong instance")
 	}
 
-	if decidedMessage.Height != b.State.RunningInstance.GetHeight() {
+	if decidedMessage.Height != b.State.RunningInstance.State.Height {
 		return false, errors.New("decided wrong instance")
 	}
 

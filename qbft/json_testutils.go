@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // This file adds, as testing utils, the Encode, Decode and GetRoot methods
@@ -21,10 +22,9 @@ func (c *Controller) Decode(data []byte) error {
 		return errors.Wrap(err, "could not decode controller")
 	}
 
-	config := c.GetConfig()
 	for _, i := range c.StoredInstances {
 		if i != nil {
-			i.config = config
+			i.Config = c.Config
 		}
 	}
 	return nil
@@ -52,38 +52,91 @@ func (i *Instance) GetRoot() ([32]byte, error) {
 	return i.State.GetRoot()
 }
 
+func (c *Controller) MarshalJSON() ([]byte, error) {
+
+	// Create alias without config due to custom marshalling error
+	type ControllerAlias struct {
+		Identifier      []byte
+		Height          Height
+		StoredInstances InstanceContainer
+		CommitteeMember *types.CommitteeMember
+		OperatorSigner  *types.OperatorSigner `json:"-"`
+	}
+
+	alias := &ControllerAlias{
+		Identifier:      c.Identifier,
+		Height:          c.Height,
+		StoredInstances: c.StoredInstances,
+		CommitteeMember: c.CommitteeMember,
+		OperatorSigner:  c.OperatorSigner,
+	}
+
+	return json.Marshal(alias)
+}
+
+func (c *Controller) UnmarshalJSON(data []byte) error {
+
+	// Create alias without config due to custom marshalling error
+	type ControllerAlias struct {
+		Identifier      []byte
+		Height          Height
+		StoredInstances InstanceContainer
+		CommitteeMember *types.CommitteeMember
+		OperatorSigner  *types.OperatorSigner `json:"-"`
+	}
+
+	aux := &ControllerAlias{}
+
+	// Unmarshal the JSON data into the auxiliary struct
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	c.Identifier = aux.Identifier
+	c.Height = aux.Height
+	c.StoredInstances = aux.StoredInstances
+	c.CommitteeMember = aux.CommitteeMember
+	c.OperatorSigner = aux.OperatorSigner
+
+	return nil
+}
+
 // MarshalJSON is a custom JSON marshaller for Instance
 func (i *Instance) MarshalJSON() ([]byte, error) {
-	type Alias Instance
-	if i.forceStop {
-		return json.Marshal(&struct {
-			ForceStop bool `json:"forceStop"`
-			*Alias
-		}{
-			ForceStop: i.forceStop,
-			Alias:     (*Alias)(i),
-		})
-	} else {
-		return json.Marshal(&struct {
-			*Alias
-		}{
-			Alias: (*Alias)(i),
-		})
+
+	// Create alias without config due to custom marshalling error
+	type InstanceAlias struct {
+		State      *State
+		ForceStop  *bool `json:"forceStop,omitempty"`
+		StartValue []byte
 	}
+	aux := &InstanceAlias{
+		State:      i.State,
+		ForceStop:  &i.forceStop,
+		StartValue: i.StartValue,
+	}
+
+	return json.Marshal(aux)
 }
 
 // UnmarshalJSON is a custom JSON unmarshaller for Instance
 func (i *Instance) UnmarshalJSON(data []byte) error {
-	type Alias Instance
-	aux := &struct {
-		ForceStop *bool `json:"forceStop,omitempty"`
-		*Alias
-	}{
-		Alias: (*Alias)(i),
+
+	// Create alias without config due to custom marshalling error
+	type InstanceAlias struct {
+		State      *State
+		ForceStop  *bool `json:"forceStop,omitempty"`
+		StartValue []byte
 	}
+
+	aux := &InstanceAlias{}
 	if err := json.Unmarshal(data, &aux); err != nil {
 		return err
 	}
+
+	i.State = aux.State
+	i.StartValue = aux.StartValue
+
 	if aux.ForceStop != nil {
 		i.forceStop = *aux.ForceStop
 	}
