@@ -2,28 +2,32 @@
 
 | Contributors                               | Status | Last Revision |
 |:-------------------------------------------|:-------|:--------------|
-| [@amir-blox](https://github.com/amir-blox) | DRAFT  | SEP 22        |
+| [@amir-blox](https://github.com/amir-blox) & Mathus Franco | Updated  | SEP 24        |
 
 This document contains information on the pubsub scoring strategies and configurations used in `SSV.Network`.
 
-**NOTE** that the work on scoring is in progress. 
-fine-tuning scoring params might introduce updates to this document.  
-
-<br />
-
 ## Overview
 
-`gossipsub v1.1` introduced pubsub [scoring](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#peer-scoring),
-the idea is that a node maintains a score for each connected peer. 
-The score helps to identify and ignore or prune malicious, badly connected or just slow peers 
-(e.g. small machines that don't keep up).
+`GossipSub v1.1` introduced the pubsub [scoring](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#peer-scoring) feature.
+With this feature, the node maintains a single score for each individual peer. The score is used to regulate what types of communication may be performed with the corresponding peer (e.g. graylisting a peer that sends too many malicious messages). The score for each peer is computed locally taking into consideration its observed behaviour and it's not shared in the network.
+
+To use the scoring feature, we need to define several scoring parameters, as defined in its [documentation](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#the-score-function). To compute the parameters, we based our calculations in a [script for ETH 2](https://gist.github.com/blacktemplar/5c1862cb3f0e32a1a7fb0b25e79e6e2c)
+since it has shown robustness in scale.
+
+For a quick summary, the scoring is composed of topic scores ($S_1, S_2, S_3, S_{3b},$ and $S_4$) and general scores ($S_5, S_6,$ and $S_7$) and it's defined as
+
+$$S(P) = max\{TopicScoreCap, \sum_{i}TopicScore(P,t_i)\} + S_5(P) + S_6(P) + S_7(P)$$
+
+with
+
+$$TopicScore(P,t) = w_{t} \times (S_1(P,t) + S_2(P,t) + S_3(P,t) + S_{3b}(P,t) + S_4(P,t))$$
+
+Each different subscore ($S_1$, ..., $S_7$) serves for a different purpose (e.g. penalizing or rewarding depending on the peer behaviour) and each holds its own counter ($P_1$, ..., $P_7$). Not to classify a peer as good or bad for eternity, the counters decays according to their specific rates every `DecayInterval` interval.
 
 Additional sources of information are available in libp2p documentation:
 * [Score function](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#the-score-function)
 * [Parameters overview](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#overview-of-new-parameters)
-
-Scoring parameters calculations are based on [ETH 2](https://gist.github.com/blacktemplar/5c1862cb3f0e32a1a7fb0b25e79e6e2c),
-as it is a similar solution that has already shown robustness in scale.
+* [Score parameters Go file](https://github.com/libp2p/go-libp2p-pubsub/blob/b8a6a868adce87101b3f61cb1b1a644db627c59f/score_params.go)
 
 <br />
 
@@ -32,382 +36,284 @@ as it is a similar solution that has already shown robustness in scale.
 Scoring thresholds are used by libp2p to determine whether a peer should be removed from topic's mesh,
 penalized or even ignored if the score drops too low. \
 See [this section](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#score-thresholds)
-for more details regards the different thresholds.
+for more details regarding the different thresholds.
 
-`SSV.Network` uses the following scoring thresholds:
+It's used the following scoring thresholds:
 
 | Name | Description | Default Value (libp2p) | Default Value (SSV) | Default Value (ETH2) |
 |---   | ---  | ---                    | ---                 | ---                  |
-| `GossipThreshold` | below this threshold, gossip propagation is supressed | `-4000`   | `-4000` | `-4000` |
-| `PublishThreshold`| below this threshold, message publishing is supressed | `-8000`   | `-8000` | `-8000` |
-| `GraylistThreshold`| below this threshold, message processing is supressed altogether | `-16000`| `-16000` | `-16000` |
-| `AcceptPXThreshold`| below this threshold, Peer Exchange will be ignored | `100`      | `100` | `100` |
-| `OpportunisticGraftThreshold`| the median mesh score threshold before triggering opportunistic grafting | `5`  | `5` | `5` |
+| `GossipThreshold` | below this threshold, no gossip is emitted to or received from the peer | `-4000`   | `-4000` | `-4000` |
+| `PublishThreshold`| below this threshold, no self-published messages are propagated to the peer | `-8000`   | `-8000` | `-8000` |
+| `GraylistThreshold`| below this threshold, all RPCs from/to the peer are ignored | `-16000`| `-16000` | `-16000` |
+| `AcceptPXThreshold`| above this threshold, We accept supplied peers from the peer | `100`      | `100` | `100` |
+| `OpportunisticGraftThreshold`| if the median mesh is below this threshold, opportunistic grafting is triggered | `5`  | `5` | `5` |
 
 <br />
 
 ## Peer Score Params
 
-Peer score params defines a set of general parameters to apply to all peers, 
-regardless of what topic/s they are connected and sending messages.
+[`PeerScoreParams`](https://github.com/libp2p/go-libp2p-pubsub/blob/b8a6a868adce87101b3f61cb1b1a644db627c59f/score_params.go#L66) defines a set of general parameters that are independent of specific topic behaviours.
 
-As mentioned above, this solution is based on ETH2 
-(see [function](https://gist.github.com/blacktemplar/5c1862cb3f0e32a1a7fb0b25e79e6e2c#file-generate-scoring-params-py-L144))
-for calculating peer score params.
+| Parameter |  Value | Description |
+| --- | --- | --- |
+| `TopicScoreCap`| 32.72 | Cap for the sum of topic scores |
+| `DecayInterval` | `32 * (12 * Time.Second)` (one epoch) | Time until applying the decay function |
+| `DecayToZero` | 0.01 | Below this value, a counter is set to 0 |
+| `RetainScore` | `100 * 32 * (12 * Time.Second)` (100 epochs) | Time we save a peer's score |
+| `SeenMsgTTL` | `550 * HeartbeatInterval` (500 heartbeats) | Time until forgetting about a message |
 
-```json
-{
-  "TopicScoreCap": 56.25, // = maxPositiveScore / 4.0
-  "AppSpecificWeight": 1, // not used for now
-  "IPColocationFactorWeight": -56.25, // = -topicScoreCap
-  "IPColocationFactorThreshold": 10,
-  "IPColocationFactorWhitelist": [],
-  "BehaviourPenaltyWeight": -47.74333136903669, // = gossipThreshold / decayConvergence(rate = 10.0) ^ 2
-  "BehaviourPenaltyThreshold": 10,
-  "BehaviourPenaltyDecay": 0.6309573444801931,  // = decay oneEpoch*10
-  "DecayInterval": 384000000000, // = oneEpoch
-  "DecayToZero": 0.01,
-  "RetainScore": 3840000000000, // = oneEpoch * 10
-  "SeenMsgTTL": 385000000000
-}
-```
+### P5
 
-#### Input Arguments
+| Parameter | Value |
+| --- | --- |
+| `AppSpecificWeight` | 0 |
 
-The following arguments can be provided as an input to peer score params procedure:
+$P_5$ is computed as follows:
+$$S_5(P) = w_5 * P_5$$
 
-- one epoch duration should set the time offset for scoring (`12 seconds * 32 slots`)
-- msgID cache TTL
-- IP colocation threshold the amount of peers allowed from the same IP (SSV default `10`)
-- IP colocation weight helps to determine the penalty for multiple peers of the same IP
-- IP whitelist to enable specific peers
+Notes:
+- P5 is not currently being used. So, the weight is set to 0.
+
+### P6
+| Parameter | Value |
+| --- | --- |
+| `IPColocationFactorWhitelist` | 0 |
+| `IPColocationFactorWeight` | -32.72 (-`TopicScoreCap`) |
+| `IPColocationFactorThreshold` | 10 |
+
+$S_6$ is computed as follows:
+$$S_6(P) = w_6 * (max\{0, P_6 - th_6\})^2$$
+
+Notes:
+- P6 penalizes a peer if it shares the same IP with too many other peers. It's useful against Sybil attacks.
+- The P6 counter is always the total number of peers with the peer's IP and it doesn't decay.
+- Whitelist is the list of IPs not to be penalized. As default, this list is empty.
+- Threshold is the value after which the peer starts to get penalized. In our case, we allow at most 10.
+- The weight is defined so that, after a peer exceeds the threshold, its total score is at most 0.
+
+
+### P7
+| Parameter | Value |
+| --- | --- |
+| `BehaviourPenaltyDecay` | 0.6309573444801932 |
+| `BehaviourPenaltyWeight` | -8.986961427779512 |
+| `BehaviourPenaltyThreshold` | 6 |
+
+$S_7$ is computed as follows:
+$$S_7(P) = w_7 * (max\{0, P_7 - th_7\})^2$$
+
+Notes:
+- P7 applies penalizations due to misbehaviours according to [GossipSub router's rules](https://github.com/libp2p/go-libp2p-pubsub/blob/b8a6a868adce87101b3f61cb1b1a644db627c59f/score_params.go#L93).
+- The decay is set to that 1 is transformed into 0.01 after 10 epochs (considering the `DecayInterval`).
+- Threshold is the counter value after which the peer starts to get penalized. In our case, it's defined as 6.
+- The weight is set so that *a peer may keep indefinitely doing at most 10 behaviour penalties per epoch and, at infinity, it will reach `GossipThreshold`*.
+
+If the counter keeps getting incremented by $r$ and decayed by $d$, it will be, at infinity,
+$$P_7 = r + r * \times d + r * \times d^2 + ... = \frac{r}{1-d}$$
+
+So, a peer doing 10 misbehaviours per epoch will have, at infinity,
+$$P_7 = \frac{10}{1 - 0.6309573444801932} = 27.097138638119553$$
+
+Thus, we want that
+$$GossipThreshold = w_7 * (P_7 - th_7)^2$$
+$$w_7 = \frac{GossipThreshold}{(P_7 - th_7)^2} = -8.986961427779512$$
 
 <br />
 
 ## Topic Score Params
 
-Topic score params enables to define some more specific values in the topic level, 
-ensuring that each topic has its own set of config according to the topic nature.
+[`TopicScoreParams`](https://github.com/libp2p/go-libp2p-pubsub/blob/b8a6a868adce87101b3f61cb1b1a644db627c59f/score_params.go#L117) enables us to score the peer depending on more specific topic behaviours.
 
-As mentioned above, our solution for calculating score params is based on ETH2
-[procedure](https://gist.github.com/blacktemplar/5c1862cb3f0e32a1a7fb0b25e79e6e2c#file-generate-scoring-params-py-L174),
-with some minor adaptations to ssv.
+Different topics may have different parameters values. Here, we define a common set of formulas that are applied for all topics.
 
-Topic score params accepts multiple types of arguments:
+| Parameter |  Value |
+| --- | --- |
+| `TopicWeight`| 0.03125 |
 
-**Network level arguments**
+Notes:
+- We define the total topics weight to be $4.0$. Since we have $128$ topics, each topic has a weight of $\frac{4.0}{128} = 0.03125$.
 
-* `ActiveValidators` is the amount of validators in the network
-* `Subnets` is the number of subnets in the network
-  * `Groups` is the amount of groups used in the network. **TBD** pending network topology 
-* `OneEpochDuration` is used as a time-frame length to control scoring in a dynamic way
-* `TotalTopicsWeight` is the weight of all the available topics in the network (decided + subnets)
+### P1
 
-**Topic level arguments**
+| Parameter | Value |
+| --- | --- |
+| `TimeInMeshWeight` | 0.0333... |
+| `TimeInMeshQuantum` | 12 |
+| `TimeInMeshCap` | 300 |
 
-* `TopicWeight` is the weight of the topic
-* `ExpectedMsgRate` is the expected rate for the topic (in 12sec): \
-`activeValidators / float64(slotsPerEpoch)`
-* `InvalidMsgDecayTime` defines the decay for invalid messages (P4),
-passing a zero value disables scoring of message validation.
-* `FirstMsgDecayTime` defines the decay time for first message deliveries (P2)
-* `MeshMsgDecayTime` defines the decay time for mesh message deliveries (P3)
-  * `MeshMsgCapFactor` defines the factor to use to apply on the mesh message deliveries cap
-  * `MeshMsgActivationTime` defines time in the mesh before penalties are being applied
-* `D` is the gossip degree of the topic
+$S_1$ is computed as follows:
+$$S_1(P) = w_1 * P_1$$
 
-Topic level arguments might change between different topics, currently there are two supported topics:
-* **decided topic** for broadcasting decided messages across the network
-* **subnet topic** for broadcasting consensus messages (of multiple validators)
+with $P_1$ being capped by $Cap_1$ (i.e. $P_1\leftarrow max\{P_1, Cap_1\}$).
 
-### Decided Topic Params
+Notes:
+- P1 rewards a peer for staying a long period in the node's mesh.
+- The $P_1$ counter is computed by the time it's in the mesh divided by `TimeInMeshQuantum`. The $P_1$ is not decayed.
+- We defined the quantum to be a slot duration (12 seconds).
+- We defined the $Cap_1$ to be the counter value after one hour. So, $Cap_1 = \frac{60 * 60}{12} = 300$.
+- We defined the weight to be the maximum value for P1, 10, divided by the cap. So, $w_1 = \frac{10}{Cap_1} = 0.0333...$
 
-Decided topic is subscribed by all peers, used for broadcasting decided messages across the network.
-Params are based on `beacon aggregate and proof` topic (ETH2) due to the high rate of messages.
+### P2
 
-The following topic level arguments are used for constructing decided topic score params:
+| Parameter | Value |
+| --- | --- |
+| `FirstMessageDeliveriesDecay` | 0.3162277660168379 |
+| `FirstMessageDeliveriesWeight` | Check below |
+| `FirstMessageDeliveriesCap` | Check below |
 
-| Arg | Value | Comments |
-| --- | -------- | --- |
-|TotalTopicsWeight| `4.0 + 0.5 = 4.5` | The total weight consists of all subnets weight (4.0) and decided topic weight |
-|TopicWeight| `0.5` | weights more than the subnet topics as its the most busiest topic |
-|ExpectedMsgRate| `activeValidators / float64(slotsPerEpoch)` | rate per 12s |
-|FirstMsgDecayTime| `1` | |
-|MeshMsgDecayTime| `16` | |
-|MeshMsgCapFactor| `32.0` | |
-|MeshMsgActivationTime| One epoch duration | |
 
-**NOTE** might be updated once we finalize this topic, after fine-tuning. 
+$S_2$ is computed as follows:
+$$S_2(P) = w_2 * P_2$$
 
-Examples:
+with $P_2$ being capped by $Cap_2$ (i.e. $P_2\leftarrow max\{P_2, Cap_2\}$).
 
-<details>
-  <summary><b>1k validators</b></summary>
+Notes:
+- P2 rewards a peer that sends valid messages that the node has never seen before.
+- The $P_2$ counter is incremented whenever a never-seen valid message is received from the peer.
+- The decay is defined so that $P_2$ decays from 1 to 0.01 in 4 epochs.
+- The $Cap_2$ is defined as the counter value that a peer gets when sending the double of its expectation.
 
-Topic arguments:
-```json
-{
-  "TopicWeight": 0.5,
-  "ExpectedMsgRate": 31.25,
-  "InvalidMsgDecayTime": 0,
-  "FirstMsgDecayTime": 1,
-  "MeshMsgDecayTime": 16,
-  "MeshMsgCapFactor": 32,
-  "MeshMsgActivationTime": 384000000000,
-  "D": 8
+So, let's say that the expected message rate for a topic is $m$ and the mesh size is $D$. The peer is expected to send, in average, $m/D$ never-seen valid messages.
+If it keeps sending twice this value, $2m/D$, the counter will be, at infinity,
+$$P_2 = 2m/D + 2m/D \times d + 2m/D \times d^2 + ...$$
+
+where $d$ is the decay. Thus, we have that
+$$P_2 = \frac{2m/D}{1-d}$$
+
+- The weight is defined as the maximum value for P2, 80, divided by the cap. So $w_2 = \frac{80}{Cap_2}$.
+
+Here, we present no numerical values for $Cap_2$ and $w_2$ since they depend on the topic's message rate. Check the [appendix](#message-rate) to see how it can be computed for a topic.
+
+### P3 and P3b
+
+The P3 and P3b scores are used to penalize peers that doesn't fullfil an expectation of message delivery in the topic. For now, these scores are unused (i.e. the weights are set to 0).
+
+### P4
+
+| Parameter | Value |
+| --- | --- |
+| `InvalidMessageDeliveriesDecay` | 0.954992586021436 |
+| `InvalidMessageDeliveriesWeight` | -1280 |
+
+$S_4$ is computed as follows:
+$$S_4(P) = w_4 * P_4^2$$
+
+Notes:
+- P4 is used to penalize peers that send malicious messages. A message are considered malicious if its validation output is `ValidationReject`.
+- The decay is set to that the $P_4$ counter decays from 1 to 0.01 in 100 epochs.
+- The weight is defined so that, if the counter reaches 20, its score goes to `GraylistThreshold`. Thus
+
+$$GraylistThreshold = w_t \times w_4 \times P_4^2$$
+$$w_4 = \frac{GraylistThreshold}{w_t \times P_4^2} = \frac{-16000}{0.03125 \times 20^2} = -1280$$
+
+where $w_t$ is the topic's weight.
+
+
+## Appendix
+
+### Message Rate
+
+The parameters of the P2 score depends on an expected message rate for a topic. Here we present a Go code snippet that allows computing it.
+
+```go
+
+import "math"
+
+// Ethereum parameters
+const (
+	EthereumValidators                       = 1000000.0 // May be taken from the network
+	SyncCommitteeSize                        = 512.0
+	EstimatedAttestationCommitteeSize        = EthereumValidators / 2048.0
+	AggregatorProbability                    = 16.0 / EstimatedAttestationCommitteeSize
+	ProposalProbability                      = 1.0 / EthereumValidators
+	SyncCommitteeProbability                 = SyncCommitteeSize / EthereumValidators
+	SyncCommitteeAggProb                     = SyncCommitteeProbability * 16.0 / (SyncCommitteeSize / 4.0)
+	SlotsPerEpoch                            = 32.0
+	MaxAttestationDutiesPerEpochForCommittee = SlotsPerEpoch
+)
+
+// Expected number of messages per duty step
+
+func consensusMessages(n int) int {
+	return 1 + n + n + 2 // 1 Proposal + n Prepares + n Commits + 2 Decideds (average)
 }
-```
 
-Topic score params:
-```json
-{
-  "TopicWeight": 0.5,
-  "TimeInMeshWeight": 0.03333333333333333,
-  "TimeInMeshQuantum": 12000000000,
-  "TimeInMeshCap": 300,
-  "FirstMessageDeliveriesWeight": 5.0687999999999995,
-  "FirstMessageDeliveriesDecay": 0.01,
-  "FirstMessageDeliveriesCap": 7.891414141414142,
-  "MeshMessageDeliveriesWeight": -0.12514111392630922,
-  "MeshMessageDeliveriesDecay": 0.7498942093324558,
-  "MeshMessageDeliveriesCap": 59.96616130565809,
-  "MeshMessageDeliveriesThreshold": 1.8739425408018153,
-  "MeshMessageDeliveriesWindow": 2000000000,
-  "MeshMessageDeliveriesActivation": 384000000000,
-  "MeshFailurePenaltyWeight": -0.12514111392630922,
-  "MeshFailurePenaltyDecay": 0.7498942093324558,
-  "InvalidMessageDeliveriesWeight": 0,
-  "InvalidMessageDeliveriesDecay": 0.1
+func partialSignatureMessages(n int) int {
+	return n
 }
-```
-</details>
 
-<details>
-  <summary><b>10k validators</b></summary>
-
-Topic arguments:
-```json
-{
-  "TopicWeight": 0.5,
-  "ExpectedMsgRate": 312.5,
-  "InvalidMsgDecayTime": 0,
-  "FirstMsgDecayTime": 1,
-  "MeshMsgDecayTime": 16,
-  "MeshMsgCapFactor": 32,
-  "MeshMsgActivationTime": 384000000000,
-  "D": 8
+func dutyWithPreConsensus(n int) int {
+	// Pre-Consensus + Consensus + Post-Consensus
+	return partialSignatureMessages(n) + consensusMessages(n) + partialSignatureMessages(n)
 }
-```
 
-Topic score params:
-```json
-{
-  "TopicWeight": 0.5,
-  "TimeInMeshWeight": 0.03333333333333333,
-  "TimeInMeshQuantum": 12000000000,
-  "TimeInMeshCap": 300,
-  "FirstMessageDeliveriesWeight": 0.50688,
-  "FirstMessageDeliveriesDecay": 0.01,
-  "FirstMessageDeliveriesCap": 78.91414141414141,
-  "MeshMessageDeliveriesWeight": -0.01222081190686613,
-  "MeshMessageDeliveriesDecay": 0.7498942093324558,
-  "MeshMessageDeliveriesCap": 191.89171617810592,
-  "MeshMessageDeliveriesThreshold": 5.99661613056581,
-  "MeshMessageDeliveriesWindow": 2000000000,
-  "MeshMessageDeliveriesActivation": 384000000000,
-  "MeshFailurePenaltyWeight": -0.01222081190686613,
-  "MeshFailurePenaltyDecay": 0.7498942093324558,
-  "InvalidMessageDeliveriesWeight": 0,
-  "InvalidMessageDeliveriesDecay": 0.1
+func dutyWithoutPreConsensus(n int) int {
+	// Consensus + Post-Consensus
+	return consensusMessages(n) + partialSignatureMessages(n)
 }
-```
-</details>
 
-<details>
-  <summary><b>51k validators</b></summary>
+// Expected number of committee duties per epoch due to attestations
+func expectedNumberOfCommitteeDutiesPerEpochDueToAttestation(numValidators int) float64 {
+	k := float64(numValidators)
+	n := SlotsPerEpoch
 
-Topic arguments:
-```json
-{
-  "TopicWeight": 0.5,
-  "ExpectedMsgRate": 1593.75,
-  "InvalidMsgDecayTime": 0,
-  "FirstMsgDecayTime": 1,
-  "MeshMsgDecayTime": 16,
-  "MeshMsgCapFactor": 32,
-  "MeshMsgActivationTime": 384000000000,
-  "D": 8
+	// Probability that all validators are not assigned to slot i
+	probabilityAllNotOnSlotI := math.Pow((n-1)/n, k)
+	// Probability that at least one validator is assigned to slot i
+	probabilityAtLeastOneOnSlotI := 1 - probabilityAllNotOnSlotI
+	// Expected value for duty existence ({0,1}) on slot i
+	expectedDutyExistenceOnSlotI := 0*probabilityAllNotOnSlotI + 1*probabilityAtLeastOneOnSlotI
+	// Expected number of duties per epoch
+	expectedNumberOfDutiesPerEpoch := n * expectedDutyExistenceOnSlotI
+
+	return expectedNumberOfDutiesPerEpoch
 }
-```
 
-Topic score params:
-```json
-{
-  "TopicWeight": 0.5,
-  "TimeInMeshWeight": 0.03333333333333333,
-  "TimeInMeshQuantum": 12000000000,
-  "TimeInMeshCap": 300,
-  "FirstMessageDeliveriesWeight": 0.09938823529411765,
-  "FirstMessageDeliveriesDecay": 0.01,
-  "FirstMessageDeliveriesCap": 402.4621212121212,
-  "MeshMessageDeliveriesWeight": -0.01222081190686613,
-  "MeshMessageDeliveriesDecay": 0.7498942093324558,
-  "MeshMessageDeliveriesCap": 191.89171617810592,
-  "MeshMessageDeliveriesThreshold": 5.99661613056581,
-  "MeshMessageDeliveriesWindow": 2000000000,
-  "MeshMessageDeliveriesActivation": 384000000000,
-  "MeshFailurePenaltyWeight": -0.01222081190686613,
-  "MeshFailurePenaltyDecay": 0.7498942093324558,
-  "InvalidMessageDeliveriesWeight": 0,
-  "InvalidMessageDeliveriesDecay": 0.1
+// Expected committee duties per epoch that are due to only sync committee beacon duties
+func expectedSingleSCCommitteeDutiesPerEpoch(numValidators int) float64 {
+	// Probability that a validator is not in sync committee
+	chanceOfNotBeingInSyncCommittee := 1.0 - SyncCommitteeProbability
+	// Probability that all validators are not in sync committee
+	chanceThatAllValidatorsAreNotInSyncCommittee := math.Pow(chanceOfNotBeingInSyncCommittee, float64(numValidators))
+	// Probability that at least one validator is in sync committee
+	chanceOfAtLeastOneValidatorBeingInSyncCommittee := 1.0 - chanceThatAllValidatorsAreNotInSyncCommittee
+
+	// Expected number of slots with no attestation duty
+	expectedSlotsWithNoDuty := 32.0 - expectedNumberOfCommitteeDutiesPerEpochDueToAttestationCached(numValidators)
+
+	// Expected number of committee duties per epoch created due to only sync committee duties
+	return chanceOfAtLeastOneValidatorBeingInSyncCommittee * expectedSlotsWithNoDuty
 }
-```
-</details>
 
-[beacon aggregate and proof topic params for 51K validators](https://gist.github.com/blacktemplar/5c1862cb3f0e32a1a7fb0b25e79e6e2c#file-51000-toml-L63)
-
-### Subnet Topic Params
-
-Subnet topics are used for exchanging consensus messages of multiple validator committees.
-Params are based on `attestation subnets` (ETH2) due to their similar nature/orientation.
-
-The following topic level arguments are used for constructing subnet topic score params:
-
-| Arg | Value | Comments |
-| --- | -------- | --- |
-|TotalTopicsWeight| `4.0 + 0.5 = 4.5` (subnets + decided) | The total weight consists of all subnets weight (4.0) and decided topic weight |
-|TopicWeight| `4.0 / subnetsCount` | all the subnets currently share the same weight, **TBD** higher weight for busier subnets |
-|ExpectedMsgRate| `(activeValidators / subnetsCount) * msgsPerEpoch / slotsPerEpoch` | rate per 12s |
-|FirstMsgDecayTime| `8` | |
-|MeshMsgDecayTime| `16` | |
-|MeshMsgCapFactor| `16.0` | |
-|MeshMsgActivationTime| One epoch duration | |
-
-**NOTE** might be updated once we finalize this topic, after fine-tuning
-
-Examples:
-
-<details>
-  <summary><b>1k validators</b></summary>
-
-Topic arguments:
-```json
-{
-  "TopicWeight": 0.03125,
-  "ExpectedMsgRate": 2.197265625,
-  "InvalidMsgDecayTime": 0,
-  "FirstMsgDecayTime": 8,
-  "MeshMsgDecayTime": 16,
-  "MeshMsgCapFactor": 16,
-  "MeshMsgActivationTime": 384000000000,
-  "D": 8
+type Committee struct {
+	Operators     []spectypes.OperatorID
+	Validators    []phase0.ValidatorIndex
 }
-```
 
-Topic score params:
-```json
-{
-  "TopicWeight": 0.03125,
-  "TimeInMeshWeight": 0.03333333333333333,
-  "TimeInMeshQuantum": 12000000000,
-  "TimeInMeshCap": 300,
-  "FirstMessageDeliveriesWeight": 31.869332124805872,
-  "FirstMessageDeliveriesDecay": 0.5623413251903491,
-  "FirstMessageDeliveriesCap": 1.255125141730395,
-  "MeshMessageDeliveriesWeight": -450,
-  "MeshMessageDeliveriesDecay": 0.7498942093324558,
-  "MeshMessageDeliveriesCap": 2.1081853584020425,
-  "MeshMessageDeliveriesThreshold": 0.13176158490012765,
-  "MeshMessageDeliveriesWindow": 2000000000,
-  "MeshMessageDeliveriesActivation": 384000000000,
-  "MeshFailurePenaltyWeight": -450,
-  "MeshFailurePenaltyDecay": 0.7498942093324558,
-  "InvalidMessageDeliveriesWeight": 0,
-  "InvalidMessageDeliveriesDecay": 0.1
+// Calculates the message rate for a topic given its committees' configurations (number of operators and number of validators)
+func calculateMessageRateForTopic(committees []*Committee) float64 {
+	if len(committees) == 0 {
+		return 0
+	}
+
+	totalMsgRate := 0.0
+
+	for _, committee := range committees {
+		committeeSize := len(committee.Operators)
+		numValidators := len(committee.Validators)
+
+		totalMsgRate += expectedNumberOfCommitteeDutiesPerEpochDueToAttestation(numValidators) * float64(dutyWithoutPreConsensus(committeeSize))
+		totalMsgRate += expectedSingleSCCommitteeDutiesPerEpoch(numValidators) * float64(dutyWithoutPreConsensus(committeeSize))
+		totalMsgRate += float64(numValidators) * AggregatorProbability * float64(dutyWithPreConsensus(committeeSize))
+		totalMsgRate += float64(numValidators) * SlotsPerEpoch * ProposalProbability * float64(dutyWithPreConsensus(committeeSize))
+		totalMsgRate += float64(numValidators) * SlotsPerEpoch * SyncCommitteeAggProb * float64(dutyWithPreConsensus(committeeSize))
+	}
+
+	// Convert rate to seconds
+	totalEpochSeconds := float64(SlotsPerEpoch * 12)
+	totalMsgRate = totalMsgRate / totalEpochSeconds
+
+	return totalMsgRate
 }
+
 ```
-</details>
-
-<details>
-  <summary><b>10k validators</b></summary>
-
-Topic arguments:
-```json
-{
-  "TopicWeight": 0.03125,
-  "ExpectedMsgRate": 21.97265625,
-  "InvalidMsgDecayTime": 0,
-  "FirstMsgDecayTime": 8,
-  "MeshMsgDecayTime": 16,
-  "MeshMsgCapFactor": 16,
-  "MeshMsgActivationTime": 384000000000,
-  "D": 8
-}
-```
-
-Topic score params:
-```json
-{
-  "TopicWeight": 0.03125,
-  "TimeInMeshWeight": 0.03333333333333333,
-  "TimeInMeshQuantum": 12000000000,
-  "TimeInMeshCap": 300,
-  "FirstMessageDeliveriesWeight": 3.186933212480587,
-  "FirstMessageDeliveriesDecay": 0.5623413251903491,
-  "FirstMessageDeliveriesCap": 12.55125141730395,
-  "MeshMessageDeliveriesWeight": -16.199996132888096,
-  "MeshMessageDeliveriesDecay": 0.7498942093324558,
-  "MeshMessageDeliveriesCap": 21.081853584020426,
-  "MeshMessageDeliveriesThreshold": 1.3176158490012766,
-  "MeshMessageDeliveriesWindow": 2000000000,
-  "MeshMessageDeliveriesActivation": 384000000000,
-  "MeshFailurePenaltyWeight": -16.199996132888096,
-  "MeshFailurePenaltyDecay": 0.7498942093324558,
-  "InvalidMessageDeliveriesWeight": 0,
-  "InvalidMessageDeliveriesDecay": 0.1
-}
-```
-</details>
-
-<details>
-  <summary><b>51k validators</b></summary>
-
-Topic arguments:
-```json
-{
-  "TopicWeight": 0.03125,
-  "ExpectedMsgRate": 112.060546875,
-  "InvalidMsgDecayTime": 0,
-  "FirstMsgDecayTime": 8,
-  "MeshMsgDecayTime": 16,
-  "MeshMsgCapFactor": 16,
-  "MeshMsgActivationTime": 384000000000,
-  "D": 8
-}
-```
-
-Topic score params:
-```json
-{
-  "TopicWeight": 0.03125,
-  "TimeInMeshWeight": 0.03333333333333333,
-  "TimeInMeshQuantum": 12000000000,
-  "TimeInMeshCap": 300,
-  "FirstMessageDeliveriesWeight": 0.624888865192272,
-  "FirstMessageDeliveriesDecay": 0.5623413251903491,
-  "FirstMessageDeliveriesCap": 64.01138222825014,
-  "MeshMessageDeliveriesWeight": -0.7821319620394324,
-  "MeshMessageDeliveriesDecay": 0.7498942093324558,
-  "MeshMessageDeliveriesCap": 95.94585808905296,
-  "MeshMessageDeliveriesThreshold": 5.99661613056581,
-  "MeshMessageDeliveriesWindow": 2000000000,
-  "MeshMessageDeliveriesActivation": 384000000000,
-  "MeshFailurePenaltyWeight": -0.7821319620394324,
-  "MeshFailurePenaltyDecay": 0.7498942093324558,
-  "InvalidMessageDeliveriesWeight": 0,
-  "InvalidMessageDeliveriesDecay": 0.1
-}
-```
-</details>
-
-[beacon attestations subnet topic params for 51K validators](https://gist.github.com/blacktemplar/5c1862cb3f0e32a1a7fb0b25e79e6e2c#file-51000-toml-L87)
