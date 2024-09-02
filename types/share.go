@@ -18,11 +18,3 @@ type ShareMember struct {
 	SharePubKey ShareValidatorPK `ssz-size:"48"`
 	Signer      OperatorID
 }
-
-func (share *Share) Encode() ([]byte, error) {
-	return share.MarshalSSZ()
-}
-
-func (share *Share) Decode(data []byte) error {
-	return share.UnmarshalSSZ(data)
-}
