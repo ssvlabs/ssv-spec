@@ -20,12 +20,17 @@ var BaseCommittee = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet) *ssv.C
 		shareMap[valIdx] = TestingShare(ks, valIdx)
 	}
 
+	validators := make(map[phase0.ValidatorIndex]*ssv.Validator)
+	for valIdx, ks := range keySetMap {
+		validators[valIdx] = BaseValidatorWithIndex(ks, valIdx)
+	}
+
 	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) *ssv.CommitteeRunner {
 		return CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)
 	}
 	return ssv.NewCommittee(
 		*TestingCommitteeMember(keySetSample),
-		shareMap,
+		validators,
 		createRunnerF,
 	)
 }
@@ -43,13 +48,18 @@ var BaseCommitteeWithRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeyS
 		shareMap[valIdx] = TestingShare(ks, valIdx)
 	}
 
+	validators := make(map[phase0.ValidatorIndex]*ssv.Validator)
+	for valIdx, ks := range keySetMap {
+		validators[valIdx] = BaseValidatorWithIndex(ks, valIdx)
+	}
+
 	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) *ssv.CommitteeRunner {
 		return runner
 	}
 
 	return ssv.NewCommittee(
 		*TestingCommitteeMember(keySetSample),
-		shareMap,
+		validators,
 		createRunnerF,
 	)
 }
@@ -65,6 +75,11 @@ var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.Validat
 	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
 	for valIdx, ks := range keySetMap {
 		shareMap[valIdx] = TestingShare(ks, valIdx)
+	}
+
+	validators := make(map[phase0.ValidatorIndex]*ssv.Validator)
+	for valIdx, ks := range keySetMap {
+		validators[valIdx] = BaseValidatorWithIndex(ks, valIdx)
 	}
 
 	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) *ssv.CommitteeRunner {
@@ -91,7 +106,7 @@ var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.Validat
 
 	return ssv.NewCommittee(
 		*TestingCommitteeMember(keySetSample),
-		shareMap,
+		validators,
 		createRunnerF,
 	)
 }

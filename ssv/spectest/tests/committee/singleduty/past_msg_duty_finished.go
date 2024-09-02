@@ -79,8 +79,8 @@ func PastMessageDutyFinished() tests.SpecTest {
 		}
 
 		// Erase broadcasted messages and roots due to test setup
-		c.Runners[previousDuty.DutySlot()].GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs = make([]*types.SignedSSVMessage, 0)
-		c.Runners[previousDuty.DutySlot()].GetBeaconNode().(*testingutils.TestingBeaconNode).BroadcastedRoots = make([]phase0.Root, 0)
+		c.CommitteeRunners[previousDuty.DutySlot()].GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs = make([]*types.SignedSSVMessage, 0)
+		c.CommitteeRunners[previousDuty.DutySlot()].GetBeaconNode().(*testingutils.TestingBeaconNode).BroadcastedRoots = make([]phase0.Root, 0)
 
 		return c
 	}

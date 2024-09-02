@@ -21,6 +21,8 @@ import (
 
 var AllTests = []tests.TestF{
 	runner.FullHappyFlow,
+	runner.UnknownMsgType,
+	runner.EmptyData,
 
 	postconsensus.TooManyRoots,
 	postconsensus.TooFewRoots,
@@ -89,6 +91,7 @@ var AllTests = []tests.TestF{
 	committeesingleduty.WrongMessageID,
 	committeesingleduty.StartWithNoSharesForDuty,
 	committeesingleduty.MissingSomeShares,
+	committeesingleduty.UnknownValidator,
 
 	committeemultipleduty.SequencedDecidedDuties,
 	committeemultipleduty.SequencedHappyFlowDuties,
@@ -180,6 +183,8 @@ var AllTests = []tests.TestF{
 
 	dutyexe.WrongDutyRole,
 	dutyexe.WrongDutyPubKey,
+	dutyexe.UnknownDuty,
+
 	partialsigcontainer.OneSignature,
 	partialsigcontainer.Quorum,
 	partialsigcontainer.Duplicate,

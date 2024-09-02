@@ -2,6 +2,7 @@ package committeesingleduty
 
 import (
 	"crypto/rsa"
+
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -39,7 +40,7 @@ func WrongMessageID() tests.SpecTest {
 		return signedMessage
 	}
 
-	expectedError := "Message invalid: msg ID doesn't match committee ID"
+	expectedError := "message doesn't belong to committee or one of its validators"
 
 	validatorsIndexList := testingutils.ValidatorIndexList(1)
 	ksMap := testingutils.KeySetMapForValidators(1)

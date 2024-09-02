@@ -46,7 +46,7 @@ func (test *CommitteeSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 
 	broadcastedMsgs := make([]*types.SignedSSVMessage, 0)
 	broadcastedRoots := make([]phase0.Root, 0)
-	for _, runner := range test.Committee.Runners {
+	for _, runner := range test.Committee.CommitteeRunners {
 		network := runner.GetNetwork().(*testingutils.TestingNetwork)
 		beaconNetwork := runner.GetBeaconNode().(*testingutils.TestingBeaconNode)
 		broadcastedMsgs = append(broadcastedMsgs, network.BroadcastedMsgs...)
@@ -82,7 +82,7 @@ func (test *CommitteeSpecTest) runPreTesting() error {
 		var err error
 		switch input := input.(type) {
 		case types.Duty:
-			err = test.Committee.StartDuty(input.(*types.CommitteeDuty))
+			err = test.Committee.StartDuty(input)
 		case *types.SignedSSVMessage:
 			err = test.Committee.ProcessMessage(input)
 		default:

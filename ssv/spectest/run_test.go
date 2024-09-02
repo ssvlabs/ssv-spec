@@ -215,6 +215,17 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 			panic("cant unmarshal beacon duty")
 		}
 		testDuty = duty
+	} else if _, ok := m["UnknownDuty"]; ok {
+		byts, err := json.Marshal(m["UnknownDuty"])
+		if err != nil {
+			panic("cant marshal beacon duty")
+		}
+		duty := &testingutils.UnknownDuty{}
+		err = json.Unmarshal(byts, duty)
+		if err != nil {
+			panic("cant unmarshal beacon duty")
+		}
+		testDuty = duty
 	} else {
 		panic("no beacon or committee duty")
 	}
@@ -276,6 +287,17 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 			panic("cant marshal beacon duty")
 		}
 		duty := &types.ValidatorDuty{}
+		err = json.Unmarshal(byts, duty)
+		if err != nil {
+			panic("cant unmarshal beacon duty")
+		}
+		testDuty = duty
+	} else if _, ok := m["UnknownDuty"]; ok {
+		byts, err := json.Marshal(m["UnknownDuty"])
+		if err != nil {
+			panic("cant marshal beacon duty")
+		}
+		duty := &testingutils.UnknownDuty{}
 		err = json.Unmarshal(byts, duty)
 		if err != nil {
 			panic("cant unmarshal beacon duty")
@@ -419,20 +441,20 @@ func fixCommitteeForRun(t *testing.T, committeeMap map[string]interface{}) *ssv.
 		return testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)
 	}
 
-	for slot := range c.Runners {
+	for slot := range c.CommitteeRunners {
 
 		var shareInstance *types.Share
-		for _, share := range c.Runners[slot].BaseRunner.Share {
+		for _, share := range c.CommitteeRunners[slot].BaseRunner.Share {
 			shareInstance = share
 			break
 		}
 
 		fixedRunner := fixRunnerForRun(
 			t,
-			committeeMap["Runners"].(map[string]interface{})[fmt.Sprintf("%v", slot)].(map[string]interface{}),
+			committeeMap["CommitteeRunners"].(map[string]interface{})[fmt.Sprintf("%v", slot)].(map[string]interface{}),
 			testingutils.KeySetForShare(shareInstance),
 		)
-		c.Runners[slot] = fixedRunner.(*ssv.CommitteeRunner)
+		c.CommitteeRunners[slot] = fixedRunner.(*ssv.CommitteeRunner)
 	}
 
 	return c
