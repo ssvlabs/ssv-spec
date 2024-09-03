@@ -60,7 +60,7 @@ type SignedSSVMessage struct {
 ```
 It contains the list of signers, signatures, a `SSVMessage`, and a `FullData` field used for proposed data in QBFT. The signers and signatures lists have more than one element only for Decided messages.
 
-The `SSVMesage` identifies the type of the message (consensus or partial signature) and includes the encoded message along with a [`MessageID`](#messageid).
+The `SSVMessage` identifies the type of the message (consensus or partial signature) and includes the encoded message along with a [`MessageID`](#messageid).
 ```go
 type SSVMessage struct {
 	MsgType MsgType
@@ -70,6 +70,8 @@ type SSVMessage struct {
 ```
 
 If the `MsgType` is of consensus type, then the `Data` should an encoded `qbft.Message` object. Else (if it's of partial signature type), it should be an encoded [`PartialSignatureMessages`](#partialsignaturemessages) object.
+
+The `MessageID` field helps to route messages within the SSV node code, by identifying the validator/committee and the duty type.
 
 ## PartialSignatureMessage(s)
 
