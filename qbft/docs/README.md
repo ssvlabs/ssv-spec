@@ -1,7 +1,7 @@
 # Documentation
 
 <p align="center",float="left">
-<img src="./simple_class_diagram.drawio.png", width="45%" height="10%">
+<img src="./simple_class_diagram.drawio.png", width="70%" height="10%">
 </p>
 
 ## Message

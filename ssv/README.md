@@ -25,12 +25,23 @@ At first, it seems that two steps are needed: a BFT consensus protocol (for deci
 This steps can be better visualized in the following diagram.
 
 <p align="center",float="left">
-<img src="./docs/duty_flow.drawio.png", width="45%" height="10%">
+<img src="./docs/duty_flow.drawio.png", width="70%" height="10%">
 </p>
 
-The Ethereum duties that require a the Pre-Consenus phase are the Proposer, Aggregation and Sync Committee Contribution duties. The other duties (Attestation and Sync Committee) start from step 2 of the above diagram (without needing to provide any signature).
+The Ethereum duties that require a the Pre-Consenus phase are the Proposer, Aggregation and Sync Committee Contribution duties. The other duties (Attestation and Sync Committee) start from step 2 of the above diagram (without needing to provide any signature). In the Pre-Consensus phase:
+- the Proposer duty should construct the validator's signature over the `Epoch` number to build the `RANDAO` object.
+- the Aggregator duty should construct the validator's signature over the `Slot` number to submit an `AggregateSelectionProof`.
+- the Sync Committee Contributor duty should, for each committee index, construct the validator's signature over the `SyncAggregatorSelectionData` object to check if it's an aggregator.
 
 To reconstruct the validators signature, at minimum a *threshold* amount of signatures is needed. In our case, this *threshold* is $\lfloor \frac{N+f}{2} \rfloor + 1$ (or $2f+1$ in case $N = 3f+1$).
+
+### Duty start time
+
+Within the duty's slot, thhe time at which the operators should start the duty depends on the duty type.
+
+- For the Proposer duty, the protocol should be executed as soon as the slot starts (so no delay).
+- For the Attestation and Sync Committee duties, the protocol should be executed after one third (1/3) of the slot duration, i.e. 4 seconds. This helps maximizing the chance of voting for the most recent proposed block.
+- For the Aggregation and Sync Committee Contribution duties, the protocol should be executed after two thirds (2/3) of the slot duration, i.e. 8 seconds. This helps maximizing the collection of Attestation and Sync Committee votes.
 
 ## Validator Registration and Voluntary Exit Duties
 
@@ -39,6 +50,8 @@ Apart from the known Ethereum duties, there are two extra duties that may be per
 - `VoluntaryExit`: to exit the validator from the blockchain.
 
 Both duties are only composed by the Pre-Consensus phase since only a signature construction is needed over an a prior known data.
+
+Regarding the duties' start time, both should start at the beginning of the slot.
 
 ## The Committee duty
 Since the committee may manage several validators, many Attestation duties may need to be performed in the same slot. This represents a workload concern. Luckly, we have that all consensus executions for each attestation duty agree on the same data (the Casper FFG and LMD GHOST votes). Therefore, we can perform a single consensus execution for all validators assigned in the same slot (though a unique Post-Consensus phase is required for each).

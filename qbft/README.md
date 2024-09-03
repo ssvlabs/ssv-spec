@@ -51,7 +51,7 @@ Check the [module documentation](docs/README.md) to better understand the implem
 ### BPMN diagram
 
 <p align="center",float="left">
-<img src="./docs/qbft_bpmn.drawio.png", width="45%" height="10%">
+<img src="./docs/qbft_bpmn.drawio.png", width="70%" height="10%">
 </p>
 
 Note:
