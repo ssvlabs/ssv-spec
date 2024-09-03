@@ -1,4 +1,4 @@
-# Code Documentation
+# Documentation
 
 
 <p align="center",float="left">

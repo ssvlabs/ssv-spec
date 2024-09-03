@@ -48,6 +48,6 @@ The Sync Committee duty has a similar behavior to the Attestation duty. Thus, it
 This optimization is embodied as a **Committee duty**, which represents a list of Attestation and Sync Committee duties to be performed in the same slot.
 
 
-## Code Documentation
+## Module Documentation
 
-Check the [code documentation](docs/documentation.md) to better understand the implementation components.
+Check the [module documentation](docs/README.md) to better understand the implementation components.
