@@ -42,9 +42,9 @@ Examples:
 
 Because of the above, there is a need to order and queue messages based on their round and type so to not lose message and make the protocol round change.
 
-## Code Documentation
+## Module Documentation
 
-Check the [code documentation](docs/documentation.md) to better understand the implementation components.
+Check the [module documentation](docs/README.md) to better understand the implementation components.
 
 ## Appendix
 

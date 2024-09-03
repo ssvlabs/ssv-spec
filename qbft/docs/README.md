@@ -1,4 +1,4 @@
-# Code Documentation
+# Documentation
 
 <p align="center",float="left">
 <img src="./simple_class_diagram.drawio.png", width="45%" height="10%">
