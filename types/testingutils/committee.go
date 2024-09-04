@@ -82,7 +82,6 @@ var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.Validat
 			runnerSample.GetSigner(),
 			runnerSample.GetOperatorSigner(),
 			runnerSample.GetValCheckF(),
-			&ssv.Config{Domain: TestingSSVDomainType},
 		)
 		if err != nil {
 			panic(err)

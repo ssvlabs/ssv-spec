@@ -29,7 +29,6 @@ func NewVoluntaryExitRunner(
 	network Network,
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
-	config IConfig,
 ) (Runner, error) {
 
 	if len(share) != 1 {
@@ -41,7 +40,6 @@ func NewVoluntaryExitRunner(
 			RunnerRoleType: types.RoleVoluntaryExit,
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
-			Config:         config,
 		},
 
 		beacon:         beacon,
@@ -143,7 +141,7 @@ func (r *VoluntaryExitRunner) executeDuty(duty types.Duty) error {
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	msgID := types.NewMsgID(r.BaseRunner.Config.GetDomainType(), r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
+	msgID := types.NewMsgID(r.network.GetDomainType(), r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
 
 	encodedMsg, err := msgs.Encode()
 	if err != nil {

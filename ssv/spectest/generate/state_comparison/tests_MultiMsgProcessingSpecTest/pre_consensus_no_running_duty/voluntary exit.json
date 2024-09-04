@@ -100,14 +100,6 @@
 				},
 				"QBFTController": null,
 				"BeaconNetwork": "now_test_network",
-				"RunnerRoleType": 5,
-				"Config": {
-						"Domain": [
-								0,
-								0,
-								3,
-								1
-						]
-				}
+				"RunnerRoleType": 5
 		}
 }

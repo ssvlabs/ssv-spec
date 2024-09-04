@@ -2348,15 +2348,7 @@
 										}
 								},
 								"BeaconNetwork": "now_test_network",
-								"RunnerRoleType": 0,
-								"Config": {
-										"Domain": [
-												0,
-												0,
-												3,
-												1
-										]
-								}
+								"RunnerRoleType": 0
 						}
 				},
 				"13": {
@@ -4707,15 +4699,7 @@
 										}
 								},
 								"BeaconNetwork": "now_test_network",
-								"RunnerRoleType": 0,
-								"Config": {
-										"Domain": [
-												0,
-												0,
-												3,
-												1
-										]
-								}
+								"RunnerRoleType": 0
 						}
 				},
 				"14": {
@@ -7066,15 +7050,7 @@
 										}
 								},
 								"BeaconNetwork": "now_test_network",
-								"RunnerRoleType": 0,
-								"Config": {
-										"Domain": [
-												0,
-												0,
-												3,
-												1
-										]
-								}
+								"RunnerRoleType": 0
 						}
 				},
 				"15": {
@@ -9425,15 +9401,7 @@
 										}
 								},
 								"BeaconNetwork": "now_test_network",
-								"RunnerRoleType": 0,
-								"Config": {
-										"Domain": [
-												0,
-												0,
-												3,
-												1
-										]
-								}
+								"RunnerRoleType": 0
 						}
 				}
 		},

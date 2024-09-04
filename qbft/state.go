@@ -5,8 +5,6 @@ import (
 )
 
 type IConfig interface {
-	// GetSignatureDomainType returns the Domain type used for signatures
-	GetSignatureDomainType() types.DomainType
 	// GetValueCheckF returns value check function
 	GetValueCheckF() ProposedValueCheckF
 	// GetProposerF returns func used to calculate proposer
@@ -20,17 +18,11 @@ type IConfig interface {
 }
 
 type Config struct {
-	Domain      types.DomainType
 	ValueCheckF ProposedValueCheckF
 	ProposerF   ProposerF
 	Network     Network
 	Timer       Timer
 	CutOffRound Round
-}
-
-// GetSignatureDomainType returns the Domain type used for signatures
-func (c *Config) GetSignatureDomainType() types.DomainType {
-	return c.Domain
 }
 
 // GetValueCheckF returns value check instance

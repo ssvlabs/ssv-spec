@@ -164,32 +164,6 @@ func (c *Committee) UnmarshalJSON(data []byte) error {
 
 // Runners
 
-// BaseRunner
-func (r *BaseRunner) UnmarshalJSON(data []byte) error {
-	// Create alias with Config implementation for IConfig
-	var aux struct {
-		State          *State
-		Share          map[spec.ValidatorIndex]*types.Share
-		QBFTController *qbft.Controller
-		BeaconNetwork  types.BeaconNetwork
-		RunnerRoleType types.RunnerRole
-		Config         *Config
-	}
-
-	if err := json.Unmarshal(data, &aux); err != nil {
-		return err
-	}
-
-	r.State = aux.State
-	r.Share = aux.Share
-	r.QBFTController = aux.QBFTController
-	r.BeaconNetwork = aux.BeaconNetwork
-	r.RunnerRoleType = aux.RunnerRoleType
-	r.Config = aux.Config
-
-	return nil
-}
-
 // ProposerRunner
 func (r *ProposerRunner) Encode() ([]byte, error) {
 	return json.Marshal(r)

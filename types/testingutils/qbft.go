@@ -24,7 +24,6 @@ var TestingOperatorSigner = func(keySet *TestKeySet) *types.OperatorSigner {
 
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
-		Domain: TestingSSVDomainType,
 		ValueCheckF: func(data []byte) error {
 			if bytes.Equal(data, TestingInvalidValueCheck) {
 				return errors.New("invalid value")

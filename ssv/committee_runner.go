@@ -28,7 +28,6 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
-	config IConfig,
 ) (Runner, error) {
 	if len(share) == 0 {
 		return nil, errors.New("no shares")
@@ -39,7 +38,6 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
 			QBFTController: qbftController,
-			Config:         config,
 		},
 		beacon:          beacon,
 		network:         network,
@@ -133,7 +131,7 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 	committeeID := types.GetCommitteeID(operatorIDs)
 	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(cr.BaseRunner.Config.GetDomainType(), committeeID[:], cr.BaseRunner.RunnerRoleType),
+		MsgID:   types.NewMsgID(cr.network.GetDomainType(), committeeID[:], cr.BaseRunner.RunnerRoleType),
 	}
 	ssvMsg.Data, err = postConsensusMsg.Encode()
 	if err != nil {

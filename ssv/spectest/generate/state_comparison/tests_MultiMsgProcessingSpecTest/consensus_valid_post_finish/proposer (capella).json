@@ -2236,14 +2236,6 @@
 						}
 				},
 				"BeaconNetwork": "now_test_network",
-				"RunnerRoleType": 2,
-				"Config": {
-						"Domain": [
-								0,
-								0,
-								3,
-								1
-						]
-				}
+				"RunnerRoleType": 2
 		}
 }

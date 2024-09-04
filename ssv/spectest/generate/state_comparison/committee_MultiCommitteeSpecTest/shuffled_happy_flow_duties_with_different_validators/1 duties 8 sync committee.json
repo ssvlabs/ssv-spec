@@ -3058,15 +3058,7 @@
 										}
 								},
 								"BeaconNetwork": "now_test_network",
-								"RunnerRoleType": 0,
-								"Config": {
-										"Domain": [
-												0,
-												0,
-												3,
-												1
-										]
-								}
+								"RunnerRoleType": 0
 						}
 				}
 		},

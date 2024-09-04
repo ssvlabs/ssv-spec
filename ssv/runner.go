@@ -48,7 +48,6 @@ type BaseRunner struct {
 	QBFTController *qbft.Controller
 	BeaconNetwork  types.BeaconNetwork
 	RunnerRoleType types.RunnerRole
-	Config         IConfig
 	*types.OperatorSigner
 
 	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
@@ -61,7 +60,6 @@ func NewBaseRunner(
 	controller *qbft.Controller,
 	beaconNetwork types.BeaconNetwork,
 	runnerRoleType types.RunnerRole,
-	config IConfig,
 	highestDecidedSlot spec.Slot,
 ) *BaseRunner {
 	return &BaseRunner{
@@ -70,7 +68,6 @@ func NewBaseRunner(
 		QBFTController:     controller,
 		BeaconNetwork:      beaconNetwork,
 		RunnerRoleType:     runnerRoleType,
-		Config:             config,
 		highestDecidedSlot: highestDecidedSlot,
 	}
 }
