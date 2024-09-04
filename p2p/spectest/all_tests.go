@@ -2,7 +2,8 @@ package spectest
 
 import (
 	"github.com/ssvlabs/ssv-spec/p2p/spectest/tests"
-	validation "github.com/ssvlabs/ssv-spec/p2p/spectest/tests/validation"
+	messageratetest "github.com/ssvlabs/ssv-spec/p2p/spectest/tests/messagerate"
+	"github.com/ssvlabs/ssv-spec/p2p/spectest/tests/validation"
 )
 
 var AllTests = []tests.TestF{
@@ -103,4 +104,9 @@ var AllTests = []tests.TestF{
 
 	// Valid cases
 	validation.HappyFlow,
+
+	// Message rate
+	messageratetest.DisjointCommittees,
+	messageratetest.SingleCommittee,
+	messageratetest.SeveralBigCommittees,
 }

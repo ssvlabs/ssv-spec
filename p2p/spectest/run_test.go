@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	tests2 "github.com/ssvlabs/ssv-spec/p2p/spectest/tests"
+	messageratetest "github.com/ssvlabs/ssv-spec/p2p/spectest/tests/messagerate"
 	"github.com/ssvlabs/ssv-spec/p2p/spectest/tests/validation"
 	"github.com/stretchr/testify/require"
 )
@@ -69,6 +70,16 @@ func TestJson(t *testing.T) {
 				}
 
 				typedTest.Run(t)
+
+			case reflect.TypeOf(&messageratetest.MessageRateTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &messageratetest.MessageRateTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+
+				tests[testName] = typedTest
+				typedTest.Run(t)
+
 			default:
 				panic("unsupported test type " + testType)
 			}
