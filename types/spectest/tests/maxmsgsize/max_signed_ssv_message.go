@@ -7,7 +7,7 @@ import (
 const (
 	maxSizeSignedSSVMessageFromQBFTWithNoJustification  = 3700
 	maxSizeSignedSSVMessageFromQBFTWith1Justification   = 51852
-	maxSizeSignedSSVMessageFromQBFTWith2Justification   = 4920512
+	MaxSizeSignedSSVMessageFromQBFTWith2Justification   = 4920512
 	maxSizeSignedSSVMessageFromPartialSignatureMessages = 147588
 	maxSizeFullData                                     = 4194532
 )
@@ -65,7 +65,7 @@ func MaxSignedSSVMessageFromQBFTMessageWith2Justification() *StructureSizeTest {
 	return &StructureSizeTest{
 		Name:                  "max SignedSSVMessage from qbftMessage with 2 justifications",
 		Object:                maxSignedSSVMessageWithFullDataFromObject(maxQbftMessageWith2Justification()),
-		ExpectedEncodedLength: maxSizeSignedSSVMessageFromQBFTWith2Justification,
+		ExpectedEncodedLength: MaxSizeSignedSSVMessageFromQBFTWith2Justification,
 		IsMaxSize:             true,
 	}
 }
