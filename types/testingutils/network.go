@@ -18,6 +18,7 @@ func NewTestingNetwork(operatorID types.OperatorID, sk *rsa.PrivateKey) *Testing
 		BroadcastedMsgs: make([]*types.SignedSSVMessage, 0),
 		OperatorID:      operatorID,
 		OperatorSK:      sk,
+		Domain:          TestingSSVDomainType,
 	}
 }
 
