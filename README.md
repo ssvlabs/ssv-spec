@@ -76,7 +76,6 @@ Signature type Constants:
 |----------------------|----------------------|------------------------------------------|
 | QBFTSignatureType          | [] byte {1, 0, 0, 0} | SignedMessage specific signatures        |
 | PartialSignatureType | [] byte {2, 0, 0, 0} | PostConsensusMessage specific signatures |
-| DKGSignatureType | [] byte {3, 0, 0, 0} | PostConsensusMessage specific signatures |
 
 ## Validator and Runners
 A validator instance is created for each validator independently, each validator will have multiple Runner for each beacon chain duty type (Attestations, Blocks, etc.)
