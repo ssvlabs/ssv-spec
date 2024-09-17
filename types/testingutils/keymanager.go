@@ -1,7 +1,6 @@
 package testingutils
 
 import (
-	"crypto/ecdsa"
 	"crypto/rsa"
 	"encoding/hex"
 	"sync"
@@ -24,7 +23,6 @@ type SignOutput struct {
 // This data is never changed and, thus, we implement the singleton creational pattern
 type TestingKeyStorage struct {
 	keys           map[string]*bls.SecretKey
-	ecdsaKeys      map[string]*ecdsa.PrivateKey
 	encryptionKeys map[string]*rsa.PrivateKey
 	domain         types.DomainType
 	signatureCache map[string]map[string]map[spec.Domain]*SignOutput
@@ -61,7 +59,6 @@ func NewTestingKeyStorage() *TestingKeyStorage {
 
 		ret := &TestingKeyStorage{
 			keys:           map[string]*bls.SecretKey{},
-			ecdsaKeys:      map[string]*ecdsa.PrivateKey{},
 			encryptionKeys: nil,
 			domain:         TestingSSVDomainType,
 			signatureCache: make(map[string]map[string]map[spec.Domain]*SignOutput),
