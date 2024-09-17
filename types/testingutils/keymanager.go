@@ -4,13 +4,11 @@ import (
 	"crypto/ecdsa"
 	"crypto/rsa"
 	"encoding/hex"
-	"fmt"
 	"sync"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
-	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
@@ -76,18 +74,12 @@ func NewTestingKeyStorage() *TestingKeyStorage {
 			for _, s := range testingShareSet.Shares {
 				_ = ret.AddShare(s)
 			}
-			for _, o := range testingShareSet.DKGOperators {
-				ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
-			}
 		}
 
 		for _, keySet := range TestingKeySetMap {
 			_ = ret.AddShare(keySet.ValidatorSK)
 			for _, s := range keySet.Shares {
 				_ = ret.AddShare(s)
-			}
-			for _, o := range keySet.DKGOperators {
-				ret.ecdsaKeys[o.ETHAddress.String()] = o.SK
 			}
 		}
 
@@ -162,23 +154,6 @@ func (km *TestingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Doma
 		return sigString, r, nil
 	}
 	return nil, [32]byte{}, errors.New("pk not found")
-}
-
-// SignDKGOutput signs output according to the SIP https://docs.google.com/document/d/1TRVUHjFyxINWW2H9FYLNL2pQoLy6gmvaI62KL_4cREQ/edit
-func (km *TestingKeyManager) SignDKGOutput(output types.Root, address common.Address) (types.Signature, error) {
-	root, err := output.GetRoot()
-	if err != nil {
-		return nil, err
-	}
-	sk := km.keyStorage.ecdsaKeys[address.String()]
-	if sk == nil {
-		return nil, errors.New(fmt.Sprintf("unable to find ecdsa key for address %v", address.String()))
-	}
-	sig, err := ethcrypto.Sign(root[:], sk)
-	if err != nil {
-		return nil, err
-	}
-	return sig, nil
 }
 
 func (km *TestingKeyManager) SignETHDepositRoot(root []byte, address common.Address) (types.Signature, error) {
