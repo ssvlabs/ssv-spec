@@ -79,8 +79,6 @@ const (
 	SSVConsensusMsgType MsgType = iota
 	// SSVPartialSignatureMsgType are all partial signatures msgs over beacon chain specific signatures
 	SSVPartialSignatureMsgType
-	// DKGMsgType represent all DKG related messages
-	DKGMsgType
 )
 
 // MessageSignature includes all functions relevant for a signed message (QBFT message, post consensus msg, etc)
