@@ -87,9 +87,11 @@ func lateProposalPastInstanceStateComparison(height qbft.Height, lateMsg *types.
 		testingutils.TestingOperatorSigner(ks),
 	)
 
-	for i := 0; i <= int(height); i++ {
+	msgIndex := 0
+	for i := uint64(0); i <= uint64(height); i++ {
 		contr.Height = qbft.Height(i)
-		msgs := allMsgs[offset*i : offset*(i+1)]
+		msgs := allMsgs[offset*msgIndex : offset*(msgIndex+1)]
+		msgIndex += 1
 
 		instance := &qbft.Instance{
 			StartValue: []byte{1, 2, 3, 4},
