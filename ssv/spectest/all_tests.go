@@ -63,6 +63,7 @@ var AllTests = []tests.TestF{
 	postconsensus.InvalidSignedMessageEmptySignature,
 	postconsensus.InvalidSignedMessageDifferentLength,
 	postconsensus.InvalidSignedMessageNoSigners,
+	postconsensus.NoPostConsensusPhase,
 
 	newduty.ConsensusNotStarted,
 	newduty.NotDecided,
@@ -118,6 +119,7 @@ var AllTests = []tests.TestF{
 	consensus.EmptySignature,
 	consensus.SignersAndSignaturesWithDifferentLength,
 	consensus.NilSSVMessage,
+	consensus.NoConsensusPhase,
 
 	synccommitteeaggregator.SomeAggregatorQuorum,
 	synccommitteeaggregator.NoneAggregatorQuorum,
@@ -161,6 +163,7 @@ var AllTests = []tests.TestF{
 	preconsensus.InvalidSignedMessageNoSignatures,
 	preconsensus.InvalidSignedMessageEmptySignature,
 	preconsensus.InvalidSignedMessageDifferentLength,
+	preconsensus.NoPreConsensusPhase,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,
