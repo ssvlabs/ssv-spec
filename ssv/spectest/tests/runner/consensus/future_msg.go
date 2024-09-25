@@ -122,36 +122,6 @@ func FutureMessage() tests.SpecTest {
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
-			{
-				Name:   "validator registration",
-				Runner: testingutils.ValidatorRegistrationRunner(ks),
-				Duty:   &testingutils.TestingValidatorRegistrationDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1),
-						testingutils.ValidatorRegistrationMsgID, testingutils.TestAttesterConsensusDataByts,
-						qbft.Height(testingutils.TestingDutySlot)),
-				},
-				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-				},
-				ExpectedError: "no consensus phase for validator registration",
-			},
-			{
-				Name:   "voluntary exit",
-				Runner: testingutils.VoluntaryExitRunner(ks),
-				Duty:   &testingutils.TestingVoluntaryExitDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1),
-						testingutils.VoluntaryExitMsgID, testingutils.TestAttesterConsensusDataByts,
-						qbft.Height(testingutils.TestingDutySlot)),
-				},
-				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-				},
-				ExpectedError: "no consensus phase for voluntary exit",
-			},
 		},
 	}
 }

@@ -113,17 +113,19 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 			return errors.Wrap(err, "invalid PartialSignatureMessages")
 		}
 
-		if pSigMessages.Type == types.PostConsensusPartialSig {
-			runner, exists := c.Runners[pSigMessages.Slot]
-			if !exists {
-				return errors.New("no runner found for message's slot")
-			}
-			return runner.ProcessPostConsensus(pSigMessages)
+		if pSigMessages.Type != types.PostConsensusPartialSig {
+			return errors.New("no pre consensus phase for committee runner")
 		}
+
+		runner, exists := c.Runners[pSigMessages.Slot]
+		if !exists {
+			return errors.New("no runner found for message's slot")
+		}
+		return runner.ProcessPostConsensus(pSigMessages)
+
 	default:
 		return errors.New("unknown msg")
 	}
-	return nil
 
 }
 
