@@ -126,7 +126,6 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	default:
 		return errors.New("unknown msg")
 	}
-	return nil
 
 }
 
