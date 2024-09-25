@@ -140,45 +140,45 @@ var TestConsensusWrongDutyPKData = &types.ValidatorConsensusData{
 var TestConsensusWrongDutyPKDataByts, _ = TestConsensusWrongDutyPKData.Encode()
 
 var SSVMsgAttester = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee))
+	return SSVMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee))
 }
 
 var SSVMsgWrongID = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingWrongValidatorPubKey[:], types.RoleCommittee))
+	return SSVMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingWrongValidatorPubKey[:], types.RoleCommittee))
 }
 
 var SSVMsgCommittee = func(ks *TestKeySet, qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
 	msgIDBytes := CommitteeMsgID(ks)
 	var msgID types.MessageID
 	copy(msgID[:], msgIDBytes)
-	return ssvMsg(qbftMsg, partialSigMsg, msgID)
+	return SSVMsg(qbftMsg, partialSigMsg, msgID)
 }
 
 var SSVMsgProposer = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleProposer))
+	return SSVMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleProposer))
 }
 
 var SSVMsgAggregator = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleAggregator))
+	return SSVMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleAggregator))
 }
 
 var SSVMsgSyncCommittee = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee))
+	return SSVMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee))
 }
 
 var SSVMsgSyncCommitteeContribution = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleSyncCommitteeContribution))
+	return SSVMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleSyncCommitteeContribution))
 }
 
 var SSVMsgValidatorRegistration = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleValidatorRegistration))
+	return SSVMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleValidatorRegistration))
 }
 
 var SSVMsgVoluntaryExit = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleVoluntaryExit))
+	return SSVMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleVoluntaryExit))
 }
 
-var ssvMsg = func(qbftMsg *types.SignedSSVMessage, postMsg *types.PartialSignatureMessages, msgID types.MessageID) *types.SSVMessage {
+var SSVMsg = func(qbftMsg *types.SignedSSVMessage, postMsg *types.PartialSignatureMessages, msgID types.MessageID) *types.SSVMessage {
 
 	if qbftMsg != nil {
 		return &types.SSVMessage{
