@@ -17,20 +17,31 @@ func ValidatorIndexList(limit int) []int {
 	return ret
 }
 
-func KeySetMapForValidatorIndexList(valIndexes []int) map[phase0.ValidatorIndex]*TestKeySet {
+func KeySetMapForValidatorIndexList(valIndexes []phase0.ValidatorIndex) map[phase0.ValidatorIndex]*TestKeySet {
 	ret := make(map[phase0.ValidatorIndex]*TestKeySet)
 	for _, valIdx := range valIndexes {
-		ks, exists := TestingKeySetMap[phase0.ValidatorIndex(valIdx)]
+		ks, exists := TestingKeySetMap[valIdx]
 		if !exists {
 			panic(fmt.Sprintf("Validator index %v does not exist in TestingKeySetMap", valIdx))
 		}
-		ret[phase0.ValidatorIndex(valIdx)] = ks
+		ret[valIdx] = ks
 	}
 	return ret
 }
 
 func KeySetMapForValidators(limit int) map[phase0.ValidatorIndex]*TestKeySet {
-	return KeySetMapForValidatorIndexList(ValidatorIndexList(limit))
+	if limit <= 0 {
+		return map[phase0.ValidatorIndex]*TestKeySet{}
+	}
+	validators := make([]phase0.ValidatorIndex, limit)
+	for i := 0; i < limit; i++ {
+		validatorIndex := (i + 1)
+		if validatorIndex < 0 {
+			panic("Invalid validator index")
+		}
+		validators[i] = phase0.ValidatorIndex(validatorIndex)
+	}
+	return KeySetMapForValidatorIndexList(validators)
 }
 
 func ShareMapFromKeySetMap(keySetMap map[phase0.ValidatorIndex]*TestKeySet) map[phase0.ValidatorIndex]*types.Share {
