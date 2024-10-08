@@ -157,7 +157,7 @@ func writeJson(name string, data []byte) {
 
 	file := filepath.Join(basedir, name+".json")
 	log.Printf("writing spec tests json to: %s\n", file)
-	if err := os.WriteFile(file, data, 0644); err != nil {
+	if err := os.WriteFile(file, data, 0400); err != nil {
 		panic(err.Error())
 	}
 }
