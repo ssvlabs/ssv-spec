@@ -3,14 +3,15 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ssvlabs/ssv-spec/types/spectest"
-	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"strings"
+
+	"github.com/ssvlabs/ssv-spec/types/spectest"
+	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 //go:generate go run main.go
@@ -27,18 +28,40 @@ func main() {
 		all[n] = t
 	}
 
-	byts, err := json.Marshal(all)
-	if err != nil {
-		panic(err.Error())
-	}
-
 	if len(all) != len(spectest.AllTests) {
 		panic("did not generate all tests\n")
 	}
 
-	fmt.Printf("found %d tests\n", len(all))
-	writeJson(byts)
+	// write small json files for each test
+	// try to create directory if it doesn't exist
+	_, basedir, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("no caller info")
+	}
+	testsDir := filepath.Join(strings.TrimSuffix(basedir, "main.go"), "tests")
+	if err := os.MkdirAll(testsDir, 0700); err != nil && !os.IsExist(err) {
+		panic(err.Error())
+	}
+	for name, test := range all {
+		byts, err := json.Marshal(test)
+		if err != nil {
+			panic(err.Error())
+		}
+		name = strings.ReplaceAll(name, " ", "_")
+		name = strings.ReplaceAll(name, "*", "")
+		name = "tests/" + name
+		writeJson(name, byts)
+	}
 
+	// write large tests.json file
+	byts, err := json.Marshal(all)
+	if err != nil {
+		panic(err.Error())
+	}
+	log.Printf("found %d tests\n", len(all))
+	writeJson("tests", byts)
+
+	// write state comparison json files
 	for _, testF := range spectest.AllTests {
 		// generate post state comparison
 		writeJsonStateComparison(testF.TestName(), reflect.TypeOf(testF).String(), testF)
@@ -95,7 +118,8 @@ func scDir(testType string) string {
 	scDir := comparable2.GetSCDir(basedir, testType)
 	return scDir
 }
-func writeJson(data []byte) {
+
+func writeJson(name string, data []byte) {
 	_, basedir, _, ok := runtime.Caller(0)
 	if !ok {
 		panic("no caller info")
@@ -105,9 +129,8 @@ func writeJson(data []byte) {
 	// try to create directory if it doesn't exist
 	_ = os.Mkdir(basedir, os.ModeDir)
 
-	file := filepath.Join(basedir, "tests.json")
-
-	fmt.Printf("writing spec tests json to: %s\n", file)
+	file := filepath.Join(basedir, name+".json")
+	log.Printf("writing spec tests json to: %s\n", file)
 	if err := os.WriteFile(file, data, 0644); err != nil {
 		panic(err.Error())
 	}

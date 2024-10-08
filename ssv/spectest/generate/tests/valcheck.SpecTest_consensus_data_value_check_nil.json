@@ -1,0 +1,1 @@
+{"Name":"consensus data value check nil","Network":"prater","RunnerRole":0,"DutySlot":"12","Input":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==","SlashableSlots":null,"omitempty":null,"ExpectedError":"attestation data source \u003e= target","AnyError":false}
