@@ -130,7 +130,7 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 	}
 
 	log.Printf("writing state comparison json: %s\n", file)
-	if err := os.WriteFile(file, byts, 0644); err != nil {
+	if err := os.WriteFile(file, byts, 0400); err != nil {
 		panic(err.Error())
 	}
 }

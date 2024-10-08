@@ -64,10 +64,10 @@ func (c *Controller) UponDecided(msg *ProcessingMessage) (*types.SignedSSVMessag
 func ValidateDecided(
 	config IConfig,
 	msg *ProcessingMessage,
-	share *types.CommitteeMember,
+	committeeMember *types.CommitteeMember,
 ) error {
 
-	isDecided, err := IsDecidedMsg(share, msg)
+	isDecided, err := IsDecidedMsg(committeeMember, msg)
 	if err != nil {
 		return err
 	}
@@ -75,16 +75,8 @@ func ValidateDecided(
 		return errors.New("not a decided msg")
 	}
 
-	if err := msg.Validate(); err != nil {
+	if err := baseCommitValidationVerifySignature(msg, msg.QBFTMessage.Height, committeeMember.Committee); err != nil {
 		return errors.Wrap(err, "invalid decided msg")
-	}
-
-	if err := baseCommitValidationVerifySignature(msg, msg.QBFTMessage.Height, share.Committee); err != nil {
-		return errors.Wrap(err, "invalid decided msg")
-	}
-
-	if err := msg.Validate(); err != nil {
-		return errors.Wrap(err, "invalid decided")
 	}
 
 	r, err := HashDataRoot(msg.SignedMessage.FullData)
@@ -99,6 +91,6 @@ func ValidateDecided(
 }
 
 // IsDecidedMsg returns true if signed commit has all quorum sigs
-func IsDecidedMsg(share *types.CommitteeMember, msg *ProcessingMessage) (bool, error) {
-	return share.HasQuorum(len(msg.SignedMessage.OperatorIDs)) && msg.QBFTMessage.MsgType == CommitMsgType, nil
+func IsDecidedMsg(committeeMember *types.CommitteeMember, msg *ProcessingMessage) (bool, error) {
+	return committeeMember.HasQuorum(len(msg.SignedMessage.OperatorIDs)) && msg.QBFTMessage.MsgType == CommitMsgType, nil
 }

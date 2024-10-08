@@ -28,7 +28,10 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
-) Runner {
+) (Runner, error) {
+	if len(share) == 0 {
+		return nil, errors.New("no shares")
+	}
 	return &CommitteeRunner{
 		BaseRunner: &BaseRunner{
 			RunnerRoleType: types.RoleCommittee,
@@ -42,7 +45,7 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 		operatorSigner:  operatorSigner,
 		valCheck:        valCheck,
 		submittedDuties: make(map[types.BeaconRole]map[phase0.ValidatorIndex]struct{}),
-	}
+	}, nil
 }
 
 func (cr CommitteeRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
@@ -144,10 +147,6 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		Signatures:  [][]byte{sig},
 		OperatorIDs: []types.OperatorID{cr.BaseRunner.QBFTController.CommitteeMember.OperatorID},
 		SSVMessage:  ssvMsg,
-	}
-
-	if err != nil {
-		return errors.Wrap(err, "could not create SignedSSVMessage from SSVMessage")
 	}
 
 	if err := cr.GetNetwork().Broadcast(ssvMsg.MsgID, msgToBroadcast); err != nil {
@@ -257,29 +256,34 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 	}
 
 	// Submit multiple attestations
-	attestations := make([]*phase0.Attestation, 0)
+	attestations := make([]*phase0.Attestation, 0, len(attestationsToSubmit))
 	for _, att := range attestationsToSubmit {
 		attestations = append(attestations, att)
 	}
-	if err := cr.beacon.SubmitAttestations(attestations); err != nil {
-		return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")
-	}
-	// Record successful submissions
-	for validator := range attestationsToSubmit {
-		cr.RecordSubmission(types.BNRoleAttester, validator)
+
+	if len(attestations) > 0 {
+		if err := cr.beacon.SubmitAttestations(attestations); err != nil {
+			return errors.Wrap(err, "could not submit to Beacon chain reconstructed attestation")
+		}
+		// Record successful submissions
+		for validator := range attestationsToSubmit {
+			cr.RecordSubmission(types.BNRoleAttester, validator)
+		}
 	}
 
 	// Submit multiple sync committee
-	syncCommitteeMessages := make([]*altair.SyncCommitteeMessage, 0)
+	syncCommitteeMessages := make([]*altair.SyncCommitteeMessage, 0, len(syncCommitteeMessagesToSubmit))
 	for _, syncMsg := range syncCommitteeMessagesToSubmit {
 		syncCommitteeMessages = append(syncCommitteeMessages, syncMsg)
 	}
-	if err := cr.beacon.SubmitSyncMessages(syncCommitteeMessages); err != nil {
-		return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed sync committee")
-	}
-	// Record successful submissions
-	for validator := range syncCommitteeMessagesToSubmit {
-		cr.RecordSubmission(types.BNRoleSyncCommittee, validator)
+	if len(syncCommitteeMessages) > 0 {
+		if err := cr.beacon.SubmitSyncMessages(syncCommitteeMessages); err != nil {
+			return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed sync committee")
+		}
+		// Record successful submissions
+		for validator := range syncCommitteeMessagesToSubmit {
+			cr.RecordSubmission(types.BNRoleSyncCommittee, validator)
+		}
 	}
 
 	if anyErr != nil {

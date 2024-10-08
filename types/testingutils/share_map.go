@@ -1,12 +1,10 @@
 package testingutils
 
 import (
-	"crypto/ecdsa"
 	"crypto/rsa"
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -19,20 +17,31 @@ func ValidatorIndexList(limit int) []int {
 	return ret
 }
 
-func KeySetMapForValidatorIndexList(valIndexes []int) map[phase0.ValidatorIndex]*TestKeySet {
+func KeySetMapForValidatorIndexList(valIndexes []phase0.ValidatorIndex) map[phase0.ValidatorIndex]*TestKeySet {
 	ret := make(map[phase0.ValidatorIndex]*TestKeySet)
 	for _, valIdx := range valIndexes {
-		ks, exists := TestingKeySetMap[phase0.ValidatorIndex(valIdx)]
+		ks, exists := TestingKeySetMap[valIdx]
 		if !exists {
 			panic(fmt.Sprintf("Validator index %v does not exist in TestingKeySetMap", valIdx))
 		}
-		ret[phase0.ValidatorIndex(valIdx)] = ks
+		ret[valIdx] = ks
 	}
 	return ret
 }
 
 func KeySetMapForValidators(limit int) map[phase0.ValidatorIndex]*TestKeySet {
-	return KeySetMapForValidatorIndexList(ValidatorIndexList(limit))
+	if limit <= 0 {
+		return map[phase0.ValidatorIndex]*TestKeySet{}
+	}
+	validators := make([]phase0.ValidatorIndex, limit)
+	for i := 0; i < limit; i++ {
+		validatorIndex := (i + 1)
+		if validatorIndex < 0 {
+			panic("Invalid validator index")
+		}
+		validators[i] = phase0.ValidatorIndex(validatorIndex)
+	}
+	return KeySetMapForValidatorIndexList(validators)
 }
 
 func ShareMapFromKeySetMap(keySetMap map[phase0.ValidatorIndex]*TestKeySet) map[phase0.ValidatorIndex]*types.Share {
@@ -50,33 +59,6 @@ var TestingOperatorKeys4Map = map[types.OperatorID]*rsa.PrivateKey{
 	4: rsaSKFromHex("308204a40201000282010100a905f3abfe97b5511f25367fbf53f09334a43515dba42ff8d5af4b490bec924202746d9d1b0f906a090d558a6f290b11df003105f0e842a74ca04bfc1a1f7105a65a7fa90b5a49da55860d25e5a7e9b1220e65e35580ccab976197da1df5484ae04613f2b21fe5a95fc846bdf96b3da1e00b4b6d5c54fa513e86d01f1b17f31a3db900ab2f13aa738116f36f392a3e6f9d095fa461b6d561417db1c64785daf9a98e7d328f9512e579550ccf05feee978627fe47de3a4b165fa815aaf60bf6031ff109cf4f8daba1899bbd6227b31cd7e7343fa14e6b2e99a99f990e3f5da4977f99ba98cf2deb2ba6cfa3c36f3446074897ce443e0a8cd308b384b5ca9c592302030100010282010060dd2e562523601fcb4f923a07b5dd2b1f81f382414b88ca7bfb6793c7279e7201e2236763b8b9b46ad79f6c24644b19c4c8e14f5c4e5ed46dcf777c54a42c2b66b87a6cb03ae01425eb1ae1db092d9dfbbc709ba5c69884c5ce822dd7f957a2c180a7b1f06ee338fbd154e94e652cfef5dcc32f3b38dff36b77eb11c87f232bb9be79e7039dc61af7ac15e608369c479f23cd99887bc01dadbe5aeefee4b579a7b9858705a4cb2a3f66c13ae304cd52d6a60f0cc445025d872883b419ea6f2fc90d794b82f107afa191239642d97b85e2f7069b560bcc855c9ea5119d9f98d2b4e207102ebc23153a956207b62295172f725655c46756ef7c57ce6c117659e102818100c2b75c4ce021fef5ca4ec0a5581e7383c7ec0a0342bae6082ea3b2d9c3a9ce157b190a1eb2bb7a7e5407332f8e28ac16926156b4b47f25e1392bf5fcd35e0de463f928ecb1d3c6311c6f69b4244d666eb4f29dc10622ad124ed33c95abaec5d1443036725a92831ab1aa956f18f4f5a713f48e3a12b1a210f0d3b6ec7c0907c902818100de3875b1ee8f03e42274bb26b34739d4e4b33e48280a72ff9b2c7e5954308a5faaf7bceef3c45d495082f1825217646fd490cf2bc0df90fe807c13b4f7c2e8106438f856f04089a6130f0974cbb619709be2ee988f0362f8900f37444e5e53ed85b07574063cfa275b8f4636d5e94cbcd1c7a655dd3a1cd66209daa7f319a78b0281807665198960eb2ae4f6db45c603bb984f73bb712724671241bd6229f8c141399ed4179890abead50385424f7c45fb331012777f4a2749fc9562b6f93e7ea2fcdd777063d2f019adb3e4ef559d84494fd456d002de00460b684b67a3b9fa072e1f1d50177b16d969404cf14525a54e25242f3d0f51fe55e60e58f0d2941ea33b0902818100bc66abca3612445f47a32604b29c6178908932f5a414efd8ababb6576fdc5384b683a148099de2e544802fd7a857b2cc693078a484ba46c8af1002f93bd1a0443d645b9001d305a0aaa9e5ff82b299b0f2491cb675118ef863d2b2ad93afbf823205201f4526af836cc9f4e28acb6846f1a84deaa04c23a4d2abbe19042f2cef02818100bb9e385d27f693f7981cad37aa856e24b651e26e8f8040e9e29b9da15b9a54f51cf49cd718dfc70948436ee8d4a4625b6cab3da065ba1f286fd423f55e10a778634a4286e1838df70e2525fc5cc48a3f4e1e28859526e1f8a2563f6bd635484ce101d1a7158d2702f25399d0013d4fff927547b828286a3f882d3c39869f3836"),
 }
 
-var TestingDKGOperators4Map = map[types.OperatorID]struct {
-	SK            *ecdsa.PrivateKey
-	ETHAddress    common.Address
-	EncryptionKey *rsa.PrivateKey
-}{
-	1: {
-		SK:            ecdsaSKFromHex("96e85c616d446272f387f52f8ce936ee7ac3c65ebe284d1de3c481fa0d147501"),
-		ETHAddress:    ethAddressFromHex("535953b5a6040074948cf185eaa7d2abbd66808f"),
-		EncryptionKey: rsaSKFromHex("308204a50201000282010100cd2476cbe0327a3d7042206e11b549e9519cf713c2fad9d7f9b6e7625c12d69eb5f8ad354ab1af7b4a5b96684802d28e0123f0a25240954821884b516b1bb368b1b8f721ec49e7471cfcc4d7430f3109eb23941a51e6fe172615c0bed0395b41a7d09830fbe67fd38276405caa064fd6e9f3d3a4989be64fcef96d81e28aba5f078376bc4301610ee4c7532c96f7eaf5c403aaa1ed3ac7d779075f64d37ff261e60717825becb181d042ef2e4642cc8ee330d6812c0d98447e8221dacfd839693a0c368379581f5677f64ce45ceeee98b678e8cdd4caf03428d6063ddd298da55ddd5430735b1da21ca38b1922c04622129e7ac925c03546cc39b3b690951c350203010001028201002df4422c6f9fbf246e3651ff76360f459603bc918fb713ffbeafcb6b8c46a80f4ba25662bec5c912ac5891fbf04db98f18104e027ebc7af47a968690c9969dfd10fae759910e0922340b27a9351b7d17c4b5e6a272c0752108660d14719eb7a3a08d28daa8433d554b3f64319de0e617b5b6ea2d5006747462601bb8e1dfc3d9c92309cc0fd8a576723ae6aa8d8dfbba4872067ecf644c4730c00b00a2b8edd1789e0a0ed5e3b76b5f2d31db12105120e49aaad8eb4a5dabc62adfd0e5368773548538ea66c87ea576d7b7a20a8738c25cb1347e5d0bd1cfe28633faaed97d9c070622ddc3764c00e9ce00fc8325b7d5109e543f606d47cf2d953436099f976102818100ec784008ff79151521baa6b98f32c923efae24ce210a51ecf50874332624fe3c9edaa71698a0c7c99273f7d1759785799aa9649e0e62de74586bc768402a6c30ea7c0a949357ba17e2f52c1d92ad3a069a7bc7c5818ed2a7e0ebc5de7ac2e0f7e5b39dcd5bfa0916f3b42fd3316e1556f5617bd50c09a49f0d819e874d4df60902818100de15da091d66d42da949cb3c6dff2d3818ed86ca0d5105ae063ff705b45f6cfb04f4592dceef66d0975b8bfec6abace5a6124f2d22bc7a568f542b67b6f0d6579c9332b912f98482b82347a1a9adc72a97a9c1d05761bb07fe806a1a3f66a62a158d0e4a918723611627ff4808677fe4cab31eb1e55ab33e46b0a870ac7c1fcd02818100bbdc387b2d82a3161baaae43a298e524d08817a34eaa65358be1007796293375337a5fdddab9789f11e361909d0c1834e883047570d66906232cd4c964988f453933fc2fd6f28ddbe62982b7a7cc48d9f026c0298f68c8c0283707065d9eae9d227654ba4e04d0edd404652e3209d39836ef1032cc12691f16dacff78b99910902818100c67752b54890275772ecde71ef7ed62346aba60414e86e21f9b5da04400ff32d545d2500f9e819c2993097a82455311abd51a96e1597c7e0690ff80624878f9515f8b9a0892370d6fcc59273175694212d0de8854e41a949d8975bba7f2435a47043f11c9476e718111bc757d122e5394a27ce6b7e229302395c0ffb393967950281810094163aa0f45111ebb0539c52d35287b08e2aae25d62ce815e2ca6804689c33949420d7968dba1674aad76b8c501940a5ac32e4574dfe6511adf8ed8e6d6b25ceb2037d3b6bcf5ec11b0b3d0eae638e21796d042473fc8c0ee2a8d480b3053c2069618f1dd551e1a1d8c76327efdc704272e8cedba1e1e51f82308b834ed692f4"),
-	},
-	2: {
-		SK:            ecdsaSKFromHex("6222880ea97bba45d6120626691bc74829741db4ad9300a85a20a925e2c74996"),
-		ETHAddress:    ethAddressFromHex("01139beb7ceb4c6a9fd3da779ed69612e489f4e6"),
-		EncryptionKey: rsaSKFromHex("308204a50201000282010100c0a177fe5c06b91d0374b66a69a6dda067439085de6248825aebcea570873abecb89f8bbb52aacaebf80d46ee576593f10d804a6ffda4274d6fc19cd2444db74c690adafc2432f13149251e5624d8dd32f6fe034d9a174605105ee5d3f6285a220657cbc1d8f52abf6789eef8be2ab831a9f66c9556a43a10d3064de8f9924ccd818966502ad75079006a267116f5d328871f9040c425b4fb4f3d33985fcfd161ac4fe8e8e7b13205208ff13b353f4a56d394e0b08d1b770ae6f3ad8242c2401433eecf3f0a0fc0e2fe076e21041525c7bd27bd659bc386067d5bd2fa88fd6ca8f89092d598c99f146b996a6ce4667cc4be7fa9c9013ffac90e4b82cb075d95102030100010282010100b85b50be0d5119e51ca39cd9a717de505fc4181326cca55cacabb5f03c0c103afe0da411f1c74fd146d2837d46fac75b464197e244479d06b9a239074e48e04798aa6ab02599aaf9f5dc3ba8ef360e2029ec46860e2b2977ecd36257b80c109d23a83d82c43fa0fd973bc5d0b8ee4cfb828540183c392154878ce35ce5cdc99ae14757e866c4c5cab0625fc1f463a7c6adbc18de8f1410c2ae844b59f443296bb12ccf149d5cc7b85cea10f95569b0526882c1aa19fa197579efcb4dbab0d7580c1b05468c24dc0e1ded552a2ba84db32c610029a5426a9700628ce167f9aaa9ef151ac05cfdd6a66ddbc77d27dde1599098cd677bc7c92fd4f8a3e3e9cbc88102818100e8b2aa080efc1684d7b4de3c02a7e9bf1703c0b361039c4b47470ec1fa5e1be63aae59dc1a6f0661b5485f99ea2d36491c17c250779cea0fb61533c3a5936fce4dd2f32c5d4ea70c9bcaa5304cd76571ad257b80bb8cc2b073ae9964152f9bdd78a7c58b38c893d4a1971b9ac64aa99b8db043d6224db86e8f76183fbc46de2902818100d3eba93f76e2457e4324ae71f1d5adad220ef8b8fe0a37c71a4b40b2e02d3820b091ce43f50239ab49b344cb9c31894286ce6379373553b5ff9a78325f02f1fd47efeee66aece1a48102b268599e89e4d917506718e64b99eaf47bb3ea72406172257139d279383508b6ded3e7ad9a07d275dbe20a174486866c0038e97136e9028181009aafda540d120b2e37eea6252266d8fe0ca094032aa4a9cb69109580e19c99d34c83067d489d3192d65dcc1f970a8321caa908a5513e60621d5aaed48a471e75f84a19190ed5f03a737e1c9da51732fa846d7c52315afb392d4d8dee781ef3f01ffaf758fb606ad558ae08cdb4af815c44ae3e0a2537a138ede9456969117b3102818100a99397f91ace714159c50e7a4b43eb17f17afd783a803ea5e9da71c9312dbe0e1a7c720b5b110ec88bcf11abc42eb7612eb2145338e4493a0770b9e1c4b97c9e6a640a4d031ece686e7b93fb804b2698a346cea5d0fce75e20eec5d5f032c065b98b50912e64a59f7a7baacef242ae50b80e6b86f3002f6b5e4129e46098a19102818029055908c97eb39712df34b9078c6c94b6fa3908c2809c7da36f9ff282e79196180a1da03fa67fda6a000cb6e6cf75707921c2243d8a92cccc150e874b5691c5069bbd9d096b4fc05fa2f5f7ae0af2699057b42c0f2b83236de4542781ea77befbb6985cdc5a878518eef254942330898439723840294369519d7103757465ca"),
-	},
-	3: {
-		SK:            ecdsaSKFromHex("182fc09c07dc35580f1e2c67cb623a71aa2745f79824119a1095c0d373bc1c42"),
-		ETHAddress:    ethAddressFromHex("ac8dea7a377f42f31a72cbbf0029048bda105c37"),
-		EncryptionKey: rsaSKFromHex("308204a40201000282010100d9d5a9e7aa4d9fc75ed0a5a77540b6026b9ea6913a635edf1f5481f81fd0eabbcc3fea37ed11edd38086983260135d25ed4d2cdbae6892fde3787074e892727602639577c0729e6446bb289ec87f6bc8071a6ad9120cfdc892910f005a56fc466b9f9ebb9adf80e14f13de129b82eeec95d0c9ebba4f3952786d8287ff3146a4e00af5c44aaf1f7611a5791dcf05dfe076733d89bca404722ab9810695bdbc95839f47938367ae5f829b053988cb7d94f72825ede566bcc5aac15b227a1d6899efc428c7829ccb38839196b39aa091e714f8fbad4ed75694ada2f90b70a15b147114d360ccd93767c45db0d6fc3dbc58d024fd1fd2d0fd1301823e7e6432cd4d02030100010282010100a62e9f80f1e668278408eee772c71c537a60bd37fbf0453738c292a885352f6e77a2a6ff65679125125f1c0b0a4a9b7c4caddcb3f7392632746fb4732bde555dfbf296db95c09b5f6aaa6b91bee99e832a10184563c4ef732d85668961620cf178377cb428b1abb3b74d33d4c438be27551fc47b8655dc2833616ffc6a4de0528d7987bf8621f3586016bb47f8e81cf04657f471ce6f0d9d71dd7da3e7ef850af1d20551c0cdbbf77fe6e39dd58434083dd20e7f4eddb4883e67db7f172d26b35bb559aa3c7a9c3a0a46e665857463904973d31443097ce1ec37ba8f15efa9c36201acbda208350dedf94b9c52699a8188267a87bcf48c73dc2149dd2c9f53ad02818100f2d7cf3ae35d2e09b5aad153b8b3819c7b8196491ff936abebc7bd86a967e08af4e21e11865833c50ca6a286eca8e9554dc93b6a2acfdb5f38258f41075a7f8fb0c1240e37d4371bab40d8a6eed71974e7c5f40455018f7b50700c028d7c9d2a26b3e6f234c588081d6821a8bb8518693be4c9eb222dbfb80d3cce0369c03e0f02818100e5a2fe04fb9a0cc637ed2e97df12bd2c6f859dadbb41b2f251ab705419c4049779686b9b6275e57fb2950af2816ac8697ec9ec7a98f5899cdf2b377aa3aa0807d7b609afff7ecbe3d539193593f3d209a539509fbe501251c4d35367ed89fe0aac2bca9b0e0a12e427c506aa3dae1fa98a495f43d4086a33b43c659e2aeddae30281802a5b580af6735f3f544f8a196742f01d8231552c46066af1cbbb58246fd1ed896f332d79730c59634a549a4e9c62cde8121c425fbf3de80e90b5846a1c453db0ab6cd4c4221ac2cdf1adeadc1b16ab9b077e3094bcdafbd2cf71ebb65a455d08681dc2ef8622da1a483ecc7828d50b2ff7c16d32b51073bb3f9bd67723efe3230281805bb0d12cbc29aea01704a56e0eac34cce15ac0b2f5ea2dc183caa8776c3250830aff1eb854802ebae65b8c9b780163347c63b400dfc26ac83073d91b26ee65767c333b7b02d16627faa369e572c6103fb9b140f807cd8103154c2c297b3776305cbebf8f59f3bbc74df9e5c764097aaaff847c7d60d45b5379cc03e73bcced7102818100e82890aff55c0ac12bb1be372cf491be5b20d54438f1ff96b32d00b59c539106478ce6d7b6a1200037a4998c12dc7f6f2479a8ca7c0ab0e8bc019d82047cdb315ed2f20cec4ca1f118ea778ea2bbc3c78f20258fd025115c9451e90120c46f0c95f5aeaefb6cf37428d62811051466d5f1d3301144dc7c9e735c0bcd114625a1"),
-	},
-	4: {
-		SK:            ecdsaSKFromHex("4d3eb49ca01aa6b715a482633fac171f26e957874dd64fe14d8645ddd11346fb"),
-		ETHAddress:    ethAddressFromHex("aaaa953af60e4423ad0dadacacab635b095ba255"),
-		EncryptionKey: rsaSKFromHex("308204a40201000282010100ad489826fd514cc2845646d59bd0846fdc9b77c58fd3b79dbf07f1a4d0d98f5210f5af483c3a02769927961c9de52acdcc78d7a87e720b574d40f93b5a49095e26e95fd5ccfc3976051c8cb18ff26ac8bd1a95a759b9cc6fa3b75aa77687ce103874680aa922b5f0b65831f9903404da1ce87e15276ab956cf6f72622274edf8a34b743575e870e67368d6e0da4167da9e7027dee219c65c7fd66f8484d249fbaf59534ee553d756dd07f9a50c26334fcfd94391f2b5583b67a8a4c2239b5de55f1b21a8d748312010ac99baebe617183fcb0fcb28b93810344089f3cf2e57969d3c6f72b340ff3c2941fd7b921f314440aec96bba353d848685b305ea2732670203010001028201004dc6627c4580830a5f6975fb9426dffa7132da6c32e4dcea117ed8479871bdb120e994d5c02a6d469bf1379ffa828c56b86a98a908afd94542e861b4f10e0d055443b4fefa354ef918cc3a9dcbb50b96b3c1c5dfca16e99a460a1ac7451d29310095c6c8da2739302437ab9e8ec9ba4fc75fd68f5a14bdc127f3a68c4358e621d0c62b855809c0a97cfd617ce639864be5b5d367eb4ebe37e647856ffe2d7dbc43eb20c8ce2fca5651dcbf682a85848297375d611dcee007d4d1edeaa7eb47431b1ee2b24d929f4587b55368c37adc21adeb72d4bcd4046c00954007177a28a4df766be75bb64a60d43ec02f9306e405485767fd5e010e0670f04c215a662f4102818100d995225d2236d885ae9818e03e947f88ac408f4580bd7166bc17e2e02d58c7b81bcd74e5ded04ae6f1d65b87232b1d7c3a7e3a7b8c8c5202731549d1f9ea39c769364003970d703634f2e0d50a46dccf8f7972756b1bc01fb183bc3915dc9875ccb488a79e09af675fa456a1dfe4489bcc49ac13c3517146e03ff6132d2f1e8702818100cbe11e635ede1aee24e1771d187da30161c521795f7e11a99997828f3257df51ab6a56ab62eae6bf691bddcc39547dc88ce34faeb1254f3c1fe48a1cbb89c21bd56a154533a77da103962fcc5485d82291a828e9a6e04e42ad135bd8dbaf7a30ec4845392517ed89ba23037070943a4cbd257bda17a4f8654f40c26400ef65210281807d5ea3184ad8935623cddbb78a17828cbbc3cf49daee4d6346c9f49dfb4306811cf3fb81602b609d45879fe173f029e324c90ae5998c58ccb486f5ac19764ea88a050a498745e4fc36f2237e5d978b2fc599d2cbb9559a1428f2a107bb830a0e064f97d60d07c39baace4464ad5f1a3f3b2cd00beb25084230806a478e67720d0281810096849ceac01f39c29777dd789d9c23bbe172a843f33c1fce1696c4ccf35dec815f0c22f0651707444955496a7ce8e3f42c0fa5c45304387b2b108ee6a78e0cc07fced1e5453d62827d23642676405a512b37fafc8537149025372597f498989d85d3d5475b1b4f435f287a6188bbe64ec155eb1a185ab308187ab7091da7a00102818100c157cce973ed91393e04048d321042feaed05d9cf4ec21e1cb0ed584ebad80c06810357fc45e9324173c4bbd234288403f15ad58e83184c2dade6e47d897ce100fc6c3bd4e6d1ef4b5af1f6621dd111b27a6f14f8850e89b61c3970234696d1a487322e972cd835d8ff35a0571585c827b3c630f4474e814dfd88dc4bc113477"),
-	},
-}
-
 var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 	1: {
 		ValidatorSK:      skFromHex("539924aa9690c9e67d833df878f8257c686097c0d29e0d2f6096f221ac0b4598"),
@@ -91,7 +73,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("09e03e63de7cf79d6750e3180da44f524c4f8aaf9780012b7c5a20f4b6b1aab0"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	2: {
 		ValidatorSK:      skFromHex("40ca274c950f56fe243eb1786979c9369aa3068ecdd9da21a7e7a6dc8a4d5402"),
@@ -106,7 +87,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("0af3bb03c7dc781e2d5733dde17ab83dd85c99e9c7a90439ed06830c67f879b7"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	3: {
 		ValidatorSK:      skFromHex("3d32f9dbd459b3b1a1dad48401b320d4131a4169d5b1225ae26ac4735f067fd0"),
@@ -121,7 +101,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("19885eed562a97a1a7c2ec9dd6f362f0715ff1c386ce2c9230a54cc1d75aec49"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	4: {
 		ValidatorSK:      skFromHex("3aa10c2ed0ee1149a52b5b40e3849d1f8d3cadd1ff9d0c9d44686cd8d87516d3"),
@@ -136,7 +115,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6effbe961e38534f451b85a94e99b91041b5c07b51618f5d74806e9d77c7d419"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	5: {
 		ValidatorSK:      skFromHex("6ad0449f551042a79fb5955cffddecae01cda457bf287e2d7748feb6ea1dcbce"),
@@ -151,7 +129,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3949c018a85b40f3d6d474e2a379e878128b014017fd38d6bffbdf2ad9994da0"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	6: {
 		ValidatorSK:      skFromHex("26ecc0d0d83c5efc2b13d202ace63f00eadbb83373ccaac047ec2d629117a241"),
@@ -166,7 +143,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("25663a3f399f4ad2b5361d5b0dd3398247d2cce29a54e67aa03093af8c4ad9f2"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	7: {
 		ValidatorSK:      skFromHex("23cb500b937dda17a9b088c6b2a939a282e9ec1d36e68afbeea830eb8cd402ef"),
@@ -181,7 +157,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0a53904d8d67249ddca590d757ed190facd86c29fd43d363f34273636987ff60"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	8: {
 		ValidatorSK:      skFromHex("5537e6d9e3a4ecb4df2d56d83da8a1ea38341b305c01cdd2c7727165b74e71fb"),
@@ -196,7 +171,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("348a497dee714c5d27f8242ffee67d5013930f0c5cbb4210fcfce92ed3b77475"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	9: {
 		ValidatorSK:      skFromHex("1c5d016e644f54242e5dab99cc2da72063c658fc67d7ce159b761a30ec957516"),
@@ -211,7 +185,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("3a070a09281878919abc6384f26f5bf86f019a8e01a0e016080e6a3de190a0cd"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	10: {
 		ValidatorSK:      skFromHex("6277cefa1f126f6df7a622bbeb2ad007440c1c4f9b971e7a60dd404553668f51"),
@@ -226,7 +199,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("5859b6c86e11c49870965d50c8771553892748fcb29a201ae0f4f0a85b7a994a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	11: {
 		ValidatorSK:      skFromHex("6cf5e81fd367718143283c4611c0dd0c61c3be1cf2e2eb40af6b4e8d9ecf3bba"),
@@ -241,7 +213,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1c576c76cd03ea5f8ed164346e613f570e3125185c8d4a07b0302cad737f0cb1"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	12: {
 		ValidatorSK:      skFromHex("63f6e77baf7bdd5361be54b797475183ca701a73cde7193e8a82da8a8d0519b9"),
@@ -256,7 +227,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("654fe5e1f8cca9efd5a784babf523fe1b339624cb30b7724612766308685e7a3"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	13: {
 		ValidatorSK:      skFromHex("454820d787bf263f321b34778606e2c3f0ed0320027968064fcaad23eb9d1661"),
@@ -271,7 +241,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("54931f3d533502ad88fbc51d66f1962b4bac00b080029ed5ccf9c483c59e9666"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	14: {
 		ValidatorSK:      skFromHex("0206bd37179f8f7e4883d7064360d1a066a60e11c7050a7f9469489dc707c58d"),
@@ -286,7 +255,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("414aa850a8288c9184dfdb41ac0007ba85ec7f248c999241d3ce189d86300617"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	15: {
 		ValidatorSK:      skFromHex("6cad9ed414493c6fc7e352822d3e191476dc15190088459e56f60c9fc397bbf5"),
@@ -301,7 +269,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("0c535debe6e6bcae7acb2f5dba2de9b3cfe2514e8fc8d9b63d21839e75ea71b8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	16: {
 		ValidatorSK:      skFromHex("27fad6f9b62e1c62b2c60044778e45b0954e5e1390f773cff4a05609b013409d"),
@@ -316,7 +283,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("2f8ebb283126580b53369fb549d5f6c6d702a596c83e2e95acac027792d43fc8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	17: {
 		ValidatorSK:      skFromHex("223bf61cdd4bd33a496c7efc0fc3d2c48f7c9070047dd1d71874b655075580f6"),
@@ -331,7 +297,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("29a11d05fbd6fd835f006662fbc5b45545bc9c40fc25700e347b7b6fe25fcb68"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	18: {
 		ValidatorSK:      skFromHex("0078cb3480eab63fa7095d9478dd74a7568eab23d61308be0022db7c3b3e98e4"),
@@ -346,7 +311,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("63cd3c6e40043298c39c3f777fa8cd539473e448d9622707edc7ca7a1e53c760"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	19: {
 		ValidatorSK:      skFromHex("0f051c0285a51877911fbff2d1d7e0c042035692b5d4788e90f00ceb1a22774f"),
@@ -361,7 +325,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0833dd56b5327ebe4a918b09aa81664f0984a07f345e588aa9a10ad4f100477e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	20: {
 		ValidatorSK:      skFromHex("540fa6d86742501cab0d764a4dfdbbe08d01193e3fc2cc694b82783085a5f408"),
@@ -376,7 +339,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("09940072a5b53b6e7fead3b0936e121fe9354dc4a82f5de9a5b99f204bc21d65"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	21: {
 		ValidatorSK:      skFromHex("2d4552c9e2e75dcb4c304e1902d2976b4c7df8a40b74967fbf41409b1bb5a65b"),
@@ -391,7 +353,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("730852e9eaae0a87fc03fa21a72a90c731b1e2890303a4f708aaec7d95dee0de"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	22: {
 		ValidatorSK:      skFromHex("220ccee9cfd3b9b1b0e5d659d1ccdd2f498b36faf2cb3caeaec715ae06ae4a0d"),
@@ -406,7 +367,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1741b69021ea6749ed44bc94787af55672385fab060c9c571a203354b617104f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	23: {
 		ValidatorSK:      skFromHex("6b05a83c6337f94b608b572fcebe5011be2183933b7ecbaef9e4128c9195d71b"),
@@ -421,7 +381,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("50c078d3cff18e735976dd1094f28caffd8ff11a524aa5aafe8969647b5cd482"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	24: {
 		ValidatorSK:      skFromHex("3d35743ebbb3875c9a76fa1c11fcdfcaec6c300d454b8aa66bfcdd132dc92731"),
@@ -436,7 +395,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("61e91d08b918224d63874ea28171d986e3fe1a925959902fcde0d6df7ec50d66"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	25: {
 		ValidatorSK:      skFromHex("2d5a4286693ae954d9f2149e6e2bbcbc102c7e59c20f16a9cdcd4ccbc409acb5"),
@@ -451,7 +409,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("18b28f62b2d7059ed9d7a5ee3de96f3b90663e01bdf1a6a533c734207933791c"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	26: {
 		ValidatorSK:      skFromHex("6c78a15f19d3f3e225f8b86a049bc476e24657c10ef9336ca03e9c6f2e57a1f0"),
@@ -466,7 +423,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("471dd9180a81f797ec392eea3c53e70a0838d2dec01e99fef868aff7934eddfa"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	27: {
 		ValidatorSK:      skFromHex("1cf54617ddc76f605403b9d6d11699e39121f6588d3def67a5bb651c7b9ce05e"),
@@ -481,7 +437,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("1bd8a60760d60c753dc6497f35857d4a36dc8dbf6aea35079a3768d7ce7baa6e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	28: {
 		ValidatorSK:      skFromHex("0448bfd4d8c78983db48ee73fa91f1e69f14ec1e1816def10ee13a835a75c896"),
@@ -496,7 +451,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("352f29a759db28d7d5efe0f2f859f94c701dfeae3eac0e0173cff1a965ea1cec"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	29: {
 		ValidatorSK:      skFromHex("530896bbbf9403a656113b04c1800815eb7adf5ae18461c3239d1f2042c0349f"),
@@ -511,7 +465,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("31b08e78e6b61febc9e6dbaf7a4064f226c189c9a6ec7fd166a588ef28836531"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	30: {
 		ValidatorSK:      skFromHex("3c1d094e24bdd5f3bd6c79d8a7b5eb28a007256d5a1576a677d6b4db6af68531"),
@@ -526,7 +479,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0ab6380d5091998e831091325c944c7c90091ccd94188130daf0c7346bbf61d3"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	31: {
 		ValidatorSK:      skFromHex("4dd058b5bdc6a788cd1d1cfacef0c1ec82e63ad8ae12583df4190fbe3cee1b07"),
@@ -541,7 +493,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("56ff20a3c1f6f03ddeb081fd1a88122d810b090fb0fc21e40f4f8328ac3af125"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	32: {
 		ValidatorSK:      skFromHex("1461bf554b1a04b1a762001013133ac127f95a223de56adba662f858b9fafd84"),
@@ -556,7 +507,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4cfaa392ed2fb1cf202d5b84dac32972a022aea2096392a72e87e4757163b3e5"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	33: {
 		ValidatorSK:      skFromHex("51ea0501958c7dc468e327dc2ca10919ceecbd3a18065847d5c95850072e3784"),
@@ -571,7 +521,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("42b7ee911bd04106c9cee1e2d0a858b66e5a3dec3655e825570eee54c0711ed2"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	34: {
 		ValidatorSK:      skFromHex("49be502309a249cebe31d8e0e7534d2edafec65384e776835c224183f570b9ee"),
@@ -586,7 +535,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("595ef42038bb2b9b0a9c16d58b2a2d0c24072a8846fac2e3da50270fa0205c50"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	35: {
 		ValidatorSK:      skFromHex("29c8fd119b65cd4945241d75d094e365cb72c2b177f5997af756b462e23df88c"),
@@ -601,7 +549,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("2fc7763cb2d83eac84b47d2f178a1ac692983b97a21476f1b629183c166be610"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	36: {
 		ValidatorSK:      skFromHex("32a2047a0cf6ed2cdf3bf13b448191e0d4536f51bae4ab7b88512532f2ec182a"),
@@ -616,7 +563,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("322067b9a4b999794dca03389b11cd69ff195c2094e0980f1d4d54312a3f4928"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	37: {
 		ValidatorSK:      skFromHex("5574de61a19bb5e702797d42e71f33bb2c04a2a20eff525dd0c1d8ab9c9df0fd"),
@@ -631,7 +577,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("139d343af475f4f37ec5c6a95cc098cd26d0012040adb7f628fca2edb6743613"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	38: {
 		ValidatorSK:      skFromHex("1827d55ac64d582dff0c5c3f825f6dc2868b347ba55cd32e55081e9264eb0fe1"),
@@ -646,7 +591,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("52b5f5fb2a90b09975d7f1b2c7998c55c7783156ca8400b44d2c6ec3fddc534f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	39: {
 		ValidatorSK:      skFromHex("2616f7b8ed229ad0efa9cec5e93707f4436eec885b241c7a5c80ea13a6a89f48"),
@@ -661,7 +605,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0934df5803d1ae493806349d04bf85c82b92ed708983ac30154f1b8856b06023"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	40: {
 		ValidatorSK:      skFromHex("57e44d5cc162976b088f3ea54ac0f4377267025484bac8aa9951021aec5db0d1"),
@@ -676,7 +619,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("71b9b3ac38afffa8bc802c25e5cf3cf9306c2bcd8c35c0083b8b0212779dfb4c"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	41: {
 		ValidatorSK:      skFromHex("0ee85af96f5b8d979ab3d10736a048d9c060f34d9c337752462f3aef102c135d"),
@@ -691,7 +633,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("179c8847fc998c60a147071a9b76d27da7ca2a7fa063f7106cc247b6eadff477"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	42: {
 		ValidatorSK:      skFromHex("3ecb9fb3d47998a8b39ca0d52f5dd96619062936cbc7d537fca63970629d8578"),
@@ -706,7 +647,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("241538458867e9bf3d000e8301157196ccc715680f20889b9a9177f130d94e0b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	43: {
 		ValidatorSK:      skFromHex("57e0e6198c25dc23b565e62c6332c86b283fc891d19d13bab12c2edf1ffe0190"),
@@ -721,7 +661,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("17f084496ae8653fb9aa7ada6881f35c648417dce32bff3053483e4d639682d3"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	44: {
 		ValidatorSK:      skFromHex("33d9368b5b88b091c144d954f2f18e4f01d7e5184f34f0ef1c43af7538de71b4"),
@@ -736,7 +675,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2bf17c12ee6ce1b3e5c59a0790d6e64c8838bb085baa399bcd500925ac3a5b6f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	45: {
 		ValidatorSK:      skFromHex("63fdff4f7c0e4febec7873f287cae242de85cdb4faebdcb586cf079a5d75ffc1"),
@@ -751,7 +689,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("4b6054c375bc6aba58a495b1c88beca23634897fb8bb0ebc513f0ffc3b61da6a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	46: {
 		ValidatorSK:      skFromHex("6b962aecd305291ff20b5ae84818bbbed02701e82d4546c01eb870c1a9ab4864"),
@@ -766,7 +703,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("091d1838282d6747cd342874994fe2c7ad04b8ba582868a00a0c214e894adaaf"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	47: {
 		ValidatorSK:      skFromHex("6e6878b82796661419966a6adaa9024b2a34c809abcc2b21a0589e2d1399d05b"),
@@ -781,7 +717,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("0598bc12e1a950a3cfa01b2c5c282e90ac747658c6ee2433cfbda436c9a34728"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	48: {
 		ValidatorSK:      skFromHex("4a561c8573ea4da69082fc4d744814c92b51ff1e2b6126b9d0e37350545d9601"),
@@ -796,7 +731,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5955163d563e2d71cb4fb4b196d0b8345d14d8deda1abd1ac31f99a9c5d318ca"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	49: {
 		ValidatorSK:      skFromHex("097690aeb77302d96b0e28443293399afca0a9285e9dc5ccf90778f9fcbef2c3"),
@@ -811,7 +745,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2a2392b901106c256eee99131398aa78dfc3b0f322b171991c1ee47256f2df71"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	50: {
 		ValidatorSK:      skFromHex("2338f532cdc9fee22fa8b65310e5a677d96bf9d25a2bb805cbf702e97882ce59"),
@@ -826,7 +759,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0cb33eadae4bb27eb29f32192015df7a5e8689f6e35bbc5430e53de9a7704bda"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	51: {
 		ValidatorSK:      skFromHex("370ba426c8d4a02a3cdbd5631ebb2963087d6fbca2948b6c13835ebe562f6f07"),
@@ -841,7 +773,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0eab93b12b28cb7c47528065708494f34e18fceff37cc6b957b418e4be2093fd"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	52: {
 		ValidatorSK:      skFromHex("51b1ba10f8e2b0179457b7f9a09f6512e70da2f08190cc4f7d15596481f28d85"),
@@ -856,7 +787,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3c3083ed2ae8ee75aa8ec2f5de0f67828d8478c70f438248feed6720776bddd8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	53: {
 		ValidatorSK:      skFromHex("3ccba9cf6731ae9a347150b77798fd3b36a9a02e5f54d9b6c9fa86f26ed7cb02"),
@@ -871,7 +801,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1597542cf9c5c01be5cf15f42e5e7a69b70970393dd07aa41a0d19ef56dba677"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	54: {
 		ValidatorSK:      skFromHex("6a743240e4c556c786113e4171ee406b482580e4e18009adc6898d393b600872"),
@@ -886,7 +815,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("5bb3259e5de36b92f12fe633f6ee6eebfe72cd85ea66b94b71f3042f4d5fc4b6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	55: {
 		ValidatorSK:      skFromHex("421c8e665d7f9059dc558b00c62b7aebaf66a8edb29083434a1de56346f8b4f1"),
@@ -901,7 +829,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("3ecde11d2157865095758db4eefb95c8d15cd578c51563ea76121958d7b3c76e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	56: {
 		ValidatorSK:      skFromHex("47f94ba2d0f8690cd7b7bbc5baed1b602727dbbef94b93a1d5417d1709f7bf7f"),
@@ -916,7 +843,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5b5553556f90f7d100ce9c8893c5312915d2beb8fe5bc50272f8efad1276b51d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	57: {
 		ValidatorSK:      skFromHex("0d3a74139ca6c5b7bbf8b9cd252b9170d8405f1da7457a8a295d979eb915bd08"),
@@ -931,7 +857,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6158f973fa0b62371a2c397b896b23e00d0c4ab0f27ec028e86f6fb170df0529"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	58: {
 		ValidatorSK:      skFromHex("3ab848a3fa79ae75850a411e44663cf4da7932aeed7ed263f1f5287529eeaf69"),
@@ -946,7 +871,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2f5b0f91f31fa0fd2fd47eeb2b5ab1027676a66974aa498f15989412aa3f2642"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	59: {
 		ValidatorSK:      skFromHex("3baae354ee69d8eb0e520b75706a015503d391e8f2c1fc3d801168b38f29a3e6"),
@@ -961,7 +885,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("7386e9d3aaa1f0d1b774f963cb3e98763eede4a78c30baf98c263c0629b354d7"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	60: {
 		ValidatorSK:      skFromHex("591ce66e868d0d43963a78e6629099bcc8aa4839a993c052e90dbdeab11235bb"),
@@ -976,7 +899,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("24f7dbc1493ae3baa149f2d8bee1f9bdea4b1c6b292f1c5557748d273b59f193"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	61: {
 		ValidatorSK:      skFromHex("5e444df10f93a3fe12591c71c5beec192cf176aae197dad0f492328dc92ea9eb"),
@@ -991,7 +913,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("02b4bb40d206abffa79a0f6110c4467d1e0247c475c0c31e15dd601a480e0b2b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	62: {
 		ValidatorSK:      skFromHex("164d525b5e681595cb08f8a5087b2e8dfa0f54e31f2ae798ad5bacb1dc35cb3b"),
@@ -1006,7 +927,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("33e2232b45489df303c9dd11a171f35ac0acd0f42b6024593f69e5b7a27bd1f4"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	63: {
 		ValidatorSK:      skFromHex("06d197a642bf51aa2a5b2e8b9f9fb40ea0a2ceffc61a19ef7a2a14b7f702a376"),
@@ -1021,7 +941,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2039fbff9ccc21b344dbd0211c6e94aa53c9ea53f12097b121921833158aceca"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	64: {
 		ValidatorSK:      skFromHex("2fa619792853b94a079b5e4af9f369c64f8c2209a614c41bfba1c5d453ab3b1f"),
@@ -1036,7 +955,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4e1a3bc0b809270e9088fe9a173a8cf978620b325925762d50e9629337c68503"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	65: {
 		ValidatorSK:      skFromHex("145c76ab6f175017ed5421af025731f2a5e484c2f9ac87357062656a911e14d8"),
@@ -1051,7 +969,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0c129cfb156f186ce8097bc8a539209aa63e751eccd5f499cd7bd503c90e1376"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	66: {
 		ValidatorSK:      skFromHex("3606c873d4fe61f17397086ed939e5aeec3a8e758abe51a3619e32f85c7f6be6"),
@@ -1066,7 +983,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3820d389c17ce5dc84f0ba8f51a321d8d5c511b21c0b19fc89536bd21c57c18a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	67: {
 		ValidatorSK:      skFromHex("425b4167bee521e9887e97e89dd280b2176be565c6679f5c93fb7dba7745a19f"),
@@ -1081,7 +997,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6b5cbdbbd043de6eb7bfe5cbeaf700c46b724298520863b3a42544009684fa90"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	68: {
 		ValidatorSK:      skFromHex("29e8e9d0fe684e477d97773ff28b8474a2fc69cbc2b2b66ca9873ba4ed8e296f"),
@@ -1096,7 +1011,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3a93b6cb8c1cb0266e6cd6c3c476678fda5a166f036e6cdfd10b4d90686f0fb0"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	69: {
 		ValidatorSK:      skFromHex("3875137eeabe6c1e8e431ff21624b7a2776157c9795983c8efa41919b8f36fad"),
@@ -1111,7 +1025,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5e5d1b6626b3197a10040665a2b31ea327fb5ae026e4fffe7e5569f9e6c00a8c"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	70: {
 		ValidatorSK:      skFromHex("52a9dc6d5fe94ca61a069d7411459ab9adc750dbf2226b99a35179fd8df755d9"),
@@ -1126,7 +1039,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("0cd805cf54a5965240938f1e6e9a32751089f4c4420f4bf4bed4ec2023071b2e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	71: {
 		ValidatorSK:      skFromHex("152cda9385d6187b97a9e55eb644b773a9b3ca304b2887966efbf24ce9587f33"),
@@ -1141,7 +1053,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("0c1a94bdd704c78108a29672a2246412f13fadec3009fd4c749d469f4d8ef1d9"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	72: {
 		ValidatorSK:      skFromHex("3b4dbde0d4fa87fa02e69a136fcf503a1370ede2f40cb4f59b9b3cb7f75d3fde"),
@@ -1156,7 +1067,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1a551fc12ec1130539605514ff5350ac623a938df7a9d090cbe1831948da9d59"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	73: {
 		ValidatorSK:      skFromHex("1a81d1a0c9fce9aa3f0fe247efde50329324323dfcdb0c97f6cdfd3065357160"),
@@ -1171,7 +1081,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("01dc300f216fc884f2ddf60b2229ce31103b4c2b3277217956d787b058bc3f45"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	74: {
 		ValidatorSK:      skFromHex("3c1da74c506fce54e5e5ed3308d3cf550e2b4280804346cb78e4773707af85c1"),
@@ -1186,7 +1095,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("2fc5f5b56074b3f78ad7e71853ab9e267faeff5c193748057d6c794b78f24469"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	75: {
 		ValidatorSK:      skFromHex("5365589f48bfa9d75f6523a1c50a12813e54bccde52b61262d513a61a87d4e0e"),
@@ -1201,7 +1109,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6dc1f9dc772906b31d962348ec8ebbb91e62b952fcc8590fff2cd4ed0e66d0ce"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	76: {
 		ValidatorSK:      skFromHex("50cb3fca79835aec0fb5882b7210f1b9e67ee58a4cad1f498ebdcef930f7279e"),
@@ -1216,7 +1123,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("200a51cfcb18d46973f162b0b1e10cd87f1501ad66cbe7fd55f04e90c54b807c"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	77: {
 		ValidatorSK:      skFromHex("153f553e5764aaaf645f5872074c19a505482f474cd21e42dba13453160236ed"),
@@ -1231,7 +1137,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5d1b6b6df8eba7d55693dbc1dd25c3c54a12c90142388814f1ffd271ad15c651"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	78: {
 		ValidatorSK:      skFromHex("4c241dc252bc6f128213e1ce3962ef5ae78cc2b9824ba3ce5ba3bebbcbbe9764"),
@@ -1246,7 +1151,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5397f578553f7030b5cff5caf0f515ef0be632e559af6eb379b81b43d338312a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	79: {
 		ValidatorSK:      skFromHex("49df1bae697fa8cddcb80ed051f9a39907122b80044dad7fbddcb64d1022e8a6"),
@@ -1261,7 +1165,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1b6cc5b9423c20b6bcb48b0e7df021423049b5067bfa745fe2a939e38e06dc64"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	80: {
 		ValidatorSK:      skFromHex("732c0dd627018f155eaa52bd00e52177c75eaab1e4ddaa3a95737f558cbf0569"),
@@ -1276,7 +1179,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1ebaddcf437e5e34228af6c7f4a2bf7c1e0a47eb169c7e02d8b24954d3c4afc1"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	81: {
 		ValidatorSK:      skFromHex("426b182bf6e4cd80fae3f02e2bf63c0866236cc128a6fce6e47e126f4bc41bed"),
@@ -1291,7 +1193,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0cb662c4cb953e2c07c0fd0ff40cba780e48d1cec86c381fc27ce036fd069455"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	82: {
 		ValidatorSK:      skFromHex("08c16ab5ade5df0fd45aac30593e7cfb376949201467fa0bd2347b5af6806c43"),
@@ -1306,7 +1207,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4d893261a116ce365a1f438cf926b558325f63b1c3d609b1ac406c3fa2ebfc3a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	83: {
 		ValidatorSK:      skFromHex("4698a3486859ac5b1e32087a3e3f8521d36aa4b8649209e32d35c01407665e23"),
@@ -1321,7 +1221,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("2a69d47c3ac96b5f33f4e6b1c32ea32853f02fbc2f13f69cd5c4f3f931c3b2e8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	84: {
 		ValidatorSK:      skFromHex("12c041821fc0745bf5cb916b9f087f551c81502432bf445b0bb7c8ae2eceb106"),
@@ -1336,7 +1235,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("69efc426aeebb9a0b3cb65bdd62f760ab703f89cf656771f43f115ae8e5ccc91"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	85: {
 		ValidatorSK:      skFromHex("3ddc3fa7518f9a4460d86d7c79e782eb9e0e81d6a666e261bd5cd258ee74f6ba"),
@@ -1351,7 +1249,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("3941687202f67588d379cf35727575cf61b0b436e0b8acb78ff8c0ed2fae7efd"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	86: {
 		ValidatorSK:      skFromHex("22dd1e48f8dc888b780d20123cfffd5346942a5368fe6653c949fd188f248110"),
@@ -1366,7 +1263,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("0db25012ffdc51cb95d18eae537ec2e003eeff9342f5be9e27f998112de6c1fb"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	87: {
 		ValidatorSK:      skFromHex("674bca73a63157278bcceb596d234ed561a12a2718572d5d5cfb12d5dd490ccb"),
@@ -1381,7 +1277,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("386a48894f07bb1c69e77ad9c7148cce808d8c8bab635474c698e49cf7315757"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	88: {
 		ValidatorSK:      skFromHex("4a0a4b607562df76e97c86c02e4ad7bd847ca59edf3349beef500df3bb2e1318"),
@@ -1396,7 +1291,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("66d623ace1a9769ad7baa5e921b55c3e747361738e57d30f7d055076b8f02811"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	89: {
 		ValidatorSK:      skFromHex("5ea14d1062a65e6d42bc910426af226831bd05bb16613656d096a81c6ee87357"),
@@ -1411,7 +1305,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6ffd083c78c19b829fe6815f6643441308bd989a43bc2fc52bd4cdc5d16f7c06"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	90: {
 		ValidatorSK:      skFromHex("5134279804bdcef4bc3a840c791cf90a3570615c53d3db6ea4cbfe0ceee19bdb"),
@@ -1426,7 +1319,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("61b872cd276333ab7cc2120c3d52c36d6a7ff7a9bd36abfd65e6307c920c8eca"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	91: {
 		ValidatorSK:      skFromHex("2271cec0623605a4d9c746dc2a33cae0baf3beafaef03094358306ea19fdaad4"),
@@ -1441,7 +1333,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("04893c665cae4d07119373642737283312e4cc5ee56f35a945db44ea29c02e31"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	92: {
 		ValidatorSK:      skFromHex("44315d8309ca9371e4124a70b5f2c24b0c5ed01d1c9c4275542995730e203468"),
@@ -1456,7 +1347,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2017fdf5533e2a64cb0c426e2143364370d9d2799c5a9cab69325d9d72d5afbc"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	93: {
 		ValidatorSK:      skFromHex("66f2723191943b54f0f5a887363feb8c8e377fdd3dc26426eac39bbb7792fa15"),
@@ -1471,7 +1361,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("469ba68cb87153b8defb3472b484f0fee2f18324c2f0c4384099dfb6801b6344"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	94: {
 		ValidatorSK:      skFromHex("1e91950d4db24c05bb9eacea213f61523eff2e6ea5ace534c8ab486f81c473f7"),
@@ -1486,7 +1375,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("363f2eac28efe7aaa1e81654e4d96159707bd870e3bb9f9f6b9684d59696681f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	95: {
 		ValidatorSK:      skFromHex("570c5517cef20bff9b23e56d1089b14ef9333d6745d0319dd23e0136d4acd001"),
@@ -1501,7 +1389,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("01bbcd4687fb83fdbae360952689d59664cd84dc41a5b08bf8ab1c2d33c5c550"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	96: {
 		ValidatorSK:      skFromHex("64c74d71707cb0e77a8edb2a98425d567f94bb4c7a88cb447139b1b108b3665c"),
@@ -1516,7 +1403,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("734bfd98982d4a6fcfb29a552b92ebe6b1d5b2a7136e14a7c17914b4948c5e74"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	97: {
 		ValidatorSK:      skFromHex("6a0d56df0e95f55aa3ea4ca2ed386fc423a5eb62b5e00e7c8d2b8f20a1d40b18"),
@@ -1531,7 +1417,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("28c47bd221a87a0eb449ee3b2e8138f650a62024a93d594fdb459311bc7dd22e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	98: {
 		ValidatorSK:      skFromHex("27ff25f61264d9b86893a68526053e8df62131ffd5ffafbdefb80aa37227e861"),
@@ -1546,7 +1431,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("68c5a9bd6d5dff9623c67586bc1b769e14dad90ef96a220a84864e6e2f12dced"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	99: {
 		ValidatorSK:      skFromHex("6f639a700311f8ebc2baf61e1e5ff9c07a3545b19bd1dd4719306ed03b214d02"),
@@ -1561,7 +1445,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6d0e5b871913ac1e154d227c3430d13f1f7697ced741e850fc8965bfdfd987ed"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	100: {
 		ValidatorSK:      skFromHex("2bba0ab7ceb59ff1b733ff2dfb2226d43f8b92aeab269cdb1f6ff48163a786fe"),
@@ -1576,7 +1459,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("41e67f140c0cace010ecc4fcd03cdf6d6f75b60146871bdc459de6eb7655d3cf"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	101: {
 		ValidatorSK:      skFromHex("59811f9276c0f8be29057411b7490ff63e63492b7b47102fa867ebd7c5ae512a"),
@@ -1591,7 +1473,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4269334667798a9c7c0854cd578c6b49c6445ef833a2812c07f24df1946facd9"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	102: {
 		ValidatorSK:      skFromHex("63fbb12137d7bb849e95752a2d3b881c7ec3804a59c9ed06c1d7b8e6926df5b9"),
@@ -1606,7 +1487,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("14a3e530ee9dd8b5b1f4e5127841916e8e8986e9d927a14dd4c1c1bc7bbfcc59"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	103: {
 		ValidatorSK:      skFromHex("3b0d99d056c15a72bd8f265ffd734a36da51dc5531f1daf20d02b80146d3bd30"),
@@ -1621,7 +1501,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2654d225e3930ca8f4b5a8a4cbb07f5ac079ce522436273f69e3b1eb2be28437"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	104: {
 		ValidatorSK:      skFromHex("6d597faa7a76b290305d4fb9cba910d64acd13796ea15982fe3627a5773d50e2"),
@@ -1636,7 +1515,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("40052e7142242f0963413a4e2d8fa77a223cd6a3481da16d4989baee826750e5"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	105: {
 		ValidatorSK:      skFromHex("2044b7880429e4d10290487bb987de54c3ac29ba7619b45b9fdcf4b82cc117e7"),
@@ -1651,7 +1529,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("487b7efbc1bb5c274578e70ca5fc5f43bdb94e3d69e59bec1f7b358dea711cd4"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	106: {
 		ValidatorSK:      skFromHex("4d1af1ed041a7928eb6aac518fd37d9a6d9eead83b9bc088f4461d06300a26f9"),
@@ -1666,7 +1543,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("568bcb3072aad06379a4253872156f135317ffa3da9a02f4010ee4a70d2f4ce5"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	107: {
 		ValidatorSK:      skFromHex("4552a8b54b5572bd179e83ebfe6bba683d3d4e8997249aa843bf7e4c9215db85"),
@@ -1681,7 +1557,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("2253ed038fd412d93670103c6247f4eea031acff28d8dea74db1c114212d8ed5"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	108: {
 		ValidatorSK:      skFromHex("50bb9915fd070356d3ee69da31bd7172a8bb3e9e79b9b75012d4d8bbfbe60e17"),
@@ -1696,7 +1571,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1c2a908be97ea27074bf4239f4db75798a9bfbb08a75dc53bffe703db4bf7255"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	109: {
 		ValidatorSK:      skFromHex("53d6ca78fcf759abf43e85aa072f4b2322eb491ddf310f4eab179dc2b83a0c0a"),
@@ -1711,7 +1585,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1c56dfefa2c51952a242769ff64699d1b51683e593cf0cea36c551564475dd3d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	110: {
 		ValidatorSK:      skFromHex("268cc7d2da7fcaf0cda6870f89af380828f1405c5d099541c2d739729adda060"),
@@ -1726,7 +1599,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("6604bedd39304cd00935409bef56d64b52b5c43d3fad44550a6328275ddc1e68"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	111: {
 		ValidatorSK:      skFromHex("1e1e1f5c6839737a138d9b55c366fe66c24c061e829969f48c47bea6d972efca"),
@@ -1741,7 +1613,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("648d0e61cd4aebe793e2859ee4d10abda96008d39725df610f8d7cea88097344"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	112: {
 		ValidatorSK:      skFromHex("100309a98475491f966fa0bf829009841b155ec7e65099699fbfee183a6f855d"),
@@ -1756,7 +1627,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("495ad7c889f3dd380bf82eeb4ec1aa368c58aae7b8b7319e52f103588ccb92a6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	113: {
 		ValidatorSK:      skFromHex("64db1baeed924ec2d314f51dee111a009818c81547b690bc8f5a50f4e5001350"),
@@ -1771,7 +1641,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("2dbd4a6152fe3911ae165588d39b73f952dd8d9d8cb0be8b202f5b27a78499de"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	114: {
 		ValidatorSK:      skFromHex("20de91f8d479c3f30c0c95173f2db0535bf6067f1ca8e07d12134ca2d22aee15"),
@@ -1786,7 +1655,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("4b763305d42a3137f86ba04b91cf8bfbb0f3053805af9bb09864571c2a66578e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	115: {
 		ValidatorSK:      skFromHex("69c001aa928d164a8807368cdc0713c01816ef23d0781deb72617fe9872e0b65"),
@@ -1801,7 +1669,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("589702b207c819681d23951d7be46b482b0d12e7c08cc56caafb8107e3a9484b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	116: {
 		ValidatorSK:      skFromHex("1795b2baa91b4ad2d1f040c6cf27f7d28a3432b32b40ae93e607ff3c20d3b30b"),
@@ -1816,7 +1683,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("09a05e020449804176b0b450e303bd5790caa6361f1a14db2acb8f06891b6cb2"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	117: {
 		ValidatorSK:      skFromHex("019f151c48805e61401431c249076f1df49640f0ad997e7eed6f1356ee43e141"),
@@ -1831,7 +1697,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("127fa166a372718928cc0e2cc0f2764b1e33608c8d9936fc03d0f7542df0ea29"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	118: {
 		ValidatorSK:      skFromHex("6437cb0433d263ec5998fb6959b405f3f4a6b20d172dfc7d8510bca822798626"),
@@ -1846,7 +1711,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1a3d33be2b21ecd40ed9a692aff85559c87057395559640cbd860dd7e837fd33"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	119: {
 		ValidatorSK:      skFromHex("3444c59abaed37801a92c84888248a5d33f127a98662bb068ab72ab79761156c"),
@@ -1861,7 +1725,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("2c45b271c1fbee45fc2f4ae099537b469abcecd55aea93716a96faeafb9c7a4e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	120: {
 		ValidatorSK:      skFromHex("2c6e97db46156e0ab393aad73024663884dd0ec1a2a43fda18e47e6c2a0d10cb"),
@@ -1876,7 +1739,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("06c11459a4f7cc4cd920230dd18178a7ee0e1ba47da34753df0d6871f4e4d384"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	121: {
 		ValidatorSK:      skFromHex("39dc494c7bce80c3e202ac4d3d8b8511e9ab40a9ad4d7938296890d07ca4e1e3"),
@@ -1891,7 +1753,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("70575d17a24e0b6027d7ba05709565008a127cb1474725619672f34ee2900103"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	122: {
 		ValidatorSK:      skFromHex("54be684eb0576ac04e33c4a1d1b028a4fa25ccbfcbce67585b2255feaa672537"),
@@ -1906,7 +1767,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("329d7851f3b28089c0458ae8b474518b295b231b09573624a264ecb6d5b8d657"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	123: {
 		ValidatorSK:      skFromHex("07b90c4977554bdde395c8d1f5ce91918719f72ae6dd0a0da83a47c8704405f1"),
@@ -1921,7 +1781,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0c044b4aa53e9241a10c65f0e28b57797f9983cd844febda88a6b3fbc348ad55"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	124: {
 		ValidatorSK:      skFromHex("0101b2fd7639589f747d6b3e2a094bd578c02da8a8342ebebeee6eea3ad21f7b"),
@@ -1936,7 +1795,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("6295521507a6956eb274c50979de75d312eb4f1c3c347f1253fcb9e8ad21f2b5"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	125: {
 		ValidatorSK:      skFromHex("70d35ef9a342bfd3ca830278ff69a8da4abf1494805acb9308c9bcf93f9d488b"),
@@ -1951,7 +1809,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("13e05d8ecc28e047e31ee3ffc01d773e895219ed246cfe52c35320788ea1ea45"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	126: {
 		ValidatorSK:      skFromHex("4d8b73645a088240e2140885b39b372d62a164a47b92e296edc5f22d87a46cb0"),
@@ -1966,7 +1823,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3d009414ac9d187b15fbb914c338c169e272437819a6e8b35b1888c2a94ba52a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	127: {
 		ValidatorSK:      skFromHex("33294cc490c81fccfd5c2e546270e11e172b305149b5d70bdf2e02103b6f9465"),
@@ -1981,7 +1837,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("580fec405459885c29f133c04be15cf7e60375e663a172cbafea8cfe122dd351"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	128: {
 		ValidatorSK:      skFromHex("4a3dd9144ec65d3f3cb6386b2a96243db7057c3872267685a88d70c377e717f2"),
@@ -1996,7 +1851,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1ee5666ada43a9aa249ec8d109e3516b7232d2d001c3111874bf891c48f66028"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	129: {
 		ValidatorSK:      skFromHex("36836f4184f35e289beab93eb0566057827647cac0a1aeb79c0633a79fa8e5a6"),
@@ -2011,7 +1865,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("637c9b7ded14056ac0a901be4d4b9c7597c773b38e840b6e3fbe7c4467e0947f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	130: {
 		ValidatorSK:      skFromHex("4b9b5fbd007efa84e602aafd0e4418765fc982f9749d5724fe7b054e2288a0af"),
@@ -2026,7 +1879,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("57c67349062cfa97225c409e290805912c8a9763534271f02b94cdf83f8994f0"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	131: {
 		ValidatorSK:      skFromHex("3752d02cd68d4c03bf32d4adcb124ba8ccc61ba594828ce448f599f262e82251"),
@@ -2041,7 +1893,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3977eb4ac875f28fe4042dc52972f25c346d5cc172f35dd0b2ec97c07950f75a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	132: {
 		ValidatorSK:      skFromHex("738b0c5505cc1f35cfc21f6b730a4f1de0de19ca9331b2beb8b84120589c0ba5"),
@@ -2056,7 +1907,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("028c572536143d53dc353d2d3bc395a85ee4d51c7c6750dc0747c6c9dd9d65e0"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	133: {
 		ValidatorSK:      skFromHex("09d38fd13f537467becf55fe2e8e7bb4e0b9136809681db235d93771153ff112"),
@@ -2071,7 +1921,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("0bd3b3d15ca148040dd77e04bc31344ffe0a71f0be8685ccd6e0c52e87714ae8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	134: {
 		ValidatorSK:      skFromHex("37f3b9df9c555b4cfe506d757036800a66a7c1ad1a65e452437351ada94a6103"),
@@ -2086,7 +1935,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("53283a23137833ecfd937abf8dd830c6861f954ed7a811b9574546ead3b98254"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	135: {
 		ValidatorSK:      skFromHex("4a0110621c778009865288dde0029884439076edd3803b45a6e86b2113462d5f"),
@@ -2101,7 +1949,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("4dc7ed687b82f05c789d0de2d8573c0d570d354c232ca5b4876254e705d9acdc"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	136: {
 		ValidatorSK:      skFromHex("161f58a111448b5e40ca13197fdb51f49ad41db6d9ea53dc842f9f517ebd02e6"),
@@ -2116,7 +1963,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("11117b2dec7f9e734f903c3714b7c7b79cd7f4b46372530310120984b7167b7f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	137: {
 		ValidatorSK:      skFromHex("1ed5bf7554e5db61b60f1513307318855a3b71f6abaf4b4a3b9942e9ca246988"),
@@ -2131,7 +1977,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("14b0fe0310392a095c7a025602db58d4a882bd831af4baa50bf985368489c5ed"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	138: {
 		ValidatorSK:      skFromHex("1d0a887973918e8a8a12cb71b13956a69050a329eb6924bb8e86b7a7cf70c40c"),
@@ -2146,7 +1991,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("4df3536ddc01fe70f2f908dde74eb965c8e6e14dc409aa13e53d239aed53d06e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	139: {
 		ValidatorSK:      skFromHex("6a7af7916b65b5f40eb2d14250d0889eb612cda877d8ef5310699162ad2349e4"),
@@ -2161,7 +2005,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("2e4fe578a4533e2f4e7e4a86fe63824c71f772decef1bfc0af9f321a1f6112d6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	140: {
 		ValidatorSK:      skFromHex("11007599e8766624230c2e951be4be4cfcf3901aa25aa0ec458057e73b4a4f66"),
@@ -2176,7 +2019,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6ffef04dd826dd232fc0f1e3f9fcefeb99dc3634e70d573b1e0d5d32bdb01b4f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	141: {
 		ValidatorSK:      skFromHex("14616de04c3fd775f57129d57213c528019300b92419769f0048c6d0a5f24e88"),
@@ -2191,7 +2033,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0f1f5854bf8de76530b842f4f6de54a2812d7a100e7b7468fdc254b9899ede6e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	142: {
 		ValidatorSK:      skFromHex("48cba6c7fc98445954f56a3f3edb273d277e9aa555329a475bed5059f61c8ff8"),
@@ -2206,7 +2047,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("49232dd03eb5feef0201cdb1cab94671d73bbd764724ae9c5b5048fbc3855ad3"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	143: {
 		ValidatorSK:      skFromHex("5c841315944cdf0688d1700f8d3f2c93aaa114897f8d364d7015ddf8505a2d49"),
@@ -2221,7 +2061,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("7102b2ff1d236eca770d43d164e978e57f7b9b954b3a84e769ba6d3b34bffb56"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	144: {
 		ValidatorSK:      skFromHex("2ce06ed607fa93208c66e3ee2a7cb640b471618136d73d3125fc6448c6ec14a6"),
@@ -2236,7 +2075,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5c8994171e744cc344a89eb0437cd2da452f7a8affb31347cd49d79a6bf2e792"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	145: {
 		ValidatorSK:      skFromHex("0f81b09152bff3b1d356e01d644d691a3223a08b4b202e7f8e21fc315f7abb9e"),
@@ -2251,7 +2089,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("44473cd8d67fb48dff4cd41bb7c474815272132fe8f20df8aefe09a75c658143"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	146: {
 		ValidatorSK:      skFromHex("6e55849c4a9660cb7f708247040341ab1d06d4e28dbb15497c9b0bf9de2713aa"),
@@ -2266,7 +2103,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5b6b1ca58428c34cc4f0d1a498874f711babda441797bdb55b8fd704f505f3c8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	147: {
 		ValidatorSK:      skFromHex("3574ffe8a8589b3374de87f430a23a809c2bcd25fee75c997b2c5b9121fcc2be"),
@@ -2281,7 +2117,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2e12d53255a78a32c3e506cbeb6e5d8a69d76a50648f97c326338e15dfe7d7fb"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	148: {
 		ValidatorSK:      skFromHex("0e10d8212e2e86ccaa796f04d4a1717a7badcce9c2b85ff279694b3822ef4e75"),
@@ -2296,7 +2131,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("449dedbbe365f73e8e684704ecc98b16c2db1e7823ff999b26421686c715ba3a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	149: {
 		ValidatorSK:      skFromHex("194e689042429f62a3caee13d586aa40e5373c768b085bd9c0b43acff1e267e3"),
@@ -2311,7 +2145,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("26061ff90fc5b74d34e9de315fbac68bd50022d4bbce12b1e62b79239c3fe95c"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	150: {
 		ValidatorSK:      skFromHex("2a4e4ba48a39bffd825f7e177829c0c89f793c6b2cadb5bc72b001690d44965c"),
@@ -2326,7 +2159,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("49eb48e4a330c89cc4c99c0ccd9ed2a6289dc6a2f2c4c40273e79c56b9dcd454"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	151: {
 		ValidatorSK:      skFromHex("3db1446e7177b2e904ecf1298b58f921ca4665af2bb2a31c5bb670592b66308b"),
@@ -2341,7 +2173,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("35c9d8407c8da1586f1a233c75fab24837cfd82e46c10533ff406f2dbf8c7d42"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	152: {
 		ValidatorSK:      skFromHex("33ef8ac9eb17326b2edfd1d7d4605faef5edebc2eabc55cb0796236f15fdd3cf"),
@@ -2356,7 +2187,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("5c8f241083169e2ed94faa0913f37bc55d2c5125e2134f86c2e3246fa30c2b83"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	153: {
 		ValidatorSK:      skFromHex("41174e3828e77c0658a0c88e2cdde51541363644e76e1d82ffd4f32414084d49"),
@@ -2371,7 +2201,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("47730ac77d24e6dc7913e9d8948f01c72c58ced096eb7444971b632699d2b7f6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	154: {
 		ValidatorSK:      skFromHex("6e1d7d0d481db4140dc92258035ebf2691b60910ee663cb396b906190a98a5d6"),
@@ -2386,7 +2215,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("59a4084b8af7ea60bbc1bf4b1c8819cddf4d832143bff9f50b986d2d19405c43"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	155: {
 		ValidatorSK:      skFromHex("383fe476ebcb629680e1ddfa713808bee4e9065cb5e8abaa16bbc77325967dcb"),
@@ -2401,7 +2229,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6e915832897c6e944369881fd5757e5e5bc11b8bd1ba0fe9673cfc7650b1bd09"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	156: {
 		ValidatorSK:      skFromHex("2ac5251a9533af06df40009b2163e810acf8d4d108454b7c7dc0aacc18c390da"),
@@ -2416,7 +2243,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("486f8840ed4473b2a41719034511203385b21ccc9b24b1df2b87c924190a7e6f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	157: {
 		ValidatorSK:      skFromHex("5d012499e907054c011b9b7a7b9cf9fb6e38e0233331f8e5395d42e6a61008b9"),
@@ -2431,7 +2257,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("10cf5885cdbb9030a2e01388445fb3d95a1bd7145c4ebecca24682bd4b5a369b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	158: {
 		ValidatorSK:      skFromHex("49715e3277331e5be67fdf7b4e59abaaa4a367896f4573b708a4a58c2b2ab403"),
@@ -2446,7 +2271,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("55fa361cc66c1fae7b25412f85720c9f13c229fcc0854a466155d7689e18e814"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	159: {
 		ValidatorSK:      skFromHex("71c5754ec8de0486a4c1f6322a430b6d7e3b73808d5babece62e47bd624c5afd"),
@@ -2461,7 +2285,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("29b6e4a664daa6922067472e71cec4633fb5441a91c47ef377f5293418e8f8bc"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	160: {
 		ValidatorSK:      skFromHex("1a8a94713c1cad7b9ec1e19957bc59db82258eb0ef99b62b0143ccd376b756a4"),
@@ -2476,7 +2299,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2543bdf5f3e6f031c60887e1cac901433717f808f9bc9434b42d72d2cd559be0"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	161: {
 		ValidatorSK:      skFromHex("6c214468e41541bf8307e964e67775f6a3a81c0110d335d126a049045ff44492"),
@@ -2491,7 +2313,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("67e39e21603d371a9d21ad14f66de7f8a2d2c1c4264a9737e733755a0514b9e9"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	162: {
 		ValidatorSK:      skFromHex("45b512bde4a484faf20f45a85759d6b7b5f6f08ad40b6e89cfd35bf9bf2d13ba"),
@@ -2506,7 +2327,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("3a24988516b76c8ac886981dd3d38846edd3fa754a115b9ba059a0f93a181ae0"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	163: {
 		ValidatorSK:      skFromHex("025f722d3b4cf377dee2836741f95e51bdd73b278560a57093761c0864ff2847"),
@@ -2521,7 +2341,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("63f7cbe203980dd1314108190751d0e9c9c22be97e6c07387c7658ab6504f18b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	164: {
 		ValidatorSK:      skFromHex("4dcdd644fc187ec62dc371565f7bb75bc91a0c7bef321e53f70aa2e40451043f"),
@@ -2536,7 +2355,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("12eae7beca7e6df4116d27fc3f0406365ed10f71ebb2ed0f264277ec5667d082"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	165: {
 		ValidatorSK:      skFromHex("21dc43c3570346078a3032ce65ccb61178cd718dbf51fe372fc130dccab3e20c"),
@@ -2551,7 +2369,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("210f7d24fcbfb6574c043475963a6ff8cb9a521c91b819e72b88c2ef033592b5"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	166: {
 		ValidatorSK:      skFromHex("5346751c00152962a2ac0cef4e4c6be0dcd6acf3630f822271a43388bf400c6d"),
@@ -2566,7 +2383,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5e3f8be7615b968b1b2dbb84b1b68da540df40672d0ef2e6096922a4a09c1300"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	167: {
 		ValidatorSK:      skFromHex("3336af15904a3c8499f74815f055a5ab0fa8141b141167fef393c1e1ac5d23d7"),
@@ -2581,7 +2397,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("66d67322acc6e227b9a7f563a5ac08f246549e64fc1a318c402adaa6d08591a1"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	168: {
 		ValidatorSK:      skFromHex("3b02e4484cb2d0f2adec55aaaa1f8d45a801ded29cd04835b7ce79d5228c8165"),
@@ -2596,7 +2411,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("11ccfef9c23e4bd84d91661ab1671de201e1b1681b423c5c5de99a19188246ec"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	169: {
 		ValidatorSK:      skFromHex("08e91a929708f3c3f3b9ec33ea2bc513ee222190d5a214d984b5c29a61d09165"),
@@ -2611,7 +2425,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5d844529d13d4c4113761ee571b9c33992ebe2b5335c8ebaffd6f519af1e102e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	170: {
 		ValidatorSK:      skFromHex("6c89e97d5640cdb35ae76f2547456ce3c7f41909535eeee7bf81baf83687dedb"),
@@ -2626,7 +2439,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3573de5302e628d4b65d35d0d4aecfb33f46e45e3434be0ffa64fd6f45d730c9"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	171: {
 		ValidatorSK:      skFromHex("10a33e3fc68de7796afbd350c769c0451e1759fc509054ff2089d6687afee488"),
@@ -2641,7 +2453,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3e224721304990453255a6e6ec5d93f56feb3b6d1d1de5e66fa583d6b21ad37d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	172: {
 		ValidatorSK:      skFromHex("2fc492a3584a71514d6661a5b3af1cc4692f0515b1b4b991924c223acbeac974"),
@@ -2656,7 +2467,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("2fe4062c1dcc2410d3a3540b5ae946dc1ead7f28a51050ea8de04c4a3e7b4a8d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	173: {
 		ValidatorSK:      skFromHex("106b27ea1d63e91aa7eb54a396758e3c7b16dd094d249a40271245a36dde6608"),
@@ -2671,7 +2481,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1ed1d5483d8ef43bec7ba1bf7f03a7df56f3ae5c7defcf5a0fd00be443fdab61"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	174: {
 		ValidatorSK:      skFromHex("40cefe8db8272efda2f664e5a61caf86e7f43ef1d2c7ff8bf426069c5c25b401"),
@@ -2686,7 +2495,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("3d7b9e87c27d7e90f0e6c5ee4a5a87b35f9a65b21fe87266fad5e47649f1ae49"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	175: {
 		ValidatorSK:      skFromHex("72c640a08c97c0f92071bbe4708c7f0f93c1aad997ee3ea062caf5e271616b4f"),
@@ -2701,7 +2509,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6ad83d75a23363659793d3147d6ea21b8a64df726260210022dce02faa7c1c76"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	176: {
 		ValidatorSK:      skFromHex("6b2eb1e222d88c378c98a7711f0f2201af264d08fa7dccc4ad02bcd07213072c"),
@@ -2716,7 +2523,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("169ac98968e32608ef51a69aa45e357f2ee450579457e4afbe1b7d7c6532f3cd"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	177: {
 		ValidatorSK:      skFromHex("3f4c754baad74693046e04435a319073df6829a5d0808f8ac5b6e667687d5468"),
@@ -2731,7 +2537,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0734a5a905dff0d764fdac1cd5ed7acf85d5e20c57a2561a4677bfb717d46514"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	178: {
 		ValidatorSK:      skFromHex("587b9cb8a5f2c462fd666d376bfb056af435708dc67bc74c631058e3d2717d51"),
@@ -2746,7 +2551,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("51349c89e79ff43a881f0995bbe19ca7b9922d367ef1fb2e3e1a4f6e3b825ba1"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	179: {
 		ValidatorSK:      skFromHex("149a24abd7f269566fc47f114f654aeddbc36e3abf100d9f229f6b8990f6c1b2"),
@@ -2761,7 +2565,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0bfaeee020a7b2f9a3fd8355ab634880f8b1418d2e47b52fce9abc826bafcafa"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	180: {
 		ValidatorSK:      skFromHex("71f563ab064744cd2198b4e13ef83f853e2a4ce5a2a53713f9596102903b9d90"),
@@ -2776,7 +2579,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4715d6d53e6fbdf6cfb24611f49b5889a7404ff55dee028e8dd70efe9f40edd6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	181: {
 		ValidatorSK:      skFromHex("5b0584e376f38b48d931c7f7a6643a2bdb226da7a5abd13e7e0cd0ef54f9d0a8"),
@@ -2791,7 +2593,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5a3a74ed2733b399af18047ffac37ddc88a46bf2360a61d4266eaaa988a0c3e6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	182: {
 		ValidatorSK:      skFromHex("3fddd33386b10cf07526d569c106a21d7601d7e2eeeca2fd406494c489947488"),
@@ -2806,7 +2607,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6fa3b1be0769d218558ba4a8b42706040116bdfed4e3fd18b115e93faca570aa"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	183: {
 		ValidatorSK:      skFromHex("2b4023f069043bb9db8d4b8a2ba1acfcb01ced65266dee76469b456c312de126"),
@@ -2821,7 +2621,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0af2490c13b01c4a4c87f024b3e12208d13501c40143cb0de890ba9c7879fdf9"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	184: {
 		ValidatorSK:      skFromHex("66542aac3d78743a61b833c4713f3a9d284c6a5eb00fb8738532bab132e42c5c"),
@@ -2836,7 +2635,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("63998759206b528a9f0a7c9b1e744e204f48fe9ea704dd158fd8c953a91bc0e4"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	185: {
 		ValidatorSK:      skFromHex("1a483c21115c6e53a94084f0ef1763d024306a67ea5c232796fa7e4995235f44"),
@@ -2851,7 +2649,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("024d509865f19bb45db48ce8f1c251d0394b377919730a2b99d342c2c58679fc"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	186: {
 		ValidatorSK:      skFromHex("2717cc82a06301c8ee9ab4208192b63e2af56ddbcd541bb797a2f1578cc1cfc1"),
@@ -2866,7 +2663,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("192c828d95ea03db55e5f1cf7b013231e2d282597b5b5c04d75b4a8cacaecf3f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	187: {
 		ValidatorSK:      skFromHex("38f0093d51ca9baf60ba9580556fadc237fe53ecef88fa59aab721210af85df5"),
@@ -2881,7 +2677,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("2c1884bcd65a7ee95a0c9a8572472b60ffffe81950a3d574e6f572d169bef919"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	188: {
 		ValidatorSK:      skFromHex("43e51a68582af88cff42e3cff6b6478c0a141a7789f663977c96f335e76d6e16"),
@@ -2896,7 +2691,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("02c04a68c32bf7ff89133e4501ec87b88fcb8b058c2eea810c6cd8aa7de31093"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	189: {
 		ValidatorSK:      skFromHex("3391cb5e28b6deacbd41f3b1567aa96f8f0f1a946e364bc090d7138b7d55be9f"),
@@ -2911,7 +2705,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("35dbeaade64aefcabd3628d84f4cc5fd3a6a9539319ccda73d017cd80c4aeabd"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	190: {
 		ValidatorSK:      skFromHex("4ea899186e519d6db939821f536473003d0fc50d0ed6e2e2c209eaf60df3a13a"),
@@ -2926,7 +2719,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6a13541c394af8c2b8e1f47e32a5fd1f95c9c674a2454bb0c585281fa7fd4144"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	191: {
 		ValidatorSK:      skFromHex("135b8b893f445b85e3d098931b775cdc674f60f51ebdf91fb8b56dd281587a39"),
@@ -2941,7 +2733,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("2dd6523794fb5448713f12f9c38a9def64c95380ded0d073b374d054dd5a4f9e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	192: {
 		ValidatorSK:      skFromHex("4684c8f488eaf001af308c5b336cababc2aaa562857a90af01156dde49fc1353"),
@@ -2956,7 +2747,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("05fd2db91f00614d1c11441e5b9d5886951a013cea33b4e5732b87ca064f2a6a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	193: {
 		ValidatorSK:      skFromHex("4b89d98186d8ba680945a52fe055b32e8a53e45ad017a6d2af33e6636d3d8ff6"),
@@ -2971,7 +2761,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("2064a71b2e6f57ba0dfe88889b370d7f1370c1dfe599604f7d4dc35700b8f704"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	194: {
 		ValidatorSK:      skFromHex("27267fdcc2d719ffcf3967c7eeb7289f2c572c556c98d688a0b11febadeeaab8"),
@@ -2986,7 +2775,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("0f1970f2acda4817173827cb81a7b7db35ba9d236c7a22bea659e8ef11d74b9d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	195: {
 		ValidatorSK:      skFromHex("4e21a6e679ccd832b7a2b19e9d7dfbe065a25260d8edb0990de2a9a2b3fd33d8"),
@@ -3001,7 +2789,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0bd315e9a9f02b37af4e0d4030be589c9e7b6584721648ce21ca7390c94d2ea8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	196: {
 		ValidatorSK:      skFromHex("3e6d6eb00b5365cfba9e4ac31edeaf2e26798f82e981caccb2667130734dc044"),
@@ -3016,7 +2803,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("0217ce185c663f3a43bb532c29af3ca4ca2948d0282277b7895f3a5681521568"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	197: {
 		ValidatorSK:      skFromHex("03be948ae6cd5688d542e2aa504a3c1f18c0cadfa5cdb788624885c083dab438"),
@@ -3031,7 +2817,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("5c50687aaa9c6253741f19cc2fb0d8a521d4bdb752b00e27089b8485d66d30a8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	198: {
 		ValidatorSK:      skFromHex("5aae004f6ec87ebc0615e540d67a35ebdb7caf907422fd304775fbb5f35148e5"),
@@ -3046,7 +2831,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1c03ef395814aa9443014b89f9e8105ab9b8f937beeb6bb056eb51a99e89cc99"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	199: {
 		ValidatorSK:      skFromHex("161baf14ae0a384fee9332a16e322d1584be30d265fa17323d3b667eb338b7d7"),
@@ -3061,7 +2845,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0ed7c76bb627cfeac75c70e7c1722e4612840553c85a3e0a55c4329cb1db647b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	200: {
 		ValidatorSK:      skFromHex("6a83766cf8cc149c880a984b39379a404efc933a167419d66621bfa7a4a067c8"),
@@ -3076,7 +2859,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("19cedc65cfc779282041891f9a02ac98a6cc16e72e7e9444b198c376807eeefd"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	201: {
 		ValidatorSK:      skFromHex("36b5ccb699c144e638918e652bd739e06862af1b5e89b1a475ff134514736e86"),
@@ -3091,7 +2873,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("3d5e6f913dea7162f1cb8efde1fdd1e014d60304d825bfa5d2ecbd07ba487b9f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	202: {
 		ValidatorSK:      skFromHex("17e42df0853e81c8d999c27554257478a3e6cb6a99f07349c3b1e28c2dd5bf77"),
@@ -3106,7 +2887,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("05aada3db4c13e3120ba358d63d0b61fd5ad53d5ebbcdbec15a48f2d2b762da9"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	203: {
 		ValidatorSK:      skFromHex("0fe2246ed49b2433167a0a83e2034764771d3768b626fb3f9bb504f8487eebbd"),
@@ -3121,7 +2901,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2ea9ddf93db103a1085d5c03088e9e9050b661031d11a8965d312f9d87834bee"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	204: {
 		ValidatorSK:      skFromHex("23696c9a09f94aa7a97eb74206a3dada0bacd160884e56ae3966d3fcef6b7822"),
@@ -3136,7 +2915,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("1544a9e3053ee6a830313aa5126e266ea0dd9daf2dfbeebe68dc6900b2508560"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	205: {
 		ValidatorSK:      skFromHex("140c508b14af97e9f70d45880eb9a51991c26859a1e6127d3ae49490ecb0bb88"),
@@ -3151,7 +2929,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("67b9682af6306844860216adbff1379130d568c3ef395d209951740b59efd388"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	206: {
 		ValidatorSK:      skFromHex("73042bbed129c2bb8f1ba3e736aba6ce41ecbeec75f8e94adba0534f6b3935e3"),
@@ -3166,7 +2943,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1ce63d30ea8e4ed7f6b5eb8485438a468e3093d47ce5a906030b8f2a0fcf542a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	207: {
 		ValidatorSK:      skFromHex("1e20950f7fe8520c87ef5ce816122dceb5199ab31c8c7d3deef0e610ba6d0308"),
@@ -3181,7 +2957,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("6409299dbc809a2b1f3c4e1a92e37c2116dc1c174174705e26c3e98389c51f1c"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	208: {
 		ValidatorSK:      skFromHex("64f3048bc43f52fe8811111c02ad9a59218cddec9a25b9767b740fd16d683b92"),
@@ -3196,7 +2971,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1db3e6302d61adf29dd06d0f486108b1f40c56d2519f8bc3c31edcf057af2cea"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	209: {
 		ValidatorSK:      skFromHex("31b19a52ec9b3cbde4053c60d076f046ca502d0d3edd2178ef07939e6a957878"),
@@ -3211,7 +2985,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("259e454b2f563b804a4e37aa6dd836d5dd57ee061379c3a6f69b33d0c07d09db"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	210: {
 		ValidatorSK:      skFromHex("3fac11d3ab7149d16d29f31024830f9ea4fa41d832cc2d675cd659f5ba452bfa"),
@@ -3226,7 +2999,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0c78884a2eb88fb0d2490f5d7d49cf74b1cdc947ed56719427e6c0408ab67a48"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	211: {
 		ValidatorSK:      skFromHex("390f7ebae4737ac6aa6ce212399a7ac871f9144aec27e7521409777b4ccac561"),
@@ -3241,7 +3013,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("675cc9fc0280850a426544e3a61461c6dd818d71a68d406b8811613b13541326"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	212: {
 		ValidatorSK:      skFromHex("3237b8aa86efaf940f790195d457ca06500a244bb83a7aa0cc6580bbb82ff9c0"),
@@ -3256,7 +3027,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("587bc6e1fd6cddcd3785c6b66d3b3c3da27c866f7ca6d8084692586d97286c05"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	213: {
 		ValidatorSK:      skFromHex("729e7b308689225981e7b2b078c2dd11f04d9f31c24fd7eead901c01988c2739"),
@@ -3271,7 +3041,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2948c109351b13e6131679b26660f1f10f616c6bbab947c621b5209f7f309c80"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	214: {
 		ValidatorSK:      skFromHex("70eb218940f31ea3a6e4d34e4343c046f2dd63a9cf244b47c53ac4c14f1ced98"),
@@ -3286,7 +3055,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3b17790440a8208d2507e2714ecd277531d23bf11e276cdee700050412a01401"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	215: {
 		ValidatorSK:      skFromHex("21bc050bafacbfe021f154d29b9f7b82658b334e509719a41409193fa9c00da5"),
@@ -3301,7 +3069,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("58530f047f392ea5b837840ff1d3ed99d7c5ee99c6586902267e5d04866fd197"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	216: {
 		ValidatorSK:      skFromHex("2ba7d22a1bf13b682e372e29e50cac5ac5ffe480b9c8ba5f59da3274ff483e51"),
@@ -3316,7 +3083,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("624c2a2f2708744898541e8fdf3057a7170356f8bb484c41236c527f05aa245a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	217: {
 		ValidatorSK:      skFromHex("61339d9f4c508a7b32e6abf68b731a03cd3942bd7db959f7dc975a7fc0d58b91"),
@@ -3331,7 +3097,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6816bc78f38369441ed8136df2e193a334cca18553d2c8cb2debd3011ca7e5ed"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	218: {
 		ValidatorSK:      skFromHex("1970bda084bd5232b628fca8123c593ca40b254b831659c72d02dd4bc827d026"),
@@ -3346,7 +3111,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("20a263e9dbdc280280e8c6db8365548c5fd61f35ae33adc1df8fb188694687cc"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	219: {
 		ValidatorSK:      skFromHex("40d7b22fd2a2e96abf399dd9b76551c698bca48c3063b81dde81a6adedf53509"),
@@ -3361,7 +3125,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6e2b7827a7f1c313943e49e9de47f76c9be697392838aa0a1c0728187c9926d3"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	220: {
 		ValidatorSK:      skFromHex("338e907da58fcfb30c3b8fce39eecf0a0f6d33fc6011fcd128c7f4c2256e25b3"),
@@ -3376,7 +3139,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2d92c3dc2d0381f0e7c6e7353eeb177dbb93094f7871ead1d4b523fd167511b0"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	221: {
 		ValidatorSK:      skFromHex("154e5532e49f27dcad0eced94aa0af7ec1d2764c08b4ef72324047db94e40893"),
@@ -3391,7 +3153,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("50c944adf6a740fe838fa64367e505fb12dddf6ec3b5286c5dce0db720f0d51b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	222: {
 		ValidatorSK:      skFromHex("6091ab3be876c4b8f41e73ef2cbc24cbe378aa062d5eab7cbd51dea53d5e1aef"),
@@ -3406,7 +3167,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0b0149277ca9cd5a9ccdf8a3e58180a1def0c549ffdc0856756fb9822fa0edac"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	223: {
 		ValidatorSK:      skFromHex("02bee1a1762954604ef25e6e1b58b7e8d39661ef572b190464b2c48720620b4a"),
@@ -3421,7 +3181,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5439bc2298cf3bee47e94915eb00525024f1ced89688e93b11e24d77e269bb46"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	224: {
 		ValidatorSK:      skFromHex("234423c61959abc1ebfd0244b8a37a7ce83ed8629ad00e9f5abbc1f5db1447af"),
@@ -3436,7 +3195,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3d05328dc47734d6a01c810b73ad87f44990dcffbec0bf0904082172628c6ee8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	225: {
 		ValidatorSK:      skFromHex("0b03d6625cb581a8b37e447c795800cbb8271850d3982f9523cd3f588f4d6d63"),
@@ -3451,7 +3209,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("37f8748aa60f63448d71fe61886d890dee75284bd76998951599808466929de5"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	226: {
 		ValidatorSK:      skFromHex("3ef52af3d65ecbb5210ca5497599f74c5f4f00ed65fb340e9b7b4e68f6983859"),
@@ -3466,7 +3223,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("60cb77f7acf8d58315bdb068b006c2c83d28e5633d64691c9ffd31f28b511d4f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	227: {
 		ValidatorSK:      skFromHex("5f5af6f45315a22c088938056ae1a5d96a13b7f349dc1acfab1146c34b41fcb3"),
@@ -3481,7 +3237,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("535cf301f68bce06a0061ba0ee7fd953786981a2bdb3c905cfeea72369fad743"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	228: {
 		ValidatorSK:      skFromHex("5fa67012ef2c33955fc7d7b333e3b0c870f8df201882a36eaa3f6d8813caf5f5"),
@@ -3496,7 +3251,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("326aa383aa125308400cc948024a774965a47dba167d29432a3037b6ee31d25b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	229: {
 		ValidatorSK:      skFromHex("48c7d01829ef8a55f9069f0ac18d2116577e98ca247a8f54ce65c1d2e6079b59"),
@@ -3511,7 +3265,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("5218660232ff10c568a00cfaa0c7df2d952fbce96b145ce9c2e2c41338be1ca0"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	230: {
 		ValidatorSK:      skFromHex("6f673ec9a5b3012cdee5f681328a8284d93b531e24683cbe65031f5bee43378d"),
@@ -3526,7 +3279,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("14e57d08a0d0f7a5069ae681a0b8171c5624194e8b08400c1b1686b1ce4ddecc"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	231: {
 		ValidatorSK:      skFromHex("0494fae2b84df149765a9582ea8ed7a0d42089f0b5e3defa46bb8e8897d01e60"),
@@ -3541,7 +3293,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("10d595f283ca9be20714dd5c60c0ccebecfc4d24e43dc4a1258c31883b59ae92"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	232: {
 		ValidatorSK:      skFromHex("4c66ecc5bd2bc3dc6fd22945a79a9c72f18b6f9830a520c421e0f323b9086033"),
@@ -3556,7 +3307,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1fa5972d2c9780f8c6ff11caf6b4f3296f270e77d84c78a92db87796d70d88a4"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	233: {
 		ValidatorSK:      skFromHex("5094c00efbe31fba9c59a60104fed7d020e5d8b4ec1864b264efbddb4807faff"),
@@ -3571,7 +3321,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("4faea26ac0b0a35a23b0c693a2a819a0bc99305323477e9d8030f886e6f47c2f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	234: {
 		ValidatorSK:      skFromHex("16ffe145168f2a17df357a020bfd68f8095c619da14070e4541cfaece58fcba1"),
@@ -3586,7 +3335,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("6554da3674e69d0c7b2f8d75dd0cd20f80487731db95b5d77bc40e45976cfabc"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	235: {
 		ValidatorSK:      skFromHex("07d3e8e9ecab49a7d5c1647f51d8e5368ecf20466ebb84f432074c0804b5d24d"),
@@ -3601,7 +3349,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3776838eaf20f376339cc0c65143dbbc98b17d70132a643f16d13fa07d95556f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	236: {
 		ValidatorSK:      skFromHex("2c9742500d925ad9d202c690848528065e09fed8ced8f42638868df93d12bd3e"),
@@ -3616,7 +3363,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("022fe7cb8568417825e91c6b1ae72d585535edbd0af6ae29c9250605264098da"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	237: {
 		ValidatorSK:      skFromHex("610e3d0dc6fdda4fe22652e5e13f187ab38b75ac58e60a99643d4ec0df65ec4b"),
@@ -3631,7 +3377,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("57e9bad4a7b5b9a0037f73e8a5a1da2f22dd4b92fbb859beb5c56010385af997"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	238: {
 		ValidatorSK:      skFromHex("148e46c21592751fe4141e82c8292288445ec7571857914e04e892cad4b35815"),
@@ -3646,7 +3391,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("277b5718762c72176a4518099d18ee75f42dd88ca1a0f6b84a6ea46384569dc8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	239: {
 		ValidatorSK:      skFromHex("3c252177760c16c90b97fda4689c2cab1807d8fc80ac6a64322d7c3bd50b8929"),
@@ -3661,7 +3405,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("3106a30b9c54eef7c932e97c02cc50cabaa6de03b786e78fde1f630ebcf974dc"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	240: {
 		ValidatorSK:      skFromHex("0c0e48fcd7c5490e41c43b4b1cb4875f837d0433fa0792b2a14211b37891aac3"),
@@ -3676,7 +3419,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("10cf29014cfea8ac3fa472163be5ae879cffa872757c23db66aae72dda665057"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	241: {
 		ValidatorSK:      skFromHex("3e396a4459a3a1681d41a0e3f8ead297c578cfe64b4b9c10fafb7b536e2ad361"),
@@ -3691,7 +3433,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2bbf7259dcab791349e9776bd81ad4ed18e39d7b9f742ab0ce20affba8351de3"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	242: {
 		ValidatorSK:      skFromHex("405a08c833cf2e1558bbcdc7ae4c3550d28f7b4bba6d5c70fbd3c64ac331ea16"),
@@ -3706,7 +3447,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4064114b96e85e0026c44b31d551da090288a76124b53e48016e2d4af9efbbc1"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	243: {
 		ValidatorSK:      skFromHex("07d506662b85f6a16e231f7445dbf1f80d0b7a1c643f48d468c81aca98c5086a"),
@@ -3721,7 +3461,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("08dbeb315652c61a5dacf9623c970d83fb0ff630ffa4c9f5f1b9ea686cdce37c"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	244: {
 		ValidatorSK:      skFromHex("1dd0eb17ba69fcab42ffa8538c96410d55be71405833d760a5c16567cf5a6350"),
@@ -3736,7 +3475,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("46d0b44f7727ba200b27f13c11c01de8e6315196f92b15ee03518436a0cd3641"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	245: {
 		ValidatorSK:      skFromHex("20ad1b40cc78c2a83c03f15535306e647bef262549a75b676c6d212fea0e3e86"),
@@ -3751,7 +3489,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0c932bd4556dbcc77b6642dc3e3ef971226da13c34d78e124a01aee2f9e82e11"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	246: {
 		ValidatorSK:      skFromHex("47b6a3540b772943f51a5fb03b18a8622753ca14430d55447da22528cad458c5"),
@@ -3766,7 +3503,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2ea09d97a9ea142aae6acf5fd1b8e6797662dd06fb4621d7b445ec0fd7aa0c86"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	247: {
 		ValidatorSK:      skFromHex("1c8f86d782cc1fc8206208829356ee88180b5bb54494e5bbe720e1799d559a4c"),
@@ -3781,7 +3517,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("18990b556e58ee60438a2918b2b337a0eaace617a2d7f49ca41aa643823cd8bb"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	248: {
 		ValidatorSK:      skFromHex("2b997ecf4ca9dee81e683b59e6347abd57e3c62dc5f9112ec21247d21af32828"),
@@ -3796,7 +3531,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("006eb7ac77bd0982833f9f8485f1499b03fa93cc8c45c52886e68e40b3efb281"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	249: {
 		ValidatorSK:      skFromHex("19a64d490068d8d83e75e13cbd7ad78d9995a183c45201167d9697555df3174d"),
@@ -3811,7 +3545,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("736611c1574978e3ff7e3137462dbbabda58c396b336501c218b5a5805d36c67"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	250: {
 		ValidatorSK:      skFromHex("30fe2746fac16e52202ad4ae0af11f864a8e645f8f6e3a518e4bc7e2963bd22a"),
@@ -3826,7 +3559,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("3767d7595de59e23cb4d4505ba77275254eefd5822203dc556433f7bab5443c4"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	251: {
 		ValidatorSK:      skFromHex("041368a19d80d2b73baed45359b1255d6e675ea03641a09e6ac6fa60b1f34827"),
@@ -3841,7 +3573,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("457cb1512af5f71c06463a818adebc9393556f60cca67715c1d92379e0e65460"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	252: {
 		ValidatorSK:      skFromHex("4ddfabd2434eb4ef045c4fd8efac2952aadb4438afcd659564d3a815c883f7a9"),
@@ -3856,7 +3587,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0a4316c622a72b58d0c31c1db98aac39029b75f33f6856303b9baaa76204c153"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	253: {
 		ValidatorSK:      skFromHex("547378c06e03465c963b40f3cd3ab10031de5ac0c06b63811595b5a18f809b5c"),
@@ -3871,7 +3601,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6670cee8f2cc0fbec488fcbf0d6df3249eaef02bfc09374aa5b31b89bd73d44e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	254: {
 		ValidatorSK:      skFromHex("2391b700992608a6ca1a964219faa3780e64fbeebbbd3b9f74bb6b99177d633d"),
@@ -3886,7 +3615,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4b23d98247bdb26fd8ece6db21b1f0253fada48d6d04d5964c5eb16e8192ce94"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	255: {
 		ValidatorSK:      skFromHex("10fa34f86948530c0e294a60dc9c7bd9f3a978a4783cdc38d4a61f7f7d583ff8"),
@@ -3901,7 +3629,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("17c1c75a50f4c2b3156273183baf58fee57277c007546cbdfdf7bdc789901c3b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	256: {
 		ValidatorSK:      skFromHex("23056640fc22930456c064041bad890d4aa0aee2933bf2e0c1ed0ebccd3615ae"),
@@ -3916,7 +3643,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("7044d1345b7329a6efdda3136fe18ef0f36d9b10d3cb19ff71a63ed523c9323b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	257: {
 		ValidatorSK:      skFromHex("2cf60d073df096fe8e6a6040cd3aa0785d39c014544fe49d71fddf1748045d2a"),
@@ -3931,7 +3657,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("67fade9e93b458df69ba295547fa33e2cfb828671356dc846b1a04d9a41c70f1"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	258: {
 		ValidatorSK:      skFromHex("120bd74ba96bc1c2bed238e2ddaad7062f73b0269e69eaab353d1c74b7e92450"),
@@ -3946,7 +3671,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4dd210c2a1c6cb7748b1d6a49f1aad6d0705d5f46f776ba67bd573ed25d76eca"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	259: {
 		ValidatorSK:      skFromHex("5ab4bff6609e0065082e6e5a47264dfd878e9c09d7d0df80fa7135457a6c3899"),
@@ -3961,7 +3685,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4c54abf0126cd64cd671b9769b355e455a554abeeff8b31af7e290defb70e49d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	260: {
 		ValidatorSK:      skFromHex("30a4820284c59fcc2c46c22365faec6789d10aabf728f3dde9fc6b88c85dddfb"),
@@ -3976,7 +3699,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("322da38e91ae1c46ebde3f33dd24b02912aefb49a2dc997ff89fcbce2250c617"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	261: {
 		ValidatorSK:      skFromHex("3567b2ff6397f16881c933e158beeb0c6d39a1b0636855fd95eec40dbfb100e9"),
@@ -3991,7 +3713,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2c6ee72f9f77cc7d95523fcc1843fdefe7240cc267f2a480f6274dc47c8816ca"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	262: {
 		ValidatorSK:      skFromHex("599f08ef8c4032bb42f767cb3908059a864ea15644d80ab429bafffbe6dc28f7"),
@@ -4006,7 +3727,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("5a489c163964694ed40cdf38c2698ae2de7411575aa664a6f63e0d77e5c8603f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	263: {
 		ValidatorSK:      skFromHex("5259412549d035a30ddff0e307f6a28e89cb19d00926457873def2a79b3dcc28"),
@@ -4021,7 +3741,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6df0b6f98388b2909a869b0843ec289b97e0c737e4a862c10279f13c4ffa0458"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	264: {
 		ValidatorSK:      skFromHex("6afed0147d4e5ac29f705e1ece817446cc7794c525ee70252937220b863f3695"),
@@ -4036,7 +3755,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6c89b5d8b7ace5ac16a956ea95f245a2f3296cd197c8a605994a7c9173fbe0d8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	265: {
 		ValidatorSK:      skFromHex("302e29faf182d2a78b1742272091b2f7b33d0ba7ca6a612c60254e49508b4159"),
@@ -4051,7 +3769,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0e522588e0ebf6c9b125e53e7d4e8aa435a1b029166abc49e093c08836633ce6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	266: {
 		ValidatorSK:      skFromHex("049666a8dc2158b19b8bc9424ebd94b662dfdee5334a715425acceff2369207a"),
@@ -4066,7 +3783,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("22ce6cfc4af9414a3c0fd6f2c90ce1e75171d6fe7cca6ec9ed1f33208f840cb3"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	267: {
 		ValidatorSK:      skFromHex("47d565c2b4d6198059755d7e5292d5a176b26996438a4d408e284fcc32bf4c2f"),
@@ -4081,7 +3797,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("008dee5516f85a66553056ea5490de1189f5d3653ddd9dc3598eb1ddb196024f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	268: {
 		ValidatorSK:      skFromHex("30c47a4107aa292bc8d758791f73e693c9168ebfd3849bfa3106a1a705f6d183"),
@@ -4096,7 +3811,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5e3a78564513bd1c035a6cd7dd0c9d3fc3effb20272f18e359cd7e2938e4e649"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	269: {
 		ValidatorSK:      skFromHex("6ccf825bbef784793cf176a454b530cb1c781539e18e1e7bd47d77e615ee9a5d"),
@@ -4111,7 +3825,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("23312e88d2f9d404318fecfa7054e6b49bdc1d7ac1b751f26ccb6db9391f5e85"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	270: {
 		ValidatorSK:      skFromHex("33b4617fa150d15ed19f15f1539365fa1e9a63f5ae00ef60b2222c29be26fe12"),
@@ -4126,7 +3839,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("372bc3f828f3f48ef8cfe22fbd93ad165b5a260152ecea697e2ba04681104d8a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	271: {
 		ValidatorSK:      skFromHex("289c259c0ca728005f7bbdeee42f37dbc58c14b4920816a0b916c7c5ff3c439c"),
@@ -4141,7 +3853,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("4a458314dc8198cf3fa5d8cfc64ad8ddfdd3738e98e7efc194c3100b8d9d493d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	272: {
 		ValidatorSK:      skFromHex("4d100b7b17513172a2355db12a7ae1a397422ea5f4a17fb1feaa3ece6acdac93"),
@@ -4156,7 +3867,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("26c5118ccee08fc978e400ba0740e7eedad982468533d1d971e3ef99c0e6e456"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	273: {
 		ValidatorSK:      skFromHex("71ce266c132db5f1c2fb615b2af5d6863076159f68e0cea11ca67c4e3d145dd9"),
@@ -4171,7 +3881,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2d78926ed6da18f3f4ec6e66dc96a298fe7a0ca3177fd4734989022330b9d243"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	274: {
 		ValidatorSK:      skFromHex("3faedbfd7203a3ec1e375272e79926e8d8d0241c128c315a628d805ced3828ae"),
@@ -4186,7 +3895,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("36a7131e2aca0b02134c22092bf193faea0979b4915d0abe74dab480c8b07b63"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	275: {
 		ValidatorSK:      skFromHex("2d94ad79167b0d7a75d30c80f46698f869942c4b2b02ca7b7a9f27008d56139e"),
@@ -4201,7 +3909,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("26b59f8b49f9b16e6cba62e886b81438cee3f985cb3932856326c99e536e9f72"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	276: {
 		ValidatorSK:      skFromHex("1e43f93aa768ba8d885d5a53ee8615c26741c0d4ba6777624fe57b6fc22b1cc6"),
@@ -4216,7 +3923,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6493cfd21ee893499c9ca490592ba68193306a3c6ef474ca6d07805f4267f2bc"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	277: {
 		ValidatorSK:      skFromHex("099308321c024f5aa15ad6a6c9b18e0a7fd539b1d0113e55b51c92b43c35c383"),
@@ -4231,7 +3937,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("09317682d7364aca2616a253d33c059bfb5ba3b9660ab3a20dc1aecc63b5f020"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	278: {
 		ValidatorSK:      skFromHex("2fb429439f7fce1920ebcb1df5b38cdccb38676627911d6df36cda94f2e33cc0"),
@@ -4246,7 +3951,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("25fdb2f202acd60a6fb2a12689be78860fb167a64c6f7d023878835955945f0f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	279: {
 		ValidatorSK:      skFromHex("29b9f4e8448036d2de019b39c8d6c083bda72e11b8ab6dfcf5f141636e6c4100"),
@@ -4261,7 +3965,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3794546577f1a332601bcd03314c6aaaa14f6a7eadbede71e2a2544f2aa56b7e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	280: {
 		ValidatorSK:      skFromHex("13554650c2e0450527d95f8bc6e3d0941365d47979552d84880d226688c347af"),
@@ -4276,7 +3979,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("19a69c240efcdad40277f7e1ec1feec03619af9f270be15fe9dedab796a8ba95"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	281: {
 		ValidatorSK:      skFromHex("2ebe0619fa4d37da40af85502b443d5d7cc244fc3449d208d7c2d6ef414b50b1"),
@@ -4291,7 +3993,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("33c8fc4e7b5924179ec4898f4894c8a83bda4443693d968340e3de69c844294d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	282: {
 		ValidatorSK:      skFromHex("383b9142cfe245649350fb7479231736ae8ab0c685391c06435c60d1cbc07b51"),
@@ -4306,7 +4007,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2cacfde722c3250c29eff0db5b1e371ec920c1e189cc014a946a84e8d28beb0f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	283: {
 		ValidatorSK:      skFromHex("52b86d818c5a12664ef635e7937ca41c943a676fe5e6d3ae24ecfd2b25964a1f"),
@@ -4321,7 +4021,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5f034fd4cf838b5e0857987ada5b6298f8e54baa87da7fe56d92edbf47add7c7"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	284: {
 		ValidatorSK:      skFromHex("354698574e859f9582e44cdfbf99ea01adb1924183f5094a9d4a104eb790684b"),
@@ -4336,7 +4035,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("45e97c37586fb3768b3f7ecd0f558966b54321a37d2995c32431b240e16ac485"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	285: {
 		ValidatorSK:      skFromHex("263471f1756e901e1d84576d0d5e7adf565338e505ca475224d20b2c761d904d"),
@@ -4351,7 +4049,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("538281bed20ea34524f1c3900500425bb7ffa21e5be82f82ad6bfef1d7405845"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	286: {
 		ValidatorSK:      skFromHex("339f0a82657b6c86a04957d05a0d75e5ba01d963da791d22c567688725c70be6"),
@@ -4366,7 +4063,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("002fec60b52896a0820bff92ff7d663625c007f64bc3173b852cee714290cb91"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	287: {
 		ValidatorSK:      skFromHex("273826165fd870a2e56285914afce795fa6314ea7f2ea599bcf739e06ba07c9f"),
@@ -4381,7 +4077,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("37d14f1f311303d02b07cda2f343bfc0b7efa9d37ef9256def45796430861254"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	288: {
 		ValidatorSK:      skFromHex("568678d61c173b5821dde30b94c68d7ebe53c88403731b75dbe2e5f5e4d6db74"),
@@ -4396,7 +4091,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2f7b4a6bdf4c7bcff24330a85940804a563020d5bc27a15fb76d882646c534d5"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	289: {
 		ValidatorSK:      skFromHex("045399febad75c9c53045195bb4c0e25e1cce92e916f050bfaa01c38b2bdc047"),
@@ -4411,7 +4105,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0e602031a0e4516768b1c6e68d94d35cb9970a15fe1251bbd7861c51799d34b2"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	290: {
 		ValidatorSK:      skFromHex("2c909f768783e8b01998773053f2697ed2cfbd6921fdf18494a7e95d7bb4a74c"),
@@ -4426,7 +4119,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("174e5aa370bcb5b4016d1b3da4618a8fd1a589c98abffd4b2df7b09a674cd35e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	291: {
 		ValidatorSK:      skFromHex("4a04a38147b880da359fdd04ec3023fbeef594c27ee0d65fa849116a22d204cf"),
@@ -4441,7 +4133,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("446508cb1572e3f50937caf6f7bdaf6d4528ff5941f3c526ccf4e5bff0cf1efc"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	292: {
 		ValidatorSK:      skFromHex("54c07d0cd34ad116b94195a4cf78fbb8623aa130a3a9f8f50b4de42db25296c5"),
@@ -4456,7 +4147,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("0afc0832324d154845492fd5f74013a6ac4a28dab644293670f69ca4195be727"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	293: {
 		ValidatorSK:      skFromHex("206aab7b54c96571a7f23ab27f119514b4ce28214a7557dd23a30cc82eb4e663"),
@@ -4471,7 +4161,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0225562c33746695e6a1059009c05df58d5a50d6606aeb9e5ca277a9d64bd1fa"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	294: {
 		ValidatorSK:      skFromHex("2e26162f2dbe4dcf98f0c12f787a37c0cf84b3173b417a516cfc2cec41241ab5"),
@@ -4486,7 +4175,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("472b048a5da35f528abd53d48cf6d1473eb619b86c5abb9738dc7dd02d9a42c3"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	295: {
 		ValidatorSK:      skFromHex("578794aac601c5f5c2a31609234341102cc5906c126deceed81353665defcd9b"),
@@ -4501,7 +4189,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("31ab9c0c72dfec8a5bef7cb6b0efa3ab9292eb4e4b9d2b5abbfb954aa3e4d0be"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	296: {
 		ValidatorSK:      skFromHex("3e68db2e86756306fa2622422910a854f98e661c30bac9cfab17062919bfa1fb"),
@@ -4516,7 +4203,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2abc22e9b06ff726429c6ad2ce15ab3e35c92640ac73a2ecd43b663d8b8e1675"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	297: {
 		ValidatorSK:      skFromHex("2bb969ff6f8fe91fffc0f6c3aa0b2a0f9410aaa59c459de7466d870206510861"),
@@ -4531,7 +4217,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("370e902397cd0d8fd282e4c4455f33945051b4b6d168f6df4425b39a0557baaa"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	298: {
 		ValidatorSK:      skFromHex("5746b023bc8addbc53086a9e5508dc2b0ba3d6814760551fd27bca3ff8480236"),
@@ -4546,7 +4231,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("69fe5e459b7b96ad335cd7fa5e942e5b66316ce888fd10b854d144fbb3595002"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	299: {
 		ValidatorSK:      skFromHex("3859870bf77dc8aef540e7ce1b5506d58ee99fae9e06910046623139f5dcc43d"),
@@ -4561,7 +4245,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("693acf083709fb50aa36fbecf001f7379fe4df365a17fdc3e18df605735b2a8c"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	300: {
 		ValidatorSK:      skFromHex("2215a3ce53f835c481cdcfd2163dc7c76a801fbcc3993bb509bc233cb7ea673a"),
@@ -4576,7 +4259,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3cd424bab51d905187e963a0919c9d7e7f5df5ed8761ebcbbdda8df0829039a9"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	301: {
 		ValidatorSK:      skFromHex("2d2ae74f3d501ed8f452994bd3b6ad01c5f2522e8c59dd9b0fea84bfa8d9118f"),
@@ -4591,7 +4273,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("14c23c98a20c94ba3febcd1c0813dcc55521a196ce68790b8c67507a05dc17f4"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	302: {
 		ValidatorSK:      skFromHex("1956d39d1153f7808eee5d474299681823313f5a30c314dd677ba10d4990440d"),
@@ -4606,7 +4287,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("5043e7c706319ac3ddc09369360863028da0540a004d781dfeaa441ff1f52a6f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	303: {
 		ValidatorSK:      skFromHex("00befd447497dec81b744034d3596e2e8ea8cf3ec3d748d60d81a7022c613387"),
@@ -4621,7 +4301,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("59f3208273ac924d55718c928fec12a2aa55bf09170ec04aa0d66a3f4bd9cd1d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	304: {
 		ValidatorSK:      skFromHex("34605d767abfbf61d2a650ed2a205260ed7156102c0f79205072655353909816"),
@@ -4636,7 +4315,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("2a1af79e3c538b2f15e03e4a0b722c2aa25bb9b031da1bd9ae5ece1b818b04f2"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	305: {
 		ValidatorSK:      skFromHex("3a3bc54d74a0c5c51d8fe5a554604aea74a41e5f1448d9eeaab0bdf23c20fc36"),
@@ -4651,7 +4329,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("659e9352cbc7e2e396d015a82e606a2e4eb874b6c1ec383da6c91f024bf880e6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	306: {
 		ValidatorSK:      skFromHex("72471917dcf03f90aed65da8faa7f81c0a5c6a91808cbfe0098e3943b908c76c"),
@@ -4666,7 +4343,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("24168cc41285fd94736d5ae75ab63deaae78c72b53b47bfcd657e0a906fc0570"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	307: {
 		ValidatorSK:      skFromHex("1bdc3c2bf98f785064082a7d9e24b96129e207dc80c033bb9217677d16409cd0"),
@@ -4681,7 +4357,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("280c8f15beceeb3e4a8cd9eb9565b40f06177aa83445f4a7c54c18e1e5dddb35"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	308: {
 		ValidatorSK:      skFromHex("369f6cb509d5160eaa30e13249e763dc19a5d5841acb73580e83d3395292b801"),
@@ -4696,7 +4371,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4a55ef5665ae58143d099e9912726719da253cd7b7ad572954f68756f0e542e0"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	309: {
 		ValidatorSK:      skFromHex("461fbf2d24a17cc0609fcdbd9683256608d6f13edb3769af281c8d78d4aad458"),
@@ -4711,7 +4385,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("18049661bde1a7da7c4c49740d5ec5b4d11f3ac0990bdc14149b0f5b0dd91af4"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	310: {
 		ValidatorSK:      skFromHex("243f442309d540c5caff3a3d7f13975d7c9fa025ff0b25db103d2d543e46485a"),
@@ -4726,7 +4399,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("386bfb613492eb2a0a4f3c83d35df00f5ec51a5e2e7aae6e17c5376e557ff201"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	311: {
 		ValidatorSK:      skFromHex("37348cd6bffef699c2504a4b5b0685bd64cd67ba5b3bccb3c04c8af883bfb3b1"),
@@ -4741,7 +4413,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("72c550fb6c84cdfc48f78746d4b0e1ce2446fa5521a34f2c02dcc232fbcccfdc"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	312: {
 		ValidatorSK:      skFromHex("006624b9d4e6214cebf76b85fc81b4654f7905acd5158658961b3f30ad161e3b"),
@@ -4756,7 +4427,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("517ffffe01c30068d968af5662f1d2a5c988fe4f218f59e5ec765151f90551bf"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	313: {
 		ValidatorSK:      skFromHex("39ebec036c5f1328f424fd28e23b9ab3ee9eaae590ee86c8f270fcf1401ecee0"),
@@ -4771,7 +4441,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("43a081260dfffcfc6f48c2a85f2e17beabb9debde30d5f7f7bd2a4598c4623e1"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	314: {
 		ValidatorSK:      skFromHex("589516c4bc559915a2ef162569bcce37fea322143835edd1ab569988134b5b65"),
@@ -4786,7 +4455,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("725f125b5781a83a324e8fee2af1c089a052da13b526bf3f9cc24da056611c34"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	315: {
 		ValidatorSK:      skFromHex("12828a517394c89b7cd200dc5c06c65c42affbc9633f420860624d8c1ad648dc"),
@@ -4801,7 +4469,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("67e1aca9d7a53a57b142256a0e3be870efa52e132f5112e32b317fb1e739dc14"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	316: {
 		ValidatorSK:      skFromHex("67715bfb0822cf13d08b2bd2b875bf421624dd0cfa7cf3f16f13abbdd54bf035"),
@@ -4816,7 +4483,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("648edcf2f9d9974d6446674957871f817beac251a66703376cf0ea73f5ff0441"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	317: {
 		ValidatorSK:      skFromHex("6e8658cb4181431040add8683e777d138afa9702f288ae573ba4aab77e57c8f2"),
@@ -4831,7 +4497,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("3e42dfed0593d880b1fe080b80f69a356fa2d8c4abc82b0534536a14ba7cb97a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	318: {
 		ValidatorSK:      skFromHex("4bd2aa2481b7a4cb69a43e8880aea85fa7a76d56fbd8fcbdfeeaa3464641c287"),
@@ -4846,7 +4511,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0ded5e5ee378450ba5ca561b3cf64f4ebdea88ab5d8d9a5672fcae3324ccc01b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	319: {
 		ValidatorSK:      skFromHex("17e8c004ed98a373a47dbdcb782954b9c3ec8ef04d9c97baad4efcce3b65dbf1"),
@@ -4861,7 +4525,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("3786ad113c618605b9819aaf591be52ca2c80d44953a2737bb05678e5bde2e2b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	320: {
 		ValidatorSK:      skFromHex("082a1c5097fd3cacb0c0a69f0898d6b5b743e953617cd7ffbc0b547201b1ad4c"),
@@ -4876,7 +4539,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4b7929c277ffb943f4778741829c84fad03f421388a7bc350e0beff11e69c494"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	321: {
 		ValidatorSK:      skFromHex("5f7821dccb5b3f7c38464f7fa17acbeea0e40ee018cf92c8e1628eba5a460089"),
@@ -4891,7 +4553,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("52c54133c1cf3b8117ee94f4160f0ba0720fc8fd517ee21e473d837eefc232d4"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	322: {
 		ValidatorSK:      skFromHex("1b9f0653a903bd2cf2872f1b93548304cdb0bf65b392fc3b1643b2fa204bb24b"),
@@ -4906,7 +4567,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("2ce1f7a71d006254f5562673336e38e93c23b36ca2e12342b70c597bd05072b8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	323: {
 		ValidatorSK:      skFromHex("5c19289ec8af956f5e805638de0740c689a6f17cc7e0a55cbdb1375e412d3caa"),
@@ -4921,7 +4581,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("48fd3da19dd6fbb26dcb754263e82ae503a5c648fd9735229d00bdf4c5c49de8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	324: {
 		ValidatorSK:      skFromHex("07a489a19cb3a0d182ea664a2948e240c28d87561bf8690cb15abeb0361679f8"),
@@ -4936,7 +4595,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3109104e3477b69866a3e75a3a014cfe8697b846a41dd232b3f9f2fbfbce4d9d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	325: {
 		ValidatorSK:      skFromHex("155f8a941f5e9c0226cd91cd7a447917d0fa312cf73dba878a2bd05ccecfcc61"),
@@ -4951,7 +4609,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("166ecd52b5246b898a5ea06b5d47100d2156d245d7fddae25b036f455a2653c1"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	326: {
 		ValidatorSK:      skFromHex("001c4bcb5fbc53cba930c940c4e34e160045e36e945978694813cd1b57f8fbed"),
@@ -4966,7 +4623,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("5fe7274481271011068c68c899067c93a6beb160bbe5b54bb92e3a112abb9626"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	327: {
 		ValidatorSK:      skFromHex("19fafbf23ab4bbd6f91eb6f3dab5d3220e9e67a180a238027ea0a6341a8f3d0c"),
@@ -4981,7 +4637,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("093857c88bb45e4f6c9ac7595bb602a2098a45997dea218102bb0750ff38fc92"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	328: {
 		ValidatorSK:      skFromHex("365073a59ecc88748290296ab5f0c095dfbb540f2bdce258b2732c1a89d3fda1"),
@@ -4996,7 +4651,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("18d79430b1a0aecec2e67eec42bd1d248ce7ec94b4bb6f15b274813ea36556e9"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	329: {
 		ValidatorSK:      skFromHex("4d1ad67a4821ca1dc2c8f1641dbf79578ff13f2a2abeca834cf5a45a03330154"),
@@ -5011,7 +4665,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6af9695b0718191b42e615892fd6b6a3bfaa81a72d8132a90339d1f4ea2e80f9"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	330: {
 		ValidatorSK:      skFromHex("3e2231139faaf61014e8f75aba18c136c666ff11c44cced39149b35b0ad04d70"),
@@ -5026,7 +4679,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("103593ad8e2b7f9fedb1e68a67deddae03d15efcafd87acc4e376597b096b684"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	331: {
 		ValidatorSK:      skFromHex("5784d4803dc5c81d8c96a708c6c03c43f06d40c3b114f58dceb0aea681c9783a"),
@@ -5041,7 +4693,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4b91652123dab261fd735d73509043853df3d591a713a06b081a5e6b7109e8a0"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	332: {
 		ValidatorSK:      skFromHex("332217771be7a0801159128ee53f4a2199293120d6125302d6fa9e76242ec6a6"),
@@ -5056,7 +4707,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("23a94184e9a5da059e1061f96b5f86a34091996da03f33a1ec36bd6673d5e3b1"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	333: {
 		ValidatorSK:      skFromHex("539b84ad7911ff44a177165098643a95cde844c631ac65a44edb3ddf1fef41a4"),
@@ -5071,7 +4721,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("632150f5c28d69fc006f91406fd0e61362d9d080afcd630c30f757e8aec0317c"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	334: {
 		ValidatorSK:      skFromHex("157c70d44640091cab455caa67947e201c0e4fbb8221b5a2b82e66880fc92d18"),
@@ -5086,7 +4735,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("17f28a70b470e908576d0f17f353df452445aeebe5eda3e4142e2c45d804f7de"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	335: {
 		ValidatorSK:      skFromHex("487e18687ccd0b8c0c301d1dd973f6a75d13f6b87b96e25fe950d4ea28a9492a"),
@@ -5101,7 +4749,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("123a932d182eb02b5724c21757f359786a400ece2f8fa3ced9378dcb4da4b095"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	336: {
 		ValidatorSK:      skFromHex("5afffbf24746adde6e71a0fde485e22fc1c8f7e345d81fbd5fb68ff5d227c2f5"),
@@ -5116,7 +4763,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1d99d2a7cf54608db9310385daf8db7f8611359de601abb8806e0d2e6a1c63f6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	337: {
 		ValidatorSK:      skFromHex("0fec69f653f804691314b0af87bcbb95d8afe23f0e8033d2906e4c1cb1b90e13"),
@@ -5131,7 +4777,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("68806b55f2a413d1cfaff51abbbda79d80f21dc35a308c9964bcdbba4a863429"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	338: {
 		ValidatorSK:      skFromHex("088b080403923bd39a0378add14f29fe9df6d36bf153b91bf80993e453f0c103"),
@@ -5146,7 +4791,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("5cf9b629dde7c04940cf1deb32bac4e8e98e4124906db768ba2bfc9a405bd9b1"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	339: {
 		ValidatorSK:      skFromHex("57a42efae2e5ac8cf8e51c97e3864e398f3967a21f9620c103e199212bb5a546"),
@@ -5161,7 +4805,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("71636bbc0dd805404ad1ca30f920ac9de3a0edacd1f8ff2d7379eb3070ebbf7c"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	340: {
 		ValidatorSK:      skFromHex("01fe4d62220d5b1e18b47dccc353a310a2b985cbfd9feaf0d763b870fbcf1f61"),
@@ -5176,7 +4819,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("644f6eb086c84dd83a8ccb1330e874125291a0d49bbe89ee400d6d3833036297"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	341: {
 		ValidatorSK:      skFromHex("07bda9a7bb8e4d7d9bfa05efcf78def2b0767eb40d07cc9d4f729f2de4590c3b"),
@@ -5191,7 +4833,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("5632cf631dfd032a3978e0cb19b632e909f37d57fc96088279413852153606b7"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	342: {
 		ValidatorSK:      skFromHex("278fb877a9eabb718cf3179a8a9a39395c5ac052c7ebe2cbfc47bdea478f0da1"),
@@ -5206,7 +4847,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("63933cd7ac6a72a4d5832addf4e12bf00212858b64230226936de9e11bba04be"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	343: {
 		ValidatorSK:      skFromHex("03f16e1def7743f6c0f020a4822bed4bb602df02b7ce0edace1890dab7248a1d"),
@@ -5221,7 +4861,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("731c18c40a9f631ac4940f32193850065fc75652e22029078eea28ae7b9c0a16"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	344: {
 		ValidatorSK:      skFromHex("57288e87737a1e0bb67bb0ee0739d3ab3a04e35158435d0b94ac272b50eb938e"),
@@ -5236,7 +4875,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("59a2ade68b1ab0608bd532f108c6243546017dd4bafb1cbca5d7bfe5e722a5f5"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	345: {
 		ValidatorSK:      skFromHex("722ce6207651acb2eaa1408a5dcd6fbbaeef7ec5c4781acbe68299847e962c9c"),
@@ -5251,7 +4889,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("176c8f2c37ac0eadc404720d0c199539225ec6af6c73c0a4e8c303036cde8cd4"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	346: {
 		ValidatorSK:      skFromHex("1d178c578d78a5eb7d1228ab577118689cd40a0436666e90a2d4005946f206fe"),
@@ -5266,7 +4903,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0ac25b5d7a4cf282bc4ae58ecb2720af6232261c0eee758249b4cdbe5cad9a4a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	347: {
 		ValidatorSK:      skFromHex("3b6016d9d351af61f8847e5c76742d25b3660d4441efd25ce39ce29b93edabca"),
@@ -5281,7 +4917,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("330e6bbbb58dd1a5a1a469f83dcbd6f05f5d54e6f48ce34870d0c1f2cbd9097d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	348: {
 		ValidatorSK:      skFromHex("13b9a819d23e497ea2398afb4530cefeb190ddfe6ec091f76d2f08cd927bd33a"),
@@ -5296,7 +4931,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("1177720240bec5283279f38de394c15f35b4e5d6060147eb77e0569448c458bf"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	349: {
 		ValidatorSK:      skFromHex("5b54f7edf62bf2242c7998d8f6eaefeb98d074b6343a7e409cd333510f5e80e5"),
@@ -5311,7 +4945,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5ce542fab9ec895d2e2374ee22b7167808613b328c069182a731ed2e4c7f6dcf"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	350: {
 		ValidatorSK:      skFromHex("1f25dc7f1db17c64336d284a4b92a6b812e3f92cbb32798968466a0c09be5f9f"),
@@ -5326,7 +4959,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("0a7db8cc6d682b47f8f88121445cc534a4566cbc0955204934fa171f7f5dfd34"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	351: {
 		ValidatorSK:      skFromHex("5d6c4277926c8d0f1eed937e5ba5a4ff98efc483471308006da2aa55bc9c6d68"),
@@ -5341,7 +4973,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("2512bc43009a78eb9f0e003677921a9fc2e12a8ee45c405b343acc9288061c72"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	352: {
 		ValidatorSK:      skFromHex("1470a538422091b04ffd8153e29c4ec101d5bcd5a8829101a450e0595cdfedf5"),
@@ -5356,7 +4987,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0a79df2c5d612e8c43c8fa4ae66f072d7032299b2644f9225f50258e76f479af"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	353: {
 		ValidatorSK:      skFromHex("440bb73867599f93a2b8f3149444d624847870a55bc883a841e9cd50d72ea42f"),
@@ -5371,7 +5001,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2f5fc1210225d1f3547582951405e18aff1a112a052bb2bca8b4ed9549ba806f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	354: {
 		ValidatorSK:      skFromHex("6e8b3511e2f44fab895c1ff02599cd8eb7f9614de3550f730f913aba19ba013d"),
@@ -5386,7 +5015,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("17b5a3646b5a48d3d5ce4771a54be7492ccd91d2e41ec2f9cad8774deea10069"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	355: {
 		ValidatorSK:      skFromHex("4147602e9957cf9ab8d81acf0ff72e41ade7f507882d3f88e87b69d2f21b6c8c"),
@@ -5401,7 +5029,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("185bb6cdbabdfb975b1bd311669b64c75a2643f58f94aac2a44c6930a2381d19"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	356: {
 		ValidatorSK:      skFromHex("2c7a30f389eee1d5a167c8d3e1520da1a9b7ca3e14338913e0575b1e19ebe52e"),
@@ -5416,7 +5043,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("19a4a449409acee4bb3e1ec97675cf3c4987f662d56a72174e0081bc53e9fec2"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	357: {
 		ValidatorSK:      skFromHex("421380008e17baca5f53bb623a71ed5143877955c3604d8d7e1da5eec7441f66"),
@@ -5431,7 +5057,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4d7cf3ef612ea0d169a6ba5f06ba293c208a387007e4e24bfa1d162a28ab7c3f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	358: {
 		ValidatorSK:      skFromHex("4872e49d827a58bd289319274c60759d0a05558a83ee34661a1e8c012d9e957d"),
@@ -5446,7 +5071,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("159703d2fa5ab2fd9af5115f4c6bc15631326e7a3e57ed8c1a6f9483294a8d3f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	359: {
 		ValidatorSK:      skFromHex("6fede035ae6f7de92afba0fd363de36863d614e4f33412d42f30ef89a273cdeb"),
@@ -5461,7 +5085,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("35023156e1ef0ea8ed884af3872720154498609862feb4ace7813df7ebef8a25"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	360: {
 		ValidatorSK:      skFromHex("5a36bc7cdae23d3a600c07d1029a284e449d8c214d701c5e91de10dcb37204a2"),
@@ -5476,7 +5099,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("354922a992650f46305a6193d31acc527248a26a47d484f0c845831ef9779fb0"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	361: {
 		ValidatorSK:      skFromHex("4d97435163a52eccb7357c903516164982e61aacc463fd5434fd36ba1257571e"),
@@ -5491,7 +5113,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("13896c529a270805289db8be5e5770fcf6ef5c231741550ac31ed3c8cabfc796"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	362: {
 		ValidatorSK:      skFromHex("1a5604508138831a6eee3c293d0d1ba9e06cc5f9f98fe22db41f8322329af77c"),
@@ -5506,7 +5127,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("082e033db78ec2556b264c959620f4596e71b637de99f0f5e2deacceb731ccac"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	363: {
 		ValidatorSK:      skFromHex("2f49c33448830597710c4faa98c9d32562179b476d33819581a36ece9405781a"),
@@ -5521,7 +5141,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("654dbf8ad90cc5e20c504da2e1142981115a5f9d64d2b241e7df120ba1b71107"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	364: {
 		ValidatorSK:      skFromHex("547fc41d8cbbdd3ecd1f3157ceecd76f8dbb871f362581ef23b55783aaf937c9"),
@@ -5536,7 +5155,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0a14cfddf0c2497e86a15bd59b176b9916c6f02b146855c3d1e9c0b4d6c66a22"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	365: {
 		ValidatorSK:      skFromHex("307d7867f0f05f4c3a798e6a6fdff41ccc16763b2415844a2b91b2b730c73761"),
@@ -5551,7 +5169,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("654aac7dbb2623f6f42cd5981f4eb2631e7fc4b8e1edc182452c2535584a5938"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	366: {
 		ValidatorSK:      skFromHex("73e2d6cb9b3bf28725213ec16586550e35ff6579ede6010f0793d037ff3a54f8"),
@@ -5566,7 +5183,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("6195d24db7f99a0cccceb2e045ec07f8ac7c2159b746a6855e9ad3a9cc593e14"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	367: {
 		ValidatorSK:      skFromHex("032ec831e51250379869188d5b99c5b3f6b8592356f4e6dbabf983eb745d186a"),
@@ -5581,7 +5197,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("094e2d0fac83336748bac7e48b66c5b5f079c68aebb2154c6aa0abf7d8ac6d12"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	368: {
 		ValidatorSK:      skFromHex("17210f2864a3be6e9325fd59ce396b5cfa68f46c19fd9feaddb1d71ac787c18a"),
@@ -5596,7 +5211,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6e3f80638ca58567787e79dd33e3658acaf2c87fe3dbd75ffdff58aec532fc31"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	369: {
 		ValidatorSK:      skFromHex("3ea72faa85c10b44c3558ef2d91a23aca85a7ec4ceea960ad6b84d02daff29f9"),
@@ -5611,7 +5225,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("187510661d18e16912477200e205c2189a9bbb04a1ef1c24ea19b128210ce78d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	370: {
 		ValidatorSK:      skFromHex("6c08b47fb3e4772e361e56bb967e71454709b968300aa684fec207cf4237e271"),
@@ -5626,7 +5239,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2efd6ee83ae5187bbce5b5b63c98bbdb48c9edc4eb496ff7cfa3743c9cf8c9ef"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	371: {
 		ValidatorSK:      skFromHex("02690f48c1d94c5db4b4fd1152e4ec2846947546a6771cd767d26207f666fdce"),
@@ -5641,7 +5253,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5aea0571ac408b1a4aa1f9570c8b2d3858995a3f86b3dbbc5e748dc2eab89607"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	372: {
 		ValidatorSK:      skFromHex("173c9b5d7e12f1f7aa67cf005082d0a0fca7c825a58303b09854c8c839c57402"),
@@ -5656,7 +5267,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("4e5d5ee285f9bbe35b6d9c916c29c1b0f49dac4e4ce2313fddc6d5e466f57de8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	373: {
 		ValidatorSK:      skFromHex("36505fa1c9604910a680cefa96a05ac5db947a474cebbee3927453aa2eeef1f9"),
@@ -5671,7 +5281,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("2319bf95485d2738a5c31dfdaf643ba9af5edf8b46c8bffc7ae4a4f2ec0719d6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	374: {
 		ValidatorSK:      skFromHex("00ffcd0872cb18eef4436410d502731f70c208a804ae53b63a92ebfa39b2e33e"),
@@ -5686,7 +5295,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("4eb0e3c043a808c75fb11d9448d797cf059c8d9f77d55ed3a6bf7746869ba0a6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	375: {
 		ValidatorSK:      skFromHex("1d24ef6342429cc3efc2c9acb13d885170a59e1debe82bd480d733662836186e"),
@@ -5701,7 +5309,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("55256de1ec866e24bcddec62b10ec45de6f648b3d8052e9d66e82e3742cfbb1d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	376: {
 		ValidatorSK:      skFromHex("62bf4991492361da501787f65f30545c1867155c7939a661a1010aef3decc074"),
@@ -5716,7 +5323,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("45f1da398f309a5eae95b10336fca5b4a067be687a9859541774b9bc470d0b7c"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	377: {
 		ValidatorSK:      skFromHex("3909a40ffd75df2ee761cd8f2cd280d78ff9c4a2aa1cd5a16735bdfe3e10bc39"),
@@ -5731,7 +5337,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("02c672d5460e07e492cd9383f2f01d53bb2aa3c40e46d9051ed37c3ed11dba54"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	378: {
 		ValidatorSK:      skFromHex("50506b070c55fda6a7bb02f548df892bd4bb44788e7aa85a05a0bc02ffa5feed"),
@@ -5746,7 +5351,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0ae62f6a434e01f271fa4a5e25fdf814a4f3d80f582f08ad856b0a02e5d358e2"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	379: {
 		ValidatorSK:      skFromHex("3fd7460d2f527e88c2667935bbda5e329c618774bac0cbe2bdb5aaa18970a2ec"),
@@ -5761,7 +5365,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5d63b251cc187411f159c01feaddd08b0ba768d927dc633d083e5d4427c5e9d8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	380: {
 		ValidatorSK:      skFromHex("7205fd13a0b36b42838e5bff88b7add30feaf701baa7f4c797dbb66b3dab3d79"),
@@ -5776,7 +5379,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3ff9b2b5042c9739f5b1e05d347d23bd4ec9eb433746388c3272067557ed7246"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	381: {
 		ValidatorSK:      skFromHex("214a33c2fd169cf0c18580d8acdc56113c4f6aa064e31156eea8f56027553c83"),
@@ -5791,7 +5393,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6e48d25b4573f43b25451ae33c648cd7c8312505153a90dafe14c7326d829ace"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	382: {
 		ValidatorSK:      skFromHex("0c9150ab1b45e881f84df64f3c4320b923a5640d0b3001e7b40d6e1ba986912f"),
@@ -5806,7 +5407,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("32874ef9182c53a590b0cd0847b8a79609f3064a6fd305aab204b27b1edd5dbc"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	383: {
 		ValidatorSK:      skFromHex("55283ed8592f98a931c9adf7d79f71b8b5fe7d54356498644ad161fe5b0cdf64"),
@@ -5821,7 +5421,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2044db14727cdf09574e13e87485bc467e54f773333949c51eadd33ec4f4740a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	384: {
 		ValidatorSK:      skFromHex("4e6b1bb0d7e16ec3eeb70b81a645e707d3a2ce88b215e77d33308f31587c5b3e"),
@@ -5836,7 +5435,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("53b1faec61a4bd53b333800a3310d93c1347c1b1a3d5bfa60c3497d0f9dfdf22"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	385: {
 		ValidatorSK:      skFromHex("13342701ae871d49abbea012911201b52c1f1308a857e2a7a694773bb013e22f"),
@@ -5851,7 +5449,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("527f0292d39c58d9392f2e65ad6fed256f82df50a27bcaeae10cad69c0b5674a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	386: {
 		ValidatorSK:      skFromHex("3c5f5696f2ff3d9b6fb3e9d95baf4fdfd57f21771205c195d0996413d01bd50c"),
@@ -5866,7 +5463,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("3fb0b31d39f14689fad94c8520237e71065862aa104d72cc9e9463cb2dea58d9"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	387: {
 		ValidatorSK:      skFromHex("6466d06eb0da0fee1a02642abff77849e191755a33d098e48c6eb464bd917abb"),
@@ -5881,7 +5477,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("16cf6d5bca1c6dbf048d26705deee01bfd1a245270b92c397547a8ae466360cf"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	388: {
 		ValidatorSK:      skFromHex("59e1a423ea0ec2d4b7658c318095a7aefb7c59ddd6c59a4964295dcc1c10872a"),
@@ -5896,7 +5491,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("69813220a65655440c42a565aa15d247fb041fcf115373203e84593c072f32ff"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	389: {
 		ValidatorSK:      skFromHex("36dc2e0b62c91fa147d2d9f577d7b4efd86905aeff69ef0c9dce6b46ad765c31"),
@@ -5911,7 +5505,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("64727bf5ca869f54002d164809f43203ab46890d887c28d2c8c39d46f88b8f19"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	390: {
 		ValidatorSK:      skFromHex("4b75df2c44c311d51d25e0db34a47be3e8470adfec4c7114523f53b02a58b831"),
@@ -5926,7 +5519,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4a9fc1dea99fbdaa233023249a28e085752d23c1be0c80dba54c53283b62eae3"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	391: {
 		ValidatorSK:      skFromHex("1bd381b2916ea8d92c2a6cf05825e8f893f6face318b1dc7b2fcf238f1cbeb3c"),
@@ -5941,7 +5533,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2e8a6e2b39f78cc57510aee78ea5be320e992138705889e3e1b686b683ebb7b0"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	392: {
 		ValidatorSK:      skFromHex("1cffb49b309d32393d5d8dbd105cdb9ca77e5673805b7e8e5ae7094bbb512812"),
@@ -5956,7 +5547,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("3095a5c4031db4e448c871f55779660de7a0bd401443e47cef26cd1b07a16707"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	393: {
 		ValidatorSK:      skFromHex("6d501f34cd5a6e4c2aeb7814e998d83c22ceb3c0b889e843ef2b69fe7766df5c"),
@@ -5971,7 +5561,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("469f68c6252a67b4e2a3a2b260e406088469baa4a6114d61618418d0fff08f7b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	394: {
 		ValidatorSK:      skFromHex("6817b82331d83e5466bc351d9cd6f7f854ab04c91c2c51e5c3e42a2fe0f518b5"),
@@ -5986,7 +5575,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("2562d932789d9c7b38942591288383574061ae9af449445a72c4b963704b9531"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	395: {
 		ValidatorSK:      skFromHex("1ac69e79b22f61d7ca6392817a388160e7b39564bcb63cf985a275e50fa3dfb5"),
@@ -6001,7 +5589,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("57439b8523ccdb307d01072bb82c1a6e24f69e4058cb0e749e954012ce2f512b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	396: {
 		ValidatorSK:      skFromHex("34d1621cba108b1432a2f353bc54ccff844567fdfc9384800d48e8ccebc33fe0"),
@@ -6016,7 +5603,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("108382a524cfcd5cae2004cdec053bb4820a605ce9426f9063cddf29fe7a5c15"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	397: {
 		ValidatorSK:      skFromHex("4a9cae93a7e4a5de453b2cf3f2c72b6155471f0ed016773cc02744333c99c46d"),
@@ -6031,7 +5617,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6edfdd1facb02e47e4073f4a8ba979b55af3b431beee6f3712e7361a02e3f065"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	398: {
 		ValidatorSK:      skFromHex("71f29782176102b9666334566747f090b9b31d2134dbcf1e215a9e04d2ef1e2d"),
@@ -6046,7 +5631,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4a29746f1507f352fb120d91349c9b84482c031487ad869b31b8d2162bd926d5"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	399: {
 		ValidatorSK:      skFromHex("1bb25b1b67ee687017315808aa3fed8619773316058d63556f4ecabea20bbc41"),
@@ -6061,7 +5645,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1c7fb6a550defc0744d7322b77a16a77c47c2b0408eb8de592d474245629d88f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	400: {
 		ValidatorSK:      skFromHex("3bbcc429a9b23ce7f52ae7c911a601070c6dd2b7161747a36fb988958a3bb3f2"),
@@ -6076,7 +5659,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("52bc33fe07d973af59b34bb52d2f9e58de6b3ffda2a0b0f90f1f94b7f779c9e4"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	401: {
 		ValidatorSK:      skFromHex("3e03d0d606c470fedc30796f973f77359ba5e4aa619080f93319abf3a50ccb22"),
@@ -6091,7 +5673,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("43eee51d5394de6eca74666846212f8aaf673fb23e48f01b71a886c009169d8a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	402: {
 		ValidatorSK:      skFromHex("6e107119decc3f19976e40647634266e8a402f8858e02110f15dc1a9db556f91"),
@@ -6106,7 +5687,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6c3051a30c59d6217f0b207fc0b12a79cf335a5b885a504acc6b6266ad4a7a10"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	403: {
 		ValidatorSK:      skFromHex("481a40d416cfbb7f17bb650c337b85b8f760ced2c1683effc7c21409cd6f778e"),
@@ -6121,7 +5701,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4807b3eca8ff123b2e5c9817b0175c01430f344946993abbddac48fb1fcb1143"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	404: {
 		ValidatorSK:      skFromHex("24da620f541f6cea37957dd709574d22ba274f7aebf1c65e9bec43a99e47b560"),
@@ -6136,7 +5715,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("5742e6e92ab2f1b22ee12dd3cefccfe59b20b04ca10850652f4787739c18604d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	405: {
 		ValidatorSK:      skFromHex("714e05433d505ca1f4bcd2701f58a41c29b48d17268ef35cc47f331e33bc59f6"),
@@ -6151,7 +5729,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("3ad7a52024244c1c9acf0d60b59da3bb5f631256efc09249cc919e291e75f299"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	406: {
 		ValidatorSK:      skFromHex("11738c67c9818f70ad867610f27e9c47b60001e676df853ea434e904eff475a0"),
@@ -6166,7 +5743,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("2e1b09b664d11f0f616501fbc914e4f1fa0b4b3e7d6a8886bb64c486f781edad"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	407: {
 		ValidatorSK:      skFromHex("3ea57e37f857ece85262df5ee7533672f2c1f73bb2ea6ba9f30ada72999769a1"),
@@ -6181,7 +5757,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("434b36cec09c265b63df38e5db0243ed3e433964ef9a7c2d35d85e3002c3ec98"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	408: {
 		ValidatorSK:      skFromHex("39d98e0c28ea0961a42530fdcf237ba84a3c2a8fb035941113bc2cefb10ac027"),
@@ -6196,7 +5771,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("216816708dc962f0a9ec6d7a09b00566d5d4583a9f8d4b24e873b3e2cea10cbf"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	409: {
 		ValidatorSK:      skFromHex("410441c9a30c58d9de64b92f62ab3937057592a0ca3fac1c5452cb1610c12c29"),
@@ -6211,7 +5785,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("172591427e9ae19960d40f3b4a7bf8a6ba79be60d616edb3de2ce166f19ec215"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	410: {
 		ValidatorSK:      skFromHex("19ce23a7f976d133be49f55d1ff03f9e6609aad0db569bc53e37fd755fda0af3"),
@@ -6226,7 +5799,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("31872c2690f91b26ab1401c095d5d26c2bc3d62316238c8ca07522a1bdabbe85"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	411: {
 		ValidatorSK:      skFromHex("6f10cf5fe52a474438d03da53bdb12bbfaa0450d5d5ac55908fd38c97001356a"),
@@ -6241,7 +5813,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("33ea3659e18b310f1dcdab55ad6fe4bfe03450aaad9a1d5c04c2d9f4a74c9aa6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	412: {
 		ValidatorSK:      skFromHex("0deee48efad415d81e15f9bd9c1a7849d0b554663ccaaf5dc03d751335b62654"),
@@ -6256,7 +5827,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("17f6c5bcc6651841f8757c898310ad5c06804c5b3144f3ce764126947829148c"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	413: {
 		ValidatorSK:      skFromHex("6220b79ae11c5183498e0447a2a9ca7780055c458a752dcd87caa941b1a5b3a9"),
@@ -6271,7 +5841,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4fc654a275cebba2b1492531ec01eeb7add6aa452c41e615ae483775f0678709"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	414: {
 		ValidatorSK:      skFromHex("6356e3bcd16605e125d60959863f794b88bb30e53c544b70d58150f3c1633743"),
@@ -6286,7 +5855,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("40a44b2cc7f9fb1207e2afa61cf996dec416e72645b6dda38bbe426993ce5d40"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	415: {
 		ValidatorSK:      skFromHex("02b3b68862537fe4cd4a6e8f0f4c60ccec6275d69fe4944b9d7f49ef577e7f42"),
@@ -6301,7 +5869,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("21b7032464e79d44306810c5708767b2eb2c08d859b37f8fa1d7ff5c120a119e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	416: {
 		ValidatorSK:      skFromHex("35a51a127c2125534468d29a75f9ffe1baaaa2af506bfcd1681d38a0f1ed12d7"),
@@ -6316,7 +5883,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("222db06727a4b1f4d13d3d09501314b8516961acea366fba3d9fcd14cb376732"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	417: {
 		ValidatorSK:      skFromHex("68afcb343c9b7a3791be9f82cf6b2e51710ecbb5a609592d970dbac0ca03a3d0"),
@@ -6331,7 +5897,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4485f8d24eaca1060146c9d2c8632962724b312fd1172352e6427ee822998bc6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	418: {
 		ValidatorSK:      skFromHex("69994153ab26b15c47a12186e0e7c742013816fea602ce28cc4d9c9543d8442d"),
@@ -6346,7 +5911,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("5148a46d045c7e3f6d054d5857e67044f5c469388260c73d3c36de65f60bc2d9"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	419: {
 		ValidatorSK:      skFromHex("3809d4b66e41efbbb38be1fbcb7f8491e17ec1eb41b3ee9d0327d9091eda09bb"),
@@ -6361,7 +5925,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2566c8b8ea40438784df003b1ae00b28ef8c6ce026fcfdb48437bcd64688cde3"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	420: {
 		ValidatorSK:      skFromHex("38c12f11ba2317bb1af5f693580f4bf5478bf646a2ea4f93a975c7c821a498b0"),
@@ -6376,7 +5939,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1b8e34583c0d69708aed75f6f1cba437f1ae5ae266dd71f4b1c0fc2270df5a0d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	421: {
 		ValidatorSK:      skFromHex("461228456145b4ac8f3ae87548b41d0953dd4a7fbf23974bc6ec404eb2cff957"),
@@ -6391,7 +5953,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("10f3f140e2c08c53d5afc6bca01af240792f3460368eff5bcb5742e4b48f9117"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	422: {
 		ValidatorSK:      skFromHex("4f16f0474046b5c33b76ad794876dd0bace2de974a0da00fd383361b9f32f047"),
@@ -6406,7 +5967,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("65f19cd97e30ccf01e96a5b8d34f0d53192ac93df49a9abcc0d3e1db24b0e12e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	423: {
 		ValidatorSK:      skFromHex("4c00f6b5bb5f76ea46529929c82ede0c5341767a28eeabdb06e933acfe8e2999"),
@@ -6421,7 +5981,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("6e5f964ead2472339e324341251548923d9836c0ba1e370fffa064842708552a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	424: {
 		ValidatorSK:      skFromHex("6afc79f559f885206af71b755b7372e94b0793645b522ef049467ac0df3fc885"),
@@ -6436,7 +5995,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0907915d29a07418fe89d9c24f1db25a6cb08f6e8c4d1980a5471a6193518b1d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	425: {
 		ValidatorSK:      skFromHex("08baf6042446935d4dc8873db52811880a39f4b5266bcdccc962c55e08fbab20"),
@@ -6451,7 +6009,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3d98fa7bf9680e2301b0ea91acb433893d5ba4041f4284d5fb4d6e865ace0a1b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	426: {
 		ValidatorSK:      skFromHex("04a771b08759d307e629c84b02ea07193934d102b3cecf8b34a0713096f9dce6"),
@@ -6466,7 +6023,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("05c6b23966f1c2a9cc4742efa66641b359779179f119892105fe4e1423ae2926"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	427: {
 		ValidatorSK:      skFromHex("6105933b52d36b5ff846f6c7883efe5ddb2b8c89844f9f85cf76e594f64843e2"),
@@ -6481,7 +6037,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("5729e799ca703df8fc1c25c950965feeeb8ce487ae3c44d649d38002ef950395"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	428: {
 		ValidatorSK:      skFromHex("3b65cedcaf3efda7033a48be3dd53e84f99a90b4b13111c70a5244f9669f8a17"),
@@ -6496,7 +6051,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2718c4cffbf15dc52b81c0cf442fb1cdfef92a0f8cdd5529d394b3a282812d99"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	429: {
 		ValidatorSK:      skFromHex("313b612d700fff837cc0b290e0155296f58a85ab4410cce5cbf99fc56f885e86"),
@@ -6511,7 +6065,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("52948b831c98e10dd89da9e4f5be1099bd68cca99c03482739821a98a974581c"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	430: {
 		ValidatorSK:      skFromHex("222b05bcd61d48f83f1a21119b04ff6d9099d5193d3f7483e17d1df5e46371c8"),
@@ -6526,7 +6079,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("6ad35d678e4a123af6887442d752201d54134661ac5d794a017922d6fd761425"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	431: {
 		ValidatorSK:      skFromHex("3a4788ca1d6f5eda905caca70a2a61e353cc105e8b8af743df50f56ea8ad9d8a"),
@@ -6541,7 +6093,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("0f01f33728c53159119d9e33759ee58e7b4333113d08a1824658929f89dc0e3f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	432: {
 		ValidatorSK:      skFromHex("45643f3622b8d129bf6b4012ccd59e023cb8bb6872103ae0bdf77bc3af06eed0"),
@@ -6556,7 +6107,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("66e30307f9a961f456b2ed9a27ac4ca8cafddd18d07296b52807cdb679955f2b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	433: {
 		ValidatorSK:      skFromHex("29df710e78ed8b8154c89535aa16b9ded35c1b6c6b97c8d8ab03f9b06ff91215"),
@@ -6571,7 +6121,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("2f3d22ede034fe0a9ad5e281a403670df0d5f00a4a7075bd1602b72a89add2ba"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	434: {
 		ValidatorSK:      skFromHex("454319aec831bd573b7f19272f8b530eacb1ea75ef12d322284d15724db22348"),
@@ -6586,7 +6135,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("611126759c24be4cd6a0478e9a7228bb9659ece3f0c9905fe52790142cb00417"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	435: {
 		ValidatorSK:      skFromHex("1fa32d151ffdf6be56da15077a7ca8ad7c29a80318cfbf4869aff932d3eddd40"),
@@ -6601,7 +6149,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6d2b04391c1759b938fbcd2fb857b510f23d988aeab84055350c960c25a3b534"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	436: {
 		ValidatorSK:      skFromHex("134f0a331c10e07ba2b39b0e97819d3837912dd4c9ddcfba4f003a6ac4699a11"),
@@ -6616,7 +6163,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("2cfe099a5f4ebf1fc5119eed7fb880f5050694a6000d00d936b8d6c5373c13fb"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	437: {
 		ValidatorSK:      skFromHex("43e67797a0be0119e40c9d95b5866a0c85cc89e3b0677f7741f33e1343e17fc7"),
@@ -6631,7 +6177,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("554c21cb87f13cb19791b37d2659f4848a5b92fc6bfe898994e118ca39c8258f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	438: {
 		ValidatorSK:      skFromHex("0a63813b1697fe5964742d49f9664189bd6cc3d5139249d0d750ea8c61a09718"),
@@ -6646,7 +6191,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("12aea2aad965f566452a98f4735914ec134463c517b9defdbc171d6c8dbcf71d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	439: {
 		ValidatorSK:      skFromHex("4af3e0f63b0d9243ed6bbffa3e631eaffd50e70b7305c64a09f2b3713b347175"),
@@ -6661,7 +6205,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("2aa4049864817286aebf91ba3489e68c0056e4d703a43d0281356d30fae0447f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	440: {
 		ValidatorSK:      skFromHex("0944b9b5808ae8a758ab321d2213693d6c82b4d1dc29382df611aa4da6b79a94"),
@@ -6676,7 +6219,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4254da2721735ecb6ed97dd97571fb0718e38ffdf3eb6243b076d02bee3f1de7"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	441: {
 		ValidatorSK:      skFromHex("66d23081276cb8825e3f370555e1195c77ff83b4781d7420cad0d4fec1c0e642"),
@@ -6691,7 +6233,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("427c00edfba5310ae3b360078ca3290b80f358e958af0022abf1096c450ddba6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	442: {
 		ValidatorSK:      skFromHex("1ef33c270a716969047024ccb42686c074c1715e0d21011faa866363fa8c23bc"),
@@ -6706,7 +6247,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4dfb37231977e8dca7060627398f85aaaff3914ad5bc0ae198df1ffaf785089b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	443: {
 		ValidatorSK:      skFromHex("47ebba6fe35979e538026a5f657935840dd3857f5687e9434ea0f78bbfc97397"),
@@ -6721,7 +6261,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("4884100b8d001227f6d01334fc5947f201218cea9247188bd8cb5dbae8bf78d6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	444: {
 		ValidatorSK:      skFromHex("4045a5c2aac40870c9f99465071193cd1639d105a880625c544dcb6a81f8c989"),
@@ -6736,7 +6275,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3f128d107c9d9ff295acb67015cc692a39febdeed425a25c0b91705ee029ac46"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	445: {
 		ValidatorSK:      skFromHex("3ae9ad5be53a1eb8a377ecc57b62cf859b8b30afb96f7d00dc115a1a75768e6c"),
@@ -6751,7 +6289,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("371919f3eb0bb0d27741ea7a0f1b86362c5ceb247aa04cc783e0963cc70c3147"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	446: {
 		ValidatorSK:      skFromHex("6ca1ce0800648c49efbf4a4d612d25090a23646497abfd7d043c69981ec5bc7c"),
@@ -6766,7 +6303,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("529f9e53cfbebb92de9a71a0e8fa8590c1f43c58dfa7860866b23850068a51d7"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	447: {
 		ValidatorSK:      skFromHex("1da9873a3c6b5f9903d58864cb7b5f7e9a4ca213c972058c6272202336958bbb"),
@@ -6781,7 +6317,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1046c67f9cece4c2377cc1ddc41ccac2f5232a7408fbf186600c860de9683c4b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	448: {
 		ValidatorSK:      skFromHex("3910b2eec6f9c5235a922cc654c5b650c312330d92c87d3d99102579317863fc"),
@@ -6796,7 +6331,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("16b9fb3211897a22fbe0eba913158a38fd302e9decd825d336131f68030c19cf"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	449: {
 		ValidatorSK:      skFromHex("11bd36107346c94eebc2e40db99977b066c7ff7f4ddd6dedb9b5f6757eb67cb7"),
@@ -6811,7 +6345,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("44f4c6290c2e1b503a26320829add2a24ea91c2b50aaba5f8131c60b327e2ee8"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	450: {
 		ValidatorSK:      skFromHex("2b6d51a54810bf2c3fe74b939e4a14f8d82ad13315110c80af2d5776cc5b0519"),
@@ -6826,7 +6359,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("3594ef8cb5120172f0db68350346e9504f5094a4b6d694e91caec66b3f0d181e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	451: {
 		ValidatorSK:      skFromHex("0380b436d4677b01ccc3e43b40bbff4fcf3b713f84b36f6f9fbbfc6a8cb5cd7a"),
@@ -6841,7 +6373,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("38e7abc32635fc7088b89123a6e830006353b8799081c105e2328a24eed6983a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	452: {
 		ValidatorSK:      skFromHex("6c7b201024cf750d247b8ec399530230bb0364337c6c9e8657f1b3a36c9d708b"),
@@ -6856,7 +6387,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("350cdb418618840100397d77166c16649e73ef8df829dae53b36c9c75bf112b3"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	453: {
 		ValidatorSK:      skFromHex("3bbbc6bcbd5c90a810806f1bc815693f95bac92061f74a7ba84009359b4caacc"),
@@ -6871,7 +6401,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("55bb1af8910fdcf5e4a558c38fffad65e3e9e1b2a074ab6201684dbd95711d7b"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	454: {
 		ValidatorSK:      skFromHex("326855b1ef9cde2add5d8333ae074aba26c93587c9e2974e57a180e034d26c6e"),
@@ -6886,7 +6415,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0d3f7d16e84b34517b241d4f54ac500edf8dbc7e4bdca8e75894064e5833fe66"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	455: {
 		ValidatorSK:      skFromHex("6df78e3445d461c3affe02d9648587b4391f53086545eeb6b187a296d135a907"),
@@ -6901,7 +6429,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("270aed62c4e7a396307bd43e2319bf0d9cb3d833e103aecfc2d3dc892625952a"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	456: {
 		ValidatorSK:      skFromHex("2e25e1499a2e93caf672169722ceb540ada3133d781881387116a69cb24ec0d2"),
@@ -6916,7 +6443,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("425ac694bd84dba9c360ba03a52b608d1d23c1987f9a70eba9e57b41afc42358"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	457: {
 		ValidatorSK:      skFromHex("368f523460b9d6c1aa66a0242e0a4e64d41bd56c9339d1fea79d9c35dfa8085f"),
@@ -6931,7 +6457,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0dbe0f22456e9ef176463c175af5c8f31479a7ef245793580c1d170a6c451c61"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	458: {
 		ValidatorSK:      skFromHex("3ce961868b28e2c96864cd2816de1db5d82187203dfe5dccc10545440a8e1985"),
@@ -6946,7 +6471,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6b551725d070e1f892ec52e9b2ac5bc863745671181369c4161d5c8ccd9e785d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	459: {
 		ValidatorSK:      skFromHex("3099a301b2b67784fbe465db74b208dbb608d1d48982e12be31ad787e9a1788a"),
@@ -6961,7 +6485,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("14362ec544ecdbdece80459e5f930ff16cd471a6962a5f9acb9c44df3680d90c"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	460: {
 		ValidatorSK:      skFromHex("34d5a270ff1307ca5b6d96dac88c1bfd259f52c48045d5d7298479f6f0de1399"),
@@ -6976,7 +6499,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("597d5b70ed94a65fe2ae23e4ce4c2dbf555552a3cbde1fc84015786818c24944"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	461: {
 		ValidatorSK:      skFromHex("60e3cdebdb62a211f10f91f2979802d03f59f282a13559db64413dc6dcdd1ad7"),
@@ -6991,7 +6513,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("22a39d061f482c185cb7545308f966a98c520a8dcfd19e82ddc56c4d4e0d24b5"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	462: {
 		ValidatorSK:      skFromHex("13470910413f3ab457acabc9375d3651037adcf343f87216c42d13f7f341c492"),
@@ -7006,7 +6527,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("30a6ab64de7eef17790989736f1f39a11865ee8ed04045a0a4b973030a487bbd"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	463: {
 		ValidatorSK:      skFromHex("3aa6110f54f92d44c03cf5103b826b0466f8e43ac9e58765b4f72c89777623aa"),
@@ -7021,7 +6541,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("026d04b9694efa4a4e2b37008bc166cca30217eb1d21e181f38c7e8d72de70d3"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	464: {
 		ValidatorSK:      skFromHex("0f4d40a4fdea6df93ebc5da4585faf0d6c510d6d5bfb2e6ae49d56ec9bfec5af"),
@@ -7036,7 +6555,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("40e751e283bdb0f63f556cd020b3e667fd481967fa29a2668a529d9d2c759367"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	465: {
 		ValidatorSK:      skFromHex("570bb2393bb08e841cd5759d699304e7e9f4a3b7f5e0058502d39ea4ce04bd2c"),
@@ -7051,7 +6569,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("1e668f9e4d81a3eafdc5fee8a0ca4d41a2ad705498f9a5a36ffdb3d7339f6d61"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	466: {
 		ValidatorSK:      skFromHex("07eb74714dba93c9d6cba5563cee4c92556a84a3519097ac7fe9e86f39c5e0b0"),
@@ -7066,7 +6583,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0ece51d1698fb38b46b15c8fbc7e083ec6efe5e26612b3f764219dde32632257"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	467: {
 		ValidatorSK:      skFromHex("27c893ac9cd131e6308df598dc2aacf250a1fc4ed354b37c96b1e3535e61f7c7"),
@@ -7081,7 +6597,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("00076312bfbf91bc85b5a6f0904e13642532f2d638a4c171b2da906a0ffda2c4"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	468: {
 		ValidatorSK:      skFromHex("216e0afb6219ac1fd014a117f314632ce50612a19c9f205ec933902603029f51"),
@@ -7096,7 +6611,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("26696256996a66191b2b53dd89aab4ab251694c1d20a331dc53ecd532fda6409"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	469: {
 		ValidatorSK:      skFromHex("3060c2f50f0a80f88430f77c3e45e5aa1af927c3b2e683c1ee2c07748274984e"),
@@ -7111,7 +6625,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("2d0090e168ba15f36fc1ae1f8989cdca442eaf89589775836ff67b937d1411bc"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	470: {
 		ValidatorSK:      skFromHex("67e6af9079f89a6ed337d34ea73d1ce0d442bab751c2e86fcabc31d910375dfe"),
@@ -7126,7 +6639,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4c3636d81285dcef217372b351fc534cc9fdb2d43af24898accc6d4a9fb65dea"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	471: {
 		ValidatorSK:      skFromHex("424b70246dc0b29dcb271874f03c661e8864fae2c0238c537794eaa5700fd173"),
@@ -7141,7 +6653,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5263a3c6d93ed36a72f0917babd207bd7e8bbeff836ffff77ee5a4870f635685"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	472: {
 		ValidatorSK:      skFromHex("522c7450f56a57aeee6220a3abc3745a1d85bf69a5aa2182420295ab14777670"),
@@ -7156,7 +6667,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("6e86eb8d987d049cfa94a8d8a14bfa3a830bf948ee558a2e76747be7dad422e4"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	473: {
 		ValidatorSK:      skFromHex("3a249ae045a1fd3c7cb785d489342f1f03e8f598c7c6b8fe6c64ff30c8f39eef"),
@@ -7171,7 +6681,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4c62b6c929fb6a90814c25c1bd06e876e5a7a68786a4dfbd4b6ffd378b99e143"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	474: {
 		ValidatorSK:      skFromHex("117e0a235b7dab1eb69007e2dd4bf50890b1661219596bb09702403736c7d99b"),
@@ -7186,7 +6695,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("5d97574d9163d574c9bccb9708b969ce60f26c9a4e33cb8fd68664eedfced590"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	475: {
 		ValidatorSK:      skFromHex("00c1f4e466a892cdffef9847f40588ff68693a87ef3e9403ccbe93ab9e398b76"),
@@ -7201,7 +6709,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("5613025e241fdca885c5abb50cf740cf9f7eacccf601dfdf182c3222cfcf7a03"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	476: {
 		ValidatorSK:      skFromHex("25c8a7bb959eedaa6ac889fe97b7ad5cd95f6b4ce3617899574e50ccc2696f3a"),
@@ -7216,7 +6723,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("25d3f174c4e019081991237c60aa86821c1576f80deaaf0943e6222242f75871"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	477: {
 		ValidatorSK:      skFromHex("0b31cef048e1866b8ca98ef81367ecc30c899322981b2dedb1e4a184bbf55ba1"),
@@ -7231,7 +6737,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2fb9199cf8039f460cccf482fe96f95d59b2b635660e2792ee22be20fbdb5cd1"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	478: {
 		ValidatorSK:      skFromHex("5e81ac3c6363465c0d98597be732eb5acbc25598a8adb79e2025bdfd651402dd"),
@@ -7246,7 +6751,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0b09e5a02d5011795733851c32ea3481b9397d9d916e8fe26692b944f1ef5072"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	479: {
 		ValidatorSK:      skFromHex("01bdfd638bead9d2f43a17ab4e1a1f05722f25cfd2a88ba012f3b2c0e9ad821e"),
@@ -7261,7 +6765,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("4dd8d63bb2946c415d5f107702d4990eb13ef6c44892088669e554aea3373b0d"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	480: {
 		ValidatorSK:      skFromHex("4e10a6cc2bb046707604ff14f095a6b54d0fb203636e8868fc6909321f4a6b9f"),
@@ -7276,7 +6779,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("18efbfc864f67dbaacf9082e0feec7c948f757aa2f67614125cc2731436d711f"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	481: {
 		ValidatorSK:      skFromHex("0e0bb254e9da037a767a9db7f2f1329eb78fba502e6327918f92c0a279b51844"),
@@ -7291,7 +6793,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("62bb826e280d065129a5d0ed494115b46f53ba180fbe0cf314fffd8237f18a1e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	482: {
 		ValidatorSK:      skFromHex("21bc2c340b991384db1216c85464a93eea92d65215492cef1f1f96f3da542c3f"),
@@ -7306,7 +6807,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("3f9cc2f75093ae31cb2711fb844d3cb8617052531c8e7bba332747b1e7b211bd"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	483: {
 		ValidatorSK:      skFromHex("35fa683bcc943536957db7d988d36a1cb5c055b74a5a2439a2792f54fcf041d7"),
@@ -7321,7 +6821,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("2d6fd670ede47cdd183fe2525035ea39fcb044f69863d51969c19465d77d08e6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	484: {
 		ValidatorSK:      skFromHex("39209fb597fc8d34c0a9bcfae03cdcc513430fb8adf45b3e0b590be385c7db03"),
@@ -7336,7 +6835,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("5878f75f6fac1a5a4073576f9fe38b0cffc83e337cc1cbefa50b70aa67603017"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	485: {
 		ValidatorSK:      skFromHex("66ad0c9de6c66f406396d272dc8fe00cd657801c68129958290ba430b184a959"),
@@ -7351,7 +6849,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1a5ecfb50ffeee391ce79ac954930078c73e0144f273af96e3ab5b9e3f9fae05"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	486: {
 		ValidatorSK:      skFromHex("390c79530445eb72f82b7fb31f2ee18d2b06f6fb61a4a9aa758fdf864e6adec0"),
@@ -7366,7 +6863,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("017d0365231f6a39be93a283d6e9d4a31015e795d12bf5f7e18f5719b43ff4c6"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	487: {
 		ValidatorSK:      skFromHex("3d1ed544ca62816808eff5b0f935b601c70e043ef2867ab6712da72e73293f90"),
@@ -7381,7 +6877,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("71b54212f98914d15c0bda0f324ac9849eb56f74573fe167611843cbd0664985"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	488: {
 		ValidatorSK:      skFromHex("2c94a88d2c2b2f62ce2d864ac3073745181790a0a5705b46c7e5c793ff05c4c2"),
@@ -7396,7 +6891,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("0b7af071e453d05405c7557e11ad8ffa252003357b6b9efd083198775222b612"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	489: {
 		ValidatorSK:      skFromHex("66803b1c75d7c6f6f6a4ed3829f1e1149ed7ecb7e24eaf8b659c27235b9c01f1"),
@@ -7411,7 +6905,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("6967d4e09ad0e978bdd9650794416d64be2641705c424f6422fa3b82f3f699f9"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	490: {
 		ValidatorSK:      skFromHex("1d25b694ed6819a3e4504a5701ab0d9cfe25b12f927a43d07b0bf4de82c505a6"),
@@ -7426,7 +6919,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("3b10c96a5292090d4ac85d71bd8c4425d7408f27340c3abe9e6f5f7566f39611"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	491: {
 		ValidatorSK:      skFromHex("4342c284004747e8bb0487671abdfda04f7617ccda76dfc35be092376ca52142"),
@@ -7441,7 +6933,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("482fdb2aa5d881975c38024bdf7439896753d90569a095a80239eb3dcc070a14"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	492: {
 		ValidatorSK:      skFromHex("6be5838608acb5dc130e18ef5da45ac79b309fbefee5e76eba2510f691a4d57d"),
@@ -7456,7 +6947,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			1: skFromHex("3b3848a5bb246a471bbfb5ee2ef1d50d971e3c5d27b57cb9506c9e61ba93b5a4"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	493: {
 		ValidatorSK:      skFromHex("38273ed920d6d546ae39992e1d3e6f80c9d6badcd7d97df7a43b314982899085"),
@@ -7471,7 +6961,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("526dba7b1c6201ebd478225325fec3bcd9378d8bcba2e1f1962f3ac56ecc2b58"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	494: {
 		ValidatorSK:      skFromHex("6d7002dd31227658046e0f87b72700ef651023365e14665c6eed49e4a9ea2c1e"),
@@ -7486,7 +6975,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("111cbe2b0870144e938841b6c544f07f9e1137867412d6a7068769f12c3ddd4c"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	495: {
 		ValidatorSK:      skFromHex("3b2bfe533d862a800161a6a80e15943ad7ab9e5071dd6164617bb86fee0171bd"),
@@ -7501,7 +6989,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("355124aeef3f971570443e7c4cd6d90ebddd1879ec915ab2e2e507cd95d80436"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	496: {
 		ValidatorSK:      skFromHex("57612df626090a9d5f4b61c5f53179cf3d8d42247fb3c064a14d35f24490eeb2"),
@@ -7516,7 +7003,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("2acc079d76777a547768fd863349792c3f881325d706d7b1aa5b047161b8afec"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	497: {
 		ValidatorSK:      skFromHex("68468f4da39e2be2f9c9a292ccf7864b0bb93408e3752a0d4d3bd62af459623f"),
@@ -7531,7 +7017,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("41c310581e4c80d210c2e421d7cfcf45cda689e1a8802eef89f82f67beb43049"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	498: {
 		ValidatorSK:      skFromHex("1206107ef4047b105122ad84492487f09a46852e1b9339ceafedbeec8aeeb89a"),
@@ -7546,7 +7031,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			3: skFromHex("6a4c3da70781bd70913b4503bbf030a74d0fdae0e351df414ea7c5eacc7b88de"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	499: {
 		ValidatorSK:      skFromHex("1a13739b160eb88a788b9c215d61606bfefb06c4ee8521ad266cd9af1e21069b"),
@@ -7561,7 +7045,6 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			4: skFromHex("1dee6a692e7d90fa0456f64e830eb9310894e679bdb3ca7ece74485b63126cdf"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 	500: {
 		ValidatorSK:      skFromHex("385a537ef98b543571603f0702a1606d48b3ca14d79561aa657ca9dee03ac244"),
@@ -7576,6 +7059,5 @@ var TestingKeySetMap = map[phase0.ValidatorIndex]*TestKeySet{
 			2: skFromHex("42dd0f4c16cb174b6e175bda62bff7ab142461310ecd0a97832ebd0e5404517e"),
 		},
 		OperatorKeys: TestingOperatorKeys4Map,
-		DKGOperators: TestingDKGOperators4Map,
 	},
 }
