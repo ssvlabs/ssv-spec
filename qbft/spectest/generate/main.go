@@ -44,7 +44,7 @@ func main() {
 	if !ok {
 		panic("no caller info")
 	}
-	testsDir := filepath.Join(basedir, "tests")
+	testsDir := filepath.Join(strings.TrimSuffix(basedir, "main.go"), "tests")
 	if err := os.MkdirAll(testsDir, 0700); err != nil && !os.IsExist(err) {
 		panic(err.Error())
 	}
