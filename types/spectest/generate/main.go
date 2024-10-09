@@ -18,6 +18,7 @@ import (
 
 func main() {
 	clearStateComparisonFolder()
+	clearTestsFolder()
 
 	all := map[string]spectest.SpecTest{}
 	for _, t := range spectest.AllTests {
@@ -27,7 +28,7 @@ func main() {
 		}
 		all[n] = t
 	}
-
+	log.Printf("found %d tests\n", len(all))
 	if len(all) != len(spectest.AllTests) {
 		panic("did not generate all tests\n")
 	}
@@ -58,7 +59,6 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	log.Printf("found %d tests\n", len(all))
 	writeJson("tests", byts)
 
 	// write state comparison json files
@@ -74,6 +74,22 @@ func clearStateComparisonFolder() {
 		panic("no caller info")
 	}
 	dir := filepath.Join(strings.TrimSuffix(basedir, "main.go"), "state_comparison")
+
+	if err := os.RemoveAll(dir); err != nil {
+		panic(err.Error())
+	}
+
+	if err := os.Mkdir(dir, 0700); err != nil {
+		panic(err.Error())
+	}
+}
+
+func clearTestsFolder() {
+	_, basedir, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("no caller info")
+	}
+	dir := filepath.Join(strings.TrimSuffix(basedir, "main.go"), "tests")
 
 	if err := os.RemoveAll(dir); err != nil {
 		panic(err.Error())
