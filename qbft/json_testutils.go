@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 
 	"github.com/pkg/errors"
-	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // This file adds, as testing utils, the Encode, Decode and GetRoot methods
@@ -50,55 +49,6 @@ func (i *Instance) Decode(data []byte) error {
 
 func (i *Instance) GetRoot() ([32]byte, error) {
 	return i.State.GetRoot()
-}
-
-func (c *Controller) MarshalJSON() ([]byte, error) {
-
-	// Create alias without config due to custom marshalling error
-	type ControllerAlias struct {
-		Identifier      []byte
-		Height          Height
-		StoredInstances InstanceContainer
-		CommitteeMember *types.CommitteeMember
-		OperatorSigner  *types.OperatorSigner `json:"-"`
-	}
-
-	alias := &ControllerAlias{
-		Identifier:      c.Identifier,
-		Height:          c.Height,
-		StoredInstances: c.StoredInstances,
-		CommitteeMember: c.CommitteeMember,
-		OperatorSigner:  c.OperatorSigner,
-	}
-
-	return json.Marshal(alias)
-}
-
-func (c *Controller) UnmarshalJSON(data []byte) error {
-
-	// Create alias without config due to custom marshalling error
-	type ControllerAlias struct {
-		Identifier      []byte
-		Height          Height
-		StoredInstances InstanceContainer
-		CommitteeMember *types.CommitteeMember
-		OperatorSigner  *types.OperatorSigner `json:"-"`
-	}
-
-	aux := &ControllerAlias{}
-
-	// Unmarshal the JSON data into the auxiliary struct
-	if err := json.Unmarshal(data, &aux); err != nil {
-		return err
-	}
-
-	c.Identifier = aux.Identifier
-	c.Height = aux.Height
-	c.StoredInstances = aux.StoredInstances
-	c.CommitteeMember = aux.CommitteeMember
-	c.OperatorSigner = aux.OperatorSigner
-
-	return nil
 }
 
 // MarshalJSON is a custom JSON marshaller for Instance

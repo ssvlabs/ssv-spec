@@ -1736,6 +1736,7 @@
 												}
 										}
 								},
+								"forceStop": false,
 								"StartValue": "AQIDBA=="
 						}
 				],

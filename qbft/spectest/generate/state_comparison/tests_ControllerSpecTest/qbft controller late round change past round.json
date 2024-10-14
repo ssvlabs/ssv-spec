@@ -1620,6 +1620,7 @@
 												}
 										}
 								},
+								"forceStop": false,
 								"StartValue": "AQIDBA=="
 						}
 				],

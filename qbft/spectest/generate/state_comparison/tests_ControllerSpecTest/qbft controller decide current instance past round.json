@@ -1742,6 +1742,7 @@
 												}
 										}
 								},
+								"forceStop": false,
 								"StartValue": "AQIDBA=="
 						}
 				],

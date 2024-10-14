@@ -17,7 +17,7 @@ type Controller struct {
 	StoredInstances InstanceContainer
 	CommitteeMember *types.CommitteeMember
 	OperatorSigner  *types.OperatorSigner `json:"-"`
-	Config          IConfig
+	Config          IConfig               `json:"-"`
 }
 
 func NewController(identifier []byte, committeeMember *types.CommitteeMember, config IConfig,
