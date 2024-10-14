@@ -489,7 +489,7 @@ func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller
 
 func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller, share *types.CommitteeMember) *qbft.Instance {
 	newInst := qbft.NewInstance(
-		contr.GetConfig(),
+		contr.Config,
 		share,
 		contr.Identifier,
 		contr.Height,

@@ -43,7 +43,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	if test.ExpectedTimerState != nil {
 		// checks round timer state
-		timer, ok := test.Pre.GetConfig().GetTimer().(*testingutils.TestQBFTTimer)
+		timer, ok := test.Pre.Config.GetTimer().(*testingutils.TestQBFTTimer)
 		if ok && timer != nil {
 			require.Equal(t, test.ExpectedTimerState.Timeouts, timer.State.Timeouts, "timer should have expected timeouts count")
 			require.Equal(t, test.ExpectedTimerState.Round, timer.State.Round, "timer should have expected round")
@@ -54,7 +54,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	require.NoError(t, err)
 
 	// test output message
-	broadcastedSignedMsgs := test.Pre.GetConfig().GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
+	broadcastedSignedMsgs := test.Pre.Config.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
 	testingutils.CompareSignedSSVMessageOutputMessages(t, test.OutputMessages, broadcastedSignedMsgs, test.Pre.State.CommitteeMember.Committee)
 
 	// test root
@@ -67,7 +67,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 func (test *MsgProcessingSpecTest) runPreTesting() error {
 	// a simple hack to change the proposer func
 	if test.Pre.State.Height == ChangeProposerFuncInstanceHeight {
-		test.Pre.GetConfig().(*qbft.Config).ProposerF = func(state *qbft.State, round qbft.Round) types.OperatorID {
+		test.Pre.Config.(*qbft.Config).ProposerF = func(state *qbft.State, round qbft.Round) types.OperatorID {
 			return 2
 		}
 	}

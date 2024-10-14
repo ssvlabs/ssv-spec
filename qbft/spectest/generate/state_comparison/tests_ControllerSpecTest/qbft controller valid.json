@@ -212,6 +212,7 @@
 												"Msgs": {}
 										}
 								},
+								"forceStop": false,
 								"StartValue": "AQIDBA=="
 						}
 				],

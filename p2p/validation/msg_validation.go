@@ -21,7 +21,7 @@ func MsgValidation(runner ssv.Runner) MsgValidatorFunc {
 			return pubsub.ValidationReject
 		}
 
-		switch signedSSVMsg.SSVMessage.GetType() {
+		switch signedSSVMsg.SSVMessage.MsgType {
 		case types.SSVConsensusMsgType:
 			if validateConsensusMsg(runner, signedSSVMsg) != nil {
 				return pubsub.ValidationReject
@@ -39,7 +39,7 @@ func MsgValidation(runner ssv.Runner) MsgValidatorFunc {
 }
 
 func DecodePubsubMsg(msg *pubsub.Message) (*types.SignedSSVMessage, error) {
-	byts := msg.GetData()
+	byts := msg.Data
 	ret := &types.SignedSSVMessage{}
 	if err := ret.Decode(byts); err != nil {
 		return nil, err
@@ -72,11 +72,11 @@ func validateConsensusMsg(runner ssv.Runner, signedMsg *types.SignedSSVMessage) 
 		return err
 	}
 	if isDecided {
-		return qbft.ValidateDecided(contr.GetConfig(), msg, contr.CommitteeMember)
+		return qbft.ValidateDecided(contr.Config, msg, contr.CommitteeMember)
 	}
 
 	if msg.QBFTMessage.Height > contr.Height {
-		return validateFutureMsg(contr.GetConfig(), signedMsg, contr.CommitteeMember)
+		return validateFutureMsg(contr.Config, signedMsg, contr.CommitteeMember)
 	}
 
 	if inst := contr.StoredInstances.FindInstance(msg.QBFTMessage.Height); inst != nil {

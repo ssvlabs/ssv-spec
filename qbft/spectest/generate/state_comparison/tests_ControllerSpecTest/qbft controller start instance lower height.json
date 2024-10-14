@@ -89,6 +89,7 @@
 												"Msgs": {}
 										}
 								},
+								"forceStop": false,
 								"StartValue": "AQIDBA=="
 						}
 				],
@@ -246,6 +247,7 @@
 												"Msgs": {}
 										}
 								},
+								"forceStop": false,
 								"StartValue": "AQIDBA=="
 						}
 				],

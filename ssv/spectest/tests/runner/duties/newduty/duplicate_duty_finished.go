@@ -21,7 +21,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 	finishRunner := func(r ssv.Runner, duty types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
-			r.GetBaseRunner().QBFTController.GetConfig(),
+			r.GetBaseRunner().QBFTController.Config,
 			r.GetBaseRunner().QBFTController.CommitteeMember,
 			r.GetBaseRunner().QBFTController.Identifier,
 			qbft.Height(duty.DutySlot()),

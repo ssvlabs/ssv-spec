@@ -203,11 +203,11 @@ func (r *SyncCommitteeAggregatorRunner) ProcessConsensus(signedMsg *types.Signed
 
 	msgToBroadcast := &types.SignedSSVMessage{
 		Signatures:  [][]byte{sig},
-		OperatorIDs: []types.OperatorID{r.operatorSigner.GetOperatorID()},
+		OperatorIDs: []types.OperatorID{r.operatorSigner.OperatorID},
 		SSVMessage:  ssvMsg,
 	}
 
-	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
+	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.MsgID, msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial post consensus sig")
 	}
 	return nil
@@ -387,11 +387,11 @@ func (r *SyncCommitteeAggregatorRunner) executeDuty(duty types.Duty) error {
 
 	msgToBroadcast := &types.SignedSSVMessage{
 		Signatures:  [][]byte{sig},
-		OperatorIDs: []types.OperatorID{r.operatorSigner.GetOperatorID()},
+		OperatorIDs: []types.OperatorID{r.operatorSigner.OperatorID},
 		SSVMessage:  ssvMsg,
 	}
 
-	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
+	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.MsgID, msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial contribution proof sig")
 	}
 	return nil

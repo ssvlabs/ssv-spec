@@ -95,6 +95,7 @@
 												"Msgs": {}
 										}
 								},
+								"forceStop": false,
 								"StartValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 						},
 						"DecidedValue": null,
@@ -309,10 +310,10 @@
 														"Msgs": {}
 												}
 										},
+										"forceStop": false,
 										"StartValue": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg=="
 								},
 								{
-										"forceStop": true,
 										"State": {
 												"CommitteeMember": {
 														"OperatorID": 1,
@@ -398,6 +399,7 @@
 														"Msgs": {}
 												}
 										},
+										"forceStop": true,
 										"StartValue": null
 								}
 						],
