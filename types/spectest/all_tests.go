@@ -10,7 +10,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/maxmsgsize"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/share"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssz"
@@ -37,8 +36,6 @@ var AllTests = []SpecTest{
 	partialsigmessage.PartialRootValid(),
 	partialsigmessage.ValidContributionProofMetaData(),
 	partialsigmessage.InconsistentSignedMessage(),
-
-	share.Encoding(),
 
 	committeemember.HasQuorum(),
 	committeemember.HasQuorum3f1(),
