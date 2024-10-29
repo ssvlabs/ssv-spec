@@ -8,31 +8,33 @@ This document contains the networking specification for `SSV.Network`.
 
 ## Overview
 
-- [Fundamentals](#fundamentals)
+- [SSV Specifications - Networking](#ssv-specifications---networking)
+  - [Overview](#overview)
+  - [Fundamentals](#fundamentals)
     - [Stack](#stack)
     - [Transport](#transport)
     - [Messaging](#messaging)
     - [Network Peers](#network-peers)
     - [Identity](#identity)
     - [Network Discovery](#network-discovery)
-    - [Peer Scoring](#peer-scoring)
-- [Wire](#wire)
-    - [Consensus](#consensus-protocol)
-    - [Sync](#sync-protocols)
-    - [Handshake](#handshake-protocol)
-- [Network Layer ](#networking)
-    - [PubSub](#pubsub)
-    - [PubSub Scoring](#pubsub-scoring)
-    - [Message Validation](#pubsub-validation)
-    - [Discovery](#discovery)
+  - [Wire](#wire)
+  - [Consensus Protocol](#consensus-protocol)
+    - [Message Structure](#message-structure)
+  - [Handshake Protocol](#handshake-protocol)
+  - [Networking](#networking)
+    - [Pubsub](#pubsub)
+    - [Pubsub Scoring](#pubsub-scoring)
+    - [Pubsub Validation](#pubsub-validation)
     - [Subnets](#subnets)
+    - [Discovery](#discovery)
+      - [ENR](#enr)
+      - [Subnets Discovery](#subnets-discovery)
     - [Peers Connectivity](#peers-connectivity)
-    - [Peers Balancing](#peers-balancing)
-    - [Connection Gating](#connection-gating)
+      - [Peers Balancing](#peers-balancing)
+      - [Connection Gating](#connection-gating)
     - [Security](#security)
     - [Configurations](#configurations)
     - [Forks](#forks)
-    - [Relayers](#relayers)
 
 ## Fundamentals
 
@@ -113,14 +115,6 @@ Exporter and Bootnode does not hold this key.
 is used in `SSV.Network` as the discovery component.
 
 More information is available in [Discovery section](#discovery)
-
-
-### Peer Scoring
-
-Peer scoring in `SSV.Network` is how we protect the network from bad peers,
-by scoring them according to a predefined set of scores.
-
-For more info please refer to [Pubsub Scoring](#pubsub-scoring) section
 
 
 ------
@@ -247,38 +241,14 @@ In addition, parameters configuration is described [here](./CONFIG.md#pubsub-par
 
 ### Pubsub Scoring
 
-`gossipsub v1.1` introduced pubsub [scoring](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#peer-scoring),
-the idea is that each individual peer maintains a score for other peers.
-The score is locally computed by each individual peer based on observed behaviour and is not shared.
-
-**NOTE** that [topic scores](./SCORING.md#topic-score-params), [peer scores](./SCORING.md#peer-score-params) 
-and [thresholds](./SCORING.md#peer-score-thresholds) are detailed in the sibling scoring spec document. 
+`GossipSub v1.1` introduced the pubsub [scoring](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#peer-scoring) feature.
+With this feature, the node maintains a single score for each individual peer. The score is used to regulate what types of communication may be performed with the corresponding peer (e.g. graylisting a peer that sends too many malicious messages). More about our scoring usage can be found in the [scoring documentation](./SCORING.md).
 
 
 ### Pubsub Validation
 
-Message validation is applied on the topic level.
-Each incoming message will be validated to avoid relaying bad messages,
-which could affect peer score.
-
-[Extended Validators](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#extended-validators)
-allows the application to aid in the gossipsub peer-scoring scheme.
-We utilize `ACCEPT`, `REJECT`, and `IGNORE` as the result of the validation.
-
-#### Basic Validation
-
-This validation pipeline is the baseline and will be applied for all pubsub topics. It consists of the following rules:
-
-- `ACCEPT` message from my peer
-- `REJECT` empty message
-- `REJECT` message with corrupted or invalid top-level structure
-
-**NOTE** any message will be decoded only once as part of the basic validation.
-
-**NOTE** As of the time this spec was written, additional validation is performed by QBFT components in an async way.
-As messages might pass the base validation but fail at a later point, signing policy of pubsub is turned on 
-to ensure authenticity of pubsub message senders. Once a more complete validation is added, we will reduce
-the signing policy as it becomes redundant.
+GossipSub has an [Extended Validators](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#extended-validators) feature that allows
+the node to validate each received message before it reaches the application layer. In case a message fails the validation process, it's dropped so that the node doesn't overlay bad messages to the network. More about our validation process can be found in the [validation module's documentation](./validation/README.md).
 
 <br />
 
