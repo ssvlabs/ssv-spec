@@ -79,12 +79,6 @@ func TestJson(t *testing.T) {
 				typedTest := &partialsigmessage.EncodingTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
-			case reflect.TypeOf(&share.EncodingTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &share.EncodingTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
 			case reflect.TypeOf(&ssvmsg.EncodingTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
