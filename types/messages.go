@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
-	"math"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
@@ -50,25 +49,12 @@ func (msg MessageID) GetDutyExecutorID() []byte {
 
 func (msg MessageID) GetRoleType() RunnerRole {
 	roleByts := msg[roleTypeStartPos : roleTypeStartPos+roleTypeSize]
-	roleValue := binary.LittleEndian.Uint32(roleByts)
-
-	// Sanitize RoleValue
-	if roleValue > math.MaxInt32 {
-		return RoleUnknown
-	}
-
-	return RunnerRole(roleValue)
+	return RunnerRole(binary.LittleEndian.Uint32(roleByts))
 }
 
 func NewMsgID(domain DomainType, dutyExecutorID []byte, role RunnerRole) MessageID {
-
-	// Sanitize role. If bad role, return an empty MessageID
-	roleValue := int32(role)
-	if roleValue < 0 {
-		return MessageID{}
-	}
 	roleByts := make([]byte, 4)
-	binary.LittleEndian.PutUint32(roleByts, uint32(roleValue))
+	binary.LittleEndian.PutUint32(roleByts, uint32(role))
 
 	return newMessageID(domain[:], roleByts, dutyExecutorID)
 }
@@ -93,6 +79,8 @@ const (
 	SSVConsensusMsgType MsgType = iota
 	// SSVPartialSignatureMsgType are all partial signatures msgs over beacon chain specific signatures
 	SSVPartialSignatureMsgType
+	// DKGMsgType represent all DKG related messages
+	DKGMsgType
 )
 
 // MessageSignature includes all functions relevant for a signed message (QBFT message, post consensus msg, etc)

@@ -24,9 +24,6 @@ type Operator struct {
 // https://github.com/ConsenSys/qbft-formal-spec-and-verification/blob/main/dafny/spec/L1/node_auxiliary_functions.dfy#L259
 
 func (cm *CommitteeMember) HasQuorum(cnt int) bool {
-	if cnt <= 0 {
-		return false
-	}
 	return uint64(cnt) >= cm.GetQuorum()
 }
 
@@ -38,9 +35,6 @@ func (cm *CommitteeMember) GetQuorum() uint64 {
 // https://github.com/ConsenSys/qbft-formal-spec-and-verification/blob/main/dafny/spec/L1/node_auxiliary_functions.dfy#L244
 
 func (cm *CommitteeMember) HasPartialQuorum(cnt int) bool {
-	if cnt <= 0 {
-		return false
-	}
 	return uint64(cnt) >= cm.FaultyNodes+1
 }
 

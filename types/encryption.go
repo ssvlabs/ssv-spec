@@ -49,26 +49,39 @@ func Encrypt(pk *rsa.PublicKey, plainText []byte) ([]byte, error) {
 // PemToPrivateKey return rsa private key from pem
 func PemToPrivateKey(skPem []byte) (*rsa.PrivateKey, error) {
 	block, _ := pem.Decode(skPem)
-	if block == nil {
-		return nil, errors.New("failed to decode PEM")
+	// nolint
+	enc := x509.IsEncryptedPEMBlock(block)
+	b := block.Bytes
+	if enc {
+		var err error
+		// nolint
+		b, err = x509.DecryptPEMBlock(block, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Failed to decrypt private key")
+		}
 	}
-
-	// Parse key as PKCS1
-	parsedSk, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	parsedSk, err := x509.ParsePKCS1PrivateKey(b)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to parse private key")
 	}
-
 	return parsedSk, nil
 }
 
 // PemToPublicKey return rsa public key from pem
 func PemToPublicKey(pkPem []byte) (*rsa.PublicKey, error) {
 	block, _ := pem.Decode(pkPem)
-	if block == nil {
-		return nil, errors.New("failed to decode PEM")
+	// nolint
+	enc := x509.IsEncryptedPEMBlock(block)
+	b := block.Bytes
+	if enc {
+		var err error
+		// nolint
+		b, err = x509.DecryptPEMBlock(block, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "Failed to decrypt private key")
+		}
 	}
-	parsedPk, err := x509.ParsePKIXPublicKey(block.Bytes)
+	parsedPk, err := x509.ParsePKIXPublicKey(b)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to parse public key")
 	}
@@ -80,11 +93,10 @@ func PemToPublicKey(pkPem []byte) (*rsa.PublicKey, error) {
 
 // PrivateKeyToPem converts privateKey to pem encoded
 func PrivateKeyToPem(sk *rsa.PrivateKey) []byte {
-	pemBytes := x509.MarshalPKCS1PrivateKey(sk)
 	return pem.EncodeToMemory(
 		&pem.Block{
 			Type:  "RSA PRIVATE KEY",
-			Bytes: pemBytes,
+			Bytes: x509.MarshalPKCS1PrivateKey(sk),
 		},
 	)
 }

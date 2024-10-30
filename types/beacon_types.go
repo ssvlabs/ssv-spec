@@ -231,44 +231,16 @@ func (n BeaconNetwork) EstimatedCurrentSlot() spec.Slot {
 
 // EstimatedSlotAtTime estimates slot at the given time
 func (n BeaconNetwork) EstimatedSlotAtTime(time int64) spec.Slot {
-	// Sanitize time
-	if time < 0 {
+	genesis := int64(n.MinGenesisTime())
+	if time < genesis {
 		return 0
 	}
-
-	// Get delta time
-	genesis := n.MinGenesisTime()
-	deltaTime := uint64(time) - genesis
-
-	// Get slot duration
-	slotDurationInSeconds := int64(n.SlotDurationSec().Seconds())
-	// Sanitize slot duration
-	if slotDurationInSeconds <= 0 {
-		return spec.Slot(math.MaxUint64)
-	}
-
-	return spec.Slot(uint64(deltaTime) / uint64(slotDurationInSeconds))
+	return spec.Slot(uint64(time-genesis) / uint64(n.SlotDurationSec().Seconds()))
 }
 
 func (n BeaconNetwork) EstimatedTimeAtSlot(slot spec.Slot) int64 {
-	// Get slot duration
-	slotDurationInSeconds := int64(n.SlotDurationSec().Seconds())
-	if slotDurationInSeconds < 0 {
-		return int64(math.MaxInt64)
-	}
-
-	// Get delta to add to genesis time
-	d := uint64(slot) * uint64(slotDurationInSeconds)
-
-	// Get genesis time
-	minGenesisTime := n.MinGenesisTime()
-
-	// Sanitize variables
-	if minGenesisTime > uint64(math.MaxInt64) || d > uint64(math.MaxInt64) {
-		return int64(math.MaxInt64)
-	}
-
-	return int64(minGenesisTime) + int64(d)
+	d := int64(slot) * int64(n.SlotDurationSec().Seconds())
+	return int64(n.MinGenesisTime()) + d
 }
 
 // EstimatedCurrentEpoch estimates the current epoch

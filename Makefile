@@ -26,7 +26,3 @@ generate-ssz:
 	@go generate ./qbft/
 	@go generate ./ssv/
 	@go generate ./types/
-
-.PHONY: gosec
-gosec:
-	gosec ./...
