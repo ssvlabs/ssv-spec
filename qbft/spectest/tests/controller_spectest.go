@@ -57,14 +57,16 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 	}
 
 	var lastErr error
-	for i, runData := range test.RunInstanceData {
-		height := qbft.Height(i)
+	currHeight := qbft.Height(0)
+	for _, runData := range test.RunInstanceData {
+		height := currHeight
 		if runData.Height != nil {
 			height = *runData.Height
 		}
 		if err := test.runInstanceWithData(t, height, contr, runData); err != nil {
 			lastErr = err
 		}
+		currHeight += 1
 	}
 
 	if len(test.ExpectedError) != 0 {
@@ -232,8 +234,9 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 	}
 
 	ret := make([]*qbft.Controller, len(test.RunInstanceData))
+	currHeight := qbft.Height(0)
 	for i, runData := range test.RunInstanceData {
-		height := qbft.Height(i)
+		height := currHeight
 		if runData.Height != nil {
 			height = *runData.Height
 		}
@@ -259,6 +262,8 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 			return nil, err
 		}
 		ret[i] = copied
+
+		currHeight += 1
 	}
 	return ret, nil
 }

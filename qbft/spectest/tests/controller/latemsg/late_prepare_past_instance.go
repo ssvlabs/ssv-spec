@@ -87,7 +87,8 @@ func latePreparePastInstanceStateComparison(height qbft.Height, lateMsg *types.S
 		testingutils.TestingOperatorSigner(ks),
 	)
 
-	for i := 0; i <= int(height); i++ {
+	msgIndex := 0
+	for i := uint64(0); i <= uint64(height); i++ {
 		contr.Height = qbft.Height(i)
 
 		instance := &qbft.Instance{
@@ -126,7 +127,8 @@ func latePreparePastInstanceStateComparison(height qbft.Height, lateMsg *types.S
 			instance.ForceStop()
 		}
 
-		msgs := allMsgs[offset*i : offset*(i+1)]
+		msgs := allMsgs[offset*msgIndex : offset*(msgIndex+1)]
+		msgIndex += 1
 		comparable.SetSignedMessages(instance, msgs)
 
 		contr.StoredInstances = append([]*qbft.Instance{instance}, contr.StoredInstances...)

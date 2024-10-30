@@ -39,7 +39,7 @@ func MajoritySlashable() tests.SpecTest {
 
 	// Make slashable map with majority
 	slashableMap := make(map[string][]phase0.Slot)
-	for i := 0; i < int(keySet.Threshold); i++ {
+	for i := uint64(0); i < keySet.Threshold; i++ {
 		slashableMap[sharesPKString[i]] = []phase0.Slot{testingutils.TestingDutySlot}
 	}
 

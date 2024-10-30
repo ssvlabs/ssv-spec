@@ -20,7 +20,7 @@ func MissingSomeShares() tests.SpecTest {
 	msgID := testingutils.CommitteeMsgID(ks)
 
 	// Committee's validator indexes
-	committeeShareValidators := []int{1, 3, 5, 7, 9}
+	committeeShareValidators := []phase0.ValidatorIndex{1, 3, 5, 7, 9}
 	// KeySet and Share map for Committee
 	committeeShareKSMap := testingutils.KeySetMapForValidatorIndexList(committeeShareValidators)
 	committeeShareMap := testingutils.ShareMapFromKeySetMap(committeeShareKSMap)

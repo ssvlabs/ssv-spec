@@ -54,7 +54,7 @@ func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comp
 		testingutils.TestingOperatorSigner(ks),
 	)
 
-	for i := 0; i <= int(height); i++ {
+	for i := uint64(0); i <= uint64(height); i++ {
 		contr.Height = qbft.Height(i)
 
 		instance := &qbft.Instance{

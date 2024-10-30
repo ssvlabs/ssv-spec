@@ -23,7 +23,7 @@ func GetCommitteeID(committee []OperatorID) CommitteeID {
 	// Convert to bytes
 	bytes := make([]byte, len(committee)*4)
 	for i, v := range committee {
-		binary.LittleEndian.PutUint32(bytes[i*4:], uint32(v))
+		binary.LittleEndian.PutUint32(bytes[i*4:], uint32(v)) // #nosec G115 --This conversion is kept since it would cause a network fork, and, for now, it is safe since OperatorID << MaxUInt32 as it's incremented by contract
 	}
 	// Hash
 	return sha256.Sum256(bytes)
