@@ -37,11 +37,3 @@ func (cm *CommitteeMember) GetQuorum() uint64 {
 func (cm *CommitteeMember) HasPartialQuorum(cnt int) bool {
 	return uint64(cnt) >= cm.FaultyNodes+1
 }
-
-func (cm *CommitteeMember) Encode() ([]byte, error) {
-	return cm.MarshalSSZ()
-}
-
-func (cm *CommitteeMember) Decode(data []byte) error {
-	return cm.UnmarshalSSZ(data)
-}
