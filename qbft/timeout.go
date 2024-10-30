@@ -75,9 +75,7 @@ func AggregationOrContributionTimeout(r Round, height Height, network types.Beac
 func DefaultTimeout(round Round) int64 {
 	if round <= quickTimeoutThreshold {
 		return quickTimeout
-	} else {
-		return slowTimeout
-	}
+	return slowTimeout
 }
 
 func (i *Instance) UponRoundTimeout() error {
