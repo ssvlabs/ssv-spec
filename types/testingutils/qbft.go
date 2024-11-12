@@ -24,7 +24,6 @@ var TestingOperatorSigner = func(keySet *TestKeySet) *types.OperatorSigner {
 
 var TestingConfig = func(keySet *TestKeySet) *qbft.Config {
 	return &qbft.Config{
-		Domain: TestingSSVDomainType,
 		ValueCheckF: func(data []byte) error {
 			if bytes.Equal(data, TestingInvalidValueCheck) {
 				return errors.New("invalid value")
@@ -61,7 +60,6 @@ var TestingShare = func(keysSet *TestKeySet, valIdx phase0.ValidatorIndex) *type
 		ValidatorPubKey:     pkBytesArray,
 		SharePubKey:         keysSet.Shares[1].GetPublicKey().Serialize(),
 		Committee:           keysSet.Committee(),
-		DomainType:          TestingSSVDomainType,
 		FeeRecipientAddress: TestingFeeRecipient,
 		Graffiti:            TestingGraffiti[:],
 	}
@@ -102,7 +100,6 @@ var TestingCommitteeMember = func(keysSet *TestKeySet) *types.CommitteeMember {
 		SSVOperatorPubKey: operatorPubKeyBytes,
 		FaultyNodes:       (keysSet.Threshold - 1) / 2,
 		Committee:         operators,
-		DomainType:        TestingSSVDomainType,
 	}
 }
 
