@@ -165,12 +165,6 @@
 																				"OperatorID": 4,
 																				"SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBcVFYenEvNlh0VkVmSlRaL3YxUHcKa3pTa05SWGJwQy80MWE5TFNRdnNra0lDZEcyZEd3K1FhZ2tOVllwdktRc1Izd0F4QmZEb1FxZE1vRXY4R2g5eApCYVphZjZrTFdrbmFWWVlOSmVXbjZiRWlEbVhqVllETXE1ZGhsOW9kOVVoSzRFWVQ4cklmNWFsZnlFYTkrV3M5Cm9lQUxTMjFjVlBwUlBvYlFIeHNYOHhvOXVRQ3JMeE9xYzRFVzgyODVLajV2blFsZnBHRzIxV0ZCZmJIR1I0WGEKK2FtT2ZUS1BsUkxsZVZVTXp3WCs3cGVHSi81SDNqcExGbCtvRmFyMkMvWURIL0VKejArTnE2R0ptNzFpSjdNYwoxK2MwUDZGT2F5NlpxWitaRGo5ZHBKZC9tYnFZenkzcks2YlBvOE52TkVZSFNKZk9SRDRLak5NSXM0UzF5cHhaCkl3SURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
 																		}
-																],
-																"DomainType": [
-																		0,
-																		0,
-																		3,
-																		1
 																]
 														},
 														"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
@@ -1420,12 +1414,6 @@
 																"Signer": 4
 														}
 												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
-												],
 												"FeeRecipientAddress": [
 														83,
 														89,
@@ -1520,12 +1508,6 @@
 																"SharePubKey": "hrAN+rdxvyWBA0xXwn35OSp48WlrIAySilDI04aOniDTSol4aEMhYFbOOjdTeTD4",
 																"Signer": 4
 														}
-												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
 												],
 												"FeeRecipientAddress": [
 														83,
@@ -1622,12 +1604,6 @@
 																"Signer": 4
 														}
 												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
-												],
 												"FeeRecipientAddress": [
 														83,
 														89,
@@ -1722,12 +1698,6 @@
 																"SharePubKey": "gbN+DF6u/2ee0b+bkdZOEQsCWRJ8fERL6rpP6XJzQXBssk/2cc3QPGaDYhZly4es",
 																"Signer": 4
 														}
-												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
 												],
 												"FeeRecipientAddress": [
 														83,
@@ -1824,12 +1794,6 @@
 																"Signer": 4
 														}
 												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
-												],
 												"FeeRecipientAddress": [
 														83,
 														89,
@@ -1924,12 +1888,6 @@
 																"SharePubKey": "rzXb9zreo+J1R+PZTobdrr0sy05CaNkuUpmnH+kaweVG60WnXOy20V9TjyVsS5gT",
 																"Signer": 4
 														}
-												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
 												],
 												"FeeRecipientAddress": [
 														83,
@@ -2026,12 +1984,6 @@
 																"Signer": 4
 														}
 												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
-												],
 												"FeeRecipientAddress": [
 														83,
 														89,
@@ -2127,12 +2079,6 @@
 																"Signer": 4
 														}
 												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
-												],
 												"FeeRecipientAddress": [
 														83,
 														89,
@@ -2219,12 +2165,6 @@
 																						"OperatorID": 4,
 																						"SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBcVFYenEvNlh0VkVmSlRaL3YxUHcKa3pTa05SWGJwQy80MWE5TFNRdnNra0lDZEcyZEd3K1FhZ2tOVllwdktRc1Izd0F4QmZEb1FxZE1vRXY4R2g5eApCYVphZjZrTFdrbmFWWVlOSmVXbjZiRWlEbVhqVllETXE1ZGhsOW9kOVVoSzRFWVQ4cklmNWFsZnlFYTkrV3M5Cm9lQUxTMjFjVlBwUlBvYlFIeHNYOHhvOXVRQ3JMeE9xYzRFVzgyODVLajV2blFsZnBHRzIxV0ZCZmJIR1I0WGEKK2FtT2ZUS1BsUkxsZVZVTXp3WCs3cGVHSi81SDNqcExGbCtvRmFyMkMvWURIL0VKejArTnE2R0ptNzFpSjdNYwoxK2MwUDZGT2F5NlpxWitaRGo5ZHBKZC9tYnFZenkzcks2YlBvOE52TkVZSFNKZk9SRDRLak5NSXM0UzF5cHhaCkl3SURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
 																				}
-																		],
-																		"DomainType": [
-																				0,
-																				0,
-																				3,
-																				1
 																		]
 																},
 																"ID": "AAADAQAAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
@@ -3242,12 +3182,6 @@
 																"OperatorID": 4,
 																"SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBcVFYenEvNlh0VkVmSlRaL3YxUHcKa3pTa05SWGJwQy80MWE5TFNRdnNra0lDZEcyZEd3K1FhZ2tOVllwdktRc1Izd0F4QmZEb1FxZE1vRXY4R2g5eApCYVphZjZrTFdrbmFWWVlOSmVXbjZiRWlEbVhqVllETXE1ZGhsOW9kOVVoSzRFWVQ4cklmNWFsZnlFYTkrV3M5Cm9lQUxTMjFjVlBwUlBvYlFIeHNYOHhvOXVRQ3JMeE9xYzRFVzgyODVLajV2blFsZnBHRzIxV0ZCZmJIR1I0WGEKK2FtT2ZUS1BsUkxsZVZVTXp3WCs3cGVHSi81SDNqcExGbCtvRmFyMkMvWURIL0VKejArTnE2R0ptNzFpSjdNYwoxK2MwUDZGT2F5NlpxWitaRGo5ZHBKZC9tYnFZenkzcks2YlBvOE52TkVZSFNKZk9SRDRLak5NSXM0UzF5cHhaCkl3SURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
 														}
-												],
-												"DomainType": [
-														0,
-														0,
-														3,
-														1
 												]
 										}
 								},
@@ -3311,12 +3245,6 @@
 								"OperatorID": 4,
 								"SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBcVFYenEvNlh0VkVmSlRaL3YxUHcKa3pTa05SWGJwQy80MWE5TFNRdnNra0lDZEcyZEd3K1FhZ2tOVllwdktRc1Izd0F4QmZEb1FxZE1vRXY4R2g5eApCYVphZjZrTFdrbmFWWVlOSmVXbjZiRWlEbVhqVllETXE1ZGhsOW9kOVVoSzRFWVQ4cklmNWFsZnlFYTkrV3M5Cm9lQUxTMjFjVlBwUlBvYlFIeHNYOHhvOXVRQ3JMeE9xYzRFVzgyODVLajV2blFsZnBHRzIxV0ZCZmJIR1I0WGEKK2FtT2ZUS1BsUkxsZVZVTXp3WCs3cGVHSi81SDNqcExGbCtvRmFyMkMvWURIL0VKejArTnE2R0ptNzFpSjdNYwoxK2MwUDZGT2F5NlpxWitaRGo5ZHBKZC9tYnFZenkzcks2YlBvOE52TkVZSFNKZk9SRDRLak5NSXM0UzF5cHhaCkl3SURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
 						}
-				],
-				"DomainType": [
-						0,
-						0,
-						3,
-						1
 				]
 		},
 		"Share": {
@@ -3390,12 +3318,6 @@
 										"SharePubKey": "qSfP2ES1E+nhWm1nLFCjwkxS/oJVaEx6oEqBykh30NU62WvfsWvj+q1xYDjBBgxi",
 										"Signer": 4
 								}
-						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
 						],
 						"FeeRecipientAddress": [
 								83,
@@ -3492,12 +3414,6 @@
 										"Signer": 4
 								}
 						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
-						],
 						"FeeRecipientAddress": [
 								83,
 								89,
@@ -3592,12 +3508,6 @@
 										"SharePubKey": "lrXjfGpbjLW/FWZXSVauZFof3BCPUF52MLj7DzhSNKZcLCKSZDTyNGiVaxH+hp6B",
 										"Signer": 4
 								}
-						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
 						],
 						"FeeRecipientAddress": [
 								83,
@@ -3694,12 +3604,6 @@
 										"Signer": 4
 								}
 						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
-						],
 						"FeeRecipientAddress": [
 								83,
 								89,
@@ -3794,12 +3698,6 @@
 										"SharePubKey": "rlqILdLTHeFOBDozUgD7t1mHo7tsYOGywhWFxr7hbsSmCthreEFnaDqWXY5GJwrl",
 										"Signer": 4
 								}
-						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
 						],
 						"FeeRecipientAddress": [
 								83,
@@ -3896,12 +3794,6 @@
 										"Signer": 4
 								}
 						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
-						],
 						"FeeRecipientAddress": [
 								83,
 								89,
@@ -3997,12 +3889,6 @@
 										"Signer": 4
 								}
 						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
-						],
 						"FeeRecipientAddress": [
 								83,
 								89,
@@ -4097,12 +3983,6 @@
 										"SharePubKey": "tHLM2nSnwMF9LKvZ1FGX9C7H+bgUrEgxcME/wg6hAOy2NqFkVE1q+Ts2B3mJ0LZx",
 										"Signer": 4
 								}
-						],
-						"DomainType": [
-								0,
-								0,
-								3,
-								1
 						],
 						"FeeRecipientAddress": [
 								83,
