@@ -10,23 +10,18 @@ func Valid() *SignedSSVMessageTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	// RSA key to sign message
-	skByts, pkByts, err := types.GenerateKey()
+	pkBytes, err := types.GetPublicKeyPem(ks.OperatorKeys[1])
 	if err != nil {
-		panic(err.Error())
-	}
-	sk, err := types.PemToPrivateKey(skByts)
-	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 
-	msg := testingutils.TestingSignedSSVMessage(ks.Shares[1], 1, sk)
+	msg := testingutils.TestingSignedSSVMessage(ks.Shares[1], 1, ks.OperatorKeys[1])
 
 	return &SignedSSVMessageTest{
 		Name: "valid",
 		Messages: []*types.SignedSSVMessage{
 			msg,
 		},
-		RSAPublicKey: [][]byte{pkByts},
+		RSAPublicKey: [][]byte{pkBytes},
 	}
 }
