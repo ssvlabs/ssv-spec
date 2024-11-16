@@ -458,7 +458,7 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 
 func (cr CommitteeRunner) executeDuty(duty types.Duty) error {
 	slot := duty.DutySlot()
-	attData, _, err := cr.GetBeaconNode().GetAttestationData(slot, phase0.CommitteeIndex(0))
+	attData, _, err := cr.GetBeaconNode().GetAttestationData(slot)
 	if err != nil {
 		return errors.Wrap(err, "failed to get attestation data")
 	}
@@ -486,7 +486,6 @@ func (cr CommitteeRunner) GetOperatorSigner() *types.OperatorSigner {
 func constructAttestationData(vote *types.BeaconVote, duty *types.ValidatorDuty) *phase0.AttestationData {
 	return &phase0.AttestationData{
 		Slot:            duty.Slot,
-		Index:           duty.CommitteeIndex,
 		BeaconBlockRoot: vote.BlockRoot,
 		Source:          vote.Source,
 		Target:          vote.Target,

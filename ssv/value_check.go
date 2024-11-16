@@ -59,6 +59,7 @@ func BeaconVoteValueCheckF(
 
 		attestationData := &phase0.AttestationData{
 			Slot: slot,
+			// TODO: Remove Index field
 			// Consensus data is unaware of CommitteeIndex
 			// We use -1 to not run into issues with the duplicate value slashing check:
 			// (data_1 != data_2 and data_1.target.epoch == data_2.target.epoch)

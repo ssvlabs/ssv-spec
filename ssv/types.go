@@ -29,7 +29,7 @@ type Network interface {
 // AttesterCalls interface has all attester duty specific calls
 type AttesterCalls interface {
 	// GetAttestationData returns attestation data by the given slot and committee index
-	GetAttestationData(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (*phase0.AttestationData,
+	GetAttestationData(slot phase0.Slot) (*phase0.AttestationData,
 		spec.DataVersion, error)
 	// SubmitAttestation submit the attestation to the node
 	SubmitAttestations(attestations []*phase0.Attestation) error
