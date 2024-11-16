@@ -85,7 +85,6 @@ var TestWrongBeaconVote = types.BeaconVote{
 
 var TestingAttestationData = &phase0.AttestationData{
 	Slot:            TestingDutySlot,
-	Index:           3,
 	BeaconBlockRoot: TestingBlockRoot,
 	Source: &phase0.Checkpoint{
 		Epoch: 0,
@@ -102,7 +101,6 @@ var TestingAttestationDataRoot, _ = TestingAttestationData.HashTreeRoot()
 var TestingAttestationDataForValidatorDuty = func(duty *types.ValidatorDuty) *phase0.AttestationData {
 	return &phase0.AttestationData{
 		Slot:            duty.Slot,
-		Index:           duty.CommitteeIndex,
 		BeaconBlockRoot: TestBeaconVote.BlockRoot,
 		Source:          TestBeaconVote.Source,
 		Target:          TestBeaconVote.Target,
@@ -116,7 +114,6 @@ var TestingAttestationDataBytes = func() []byte {
 
 var TestingAttestationNextEpochData = &phase0.AttestationData{
 	Slot:            TestingDutySlot2,
-	Index:           3,
 	BeaconBlockRoot: TestingBlockRoot,
 	Source: &phase0.Checkpoint{
 		Epoch: 0,
@@ -689,13 +686,10 @@ func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 }
 
 // GetAttestationData returns attestation data by the given slot and committee index
-func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (*phase0.
+func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot) (*phase0.
 	AttestationData, spec.DataVersion, error) {
 	data := *TestingAttestationData
 	data.Slot = slot
-	if committeeIndex != 0 {
-		data.Index = committeeIndex
-	}
 	return &data, spec.DataVersionPhase0, nil
 }
 

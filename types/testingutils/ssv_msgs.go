@@ -390,7 +390,6 @@ var postConsensusAttestationMsg = func(
 
 	attData := &phase0.AttestationData{
 		Slot:            phase0.Slot(height),
-		Index:           TestingAttestationData.Index,
 		BeaconBlockRoot: TestingAttestationData.BeaconBlockRoot,
 		Source:          TestingAttestationData.Source,
 		Target:          TestingAttestationData.Target,
