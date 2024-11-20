@@ -60,7 +60,6 @@ func main() {
 	}
 
 	// make small test files read-only
-	os.Chmod(testsDir, 0444)
 	err := os.Chmod(testsDir, 0444)
 	if err != nil {
 		panic(err.Error())
