@@ -35,14 +35,14 @@ func main() {
 
 	log.Printf("found %d tests\n", len(all))
 	if len(all) != len(spectest.AllTests) {
-		panic("did not generate all tests\n")
+		log.Fatalf("did not generate all tests\n")
 	}
 
 	// write small json files for each test
 	// try to create directory if it doesn't exist
 	_, basedir, _, ok := runtime.Caller(0)
 	if !ok {
-		panic("no caller info")
+		log.Fatalf("no caller info")
 	}
 	testsDir := filepath.Join(strings.TrimSuffix(basedir, "main.go"), "tests")
 	if err := os.MkdirAll(testsDir, 0700); err != nil && !os.IsExist(err) {
@@ -58,6 +58,9 @@ func main() {
 		name = "tests/" + name
 		writeJson(name, byts)
 	}
+
+	// make small test files read-only
+	os.Chmod(testsDir, 0444)
 
 	// write large tests.json file
 	byts, err := json.Marshal(all)
