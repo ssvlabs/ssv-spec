@@ -60,7 +60,7 @@ func main() {
 	}
 
 	// make small test files read-only
-	err := os.Chmod(testsDir, 0444)
+	err := os.Chmod(testsDir, 0644) // #nosec G302 -- Everyone can read the test files
 	if err != nil {
 		panic(err.Error())
 	}
@@ -141,9 +141,6 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 	}
 
 	scDir := scDir(testType)
-	if err != nil {
-		panic(err.Error())
-	}
 
 	file := filepath.Join(scDir, fmt.Sprintf("%s.json", path))
 	// try to create directory if it doesn't exist

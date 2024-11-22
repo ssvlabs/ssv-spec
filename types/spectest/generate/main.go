@@ -55,7 +55,7 @@ func main() {
 	}
 
 	// make small test files read-only
-	err := os.Chmod(testsDir, 0444)
+	err := os.Chmod(testsDir, 0644) // #nosec G302 -- Everyone can read the test files
 	if err != nil {
 		panic(err.Error())
 	}
