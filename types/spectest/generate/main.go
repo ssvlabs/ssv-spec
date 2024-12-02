@@ -54,12 +54,6 @@ func main() {
 		writeJson(name, byts)
 	}
 
-	// make small test files read-only
-	err := os.Chmod(testsDir, 0644) // #nosec G302 -- Everyone can read the test files
-	if err != nil {
-		panic(err.Error())
-	}
-
 	// write large tests.json file
 	byts, err := json.Marshal(all)
 	if err != nil {
