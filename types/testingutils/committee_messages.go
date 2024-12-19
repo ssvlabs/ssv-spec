@@ -107,10 +107,6 @@ func CommitteeInputForSlotInSequencedDuties(numAttestingValidators int, numSyncC
 	// Validators assigned to the duties
 	attValidatorsForDuty, scValidatorsForDuty := selectValidatorsForDuties(numAttestingValidators, numSyncCommitteeValidators, numSequencedDuties, slotIncrement, diffValidatorsForDuties)
 
-	if currentSlot < 0 {
-		panic("Invalid current slot")
-	}
-
 	// Duty
 	duty := TestingCommitteeDuty(phase0.Slot(currentSlot), attValidatorsForDuty, scValidatorsForDuty)
 
@@ -168,9 +164,6 @@ func CommitteeOutputMessagesForDutiesWithParams(numSequencedDuties int, numAttes
 	for slotIncrement := 0; slotIncrement < numSequencedDuties; slotIncrement++ {
 
 		currentSlot := startingSlot + slotIncrement
-		if currentSlot < 0 {
-			panic("Invalid current slot")
-		}
 
 		// Validators assigned to the duties
 		attValidatorsForDuty, scValidatorsForDuty := selectValidatorsForDuties(numAttestingValidators, numSyncCommitteeValidators, numSequencedDuties, slotIncrement, diffValidatorsForDuties)
@@ -210,9 +203,6 @@ func CommitteeBeaconBroadcastedRootsForDutiesWithParams(numSequencedDuties int, 
 	for slotIncrement := 0; slotIncrement < numSequencedDuties; slotIncrement++ {
 
 		currentSlot := startingSlot + slotIncrement
-		if currentSlot < 0 {
-			panic("Invalid current slot")
-		}
 
 		// Validators assigned to the duties
 		attValidatorsForDuty, scValidatorsForDuty := selectValidatorsForDuties(numAttestingValidators, numSyncCommitteeValidators, numSequencedDuties, slotIncrement, diffValidatorsForDuties)

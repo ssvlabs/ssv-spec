@@ -10,7 +10,6 @@ type TestingNetwork struct {
 	BroadcastedMsgs []*types.SignedSSVMessage
 	OperatorID      types.OperatorID
 	OperatorSK      *rsa.PrivateKey
-	Domain          types.DomainType
 }
 
 func NewTestingNetwork(operatorID types.OperatorID, sk *rsa.PrivateKey) *TestingNetwork {
@@ -18,7 +17,6 @@ func NewTestingNetwork(operatorID types.OperatorID, sk *rsa.PrivateKey) *Testing
 		BroadcastedMsgs: make([]*types.SignedSSVMessage, 0),
 		OperatorID:      operatorID,
 		OperatorSK:      sk,
-		Domain:          TestingSSVDomainType,
 	}
 }
 
@@ -33,9 +31,4 @@ func ConvertBroadcastedMessagesToSSVMessages(signedMessages []*types.SignedSSVMe
 		ret = append(ret, msg.SSVMessage)
 	}
 	return ret
-}
-
-// GetDomainType returns the Domain type used for signatures
-func (c *TestingNetwork) GetDomainType() types.DomainType {
-	return c.Domain
 }

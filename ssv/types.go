@@ -24,8 +24,6 @@ func (ci DutyRunners) DutyRunnerForMsgID(msgID types.MessageID) Runner {
 // Network is the network interface for SSV
 type Network interface {
 	p2p.Broadcaster
-	// GetDomainType returns the Domain type used for signatures
-	GetDomainType() types.DomainType
 }
 
 // AttesterCalls interface has all attester duty specific calls
