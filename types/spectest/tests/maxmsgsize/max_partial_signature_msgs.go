@@ -6,7 +6,7 @@ import (
 
 const (
 	maxSizePartialSignatureMessage                 = 144
-	maxSizePartialSignatureMessages                = 144020
+	maxSizePartialSignatureMessages                = 217748
 	maxSizePartialSignatureMessagesForPreConsensus = 1892
 )
 
@@ -25,7 +25,7 @@ func maxPartialSignatureMessage() *types.PartialSignatureMessage {
 func maxPartialSignatureMessages() *types.PartialSignatureMessages {
 
 	msgs := make([]*types.PartialSignatureMessage, 0)
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < 1512; i++ {
 		msgs = append(msgs, maxPartialSignatureMessage())
 	}
 

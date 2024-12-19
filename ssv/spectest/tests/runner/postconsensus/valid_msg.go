@@ -48,7 +48,7 @@ func decideRunnerForData(r ssv.Runner, duty types.Duty, decidedValue []byte) ssv
 		break
 	}
 
-	quorum := ((uint64(len(share.Committee))-1)/3)*2 + 1
+	quorum := (uint64(len(share.Committee)-1)/3)*2 + 1
 	r.GetBaseRunner().State = ssv.NewRunnerState(quorum, duty)
 	r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 		r.GetBaseRunner().QBFTController.GetConfig(),
