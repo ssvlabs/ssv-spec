@@ -386,6 +386,33 @@ func TestingValidatorRegistrationBySlot(slot phase0.Slot) *v1.ValidatorRegistrat
 	}
 }
 
+var TestingSignedValidatorRegistration = func(ks *TestKeySet) *v1.SignedValidatorRegistration {
+	vr := TestingValidatorRegistration
+	sig := signBeaconObject(vr, types.DomainApplicationBuilder, ks)
+	return &v1.SignedValidatorRegistration{
+		Message:   vr,
+		Signature: sig,
+	}
+}
+
+var TestingSignedValidatorRegistrationWrong = func(ks *TestKeySet) *v1.SignedValidatorRegistration {
+	vr := TestingValidatorRegistrationWrong
+	sig := signBeaconObject(vr, types.DomainApplicationBuilder, ks)
+	return &v1.SignedValidatorRegistration{
+		Message:   vr,
+		Signature: sig,
+	}
+}
+
+var TestingSignedValidatorRegistrationBySlot = func(ks *TestKeySet, slot phase0.Slot) *v1.SignedValidatorRegistration {
+	vr := TestingValidatorRegistrationBySlot(slot)
+	sig := signBeaconObject(vr, types.DomainApplicationBuilder, ks)
+	return &v1.SignedValidatorRegistration{
+		Message:   vr,
+		Signature: sig,
+	}
+}
+
 var TestingVoluntaryExit = &phase0.VoluntaryExit{
 	Epoch:          0,
 	ValidatorIndex: TestingValidatorIndex,
