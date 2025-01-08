@@ -92,7 +92,7 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Parti
 		return errors.New("no share to get validator public key")
 	}
 
-	registration, err := r.calculateValidatorRegistration(r.beacon.GetBeaconNetwork().FirstSlotAtEpoch(r.beacon.GetBeaconNetwork().EstimatedCurrentEpoch()))
+	registration, err := r.calculateValidatorRegistration(r.BaseRunner.State.StartingDuty.DutySlot())
 	if err != nil {
 		return errors.Wrap(err, "could not calculate validator registration")
 	}
