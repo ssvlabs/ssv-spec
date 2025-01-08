@@ -201,6 +201,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			net,
 			km,
 			opSigner,
+			types.DefaultGasLimit,
 		)
 	case types.RoleVoluntaryExit:
 		runner, err = ssv.NewVoluntaryExitRunner(
@@ -357,6 +358,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			net,
 			km,
 			opSigner,
+			types.DefaultGasLimit,
 		)
 	case types.RoleVoluntaryExit:
 		runner, err = ssv.NewVoluntaryExitRunner(

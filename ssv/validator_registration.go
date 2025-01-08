@@ -1,7 +1,9 @@
 package ssv
 
 import (
+	"github.com/attestantio/go-eth2-client/api"
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -18,6 +20,8 @@ type ValidatorRegistrationRunner struct {
 	signer         types.BeaconSigner
 	operatorSigner *types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
+
+	gasLimit uint64
 }
 
 func NewValidatorRegistrationRunner(
@@ -27,6 +31,7 @@ func NewValidatorRegistrationRunner(
 	network Network,
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
+	gasLimit uint64,
 ) (Runner, error) {
 
 	if len(share) != 1 {
@@ -44,6 +49,7 @@ func NewValidatorRegistrationRunner(
 		network:        network,
 		signer:         signer,
 		operatorSigner: operatorSigner,
+		gasLimit:       gasLimit,
 	}, nil
 }
 
@@ -86,8 +92,20 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Parti
 		return errors.New("no share to get validator public key")
 	}
 
-	if err := r.beacon.SubmitValidatorRegistration(share.ValidatorPubKey[:],
-		share.FeeRecipientAddress, specSig); err != nil {
+	registration, err := r.calculateValidatorRegistration(r.beacon.GetBeaconNetwork().FirstSlotAtEpoch(r.beacon.GetBeaconNetwork().EstimatedCurrentEpoch()))
+	if err != nil {
+		return errors.Wrap(err, "could not calculate validator registration")
+	}
+
+	signed := &api.VersionedSignedValidatorRegistration{
+		Version: spec.BuilderVersionV1,
+		V1: &v1.SignedValidatorRegistration{
+			Message:   registration,
+			Signature: specSig,
+		},
+	}
+
+	if err := r.beacon.SubmitValidatorRegistration(signed); err != nil {
 		return errors.Wrap(err, "could not submit validator registration")
 	}
 
@@ -107,7 +125,7 @@ func (r *ValidatorRegistrationRunner) expectedPreConsensusRootsAndDomain() ([]ss
 	if r.BaseRunner.State == nil || r.BaseRunner.State.StartingDuty == nil {
 		return nil, types.DomainError, errors.New("no running duty to compute preconsensus roots and domain")
 	}
-	vr, err := r.calculateValidatorRegistration(r.BaseRunner.State.StartingDuty)
+	vr, err := r.calculateValidatorRegistration(r.BaseRunner.State.StartingDuty.DutySlot())
 	if err != nil {
 		return nil, types.DomainError, errors.Wrap(err, "could not calculate validator registration")
 	}
@@ -120,7 +138,7 @@ func (r *ValidatorRegistrationRunner) expectedPostConsensusRootsAndDomain() ([]s
 }
 
 func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
-	vr, err := r.calculateValidatorRegistration(duty)
+	vr, err := r.calculateValidatorRegistration(duty.DutySlot())
 	if err != nil {
 		return errors.Wrap(err, "could not calculate validator registration")
 	}
@@ -167,7 +185,7 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 	return nil
 }
 
-func (r *ValidatorRegistrationRunner) calculateValidatorRegistration(duty types.Duty) (*v1.ValidatorRegistration, error) {
+func (r *ValidatorRegistrationRunner) calculateValidatorRegistration(slot phase0.Slot) (*v1.ValidatorRegistration, error) {
 
 	share := r.GetShare()
 	if share == nil {
@@ -177,11 +195,11 @@ func (r *ValidatorRegistrationRunner) calculateValidatorRegistration(duty types.
 	pk := phase0.BLSPubKey{}
 	copy(pk[:], share.ValidatorPubKey[:])
 
-	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(duty.DutySlot())
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(slot)
 
 	return &v1.ValidatorRegistration{
 		FeeRecipient: share.FeeRecipientAddress,
-		GasLimit:     types.DefaultGasLimit,
+		GasLimit:     r.gasLimit,
 		Timestamp:    r.BaseRunner.BeaconNetwork.EpochStartTime(epoch),
 		Pubkey:       pk,
 	}, nil
