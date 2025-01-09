@@ -2,7 +2,6 @@ package types
 
 import (
 	"bytes"
-
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 )
@@ -19,6 +18,7 @@ func (sigType SignatureType) Equal(other SignatureType) bool {
 var (
 	QBFTSignatureType    SignatureType = [4]byte{1, 0, 0, 0}
 	PartialSignatureType SignatureType = [4]byte{2, 0, 0, 0}
+	DKGSignatureType     SignatureType = [4]byte{3, 0, 0, 0}
 )
 
 type BeaconSigner interface {

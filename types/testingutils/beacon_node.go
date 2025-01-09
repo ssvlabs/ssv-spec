@@ -446,9 +446,6 @@ var TestingProposerDutyFirstSlot = types.ValidatorDuty{
 }
 
 func getValPubKeyByValIdx(valIdx int) phase0.BLSPubKey {
-	if valIdx < 0 {
-		panic("Invalid validator index")
-	}
 	return TestingValidatorPubKeyForValidatorIndex(phase0.ValidatorIndex(valIdx))
 }
 
@@ -507,16 +504,11 @@ func TestingCommitteeDutyWithParams(slot phase0.Slot, attestationValidatorIds []
 
 	for _, valIdx := range attestationValidatorIds {
 		pk := getValPubKeyByValIdx(valIdx)
-
-		if valIdx < 0 {
-			panic("Invalid validator index")
-		}
-
 		duties = append(duties, &types.ValidatorDuty{
 			Type:                    types.BNRoleAttester,
 			PubKey:                  pk,
 			Slot:                    slot,
-			ValidatorIndex:          phase0.ValidatorIndex(uint64(valIdx)),
+			ValidatorIndex:          phase0.ValidatorIndex(valIdx),
 			CommitteeIndex:          committeeIndex,
 			CommitteesAtSlot:        committeesAtSlot,
 			CommitteeLength:         committeeLenght,
@@ -526,11 +518,6 @@ func TestingCommitteeDutyWithParams(slot phase0.Slot, attestationValidatorIds []
 
 	for _, valIdx := range syncCommitteeValidatorIds {
 		pk := getValPubKeyByValIdx(valIdx)
-
-		if valIdx < 0 {
-			panic("Invalid validator index")
-		}
-
 		duties = append(duties, &types.ValidatorDuty{
 			Type:                          types.BNRoleSyncCommittee,
 			PubKey:                        pk,
