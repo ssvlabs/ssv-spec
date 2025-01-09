@@ -86,12 +86,6 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Parti
 	specSig := phase0.BLSSignature{}
 	copy(specSig[:], fullSig)
 
-	// Get share
-	share := r.GetShare()
-	if share == nil {
-		return errors.New("no share to get validator public key")
-	}
-
 	registration, err := r.calculateValidatorRegistration(r.BaseRunner.State.StartingDuty.DutySlot())
 	if err != nil {
 		return errors.Wrap(err, "could not calculate validator registration")
