@@ -3,7 +3,7 @@ module github.com/ssvlabs/ssv-spec
 go 1.22
 
 require (
-	github.com/attestantio/go-eth2-client v0.21.3
+	github.com/attestantio/go-eth2-client v0.23.0
 	github.com/ethereum/go-ethereum v1.14.8
 	github.com/ferranbt/fastssz v0.1.3
 	github.com/google/go-cmp v0.6.0
