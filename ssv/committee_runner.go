@@ -486,6 +486,7 @@ func (cr CommitteeRunner) GetOperatorSigner() *types.OperatorSigner {
 func constructAttestationData(vote *types.BeaconVote, duty *types.ValidatorDuty) *phase0.AttestationData {
 	return &phase0.AttestationData{
 		Slot:            duty.Slot,
+		Index:           0, // EIP-7549: Index should be set to 0
 		BeaconBlockRoot: vote.BlockRoot,
 		Source:          vote.Source,
 		Target:          vote.Target,

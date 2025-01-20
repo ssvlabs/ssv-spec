@@ -85,6 +85,7 @@ var TestWrongBeaconVote = types.BeaconVote{
 
 var TestingAttestationData = &phase0.AttestationData{
 	Slot:            TestingDutySlot,
+	Index:           0, // EIP-7549: Index should be set to 0
 	BeaconBlockRoot: TestingBlockRoot,
 	Source: &phase0.Checkpoint{
 		Epoch: 0,
@@ -101,6 +102,7 @@ var TestingAttestationDataRoot, _ = TestingAttestationData.HashTreeRoot()
 var TestingAttestationDataForValidatorDuty = func(duty *types.ValidatorDuty) *phase0.AttestationData {
 	return &phase0.AttestationData{
 		Slot:            duty.Slot,
+		Index:           0, // EIP-7549: Index should be set to 0
 		BeaconBlockRoot: TestBeaconVote.BlockRoot,
 		Source:          TestBeaconVote.Source,
 		Target:          TestBeaconVote.Target,
@@ -114,6 +116,7 @@ var TestingAttestationDataBytes = func() []byte {
 
 var TestingAttestationNextEpochData = &phase0.AttestationData{
 	Slot:            TestingDutySlot2,
+	Index:           0, // EIP-7549: Index should be set to 0
 	BeaconBlockRoot: TestingBlockRoot,
 	Source: &phase0.Checkpoint{
 		Epoch: 0,

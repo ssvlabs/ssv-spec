@@ -390,6 +390,7 @@ var postConsensusAttestationMsg = func(
 
 	attData := &phase0.AttestationData{
 		Slot:            phase0.Slot(height),
+		Index:           0, // EIP-7549: Index should be set to 0
 		BeaconBlockRoot: TestingAttestationData.BeaconBlockRoot,
 		Source:          TestingAttestationData.Source,
 		Target:          TestingAttestationData.Target,
