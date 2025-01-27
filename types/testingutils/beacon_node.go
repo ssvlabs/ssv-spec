@@ -14,6 +14,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
+	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -180,6 +181,41 @@ var TestingSignedAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIn
 	return ret
 }
 
+var TestingSingleAttestation = func(ks *TestKeySet) *electra.SingleAttestation {
+	duty := TestingAttesterDuty.ValidatorDuties[0]
+	return &electra.SingleAttestation{
+		CommitteeIndex: duty.CommitteeIndex,
+		AttesterIndex:  duty.ValidatorIndex,
+		Data:           TestingAttestationData,
+		Signature:      signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
+	}
+}
+
+var TestingSingleAttestationForValidatorIndex = func(ks *TestKeySet, validatorIndex phase0.ValidatorIndex) *electra.SingleAttestation {
+	committeeDuty := TestingCommitteeAttesterDuty(TestingDutySlot, []int{int(validatorIndex)})
+	duty := committeeDuty.ValidatorDuties[0]
+	return &electra.SingleAttestation{
+		CommitteeIndex: duty.CommitteeIndex,
+		AttesterIndex:  validatorIndex,
+		Data:           TestingAttestationData,
+		Signature:      signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
+	}
+}
+
+var TestingSingleAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
+	ret := make([]string, 0)
+	for valIdx, ks := range ksMap {
+		duty := TestingAttesterDuty.ValidatorDuties[0]
+		ret = append(ret, GetSSZRootNoError(&electra.SingleAttestation{
+			CommitteeIndex: duty.CommitteeIndex,
+			AttesterIndex:  valIdx,
+			Data:           TestingAttestationData,
+			Signature:      signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
+		}))
+	}
+	return ret
+}
+
 var TestingSignedCommitteeBeaconObjectSSZRoot = func(duty *types.CommitteeDuty, ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
 	ret := make([]string, 0)
 	for _, validatorDuty := range duty.ValidatorDuties {
@@ -190,10 +226,11 @@ var TestingSignedCommitteeBeaconObjectSSZRoot = func(duty *types.CommitteeDuty, 
 			attData := TestingAttestationDataForValidatorDuty(validatorDuty)
 			aggregationBitfield := bitfield.NewBitlist(validatorDuty.CommitteeLength)
 			aggregationBitfield.SetBitAt(validatorDuty.ValidatorCommitteeIndex, true)
-			ret = append(ret, GetSSZRootNoError(&phase0.Attestation{
-				Data:            attData,
-				Signature:       signBeaconObject(attData, types.DomainAttester, ks),
-				AggregationBits: aggregationBitfield,
+			ret = append(ret, GetSSZRootNoError(&electra.SingleAttestation{
+				CommitteeIndex: validatorDuty.CommitteeIndex,
+				AttesterIndex:  validatorDuty.ValidatorIndex,
+				Data:           attData,
+				Signature:      signBeaconObject(attData, types.DomainAttester, ks),
 			}))
 		} else if validatorDuty.Type == types.BNRoleSyncCommittee {
 			ret = append(ret, GetSSZRootNoError(&altair.SyncCommitteeMessage{
@@ -697,7 +734,7 @@ func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot) (*phase0.
 }
 
 // SubmitAttestations submit attestations to the node
-func (bn *TestingBeaconNode) SubmitAttestations(attestations []*phase0.Attestation) error {
+func (bn *TestingBeaconNode) SubmitAttestations(attestations []*electra.SingleAttestation) error {
 	for _, att := range attestations {
 		r, _ := att.HashTreeRoot()
 		bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)

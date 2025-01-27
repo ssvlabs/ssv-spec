@@ -37,7 +37,7 @@ func PostFinish() tests.SpecTest {
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
 				},
 				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSingleAttestation(ks)),
 				},
 				ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
 			},
@@ -79,7 +79,7 @@ func PostFinish() tests.SpecTest {
 					testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
 				},
 				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSingleAttestation(ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
 				},
 				ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",

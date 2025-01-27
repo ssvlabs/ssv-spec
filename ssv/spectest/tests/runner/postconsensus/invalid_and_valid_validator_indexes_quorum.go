@@ -32,7 +32,7 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestationForValidatorIndex(ks, testingutils.TestingValidatorIndex)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSingleAttestationForValidatorIndex(ks, testingutils.TestingValidatorIndex)),
 				},
 				DontStartDuty: true,
 			},
@@ -70,7 +70,7 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestationForValidatorIndex(ks, testingutils.TestingValidatorIndex)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSingleAttestationForValidatorIndex(ks, testingutils.TestingValidatorIndex)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRootForValidatorIndex(ks, testingutils.TestingValidatorIndex)),
 				},
 				DontStartDuty: true,

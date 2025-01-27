@@ -55,7 +55,7 @@ func HappyFlow() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationMsgForKeySet(ksMap, 1, testingutils.TestingDutySlot),
 				},
-				BeaconBroadcastedRoots: testingutils.TestingSignedAttestationSSZRootForKeyMap(ksMap),
+				BeaconBroadcastedRoots: testingutils.TestingSingleAttestationSSZRootForKeyMap(ksMap),
 			},
 			{
 				Name:      fmt.Sprintf("%v sync committee", numValidators),
@@ -106,7 +106,7 @@ func HappyFlow() tests.SpecTest {
 					testingutils.PostConsensusAttestationAndSyncCommitteeMsgForKeySet(ksMap, 1, testingutils.TestingDutySlot),
 				},
 				BeaconBroadcastedRoots: append(
-					testingutils.TestingSignedAttestationSSZRootForKeyMap(ksMap),
+					testingutils.TestingSingleAttestationSSZRootForKeyMap(ksMap),
 					testingutils.TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap(ksMap)...),
 			},
 		}...)

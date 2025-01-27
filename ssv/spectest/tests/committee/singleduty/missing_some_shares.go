@@ -56,7 +56,7 @@ func MissingSomeShares() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationMsgForKeySet(committeeShareKSMap, 1, testingutils.TestingDutySlot),
 				},
-				BeaconBroadcastedRoots: testingutils.TestingSignedAttestationSSZRootForKeyMap(committeeShareKSMap),
+				BeaconBroadcastedRoots: testingutils.TestingSingleAttestationSSZRootForKeyMap(committeeShareKSMap),
 			},
 			{
 				Name:      "sync committee",
@@ -111,7 +111,7 @@ func MissingSomeShares() tests.SpecTest {
 					testingutils.PostConsensusAttestationAndSyncCommitteeMsgForKeySet(committeeShareKSMap, 1, testingutils.TestingDutySlot),
 				},
 				BeaconBroadcastedRoots: append(
-					testingutils.TestingSignedAttestationSSZRootForKeyMap(committeeShareKSMap),
+					testingutils.TestingSingleAttestationSSZRootForKeyMap(committeeShareKSMap),
 					testingutils.TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap(committeeShareKSMap)...),
 			},
 		},

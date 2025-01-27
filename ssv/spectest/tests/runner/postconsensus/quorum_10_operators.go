@@ -34,7 +34,7 @@ func Quorum10Operators() tests.SpecTest {
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSingleAttestation(ks)),
 				},
 				DontStartDuty: true,
 			},
@@ -80,7 +80,7 @@ func Quorum10Operators() tests.SpecTest {
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSingleAttestation(ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
 				},
 				DontStartDuty: true,
