@@ -51,7 +51,7 @@ type AggregatorCalls interface {
 	// SubmitAggregateSelectionProof returns an AggregateAndProof object
 	SubmitAggregateSelectionProof(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, index phase0.ValidatorIndex, slotSig []byte) (ssz.Marshaler, spec.DataVersion, error)
 	// SubmitSignedAggregateSelectionProof broadcasts a signed aggregator msg
-	SubmitSignedAggregateSelectionProof(msg *phase0.SignedAggregateAndProof) error
+	SubmitSignedAggregateSelectionProof(msg *spec.VersionedSignedAggregateAndProof) error
 }
 
 // SyncCommitteeCalls interface has all sync committee duty specific calls
