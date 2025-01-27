@@ -3,7 +3,7 @@ module github.com/ssvlabs/ssv-spec
 go 1.22
 
 require (
-	github.com/attestantio/go-eth2-client v0.23.0
+	github.com/attestantio/go-eth2-client v0.23.1-0.20250123113554-ea64849115de // temporary branch. TO-DO: update to the latest release when available.
 	github.com/ethereum/go-ethereum v1.14.8
 	github.com/ferranbt/fastssz v0.1.3
 	github.com/google/go-cmp v0.6.0

@@ -5,6 +5,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
+	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 
@@ -32,7 +33,7 @@ type AttesterCalls interface {
 	GetAttestationData(slot phase0.Slot) (*phase0.AttestationData,
 		spec.DataVersion, error)
 	// SubmitAttestation submit the attestation to the node
-	SubmitAttestations(attestations []*phase0.Attestation) error
+	SubmitAttestations(attestations []*electra.SingleAttestation) error
 }
 
 // ProposerCalls interface has all block proposer duty specific calls

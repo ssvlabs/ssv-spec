@@ -2,10 +2,10 @@ package ssv
 
 import (
 	"github.com/attestantio/go-eth2-client/spec/altair"
+	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
-	"github.com/prysmaticlabs/go-bitfield"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -180,7 +180,7 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 	}
 
 	var anyErr error
-	attestationsToSubmit := make(map[phase0.ValidatorIndex]*phase0.Attestation)
+	attestationsToSubmit := make(map[phase0.ValidatorIndex]*electra.SingleAttestation)
 	syncCommitteeMessagesToSubmit := make(map[phase0.ValidatorIndex]*altair.SyncCommitteeMessage)
 
 	// For each root that got at least one quorum, find the duties associated to it and try to submit
@@ -246,7 +246,7 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 				syncCommitteeMessagesToSubmit[validator] = syncMsg
 
 			} else if role == types.BNRoleAttester {
-				att := sszObject.(*phase0.Attestation)
+				att := sszObject.(*electra.SingleAttestation)
 				// Insert signature
 				att.Signature = specSig
 
@@ -256,7 +256,7 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 	}
 
 	// Submit multiple attestations
-	attestations := make([]*phase0.Attestation, 0, len(attestationsToSubmit))
+	attestations := make([]*electra.SingleAttestation, 0, len(attestationsToSubmit))
 	for _, att := range attestationsToSubmit {
 		attestations = append(attestations, att)
 	}
@@ -402,11 +402,11 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 
 			// Attestation object
 			attestationData := constructAttestationData(beaconVote, validatorDuty)
-			aggregationBitfield := bitfield.NewBitlist(validatorDuty.CommitteeLength)
-			aggregationBitfield.SetBitAt(validatorDuty.ValidatorCommitteeIndex, true)
-			unSignedAtt := &phase0.Attestation{
-				Data:            attestationData,
-				AggregationBits: aggregationBitfield,
+			singleAttestation := &electra.SingleAttestation{
+				CommitteeIndex: validatorDuty.CommitteeIndex,
+				AttesterIndex:  validatorDuty.ValidatorIndex,
+				Data:           attestationData,
+				Signature:      phase0.BLSSignature{},
 			}
 
 			// Root
@@ -424,7 +424,7 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 			if _, ok := beaconObjects[validatorDuty.ValidatorIndex]; !ok {
 				beaconObjects[validatorDuty.ValidatorIndex] = make(map[[32]byte]ssz.HashRoot)
 			}
-			beaconObjects[validatorDuty.ValidatorIndex][root] = unSignedAtt
+			beaconObjects[validatorDuty.ValidatorIndex][root] = singleAttestation
 		case types.BNRoleSyncCommittee:
 			// Sync committee beacon object
 			syncMsg := &altair.SyncCommitteeMessage{
