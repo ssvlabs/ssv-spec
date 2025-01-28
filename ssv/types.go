@@ -90,6 +90,8 @@ type DomainCalls interface {
 }
 
 type VersionCalls interface {
+	// DataVersion returns a data version for the given epoch.
+	// In practice, for performance, responses can be cached in order not to always trigger an API call.
 	DataVersion(epoch phase0.Epoch) spec.DataVersion
 }
 
