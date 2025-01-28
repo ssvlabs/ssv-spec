@@ -5,7 +5,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
-	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 
@@ -33,7 +32,7 @@ type AttesterCalls interface {
 	GetAttestationData(slot phase0.Slot) (*phase0.AttestationData,
 		spec.DataVersion, error)
 	// SubmitAttestation submit the attestation to the node
-	SubmitAttestations(attestations []*electra.SingleAttestation) error
+	SubmitAttestations(attestations []*types.VersionedAttestationResponse) error
 }
 
 // ProposerCalls interface has all block proposer duty specific calls
@@ -90,6 +89,10 @@ type DomainCalls interface {
 	DomainData(epoch phase0.Epoch, domain phase0.DomainType) (phase0.Domain, error)
 }
 
+type VersionCalls interface {
+	DataVersion(epoch phase0.Epoch) spec.DataVersion
+}
+
 type BeaconNode interface {
 	// GetBeaconNetwork returns the beacon network the node is on
 	GetBeaconNetwork() types.BeaconNetwork
@@ -101,4 +104,5 @@ type BeaconNode interface {
 	ValidatorRegistrationCalls
 	VoluntaryExitCalls
 	DomainCalls
+	VersionCalls
 }
