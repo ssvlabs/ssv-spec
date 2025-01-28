@@ -423,6 +423,33 @@ func TestingValidatorRegistrationBySlot(slot phase0.Slot) *v1.ValidatorRegistrat
 	}
 }
 
+var TestingSignedValidatorRegistration = func(ks *TestKeySet) *v1.SignedValidatorRegistration {
+	vr := TestingValidatorRegistration
+	sig := signBeaconObject(vr, types.DomainApplicationBuilder, ks)
+	return &v1.SignedValidatorRegistration{
+		Message:   vr,
+		Signature: sig,
+	}
+}
+
+var TestingSignedValidatorRegistrationWrong = func(ks *TestKeySet) *v1.SignedValidatorRegistration {
+	vr := TestingValidatorRegistrationWrong
+	sig := signBeaconObject(vr, types.DomainApplicationBuilder, ks)
+	return &v1.SignedValidatorRegistration{
+		Message:   vr,
+		Signature: sig,
+	}
+}
+
+var TestingSignedValidatorRegistrationBySlot = func(ks *TestKeySet, slot phase0.Slot) *v1.SignedValidatorRegistration {
+	vr := TestingValidatorRegistrationBySlot(slot)
+	sig := signBeaconObject(vr, types.DomainApplicationBuilder, ks)
+	return &v1.SignedValidatorRegistration{
+		Message:   vr,
+		Signature: sig,
+	}
+}
+
 var TestingVoluntaryExit = &phase0.VoluntaryExit{
 	Epoch:          0,
 	ValidatorIndex: TestingValidatorIndex,
@@ -742,18 +769,8 @@ func (bn *TestingBeaconNode) SubmitAttestations(attestations []*electra.SingleAt
 	return nil
 }
 
-func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig phase0.BLSSignature) error {
-	pk := phase0.BLSPubKey{}
-	copy(pk[:], pubkey)
-
-	vr := v1.ValidatorRegistration{
-		FeeRecipient: feeRecipient,
-		GasLimit:     TestingValidatorRegistration.GasLimit,
-		Timestamp:    TestingValidatorRegistration.Timestamp,
-		Pubkey:       pk,
-	}
-
-	r, _ := vr.HashTreeRoot()
+func (bn *TestingBeaconNode) SubmitValidatorRegistration(registration *api.VersionedSignedValidatorRegistration) error {
+	r, _ := registration.V1.HashTreeRoot()
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
