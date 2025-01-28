@@ -9,30 +9,14 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-const (
-
-	//Deneb Fork Epoch
-	ForkEpochPraterDeneb = 231680
-
-	// ForkEpochPraterCapella Goerli taken from https://github.com/ethereum/execution-specs/blob/37a8f892341eb000e56e962a051a87e05a2e4443/network-upgrades/mainnet-upgrades/shanghai.md?plain=1#L18
-	ForkEpochPraterCapella = 162304
-
-	TestingDutyEpochCapella         = ForkEpochPraterCapella
-	TestingDutySlotCapella          = ForkEpochPraterCapella * 32
-	TestingDutySlotCapellaNextEpoch = TestingDutySlotCapella + 32
-	TestingDutySlotCapellaInvalid   = TestingDutySlotCapella + 50
-
-	TestingDutyEpochDeneb         = ForkEpochPraterDeneb
-	TestingDutySlotDeneb          = ForkEpochPraterDeneb * 32
-	TestingDutySlotDenebNextEpoch = TestingDutySlotDeneb + 32
-	TestingDutySlotDenebInvalid   = TestingDutySlotDeneb + 50
-)
+// ==================================================
+// Versioned (Blinded) Beacon Block
+// ==================================================
 
 // SupportedBlockVersions is a list of supported regular/blinded beacon block versions by spec.
 var SupportedBlockVersions = []spec.DataVersion{spec.DataVersionCapella, spec.DataVersionDeneb}
@@ -204,90 +188,6 @@ var TestingSignedBlindedBeaconBlockV = func(ks *TestKeySet, version spec.DataVer
 	}
 }
 
-var TestingDutyEpochV = func(version spec.DataVersion) phase0.Epoch {
-	switch version {
-	case spec.DataVersionCapella:
-		return TestingDutyEpochCapella
-	case spec.DataVersionDeneb:
-		return TestingDutyEpochDeneb
-
-	default:
-		panic("unsupported version")
-	}
-}
-
-var TestingDutySlotV = func(version spec.DataVersion) phase0.Slot {
-	switch version {
-	case spec.DataVersionCapella:
-		return TestingDutySlotCapella
-	case spec.DataVersionDeneb:
-		return TestingDutySlotDeneb
-
-	default:
-		panic("unsupported version")
-	}
-}
-
-var VersionBySlot = func(slot phase0.Slot) spec.DataVersion {
-	if slot < ForkEpochPraterDeneb*32 {
-		return spec.DataVersionCapella
-	}
-	return spec.DataVersionDeneb
-}
-
-var TestingProposerDutyV = func(version spec.DataVersion) *types.ValidatorDuty {
-	duty := &types.ValidatorDuty{
-		Type:           types.BNRoleProposer,
-		PubKey:         TestingValidatorPubKey,
-		Slot:           TestingDutySlotV(version),
-		ValidatorIndex: TestingValidatorIndex,
-		// ISSUE 233: We are initializing unused struct fields here
-		CommitteeIndex:          3,
-		CommitteesAtSlot:        36,
-		CommitteeLength:         128,
-		ValidatorCommitteeIndex: 11,
-	}
-
-	return duty
-}
-
-var TestingProposerDutyNextEpochV = func(version spec.DataVersion) *types.ValidatorDuty {
-	duty := &types.ValidatorDuty{
-		Type:           types.BNRoleProposer,
-		PubKey:         TestingValidatorPubKey,
-		ValidatorIndex: TestingValidatorIndex,
-		// ISSUE 233: We are initializing unused struct fields here
-		CommitteeIndex:          3,
-		CommitteesAtSlot:        36,
-		CommitteeLength:         128,
-		ValidatorCommitteeIndex: 11,
-	}
-
-	switch version {
-	case spec.DataVersionCapella:
-		duty.Slot = TestingDutySlotCapellaNextEpoch
-	case spec.DataVersionDeneb:
-		duty.Slot = TestingDutySlotDenebNextEpoch
-
-	default:
-		panic("unsupported version")
-	}
-
-	return duty
-}
-
-var TestingInvalidDutySlotV = func(version spec.DataVersion) phase0.Slot {
-	switch version {
-	case spec.DataVersionCapella:
-		return TestingDutySlotCapellaInvalid
-	case spec.DataVersionDeneb:
-		return TestingDutySlotDenebInvalid
-
-	default:
-		panic("unsupported version")
-	}
-}
-
 var TestingBeaconBlockCapella = func() *capella.BeaconBlock {
 	var res capella.BeaconBlock
 	err := json.Unmarshal(capellaBlock, &res)
@@ -397,3 +297,55 @@ var TestingBlindedBeaconBlockDeneb = func() *apiv1deneb.BlindedBeaconBlock {
 
 	return ret
 }()
+
+// ==================================================
+// Versioned Proposer Duty
+// ==================================================
+
+var TestingProposerDutyV = func(version spec.DataVersion) *types.ValidatorDuty {
+	duty := &types.ValidatorDuty{
+		Type:           types.BNRoleProposer,
+		PubKey:         TestingValidatorPubKey,
+		Slot:           TestingDutySlotV(version),
+		ValidatorIndex: TestingValidatorIndex,
+		// ISSUE 233: We are initializing unused struct fields here
+		CommitteeIndex:          3,
+		CommitteesAtSlot:        36,
+		CommitteeLength:         128,
+		ValidatorCommitteeIndex: 11,
+	}
+
+	return duty
+}
+
+var TestingProposerDutyNextEpochV = func(version spec.DataVersion) *types.ValidatorDuty {
+	duty := &types.ValidatorDuty{
+		Type:           types.BNRoleProposer,
+		PubKey:         TestingValidatorPubKey,
+		ValidatorIndex: TestingValidatorIndex,
+		// ISSUE 233: We are initializing unused struct fields here
+		CommitteeIndex:          3,
+		CommitteesAtSlot:        36,
+		CommitteeLength:         128,
+		ValidatorCommitteeIndex: 11,
+	}
+
+	switch version {
+	case spec.DataVersionCapella:
+		duty.Slot = TestingDutySlotCapellaNextEpoch
+	case spec.DataVersionDeneb:
+		duty.Slot = TestingDutySlotDenebNextEpoch
+
+	default:
+		panic("unsupported version")
+	}
+
+	return duty
+}
+
+var TestingProposerDutyFirstSlot = types.ValidatorDuty{
+	Type:           types.BNRoleProposer,
+	PubKey:         TestingValidatorPubKey,
+	Slot:           0,
+	ValidatorIndex: TestingValidatorIndex,
+}

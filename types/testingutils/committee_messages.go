@@ -108,7 +108,7 @@ func CommitteeInputForSlotInSequencedDuties(numAttestingValidators int, numSyncC
 	attValidatorsForDuty, scValidatorsForDuty := selectValidatorsForDuties(numAttestingValidators, numSyncCommitteeValidators, numSequencedDuties, slotIncrement, diffValidatorsForDuties)
 
 	// Duty
-	duty := TestingCommitteeDuty(phase0.Slot(currentSlot), attValidatorsForDuty, scValidatorsForDuty)
+	duty := TestingCommitteeDutyForSlot(phase0.Slot(currentSlot), attValidatorsForDuty, scValidatorsForDuty)
 
 	// QBFT and Post-Consensus
 	msgs := CommitteeInputForDuty(duty, phase0.Slot(currentSlot), ksMap, addPostConsensus)
@@ -168,7 +168,7 @@ func CommitteeOutputMessagesForDutiesWithParams(numSequencedDuties int, numAttes
 		// Validators assigned to the duties
 		attValidatorsForDuty, scValidatorsForDuty := selectValidatorsForDuties(numAttestingValidators, numSyncCommitteeValidators, numSequencedDuties, slotIncrement, diffValidatorsForDuties)
 
-		duty := TestingCommitteeDuty(phase0.Slot(currentSlot), attValidatorsForDuty, scValidatorsForDuty)
+		duty := TestingCommitteeDutyForSlot(phase0.Slot(currentSlot), attValidatorsForDuty, scValidatorsForDuty)
 		postConsensusMsg := PostConsensusCommitteeMsgForDuty(duty, ksMap, 1)
 
 		// Add post consensus
@@ -207,7 +207,7 @@ func CommitteeBeaconBroadcastedRootsForDutiesWithParams(numSequencedDuties int, 
 		// Validators assigned to the duties
 		attValidatorsForDuty, scValidatorsForDuty := selectValidatorsForDuties(numAttestingValidators, numSyncCommitteeValidators, numSequencedDuties, slotIncrement, diffValidatorsForDuties)
 
-		duty := TestingCommitteeDuty(phase0.Slot(currentSlot), attValidatorsForDuty, scValidatorsForDuty)
+		duty := TestingCommitteeDutyForSlot(phase0.Slot(currentSlot), attValidatorsForDuty, scValidatorsForDuty)
 
 		beaconRoots := TestingSignedCommitteeBeaconObjectSSZRoot(duty, ksMap)
 
@@ -232,7 +232,7 @@ func CommitteeBeaconBroadcastedRootsForDuty(slot phase0.Slot, numAttestingValida
 
 	ret := make([]string, 0)
 
-	duty := TestingCommitteeDuty(slot, attValidatorsIndexList, scValidatorsIndexList)
+	duty := TestingCommitteeDutyForSlot(slot, attValidatorsIndexList, scValidatorsIndexList)
 
 	beaconRoots := TestingSignedCommitteeBeaconObjectSSZRoot(duty, ksMap)
 

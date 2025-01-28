@@ -73,14 +73,14 @@ var TestWrongBeaconVoteByts, _ = TestWrongBeaconVote.Encode()
 // ValidatorConsensusData - Attester
 
 var TestAttesterConsensusData = &types.ValidatorConsensusData{
-	Duty:    *TestingAttesterDuty.ValidatorDuties[0],
+	Duty:    *TestingAttesterDuty(spec.DataVersionPhase0).ValidatorDuties[0],
 	DataSSZ: TestingAttestationDataBytes,
 	Version: spec.DataVersionPhase0,
 }
 var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.Encode()
 
 var TestAttesterNextEpochConsensusData = &types.ValidatorConsensusData{
-	Duty:    *TestingAttesterDutyNextEpoch.ValidatorDuties[0],
+	Duty:    *TestingAttesterDutyNextEpoch(spec.DataVersionPhase0).ValidatorDuties[0],
 	DataSSZ: TestingAttestationNextEpochDataBytes,
 	Version: spec.DataVersionPhase0,
 }
@@ -90,8 +90,8 @@ var TestingAttesterNextEpochConsensusDataByts, _ = TestAttesterNextEpochConsensu
 // ValidatorConsensusData - Aggregator
 
 var TestAggregatorConsensusData = &types.ValidatorConsensusData{
-	Duty:    TestingAggregatorDuty,
-	DataSSZ: TestingAggregateAndProofBytes,
+	Duty:    *TestingAggregatorDuty(spec.DataVersionPhase0),
+	DataSSZ: TestingAggregateAndProofBytesV(spec.DataVersionPhase0),
 	Version: spec.DataVersionPhase0,
 }
 var TestAggregatorConsensusDataByts, _ = TestAggregatorConsensusData.Encode()
@@ -99,14 +99,14 @@ var TestAggregatorConsensusDataByts, _ = TestAggregatorConsensusData.Encode()
 // ValidatorConsensusData - Sync Committee
 
 var TestSyncCommitteeConsensusData = &types.ValidatorConsensusData{
-	Duty:    *TestingSyncCommitteeDuty.ValidatorDuties[0],
+	Duty:    *TestingSyncCommitteeDuty(spec.DataVersionPhase0).ValidatorDuties[0],
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
 	Version: spec.DataVersionPhase0,
 }
 var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encode()
 
 var TestSyncCommitteeNextEpochConsensusData = &types.ValidatorConsensusData{
-	Duty:    *TestingSyncCommitteeDutyNextEpoch.ValidatorDuties[0],
+	Duty:    *TestingSyncCommitteeDutyNextEpoch(spec.DataVersionPhase0).ValidatorDuties[0],
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
 	Version: spec.DataVersionPhase0,
 }
@@ -895,9 +895,9 @@ var postConsensusAggregatorMsg = func(
 	beacon := NewTestingBeaconNode()
 	d, _ := beacon.DomainData(1, types.DomainAggregateAndProof)
 
-	aggData := TestingAggregateAndProof
+	aggData := TestingPhase0AggregateAndProof
 	if wrongRoot {
-		aggData = TestingWrongAggregateAndProof
+		aggData = TestingWrongPhase0AggregateAndProof
 	}
 
 	signed, root, _ := signer.SignBeaconObject(aggData, d, sk.GetPublicKey().Serialize(), types.DomainAggregateAndProof)
