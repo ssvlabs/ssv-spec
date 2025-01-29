@@ -52,10 +52,27 @@ func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot) (*phase0.
 }
 
 // SubmitAttestations submit attestations to the node
-func (bn *TestingBeaconNode) SubmitAttestations(attestations []*types.VersionedAttestationResponse) error {
+func (bn *TestingBeaconNode) SubmitAttestations(attestations []*spec.VersionedAttestation) error {
 	for _, att := range attestations {
-		r, _ := att.HashTreeRoot()
-		bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+
+		var root [32]byte
+
+		switch att.Version {
+		case spec.DataVersionPhase0:
+			root, _ = att.Phase0.HashTreeRoot()
+		case spec.DataVersionAltair:
+			root, _ = att.Altair.HashTreeRoot()
+		case spec.DataVersionBellatrix:
+			root, _ = att.Bellatrix.HashTreeRoot()
+		case spec.DataVersionCapella:
+			root, _ = att.Capella.HashTreeRoot()
+		case spec.DataVersionDeneb:
+			root, _ = att.Deneb.HashTreeRoot()
+		case spec.DataVersionElectra:
+			root, _ = att.Electra.HashTreeRoot()
+		}
+
+		bn.BroadcastedRoots = append(bn.BroadcastedRoots, root)
 	}
 	return nil
 }
