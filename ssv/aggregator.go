@@ -205,7 +205,7 @@ func (r *AggregatorRunner) ProcessPostConsensus(signedMsg *types.PartialSignatur
 			return errors.Wrap(err, "could not get aggregate and proof")
 		}
 
-		msg, err := contrusctVersionedSignedAggregateAndProof(*aggregateAndProof, specSig)
+		msg, err := constructVersionedSignedAggregateAndProof(*aggregateAndProof, specSig)
 		if err != nil {
 			return errors.Wrap(err, "could not construct versioned aggregate and proof")
 		}
