@@ -39,51 +39,6 @@ func FutureDecided() tests.SpecTest {
 		Name: "consensus future decided",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
-				Name:   "attester",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
-						[]types.OperatorID{1, 2, 3},
-						testingutils.TestingDutySlot+1,
-						getID(types.RoleCommittee),
-					),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  errStrCommittee,
-			},
-			{
-				Name:   "sync committee",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
-						[]types.OperatorID{1, 2, 3},
-						testingutils.TestingDutySlot+1,
-						getID(types.RoleCommittee),
-					),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  errStrCommittee,
-			},
-			{
-				Name:   "attester and sync committee",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
-						[]types.OperatorID{1, 2, 3},
-						testingutils.TestingDutySlot+1,
-						getID(types.RoleCommittee),
-					),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  errStrCommittee,
-			},
-			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
@@ -105,29 +60,81 @@ func FutureDecided() tests.SpecTest {
 				},
 				ExpectedError: errStr,
 			},
+		},
+	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name:   fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner: testingutils.AggregatorRunner(ks),
+			Duty:   testingutils.TestingAggregatorDuty(version),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3, version))),
+				testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+					[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+					[]types.OperatorID{1, 2, 3},
+					testingutils.TestingDutySlot+1,
+					getID(types.RoleAggregator),
+				),
+			},
+			OutputMessages: []*types.PartialSignatureMessages{
+				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
+			},
+			ExpectedError: errStr,
+		},
+		)
+	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
 			{
-				Name:   "aggregator",
-				Runner: testingutils.AggregatorRunner(ks),
-				Duty:   &testingutils.TestingAggregatorDuty,
+				Name:   fmt.Sprintf("attester (%s)", version.String()),
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterDuty(version),
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3))),
 					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 						[]types.OperatorID{1, 2, 3},
 						testingutils.TestingDutySlot+1,
-						getID(types.RoleAggregator),
+						getID(types.RoleCommittee),
 					),
 				},
-				PostDutyRunnerStateRoot: futureDecidedAggregatorSC().Root(),
-				PostDutyRunnerState:     futureDecidedAggregatorSC().ExpectedState,
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-				},
-				ExpectedError: errStr,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  errStrCommittee,
 			},
-		},
+			{
+				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+						[]types.OperatorID{1, 2, 3},
+						testingutils.TestingDutySlot+1,
+						getID(types.RoleCommittee),
+					),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  errStrCommittee,
+			},
+			{
+				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
+						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
+						[]types.OperatorID{1, 2, 3},
+						testingutils.TestingDutySlot+1,
+						getID(types.RoleCommittee),
+					),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  errStrCommittee,
+			},
+		}...)
 	}
 
 	// proposerV creates a test specification for versioned proposer.

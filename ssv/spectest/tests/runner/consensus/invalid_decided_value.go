@@ -2,6 +2,7 @@ package consensus
 
 import (
 	"crypto/rsa"
+	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -37,63 +38,9 @@ func InvalidDecidedValue() tests.SpecTest {
 	expectedCommitteeErr := "failed processing consensus message: decided ValidatorConsensusData invalid: decided value" +
 		" is invalid: attestation data source >= target"
 
-	return &tests.MultiMsgProcessingSpecTest{
+	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus decided invalid value",
 		Tests: []*tests.MsgProcessingSpecTest{
-			{
-				Name:   "attester",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-						[]*rsa.PrivateKey{
-							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
-						},
-						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.CommitteeMsgID(ks),
-						testingutils.TestWrongBeaconVoteByts,
-					),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedCommitteeErr,
-			},
-			{
-				Name:   "sync committee",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-						[]*rsa.PrivateKey{
-							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
-						},
-						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.CommitteeMsgID(ks),
-						testingutils.TestWrongBeaconVoteByts,
-					),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedCommitteeErr,
-			},
-			{
-				Name:   "attester and sync committee",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-						[]*rsa.PrivateKey{
-							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
-						},
-						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.CommitteeMsgID(ks),
-						testingutils.TestWrongBeaconVoteByts,
-					),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedCommitteeErr,
-			},
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -125,31 +72,6 @@ func InvalidDecidedValue() tests.SpecTest {
 				PostDutyRunnerStateRoot: "aff4af0dbbead81d6cb9dd4ff734d4660712a8b5ab8e9016a3f86e2c2ead7549",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-				},
-				ExpectedError: expectedErr,
-			},
-			{
-				Name:   "aggregator",
-				Runner: testingutils.AggregatorRunner(ks),
-				Duty:   &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3))),
-
-					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-						[]*rsa.PrivateKey{
-							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
-						},
-						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.AggregatorMsgID,
-						consensusDataByts(),
-					),
-				},
-				PostDutyRunnerStateRoot: "a93047858c5597f2b1de078a566e6b0227a217e10758a741ff7a2ed9e0a87d96",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
 				ExpectedError: expectedErr,
 			},
@@ -205,4 +127,94 @@ func InvalidDecidedValue() tests.SpecTest {
 			},
 		},
 	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name:   fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner: testingutils.AggregatorRunner(ks),
+			Duty:   testingutils.TestingAggregatorDuty(version),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3, version))),
+
+				testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+					[]*rsa.PrivateKey{
+						ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
+					},
+					[]types.OperatorID{1, 2, 3},
+					qbft.Height(testingutils.TestingDutySlotV(version)),
+					testingutils.AggregatorMsgID,
+					consensusDataByts(),
+				),
+			},
+			PostDutyRunnerStateRoot: "a93047858c5597f2b1de078a566e6b0227a217e10758a741ff7a2ed9e0a87d96",
+			OutputMessages: []*types.PartialSignatureMessages{
+				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
+			},
+			ExpectedError: expectedErr,
+		},
+		)
+	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+			{
+				Name:   fmt.Sprintf("attester (%s)", version.String()),
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+						[]*rsa.PrivateKey{
+							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
+						},
+						[]types.OperatorID{1, 2, 3},
+						qbft.Height(testingutils.TestingDutySlotV(version)),
+						testingutils.CommitteeMsgID(ks),
+						testingutils.TestWrongBeaconVoteByts,
+					),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedCommitteeErr,
+			},
+			{
+				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+						[]*rsa.PrivateKey{
+							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
+						},
+						[]types.OperatorID{1, 2, 3},
+						qbft.Height(testingutils.TestingDutySlotV(version)),
+						testingutils.CommitteeMsgID(ks),
+						testingutils.TestWrongBeaconVoteByts,
+					),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedCommitteeErr,
+			},
+			{
+				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+						[]*rsa.PrivateKey{
+							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
+						},
+						[]types.OperatorID{1, 2, 3},
+						qbft.Height(testingutils.TestingDutySlotV(version)),
+						testingutils.CommitteeMsgID(ks),
+						testingutils.TestWrongBeaconVoteByts,
+					),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedCommitteeErr,
+			},
+		}...)
+	}
+
+	return multiSpecTest
 }

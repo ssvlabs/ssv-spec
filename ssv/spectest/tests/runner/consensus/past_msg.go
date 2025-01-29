@@ -1,6 +1,8 @@
 package consensus
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -53,42 +55,9 @@ func PastMessage() tests.SpecTest {
 	// Another "past_msg" test (that is added in the committee package) runs with an existing past runner
 	expectedErrCommittee := "no runner found for message's slot"
 
-	return &tests.MultiMsgProcessingSpecTest{
+	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus past message",
 		Tests: []*tests.MsgProcessingSpecTest{
-			{
-				Name:   "attester",
-				Runner: bumpHeight(testingutils.CommitteeRunner(ks)),
-				Duty:   testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				DontStartDuty:  true,
-				ExpectedError:  expectedErrCommittee,
-			},
-			{
-				Name:   "sync committee",
-				Runner: bumpHeight(testingutils.CommitteeRunner(ks)),
-				Duty:   testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				DontStartDuty:  true,
-				ExpectedError:  expectedErrCommittee,
-			},
-			{
-				Name:   "attester and sync committee",
-				Runner: bumpHeight(testingutils.CommitteeRunner(ks)),
-				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
-				Messages: []*types.SignedSSVMessage{
-					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				DontStartDuty:  true,
-				ExpectedError:  expectedErrCommittee,
-			},
 			{
 				Name:   "sync committee contribution",
 				Runner: bumpHeight(testingutils.SyncCommitteeContributionRunner(ks)),
@@ -97,17 +66,6 @@ func PastMessage() tests.SpecTest {
 					pastMsgF(testingutils.TestSyncCommitteeContributionConsensusData, testingutils.SyncCommitteeContributionMsgID),
 				},
 				PostDutyRunnerStateRoot: "d1ba71cab348c80ebb7b4533c9c482eaba407f6a73864ee742aab93e73b94dab",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				DontStartDuty:           true,
-			},
-			{
-				Name:   "aggregator",
-				Runner: bumpHeight(testingutils.AggregatorRunner(ks)),
-				Duty:   &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SignedSSVMessage{
-					pastMsgF(testingutils.TestAggregatorConsensusData, testingutils.AggregatorMsgID),
-				},
-				PostDutyRunnerStateRoot: "5a1a9b9fb21682ea854f919be531a692fe5c3a6c5302214dbf3421faed57cff8",
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
 			},
@@ -165,4 +123,59 @@ func PastMessage() tests.SpecTest {
 			},
 		},
 	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name:   fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner: bumpHeight(testingutils.AggregatorRunner(ks)),
+			Duty:   testingutils.TestingAggregatorDuty(version),
+			Messages: []*types.SignedSSVMessage{
+				pastMsgF(testingutils.TestAggregatorConsensusData(version), testingutils.AggregatorMsgID),
+			},
+			PostDutyRunnerStateRoot: "5a1a9b9fb21682ea854f919be531a692fe5c3a6c5302214dbf3421faed57cff8",
+			OutputMessages:          []*types.PartialSignatureMessages{},
+			DontStartDuty:           true,
+		},
+		)
+	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+			{
+				Name:   fmt.Sprintf("attester (%s)", version.String()),
+				Runner: bumpHeight(testingutils.CommitteeRunner(ks)),
+				Duty:   testingutils.TestingAttesterDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				DontStartDuty:  true,
+				ExpectedError:  expectedErrCommittee,
+			},
+			{
+				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner: bumpHeight(testingutils.CommitteeRunner(ks)),
+				Duty:   testingutils.TestingSyncCommitteeDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				DontStartDuty:  true,
+				ExpectedError:  expectedErrCommittee,
+			},
+			{
+				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner: bumpHeight(testingutils.CommitteeRunner(ks)),
+				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties(version),
+				Messages: []*types.SignedSSVMessage{
+					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				DontStartDuty:  true,
+				ExpectedError:  expectedErrCommittee,
+			},
+		}...)
+	}
+
+	return multiSpecTest
 }
