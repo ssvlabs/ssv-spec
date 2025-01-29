@@ -1,7 +1,7 @@
 package partialsigcontainer
 
 import (
-	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,10 +13,10 @@ func DuplicateQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// Create PartialSignatureMessage for testing
-	msg1 := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
-	msg12 := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
-	msg2 := testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)
-	msg3 := testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight)
+	msg1 := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)
+	msg12 := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)
+	msg2 := testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, spec.DataVersionPhase0)
+	msg3 := testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, spec.DataVersionPhase0)
 	msgs := []*types.PartialSignatureMessage{msg1.Messages[0], msg12.Messages[0], msg2.Messages[0], msg3.Messages[0]}
 
 	// Verify the reconstructed signature
