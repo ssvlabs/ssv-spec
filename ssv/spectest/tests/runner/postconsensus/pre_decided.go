@@ -20,39 +20,6 @@ func PreDecided() tests.SpecTest {
 		Name: "post consensus before decided",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
-				Name:   "attester",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
-				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				ExpectedError:          err,
-			},
-			{
-				Name:   "sync committee",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1))),
-				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				ExpectedError:          err,
-			},
-			{
-				Name:   "attester and sync committee",
-				Runner: testingutils.CommitteeRunner(ks),
-				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot))),
-				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				ExpectedError:          err,
-			},
-			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
 				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
@@ -71,26 +38,66 @@ func PreDecided() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{},
 				ExpectedError:          err,
 			},
-			{
-				Name:   "aggregator",
-				Runner: testingutils.AggregatorRunner(ks),
-				Duty:   &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3))),
+		},
+	}
 
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1))),
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name:   fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner: testingutils.AggregatorRunner(ks),
+			Duty:   testingutils.TestingAggregatorDuty(version),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3, version))),
+
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version))),
+			},
+			OutputMessages: []*types.PartialSignatureMessages{
+				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
+			},
+			BeaconBroadcastedRoots: []string{},
+			ExpectedError:          err,
+		},
+		)
+	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+			{
+				Name:   fmt.Sprintf("attester (%s)", version.String()),
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version))),
 				},
-				PostDutyRunnerStateRoot: preDecidedAggregatorSC().Root(),
-				PostDutyRunnerState:     preDecidedAggregatorSC().ExpectedState,
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{},
 				ExpectedError:          err,
 			},
-		},
+			{
+				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				ExpectedError:          err,
+			},
+			{
+				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner: testingutils.CommitteeRunner(ks),
+				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				ExpectedError:          err,
+			},
+		}...)
 	}
 
 	// proposerV creates a test specification for versioned proposer.

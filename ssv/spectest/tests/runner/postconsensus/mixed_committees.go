@@ -1,6 +1,8 @@
 package postconsensus
 
 import (
+	"fmt"
+
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,15 +18,21 @@ func MixedCommittees() tests.SpecTest {
 	ksMap := testingutils.KeySetMapForValidators(numValidators)
 	shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
-	attestationCommitteeDuty := testingutils.TestingCommitteeDutyWithMixedCommitteeIndexes(testingutils.TestingDutySlot, validatorsIndexList, nil)
-	syncCommitteeCommitteeDuty := testingutils.TestingCommitteeDutyWithMixedCommitteeIndexes(testingutils.TestingDutySlot, nil, validatorsIndexList)
-	attestationAndSyncCommitteeCommitteeDuty := testingutils.TestingCommitteeDutyWithMixedCommitteeIndexes(testingutils.TestingDutySlot, validatorsIndexList, validatorsIndexList)
-
 	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "mixed committees",
-		Tests: []*tests.MsgProcessingSpecTest{
+		Name:  "mixed committees",
+		Tests: []*tests.MsgProcessingSpecTest{},
+	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+
+		attestationCommitteeDuty := testingutils.TestingCommitteeDutyWithMixedCommitteeIndexes(validatorsIndexList, nil, version)
+		syncCommitteeCommitteeDuty := testingutils.TestingCommitteeDutyWithMixedCommitteeIndexes(nil, validatorsIndexList, version)
+		attestationAndSyncCommitteeCommitteeDuty := testingutils.TestingCommitteeDutyWithMixedCommitteeIndexes(validatorsIndexList, validatorsIndexList, version)
+
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+
 			{
-				Name: "attester",
+				Name: fmt.Sprintf("attester (%s)", version.String()),
 				Runner: decideCommitteeRunner(
 					testingutils.CommitteeRunnerWithShareMap(shareMap),
 					attestationCommitteeDuty,
@@ -37,11 +45,11 @@ func MixedCommittees() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusCommitteeMsgForDuty(attestationCommitteeDuty, ksMap, 3))),
 				},
 				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: testingutils.TestingSignedCommitteeBeaconObjectSSZRoot(attestationCommitteeDuty, ksMap),
+				BeaconBroadcastedRoots: testingutils.TestingSignedCommitteeBeaconObjectSSZRoot(attestationCommitteeDuty, ksMap, version),
 				DontStartDuty:          true,
 			},
 			{
-				Name: "sync committee",
+				Name: fmt.Sprintf("sync committee (%s)", version.String()),
 				Runner: decideCommitteeRunner(
 					testingutils.CommitteeRunnerWithShareMap(shareMap),
 					syncCommitteeCommitteeDuty,
@@ -54,11 +62,11 @@ func MixedCommittees() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusCommitteeMsgForDuty(syncCommitteeCommitteeDuty, ksMap, 3))),
 				},
 				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: testingutils.TestingSignedCommitteeBeaconObjectSSZRoot(syncCommitteeCommitteeDuty, ksMap),
+				BeaconBroadcastedRoots: testingutils.TestingSignedCommitteeBeaconObjectSSZRoot(syncCommitteeCommitteeDuty, ksMap, version),
 				DontStartDuty:          true,
 			},
 			{
-				Name: "attester and sync committee",
+				Name: fmt.Sprintf("attester and sync committee (%s)", version.String()),
 				Runner: decideCommitteeRunner(
 					testingutils.CommitteeRunnerWithShareMap(shareMap),
 					attestationAndSyncCommitteeCommitteeDuty,
@@ -71,10 +79,10 @@ func MixedCommittees() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusCommitteeMsgForDuty(attestationAndSyncCommitteeCommitteeDuty, ksMap, 3))),
 				},
 				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: testingutils.TestingSignedCommitteeBeaconObjectSSZRoot(attestationAndSyncCommitteeCommitteeDuty, ksMap),
+				BeaconBroadcastedRoots: testingutils.TestingSignedCommitteeBeaconObjectSSZRoot(attestationAndSyncCommitteeCommitteeDuty, ksMap, version),
 				DontStartDuty:          true,
 			},
-		},
+		}...)
 	}
 
 	return multiSpecTest

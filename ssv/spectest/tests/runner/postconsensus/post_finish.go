@@ -1,6 +1,8 @@
 package postconsensus
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
@@ -13,57 +15,9 @@ func PostFinish() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 	err := "failed processing post consensus message: invalid post-consensus message: no running duty"
-	return &tests.MultiMsgProcessingSpecTest{
+	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "post consensus post finish",
 		Tests: []*tests.MsgProcessingSpecTest{
-			{
-				Name: "attester",
-				Runner: finishCommitteeRunner(
-					testingutils.CommitteeRunner(ks),
-					testingutils.TestingAttesterDuty,
-					&testingutils.TestBeaconVote,
-				),
-				Duty: testingutils.TestingAttesterDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[4], 4, testingutils.TestingDutySlot))),
-				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				DontStartDuty:          true,
-				ExpectedError:          err,
-			},
-			{
-				Name: "sync committee",
-				Runner: finishCommitteeRunner(
-					testingutils.CommitteeRunner(ks),
-					testingutils.TestingSyncCommitteeDuty,
-					&testingutils.TestBeaconVote,
-				),
-				Duty: testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[4], 4))),
-				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				DontStartDuty:          true,
-				ExpectedError:          err,
-			},
-			{
-				Name: "attester and sync committee",
-				Runner: finishCommitteeRunner(
-					testingutils.CommitteeRunner(ks),
-					testingutils.TestingAttesterAndSyncCommitteeDuties,
-					&testingutils.TestBeaconVote,
-				),
-				Duty: testingutils.TestingAttesterAndSyncCommitteeDuties,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[4], 4, testingutils.TestingDutySlot))),
-				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				DontStartDuty:          true,
-				ExpectedError:          err,
-			},
 			{
 				Name: "sync committee contribution",
 				Runner: finishRunner(
@@ -115,23 +69,83 @@ func PostFinish() tests.SpecTest {
 				DontStartDuty:           true,
 				ExpectedError:           err,
 			},
-			{
-				Name: "aggregator",
-				Runner: finishRunner(
-					testingutils.AggregatorRunner(ks),
-					&testingutils.TestingAggregatorDuty,
-					testingutils.TestAggregatorConsensusData,
-				),
-				Duty: &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[4], 4))),
-				},
-				PostDutyRunnerStateRoot: "7c0857b766096e33a04cb5043418ba8d69081998b6584b179051c2ab92413a0d",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
-				DontStartDuty:           true,
-				ExpectedError:           err,
-			},
 		},
 	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name: fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner: finishRunner(
+				testingutils.AggregatorRunner(ks),
+				testingutils.TestingAggregatorDuty(version),
+				testingutils.TestAggregatorConsensusData(version),
+			),
+			Duty: testingutils.TestingAggregatorDuty(version),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[4], 4, version))),
+			},
+			PostDutyRunnerStateRoot: "7c0857b766096e33a04cb5043418ba8d69081998b6584b179051c2ab92413a0d",
+			OutputMessages:          []*types.PartialSignatureMessages{},
+			BeaconBroadcastedRoots:  []string{},
+			DontStartDuty:           true,
+			ExpectedError:           err,
+		},
+		)
+	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+
+			{
+				Name: fmt.Sprintf("attester (%s)", version.String()),
+				Runner: finishCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterDuty(version),
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[4], 4, version))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          err,
+			},
+			{
+				Name: fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner: finishCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeDuty(version),
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingSyncCommitteeDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[4], 4, version))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          err,
+			},
+			{
+				Name: fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner: finishCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterAndSyncCommitteeDuties(version),
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterAndSyncCommitteeDuties(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[4], 4, version))),
+				},
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				DontStartDuty:          true,
+				ExpectedError:          err,
+			},
+		}...)
+	}
+
+	return multiSpecTest
 }

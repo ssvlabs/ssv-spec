@@ -59,54 +59,6 @@ func quorum7OperatorsSyncCommitteeContributionSC() *comparable.StateComparison {
 	}
 }
 
-// quorum7OperatorsAggregatorSC returns state comparison object for the Quorum7Operators Aggregator versioned spec test
-// runner should finish since quorum was achieved
-func quorum7OperatorsAggregatorSC() *comparable.StateComparison {
-	ks := testingutils.Testing7SharesSet()
-	cd := testingutils.TestAggregatorConsensusData
-	cdBytes := testingutils.TestAggregatorConsensusDataByts
-
-	return &comparable.StateComparison{
-		ExpectedState: func() ssv.Runner {
-			ret := testingutils.AggregatorRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
-					[]*types.SignedSSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(5),
-					[]*types.SignedSSVMessage{
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[4], 4))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[5], 5))),
-					},
-				),
-				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
-				StartingDuty: &cd.Duty,
-				Finished:     true,
-			}
-			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				State: &qbft.State{
-					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
-					ID:                ret.GetBaseRunner().QBFTController.Identifier,
-					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
-					LastPreparedRound: qbft.NoRound,
-					Decided:           true,
-					DecidedValue:      cdBytes,
-				},
-			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
-			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-
-			return ret
-		}(),
-	}
-}
-
 // quorum7OperatorsProposerSC returns state comparison object for the Quorum7Operators Proposer versioned spec test
 // runner should finish since quorum was achieved
 func quorum7OperatorsProposerSC(version spec.DataVersion) *comparable.StateComparison {
