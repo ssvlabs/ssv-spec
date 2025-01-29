@@ -46,7 +46,7 @@ func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot) (*phase0.
 	AttestationData, spec.DataVersion, error) {
 	version := VersionBySlot(slot)
-	data := *TestingAttestationData
+	data := *TestingAttestationData(version)
 	data.Slot = slot
 	return &data, version, nil
 }
@@ -170,17 +170,17 @@ func (bn *TestingBeaconNode) SubmitSignedAggregateSelectionProof(msg *spec.Versi
 
 	switch msg.Version {
 	case spec.DataVersionPhase0:
-		root, _ = msg.Phase0.Message.HashTreeRoot()
+		root, _ = msg.Phase0.HashTreeRoot()
 	case spec.DataVersionAltair:
-		root, _ = msg.Altair.Message.HashTreeRoot()
+		root, _ = msg.Altair.HashTreeRoot()
 	case spec.DataVersionBellatrix:
-		root, _ = msg.Bellatrix.Message.HashTreeRoot()
+		root, _ = msg.Bellatrix.HashTreeRoot()
 	case spec.DataVersionCapella:
-		root, _ = msg.Capella.Message.HashTreeRoot()
+		root, _ = msg.Capella.HashTreeRoot()
 	case spec.DataVersionDeneb:
-		root, _ = msg.Deneb.Message.HashTreeRoot()
+		root, _ = msg.Deneb.HashTreeRoot()
 	case spec.DataVersionElectra:
-		root, _ = msg.Electra.Message.HashTreeRoot()
+		root, _ = msg.Electra.HashTreeRoot()
 	}
 
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, root)

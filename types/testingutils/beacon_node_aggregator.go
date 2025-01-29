@@ -10,6 +10,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
+var SupportedAggregatorVersions = []spec.DataVersion{spec.DataVersionPhase0, spec.DataVersionElectra}
+
 // ==================================================
 // Versioned Aggregator Duty
 // ==================================================
@@ -106,6 +108,17 @@ var TestingVersionedSignedAggregateAndProof = func(ks *TestKeySet, version spec.
 	}
 }
 
+var TestingSignedAggregateAndProof = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
+	switch version {
+	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
+		return TestingPhase0SignedAggregateAndProof(ks)
+	case spec.DataVersionElectra:
+		return TestingElectraSignedAggregateAndProof(ks)
+	default:
+		panic("unknown data version")
+	}
+}
+
 var TestingAggregateAndProofBytesV = func(version spec.DataVersion) []byte {
 	if version == spec.DataVersionElectra {
 		return TestingElectraAggregateAndProofBytes
@@ -130,7 +143,7 @@ var TestingPhase0AggregateAndProof = &phase0.AggregateAndProof{
 	Aggregate: &phase0.Attestation{
 		AggregationBits: bitfield.NewBitlist(128),
 		Signature:       phase0.BLSSignature{},
-		Data:            TestingAttestationData,
+		Data:            TestingAttestationData(spec.DataVersionPhase0),
 	},
 }
 var TestingPhase0AggregateAndProofBytes = func() []byte {
@@ -159,7 +172,7 @@ var TestingElectraAggregateAndProof = &electra.AggregateAndProof{
 	Aggregate: &electra.Attestation{
 		AggregationBits: bitfield.NewBitlist(128),
 		Signature:       phase0.BLSSignature{},
-		Data:            TestingAttestationData,
+		Data:            TestingAttestationData(spec.DataVersionElectra),
 		CommitteeBits:   bitfield.NewBitvector64(),
 	},
 }
@@ -190,6 +203,6 @@ var TestingPhase0SignedAggregateAndProof = func(ks *TestKeySet) *phase0.SignedAg
 var TestingElectraSignedAggregateAndProof = func(ks *TestKeySet) *electra.SignedAggregateAndProof {
 	return &electra.SignedAggregateAndProof{
 		Message:   TestingElectraAggregateAndProof,
-		Signature: signBeaconObject(TestingPhase0AggregateAndProof, types.DomainAggregateAndProof, ks),
+		Signature: signBeaconObject(TestingElectraAggregateAndProof, types.DomainAggregateAndProof, ks),
 	}
 }

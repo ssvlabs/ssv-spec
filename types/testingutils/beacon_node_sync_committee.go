@@ -3,6 +3,7 @@ package testingutils
 import (
 	"encoding/hex"
 
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/prysmaticlabs/go-bitfield"
@@ -17,29 +18,29 @@ import (
 var TestingSyncCommitteeBlockRoot = TestingBlockRoot
 var TestingSyncCommitteeWrongBlockRoot = phase0.Root{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
-var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet) *altair.SyncCommitteeMessage {
+var TestingSignedSyncCommitteeBlockRoot = func(ks *TestKeySet, version spec.DataVersion) *altair.SyncCommitteeMessage {
 	return &altair.SyncCommitteeMessage{
-		Slot:            TestingDutySlot,
+		Slot:            TestingDutySlotV(version),
 		BeaconBlockRoot: TestingSyncCommitteeBlockRoot,
 		ValidatorIndex:  TestingValidatorIndex,
 		Signature:       signBeaconObject(types.SSZBytes(TestingSyncCommitteeBlockRoot[:]), types.DomainSyncCommittee, ks),
 	}
 }
 
-var TestingSignedSyncCommitteeBlockRootForValidatorIndex = func(ks *TestKeySet, validatorIndex phase0.ValidatorIndex) *altair.SyncCommitteeMessage {
+var TestingSignedSyncCommitteeBlockRootForValidatorIndex = func(ks *TestKeySet, validatorIndex phase0.ValidatorIndex, version spec.DataVersion) *altair.SyncCommitteeMessage {
 	return &altair.SyncCommitteeMessage{
-		Slot:            TestingDutySlot,
+		Slot:            TestingDutySlotV(version),
 		BeaconBlockRoot: TestingSyncCommitteeBlockRoot,
 		ValidatorIndex:  validatorIndex,
 		Signature:       signBeaconObject(types.SSZBytes(TestingSyncCommitteeBlockRoot[:]), types.DomainSyncCommittee, ks),
 	}
 }
 
-var TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
+var TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet, version spec.DataVersion) []string {
 	ret := make([]string, 0)
 	for valIdx, ks := range ksMap {
 		ret = append(ret, GetSSZRootNoError(&altair.SyncCommitteeMessage{
-			Slot:            TestingDutySlot,
+			Slot:            TestingDutySlotV(version),
 			BeaconBlockRoot: TestingBlockRoot,
 			ValidatorIndex:  valIdx,
 			Signature:       signBeaconObject(types.SSZBytes(TestingBlockRoot[:]), types.DomainSyncCommittee, ks),

@@ -21,6 +21,7 @@ var TestBeaconVote = types.BeaconVote{
 		Root:  TestingBlockRoot,
 	},
 }
+var TestBeaconVoteByts, _ = TestBeaconVote.Encode()
 
 var TestBeaconVoteNextEpoch = types.BeaconVote{
 	BlockRoot: TestingBlockRoot,
@@ -33,6 +34,7 @@ var TestBeaconVoteNextEpoch = types.BeaconVote{
 		Root:  TestingBlockRoot,
 	},
 }
+var TestBeaconVoteNextEpochByts, _ = TestBeaconVoteNextEpoch.Encode()
 
 var TestWrongBeaconVote = types.BeaconVote{
 	BlockRoot: phase0.Root{1, 2, 3, 4},
@@ -45,3 +47,4 @@ var TestWrongBeaconVote = types.BeaconVote{
 		Root:  phase0.Root{1, 2, 3, 5},
 	},
 }
+var TestWrongBeaconVoteByts, _ = TestWrongBeaconVote.Encode()

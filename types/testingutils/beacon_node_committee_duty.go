@@ -6,11 +6,11 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/prysmaticlabs/go-bitfield"
 	"github.com/ssvlabs/ssv-spec/types"
 )
+
+var SupportedAttestationVersions = []spec.DataVersion{spec.DataVersionPhase0, spec.DataVersionElectra}
 
 // ==================================================
 // Versioned CommitteeDuty
@@ -41,7 +41,7 @@ func TestingCommitteeDutyFirstSlot(attestationValidatorIds []int, syncCommitteeV
 }
 
 // Create a CommitteeDuty with attestations and sync committee with mixed CommitteeIndexes
-func TestingCommitteeDutyWithMixedCommitteeIndexes(slot phase0.Slot, attestationValidatorIds []int, syncCommitteeValidatorIds []int, version spec.DataVersion) *types.CommitteeDuty {
+func TestingCommitteeDutyWithMixedCommitteeIndexes(attestationValidatorIds []int, syncCommitteeValidatorIds []int, version spec.DataVersion) *types.CommitteeDuty {
 
 	// Sort the validator indexes
 	sort.Slice(attestationValidatorIds, func(i, j int) bool {
@@ -57,7 +57,7 @@ func TestingCommitteeDutyWithMixedCommitteeIndexes(slot phase0.Slot, attestation
 		} else {
 			// Assign the second half of the validators to a different committee index
 			duty = TestingCommitteeDutyWithParams(
-				slot,
+				TestingDutySlotV(version),
 				[]int{valIdx},
 				nil,
 				TestingDifferentCommitteeIndex,
@@ -84,7 +84,7 @@ func TestingCommitteeDutyWithMixedCommitteeIndexes(slot phase0.Slot, attestation
 		} else {
 			// Assign the second half of the validators to a different committee index
 			duty = TestingCommitteeDutyWithParams(
-				slot,
+				TestingDutySlotV(version),
 				nil,
 				[]int{valIdx},
 				TestingDifferentCommitteeIndex,
@@ -161,6 +161,10 @@ var TestingAttesterDutyForValidator = func(version spec.DataVersion, validatorIn
 	return TestingCommitteeDuty([]int{int(validatorIndex)}, nil, version)
 }
 
+var TestingAttesterDutyForValidators = func(version spec.DataVersion, validatorIndexLst []int) *types.CommitteeDuty {
+	return TestingCommitteeDuty(validatorIndexLst, nil, version)
+}
+
 var TestingAttesterDutyNextEpoch = func(version spec.DataVersion) *types.CommitteeDuty {
 	return TestingCommitteeDutyNextEpoch([]int{TestingValidatorIndex}, nil, version)
 }
@@ -179,6 +183,10 @@ var TestingSyncCommitteeDuty = func(version spec.DataVersion) *types.CommitteeDu
 
 var TestingSyncCommitteeDutyForValidator = func(version spec.DataVersion, validatorIndex phase0.ValidatorIndex) *types.CommitteeDuty {
 	return TestingCommitteeDuty(nil, []int{int(validatorIndex)}, version)
+}
+
+var TestingSyncCommitteeDutyForValidators = func(version spec.DataVersion, validatorIndexLst []int) *types.CommitteeDuty {
+	return TestingCommitteeDuty(nil, validatorIndexLst, version)
 }
 
 var TestingSyncCommitteeDutyNextEpoch = func(version spec.DataVersion) *types.CommitteeDuty {
@@ -207,22 +215,16 @@ var TestingAttesterAndSyncCommitteeDutiesFirstSlot = func() *types.CommitteeDuty
 // Beacon Roots for Committee duty
 // ==================================================
 
-var TestingSignedCommitteeBeaconObjectSSZRoot = func(duty *types.CommitteeDuty, ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
+var TestingSignedCommitteeBeaconObjectSSZRoot = func(duty *types.CommitteeDuty, ksMap map[phase0.ValidatorIndex]*TestKeySet, version spec.DataVersion) []string {
 	ret := make([]string, 0)
 	for _, validatorDuty := range duty.ValidatorDuties {
 
 		ks := ksMap[validatorDuty.ValidatorIndex]
 
 		if validatorDuty.Type == types.BNRoleAttester {
-			attData := TestingAttestationDataForValidatorDuty(validatorDuty)
-			aggregationBitfield := bitfield.NewBitlist(validatorDuty.CommitteeLength)
-			aggregationBitfield.SetBitAt(validatorDuty.ValidatorCommitteeIndex, true)
-			ret = append(ret, GetSSZRootNoError(&electra.SingleAttestation{
-				CommitteeIndex: validatorDuty.CommitteeIndex,
-				AttesterIndex:  validatorDuty.ValidatorIndex,
-				Data:           attData,
-				Signature:      signBeaconObject(attData, types.DomainAttester, ks),
-			}))
+
+			attResponse := TestingAttestationResponseBeaconObjectForDuty(ks, version, validatorDuty)
+			ret = append(ret, GetSSZRootNoError(attResponse))
 		} else if validatorDuty.Type == types.BNRoleSyncCommittee {
 			ret = append(ret, GetSSZRootNoError(&altair.SyncCommitteeMessage{
 				Slot:            validatorDuty.Slot,

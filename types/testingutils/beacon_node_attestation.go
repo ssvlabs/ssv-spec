@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	ssz "github.com/ferranbt/fastssz"
 	"github.com/prysmaticlabs/go-bitfield"
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -20,64 +21,88 @@ var TestingCommitteesAtSlot = uint64(36)
 var TestingCommitteeLenght = uint64(128)
 var TestingValidatorCommitteeIndex = uint64(11)
 
-var TestingAttestationData = &phase0.AttestationData{
-	Slot:            TestingDutySlot,
-	Index:           0, // EIP-7549: Index should be set to 0
-	BeaconBlockRoot: TestingBlockRoot,
-	Source: &phase0.Checkpoint{
-		Epoch: 0,
-		Root:  TestingBlockRoot,
-	},
-	Target: &phase0.Checkpoint{
-		Epoch: 1,
-		Root:  TestingBlockRoot,
-	},
+var TestingAttestationData = func(version spec.DataVersion) *phase0.AttestationData {
+	attData := &phase0.AttestationData{
+		Slot:            TestingDutySlotV(version),
+		Index:           TestingCommitteeIndex,
+		BeaconBlockRoot: TestingBlockRoot,
+		Source: &phase0.Checkpoint{
+			Epoch: 0,
+			Root:  TestingBlockRoot,
+		},
+		Target: &phase0.Checkpoint{
+			Epoch: 1,
+			Root:  TestingBlockRoot,
+		},
+	}
+
+	if version >= spec.DataVersionElectra {
+		attData.Index = 0
+	}
+
+	return attData
 }
 
-var TestingAttestationDataRoot, _ = TestingAttestationData.HashTreeRoot()
+var TestingAttestationDataBytes = func(version spec.DataVersion) []byte {
+	ret, _ := TestingAttestationData(version).MarshalSSZ()
+	return ret
+}
+
+var TestingAttestationDataRoot = func(version spec.DataVersion) [32]byte {
+	ret, _ := TestingAttestationData(version).HashTreeRoot()
+	return ret
+}
 
 var TestingAttestationDataForValidatorDuty = func(duty *types.ValidatorDuty) *phase0.AttestationData {
-	return &phase0.AttestationData{
+	attData := &phase0.AttestationData{
 		Slot:            duty.Slot,
-		Index:           0, // EIP-7549: Index should be set to 0
+		Index:           duty.CommitteeIndex,
 		BeaconBlockRoot: TestBeaconVote.BlockRoot,
 		Source:          TestBeaconVote.Source,
 		Target:          TestBeaconVote.Target,
 	}
+
+	version := VersionBySlot(duty.Slot)
+	if version >= spec.DataVersionElectra {
+		attData.Index = 0
+	}
+
+	return attData
 }
 
-var TestingAttestationDataBytes = func() []byte {
-	ret, _ := TestingAttestationData.MarshalSSZ()
-	return ret
-}()
-
-var TestingAttestationNextEpochData = &phase0.AttestationData{
-	Slot:            TestingDutySlot2,
-	Index:           0, // EIP-7549: Index should be set to 0
-	BeaconBlockRoot: TestingBlockRoot,
-	Source: &phase0.Checkpoint{
-		Epoch: 0,
-		Root:  TestingBlockRoot,
-	},
-	Target: &phase0.Checkpoint{
-		Epoch: 1,
-		Root:  TestingBlockRoot,
-	},
+var TestingAttestationNextEpochData = func(version spec.DataVersion) *phase0.AttestationData {
+	attData := &phase0.AttestationData{
+		Slot:            TestingDutySlotNextEpochV(version),
+		Index:           TestingCommitteeIndex,
+		BeaconBlockRoot: TestingBlockRoot,
+		Source: &phase0.Checkpoint{
+			Epoch: 0,
+			Root:  TestingBlockRoot,
+		},
+		Target: &phase0.Checkpoint{
+			Epoch: 1,
+			Root:  TestingBlockRoot,
+		},
+	}
+	if version >= spec.DataVersionElectra {
+		attData.Index = 0
+	}
+	return attData
 }
-var TestingAttestationNextEpochDataBytes = func() []byte {
-	ret, _ := TestingAttestationNextEpochData.MarshalSSZ()
+var TestingAttestationNextEpochDataBytes = func(version spec.DataVersion) []byte {
+	ret, _ := TestingAttestationNextEpochData(version).MarshalSSZ()
 	return ret
-}()
+}
 
-var TestingWrongAttestationData = func() *phase0.AttestationData {
-	byts, _ := TestingAttestationData.MarshalSSZ()
+var TestingWrongAttestationData = func(version spec.DataVersion) *phase0.AttestationData {
+	byts, _ := TestingAttestationData(version).MarshalSSZ()
 	ret := &phase0.AttestationData{}
 	if err := ret.UnmarshalSSZ(byts); err != nil {
 		panic(err.Error())
 	}
-	ret.Slot = 100
+	ret.Slot += 100
 	return ret
-}()
+}
 
 // ==================================================
 // Versioned Attestation Response
@@ -88,8 +113,8 @@ var TestingSignedAttestation = func(ks *TestKeySet) *phase0.Attestation {
 	aggregationBitfield := bitfield.NewBitlist(duty.CommitteeLength)
 	aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
 	return &phase0.Attestation{
-		Data:            TestingAttestationData,
-		Signature:       signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
+		Data:            TestingAttestationData(spec.DataVersionPhase0),
+		Signature:       signBeaconObject(TestingAttestationData(spec.DataVersionPhase0), types.DomainAttester, ks),
 		AggregationBits: aggregationBitfield,
 	}
 }
@@ -99,8 +124,8 @@ var TestingElectraSingleAttestation = func(ks *TestKeySet) *electra.SingleAttest
 	return &electra.SingleAttestation{
 		CommitteeIndex: duty.CommitteeIndex,
 		AttesterIndex:  duty.ValidatorIndex,
-		Data:           TestingAttestationData,
-		Signature:      signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
+		Data:           TestingAttestationData(spec.DataVersionElectra),
+		Signature:      signBeaconObject(TestingAttestationData(spec.DataVersionElectra), types.DomainAttester, ks),
 	}
 }
 
@@ -145,6 +170,18 @@ var TestingSignedAttestationResponse = func(ks *TestKeySet, version spec.DataVer
 	}
 }
 
+var TestingAttestationResponseBeaconObject = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
+
+	switch version {
+	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
+		return TestingSignedAttestation(ks)
+	case spec.DataVersionElectra:
+		return TestingElectraSingleAttestation(ks)
+	default:
+		panic("unknown data version")
+	}
+}
+
 // Custom Validator Index
 
 var TestingSignedAttestationForValidatorIndex = func(ks *TestKeySet, validatorIndex phase0.ValidatorIndex) *phase0.Attestation {
@@ -153,8 +190,8 @@ var TestingSignedAttestationForValidatorIndex = func(ks *TestKeySet, validatorIn
 	aggregationBitfield := bitfield.NewBitlist(duty.CommitteeLength)
 	aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
 	return &phase0.Attestation{
-		Data:            TestingAttestationData,
-		Signature:       signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
+		Data:            TestingAttestationData(spec.DataVersionPhase0),
+		Signature:       signBeaconObject(TestingAttestationData(spec.DataVersionPhase0), types.DomainAttester, ks),
 		AggregationBits: aggregationBitfield,
 	}
 }
@@ -165,8 +202,8 @@ var TestingElectraSingleAttestationForValidatorIndex = func(ks *TestKeySet, vali
 	return &electra.SingleAttestation{
 		CommitteeIndex: duty.CommitteeIndex,
 		AttesterIndex:  validatorIndex,
-		Data:           TestingAttestationData,
-		Signature:      signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
+		Data:           TestingAttestationData(spec.DataVersionElectra),
+		Signature:      signBeaconObject(TestingAttestationData(spec.DataVersionElectra), types.DomainAttester, ks),
 	}
 }
 
@@ -211,6 +248,94 @@ var TestingSignedAttestationResponseForValidatorIndex = func(ks *TestKeySet, ver
 	}
 }
 
+var TestingAttestationResponseBeaconObjectForValidatorIndex = func(ks *TestKeySet, version spec.DataVersion, validatorIndex phase0.ValidatorIndex) ssz.HashRoot {
+
+	switch version {
+	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
+		return TestingSignedAttestationForValidatorIndex(ks, validatorIndex)
+	case spec.DataVersionElectra:
+		return TestingElectraSingleAttestationForValidatorIndex(ks, validatorIndex)
+	default:
+		panic("unknown data version")
+	}
+}
+
+// Custom duty
+
+var TestingSignedAttestationForDuty = func(ks *TestKeySet, duty *types.ValidatorDuty) *phase0.Attestation {
+	aggregationBitfield := bitfield.NewBitlist(duty.CommitteeLength)
+	aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
+	attData := TestingAttestationDataForValidatorDuty(duty)
+	return &phase0.Attestation{
+		Data:            attData,
+		Signature:       signBeaconObject(attData, types.DomainAttester, ks),
+		AggregationBits: aggregationBitfield,
+	}
+}
+
+var TestingElectraSingleAttestationForDuty = func(ks *TestKeySet, duty *types.ValidatorDuty) *electra.SingleAttestation {
+	attData := TestingAttestationDataForValidatorDuty(duty)
+	return &electra.SingleAttestation{
+		CommitteeIndex: duty.CommitteeIndex,
+		AttesterIndex:  duty.ValidatorIndex,
+		Data:           attData,
+		Signature:      signBeaconObject(attData, types.DomainAttester, ks),
+	}
+}
+
+var TestingSignedAttestationResponseForDuty = func(ks *TestKeySet, version spec.DataVersion, duty *types.ValidatorDuty) *types.VersionedAttestationResponse {
+
+	switch version {
+	case spec.DataVersionPhase0:
+		return &types.VersionedAttestationResponse{
+			Version: version,
+			Phase0:  TestingSignedAttestationForDuty(ks, duty),
+		}
+
+	case spec.DataVersionAltair:
+		return &types.VersionedAttestationResponse{
+			Version: version,
+			Altair:  TestingSignedAttestationForDuty(ks, duty),
+		}
+
+	case spec.DataVersionBellatrix:
+		return &types.VersionedAttestationResponse{
+			Version:   version,
+			Bellatrix: TestingSignedAttestationForDuty(ks, duty),
+		}
+
+	case spec.DataVersionCapella:
+		return &types.VersionedAttestationResponse{
+			Version: version,
+			Capella: TestingSignedAttestationForDuty(ks, duty),
+		}
+	case spec.DataVersionDeneb:
+		return &types.VersionedAttestationResponse{
+			Version: version,
+			Deneb:   TestingSignedAttestationForDuty(ks, duty),
+		}
+	case spec.DataVersionElectra:
+		return &types.VersionedAttestationResponse{
+			Version: version,
+			Electra: TestingElectraSingleAttestationForDuty(ks, duty),
+		}
+	default:
+		panic("unknown data version")
+	}
+}
+
+var TestingAttestationResponseBeaconObjectForDuty = func(ks *TestKeySet, version spec.DataVersion, duty *types.ValidatorDuty) ssz.HashRoot {
+
+	switch version {
+	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
+		return TestingSignedAttestationForDuty(ks, duty)
+	case spec.DataVersionElectra:
+		return TestingElectraSingleAttestationForDuty(ks, duty)
+	default:
+		panic("unknown data version")
+	}
+}
+
 // SSZ Roots for Key Map
 
 var TestingSignedAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
@@ -220,8 +345,8 @@ var TestingSignedAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIn
 		aggregationBitfield := bitfield.NewBitlist(duty.CommitteeLength)
 		aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
 		ret = append(ret, GetSSZRootNoError(&phase0.Attestation{
-			Data:            TestingAttestationData,
-			Signature:       signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
+			Data:            TestingAttestationData(spec.DataVersionPhase0),
+			Signature:       signBeaconObject(TestingAttestationData(spec.DataVersionPhase0), types.DomainAttester, ks),
 			AggregationBits: aggregationBitfield,
 		}))
 	}
@@ -235,8 +360,8 @@ var TestingElectraSingleAttestationSSZRootForKeyMap = func(ksMap map[phase0.Vali
 		ret = append(ret, GetSSZRootNoError(&electra.SingleAttestation{
 			CommitteeIndex: duty.CommitteeIndex,
 			AttesterIndex:  valIdx,
-			Data:           TestingAttestationData,
-			Signature:      signBeaconObject(TestingAttestationData, types.DomainAttester, ks),
+			Data:           TestingAttestationData(spec.DataVersionElectra),
+			Signature:      signBeaconObject(TestingAttestationData(spec.DataVersionElectra), types.DomainAttester, ks),
 		}))
 	}
 	return ret
