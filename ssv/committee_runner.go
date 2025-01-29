@@ -3,9 +3,11 @@ package ssv
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
+	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
+	"github.com/prysmaticlabs/go-bitfield"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -181,7 +183,7 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 	}
 
 	var anyErr error
-	attestationsToSubmit := make(map[phase0.ValidatorIndex]*types.VersionedAttestationResponse)
+	attestationsToSubmit := make(map[phase0.ValidatorIndex]*spec.VersionedAttestation)
 	syncCommitteeMessagesToSubmit := make(map[phase0.ValidatorIndex]*altair.SyncCommitteeMessage)
 
 	// For each root that got at least one quorum, find the duties associated to it and try to submit
@@ -247,9 +249,9 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 				syncCommitteeMessagesToSubmit[validator] = syncMsg
 
 			} else if role == types.BNRoleAttester {
-				att := sszObject.(*types.VersionedAttestationResponse)
+				att := sszObject.(*spec.VersionedAttestation)
 				// Insert signature
-				err := att.WithSignature(specSig)
+				att, err = VersionedAttestationWithSignature(att, specSig)
 				if err != nil {
 					anyErr = errors.Wrap(err, "could not insert signature in versioned attestation")
 					continue
@@ -261,7 +263,7 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 	}
 
 	// Submit multiple attestations
-	attestations := make([]*types.VersionedAttestationResponse, 0, len(attestationsToSubmit))
+	attestations := make([]*spec.VersionedAttestation, 0, len(attestationsToSubmit))
 	for _, att := range attestationsToSubmit {
 		attestations = append(attestations, att)
 	}
@@ -384,11 +386,11 @@ func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot,
 func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	attestationMap map[phase0.ValidatorIndex][32]byte,
 	syncCommitteeMap map[phase0.ValidatorIndex][32]byte,
-	beaconObjects map[phase0.ValidatorIndex]map[[32]byte]ssz.HashRoot, error error,
+	beaconObjects map[phase0.ValidatorIndex]map[[32]byte]interface{}, error error,
 ) {
 	attestationMap = make(map[phase0.ValidatorIndex][32]byte)
 	syncCommitteeMap = make(map[phase0.ValidatorIndex][32]byte)
-	beaconObjects = make(map[phase0.ValidatorIndex]map[[32]byte]ssz.HashRoot)
+	beaconObjects = make(map[phase0.ValidatorIndex]map[[32]byte]interface{})
 	duty := cr.BaseRunner.State.StartingDuty.(*types.CommitteeDuty)
 	beaconVoteData := cr.BaseRunner.State.DecidedValue
 	beaconVote := &types.BeaconVote{}
@@ -408,7 +410,10 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 			// Attestation object
 			dataVersion := cr.beacon.DataVersion(cr.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(validatorDuty.Slot))
 			attestationData := constructAttestationData(beaconVote, validatorDuty, dataVersion)
-			attestationResponse := types.ConstrusctVersionedAttestationResponseWithoutSignature(attestationData, dataVersion, validatorDuty)
+			attestationResponse, err := ConstructVersionedAttestationWithoutSignature(attestationData, dataVersion, validatorDuty)
+			if err != nil {
+				continue
+			}
 
 			// Root
 			domain, err := cr.GetBeaconNode().DomainData(epoch, types.DomainAttester)
@@ -423,7 +428,7 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 			// Add to map
 			attestationMap[validatorDuty.ValidatorIndex] = root
 			if _, ok := beaconObjects[validatorDuty.ValidatorIndex]; !ok {
-				beaconObjects[validatorDuty.ValidatorIndex] = make(map[[32]byte]ssz.HashRoot)
+				beaconObjects[validatorDuty.ValidatorIndex] = make(map[[32]byte]interface{})
 			}
 			beaconObjects[validatorDuty.ValidatorIndex][root] = attestationResponse
 		case types.BNRoleSyncCommittee:
@@ -449,7 +454,7 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 			// Set root and beacon object
 			syncCommitteeMap[validatorDuty.ValidatorIndex] = root
 			if _, ok := beaconObjects[validatorDuty.ValidatorIndex]; !ok {
-				beaconObjects[validatorDuty.ValidatorIndex] = make(map[[32]byte]ssz.HashRoot)
+				beaconObjects[validatorDuty.ValidatorIndex] = make(map[[32]byte]interface{})
 			}
 			beaconObjects[validatorDuty.ValidatorIndex][root] = syncMsg
 		}
@@ -498,4 +503,86 @@ func constructAttestationData(vote *types.BeaconVote, duty *types.ValidatorDuty,
 	}
 
 	return attData
+}
+
+func VersionedAttestationWithSignature(att *spec.VersionedAttestation, specSig phase0.BLSSignature) (*spec.VersionedAttestation, error) {
+
+	switch att.Version {
+	case spec.DataVersionPhase0:
+		if att.Phase0 == nil {
+			return att, errors.New("no Phase0 attestation")
+		}
+		att.Phase0.Signature = specSig
+	case spec.DataVersionAltair:
+		if att.Altair == nil {
+			return att, errors.New("no Altair attestation")
+		}
+		att.Altair.Signature = specSig
+	case spec.DataVersionBellatrix:
+		if att.Bellatrix == nil {
+			return att, errors.New("no Bellatrix attestation")
+		}
+		att.Bellatrix.Signature = specSig
+	case spec.DataVersionCapella:
+		if att.Capella == nil {
+			return att, errors.New("no Capella attestation")
+		}
+		att.Capella.Signature = specSig
+	case spec.DataVersionDeneb:
+		if att.Deneb == nil {
+			return att, errors.New("no Deneb attestation")
+		}
+		att.Deneb.Signature = specSig
+	case spec.DataVersionElectra:
+		if att.Electra == nil {
+			return att, errors.New("no Electra attestation")
+		}
+		att.Electra.Signature = specSig
+	default:
+		return att, errors.New("unknown version")
+	}
+
+	return att, nil
+}
+
+func ConstructPhase0AttestationWithoutSignature(attestationData *phase0.AttestationData, validatorDuty *types.ValidatorDuty) *phase0.Attestation {
+	aggregationBitfield := bitfield.NewBitlist(validatorDuty.CommitteeLength)
+	aggregationBitfield.SetBitAt(validatorDuty.ValidatorCommitteeIndex, true)
+	return &phase0.Attestation{
+		Data:            attestationData,
+		AggregationBits: aggregationBitfield,
+	}
+}
+
+func ConstructElectraAttestationWithoutSignature(attestationData *phase0.AttestationData, validatorDuty *types.ValidatorDuty) *electra.Attestation {
+	aggregationBitfield := bitfield.NewBitlist(validatorDuty.CommitteeLength)
+	aggregationBitfield.SetBitAt(validatorDuty.ValidatorCommitteeIndex, true)
+
+	committeeBits := bitfield.NewBitvector64()
+	committeeBits.SetBitAt(uint64(validatorDuty.CommitteeIndex), true)
+
+	return &electra.Attestation{
+		Data:            attestationData,
+		AggregationBits: aggregationBitfield,
+		CommitteeBits:   committeeBits,
+	}
+}
+
+func ConstructVersionedAttestationWithoutSignature(attestationData *phase0.AttestationData, dataVersion spec.DataVersion, validatorDuty *types.ValidatorDuty) (*spec.VersionedAttestation, error) {
+	switch dataVersion {
+	case spec.DataVersionPhase0:
+		return &spec.VersionedAttestation{Version: dataVersion, Phase0: ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)}, nil
+	case spec.DataVersionAltair:
+		return &spec.VersionedAttestation{Version: dataVersion, Altair: ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)}, nil
+	case spec.DataVersionBellatrix:
+		return &spec.VersionedAttestation{Version: dataVersion, Bellatrix: ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)}, nil
+	case spec.DataVersionCapella:
+		return &spec.VersionedAttestation{Version: dataVersion, Capella: ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)}, nil
+	case spec.DataVersionDeneb:
+		return &spec.VersionedAttestation{Version: dataVersion, Deneb: ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)}, nil
+	case spec.DataVersionElectra:
+		return &spec.VersionedAttestation{Version: dataVersion, Electra: ConstructElectraAttestationWithoutSignature(attestationData, validatorDuty)}, nil
+	default:
+		return nil, errors.New("unknown version")
+	}
 }
