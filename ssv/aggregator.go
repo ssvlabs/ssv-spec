@@ -323,7 +323,7 @@ func (r *AggregatorRunner) GetOperatorSigner() *types.OperatorSigner {
 }
 
 // Constructs a VersionedSignedAggregateAndProof from a VersionedAggregateAndProof and a signature
-func contrusctVersionedSignedAggregateAndProof(aggregateAndProof spec.VersionedAggregateAndProof, signature phase0.BLSSignature) (*spec.VersionedSignedAggregateAndProof, error) {
+func constructVersionedSignedAggregateAndProof(aggregateAndProof spec.VersionedAggregateAndProof, signature phase0.BLSSignature) (*spec.VersionedSignedAggregateAndProof, error) {
 	ret := &spec.VersionedSignedAggregateAndProof{
 		Version: aggregateAndProof.Version,
 	}
