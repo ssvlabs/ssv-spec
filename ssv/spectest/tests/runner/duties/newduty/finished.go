@@ -1,6 +1,8 @@
 package newduty
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -34,7 +36,7 @@ func Finished() tests.SpecTest {
 		return r
 	}
 
-	return &MultiStartNewRunnerDutySpecTest{
+	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty finished",
 		Tests: []*StartNewRunnerDutySpecTest{
 			{
@@ -48,15 +50,6 @@ func Finished() tests.SpecTest {
 				},
 			},
 			{
-				Name:      "aggregator",
-				Runner:    finishRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty, true),
-				Duty:      &testingutils.TestingAggregatorDutyNextEpoch,
-				Threshold: ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
-			},
-			{
 				Name: "proposer",
 				Runner: finishRunner(testingutils.ProposerRunner(ks),
 					testingutils.TestingProposerDutyV(spec.DataVersionDeneb), true),
@@ -65,27 +58,6 @@ func Finished() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-			},
-			{
-				Name:           "attester",
-				Runner:         finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty, true),
-				Duty:           testingutils.TestingAttesterDutyNextEpoch,
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
-			},
-			{
-				Name:           "sync committee",
-				Runner:         finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty, true),
-				Duty:           testingutils.TestingSyncCommitteeDutyNextEpoch,
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
-			},
-			{
-				Name:           "attester and sync committee",
-				Runner:         finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties, true),
-				Duty:           testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:      "voluntary exit",
@@ -107,4 +79,46 @@ func Finished() tests.SpecTest {
 			},
 		},
 	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
+			Name:      fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner:    finishRunner(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty(version), true),
+			Duty:      testingutils.TestingAggregatorDutyNextEpoch(version),
+			Threshold: ks.Threshold,
+			OutputMessages: []*types.PartialSignatureMessages{
+				testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
+			},
+		},
+		)
+	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{
+
+			{
+				Name:           fmt.Sprintf("attester (%s)", version.String()),
+				Runner:         finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty(version), true),
+				Duty:           testingutils.TestingAttesterDutyNextEpoch(version),
+				Threshold:      ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner:         finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty(version), true),
+				Duty:           testingutils.TestingSyncCommitteeDutyNextEpoch(version),
+				Threshold:      ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner:         finishRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties(version), true),
+				Duty:           testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch(version),
+				Threshold:      ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+		}...)
+	}
+
+	return multiSpecTest
 }

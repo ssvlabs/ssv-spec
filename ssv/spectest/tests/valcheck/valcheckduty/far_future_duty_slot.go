@@ -44,10 +44,17 @@ func FarFutureDutySlot() tests.SpecTest {
 				ExpectedError: "duty invalid: duty epoch is into far future",
 			},
 			{
-				Name:          "aggregator",
+				Name:          "aggregator phase0",
 				Network:       types.BeaconTestNetwork,
 				RunnerRole:    types.RoleAggregator,
-				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData),
+				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
+				ExpectedError: "duty invalid: duty epoch is into far future",
+			},
+			{
+				Name:          "aggregator electra",
+				Network:       types.BeaconTestNetwork,
+				RunnerRole:    types.RoleAggregator,
+				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionElectra)),
 				ExpectedError: "duty invalid: duty epoch is into far future",
 			},
 			{

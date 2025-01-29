@@ -55,7 +55,7 @@ func PostWrongDecided() tests.SpecTest {
 	expectedError := fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
 		testingutils.TestingDutySlot, 50)
 
-	return &MultiStartNewRunnerDutySpecTest{
+	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty post wrong decided",
 		Tests: []*StartNewRunnerDutySpecTest{
 			{
@@ -66,17 +66,6 @@ func PostWrongDecided() tests.SpecTest {
 				PostDutyRunnerStateRoot: "4fce8afe24a8f812c9daccfb54c8247771c88b48d161b06901669d1e23ce7a0d",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
-				ExpectedError: expectedError,
-			},
-			{
-				Name:                    "aggregator",
-				Runner:                  decideWrong(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty, 50),
-				Duty:                    &testingutils.TestingAggregatorDuty,
-				Threshold:               ks.Threshold,
-				PostDutyRunnerStateRoot: "533fa28f89164dc4a26bdd4e2cd55cca8c17375d3e88251f2480ae727ced1ee1",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedError,
 			},
@@ -92,30 +81,66 @@ func PostWrongDecided() tests.SpecTest {
 				ExpectedError: fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb), testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50),
 			},
-			{
-				Name:           "attester",
-				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty, 50),
-				Duty:           testingutils.TestingAttesterDuty,
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
-			},
-			{
-				Name:           "sync committee",
-				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty, 50),
-				Duty:           testingutils.TestingSyncCommitteeDuty,
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
-			},
-			{
-				Name:           "attester and sync committee",
-				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties, 50),
-				Duty:           testingutils.TestingAttesterAndSyncCommitteeDuties,
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
-			},
 		},
 	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+
+		refSlot := testingutils.TestingDutySlotV(version)
+		higherSlot := qbft.Height(refSlot + 50)
+
+		expectedVersionedError := fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
+			refSlot, higherSlot)
+
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
+			Name:                    fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner:                  decideWrong(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty(version), higherSlot),
+			Duty:                    testingutils.TestingAggregatorDuty(version),
+			Threshold:               ks.Threshold,
+			PostDutyRunnerStateRoot: "533fa28f89164dc4a26bdd4e2cd55cca8c17375d3e88251f2480ae727ced1ee1",
+			OutputMessages: []*types.PartialSignatureMessages{
+				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
+			},
+			ExpectedError: expectedVersionedError,
+		},
+		)
+	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+
+		refSlot := testingutils.TestingDutySlotV(version)
+		higherSlot := qbft.Height(refSlot + 50)
+
+		expectedVersionedError := fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
+			refSlot, higherSlot)
+
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{
+			{
+				Name:           fmt.Sprintf("attester (%s)", version.String()),
+				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty(version), higherSlot),
+				Duty:           testingutils.TestingAttesterDuty(version),
+				Threshold:      ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedVersionedError,
+			},
+			{
+				Name:           fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty(version), higherSlot),
+				Duty:           testingutils.TestingSyncCommitteeDuty(version),
+				Threshold:      ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedVersionedError,
+			},
+			{
+				Name:           fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties(version), higherSlot),
+				Duty:           testingutils.TestingAttesterAndSyncCommitteeDuties(version),
+				Threshold:      ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedVersionedError,
+			},
+		}...)
+	}
+
+	return multiSpecTest
 }
