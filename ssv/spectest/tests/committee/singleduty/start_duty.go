@@ -17,39 +17,41 @@ func StartDuty() tests.SpecTest {
 		Tests: []*committee.CommitteeSpecTest{},
 	}
 
-	// TODO add 500
-	for _, numValidators := range []int{1, 30} {
+	for _, version := range testingutils.SupportedAttestationVersions {
+		// TODO add 500
+		for _, numValidators := range []int{1, 30} {
 
-		validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
-		ksMap := testingutils.KeySetMapForValidators(numValidators)
+			validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
+			ksMap := testingutils.KeySetMapForValidators(numValidators)
 
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+			multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
 
-			{
-				Name:      fmt.Sprintf("%v attestation", numValidators),
-				Committee: testingutils.BaseCommittee(ksMap),
-				Input: []interface{}{
-					testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, validatorsIndexList),
+				{
+					Name:      fmt.Sprintf("%v attestation (%s)", numValidators, version.String()),
+					Committee: testingutils.BaseCommittee(ksMap),
+					Input: []interface{}{
+						testingutils.TestingAttesterDutyForValidators(version, validatorsIndexList),
+					},
+					OutputMessages: []*types.PartialSignatureMessages{},
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-			},
-			{
-				Name:      fmt.Sprintf("%v sync committee", numValidators),
-				Committee: testingutils.BaseCommittee(ksMap),
-				Input: []interface{}{
-					testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList),
+				{
+					Name:      fmt.Sprintf("%v sync committee (%s)", numValidators, version.String()),
+					Committee: testingutils.BaseCommittee(ksMap),
+					Input: []interface{}{
+						testingutils.TestingSyncCommitteeDutyForValidators(version, validatorsIndexList),
+					},
+					OutputMessages: []*types.PartialSignatureMessages{},
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-			},
-			{
-				Name:      fmt.Sprintf("%v attestation %v sync committee", numValidators, numValidators),
-				Committee: testingutils.BaseCommittee(ksMap),
-				Input: []interface{}{
-					testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList, validatorsIndexList),
+				{
+					Name:      fmt.Sprintf("%v attestation %v sync committee (%s)", numValidators, numValidators, version.String()),
+					Committee: testingutils.BaseCommittee(ksMap),
+					Input: []interface{}{
+						testingutils.TestingCommitteeDuty(validatorsIndexList, validatorsIndexList, version),
+					},
+					OutputMessages: []*types.PartialSignatureMessages{},
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-			},
-		}...)
+			}...)
+		}
 	}
 
 	return multiSpecTest

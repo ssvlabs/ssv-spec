@@ -25,45 +25,54 @@ func ProposalWithConsensusData() tests.SpecTest {
 	expectedError := "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding beacon vote: incorrect size"
 
 	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name: "proposal with consensus data",
-		Tests: []*committee.CommitteeSpecTest{
+		Name:  "proposal with consensus data",
+		Tests: []*committee.CommitteeSpecTest{},
+	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+
+		slot := testingutils.TestingDutySlotV(version)
+		height := qbft.Height(slot)
+
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
 			{
-				Name:      fmt.Sprintf("%v attestation", numValidators),
+				Name:      fmt.Sprintf("%v attestation (%s)", numValidators, version.String()),
 				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
 				Input: []interface{}{
-					testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, validatorsIndexList),
+					testingutils.TestingAttesterDutyForValidators(version, validatorsIndexList),
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
 						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestAttesterConsensusDataByts,
-						qbft.Height(testingutils.TestingDutySlot)),
+						height),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},
 			{
-				Name:      fmt.Sprintf("%v sync committee", numValidators),
+				Name:      fmt.Sprintf("%v sync committee (%s)", numValidators, version.String()),
 				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
 				Input: []interface{}{
-					testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList),
+					testingutils.TestingSyncCommitteeDutyForValidators(version, validatorsIndexList),
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
 						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestSyncCommitteeConsensusDataByts,
-						qbft.Height(testingutils.TestingDutySlot)),
+						height),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},
 			{
-				Name:      fmt.Sprintf("%v attestations %v sync committees", numValidators, numValidators),
+				Name:      fmt.Sprintf("%v attestations %v sync committees (%s)", numValidators, numValidators, version.String()),
 				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
 				Input: []interface{}{
-					testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList, validatorsIndexList),
+					testingutils.TestingCommitteeDuty(validatorsIndexList, validatorsIndexList, version),
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
 						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestAttesterConsensusDataByts,
-						qbft.Height(testingutils.TestingDutySlot)),
+						height),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},
-		},
+		}...)
 	}
+
 	return multiSpecTest
 }

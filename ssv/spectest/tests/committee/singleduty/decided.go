@@ -24,75 +24,80 @@ func Decided() tests.SpecTest {
 		Tests: []*committee.CommitteeSpecTest{},
 	}
 
-	// TODO add 500
-	for _, numValidators := range []int{1, 30} {
+	for _, version := range testingutils.SupportedAttestationVersions {
+		// TODO add 500
+		for _, numValidators := range []int{1, 30} {
 
-		validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
-		ksMap := testingutils.KeySetMapForValidators(numValidators)
-		shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
+			validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
+			ksMap := testingutils.KeySetMapForValidators(numValidators)
+			shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
-			{
-				Name:      fmt.Sprintf("%v attestation", numValidators),
-				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
-				Input: []interface{}{
-					testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, validatorsIndexList),
-					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestBeaconVoteByts,
-						qbft.Height(testingutils.TestingDutySlot)),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+			slot := testingutils.TestingDutySlotV(version)
+			height := qbft.Height(slot)
 
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PostConsensusAttestationMsgForKeySet(ksMap, 1, testingutils.TestingDutySlot),
-				},
-			},
-			{
-				Name:      fmt.Sprintf("%v sync committee", numValidators),
-				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
-				Input: []interface{}{
-					testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList),
-					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestBeaconVoteByts,
-						qbft.Height(testingutils.TestingDutySlot)),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+			multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+				{
+					Name:      fmt.Sprintf("%v attestation (%s)", numValidators, version.String()),
+					Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+					Input: []interface{}{
+						testingutils.TestingAttesterDutyForValidators(version, validatorsIndexList),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestBeaconVoteByts,
+							height),
+						testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+						testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+						testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
 
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+						testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+						testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+						testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+					},
+					OutputMessages: []*types.PartialSignatureMessages{
+						testingutils.PostConsensusAttestationMsgForKeySet(ksMap, 1, version),
+					},
 				},
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PostConsensusSyncCommitteeMsgForKeySet(ksMap, 1),
-				},
-			},
-			{
-				Name:      fmt.Sprintf("%v attestations %v sync committees", numValidators, numValidators),
-				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
-				Input: []interface{}{
-					testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList, validatorsIndexList),
-					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestBeaconVoteByts,
-						qbft.Height(testingutils.TestingDutySlot)),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+				{
+					Name:      fmt.Sprintf("%v sync committee (%s)", numValidators, version.String()),
+					Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+					Input: []interface{}{
+						testingutils.TestingSyncCommitteeDutyForValidators(version, validatorsIndexList),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestBeaconVoteByts,
+							height),
+						testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+						testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+						testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
 
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, testingutils.TestingDutySlot, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+						testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+						testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+						testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+					},
+					OutputMessages: []*types.PartialSignatureMessages{
+						testingutils.PostConsensusSyncCommitteeMsgForKeySet(ksMap, 1, version),
+					},
 				},
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PostConsensusAttestationAndSyncCommitteeMsgForKeySet(ksMap, 1, testingutils.TestingDutySlot),
+				{
+					Name:      fmt.Sprintf("%v attestations %v sync committees (%s)", numValidators, numValidators, version.String()),
+					Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+					Input: []interface{}{
+						testingutils.TestingCommitteeDuty(validatorsIndexList, validatorsIndexList, version),
+						testingutils.TestingProposalMessageWithIdentifierAndFullData(
+							ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestBeaconVoteByts,
+							height),
+						testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+						testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+						testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+
+						testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+						testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+						testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+					},
+					OutputMessages: []*types.PartialSignatureMessages{
+						testingutils.PostConsensusAttestationAndSyncCommitteeMsgForKeySet(ksMap, 1, version),
+					},
 				},
-			},
-		}...)
+			}...)
+		}
 	}
 
 	return multiSpecTest
