@@ -1,6 +1,8 @@
 package preconsensus
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
@@ -12,7 +14,7 @@ import (
 func InvalidBeaconSignatureInQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "got pre-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature"
-	return &tests.MultiMsgProcessingSpecTest{
+	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus invalid beacon signature in quorum",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
@@ -27,21 +29,6 @@ func InvalidBeaconSignatureInQuorum() tests.SpecTest {
 				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
-				ExpectedError: expectedError,
-			},
-			{
-				Name:   "aggregator selection proof",
-				Runner: testingutils.AggregatorRunner(ks),
-				Duty:   &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofWrongBeaconSigMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3))),
-				},
-				PostDutyRunnerStateRoot: "c54e71de23c3957b73abbb0e7b9e195b3f8f6370d62fbec256224faecf177fee",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedError,
 			},
@@ -77,4 +64,23 @@ func InvalidBeaconSignatureInQuorum() tests.SpecTest {
 			},
 		},
 	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name:   fmt.Sprintf("aggregator selection proof (%s)", version.String()),
+			Runner: testingutils.AggregatorRunner(ks),
+			Duty:   testingutils.TestingAggregatorDuty(version),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofWrongBeaconSigMsg(ks.Shares[1], ks.Shares[1], 1, 1, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3, version))),
+			},
+			OutputMessages: []*types.PartialSignatureMessages{
+				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
+			},
+			ExpectedError: expectedError,
+		})
+	}
+
+	return multiSpecTest
 }

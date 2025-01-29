@@ -1,6 +1,8 @@
 package preconsensus
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
@@ -11,7 +13,7 @@ import (
 // ValidMessage7Operators tests a valid SignedPartialSignatureMessage with multi PartialSignatureMessages (7 operators)
 func ValidMessage7Operators() tests.SpecTest {
 	ks := testingutils.Testing7SharesSet()
-	return &tests.MultiMsgProcessingSpecTest{
+	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "pre consensus valid msg 7 operators",
 		Tests: []*tests.MsgProcessingSpecTest{
 			{
@@ -27,21 +29,6 @@ func ValidMessage7Operators() tests.SpecTest {
 				PostDutyRunnerStateRoot: "9325b8659fae01c677a3b012b11850a7902c4e7043cbaf7d7a110fce3eaf891f",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
-			},
-			{
-				Name:   "aggregator selection proof",
-				Runner: testingutils.AggregatorRunner(ks),
-				Duty:   &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4))),
-				},
-				PostDutyRunnerStateRoot: "2f5be659d42b520f692a2aa2d0a6e362ca82c1aea20c790fd67d12b17e08d382",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
 			{
@@ -76,4 +63,23 @@ func ValidMessage7Operators() tests.SpecTest {
 			},
 		},
 	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name:   fmt.Sprintf("aggregator selection proof (%s)", version.String()),
+			Runner: testingutils.AggregatorRunner(ks),
+			Duty:   testingutils.TestingAggregatorDuty(version),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4, version))),
+			},
+			OutputMessages: []*types.PartialSignatureMessages{
+				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
+			},
+		})
+	}
+
+	return multiSpecTest
 }

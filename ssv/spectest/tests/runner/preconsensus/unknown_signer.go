@@ -33,21 +33,22 @@ func UnknownSigner() tests.SpecTest {
 				},
 				ExpectedError: expectedError,
 			},
-			{
-				Name:   "aggregator selection proof",
-				Runner: testingutils.AggregatorRunner(ks),
-				Duty:   &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 5, 5))),
-				},
-				PostDutyRunnerStateRoot: unknownSignerAggregatorSC().Root(),
-				PostDutyRunnerState:     unknownSignerAggregatorSC().ExpectedState,
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
-				ExpectedError: expectedError,
-			},
 		},
+	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name:   fmt.Sprintf("aggregator selection proof (%s)", version.String()),
+			Runner: testingutils.AggregatorRunner(ks),
+			Duty:   testingutils.TestingAggregatorDuty(version),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 5, 5, version))),
+			},
+			OutputMessages: []*types.PartialSignatureMessages{
+				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
+			},
+			ExpectedError: expectedError,
+		})
 	}
 
 	// proposerV creates a test specification for versioned proposer.

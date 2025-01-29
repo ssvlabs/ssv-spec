@@ -35,31 +35,6 @@ func postFinishSyncCommitteeContributionSC() *comparable.StateComparison {
 	}
 }
 
-// postFinishAggregatorSC returns state comparison object for the PostFinish Aggregator versioned spec test
-func postFinishAggregatorSC() *comparable.StateComparison {
-	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestAggregatorConsensusData
-
-	return &comparable.StateComparison{
-		ExpectedState: func() ssv.Runner {
-			ret := testingutils.AggregatorRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SignedSSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SignedSSVMessage{},
-				),
-				StartingDuty: &cd.Duty,
-				Finished:     true,
-			}
-			return ret
-		}(),
-	}
-}
-
 // postFinishValidatorRegistrationSC returns state comparison object for the PostFinish ValidatorRegistration versioned spec test
 func postFinishValidatorRegistrationSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()

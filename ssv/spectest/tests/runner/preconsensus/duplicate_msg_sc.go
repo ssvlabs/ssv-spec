@@ -38,34 +38,6 @@ func duplicateMsgSyncCommitteeContributionSC() *comparable.StateComparison {
 	}
 }
 
-// duplicateMsgAggregatorSC returns state comparison object for the DuplicateMsg Aggregator versioned spec test
-func duplicateMsgAggregatorSC() *comparable.StateComparison {
-	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestAggregatorConsensusData
-
-	return &comparable.StateComparison{
-		ExpectedState: func() ssv.Runner {
-			ret := testingutils.AggregatorRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SignedSSVMessage{
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
-					},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SignedSSVMessage{},
-				),
-				StartingDuty: &cd.Duty,
-				Finished:     false,
-			}
-
-			return ret
-		}(),
-	}
-}
-
 // duplicateMsgValidatorRegistrationSC returns state comparison object for the DuplicateMsg ValidatorRegistration versioned spec test
 func duplicateMsgValidatorRegistrationSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
