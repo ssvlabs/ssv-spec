@@ -1,6 +1,7 @@
 package ssv
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
@@ -103,7 +104,8 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 	for _, duty := range duty.(*types.CommitteeDuty).ValidatorDuties {
 		switch duty.Type {
 		case types.BNRoleAttester:
-			attestationData := constructAttestationData(beaconVote, duty)
+			version := cr.beacon.DataVersion(cr.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(duty.DutySlot()))
+			attestationData := constructAttestationData(beaconVote, duty, version)
 			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, duty, attestationData, duty.DutySlot(),
 				types.DomainAttester)
 			if err != nil {
@@ -247,7 +249,11 @@ func (cr CommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignature
 			} else if role == types.BNRoleAttester {
 				att := sszObject.(*types.VersionedAttestationResponse)
 				// Insert signature
-				att.WithSignature(specSig)
+				err := att.WithSignature(specSig)
+				if err != nil {
+					anyErr = errors.Wrap(err, "could not insert signature in versioned attestation")
+					continue
+				}
 
 				attestationsToSubmit[validator] = att
 			}
@@ -400,8 +406,8 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 		case types.BNRoleAttester:
 
 			// Attestation object
-			attestationData := constructAttestationData(beaconVote, validatorDuty)
 			dataVersion := cr.beacon.DataVersion(cr.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(validatorDuty.Slot))
+			attestationData := constructAttestationData(beaconVote, validatorDuty, dataVersion)
 			attestationResponse := types.ConstrusctVersionedAttestationResponseWithoutSignature(attestationData, dataVersion, validatorDuty)
 
 			// Root
@@ -478,12 +484,18 @@ func (cr CommitteeRunner) GetOperatorSigner() *types.OperatorSigner {
 	return cr.operatorSigner
 }
 
-func constructAttestationData(vote *types.BeaconVote, duty *types.ValidatorDuty) *phase0.AttestationData {
-	return &phase0.AttestationData{
+func constructAttestationData(vote *types.BeaconVote, duty *types.ValidatorDuty, version spec.DataVersion) *phase0.AttestationData {
+	attData := &phase0.AttestationData{
 		Slot:            duty.Slot,
-		Index:           0, // EIP-7549: Index should be set to 0
+		Index:           duty.CommitteeIndex,
 		BeaconBlockRoot: vote.BlockRoot,
 		Source:          vote.Source,
 		Target:          vote.Target,
 	}
+
+	if version >= spec.DataVersionElectra {
+		attData.Index = 0 // EIP-7549: Index should be set to 0
+	}
+
+	return attData
 }
