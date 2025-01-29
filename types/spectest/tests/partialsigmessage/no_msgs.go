@@ -1,7 +1,7 @@
 package partialsigmessage
 
 import (
-	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -10,7 +10,7 @@ import (
 func NoMsgs() *MsgSpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
+	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)
 	msg.Messages = []*types.PartialSignatureMessage{}
 
 	return &MsgSpecTest{

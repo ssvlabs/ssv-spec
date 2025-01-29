@@ -62,10 +62,14 @@ var AllTests = []SpecTest{
 	validatorconsensusdata.InvalidDenebBlockValidation(),
 	validatorconsensusdata.InvalidDenebBlindedBlockValidation(),
 
-	validatorconsensusdata.AggregatorConsensusDataEncoding(),
-	validatorconsensusdata.AggregatorValidation(),
-	validatorconsensusdata.AggregatorNoJustifications(),
-	validatorconsensusdata.InvalidAggregatorValidation(),
+	validatorconsensusdata.Phase0AggregatorConsensusDataEncoding(),
+	validatorconsensusdata.Phase0AggregatorValidation(),
+	validatorconsensusdata.Phase0AggregatorNoJustifications(),
+	validatorconsensusdata.Phase0InvalidAggregatorValidation(),
+	validatorconsensusdata.ElectraAggregatorConsensusDataEncoding(),
+	validatorconsensusdata.ElectraAggregatorValidation(),
+	validatorconsensusdata.ElectraAggregatorNoJustifications(),
+	validatorconsensusdata.ElectraInvalidAggregatorValidation(),
 
 	validatorconsensusdata.SyncCommitteeContributionConsensusDataEncoding(),
 	validatorconsensusdata.SyncCommitteeContributionValidation(),
