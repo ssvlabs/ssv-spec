@@ -44,7 +44,7 @@ var SSVDecidingMsgsV = func(consensusData *types.ValidatorConsensusData, ks *Tes
 	}
 	if role == types.RoleAggregator {
 		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, signedF(PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
+			base = append(base, signedF(PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i), consensusData.Version)))
 		}
 	}
 	if role == types.RoleSyncCommitteeContribution {
@@ -91,7 +91,7 @@ var ExpectedSSVDecidingMsgsV = func(consensusData *types.ValidatorConsensusData,
 	}
 	if role == types.RoleAggregator {
 		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, ssvMsgF(PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
+			base = append(base, ssvMsgF(PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i), consensusData.Version)))
 		}
 	}
 	if role == types.RoleSyncCommitteeContribution {

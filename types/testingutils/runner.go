@@ -389,34 +389,6 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	return runner, err
 }
 
-var DecidedRunner = func(keySet *TestKeySet) ssv.Runner {
-	return decideRunner(TestAttesterConsensusData, qbft.FirstHeight, keySet)
-}
-
-var DecidedRunnerWithHeight = func(height qbft.Height, keySet *TestKeySet) ssv.Runner {
-	return decideRunner(TestAttesterConsensusData, height, keySet)
-}
-
-var DecidedRunnerUnknownDutyType = func(keySet *TestKeySet) ssv.Runner {
-	return decideRunner(TestConsensusUnkownDutyTypeData, qbft.FirstHeight, keySet)
-}
-
-var decideRunner = func(consensusInput *types.ValidatorConsensusData, height qbft.Height, keySet *TestKeySet) ssv.Runner {
-	v := BaseValidator(keySet)
-	msgs := SSVDecidingMsgsForHeight(consensusInput, AttesterMsgID, height, keySet)
-
-	if err := v.DutyRunners[types.RoleCommittee].StartNewDuty(&consensusInput.Duty, keySet.Threshold); err != nil {
-		panic(err.Error())
-	}
-	for _, msg := range msgs {
-		if err := v.ProcessMessage(msg); err != nil {
-			panic(err.Error())
-		}
-	}
-
-	return v.DutyRunners[types.RoleCommittee]
-}
-
 // //////////////////////////////// For SSV Tests ////////////////////////////////////////////////////////////////
 var SSVDecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	byts, _ := consensusData.Encode()
