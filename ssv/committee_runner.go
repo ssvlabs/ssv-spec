@@ -102,11 +102,13 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		Messages: []*types.PartialSignatureMessage{},
 	}
 
+	epoch := cr.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(duty.DutySlot())
+	version := cr.beacon.DataVersion(epoch)
+
 	beaconVote := decidedValue.(*types.BeaconVote)
 	for _, duty := range duty.(*types.CommitteeDuty).ValidatorDuties {
 		switch duty.Type {
 		case types.BNRoleAttester:
-			version := cr.beacon.DataVersion(cr.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(duty.DutySlot()))
 			attestationData := constructAttestationData(beaconVote, duty, version)
 			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, duty, attestationData, duty.DutySlot(),
 				types.DomainAttester)
@@ -398,17 +400,20 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
 	}
 
+	slot := duty.DutySlot()
+	epoch := cr.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(slot)
+
+	dataVersion := cr.beacon.DataVersion(epoch)
+
 	for _, validatorDuty := range duty.ValidatorDuties {
 		if validatorDuty == nil {
 			continue
 		}
-		slot := validatorDuty.DutySlot()
-		epoch := cr.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(slot)
+
 		switch validatorDuty.Type {
 		case types.BNRoleAttester:
 
 			// Attestation object
-			dataVersion := cr.beacon.DataVersion(cr.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(validatorDuty.Slot))
 			attestationData := constructAttestationData(beaconVote, validatorDuty, dataVersion)
 			attestationResponse, err := ConstructVersionedAttestationWithoutSignature(attestationData, dataVersion, validatorDuty)
 			if err != nil {
