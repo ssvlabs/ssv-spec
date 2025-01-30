@@ -106,11 +106,11 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 	version := cr.beacon.DataVersion(epoch)
 
 	beaconVote := decidedValue.(*types.BeaconVote)
-	for _, duty := range duty.(*types.CommitteeDuty).ValidatorDuties {
-		switch duty.Type {
+	for _, validatorDuty := range duty.(*types.CommitteeDuty).ValidatorDuties {
+		switch validatorDuty.Type {
 		case types.BNRoleAttester:
-			attestationData := constructAttestationData(beaconVote, duty, version)
-			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, duty, attestationData, duty.DutySlot(),
+			attestationData := constructAttestationData(beaconVote, validatorDuty, version)
+			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, validatorDuty, attestationData, validatorDuty.DutySlot(),
 				types.DomainAttester)
 			if err != nil {
 				return errors.Wrap(err, "failed signing attestation data")
@@ -119,7 +119,7 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 
 		case types.BNRoleSyncCommittee:
 			blockRoot := beaconVote.BlockRoot
-			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, duty, types.SSZBytes(blockRoot[:]), duty.DutySlot(),
+			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, validatorDuty, types.SSZBytes(blockRoot[:]), validatorDuty.DutySlot(),
 				types.DomainSyncCommittee)
 			if err != nil {
 				return errors.Wrap(err, "failed signing sync committee message")
