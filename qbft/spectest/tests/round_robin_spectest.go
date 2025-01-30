@@ -1,10 +1,11 @@
 package tests
 
 import (
+	"testing"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 type RoundRobinSpecTest struct {
@@ -19,13 +20,13 @@ func (test *RoundRobinSpecTest) Run(t *testing.T) {
 	require.True(t, len(test.Heights) > 0)
 	for i, h := range test.Heights {
 		r := test.Rounds[i]
-		s := &qbft.State{
-			Height:          h,
-			Round:           r,
-			CommitteeMember: test.Share,
+
+		operators := make([]types.OperatorID, 0)
+		for _, operator := range test.Share.Committee {
+			operators = append(operators, operator.OperatorID)
 		}
 
-		require.EqualValues(t, test.Proposers[i], qbft.RoundRobinProposer(s, r))
+		require.EqualValues(t, test.Proposers[i], qbft.RoundRobinProposer(h, r, operators))
 	}
 }
 
