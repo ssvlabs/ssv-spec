@@ -214,7 +214,7 @@ func (n BeaconNetwork) MinGenesisTime() uint64 {
 	case PraterNetwork:
 		return 1616508000
 	case MekongNetwork:
-		return 1730822340
+		return 1730822340 + 60 // genesis delay
 	case BeaconTestNetwork:
 		return 1616508000
 	default:
