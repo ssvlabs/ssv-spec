@@ -576,17 +576,41 @@ func ConstructElectraAttestationWithoutSignature(attestationData *phase0.Attesta
 func ConstructVersionedAttestationWithoutSignature(attestationData *phase0.AttestationData, dataVersion spec.DataVersion, validatorDuty *types.ValidatorDuty) (*spec.VersionedAttestation, error) {
 	switch dataVersion {
 	case spec.DataVersionPhase0:
-		return &spec.VersionedAttestation{Version: dataVersion, Phase0: ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)}, nil
+		return &spec.VersionedAttestation{
+			Version:        dataVersion,
+			ValidatorIndex: &validatorDuty.ValidatorIndex,
+			Phase0:         ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty),
+		}, nil
 	case spec.DataVersionAltair:
-		return &spec.VersionedAttestation{Version: dataVersion, Altair: ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)}, nil
+		return &spec.VersionedAttestation{
+			Version:        dataVersion,
+			ValidatorIndex: &validatorDuty.ValidatorIndex,
+			Altair:         ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty),
+		}, nil
 	case spec.DataVersionBellatrix:
-		return &spec.VersionedAttestation{Version: dataVersion, Bellatrix: ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)}, nil
+		return &spec.VersionedAttestation{
+			Version:        dataVersion,
+			ValidatorIndex: &validatorDuty.ValidatorIndex,
+			Bellatrix:      ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty),
+		}, nil
 	case spec.DataVersionCapella:
-		return &spec.VersionedAttestation{Version: dataVersion, Capella: ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)}, nil
+		return &spec.VersionedAttestation{
+			Version:        dataVersion,
+			ValidatorIndex: &validatorDuty.ValidatorIndex,
+			Capella:        ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty),
+		}, nil
 	case spec.DataVersionDeneb:
-		return &spec.VersionedAttestation{Version: dataVersion, Deneb: ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)}, nil
+		return &spec.VersionedAttestation{
+			Version:        dataVersion,
+			ValidatorIndex: &validatorDuty.ValidatorIndex,
+			Deneb:          ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty),
+		}, nil
 	case spec.DataVersionElectra:
-		return &spec.VersionedAttestation{Version: dataVersion, Electra: ConstructElectraAttestationWithoutSignature(attestationData, validatorDuty)}, nil
+		return &spec.VersionedAttestation{
+			Version:        dataVersion,
+			ValidatorIndex: &validatorDuty.ValidatorIndex,
+			Electra:        ConstructElectraAttestationWithoutSignature(attestationData, validatorDuty),
+		}, nil
 	default:
 		return nil, errors.New("unknown version")
 	}
