@@ -196,7 +196,7 @@ func (n BeaconNetwork) ForkVersion() [4]byte {
 	case PraterNetwork:
 		return [4]byte{0x00, 0x00, 0x10, 0x20}
 	case MekongNetwork:
-		return [4]byte{0x10, 0x63, 0x76, 0x24}
+		return [4]byte{0x10, 0x58, 0x55, 0x57}
 	case BeaconTestNetwork:
 		return [4]byte{0x99, 0x99, 0x99, 0x99}
 	default:
@@ -214,7 +214,7 @@ func (n BeaconNetwork) MinGenesisTime() uint64 {
 	case PraterNetwork:
 		return 1616508000
 	case MekongNetwork:
-		return 1730822340 + 60 // genesis delay
+		return 1738603800 + 60 // genesis delay
 	case BeaconTestNetwork:
 		return 1616508000
 	default:
