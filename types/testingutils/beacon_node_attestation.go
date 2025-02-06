@@ -138,41 +138,62 @@ var TestingElectraAttestation = func(ks *TestKeySet) *electra.Attestation {
 	}
 }
 
-var TestingVersionedAttestationResponse = func(ks *TestKeySet, version spec.DataVersion) *spec.VersionedAttestation {
+var TestingElectraSingleAttestation = func(ks *TestKeySet) *electra.SingleAttestation {
+	duty := TestingAttesterDuty(spec.DataVersionPhase0).ValidatorDuties[0]
+
+	attData := TestingAttestationData(spec.DataVersionElectra)
+
+	return &electra.SingleAttestation{
+		CommitteeIndex: duty.CommitteeIndex,
+		AttesterIndex:  TestingValidatorIndex,
+		Data:           attData,
+		Signature:      signBeaconObject(attData, types.DomainAttester, ks),
+	}
+}
+
+var TestingVersionedAttestation = func(ks *TestKeySet, version spec.DataVersion) *spec.VersionedAttestation {
+
+	vIdx := phase0.ValidatorIndex(TestingValidatorIndex)
 
 	switch version {
 	case spec.DataVersionPhase0:
 		return &spec.VersionedAttestation{
-			Version: version,
-			Phase0:  TestingSignedAttestation(ks),
+			Version:        version,
+			ValidatorIndex: &vIdx,
+			Phase0:         TestingSignedAttestation(ks),
 		}
 
 	case spec.DataVersionAltair:
 		return &spec.VersionedAttestation{
-			Version: version,
-			Altair:  TestingSignedAttestation(ks),
+			Version:        version,
+			ValidatorIndex: &vIdx,
+			Altair:         TestingSignedAttestation(ks),
 		}
 
 	case spec.DataVersionBellatrix:
 		return &spec.VersionedAttestation{
-			Version:   version,
-			Bellatrix: TestingSignedAttestation(ks),
+			Version:        version,
+			ValidatorIndex: &vIdx,
+			Bellatrix:      TestingSignedAttestation(ks),
 		}
 
 	case spec.DataVersionCapella:
 		return &spec.VersionedAttestation{
-			Version: version,
-			Capella: TestingSignedAttestation(ks),
+			Version:        version,
+			ValidatorIndex: &vIdx,
+			Capella:        TestingSignedAttestation(ks),
 		}
 	case spec.DataVersionDeneb:
 		return &spec.VersionedAttestation{
-			Version: version,
-			Deneb:   TestingSignedAttestation(ks),
+			Version:        version,
+			ValidatorIndex: &vIdx,
+			Deneb:          TestingSignedAttestation(ks),
 		}
 	case spec.DataVersionElectra:
 		return &spec.VersionedAttestation{
-			Version: version,
-			Electra: TestingElectraAttestation(ks),
+			Version:        version,
+			ValidatorIndex: &vIdx,
+			Electra:        TestingElectraAttestation(ks),
 		}
 	default:
 		panic("unknown data version")
@@ -185,7 +206,7 @@ var TestingAttestationResponseBeaconObject = func(ks *TestKeySet, version spec.D
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingSignedAttestation(ks)
 	case spec.DataVersionElectra:
-		return TestingElectraAttestation(ks)
+		return TestingElectraSingleAttestation(ks)
 	default:
 		panic("unknown data version")
 	}
@@ -225,41 +246,62 @@ var TestingElectraAttestationForValidatorIndex = func(ks *TestKeySet, validatorI
 	}
 }
 
+var TestingElectraSingleAttestationForValidatorIndex = func(ks *TestKeySet, validatorIndex phase0.ValidatorIndex) *electra.SingleAttestation {
+
+	committeeDuty := TestingAttesterDutyForValidator(spec.DataVersionPhase0, validatorIndex)
+	duty := committeeDuty.ValidatorDuties[0]
+
+	attData := TestingAttestationData(spec.DataVersionElectra)
+
+	return &electra.SingleAttestation{
+		CommitteeIndex: duty.CommitteeIndex,
+		AttesterIndex:  validatorIndex,
+		Data:           attData,
+		Signature:      signBeaconObject(attData, types.DomainAttester, ks),
+	}
+}
+
 var TestingSignedAttestationResponseForValidatorIndex = func(ks *TestKeySet, version spec.DataVersion, validatorIndex phase0.ValidatorIndex) *spec.VersionedAttestation {
 
 	switch version {
 	case spec.DataVersionPhase0:
 		return &spec.VersionedAttestation{
-			Version: version,
-			Phase0:  TestingSignedAttestationForValidatorIndex(ks, validatorIndex),
+			Version:        version,
+			ValidatorIndex: &validatorIndex,
+			Phase0:         TestingSignedAttestationForValidatorIndex(ks, validatorIndex),
 		}
 
 	case spec.DataVersionAltair:
 		return &spec.VersionedAttestation{
-			Version: version,
-			Altair:  TestingSignedAttestationForValidatorIndex(ks, validatorIndex),
+			Version:        version,
+			ValidatorIndex: &validatorIndex,
+			Altair:         TestingSignedAttestationForValidatorIndex(ks, validatorIndex),
 		}
 
 	case spec.DataVersionBellatrix:
 		return &spec.VersionedAttestation{
-			Version:   version,
-			Bellatrix: TestingSignedAttestationForValidatorIndex(ks, validatorIndex),
+			Version:        version,
+			ValidatorIndex: &validatorIndex,
+			Bellatrix:      TestingSignedAttestationForValidatorIndex(ks, validatorIndex),
 		}
 
 	case spec.DataVersionCapella:
 		return &spec.VersionedAttestation{
-			Version: version,
-			Capella: TestingSignedAttestationForValidatorIndex(ks, validatorIndex),
+			Version:        version,
+			ValidatorIndex: &validatorIndex,
+			Capella:        TestingSignedAttestationForValidatorIndex(ks, validatorIndex),
 		}
 	case spec.DataVersionDeneb:
 		return &spec.VersionedAttestation{
-			Version: version,
-			Deneb:   TestingSignedAttestationForValidatorIndex(ks, validatorIndex),
+			Version:        version,
+			ValidatorIndex: &validatorIndex,
+			Deneb:          TestingSignedAttestationForValidatorIndex(ks, validatorIndex),
 		}
 	case spec.DataVersionElectra:
 		return &spec.VersionedAttestation{
-			Version: version,
-			Electra: TestingElectraAttestationForValidatorIndex(ks, validatorIndex),
+			Version:        version,
+			ValidatorIndex: &validatorIndex,
+			Electra:        TestingElectraAttestationForValidatorIndex(ks, validatorIndex),
 		}
 	default:
 		panic("unknown data version")
@@ -272,7 +314,7 @@ var TestingAttestationResponseBeaconObjectForValidatorIndex = func(ks *TestKeySe
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingSignedAttestationForValidatorIndex(ks, validatorIndex)
 	case spec.DataVersionElectra:
-		return TestingElectraAttestationForValidatorIndex(ks, validatorIndex)
+		return TestingElectraSingleAttestationForValidatorIndex(ks, validatorIndex)
 	default:
 		panic("unknown data version")
 	}
@@ -308,41 +350,59 @@ var TestingElectraAttestationForDuty = func(ks *TestKeySet, duty *types.Validato
 	}
 }
 
+var TestingElectraSingleAttestationForDuty = func(ks *TestKeySet, duty *types.ValidatorDuty) *electra.SingleAttestation {
+
+	attData := TestingAttestationDataForValidatorDuty(duty)
+
+	return &electra.SingleAttestation{
+		CommitteeIndex: duty.CommitteeIndex,
+		AttesterIndex:  duty.ValidatorIndex,
+		Data:           attData,
+		Signature:      signBeaconObject(attData, types.DomainAttester, ks),
+	}
+}
+
 var TestingSignedAttestationResponseForDuty = func(ks *TestKeySet, version spec.DataVersion, duty *types.ValidatorDuty) *spec.VersionedAttestation {
 
 	switch version {
 	case spec.DataVersionPhase0:
 		return &spec.VersionedAttestation{
-			Version: version,
-			Phase0:  TestingSignedAttestationForDuty(ks, duty),
+			Version:        version,
+			ValidatorIndex: &duty.ValidatorIndex,
+			Phase0:         TestingSignedAttestationForDuty(ks, duty),
 		}
 
 	case spec.DataVersionAltair:
 		return &spec.VersionedAttestation{
-			Version: version,
-			Altair:  TestingSignedAttestationForDuty(ks, duty),
+			Version:        version,
+			ValidatorIndex: &duty.ValidatorIndex,
+			Altair:         TestingSignedAttestationForDuty(ks, duty),
 		}
 
 	case spec.DataVersionBellatrix:
 		return &spec.VersionedAttestation{
-			Version:   version,
-			Bellatrix: TestingSignedAttestationForDuty(ks, duty),
+			Version:        version,
+			ValidatorIndex: &duty.ValidatorIndex,
+			Bellatrix:      TestingSignedAttestationForDuty(ks, duty),
 		}
 
 	case spec.DataVersionCapella:
 		return &spec.VersionedAttestation{
-			Version: version,
-			Capella: TestingSignedAttestationForDuty(ks, duty),
+			Version:        version,
+			ValidatorIndex: &duty.ValidatorIndex,
+			Capella:        TestingSignedAttestationForDuty(ks, duty),
 		}
 	case spec.DataVersionDeneb:
 		return &spec.VersionedAttestation{
-			Version: version,
-			Deneb:   TestingSignedAttestationForDuty(ks, duty),
+			Version:        version,
+			ValidatorIndex: &duty.ValidatorIndex,
+			Deneb:          TestingSignedAttestationForDuty(ks, duty),
 		}
 	case spec.DataVersionElectra:
 		return &spec.VersionedAttestation{
-			Version: version,
-			Electra: TestingElectraAttestationForDuty(ks, duty),
+			Version:        version,
+			ValidatorIndex: &duty.ValidatorIndex,
+			Electra:        TestingElectraAttestationForDuty(ks, duty),
 		}
 	default:
 		panic("unknown data version")
@@ -355,7 +415,7 @@ var TestingAttestationResponseBeaconObjectForDuty = func(ks *TestKeySet, version
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingSignedAttestationForDuty(ks, duty)
 	case spec.DataVersionElectra:
-		return TestingElectraAttestationForDuty(ks, duty)
+		return TestingElectraSingleAttestationForDuty(ks, duty)
 	default:
 		panic("unknown data version")
 	}
@@ -405,12 +465,33 @@ var TestingElectraAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorI
 	return ret
 }
 
+var TestingElectraSingleAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
+	ret := make([]string, 0)
+	for valIdx, ks := range ksMap {
+
+		committeeDuty := TestingAttesterDutyForValidator(spec.DataVersionElectra, valIdx)
+		duty := committeeDuty.ValidatorDuties[0]
+
+		attData := TestingAttestationDataForValidatorDuty(duty)
+
+		singleAtt := &electra.SingleAttestation{
+			CommitteeIndex: duty.CommitteeIndex,
+			AttesterIndex:  valIdx,
+			Data:           attData,
+			Signature:      signBeaconObject(attData, types.DomainAttester, ks),
+		}
+
+		ret = append(ret, GetSSZRootNoError(singleAtt))
+	}
+	return ret
+}
+
 var TestingSignedAttestationResponseSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet, version spec.DataVersion) []string {
 	switch version {
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingSignedAttestationSSZRootForKeyMap(ksMap)
 	case spec.DataVersionElectra:
-		return TestingElectraAttestationSSZRootForKeyMap(ksMap)
+		return TestingElectraSingleAttestationSSZRootForKeyMap(ksMap)
 	default:
 		panic("unknown data version")
 	}

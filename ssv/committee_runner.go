@@ -574,19 +574,31 @@ func ConstructElectraAttestationWithoutSignature(attestationData *phase0.Attesta
 }
 
 func ConstructVersionedAttestationWithoutSignature(attestationData *phase0.AttestationData, dataVersion spec.DataVersion, validatorDuty *types.ValidatorDuty) (*spec.VersionedAttestation, error) {
+
+	ret := &spec.VersionedAttestation{
+		Version:        dataVersion,
+		ValidatorIndex: &validatorDuty.ValidatorIndex,
+	}
+
 	switch dataVersion {
 	case spec.DataVersionPhase0:
-		return &spec.VersionedAttestation{Version: dataVersion, Phase0: ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)}, nil
+		ret.Phase0 = ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)
+		return ret, nil
 	case spec.DataVersionAltair:
-		return &spec.VersionedAttestation{Version: dataVersion, Altair: ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)}, nil
+		ret.Altair = ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)
+		return ret, nil
 	case spec.DataVersionBellatrix:
-		return &spec.VersionedAttestation{Version: dataVersion, Bellatrix: ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)}, nil
+		ret.Bellatrix = ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)
+		return ret, nil
 	case spec.DataVersionCapella:
-		return &spec.VersionedAttestation{Version: dataVersion, Capella: ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)}, nil
+		ret.Capella = ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)
+		return ret, nil
 	case spec.DataVersionDeneb:
-		return &spec.VersionedAttestation{Version: dataVersion, Deneb: ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)}, nil
+		ret.Deneb = ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)
+		return ret, nil
 	case spec.DataVersionElectra:
-		return &spec.VersionedAttestation{Version: dataVersion, Electra: ConstructElectraAttestationWithoutSignature(attestationData, validatorDuty)}, nil
+		ret.Electra = ConstructElectraAttestationWithoutSignature(attestationData, validatorDuty)
+		return ret, nil
 	default:
 		return nil, errors.New("unknown version")
 	}

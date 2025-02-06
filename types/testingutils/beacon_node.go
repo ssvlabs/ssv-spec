@@ -52,6 +52,7 @@ func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot) (*phase0.
 }
 
 // SubmitAttestations submit attestations to the node
+// Note: The test is concerned with what should be sent on the wire. Thus, electra Attestations are converted into a SingleAttestation object as in the Ethereum spec.
 func (bn *TestingBeaconNode) SubmitAttestations(attestations []*spec.VersionedAttestation) error {
 	for _, att := range attestations {
 
@@ -69,7 +70,11 @@ func (bn *TestingBeaconNode) SubmitAttestations(attestations []*spec.VersionedAt
 		case spec.DataVersionDeneb:
 			root, _ = att.Deneb.HashTreeRoot()
 		case spec.DataVersionElectra:
-			root, _ = att.Electra.HashTreeRoot()
+			singleAttestation, err := att.Electra.ToSingleAttestation(att.ValidatorIndex)
+			if err != nil {
+				panic(err)
+			}
+			root, _ = singleAttestation.HashTreeRoot()
 		}
 
 		bn.BroadcastedRoots = append(bn.BroadcastedRoots, root)
