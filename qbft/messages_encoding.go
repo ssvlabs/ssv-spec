@@ -45,10 +45,6 @@ func (m *Message) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 
 	// Offset (7) 'PrepareJustification'
 	dst = ssz.WriteOffset(dst, offset)
-	for ii := 0; ii < len(m.PrepareJustification); ii++ {
-		offset += 4
-		offset += len(m.PrepareJustification[ii])
-	}
 
 	// Field (3) 'Identifier'
 	if size := len(m.Identifier); size > 56 {
@@ -125,7 +121,7 @@ func (m *Message) UnmarshalSSZ(buf []byte) error {
 		return ssz.ErrOffset
 	}
 
-	if o3 < 76 {
+	if o3 != 76 {
 		return ssz.ErrInvalidVariableOffset
 	}
 
