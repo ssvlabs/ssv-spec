@@ -44,7 +44,7 @@ func main() {
 		panic(err.Error())
 	}
 	for name, test := range all {
-		byts, err := json.Marshal(test)
+		byts, err := json.MarshalIndent(test, "", "  ")
 		if err != nil {
 			panic(err.Error())
 		}
@@ -55,7 +55,7 @@ func main() {
 	}
 
 	// write large tests.json file
-	byts, err := json.Marshal(all)
+	byts, err := json.MarshalIndent(all, "", "  ")
 	if err != nil {
 		panic(err.Error())
 	}

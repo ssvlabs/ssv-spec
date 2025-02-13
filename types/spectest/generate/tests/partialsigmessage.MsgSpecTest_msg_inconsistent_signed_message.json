@@ -1,1 +1,92 @@
-{"Name":"inconsistent signed message","Messages":[{"Type":1,"Slot":"7413760","Messages":[{"PartialSignature":"sn94MvbFCTZWoHaRRmtYb6BIHLk/hkVbeAVG9wuMFXt+fuYpDmotwO7pxw4/LgevCTrPabxzWuJkqR+2O356H9vxrfYZq5eE1buGbMHq8TTS724HjjKXfBl+olpomHXh","SigningRoot":[81,200,220,206,221,52,246,211,123,55,148,165,143,230,217,217,102,118,119,151,65,141,194,253,38,218,211,13,31,85,11,252],"Signer":1,"ValidatorIndex":"1"},{"PartialSignature":"q8su9bGxU3T2HdQKMiuib5rMLscB8vn2cA/fIH2NHoNMNVuT/teTcc9tpIreLZ4sDe7Z+GpPtriT22xjp55B/T14MtuAvsd9byxTJb/UAUN0JHSZQzJgBvOLpLOrH9RC","SigningRoot":[116,137,99,61,85,153,164,194,161,85,40,14,80,220,105,75,176,56,58,106,106,216,61,162,217,8,64,220,52,135,51,188],"Signer":2,"ValidatorIndex":"1"}]}],"EncodedMessages":null,"ExpectedRoots":null,"ExpectedError":"inconsistent signers"}
+{
+  "Name": "inconsistent signed message",
+  "Messages": [
+    {
+      "Type": 1,
+      "Slot": "7413760",
+      "Messages": [
+        {
+          "PartialSignature": "sn94MvbFCTZWoHaRRmtYb6BIHLk/hkVbeAVG9wuMFXt+fuYpDmotwO7pxw4/LgevCTrPabxzWuJkqR+2O356H9vxrfYZq5eE1buGbMHq8TTS724HjjKXfBl+olpomHXh",
+          "SigningRoot": [
+            81,
+            200,
+            220,
+            206,
+            221,
+            52,
+            246,
+            211,
+            123,
+            55,
+            148,
+            165,
+            143,
+            230,
+            217,
+            217,
+            102,
+            118,
+            119,
+            151,
+            65,
+            141,
+            194,
+            253,
+            38,
+            218,
+            211,
+            13,
+            31,
+            85,
+            11,
+            252
+          ],
+          "Signer": 1,
+          "ValidatorIndex": "1"
+        },
+        {
+          "PartialSignature": "q8su9bGxU3T2HdQKMiuib5rMLscB8vn2cA/fIH2NHoNMNVuT/teTcc9tpIreLZ4sDe7Z+GpPtriT22xjp55B/T14MtuAvsd9byxTJb/UAUN0JHSZQzJgBvOLpLOrH9RC",
+          "SigningRoot": [
+            116,
+            137,
+            99,
+            61,
+            85,
+            153,
+            164,
+            194,
+            161,
+            85,
+            40,
+            14,
+            80,
+            220,
+            105,
+            75,
+            176,
+            56,
+            58,
+            106,
+            106,
+            216,
+            61,
+            162,
+            217,
+            8,
+            64,
+            220,
+            52,
+            135,
+            51,
+            188
+          ],
+          "Signer": 2,
+          "ValidatorIndex": "1"
+        }
+      ]
+    }
+  ],
+  "EncodedMessages": null,
+  "ExpectedRoots": null,
+  "ExpectedError": "inconsistent signers"
+}

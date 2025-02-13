@@ -1,1 +1,26 @@
-{"Name":"attestation value check with slashable majority","Network":"now_test_network","RunnerRole":0,"DutySlot":"12","Input":"AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==","SlashableSlots":{"48e4c0a38e90f9352d1d09489446443ebd17b1904f4f0002fe894c2c3f62457a":["12"],"5f4711a796c1116b5118ec35279fb64d551d9b38813d2939954dd2df5160d3d9":["12"],"65dc7c179f68347cf12f86e1c51e54e8aeeed579d4c715082bb8a0382c1a8153":["12"]},"omitempty":["X0cRp5bBEWtRGOw1J5+2TVUdmziBPSk5lU3S31Fg09k=","SOTAo46Q+TUtHQlIlEZEPr0XsZBPTwAC/olMLD9iRXo=","Zdx8F59oNHzxL4bhxR5U6K7u1XnUxxUIK7igOCwagVM=","QkCcsJ+pRfpqFoz4sIYQRdblYvIRpwxKHNvPBBeJh2M="],"ExpectedError":"slashable attestation","AnyError":false}
+{
+  "Name": "attestation value check with slashable majority",
+  "Network": "now_test_network",
+  "RunnerRole": 0,
+  "DutySlot": "12",
+  "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+  "SlashableSlots": {
+    "48e4c0a38e90f9352d1d09489446443ebd17b1904f4f0002fe894c2c3f62457a": [
+      "12"
+    ],
+    "5f4711a796c1116b5118ec35279fb64d551d9b38813d2939954dd2df5160d3d9": [
+      "12"
+    ],
+    "65dc7c179f68347cf12f86e1c51e54e8aeeed579d4c715082bb8a0382c1a8153": [
+      "12"
+    ]
+  },
+  "omitempty": [
+    "X0cRp5bBEWtRGOw1J5+2TVUdmziBPSk5lU3S31Fg09k=",
+    "SOTAo46Q+TUtHQlIlEZEPr0XsZBPTwAC/olMLD9iRXo=",
+    "Zdx8F59oNHzxL4bhxR5U6K7u1XnUxxUIK7igOCwagVM=",
+    "QkCcsJ+pRfpqFoz4sIYQRdblYvIRpwxKHNvPBBeJh2M="
+  ],
+  "ExpectedError": "slashable attestation",
+  "AnyError": false
+}
