@@ -413,6 +413,7 @@ var TestingBlindedBeaconBlockElectra = func() *apiv1electra.BlindedBeaconBlock {
 			},
 			BLSToExecutionChanges: blockContents.Block.Body.BLSToExecutionChanges,
 			BlobKZGCommitments:    blockContents.Block.Body.BlobKZGCommitments,
+			ExecutionRequests:     blockContents.Block.Body.ExecutionRequests,
 		},
 	}
 
