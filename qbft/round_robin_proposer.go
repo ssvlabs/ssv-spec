@@ -7,16 +7,11 @@ import "github.com/ssvlabs/ssv-spec/types"
 // Each new height has a different first round proposer which is +1 from the previous height.
 // First height starts with index 0
 func RoundRobinProposer(state *State, round Round) types.OperatorID {
-	committeeLength := uint64(len(state.CommitteeMember.Committee))
-
-	firstRoundIndex := uint64(0)
-
-	// Increment index using height
+	firstRoundIndex := 0
 	if state.Height != FirstHeight {
-		firstRoundIndex += uint64(state.Height) % committeeLength
+		firstRoundIndex += int(state.Height) % len(state.CommitteeMember.Committee)
 	}
 
-	// Increment index using round heights
-	index := (firstRoundIndex + uint64(round) - uint64(FirstRound)) % committeeLength
+	index := (firstRoundIndex + int(round) - int(FirstRound)) % len(state.CommitteeMember.Committee)
 	return state.CommitteeMember.Committee[index].OperatorID
 }

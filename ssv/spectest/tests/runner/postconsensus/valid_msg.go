@@ -48,7 +48,7 @@ func decideRunnerForData(r ssv.Runner, duty types.Duty, decidedValue []byte) ssv
 		break
 	}
 
-	quorum := ((uint64(len(share.Committee))-1)/3)*2 + 1
+	quorum := (uint64(len(share.Committee)-1)/3)*2 + 1
 	r.GetBaseRunner().State = ssv.NewRunnerState(quorum, duty)
 	r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 		r.GetBaseRunner().QBFTController.GetConfig(),
@@ -196,7 +196,7 @@ func ValidMessage() tests.SpecTest {
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingValidatorRegistration),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedValidatorRegistration(ks)),
 				},
 				ExpectedError: "no post consensus phase for validator registration",
 			},

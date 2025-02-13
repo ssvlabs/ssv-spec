@@ -6,7 +6,7 @@ import (
 
 const (
 	maxSizeSSVMessageFromQBFTMessage              = 722480
-	maxSizeSSVMessageFromPartialSignatureMessages = 144088
+	maxSizeSSVMessageFromPartialSignatureMessages = 217816
 )
 
 func maxSSVMessageFromData(data []byte) *types.SSVMessage {

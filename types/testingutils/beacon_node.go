@@ -386,6 +386,33 @@ func TestingValidatorRegistrationBySlot(slot phase0.Slot) *v1.ValidatorRegistrat
 	}
 }
 
+var TestingSignedValidatorRegistration = func(ks *TestKeySet) *v1.SignedValidatorRegistration {
+	vr := TestingValidatorRegistration
+	sig := signBeaconObject(vr, types.DomainApplicationBuilder, ks)
+	return &v1.SignedValidatorRegistration{
+		Message:   vr,
+		Signature: sig,
+	}
+}
+
+var TestingSignedValidatorRegistrationWrong = func(ks *TestKeySet) *v1.SignedValidatorRegistration {
+	vr := TestingValidatorRegistrationWrong
+	sig := signBeaconObject(vr, types.DomainApplicationBuilder, ks)
+	return &v1.SignedValidatorRegistration{
+		Message:   vr,
+		Signature: sig,
+	}
+}
+
+var TestingSignedValidatorRegistrationBySlot = func(ks *TestKeySet, slot phase0.Slot) *v1.SignedValidatorRegistration {
+	vr := TestingValidatorRegistrationBySlot(slot)
+	sig := signBeaconObject(vr, types.DomainApplicationBuilder, ks)
+	return &v1.SignedValidatorRegistration{
+		Message:   vr,
+		Signature: sig,
+	}
+}
+
 var TestingVoluntaryExit = &phase0.VoluntaryExit{
 	Epoch:          0,
 	ValidatorIndex: TestingValidatorIndex,
@@ -419,9 +446,6 @@ var TestingProposerDutyFirstSlot = types.ValidatorDuty{
 }
 
 func getValPubKeyByValIdx(valIdx int) phase0.BLSPubKey {
-	if valIdx < 0 {
-		panic("Invalid validator index")
-	}
 	return TestingValidatorPubKeyForValidatorIndex(phase0.ValidatorIndex(valIdx))
 }
 
@@ -480,16 +504,11 @@ func TestingCommitteeDutyWithParams(slot phase0.Slot, attestationValidatorIds []
 
 	for _, valIdx := range attestationValidatorIds {
 		pk := getValPubKeyByValIdx(valIdx)
-
-		if valIdx < 0 {
-			panic("Invalid validator index")
-		}
-
 		duties = append(duties, &types.ValidatorDuty{
 			Type:                    types.BNRoleAttester,
 			PubKey:                  pk,
 			Slot:                    slot,
-			ValidatorIndex:          phase0.ValidatorIndex(uint64(valIdx)),
+			ValidatorIndex:          phase0.ValidatorIndex(valIdx),
 			CommitteeIndex:          committeeIndex,
 			CommitteesAtSlot:        committeesAtSlot,
 			CommitteeLength:         committeeLenght,
@@ -499,11 +518,6 @@ func TestingCommitteeDutyWithParams(slot phase0.Slot, attestationValidatorIds []
 
 	for _, valIdx := range syncCommitteeValidatorIds {
 		pk := getValPubKeyByValIdx(valIdx)
-
-		if valIdx < 0 {
-			panic("Invalid validator index")
-		}
-
 		duties = append(duties, &types.ValidatorDuty{
 			Type:                          types.BNRoleSyncCommittee,
 			PubKey:                        pk,
@@ -721,18 +735,8 @@ func (bn *TestingBeaconNode) SubmitAttestations(attestations []*phase0.Attestati
 	return nil
 }
 
-func (bn *TestingBeaconNode) SubmitValidatorRegistration(pubkey []byte, feeRecipient bellatrix.ExecutionAddress, sig phase0.BLSSignature) error {
-	pk := phase0.BLSPubKey{}
-	copy(pk[:], pubkey)
-
-	vr := v1.ValidatorRegistration{
-		FeeRecipient: feeRecipient,
-		GasLimit:     TestingValidatorRegistration.GasLimit,
-		Timestamp:    TestingValidatorRegistration.Timestamp,
-		Pubkey:       pk,
-	}
-
-	r, _ := vr.HashTreeRoot()
+func (bn *TestingBeaconNode) SubmitValidatorRegistration(registration *api.VersionedSignedValidatorRegistration) error {
+	r, _ := registration.V1.HashTreeRoot()
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
