@@ -1,0 +1,17 @@
+{
+  "Name": "attestation value check slashable",
+  "Network": "now_test_network",
+  "RunnerRole": 0,
+  "DutySlot": "12",
+  "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+  "SlashableSlots": {
+    "5f4711a796c1116b5118ec35279fb64d551d9b38813d2939954dd2df5160d3d9": [
+      "12"
+    ]
+  },
+  "omitempty": [
+    "X0cRp5bBEWtRGOw1J5+2TVUdmziBPSk5lU3S31Fg09k="
+  ],
+  "ExpectedError": "slashable attestation",
+  "AnyError": false
+}
