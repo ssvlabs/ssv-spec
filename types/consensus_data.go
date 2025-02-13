@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/api"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
 	apiv1deneb "github.com/attestantio/go-eth2-client/api/v1/deneb"
+	apiv1electra "github.com/attestantio/go-eth2-client/api/v1/electra"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
@@ -204,6 +205,12 @@ func (ci *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, si
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
 		return &api.VersionedProposal{Deneb: ret, Version: ci.Version}, ret.Block, nil
+	case spec.DataVersionElectra:
+		ret := &apiv1electra.BlockContents{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return &api.VersionedProposal{Electra: ret, Version: ci.Version}, ret.Block, nil
 	default:
 		return nil, nil, errors.Errorf("unknown block version %s", ci.Version.String())
 	}
@@ -224,6 +231,12 @@ func (ci *ValidatorConsensusData) GetBlindedBlockData() (*api.VersionedBlindedPr
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
 		return &api.VersionedBlindedProposal{Deneb: ret, Version: ci.Version}, ret, nil
+	case spec.DataVersionElectra:
+		ret := &apiv1electra.BlindedBeaconBlock{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return &api.VersionedBlindedProposal{Electra: ret, Version: ci.Version}, ret, nil
 	default:
 		return nil, nil, errors.Errorf("unknown blinded block version %s", ci.Version.String())
 	}
