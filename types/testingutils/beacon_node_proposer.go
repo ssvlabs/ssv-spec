@@ -6,9 +6,11 @@ import (
 	"github.com/attestantio/go-eth2-client/api"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
 	apiv1deneb "github.com/attestantio/go-eth2-client/api/v1/deneb"
+	apiv1electra "github.com/attestantio/go-eth2-client/api/v1/electra"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
+	"github.com/attestantio/go-eth2-client/spec/electra"
 	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
@@ -19,7 +21,7 @@ import (
 // ==================================================
 
 // SupportedBlockVersions is a list of supported regular/blinded beacon block versions by spec.
-var SupportedBlockVersions = []spec.DataVersion{spec.DataVersionCapella, spec.DataVersionDeneb}
+var SupportedBlockVersions = []spec.DataVersion{spec.DataVersionCapella, spec.DataVersionDeneb, spec.DataVersionElectra}
 
 var TestingBeaconBlockV = func(version spec.DataVersion) *api.VersionedProposal {
 	switch version {
@@ -32,6 +34,11 @@ var TestingBeaconBlockV = func(version spec.DataVersion) *api.VersionedProposal 
 		return &api.VersionedProposal{
 			Version: version,
 			Deneb:   TestingBlockContentsDeneb,
+		}
+	case spec.DataVersionElectra:
+		return &api.VersionedProposal{
+			Version: version,
+			Electra: TestingBlockContentsElectra,
 		}
 	default:
 		panic("unsupported version")
@@ -54,6 +61,12 @@ var TestingBeaconBlockBytesV = func(version spec.DataVersion) []byte {
 		}
 		ret, _ = vBlk.Deneb.MarshalSSZ()
 
+	case spec.DataVersionElectra:
+		if vBlk.Electra == nil {
+			panic("empty block")
+		}
+		ret, _ = vBlk.Electra.MarshalSSZ()
+
 	default:
 		panic("unsupported version")
 	}
@@ -72,6 +85,11 @@ var TestingBlindedBeaconBlockV = func(version spec.DataVersion) *api.VersionedBl
 		return &api.VersionedBlindedProposal{
 			Version: version,
 			Deneb:   TestingBlindedBeaconBlockDeneb,
+		}
+	case spec.DataVersionElectra:
+		return &api.VersionedBlindedProposal{
+			Version: version,
+			Electra: TestingBlindedBeaconBlockElectra,
 		}
 	default:
 		panic("unsupported version")
@@ -93,6 +111,11 @@ var TestingBlindedBeaconBlockBytesV = func(version spec.DataVersion) []byte {
 			panic("empty block")
 		}
 		ret, _ = vBlk.Deneb.MarshalSSZ()
+	case spec.DataVersionElectra:
+		if vBlk.Electra == nil {
+			panic("empty block")
+		}
+		ret, _ = vBlk.Electra.MarshalSSZ()
 
 	default:
 		panic("unsupported version")
@@ -124,6 +147,16 @@ var TestingWrongBeaconBlockV = func(version spec.DataVersion) *api.VersionedProp
 		return &api.VersionedProposal{
 			Version: version,
 			Deneb:   ret,
+		}
+	case spec.DataVersionElectra:
+		ret := &apiv1electra.BlockContents{}
+		if err := ret.UnmarshalSSZ(blkByts); err != nil {
+			panic(err.Error())
+		}
+		ret.Block.Slot = TestingDutySlotElectra + 100
+		return &api.VersionedProposal{
+			Version: version,
+			Electra: ret,
 		}
 
 	default:
@@ -158,6 +191,21 @@ var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) s
 			KZGProofs: vBlk.Deneb.KZGProofs,
 			Blobs:     vBlk.Deneb.Blobs,
 		}
+	case spec.DataVersionElectra:
+		if vBlk.Electra == nil {
+			panic("empty block contents")
+		}
+		if vBlk.Electra.Block == nil {
+			panic("empty block")
+		}
+		return &apiv1electra.SignedBlockContents{
+			SignedBlock: &electra.SignedBeaconBlock{
+				Message:   vBlk.Electra.Block,
+				Signature: signBeaconObject(vBlk.Electra.Block, types.DomainProposer, ks),
+			},
+			KZGProofs: vBlk.Electra.KZGProofs,
+			Blobs:     vBlk.Electra.Blobs,
+		}
 	default:
 		panic("unsupported version")
 	}
@@ -182,6 +230,14 @@ var TestingSignedBlindedBeaconBlockV = func(ks *TestKeySet, version spec.DataVer
 		return &apiv1deneb.SignedBlindedBeaconBlock{
 			Message:   vBlk.Deneb,
 			Signature: signBeaconObject(vBlk.Deneb, types.DomainProposer, ks),
+		}
+	case spec.DataVersionElectra:
+		if vBlk.Electra == nil {
+			panic("empty block")
+		}
+		return &apiv1electra.SignedBlindedBeaconBlock{
+			Message:   vBlk.Electra,
+			Signature: signBeaconObject(vBlk.Electra, types.DomainProposer, ks),
 		}
 	default:
 		panic("unsupported version")
@@ -298,6 +354,71 @@ var TestingBlindedBeaconBlockDeneb = func() *apiv1deneb.BlindedBeaconBlock {
 	return ret
 }()
 
+var TestingBlockContentsElectra = func() *apiv1electra.BlockContents {
+
+	var beaconBlock *electra.BeaconBlock
+	if err := json.Unmarshal(electraBeaconBlock, &beaconBlock); err != nil {
+		panic(err)
+	}
+
+	// using ForkEpochPraterElectra to keep the consistency with TestingProposerDutyV Electra slot
+	beaconBlock.Slot = ForkEpochPraterElectra
+
+	denebBlockContents := TestingBlockContentsDeneb
+
+	return &apiv1electra.BlockContents{
+		Block:     beaconBlock,
+		KZGProofs: denebBlockContents.KZGProofs,
+		Blobs:     denebBlockContents.Blobs,
+	}
+}()
+
+var TestingBlindedBeaconBlockElectra = func() *apiv1electra.BlindedBeaconBlock {
+	blockContents := TestingBlockContentsElectra
+	txRoot, _ := types.SSZTransactions(blockContents.Block.Body.ExecutionPayload.Transactions).HashTreeRoot()
+	withdrawalsRoot, _ := types.SSZWithdrawals(blockContents.Block.Body.ExecutionPayload.Withdrawals).HashTreeRoot()
+	ret := &apiv1electra.BlindedBeaconBlock{
+		Slot:          blockContents.Block.Slot,
+		ProposerIndex: blockContents.Block.ProposerIndex,
+		ParentRoot:    blockContents.Block.ParentRoot,
+		StateRoot:     blockContents.Block.StateRoot,
+		Body: &apiv1electra.BlindedBeaconBlockBody{
+			RANDAOReveal:      blockContents.Block.Body.RANDAOReveal,
+			ETH1Data:          blockContents.Block.Body.ETH1Data,
+			Graffiti:          blockContents.Block.Body.Graffiti,
+			ProposerSlashings: blockContents.Block.Body.ProposerSlashings,
+			AttesterSlashings: blockContents.Block.Body.AttesterSlashings,
+			Attestations:      blockContents.Block.Body.Attestations,
+			Deposits:          blockContents.Block.Body.Deposits,
+			VoluntaryExits:    blockContents.Block.Body.VoluntaryExits,
+			SyncAggregate:     blockContents.Block.Body.SyncAggregate,
+			ExecutionPayloadHeader: &deneb.ExecutionPayloadHeader{
+				ParentHash:       blockContents.Block.Body.ExecutionPayload.ParentHash,
+				FeeRecipient:     blockContents.Block.Body.ExecutionPayload.FeeRecipient,
+				StateRoot:        blockContents.Block.Body.ExecutionPayload.StateRoot,
+				ReceiptsRoot:     blockContents.Block.Body.ExecutionPayload.ReceiptsRoot,
+				LogsBloom:        blockContents.Block.Body.ExecutionPayload.LogsBloom,
+				PrevRandao:       blockContents.Block.Body.ExecutionPayload.PrevRandao,
+				BlockNumber:      blockContents.Block.Body.ExecutionPayload.BlockNumber,
+				GasLimit:         blockContents.Block.Body.ExecutionPayload.GasLimit,
+				GasUsed:          blockContents.Block.Body.ExecutionPayload.GasUsed,
+				Timestamp:        blockContents.Block.Body.ExecutionPayload.Timestamp,
+				ExtraData:        blockContents.Block.Body.ExecutionPayload.ExtraData,
+				BaseFeePerGas:    blockContents.Block.Body.ExecutionPayload.BaseFeePerGas,
+				BlockHash:        blockContents.Block.Body.ExecutionPayload.BlockHash,
+				TransactionsRoot: txRoot,
+				WithdrawalsRoot:  withdrawalsRoot,
+				BlobGasUsed:      blockContents.Block.Body.ExecutionPayload.BlobGasUsed,
+				ExcessBlobGas:    blockContents.Block.Body.ExecutionPayload.ExcessBlobGas,
+			},
+			BLSToExecutionChanges: blockContents.Block.Body.BLSToExecutionChanges,
+			BlobKZGCommitments:    blockContents.Block.Body.BlobKZGCommitments,
+		},
+	}
+
+	return ret
+}()
+
 // ==================================================
 // Versioned Proposer Duty
 // ==================================================
@@ -335,6 +456,8 @@ var TestingProposerDutyNextEpochV = func(version spec.DataVersion) *types.Valida
 		duty.Slot = TestingDutySlotCapellaNextEpoch
 	case spec.DataVersionDeneb:
 		duty.Slot = TestingDutySlotDenebNextEpoch
+	case spec.DataVersionElectra:
+		duty.Slot = TestingDutySlotElectraNextEpoch
 
 	default:
 		panic("unsupported version")

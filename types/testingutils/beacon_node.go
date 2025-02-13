@@ -6,10 +6,12 @@ import (
 	"github.com/attestantio/go-eth2-client/api"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
 	apiv1deneb "github.com/attestantio/go-eth2-client/api/v1/deneb"
+	apiv1electra "github.com/attestantio/go-eth2-client/api/v1/electra"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
+	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -105,6 +107,8 @@ func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, graffiti, randao [
 		return vBlk.Capella, version, nil
 	case spec.DataVersionDeneb:
 		return vBlk.Deneb, version, nil
+	case spec.DataVersionElectra:
+		return vBlk.Electra, version, nil
 	default:
 		panic("unsupported version")
 	}
@@ -140,6 +144,22 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 			Blobs:     block.Deneb.Blobs,
 		}
 		r, _ = sb.HashTreeRoot()
+	case spec.DataVersionElectra:
+		if block.Electra == nil {
+			return errors.Errorf("%s block contents is nil", block.Version.String())
+		}
+		if block.Electra.Block == nil {
+			return errors.Errorf("%s block is nil", block.Version.String())
+		}
+		sb := &apiv1electra.SignedBlockContents{
+			SignedBlock: &electra.SignedBeaconBlock{
+				Message:   block.Electra.Block,
+				Signature: sig,
+			},
+			KZGProofs: block.Electra.KZGProofs,
+			Blobs:     block.Electra.Blobs,
+		}
+		r, _ = sb.HashTreeRoot()
 	default:
 		return errors.Errorf("unknown block version %d", block.Version)
 	}
@@ -168,6 +188,15 @@ func (bn *TestingBeaconNode) SubmitBlindedBeaconBlock(block *api.VersionedBlinde
 		}
 		sb := &apiv1deneb.SignedBlindedBeaconBlock{
 			Message:   block.Deneb,
+			Signature: sig,
+		}
+		r, _ = sb.HashTreeRoot()
+	case spec.DataVersionElectra:
+		if block.Electra == nil {
+			return errors.Errorf("%s blinded block is nil", block.Version.String())
+		}
+		sb := &apiv1electra.SignedBlindedBeaconBlock{
+			Message:   block.Electra,
 			Signature: sig,
 		}
 		r, _ = sb.HashTreeRoot()
