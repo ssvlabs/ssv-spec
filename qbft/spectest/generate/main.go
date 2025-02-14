@@ -21,12 +21,11 @@ import (
 
 func main() {
 	clearStateComparisonFolder()
+	clearTestsFolder()
 
 	all := map[string]tests.SpecTest{}
 	for _, testF := range spectest.AllTests {
 		test := testF()
-
-		// write json test
 		n := reflect.TypeOf(test).String() + "_" + test.TestName()
 		if all[n] != nil {
 			panic(fmt.Sprintf("duplicate test: %s\n", n))
@@ -34,18 +33,40 @@ func main() {
 		all[n] = test
 	}
 
-	byts, err := json.Marshal(all)
+	log.Printf("found %d tests\n", len(all))
+	if len(all) != len(spectest.AllTests) {
+		log.Fatalf("did not generate all tests\n")
+	}
+
+	// write small json files for each test
+	// try to create directory if it doesn't exist
+	_, basedir, _, ok := runtime.Caller(0)
+	if !ok {
+		log.Fatalf("no caller info")
+	}
+	testsDir := filepath.Join(strings.TrimSuffix(basedir, "main.go"), "tests")
+	if err := os.MkdirAll(testsDir, 0700); err != nil && !os.IsExist(err) {
+		panic(err.Error())
+	}
+	for name, test := range all {
+		byts, err := json.MarshalIndent(test, "", "  ")
+		if err != nil {
+			panic(err.Error())
+		}
+		name = strings.ReplaceAll(name, " ", "_")
+		name = strings.ReplaceAll(name, "*", "")
+		name = "tests/" + name
+		writeJson(name, byts)
+	}
+
+	// write large tests.json file
+	byts, err := json.MarshalIndent(all, "", "  ")
 	if err != nil {
 		panic(err.Error())
 	}
+	writeJson("tests", byts)
 
-	if len(all) != len(spectest.AllTests) {
-		panic("did not generate all tests\n")
-	}
-
-	log.Printf("found %d tests\n", len(all))
-	writeJson(byts)
-
+	// write state comparison json files
 	for _, testF := range spectest.AllTests {
 		test := testF()
 		// generate post state comparison
@@ -63,6 +84,22 @@ func clearStateComparisonFolder() {
 		panic("no caller info")
 	}
 	dir := filepath.Join(strings.TrimSuffix(basedir, "main.go"), "state_comparison")
+
+	if err := os.RemoveAll(dir); err != nil {
+		panic(err.Error())
+	}
+
+	if err := os.Mkdir(dir, 0700); err != nil {
+		panic(err.Error())
+	}
+}
+
+func clearTestsFolder() {
+	_, basedir, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("no caller info")
+	}
+	dir := filepath.Join(strings.TrimSuffix(basedir, "main.go"), "tests")
 
 	if err := os.RemoveAll(dir); err != nil {
 		panic(err.Error())
@@ -108,7 +145,7 @@ func scDir(testType string) string {
 	return scDir
 }
 
-func writeJson(data []byte) {
+func writeJson(name string, data []byte) {
 	_, basedir, _, ok := runtime.Caller(0)
 	if !ok {
 		panic("no caller info")
@@ -118,7 +155,7 @@ func writeJson(data []byte) {
 	// try to create directory if it doesn't exist
 	_ = os.Mkdir(basedir, os.ModeDir)
 
-	file := filepath.Join(basedir, "tests.json")
+	file := filepath.Join(basedir, name+".json")
 	log.Printf("writing spec tests json to: %s\n", file)
 	if err := os.WriteFile(file, data, 0400); err != nil {
 		panic(err.Error())

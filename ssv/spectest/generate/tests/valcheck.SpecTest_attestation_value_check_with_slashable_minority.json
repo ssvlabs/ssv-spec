@@ -1,0 +1,20 @@
+{
+  "Name": "attestation value check with slashable minority",
+  "Network": "now_test_network",
+  "RunnerRole": 0,
+  "DutySlot": "12",
+  "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+  "SlashableSlots": {
+    "42409cb09fa945fa6a168cf8b0861045d6e562f211a70c4a1cdbcf0417898763": [
+      "12"
+    ]
+  },
+  "omitempty": [
+    "QkCcsJ+pRfpqFoz4sIYQRdblYvIRpwxKHNvPBBeJh2M=",
+    "X0cRp5bBEWtRGOw1J5+2TVUdmziBPSk5lU3S31Fg09k=",
+    "SOTAo46Q+TUtHQlIlEZEPr0XsZBPTwAC/olMLD9iRXo=",
+    "Zdx8F59oNHzxL4bhxR5U6K7u1XnUxxUIK7igOCwagVM="
+  ],
+  "ExpectedError": "slashable attestation",
+  "AnyError": false
+}
