@@ -1,6 +1,7 @@
 package testingutils
 
-// TO-DO: use json string from a test in api/v1/electra of go-eth2-client
+// Issue: https://github.com/ssvlabs/ssv-spec/issues/521
+// Use json string from a test in api/v1/electra of go-eth2-client
 // Beacon block taken from https://dora.pectra-devnet-6.ethpandaops.io/slot/58430
 // To fill the electra.BlockContents, just get the KZGProofs and Blobs from the deneb block
 var electraBeaconBlock = []byte(`{
