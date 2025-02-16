@@ -59,17 +59,21 @@ func WrongDutyRole() tests.SpecTest {
 				},
 				ExpectedError: expectedError,
 			},
-			{
-				Name:     "aggregator",
-				Runner:   testingutils.AggregatorRunner(ks),
-				Duty:     &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleAggregator)},
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-				},
-				ExpectedError: expectedError,
-			},
 		},
+	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name:     fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner:   testingutils.AggregatorRunner(ks),
+			Duty:     testingutils.TestingAggregatorDuty(version),
+			Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleAggregator)},
+			OutputMessages: []*types.PartialSignatureMessages{
+				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
+			},
+			ExpectedError: expectedError,
+		},
+		)
 	}
 
 	// proposerV creates a test specification for versioned proposer.

@@ -61,28 +61,29 @@ func PostDecided() tests.SpecTest {
 				DontStartDuty:           true,
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
-			{
-				Name: "aggregator selection proof",
-				Runner: decideRunner(
-					testingutils.AggregatorRunner(ks),
-					&testingutils.TestingAggregatorDuty,
-					testingutils.TestAggregatorConsensusData,
-					[]*types.PartialSignatureMessages{
-						testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-						testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2),
-						testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3),
-					},
-				),
-				Duty: &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4))),
-				},
-				PostDutyRunnerStateRoot: postDecidedAggregatorSC().Root(),
-				PostDutyRunnerState:     postDecidedAggregatorSC().ExpectedState,
-				DontStartDuty:           true,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
 		},
+	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name: fmt.Sprintf("aggregator selection proof (%s)", version.String()),
+			Runner: decideRunner(
+				testingutils.AggregatorRunner(ks),
+				testingutils.TestingAggregatorDuty(version),
+				testingutils.TestAggregatorConsensusData(version),
+				[]*types.PartialSignatureMessages{
+					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
+					testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2, version),
+					testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3, version),
+				},
+			),
+			Duty: testingutils.TestingAggregatorDuty(version),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4, version))),
+			},
+			DontStartDuty:  true,
+			OutputMessages: []*types.PartialSignatureMessages{},
+		})
 	}
 
 	// proposerV creates a test specification for versioned proposer.

@@ -47,45 +47,46 @@ func PostDecided() tests.SpecTest {
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
-			{
-				Name:                    "aggregator",
-				Runner:                  decidedRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
-				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
-				Threshold:               ks.Threshold,
-				PostDutyRunnerStateRoot: postDecidedAggregatorSC().Root(),
-				PostDutyRunnerState:     postDecidedAggregatorSC().ExpectedState,
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
-			},
-			{
-				Name:                    "attester",
-				Runner:                  decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
-				Duty:                    testingutils.TestingAttesterDutyNextEpoch,
-				Threshold:               ks.Threshold,
-				PostDutyRunnerStateRoot: postDecidedAttesterSC().Root(),
-				PostDutyRunnerState:     postDecidedAttesterSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
-			{
-				Name:                    "sync committee",
-				Runner:                  decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
-				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch,
-				Threshold:               ks.Threshold,
-				PostDutyRunnerStateRoot: postDecidedSyncCommitteeSC().Root(),
-				PostDutyRunnerState:     postDecidedSyncCommitteeSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
-			{
-				Name:                    "attester and sync committee",
-				Runner:                  decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
-				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
-				Threshold:               ks.Threshold,
-				PostDutyRunnerStateRoot: postDecidedCommitteeSC().Root(),
-				PostDutyRunnerState:     postDecidedCommitteeSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
 		},
+	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
+			Name:      fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner:    decidedRunner(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty(version)),
+			Duty:      testingutils.TestingAggregatorDutyNextEpoch(version),
+			Threshold: ks.Threshold,
+			OutputMessages: []*types.PartialSignatureMessages{
+				testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
+			},
+		})
+	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{
+
+			{
+				Name:           fmt.Sprintf("attester (%s)", version.String()),
+				Runner:         decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty(version)),
+				Duty:           testingutils.TestingAttesterDutyNextEpoch(version),
+				Threshold:      ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner:         decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty(version)),
+				Duty:           testingutils.TestingSyncCommitteeDutyNextEpoch(version),
+				Threshold:      ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner:         decidedRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties(version)),
+				Duty:           testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch(version),
+				Threshold:      ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+		}...)
 	}
 
 	// proposerV creates a test specification for versioned proposer.

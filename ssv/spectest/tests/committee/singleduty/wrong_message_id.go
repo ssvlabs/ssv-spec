@@ -2,6 +2,8 @@ package committeesingleduty
 
 import (
 	"crypto/rsa"
+	"fmt"
+
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -44,29 +46,34 @@ func WrongMessageID() tests.SpecTest {
 	validatorsIndexList := testingutils.ValidatorIndexList(1)
 	ksMap := testingutils.KeySetMapForValidators(1)
 	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name: "wrong message ID",
-		Tests: []*committee.CommitteeSpecTest{
-			{
-				Name:      "sync committee",
-				Committee: testingutils.BaseCommittee(ksMap),
-				Input: []interface{}{
-					testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList),
-					decidedMessage(),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
-			},
-			{
-				Name:      "attestation",
-				Committee: testingutils.BaseCommittee(ksMap),
-				Input: []interface{}{
-					testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, validatorsIndexList),
-					decidedMessage(),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
-			},
-		},
+		Name:  "wrong message ID",
+		Tests: []*committee.CommitteeSpecTest{},
 	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+			{
+				Name:      fmt.Sprintf("sync committees (%s)", version.String()),
+				Committee: testingutils.BaseCommittee(ksMap),
+				Input: []interface{}{
+					testingutils.TestingSyncCommitteeDutyForValidators(version, validatorsIndexList),
+					decidedMessage(),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+			{
+				Name:      fmt.Sprintf("attestation (%s)", version.String()),
+				Committee: testingutils.BaseCommittee(ksMap),
+				Input: []interface{}{
+					testingutils.TestingAttesterDutyForValidators(version, validatorsIndexList),
+					decidedMessage(),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedError,
+			},
+		}...)
+	}
+
 	return multiSpecTest
 }

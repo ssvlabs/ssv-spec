@@ -19,17 +19,6 @@ func noRunningDutySyncCommitteeContributionSC() *comparable.StateComparison {
 	}
 }
 
-// noRunningDutyAggregatorSC returns state comparison object for the NoRunningDuty Aggregator versioned spec test
-func noRunningDutyAggregatorSC() *comparable.StateComparison {
-	ks := testingutils.Testing4SharesSet()
-
-	return &comparable.StateComparison{
-		ExpectedState: func() ssv.Runner {
-			return testingutils.AggregatorRunner(ks)
-		}(),
-	}
-}
-
 // noRunningDutyValidatorRegistrationSC returns state comparison object for the NoRunningDuty ValidatorRegistration versioned spec test
 func noRunningDutyValidatorRegistrationSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()

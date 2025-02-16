@@ -28,10 +28,10 @@ type Network interface {
 // AttesterCalls interface has all attester duty specific calls
 type AttesterCalls interface {
 	// GetAttestationData returns attestation data by the given slot and committee index
-	GetAttestationData(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (*phase0.AttestationData,
+	GetAttestationData(slot phase0.Slot) (*phase0.AttestationData,
 		spec.DataVersion, error)
 	// SubmitAttestation submit the attestation to the node
-	SubmitAttestations(attestations []*phase0.Attestation) error
+	SubmitAttestations(attestations []*spec.VersionedAttestation) error
 }
 
 // ProposerCalls interface has all block proposer duty specific calls
@@ -49,7 +49,7 @@ type AggregatorCalls interface {
 	// SubmitAggregateSelectionProof returns an AggregateAndProof object
 	SubmitAggregateSelectionProof(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, index phase0.ValidatorIndex, slotSig []byte) (ssz.Marshaler, spec.DataVersion, error)
 	// SubmitSignedAggregateSelectionProof broadcasts a signed aggregator msg
-	SubmitSignedAggregateSelectionProof(msg *phase0.SignedAggregateAndProof) error
+	SubmitSignedAggregateSelectionProof(msg *spec.VersionedSignedAggregateAndProof) error
 }
 
 // SyncCommitteeCalls interface has all sync committee duty specific calls
@@ -88,6 +88,12 @@ type DomainCalls interface {
 	DomainData(epoch phase0.Epoch, domain phase0.DomainType) (phase0.Domain, error)
 }
 
+type VersionCalls interface {
+	// DataVersion returns a data version for the given epoch.
+	// In practice, for performance, responses can be cached in order not to always trigger an API call.
+	DataVersion(epoch phase0.Epoch) spec.DataVersion
+}
+
 type BeaconNode interface {
 	// GetBeaconNetwork returns the beacon network the node is on
 	GetBeaconNetwork() types.BeaconNetwork
@@ -99,4 +105,5 @@ type BeaconNode interface {
 	ValidatorRegistrationCalls
 	VoluntaryExitCalls
 	DomainCalls
+	VersionCalls
 }

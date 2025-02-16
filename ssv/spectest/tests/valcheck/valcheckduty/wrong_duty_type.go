@@ -44,7 +44,7 @@ func WrongDutyType() tests.SpecTest {
 				Name:          "proposer",
 				Network:       types.BeaconTestNetwork,
 				RunnerRole:    types.RoleProposer,
-				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData),
+				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
 				ExpectedError: "duty invalid: wrong beacon role type",
 			},
 		},

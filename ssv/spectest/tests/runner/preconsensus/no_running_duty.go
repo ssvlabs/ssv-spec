@@ -31,19 +31,6 @@ func NoRunningDuty() tests.SpecTest {
 				ExpectedError:           "failed processing sync committee selection proof message: invalid pre-consensus message: no running duty",
 			},
 			{
-				Name:   "aggregator",
-				Runner: testingutils.AggregatorRunner(ks),
-				Duty:   &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
-				},
-				PostDutyRunnerStateRoot: noRunningDutyAggregatorSC().Root(),
-				PostDutyRunnerState:     noRunningDutyAggregatorSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				DontStartDuty:           true,
-				ExpectedError:           "failed processing selection proof message: invalid pre-consensus message: no running duty",
-			},
-			{
 				Name:   "validator registration",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),
 				Duty:   &testingutils.TestingValidatorRegistrationDuty,
@@ -70,6 +57,20 @@ func NoRunningDuty() tests.SpecTest {
 				ExpectedError:           "failed processing voluntary exit message: invalid pre-consensus message: no running duty",
 			},
 		},
+	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name:   fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner: testingutils.AggregatorRunner(ks),
+			Duty:   testingutils.TestingAggregatorDuty(version),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version))),
+			},
+			OutputMessages: []*types.PartialSignatureMessages{},
+			DontStartDuty:  true,
+			ExpectedError:  "failed processing selection proof message: invalid pre-consensus message: no running duty",
+		})
 	}
 
 	// proposerV creates a test specification for versioned proposer.

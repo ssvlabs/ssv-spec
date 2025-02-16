@@ -36,32 +36,6 @@ func unknownSignerSyncCommitteeContributionSC() *comparable.StateComparison {
 	}
 }
 
-// unknownSignerAggregatorSC returns state comparison object for the UnknownSigner Aggregator versioned spec test
-func unknownSignerAggregatorSC() *comparable.StateComparison {
-	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestAggregatorConsensusData
-
-	return &comparable.StateComparison{
-		ExpectedState: func() ssv.Runner {
-			ret := testingutils.AggregatorRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SignedSSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SignedSSVMessage{},
-				),
-				StartingDuty: &cd.Duty,
-				Finished:     false,
-			}
-
-			return ret
-		}(),
-	}
-}
-
 // unknownSignerProposerSC returns state comparison object for the UnknownSigner Proposer versioned spec test
 func unknownSignerProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()

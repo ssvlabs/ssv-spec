@@ -1,8 +1,11 @@
 package consensus
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -11,36 +14,9 @@ import (
 // ValidDecided13Operators tests a valid decided value (13 operators)
 func ValidDecided13Operators() tests.SpecTest {
 	ks := testingutils.Testing13SharesSet()
-	return &tests.MultiMsgProcessingSpecTest{
+	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
 		Name: "consensus valid decided 13 operators",
 		Tests: []*tests.MsgProcessingSpecTest{
-			{
-				Name:     "attester",
-				Runner:   testingutils.CommitteeRunner(ks),
-				Duty:     testingutils.TestingAttesterDuty,
-				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
-				},
-			},
-			{
-				Name:     "sync committee",
-				Runner:   testingutils.CommitteeRunner(ks),
-				Duty:     testingutils.TestingSyncCommitteeDuty,
-				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1),
-				},
-			},
-			{
-				Name:     "attester and sync committee",
-				Runner:   testingutils.CommitteeRunner(ks),
-				Duty:     testingutils.TestingAttesterAndSyncCommitteeDuties,
-				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, testingutils.TestingDutySlot),
-				},
-			},
 			{
 				Name:                    "sync committee contribution",
 				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
@@ -50,17 +26,6 @@ func ValidDecided13Operators() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
-				},
-			},
-			{
-				Name:                    "aggregator",
-				Runner:                  testingutils.AggregatorRunner(ks),
-				Duty:                    &testingutils.TestingAggregatorDuty,
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData, ks, types.RoleAggregator),
-				PostDutyRunnerStateRoot: "dd79a9da2d025a61d4e4ebdebbc9a331a876a43bb8c8e7c274132ae1c4a35175",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-					testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1),
 				},
 			},
 			{
@@ -87,4 +52,56 @@ func ValidDecided13Operators() tests.SpecTest {
 			},
 		},
 	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name:                    fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner:                  testingutils.AggregatorRunner(ks),
+			Duty:                    testingutils.TestingAggregatorDuty(version),
+			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData(version), ks, types.RoleAggregator),
+			PostDutyRunnerStateRoot: "dd79a9da2d025a61d4e4ebdebbc9a331a876a43bb8c8e7c274132ae1c4a35175",
+			OutputMessages: []*types.PartialSignatureMessages{
+				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
+				testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version),
+			},
+		},
+		)
+	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+
+		height := qbft.Height(testingutils.TestingDutySlotV(version))
+
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+			{
+				Name:     fmt.Sprintf("attester (%s)", version.String()),
+				Runner:   testingutils.CommitteeRunner(ks),
+				Duty:     testingutils.TestingAttesterDuty(version),
+				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, height),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version),
+				},
+			},
+			{
+				Name:     fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner:   testingutils.CommitteeRunner(ks),
+				Duty:     testingutils.TestingSyncCommitteeDuty(version),
+				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, height),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version),
+				},
+			},
+			{
+				Name:     fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner:   testingutils.CommitteeRunner(ks),
+				Duty:     testingutils.TestingAttesterAndSyncCommitteeDuties(version),
+				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, height),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version),
+				},
+			},
+		}...)
+	}
+
+	return multiSpecTest
 }

@@ -15,7 +15,7 @@ func InvalidDuty() *ValidatorConsensusDataTest {
 			PubKey: testingutils.TestingValidatorPubKey,
 		},
 		Version: spec.DataVersionCapella,
-		DataSSZ: testingutils.TestingAttestationDataBytes,
+		DataSSZ: testingutils.TestingAttestationDataBytes(spec.DataVersionCapella),
 	}
 
 	return &ValidatorConsensusDataTest{

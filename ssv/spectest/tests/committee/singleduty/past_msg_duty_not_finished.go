@@ -23,92 +23,102 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 
 	decidedValue := testingutils.TestBeaconVoteByts
 	msgID := testingutils.CommitteeMsgID(ks)
-	pastHeight := qbft.Height(10)
 
-	bumpHeight := func(c *ssv.Committee, previousDuty types.Duty) *ssv.Committee {
+	multiSpecTest := &committee.MultiCommitteeSpecTest{
+		Name:  "past msg duty not finished",
+		Tests: []*committee.CommitteeSpecTest{},
+	}
 
-		err := c.StartDuty(previousDuty.(*types.CommitteeDuty))
-		if err != nil {
-			panic(err)
-		}
+	for _, version := range testingutils.SupportedAttestationVersions {
 
-		decidingMsgs := []*types.SignedSSVMessage{
-			testingutils.TestingProposalMessageWithIdentifierAndFullData(
-				ks.OperatorKeys[1], types.OperatorID(1), msgID, decidedValue,
-				pastHeight),
-			testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, qbft.FirstRound, pastHeight, msgID, sha256.Sum256(decidedValue)),
-			testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, qbft.FirstRound, pastHeight, msgID, sha256.Sum256(decidedValue)),
-			testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, qbft.FirstRound, pastHeight, msgID, sha256.Sum256(decidedValue)),
+		pastHeight := qbft.Height(testingutils.TestingDutySlotV(version) - 2)
 
-			testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, qbft.FirstRound, pastHeight, msgID, sha256.Sum256(decidedValue)),
-			testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, qbft.FirstRound, pastHeight, msgID, sha256.Sum256(decidedValue)),
-			testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, qbft.FirstRound, pastHeight, msgID, sha256.Sum256(decidedValue)),
-		}
-		for _, msg := range decidingMsgs {
-			err := c.ProcessMessage(msg)
+		bumpHeight := func(c *ssv.Committee, previousDuty types.Duty) *ssv.Committee {
+
+			err := c.StartDuty(previousDuty.(*types.CommitteeDuty))
 			if err != nil {
 				panic(err)
 			}
+
+			decidingMsgs := []*types.SignedSSVMessage{
+				testingutils.TestingProposalMessageWithIdentifierAndFullData(
+					ks.OperatorKeys[1], types.OperatorID(1), msgID, decidedValue,
+					pastHeight),
+				testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, qbft.FirstRound, pastHeight, msgID, sha256.Sum256(decidedValue)),
+				testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, qbft.FirstRound, pastHeight, msgID, sha256.Sum256(decidedValue)),
+				testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, qbft.FirstRound, pastHeight, msgID, sha256.Sum256(decidedValue)),
+
+				testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, qbft.FirstRound, pastHeight, msgID, sha256.Sum256(decidedValue)),
+				testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, qbft.FirstRound, pastHeight, msgID, sha256.Sum256(decidedValue)),
+				testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, qbft.FirstRound, pastHeight, msgID, sha256.Sum256(decidedValue)),
+			}
+			for _, msg := range decidingMsgs {
+				err := c.ProcessMessage(msg)
+				if err != nil {
+					panic(err)
+				}
+			}
+
+			// Erase broadcasted messages due to test setup
+			c.Runners[previousDuty.DutySlot()].GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs = make([]*types.SignedSSVMessage, 0)
+
+			return c
 		}
 
-		// Erase broadcasted messages due to test setup
-		c.Runners[previousDuty.DutySlot()].GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs = make([]*types.SignedSSVMessage, 0)
+		pastProposalMsgF := func() *types.SignedSSVMessage {
+			fullData := decidedValue
+			root, _ := qbft.HashDataRoot(fullData)
+			msg := &qbft.Message{
+				MsgType:    qbft.ProposalMsgType,
+				Height:     pastHeight,
+				Round:      qbft.FirstRound,
+				Identifier: msgID,
+				Root:       root,
+			}
+			signed := testingutils.SignQBFTMsg(ks.OperatorKeys[1], 1, msg)
+			signed.FullData = fullData
 
-		return c
-	}
-
-	pastProposalMsgF := func() *types.SignedSSVMessage {
-		fullData := decidedValue
-		root, _ := qbft.HashDataRoot(fullData)
-		msg := &qbft.Message{
-			MsgType:    qbft.ProposalMsgType,
-			Height:     pastHeight,
-			Round:      qbft.FirstRound,
-			Identifier: msgID,
-			Root:       root,
+			return signed
 		}
-		signed := testingutils.SignQBFTMsg(ks.OperatorKeys[1], 1, msg)
-		signed.FullData = fullData
 
-		return signed
-	}
+		expectedError := "failed processing consensus message: not processing consensus message since consensus has already finished"
 
-	expectedError := "failed processing consensus message: not processing consensus message since consensus has already finished"
+		attesterDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), validatorsIndexList, nil)
+		syncCommitteeDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), nil, validatorsIndexList)
+		attestationAndSyncCommitteeDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), validatorsIndexList, validatorsIndexList)
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name: "past msg duty not finished",
-		Tests: []*committee.CommitteeSpecTest{
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
 			{
-				Name:      fmt.Sprintf("%v attestation", numValidators),
-				Committee: bumpHeight(testingutils.BaseCommittee(ksMap), testingutils.TestingCommitteeAttesterDuty(phase0.Slot(pastHeight), validatorsIndexList)),
+				Name:      fmt.Sprintf("%v attestation (%s)", numValidators, version.String()),
+				Committee: bumpHeight(testingutils.BaseCommittee(ksMap), attesterDuty),
 				Input: []interface{}{
-					testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, validatorsIndexList),
+					testingutils.TestingAttesterDutyForValidators(version, validatorsIndexList),
 					pastProposalMsgF(),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},
 			{
-				Name:      fmt.Sprintf("%v sync committee", numValidators),
-				Committee: bumpHeight(testingutils.BaseCommittee(ksMap), testingutils.TestingCommitteeSyncCommitteeDuty(phase0.Slot(pastHeight), validatorsIndexList)),
+				Name:      fmt.Sprintf("%v sync committee (%s)", numValidators, version.String()),
+				Committee: bumpHeight(testingutils.BaseCommittee(ksMap), syncCommitteeDuty),
 				Input: []interface{}{
-					testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList),
+					testingutils.TestingSyncCommitteeDutyForValidators(version, validatorsIndexList),
 					pastProposalMsgF(),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},
 			{
-				Name:      fmt.Sprintf("%v attestation %v sync committee", numValidators, numValidators),
-				Committee: bumpHeight(testingutils.BaseCommittee(ksMap), testingutils.TestingCommitteeDuty(phase0.Slot(pastHeight), validatorsIndexList, validatorsIndexList)),
+				Name:      fmt.Sprintf("%v attestation %v sync committee (%s)", numValidators, numValidators, version.String()),
+				Committee: bumpHeight(testingutils.BaseCommittee(ksMap), attestationAndSyncCommitteeDuty),
 				Input: []interface{}{
-					testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList, validatorsIndexList),
+					testingutils.TestingCommitteeDuty(validatorsIndexList, validatorsIndexList, version),
 					pastProposalMsgF(),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},
-		},
+		}...)
 	}
 
 	return multiSpecTest

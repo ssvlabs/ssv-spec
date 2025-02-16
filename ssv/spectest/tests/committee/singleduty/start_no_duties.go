@@ -1,6 +1,7 @@
 package committeesingleduty
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -16,7 +17,7 @@ func StartNoDuty() tests.SpecTest {
 		Name:      "empty committee duty",
 		Committee: testingutils.BaseCommittee(ksMapFor1Validator),
 		Input: []interface{}{
-			testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, nil, nil),
+			testingutils.TestingCommitteeDuty(nil, nil, spec.DataVersionElectra),
 		},
 		ExpectedError:  "no beacon duties",
 		OutputMessages: []*types.PartialSignatureMessages{},

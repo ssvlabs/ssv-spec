@@ -171,12 +171,12 @@
   },
   "Input": [
     {
-      "Slot": "12",
+      "Slot": "7424012",
       "ValidatorDuties": [
         {
           "Type": 0,
           "PubKey": "0xaa57905889288431b819bee5bc3d77ef1dffcb3d3d0d7be8b748b96f27e0ed23a604e7a5b56c0b402af1810a17b21fe1",
-          "Slot": "12",
+          "Slot": "7424012",
           "ValidatorIndex": "2",
           "CommitteeIndex": 3,
           "CommitteeLength": 128,

@@ -405,7 +405,7 @@
       }
     },
     {
-      "Name": "aggregator",
+      "Name": "aggregator (phase0)",
       "Runner": {
         "BaseRunner": {
           "State": null,
@@ -717,6 +717,327 @@
         "Type": 1,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
         "Slot": "12",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 22,
+        "CommitteeLength": 128,
+        "CommitteesAtSlot": 36,
+        "ValidatorCommitteeIndex": 11,
+        "ValidatorSyncCommitteeIndices": null
+      }
+    },
+    {
+      "Name": "aggregator (electra)",
+      "Runner": {
+        "BaseRunner": {
+          "State": null,
+          "Share": {
+            "1": {
+              "ValidatorIndex": "1",
+              "ValidatorPubKey": [
+                142,
+                128,
+                6,
+                101,
+                81,
+                168,
+                27,
+                49,
+                130,
+                88,
+                112,
+                158,
+                218,
+                247,
+                221,
+                31,
+                99,
+                205,
+                104,
+                106,
+                14,
+                77,
+                184,
+                178,
+                155,
+                187,
+                122,
+                207,
+                230,
+                86,
+                8,
+                103,
+                122,
+                245,
+                165,
+                39,
+                217,
+                68,
+                142,
+                228,
+                120,
+                53,
+                72,
+                94,
+                2,
+                181,
+                11,
+                192
+              ],
+              "SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+              "Committee": [
+                {
+                  "SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+                  "Signer": 1
+                },
+                {
+                  "SharePubKey": "przr4wl9dBcbQMcSoDHOsDcds9PEAs8s5pG5Eg87q3XU1W36DzdZFUSZm/GMU1Pt",
+                  "Signer": 2
+                },
+                {
+                  "SharePubKey": "gJDgt2ZqRezF1O90GKyZ8J5sskQCn+pqCn/Mvp7gi8U53g36Zr5rq8hJPdmd0amN",
+                  "Signer": 3
+                },
+                {
+                  "SharePubKey": "p8CidrcKXuM5XH1tJlXtYFKKolLU0h7KX8xSI+UMxCvRaLKAq3q1MXNU3d/PPfnk",
+                  "Signer": 4
+                }
+              ],
+              "DomainType": [
+                0,
+                0,
+                3,
+                1
+              ],
+              "FeeRecipientAddress": [
+                83,
+                89,
+                83,
+                181,
+                166,
+                4,
+                0,
+                116,
+                148,
+                140,
+                241,
+                133,
+                234,
+                167,
+                210,
+                171,
+                189,
+                102,
+                128,
+                143
+              ],
+              "Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+            }
+          },
+          "QBFTController": {
+            "Identifier": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+            "Height": 0,
+            "StoredInstances": [],
+            "CommitteeMember": {
+              "OperatorID": 1,
+              "CommitteeID": [
+                207,
+                151,
+                173,
+                238,
+                219,
+                89,
+                224,
+                91,
+                253,
+                115,
+                162,
+                180,
+                194,
+                168,
+                136,
+                87,
+                8,
+                196,
+                244,
+                247,
+                12,
+                132,
+                198,
+                75,
+                39,
+                18,
+                14,
+                114,
+                171,
+                115,
+                59,
+                114
+              ],
+              "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBeU16MmIrS1pKSXpCelJad3RwYnkKTHYvZzdZNFBGTDhGVGI0Y0Y0cVhzRVh4Smh1MGxHSmhUMFlZWUN4WUNhdk1aZjUwTlFETzRRQ2RlM2xzb0VZQgphdzBlZnRrWE5pMkxYL3h3aWozY044NTZkMkdvMGhZZjJCRVYySkUzb3pkU1NyNWNoaS9hVHYxM2w4YU1ZY2pXCjA4bHlBemxBVXozWGd2UmlkVktteHhoakFQRVRmM1BtcHV3aGFvM1luL3dMOFJSNk9BakNFUjRLN1JjLzV2bksKanZCaDU3bFNRZjdZRk9kV2ZnbEhjTWNYZndVNStldmFFbVJhaW9vYXpTQnkwMUtvMlJEQnBGL3VFNzdzZGYxQwo2NVRRSnZvS3kyRjBKUWJ2ME9RVFNqVzBDUHcwaFMydk96Qk5VK3ZBRUVYNHdxQmp6M1grUER1OUxid0E1NFdtClVRSURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K",
+              "FaultyNodes": 1,
+              "Committee": [
+                {
+                  "OperatorID": 1,
+                  "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBeU16MmIrS1pKSXpCelJad3RwYnkKTHYvZzdZNFBGTDhGVGI0Y0Y0cVhzRVh4Smh1MGxHSmhUMFlZWUN4WUNhdk1aZjUwTlFETzRRQ2RlM2xzb0VZQgphdzBlZnRrWE5pMkxYL3h3aWozY044NTZkMkdvMGhZZjJCRVYySkUzb3pkU1NyNWNoaS9hVHYxM2w4YU1ZY2pXCjA4bHlBemxBVXozWGd2UmlkVktteHhoakFQRVRmM1BtcHV3aGFvM1luL3dMOFJSNk9BakNFUjRLN1JjLzV2bksKanZCaDU3bFNRZjdZRk9kV2ZnbEhjTWNYZndVNStldmFFbVJhaW9vYXpTQnkwMUtvMlJEQnBGL3VFNzdzZGYxQwo2NVRRSnZvS3kyRjBKUWJ2ME9RVFNqVzBDUHcwaFMydk96Qk5VK3ZBRUVYNHdxQmp6M1grUER1OUxid0E1NFdtClVRSURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
+                },
+                {
+                  "OperatorID": 2,
+                  "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBbVlaUDJHRzRxM1ZSUmFpZG1nbWEKT0N3eno4OEdUTDIvdHM0c3gyZk1hSkJ3dDJtY1JwR1NKTHVNQWgrUUpFSWhFUGNXYVNicllVYTdOZUg2VHZSdwp1TUlRdldzT3hzRUNmTzZndmZiTGhNeERyaGZrRmc2R3pNZ0pZQm1VUXVxRUlwYklXZitRVzJoQ0ViQjN1R3Y4CnFpMDdpSTBTTzB6OEtjZnhCVUJXNmtxNkRJdHozbEo2Z1ZOTjdTNFRBblZkS2o2NjBuR2JuSENlOVJQMzRma3IKVEtuUTBHb0NEOHh2RTE3U1dsWThHcmFzRGxJbDUxcWJSRGx2RXJJS3QvRHFBbllkZk4rL1BLekxJMkxlUGNjSApRdVdKalA5UXZZTWhrci9VVmdyMGM4Ums3bmt2YXprYmtrS2JreGVUMkp3OC9WN2gveWE0aDhZb1B6MkJLd05RCmNRSURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
+                },
+                {
+                  "OperatorID": 3,
+                  "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBdG9pRlRVcUpwTDg0eHZoTUZTQU8KWUFxYkVZaXpEQlBsL2xNMmMxOEtzRzlJQVNEU3piTmZ4R25jMnBDMzdqanI3aDNibFN4RU5ZU0tPWVZIVzJOMgpxOGJ6TEJ1MDZrSzBnenNWRERKTU5jOGpwVnFOK0VJclBsSWpOWUwybXA1Wk5uYXp5YVdBYVZWa05ZeU1hYWpJCkF6VHlyWis2d3VvUVJvaXV6U2dsdTBSNmV1V1FaZThDY2lFVDFaRHJDMFJpaG4rYklCbzNlN3YwekZBZXczUXcKVTNJbEZvanp0SjVyaitKZmx5UWFVaS96VEN5OXFUUG5XV0ZBenRHWjZGZS8wM3VoVk4wczhXWnd0MnkxVjFiaQpIWUFQWXo2MmZpdENWNDRZcmt6RU9tSVNnUm4zVW9qT3prOHZORlltY0NSNDFMMncvbzE3UjBEM0xnOG54QzZNCkpRSURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
+                },
+                {
+                  "OperatorID": 4,
+                  "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBcVFYenEvNlh0VkVmSlRaL3YxUHcKa3pTa05SWGJwQy80MWE5TFNRdnNra0lDZEcyZEd3K1FhZ2tOVllwdktRc1Izd0F4QmZEb1FxZE1vRXY4R2g5eApCYVphZjZrTFdrbmFWWVlOSmVXbjZiRWlEbVhqVllETXE1ZGhsOW9kOVVoSzRFWVQ4cklmNWFsZnlFYTkrV3M5Cm9lQUxTMjFjVlBwUlBvYlFIeHNYOHhvOXVRQ3JMeE9xYzRFVzgyODVLajV2blFsZnBHRzIxV0ZCZmJIR1I0WGEKK2FtT2ZUS1BsUkxsZVZVTXp3WCs3cGVHSi81SDNqcExGbCtvRmFyMkMvWURIL0VKejArTnE2R0ptNzFpSjdNYwoxK2MwUDZGT2F5NlpxWitaRGo5ZHBKZC9tYnFZenkzcks2YlBvOE52TkVZSFNKZk9SRDRLak5NSXM0UzF5cHhaCkl3SURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
+                }
+              ],
+              "DomainType": [
+                0,
+                0,
+                3,
+                1
+              ]
+            }
+          },
+          "BeaconNetwork": "now_test_network",
+          "RunnerRoleType": 1
+        }
+      },
+      "Messages": [
+        {
+          "Signatures": [
+            "v512oIrK/iCeglhB9RmpY530pz0R7KUguVc0QVxJlkKARpZzq/z1YkuoaWX3HnM8kNKW4+LgR52C2TFn1vux7sG8swsDvUF4a6l/vQH85nnxG51yJ1gkbbMZv4qUzB4ruMK/yMRdSCnp1nqt/TQe5uM+bI8LN8scDVH6+CzjOrIdQKlyW92bpURyp6uBSBBeYbtqUfmVd/Jz+dGwEz5fQKfXJv+EefGd3YZmxxZM66iT6z1X9ILpGH2/dfHOOp3YPd3WSd/WHUQuk566VsKpVKOmXUOeEDnM6eJqGz45JZYFG1Xc/0Z4MyeGk/MyVUgo7Re8wVlYomM8A6JLNBPrzA==",
+            "TpIev+XSbkSQW2FAYaEPDOu8XfaoIEKo+E0qa5DhV+UFG2klG9BRbwHm8aIj/eJOlvzXTUYkViaowFdOxC8jLIJJjMoNAs+o7QHcHkkvGCT+Uyf9JRroqSeUnogY1zPy3ZVqdbOSMnQYTx+Y4v19I3vFedPrX820aqA/sBeQL41zb/El59UzxfRVWwvDUXdtS/J/yHA9XjubEVS4WiWlIZQ+F0wrurPiYHdqCPf/7oktRY7XDgEp+3YSXzTkG2G5s5hcywAQ1tQP6rZewX2b3EoeYXA/w28Nxj7npaBzHtZ8HaIXdzTFjMsPeakc7+nQNkPRgXGtOCwMG51VVwVChQ==",
+            "PnCHKAfW9/TJBL0INvIGZ67SdU2qT+I47ikuaLQ+K1ak5guUMtQVlaDFKPB97tArEfBM/RdtNlTWrJUAq9xGPVUN6yH0ifCFArLPqTm2kNBhbBa/8g5gZBvd92hRQ2EFJPFpMhA5YI43d3Sx/9o3PR916l09KSEx5PETCxGvpu4IwKWcVe2tK36SPrbbXzJdp63nifk5lL0IWqFwedR3xfrGyPWIkdSZ+bnin2hRMFSrh3il4XQ/zTcX867KDJhTMnnSsPYWvop5NxPdTm2qrFadCpjVCsowOZHJBLPM8wp2BnhkhlJA26cmZolsgbMiNkpnodKlRI8NeymyWGXREQ=="
+          ],
+          "OperatorIDs": [
+            1,
+            2,
+            3
+          ],
+          "SSVMessage": {
+            "MsgType": 0,
+            "MsgID": [
+              0,
+              0,
+              3,
+              1,
+              1,
+              0,
+              0,
+              0,
+              142,
+              128,
+              6,
+              101,
+              81,
+              168,
+              27,
+              49,
+              130,
+              88,
+              112,
+              158,
+              218,
+              247,
+              221,
+              31,
+              99,
+              205,
+              104,
+              106,
+              14,
+              77,
+              184,
+              178,
+              155,
+              187,
+              122,
+              207,
+              230,
+              86,
+              8,
+              103,
+              122,
+              245,
+              165,
+              39,
+              217,
+              68,
+              142,
+              228,
+              120,
+              53,
+              72,
+              94,
+              2,
+              181,
+              11,
+              192
+            ],
+            "Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAAAAwECAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
+          },
+          "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+        }
+      ],
+      "DecidedSlashable": false,
+      "PostDutyRunnerStateRoot": "",
+      "OutputMessages": [
+        {
+          "Type": 2,
+          "Slot": "7424012",
+          "Messages": [
+            {
+              "PartialSignature": "l8xdvDZt+U7T3c72qn1Mr46+aHcAIIEMjGxsridNb/RLAYqlZAxthd0IeDP5OZmdC2VLkMciIbP0mS278pDMg3hlleb/8uJhitM1GUtNFIaZ+TG1FSWvEynV9cJABB6t",
+              "SigningRoot": [
+                220,
+                191,
+                183,
+                53,
+                238,
+                118,
+                236,
+                235,
+                228,
+                11,
+                150,
+                128,
+                219,
+                155,
+                116,
+                57,
+                19,
+                85,
+                92,
+                223,
+                118,
+                240,
+                174,
+                72,
+                224,
+                147,
+                212,
+                114,
+                195,
+                23,
+                114,
+                135
+              ],
+              "Signer": 1,
+              "ValidatorIndex": "1"
+            }
+          ]
+        }
+      ],
+      "BeaconBroadcastedRoots": null,
+      "DontStartDuty": false,
+      "ExpectedError": "failed processing consensus message: invalid msg: message doesn't belong to Identifier",
+      "ValidatorDuty": {
+        "Type": 1,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "7424012",
         "ValidatorIndex": "1",
         "CommitteeIndex": 22,
         "CommitteeLength": 128,
@@ -2001,6 +2322,648 @@
         "Type": 2,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
         "Slot": "7413760",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 3,
+        "CommitteeLength": 128,
+        "CommitteesAtSlot": 36,
+        "ValidatorCommitteeIndex": 11,
+        "ValidatorSyncCommitteeIndices": null
+      }
+    },
+    {
+      "Name": "proposer (electra)",
+      "Runner": {
+        "BaseRunner": {
+          "State": null,
+          "Share": {
+            "1": {
+              "ValidatorIndex": "1",
+              "ValidatorPubKey": [
+                142,
+                128,
+                6,
+                101,
+                81,
+                168,
+                27,
+                49,
+                130,
+                88,
+                112,
+                158,
+                218,
+                247,
+                221,
+                31,
+                99,
+                205,
+                104,
+                106,
+                14,
+                77,
+                184,
+                178,
+                155,
+                187,
+                122,
+                207,
+                230,
+                86,
+                8,
+                103,
+                122,
+                245,
+                165,
+                39,
+                217,
+                68,
+                142,
+                228,
+                120,
+                53,
+                72,
+                94,
+                2,
+                181,
+                11,
+                192
+              ],
+              "SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+              "Committee": [
+                {
+                  "SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+                  "Signer": 1
+                },
+                {
+                  "SharePubKey": "przr4wl9dBcbQMcSoDHOsDcds9PEAs8s5pG5Eg87q3XU1W36DzdZFUSZm/GMU1Pt",
+                  "Signer": 2
+                },
+                {
+                  "SharePubKey": "gJDgt2ZqRezF1O90GKyZ8J5sskQCn+pqCn/Mvp7gi8U53g36Zr5rq8hJPdmd0amN",
+                  "Signer": 3
+                },
+                {
+                  "SharePubKey": "p8CidrcKXuM5XH1tJlXtYFKKolLU0h7KX8xSI+UMxCvRaLKAq3q1MXNU3d/PPfnk",
+                  "Signer": 4
+                }
+              ],
+              "DomainType": [
+                0,
+                0,
+                3,
+                1
+              ],
+              "FeeRecipientAddress": [
+                83,
+                89,
+                83,
+                181,
+                166,
+                4,
+                0,
+                116,
+                148,
+                140,
+                241,
+                133,
+                234,
+                167,
+                210,
+                171,
+                189,
+                102,
+                128,
+                143
+              ],
+              "Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+            }
+          },
+          "QBFTController": {
+            "Identifier": "AAADAQIAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+            "Height": 0,
+            "StoredInstances": [],
+            "CommitteeMember": {
+              "OperatorID": 1,
+              "CommitteeID": [
+                207,
+                151,
+                173,
+                238,
+                219,
+                89,
+                224,
+                91,
+                253,
+                115,
+                162,
+                180,
+                194,
+                168,
+                136,
+                87,
+                8,
+                196,
+                244,
+                247,
+                12,
+                132,
+                198,
+                75,
+                39,
+                18,
+                14,
+                114,
+                171,
+                115,
+                59,
+                114
+              ],
+              "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBeU16MmIrS1pKSXpCelJad3RwYnkKTHYvZzdZNFBGTDhGVGI0Y0Y0cVhzRVh4Smh1MGxHSmhUMFlZWUN4WUNhdk1aZjUwTlFETzRRQ2RlM2xzb0VZQgphdzBlZnRrWE5pMkxYL3h3aWozY044NTZkMkdvMGhZZjJCRVYySkUzb3pkU1NyNWNoaS9hVHYxM2w4YU1ZY2pXCjA4bHlBemxBVXozWGd2UmlkVktteHhoakFQRVRmM1BtcHV3aGFvM1luL3dMOFJSNk9BakNFUjRLN1JjLzV2bksKanZCaDU3bFNRZjdZRk9kV2ZnbEhjTWNYZndVNStldmFFbVJhaW9vYXpTQnkwMUtvMlJEQnBGL3VFNzdzZGYxQwo2NVRRSnZvS3kyRjBKUWJ2ME9RVFNqVzBDUHcwaFMydk96Qk5VK3ZBRUVYNHdxQmp6M1grUER1OUxid0E1NFdtClVRSURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K",
+              "FaultyNodes": 1,
+              "Committee": [
+                {
+                  "OperatorID": 1,
+                  "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBeU16MmIrS1pKSXpCelJad3RwYnkKTHYvZzdZNFBGTDhGVGI0Y0Y0cVhzRVh4Smh1MGxHSmhUMFlZWUN4WUNhdk1aZjUwTlFETzRRQ2RlM2xzb0VZQgphdzBlZnRrWE5pMkxYL3h3aWozY044NTZkMkdvMGhZZjJCRVYySkUzb3pkU1NyNWNoaS9hVHYxM2w4YU1ZY2pXCjA4bHlBemxBVXozWGd2UmlkVktteHhoakFQRVRmM1BtcHV3aGFvM1luL3dMOFJSNk9BakNFUjRLN1JjLzV2bksKanZCaDU3bFNRZjdZRk9kV2ZnbEhjTWNYZndVNStldmFFbVJhaW9vYXpTQnkwMUtvMlJEQnBGL3VFNzdzZGYxQwo2NVRRSnZvS3kyRjBKUWJ2ME9RVFNqVzBDUHcwaFMydk96Qk5VK3ZBRUVYNHdxQmp6M1grUER1OUxid0E1NFdtClVRSURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
+                },
+                {
+                  "OperatorID": 2,
+                  "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBbVlaUDJHRzRxM1ZSUmFpZG1nbWEKT0N3eno4OEdUTDIvdHM0c3gyZk1hSkJ3dDJtY1JwR1NKTHVNQWgrUUpFSWhFUGNXYVNicllVYTdOZUg2VHZSdwp1TUlRdldzT3hzRUNmTzZndmZiTGhNeERyaGZrRmc2R3pNZ0pZQm1VUXVxRUlwYklXZitRVzJoQ0ViQjN1R3Y4CnFpMDdpSTBTTzB6OEtjZnhCVUJXNmtxNkRJdHozbEo2Z1ZOTjdTNFRBblZkS2o2NjBuR2JuSENlOVJQMzRma3IKVEtuUTBHb0NEOHh2RTE3U1dsWThHcmFzRGxJbDUxcWJSRGx2RXJJS3QvRHFBbllkZk4rL1BLekxJMkxlUGNjSApRdVdKalA5UXZZTWhrci9VVmdyMGM4Ums3bmt2YXprYmtrS2JreGVUMkp3OC9WN2gveWE0aDhZb1B6MkJLd05RCmNRSURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
+                },
+                {
+                  "OperatorID": 3,
+                  "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBdG9pRlRVcUpwTDg0eHZoTUZTQU8KWUFxYkVZaXpEQlBsL2xNMmMxOEtzRzlJQVNEU3piTmZ4R25jMnBDMzdqanI3aDNibFN4RU5ZU0tPWVZIVzJOMgpxOGJ6TEJ1MDZrSzBnenNWRERKTU5jOGpwVnFOK0VJclBsSWpOWUwybXA1Wk5uYXp5YVdBYVZWa05ZeU1hYWpJCkF6VHlyWis2d3VvUVJvaXV6U2dsdTBSNmV1V1FaZThDY2lFVDFaRHJDMFJpaG4rYklCbzNlN3YwekZBZXczUXcKVTNJbEZvanp0SjVyaitKZmx5UWFVaS96VEN5OXFUUG5XV0ZBenRHWjZGZS8wM3VoVk4wczhXWnd0MnkxVjFiaQpIWUFQWXo2MmZpdENWNDRZcmt6RU9tSVNnUm4zVW9qT3prOHZORlltY0NSNDFMMncvbzE3UjBEM0xnOG54QzZNCkpRSURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
+                },
+                {
+                  "OperatorID": 4,
+                  "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBcVFYenEvNlh0VkVmSlRaL3YxUHcKa3pTa05SWGJwQy80MWE5TFNRdnNra0lDZEcyZEd3K1FhZ2tOVllwdktRc1Izd0F4QmZEb1FxZE1vRXY4R2g5eApCYVphZjZrTFdrbmFWWVlOSmVXbjZiRWlEbVhqVllETXE1ZGhsOW9kOVVoSzRFWVQ4cklmNWFsZnlFYTkrV3M5Cm9lQUxTMjFjVlBwUlBvYlFIeHNYOHhvOXVRQ3JMeE9xYzRFVzgyODVLajV2blFsZnBHRzIxV0ZCZmJIR1I0WGEKK2FtT2ZUS1BsUkxsZVZVTXp3WCs3cGVHSi81SDNqcExGbCtvRmFyMkMvWURIL0VKejArTnE2R0ptNzFpSjdNYwoxK2MwUDZGT2F5NlpxWitaRGo5ZHBKZC9tYnFZenkzcks2YlBvOE52TkVZSFNKZk9SRDRLak5NSXM0UzF5cHhaCkl3SURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
+                }
+              ],
+              "DomainType": [
+                0,
+                0,
+                3,
+                1
+              ]
+            }
+          },
+          "BeaconNetwork": "now_test_network",
+          "RunnerRoleType": 2
+        }
+      },
+      "Messages": [
+        {
+          "Signatures": [
+            "aQaipRX32J4XXu/f9mZ8L4GaU9RHCG4f+Q4xbOkeNMLoUIe6eXBdApKbQmxkItPIqDUFr01vk60ZjV38map95MjpBzNFaRSsCi4cot7IlPecOO4avVC7euGyRuHRckjSZYtXV8j/XFm9LbHsluRSb8FBHAQimWyJsyK+bmJfFAzgco244XaYdR2D0lOyA7BZRH3gAgXFLTiKdiM/nVK4XIUJodzipB2jm6loxZUdxfwB4y30KWwL8k3uvIwO5owHdHOuALXi7G2nuVncSkTu4saXGop4NMpjEXFzpAIHTMkF3ha26grXt++ex66nkzIRv6fzZdSfZ8Ix7lgXvLAfsQ==",
+            "co+GefDIya+pLpG7ScxagLNHo5nnOyUWx+mG8MfpPUSueOAUssphwIkGZjBGDpXtXQfwpfMfnaJwyemcFszFHsPEuYDzqxVCY+jcvHDNu1nVQmAGvYiJXVG2FTfkExj2XNHUH5o4f9yA8O4C+ylYGPTM+KTXW7P2t70mwF1NDSa75zV87hatN2/CUsmXakkauOtbmDg/B2BzT9XIXKH9xmxELXokp5PsW1LOawQLErLxgdRTTNuh7qETu/i6j3KdMdmHrmR+lYsa0ySIDDSqaelDiVGnI8s1qQTL/BHD7Z+kjSdwGY3md1gcor0zUo6+xnebmle4FcN30FpmKAFVgA==",
+            "bOqWYVetdPbHJDaq5t7oUlpuHfCS0nm87sLQfTbZU8lsBfZsxw6WPrsuhSNkYO14pRqL7+QBpnutmEOlOWIFnkB6qo0rhXnjwOlrrfADOy2esd1znEq2i/ukel1HiJqu21KTBXgTGsUSWV50Vl35oa2B8vG44kYgmyR5IlcL7P5+vu9DN5N3q50GHaA0RmILoWbwPijQV1Dns8QUx0HI7H1TY/tr+wPpj8/kuViis9KpelwRMRgMHafkbFF4lMyDw/z5D8o8KLeFlTRWo+tLPRnVRemvdhyykRDLpb3XW9MEB6mQ3rZUF6Wme/ciD4IRmNVMf+CMcnvde1brPB0vRw=="
+          ],
+          "OperatorIDs": [
+            1,
+            2,
+            3
+          ],
+          "SSVMessage": {
+            "MsgType": 0,
+            "MsgID": [
+              0,
+              0,
+              3,
+              1,
+              2,
+              0,
+              0,
+              0,
+              142,
+              128,
+              6,
+              101,
+              81,
+              168,
+              27,
+              49,
+              130,
+              88,
+              112,
+              158,
+              218,
+              247,
+              221,
+              31,
+              99,
+              205,
+              104,
+              106,
+              14,
+              77,
+              184,
+              178,
+              155,
+              187,
+              122,
+              207,
+              230,
+              86,
+              8,
+              103,
+              122,
+              245,
+              165,
+              39,
+              217,
+              68,
+              142,
+              228,
+              120,
+              53,
+              72,
+              94,
+              2,
+              181,
+              11,
+              192
+            ],
+            "Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAAAAwEDAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
+          },
+          "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+        }
+      ],
+      "DecidedSlashable": false,
+      "PostDutyRunnerStateRoot": "",
+      "OutputMessages": [
+        {
+          "Type": 1,
+          "Slot": "7424012",
+          "Messages": [
+            {
+              "PartialSignature": "jlxXAsBMFF5R/zzmRID+MHnB8Fu9PqgPcHtxuCgyQpdoFxJ4EUHwwlE6Xo7cZI0QD4LCyO5G2LR7OVJNnev6zwBsMO8CORv8L4SAsQYFSBqR6XgK69yMjLmGxR4flEHp",
+              "SigningRoot": [
+                57,
+                117,
+                232,
+                175,
+                98,
+                50,
+                12,
+                66,
+                245,
+                84,
+                122,
+                236,
+                132,
+                222,
+                231,
+                55,
+                11,
+                76,
+                180,
+                241,
+                205,
+                5,
+                79,
+                12,
+                116,
+                157,
+                244,
+                8,
+                179,
+                244,
+                180,
+                138
+              ],
+              "Signer": 1,
+              "ValidatorIndex": "1"
+            }
+          ]
+        }
+      ],
+      "BeaconBroadcastedRoots": null,
+      "DontStartDuty": false,
+      "ExpectedError": "failed processing consensus message: invalid msg: message doesn't belong to Identifier",
+      "ValidatorDuty": {
+        "Type": 2,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "7424012",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 3,
+        "CommitteeLength": 128,
+        "CommitteesAtSlot": 36,
+        "ValidatorCommitteeIndex": 11,
+        "ValidatorSyncCommitteeIndices": null
+      }
+    },
+    {
+      "Name": "proposer blinded block (electra)",
+      "Runner": {
+        "BaseRunner": {
+          "State": null,
+          "Share": {
+            "1": {
+              "ValidatorIndex": "1",
+              "ValidatorPubKey": [
+                142,
+                128,
+                6,
+                101,
+                81,
+                168,
+                27,
+                49,
+                130,
+                88,
+                112,
+                158,
+                218,
+                247,
+                221,
+                31,
+                99,
+                205,
+                104,
+                106,
+                14,
+                77,
+                184,
+                178,
+                155,
+                187,
+                122,
+                207,
+                230,
+                86,
+                8,
+                103,
+                122,
+                245,
+                165,
+                39,
+                217,
+                68,
+                142,
+                228,
+                120,
+                53,
+                72,
+                94,
+                2,
+                181,
+                11,
+                192
+              ],
+              "SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+              "Committee": [
+                {
+                  "SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+                  "Signer": 1
+                },
+                {
+                  "SharePubKey": "przr4wl9dBcbQMcSoDHOsDcds9PEAs8s5pG5Eg87q3XU1W36DzdZFUSZm/GMU1Pt",
+                  "Signer": 2
+                },
+                {
+                  "SharePubKey": "gJDgt2ZqRezF1O90GKyZ8J5sskQCn+pqCn/Mvp7gi8U53g36Zr5rq8hJPdmd0amN",
+                  "Signer": 3
+                },
+                {
+                  "SharePubKey": "p8CidrcKXuM5XH1tJlXtYFKKolLU0h7KX8xSI+UMxCvRaLKAq3q1MXNU3d/PPfnk",
+                  "Signer": 4
+                }
+              ],
+              "DomainType": [
+                0,
+                0,
+                3,
+                1
+              ],
+              "FeeRecipientAddress": [
+                83,
+                89,
+                83,
+                181,
+                166,
+                4,
+                0,
+                116,
+                148,
+                140,
+                241,
+                133,
+                234,
+                167,
+                210,
+                171,
+                189,
+                102,
+                128,
+                143
+              ],
+              "Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+            }
+          },
+          "QBFTController": {
+            "Identifier": "AAADAQIAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+            "Height": 0,
+            "StoredInstances": [],
+            "CommitteeMember": {
+              "OperatorID": 1,
+              "CommitteeID": [
+                207,
+                151,
+                173,
+                238,
+                219,
+                89,
+                224,
+                91,
+                253,
+                115,
+                162,
+                180,
+                194,
+                168,
+                136,
+                87,
+                8,
+                196,
+                244,
+                247,
+                12,
+                132,
+                198,
+                75,
+                39,
+                18,
+                14,
+                114,
+                171,
+                115,
+                59,
+                114
+              ],
+              "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBeU16MmIrS1pKSXpCelJad3RwYnkKTHYvZzdZNFBGTDhGVGI0Y0Y0cVhzRVh4Smh1MGxHSmhUMFlZWUN4WUNhdk1aZjUwTlFETzRRQ2RlM2xzb0VZQgphdzBlZnRrWE5pMkxYL3h3aWozY044NTZkMkdvMGhZZjJCRVYySkUzb3pkU1NyNWNoaS9hVHYxM2w4YU1ZY2pXCjA4bHlBemxBVXozWGd2UmlkVktteHhoakFQRVRmM1BtcHV3aGFvM1luL3dMOFJSNk9BakNFUjRLN1JjLzV2bksKanZCaDU3bFNRZjdZRk9kV2ZnbEhjTWNYZndVNStldmFFbVJhaW9vYXpTQnkwMUtvMlJEQnBGL3VFNzdzZGYxQwo2NVRRSnZvS3kyRjBKUWJ2ME9RVFNqVzBDUHcwaFMydk96Qk5VK3ZBRUVYNHdxQmp6M1grUER1OUxid0E1NFdtClVRSURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K",
+              "FaultyNodes": 1,
+              "Committee": [
+                {
+                  "OperatorID": 1,
+                  "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBeU16MmIrS1pKSXpCelJad3RwYnkKTHYvZzdZNFBGTDhGVGI0Y0Y0cVhzRVh4Smh1MGxHSmhUMFlZWUN4WUNhdk1aZjUwTlFETzRRQ2RlM2xzb0VZQgphdzBlZnRrWE5pMkxYL3h3aWozY044NTZkMkdvMGhZZjJCRVYySkUzb3pkU1NyNWNoaS9hVHYxM2w4YU1ZY2pXCjA4bHlBemxBVXozWGd2UmlkVktteHhoakFQRVRmM1BtcHV3aGFvM1luL3dMOFJSNk9BakNFUjRLN1JjLzV2bksKanZCaDU3bFNRZjdZRk9kV2ZnbEhjTWNYZndVNStldmFFbVJhaW9vYXpTQnkwMUtvMlJEQnBGL3VFNzdzZGYxQwo2NVRRSnZvS3kyRjBKUWJ2ME9RVFNqVzBDUHcwaFMydk96Qk5VK3ZBRUVYNHdxQmp6M1grUER1OUxid0E1NFdtClVRSURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
+                },
+                {
+                  "OperatorID": 2,
+                  "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBbVlaUDJHRzRxM1ZSUmFpZG1nbWEKT0N3eno4OEdUTDIvdHM0c3gyZk1hSkJ3dDJtY1JwR1NKTHVNQWgrUUpFSWhFUGNXYVNicllVYTdOZUg2VHZSdwp1TUlRdldzT3hzRUNmTzZndmZiTGhNeERyaGZrRmc2R3pNZ0pZQm1VUXVxRUlwYklXZitRVzJoQ0ViQjN1R3Y4CnFpMDdpSTBTTzB6OEtjZnhCVUJXNmtxNkRJdHozbEo2Z1ZOTjdTNFRBblZkS2o2NjBuR2JuSENlOVJQMzRma3IKVEtuUTBHb0NEOHh2RTE3U1dsWThHcmFzRGxJbDUxcWJSRGx2RXJJS3QvRHFBbllkZk4rL1BLekxJMkxlUGNjSApRdVdKalA5UXZZTWhrci9VVmdyMGM4Ums3bmt2YXprYmtrS2JreGVUMkp3OC9WN2gveWE0aDhZb1B6MkJLd05RCmNRSURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
+                },
+                {
+                  "OperatorID": 3,
+                  "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBdG9pRlRVcUpwTDg0eHZoTUZTQU8KWUFxYkVZaXpEQlBsL2xNMmMxOEtzRzlJQVNEU3piTmZ4R25jMnBDMzdqanI3aDNibFN4RU5ZU0tPWVZIVzJOMgpxOGJ6TEJ1MDZrSzBnenNWRERKTU5jOGpwVnFOK0VJclBsSWpOWUwybXA1Wk5uYXp5YVdBYVZWa05ZeU1hYWpJCkF6VHlyWis2d3VvUVJvaXV6U2dsdTBSNmV1V1FaZThDY2lFVDFaRHJDMFJpaG4rYklCbzNlN3YwekZBZXczUXcKVTNJbEZvanp0SjVyaitKZmx5UWFVaS96VEN5OXFUUG5XV0ZBenRHWjZGZS8wM3VoVk4wczhXWnd0MnkxVjFiaQpIWUFQWXo2MmZpdENWNDRZcmt6RU9tSVNnUm4zVW9qT3prOHZORlltY0NSNDFMMncvbzE3UjBEM0xnOG54QzZNCkpRSURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
+                },
+                {
+                  "OperatorID": 4,
+                  "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBcVFYenEvNlh0VkVmSlRaL3YxUHcKa3pTa05SWGJwQy80MWE5TFNRdnNra0lDZEcyZEd3K1FhZ2tOVllwdktRc1Izd0F4QmZEb1FxZE1vRXY4R2g5eApCYVphZjZrTFdrbmFWWVlOSmVXbjZiRWlEbVhqVllETXE1ZGhsOW9kOVVoSzRFWVQ4cklmNWFsZnlFYTkrV3M5Cm9lQUxTMjFjVlBwUlBvYlFIeHNYOHhvOXVRQ3JMeE9xYzRFVzgyODVLajV2blFsZnBHRzIxV0ZCZmJIR1I0WGEKK2FtT2ZUS1BsUkxsZVZVTXp3WCs3cGVHSi81SDNqcExGbCtvRmFyMkMvWURIL0VKejArTnE2R0ptNzFpSjdNYwoxK2MwUDZGT2F5NlpxWitaRGo5ZHBKZC9tYnFZenkzcks2YlBvOE52TkVZSFNKZk9SRDRLak5NSXM0UzF5cHhaCkl3SURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
+                }
+              ],
+              "DomainType": [
+                0,
+                0,
+                3,
+                1
+              ]
+            }
+          },
+          "BeaconNetwork": "now_test_network",
+          "RunnerRoleType": 2
+        }
+      },
+      "Messages": [
+        {
+          "Signatures": [
+            "aQaipRX32J4XXu/f9mZ8L4GaU9RHCG4f+Q4xbOkeNMLoUIe6eXBdApKbQmxkItPIqDUFr01vk60ZjV38map95MjpBzNFaRSsCi4cot7IlPecOO4avVC7euGyRuHRckjSZYtXV8j/XFm9LbHsluRSb8FBHAQimWyJsyK+bmJfFAzgco244XaYdR2D0lOyA7BZRH3gAgXFLTiKdiM/nVK4XIUJodzipB2jm6loxZUdxfwB4y30KWwL8k3uvIwO5owHdHOuALXi7G2nuVncSkTu4saXGop4NMpjEXFzpAIHTMkF3ha26grXt++ex66nkzIRv6fzZdSfZ8Ix7lgXvLAfsQ==",
+            "co+GefDIya+pLpG7ScxagLNHo5nnOyUWx+mG8MfpPUSueOAUssphwIkGZjBGDpXtXQfwpfMfnaJwyemcFszFHsPEuYDzqxVCY+jcvHDNu1nVQmAGvYiJXVG2FTfkExj2XNHUH5o4f9yA8O4C+ylYGPTM+KTXW7P2t70mwF1NDSa75zV87hatN2/CUsmXakkauOtbmDg/B2BzT9XIXKH9xmxELXokp5PsW1LOawQLErLxgdRTTNuh7qETu/i6j3KdMdmHrmR+lYsa0ySIDDSqaelDiVGnI8s1qQTL/BHD7Z+kjSdwGY3md1gcor0zUo6+xnebmle4FcN30FpmKAFVgA==",
+            "bOqWYVetdPbHJDaq5t7oUlpuHfCS0nm87sLQfTbZU8lsBfZsxw6WPrsuhSNkYO14pRqL7+QBpnutmEOlOWIFnkB6qo0rhXnjwOlrrfADOy2esd1znEq2i/ukel1HiJqu21KTBXgTGsUSWV50Vl35oa2B8vG44kYgmyR5IlcL7P5+vu9DN5N3q50GHaA0RmILoWbwPijQV1Dns8QUx0HI7H1TY/tr+wPpj8/kuViis9KpelwRMRgMHafkbFF4lMyDw/z5D8o8KLeFlTRWo+tLPRnVRemvdhyykRDLpb3XW9MEB6mQ3rZUF6Wme/ciD4IRmNVMf+CMcnvde1brPB0vRw=="
+          ],
+          "OperatorIDs": [
+            1,
+            2,
+            3
+          ],
+          "SSVMessage": {
+            "MsgType": 0,
+            "MsgID": [
+              0,
+              0,
+              3,
+              1,
+              2,
+              0,
+              0,
+              0,
+              142,
+              128,
+              6,
+              101,
+              81,
+              168,
+              27,
+              49,
+              130,
+              88,
+              112,
+              158,
+              218,
+              247,
+              221,
+              31,
+              99,
+              205,
+              104,
+              106,
+              14,
+              77,
+              184,
+              178,
+              155,
+              187,
+              122,
+              207,
+              230,
+              86,
+              8,
+              103,
+              122,
+              245,
+              165,
+              39,
+              217,
+              68,
+              142,
+              228,
+              120,
+              53,
+              72,
+              94,
+              2,
+              181,
+              11,
+              192
+            ],
+            "Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAAAAwEDAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
+          },
+          "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+        }
+      ],
+      "DecidedSlashable": false,
+      "PostDutyRunnerStateRoot": "",
+      "OutputMessages": [
+        {
+          "Type": 1,
+          "Slot": "7424012",
+          "Messages": [
+            {
+              "PartialSignature": "jlxXAsBMFF5R/zzmRID+MHnB8Fu9PqgPcHtxuCgyQpdoFxJ4EUHwwlE6Xo7cZI0QD4LCyO5G2LR7OVJNnev6zwBsMO8CORv8L4SAsQYFSBqR6XgK69yMjLmGxR4flEHp",
+              "SigningRoot": [
+                57,
+                117,
+                232,
+                175,
+                98,
+                50,
+                12,
+                66,
+                245,
+                84,
+                122,
+                236,
+                132,
+                222,
+                231,
+                55,
+                11,
+                76,
+                180,
+                241,
+                205,
+                5,
+                79,
+                12,
+                116,
+                157,
+                244,
+                8,
+                179,
+                244,
+                180,
+                138
+              ],
+              "Signer": 1,
+              "ValidatorIndex": "1"
+            }
+          ]
+        }
+      ],
+      "BeaconBroadcastedRoots": null,
+      "DontStartDuty": false,
+      "ExpectedError": "failed processing consensus message: invalid msg: message doesn't belong to Identifier",
+      "ValidatorDuty": {
+        "Type": 2,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "7424012",
         "ValidatorIndex": "1",
         "CommitteeIndex": 3,
         "CommitteeLength": 128,

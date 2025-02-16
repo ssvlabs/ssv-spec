@@ -41,22 +41,6 @@ func PostFinish() tests.SpecTest {
 				ExpectedError:           "failed processing sync committee selection proof message: invalid pre-consensus message: no running duty",
 			},
 			{
-				Name: "aggregator selection proof",
-				Runner: finishRunner(
-					testingutils.AggregatorRunner(ks),
-					&testingutils.TestingAggregatorDuty,
-				),
-				Duty: &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4))),
-				},
-				PostDutyRunnerStateRoot: postFinishAggregatorSC().Root(),
-				PostDutyRunnerState:     postFinishAggregatorSC().ExpectedState,
-				DontStartDuty:           true,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           "failed processing selection proof message: invalid pre-consensus message: no running duty",
-			},
-			{
 				Name: "validator registration",
 				Runner: finishRunner(
 					testingutils.ValidatorRegistrationRunner(ks),
@@ -89,6 +73,23 @@ func PostFinish() tests.SpecTest {
 				ExpectedError:           "failed processing voluntary exit message: invalid pre-consensus message: no running duty",
 			},
 		},
+	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name: fmt.Sprintf("aggregator selection proof (%s)", version.String()),
+			Runner: finishRunner(
+				testingutils.AggregatorRunner(ks),
+				testingutils.TestingAggregatorDuty(version),
+			),
+			Duty: testingutils.TestingAggregatorDuty(version),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4, version))),
+			},
+			DontStartDuty:  true,
+			OutputMessages: []*types.PartialSignatureMessages{},
+			ExpectedError:  "failed processing selection proof message: invalid pre-consensus message: no running duty",
+		})
 	}
 
 	// proposerV creates a test specification for versioned proposer.

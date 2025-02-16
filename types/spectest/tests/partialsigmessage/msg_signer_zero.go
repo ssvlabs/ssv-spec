@@ -3,7 +3,6 @@ package partialsigmessage
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -14,7 +13,7 @@ func MessageSigner0() *MsgSpecTest {
 
 	msgPre := testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb)
 	msgPre.Messages[0].Signer = 0
-	msgPost := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)
+	msgPost := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)
 	msgPost.Messages[0].Signer = 0
 
 	return &MsgSpecTest{

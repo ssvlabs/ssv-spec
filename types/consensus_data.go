@@ -4,9 +4,11 @@ import (
 	"github.com/attestantio/go-eth2-client/api"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
 	apiv1deneb "github.com/attestantio/go-eth2-client/api/v1/deneb"
+	apiv1electra "github.com/attestantio/go-eth2-client/api/v1/electra"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
+	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -160,7 +162,7 @@ type ValidatorConsensusData struct {
 func (cid *ValidatorConsensusData) Validate() error {
 	switch cid.Duty.Type {
 	case BNRoleAggregator:
-		if _, err := cid.GetAggregateAndProof(); err != nil {
+		if _, _, err := cid.GetAggregateAndProof(); err != nil {
 			return err
 		}
 	case BNRoleProposer:
@@ -203,6 +205,12 @@ func (ci *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, si
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
 		return &api.VersionedProposal{Deneb: ret, Version: ci.Version}, ret.Block, nil
+	case spec.DataVersionElectra:
+		ret := &apiv1electra.BlockContents{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return &api.VersionedProposal{Electra: ret, Version: ci.Version}, ret.Block, nil
 	default:
 		return nil, nil, errors.Errorf("unknown block version %s", ci.Version.String())
 	}
@@ -223,17 +231,71 @@ func (ci *ValidatorConsensusData) GetBlindedBlockData() (*api.VersionedBlindedPr
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
 		return &api.VersionedBlindedProposal{Deneb: ret, Version: ci.Version}, ret, nil
+	case spec.DataVersionElectra:
+		ret := &apiv1electra.BlindedBeaconBlock{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return &api.VersionedBlindedProposal{Electra: ret, Version: ci.Version}, ret, nil
 	default:
 		return nil, nil, errors.Errorf("unknown blinded block version %s", ci.Version.String())
 	}
 }
 
-func (ci *ValidatorConsensusData) GetAggregateAndProof() (*phase0.AggregateAndProof, error) {
-	ret := &phase0.AggregateAndProof{}
-	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-		return nil, errors.Wrap(err, "could not unmarshal ssz")
+func (ci *ValidatorConsensusData) GetAggregateAndProof() (*spec.VersionedAggregateAndProof, ssz.HashRoot, error) {
+
+	switch ci.Version {
+	case spec.DataVersionPhase0:
+		ret := &phase0.AggregateAndProof{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+
+		return &spec.VersionedAggregateAndProof{Version: ci.Version, Phase0: ret}, ret, nil
+
+	case spec.DataVersionAltair:
+		ret := &phase0.AggregateAndProof{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+
+		return &spec.VersionedAggregateAndProof{Version: ci.Version, Altair: ret}, ret, nil
+
+	case spec.DataVersionBellatrix:
+		ret := &phase0.AggregateAndProof{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+
+		return &spec.VersionedAggregateAndProof{Version: ci.Version, Bellatrix: ret}, ret, nil
+
+	case spec.DataVersionCapella:
+		ret := &phase0.AggregateAndProof{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+
+		return &spec.VersionedAggregateAndProof{Version: ci.Version, Capella: ret}, ret, nil
+
+	case spec.DataVersionDeneb:
+		ret := &phase0.AggregateAndProof{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+
+		return &spec.VersionedAggregateAndProof{Version: ci.Version, Deneb: ret}, ret, nil
+
+	case spec.DataVersionElectra:
+		ret := &electra.AggregateAndProof{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+
+		return &spec.VersionedAggregateAndProof{Version: ci.Version, Electra: ret}, ret, nil
+
+	default:
+		return nil, nil, errors.New("unknown version for aggregate and proof")
 	}
-	return ret, nil
 }
 
 func (ci *ValidatorConsensusData) GetSyncCommitteeContributions() (Contributions, error) {

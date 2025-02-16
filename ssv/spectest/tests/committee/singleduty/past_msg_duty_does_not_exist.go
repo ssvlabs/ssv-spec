@@ -41,39 +41,43 @@ func PastMessageDutyDoesNotExist() tests.SpecTest {
 	expectedError := "no runner found for message's slot"
 
 	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name: "past msg duty does not exist",
-		Tests: []*committee.CommitteeSpecTest{
+		Name:  "past msg duty does not exist",
+		Tests: []*committee.CommitteeSpecTest{},
+	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
 			{
-				Name:      fmt.Sprintf("%v attestation", numValidators),
+				Name:      fmt.Sprintf("%v attestation (%s)", numValidators, version.String()),
 				Committee: testingutils.BaseCommittee(ksMap),
 				Input: []interface{}{
-					testingutils.TestingCommitteeAttesterDuty(testingutils.TestingDutySlot, validatorsIndexList),
+					testingutils.TestingAttesterDutyForValidators(version, validatorsIndexList),
 					pastProposalMsgF(),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},
 			{
-				Name:      fmt.Sprintf("%v sync committee", numValidators),
+				Name:      fmt.Sprintf("%v sync committee (%s)", numValidators, version.String()),
 				Committee: testingutils.BaseCommittee(ksMap),
 				Input: []interface{}{
-					testingutils.TestingCommitteeSyncCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList),
+					testingutils.TestingSyncCommitteeDutyForValidators(version, validatorsIndexList),
 					pastProposalMsgF(),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},
 			{
-				Name:      fmt.Sprintf("%v attestation %v sync committee", numValidators, numValidators),
+				Name:      fmt.Sprintf("%v attestation %v sync committee (%s)", numValidators, numValidators, version.String()),
 				Committee: testingutils.BaseCommittee(ksMap),
 				Input: []interface{}{
-					testingutils.TestingCommitteeDuty(testingutils.TestingDutySlot, validatorsIndexList, validatorsIndexList),
+					testingutils.TestingCommitteeDuty(validatorsIndexList, validatorsIndexList, version),
 					pastProposalMsgF(),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
 				ExpectedError:  expectedError,
 			},
-		},
+		}...)
 	}
 
 	return multiSpecTest

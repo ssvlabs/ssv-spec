@@ -31,8 +31,11 @@ func ProposerConsensusDataEncoding() *EncodingTest {
 func BlindedProposerConsensusDataEncoding() *EncodingTest {
 	return ConsensusDataEncoding("blinded proposer encoding", testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionCapella))
 }
-func AggregatorConsensusDataEncoding() *EncodingTest {
-	return ConsensusDataEncoding("aggregation encoding", testingutils.TestAggregatorConsensusData)
+func Phase0AggregatorConsensusDataEncoding() *EncodingTest {
+	return ConsensusDataEncoding("phase0 aggregation encoding", testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0))
+}
+func ElectraAggregatorConsensusDataEncoding() *EncodingTest {
+	return ConsensusDataEncoding("electra aggregation encoding", testingutils.TestAggregatorConsensusData(spec.DataVersionElectra))
 }
 func SyncCommitteeContributionConsensusDataEncoding() *EncodingTest {
 	return ConsensusDataEncoding("sync committee contribution encoding", testingutils.TestSyncCommitteeContributionConsensusData)

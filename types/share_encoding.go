@@ -33,7 +33,6 @@ func (s *Share) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 
 	// Offset (3) 'Committee'
 	dst = ssz.WriteOffset(dst, offset)
-	offset += len(s.Committee) * 56
 
 	// Field (4) 'DomainType'
 	dst = append(dst, s.DomainType[:]...)
@@ -90,7 +89,7 @@ func (s *Share) UnmarshalSSZ(buf []byte) error {
 		return ssz.ErrOffset
 	}
 
-	if o3 < 164 {
+	if o3 != 164 {
 		return ssz.ErrInvalidVariableOffset
 	}
 

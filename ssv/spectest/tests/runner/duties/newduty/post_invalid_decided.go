@@ -2,6 +2,7 @@ package newduty
 
 import (
 	"crypto/sha256"
+	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
 
@@ -54,7 +55,7 @@ func PostInvalidDecided() tests.SpecTest {
 		return r
 	}
 
-	return &MultiStartNewRunnerDutySpecTest{
+	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty post invalid decided",
 		Tests: []*StartNewRunnerDutySpecTest{
 			{
@@ -70,16 +71,6 @@ func PostInvalidDecided() tests.SpecTest {
 				},
 			},
 			{
-				Name:                    "aggregator",
-				Runner:                  decideWrong(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
-				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
-				Threshold:               ks.Threshold,
-				PostDutyRunnerStateRoot: "b0ec12e65623dd1a95203d4a0a753bb6758f6bed3141a467bb7955530ae35ded",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
-			},
-			{
 				Name:                    "proposer",
 				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionDeneb)),
 				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionDeneb),
@@ -90,30 +81,51 @@ func PostInvalidDecided() tests.SpecTest {
 					// broadcasts when starting a new duty
 				},
 			},
-			{
-				Name:                    "attester",
-				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty),
-				Duty:                    testingutils.TestingAttesterDutyNextEpoch,
-				Threshold:               ks.Threshold,
-				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
-			{
-				Name:                    "sync committee",
-				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty),
-				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch,
-				Threshold:               ks.Threshold,
-				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
-			{
-				Name:                    "attester and sync committee",
-				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties),
-				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch,
-				Threshold:               ks.Threshold,
-				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-			},
 		},
 	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
+			Name:                    fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner:                  decideWrong(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty(version)),
+			Duty:                    testingutils.TestingAggregatorDutyNextEpoch(version),
+			Threshold:               ks.Threshold,
+			PostDutyRunnerStateRoot: "b0ec12e65623dd1a95203d4a0a753bb6758f6bed3141a467bb7955530ae35ded",
+			OutputMessages: []*types.PartialSignatureMessages{
+				testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
+			},
+		},
+		)
+	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{
+			{
+				Name:                    fmt.Sprintf("attester (%s)", version.String()),
+				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty(version)),
+				Duty:                    testingutils.TestingAttesterDutyNextEpoch(version),
+				Threshold:               ks.Threshold,
+				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty(version)),
+				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch(version),
+				Threshold:               ks.Threshold,
+				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:                    fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner:                  decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties(version)),
+				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch(version),
+				Threshold:               ks.Threshold,
+				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
+				OutputMessages:          []*types.PartialSignatureMessages{},
+			},
+		}...)
+	}
+
+	return multiSpecTest
 }

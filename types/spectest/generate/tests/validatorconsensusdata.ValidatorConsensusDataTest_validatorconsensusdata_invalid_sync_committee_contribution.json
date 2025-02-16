@@ -19,5 +19,5 @@
     "Version": "phase0",
     "DataSSZ": "DAAAAAAAAAADAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgEAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQI="
   },
-  "ExpectedError": "could not unmarshal ssz: four"
+  "ExpectedError": "could not unmarshal ssz: incorrect end of offset: 12 0"
 }
