@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-	"runtime"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -38,13 +37,7 @@ func main() {
 		log.Fatalf("did not generate all tests\n")
 	}
 
-	// write small json files for each test
-	// try to create directory if it doesn't exist
-	_, basedir, _, ok := runtime.Caller(0)
-	if !ok {
-		log.Fatalf("no caller info")
-	}
-	testsDir := filepath.Join(strings.TrimSuffix(basedir, "main.go"), "tests")
+	testsDir := "tests"
 	if err := os.MkdirAll(testsDir, 0700); err != nil && !os.IsExist(err) {
 		panic(err.Error())
 	}
@@ -80,11 +73,7 @@ func main() {
 }
 
 func clearStateComparisonFolder() {
-	_, basedir, _, ok := runtime.Caller(0)
-	if !ok {
-		panic("no caller info")
-	}
-	dir := filepath.Join(strings.TrimSuffix(basedir, "main.go"), "state_comparison")
+	dir := "state_comparison"
 
 	if err := os.RemoveAll(dir); err != nil {
 		panic(err.Error())
@@ -109,11 +98,7 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 }
 
 func clearTestsFolder() {
-	_, basedir, _, ok := runtime.Caller(0)
-	if !ok {
-		panic("no caller info")
-	}
-	dir := filepath.Join(strings.TrimSuffix(basedir, "main.go"), "tests")
+	dir := "tests"
 
 	if err := os.RemoveAll(dir); err != nil {
 		panic(err.Error())
@@ -149,26 +134,12 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 }
 
 func scDir(testType string) string {
-	_, basedir, _, ok := runtime.Caller(0)
-	if !ok {
-		panic("no caller info")
-	}
-	basedir = strings.TrimSuffix(basedir, "main.go")
-	scDir := comparable2.GetSCDir(basedir, testType)
+	scDir := comparable2.GetSCDir(".", testType)
 	return scDir
 }
 
 func writeJson(name string, data []byte) {
-	_, basedir, _, ok := runtime.Caller(0)
-	if !ok {
-		panic("no caller info")
-	}
-	basedir = strings.TrimSuffix(basedir, "main.go")
-
-	// try to create directory if it doesn't exist
-	_ = os.Mkdir(basedir, os.ModeDir)
-
-	file := filepath.Join(basedir, name+".json")
+	file := filepath.Join(".", name+".json")
 	log.Printf("writing spec tests json to: %s\n", file)
 	if err := os.WriteFile(file, data, 0400); err != nil {
 		panic(err.Error())
