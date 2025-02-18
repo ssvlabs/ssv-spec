@@ -19,6 +19,9 @@ import (
 
 //go:generate go run main.go
 
+var testsDir = "tests"
+var stateComparisonDir = "state_comparison"
+
 func main() {
 	clearStateComparisonFolder()
 	clearTestsFolder()
@@ -37,7 +40,6 @@ func main() {
 		log.Fatalf("did not generate all tests\n")
 	}
 
-	testsDir := "tests"
 	if err := os.MkdirAll(testsDir, 0700); err != nil && !os.IsExist(err) {
 		panic(err.Error())
 	}
@@ -48,7 +50,7 @@ func main() {
 		}
 		name = strings.ReplaceAll(name, " ", "_")
 		name = strings.ReplaceAll(name, "*", "")
-		name = "tests/" + name
+		name = filepath.Join(testsDir, name)
 		writeJson(name, byts)
 	}
 
@@ -57,7 +59,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	writeJson("tests", byts)
+	writeJson(testsDir, byts)
 
 	// write state comparison json files
 	for _, testF := range spectest.AllTests {
@@ -73,13 +75,11 @@ func main() {
 }
 
 func clearStateComparisonFolder() {
-	dir := "state_comparison"
-
-	if err := os.RemoveAll(dir); err != nil {
+	if err := os.RemoveAll(stateComparisonDir); err != nil {
 		panic(err.Error())
 	}
 
-	if err := os.Mkdir(dir, 0700); err != nil {
+	if err := os.Mkdir(stateComparisonDir, 0700); err != nil {
 		panic(err.Error())
 	}
 }
@@ -98,13 +98,11 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 }
 
 func clearTestsFolder() {
-	dir := "tests"
-
-	if err := os.RemoveAll(dir); err != nil {
+	if err := os.RemoveAll(testsDir); err != nil {
 		panic(err.Error())
 	}
 
-	if err := os.Mkdir(dir, 0700); err != nil {
+	if err := os.Mkdir(testsDir, 0700); err != nil {
 		panic(err.Error())
 	}
 }
@@ -134,12 +132,11 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 }
 
 func scDir(testType string) string {
-	scDir := comparable2.GetSCDir(".", testType)
-	return scDir
+	return comparable2.GetSCDir(".", testType)
 }
 
 func writeJson(name string, data []byte) {
-	file := filepath.Join(".", name+".json")
+	file := name + ".json"
 	log.Printf("writing spec tests json to: %s\n", file)
 	if err := os.WriteFile(file, data, 0400); err != nil {
 		panic(err.Error())
