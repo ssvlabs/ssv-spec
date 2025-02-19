@@ -17,6 +17,7 @@
 ## IDE
 .idea
 .DS_Store
+.vscode
 
 # binaries
 .bin
