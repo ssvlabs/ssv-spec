@@ -38,8 +38,9 @@ var TestingSignedSyncCommitteeBlockRootForValidatorIndex = func(ks *TestKeySet, 
 
 var TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet, version spec.DataVersion) []string {
 	ret := make([]string, 0)
-	for _, valIdx := range SortedValidatorIndexes(ksMap) {
-		ks := ksMap[valIdx]
+	for _, valKs := range SortedMapKeys(ksMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
 		ret = append(ret, GetSSZRootNoError(&altair.SyncCommitteeMessage{
 			Slot:            TestingDutySlotV(version),
 			BeaconBlockRoot: TestingBlockRoot,

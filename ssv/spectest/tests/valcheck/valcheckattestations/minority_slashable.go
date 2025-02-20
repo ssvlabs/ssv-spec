@@ -31,8 +31,8 @@ func MinoritySlashable() tests.SpecTest {
 	keySet := testingutils.Testing4SharesSet()
 	sharesPKBytes := make([]types.ShareValidatorPK, 0)
 	sharesPKString := make([]string, 0)
-	for _, opID := range getSortedOperators(keySet.Shares) {
-		shareBytes := keySet.Shares[opID].Serialize()
+	for _, opShare := range testingutils.SortedMapKeys(keySet.Shares) {
+		shareBytes := opShare.Value.Serialize()
 		sharesPKBytes = append(sharesPKBytes, shareBytes)
 		sharesPKString = append(sharesPKString, hex.EncodeToString(shareBytes))
 	}

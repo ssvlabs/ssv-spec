@@ -2,7 +2,6 @@ package testingutils
 
 import (
 	"fmt"
-	"sort"
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -77,8 +76,9 @@ var PostConsensusAttestationMsgForKeySetWithSlot = func(keySetMap map[phase0.Val
 
 	var ret *types.PartialSignatureMessages
 	// Get post consensus for attestations for each validator in shares
-	for _, valIdx := range SortedValidatorIndexes(keySetMap) {
-		ks := keySetMap[valIdx]
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
 		pSigMsgs := postConsensusAttestationMsg(ks.Shares[id], id, slot, false, false, valIdx)
 		if ret == nil {
 			ret = pSigMsgs
@@ -104,11 +104,9 @@ var PostConsensusPartiallyWrongAttestationMsgForKeySet = func(keySetMap map[phas
 
 	var ret *types.PartialSignatureMessages
 
-	for _, valIdx := range SortedValidatorIndexes(keySetMap) {
-		ks, ok := keySetMap[valIdx]
-		if !ok {
-			panic("validator index not in key set map")
-		}
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
 
 		invalidMsgFlag := (msgIndex < numValid)
 
@@ -272,8 +270,9 @@ var PostConsensusAttestationAndSyncCommitteeMsgForKeySetWithSlot = func(keySetMa
 
 	var ret *types.PartialSignatureMessages
 	// Get post consensus for attestations for each validator in shares
-	for _, valIdx := range SortedValidatorIndexes(keySetMap) {
-		ks := keySetMap[valIdx]
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
 		pSigMsgs := postConsensusAttestationMsg(ks.Shares[id], id, slot, false, false, valIdx)
 		if ret == nil {
 			ret = pSigMsgs
@@ -282,8 +281,9 @@ var PostConsensusAttestationAndSyncCommitteeMsgForKeySetWithSlot = func(keySetMa
 		}
 	}
 	// Get post consensus for sync committees for each validator in shares
-	for _, valIdx := range SortedValidatorIndexes(keySetMap) {
-		ks := keySetMap[valIdx]
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
 		pSigMsgs := postConsensusSyncCommitteeMsg(ks.Shares[id], id, slot, false, false, valIdx)
 		if ret == nil {
 			ret = pSigMsgs
@@ -309,13 +309,9 @@ var PostConsensusPartiallyWrongAttestationAndSyncCommitteeMsgForKeySet = func(ke
 
 	var ret *types.PartialSignatureMessages
 
-	validatorIndexes := SortedValidatorIndexes(keySetMap)
-
-	for _, valIdx := range validatorIndexes {
-		ks, ok := keySetMap[valIdx]
-		if !ok {
-			panic("validator index not in key set map")
-		}
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
 
 		invalidMsgFlag := (msgIndex < numValid)
 
@@ -443,8 +439,9 @@ var PostConsensusSyncCommitteeMsgForKeySetWithSlot = func(keySetMap map[phase0.V
 
 	var ret *types.PartialSignatureMessages
 	// Get post consensus for sync committees for each validator in shares
-	for _, valIdx := range SortedValidatorIndexes(keySetMap) {
-		ks := keySetMap[valIdx]
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
 		pSigMsgs := postConsensusSyncCommitteeMsg(ks.Shares[id], id, slot, false, false, valIdx)
 		if ret == nil {
 			ret = pSigMsgs
@@ -470,13 +467,9 @@ var PostConsensusPartiallyWrongSyncCommitteeMsgForKeySet = func(keySetMap map[ph
 
 	var ret *types.PartialSignatureMessages
 
-	validatorIndexes := SortedValidatorIndexes(keySetMap)
-
-	for _, valIdx := range validatorIndexes {
-		ks, ok := keySetMap[valIdx]
-		if !ok {
-			panic("validator index not in key set map")
-		}
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
 
 		invalidMsgFlag := (msgIndex < numValid)
 
@@ -582,16 +575,4 @@ var postConsensusSyncCommitteeMsg = func(
 		},
 	}
 	return &msgs
-}
-
-// Sort validator indexes for order determinism
-var SortedValidatorIndexes = func(valMap map[phase0.ValidatorIndex]*TestKeySet) []phase0.ValidatorIndex {
-	validatorIndexes := make([]phase0.ValidatorIndex, 0, len(valMap))
-	for valIdx := range valMap {
-		validatorIndexes = append(validatorIndexes, valIdx)
-	}
-	sort.Slice(validatorIndexes, func(i, j int) bool {
-		return validatorIndexes[i] < validatorIndexes[j]
-	})
-	return validatorIndexes
 }
