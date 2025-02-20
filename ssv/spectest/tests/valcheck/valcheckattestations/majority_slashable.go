@@ -2,9 +2,11 @@ package valcheckattestations
 
 import (
 	"encoding/hex"
+	"sort"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -31,8 +33,8 @@ func MajoritySlashable() tests.SpecTest {
 	keySet := testingutils.Testing4SharesSet()
 	sharesPKBytes := make([]types.ShareValidatorPK, 0)
 	sharesPKString := make([]string, 0)
-	for _, shareKey := range keySet.Shares {
-		shareBytes := shareKey.Serialize()
+	for _, opID := range getSortedOperators(keySet.Shares) {
+		shareBytes := keySet.Shares[opID].Serialize()
 		sharesPKBytes = append(sharesPKBytes, shareBytes)
 		sharesPKString = append(sharesPKString, hex.EncodeToString(shareBytes))
 	}
@@ -53,4 +55,16 @@ func MajoritySlashable() tests.SpecTest {
 		SlashableSlots:    slashableMap,
 		ShareValidatorsPK: sharesPKBytes,
 	}
+}
+
+// Sort operators (for test determinism)
+func getSortedOperators(keySet map[types.OperatorID]*bls.SecretKey) []types.OperatorID {
+	operators := make([]types.OperatorID, 0)
+	for opID := range keySet {
+		operators = append(operators, opID)
+	}
+	sort.Slice(operators, func(i, j int) bool {
+		return operators[i] < operators[j]
+	})
+	return operators
 }

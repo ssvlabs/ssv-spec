@@ -425,7 +425,9 @@ var TestingAttestationResponseBeaconObjectForDuty = func(ks *TestKeySet, version
 
 var TestingSignedAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
 	ret := make([]string, 0)
-	for _, ks := range ksMap {
+	valIdxs := SortedValidatorIndexes(ksMap)
+	for _, valIdx := range valIdxs {
+		ks := ksMap[valIdx]
 		duty := TestingAttesterDuty(spec.DataVersionPhase0).ValidatorDuties[0]
 		aggregationBitfield := bitfield.NewBitlist(duty.CommitteeLength)
 		aggregationBitfield.SetBitAt(duty.ValidatorCommitteeIndex, true)
@@ -440,8 +442,8 @@ var TestingSignedAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIn
 
 var TestingElectraAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
 	ret := make([]string, 0)
-	for valIdx, ks := range ksMap {
-
+	for _, valIdx := range SortedValidatorIndexes(ksMap) {
+		ks := ksMap[valIdx]
 		committeeDuty := TestingAttesterDutyForValidator(spec.DataVersionElectra, valIdx)
 		duty := committeeDuty.ValidatorDuties[0]
 
@@ -467,8 +469,9 @@ var TestingElectraAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorI
 
 var TestingElectraSingleAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
 	ret := make([]string, 0)
-	for valIdx, ks := range ksMap {
 
+	for _, valIdx := range SortedValidatorIndexes(ksMap) {
+		ks := ksMap[valIdx]
 		committeeDuty := TestingAttesterDutyForValidator(spec.DataVersionElectra, valIdx)
 		duty := committeeDuty.ValidatorDuties[0]
 
