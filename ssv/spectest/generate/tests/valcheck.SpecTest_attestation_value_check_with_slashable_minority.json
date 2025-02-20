@@ -5,15 +5,15 @@
   "DutySlot": "12",
   "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
   "SlashableSlots": {
-    "42409cb09fa945fa6a168cf8b0861045d6e562f211a70c4a1cdbcf0417898763": [
+    "5f4711a796c1116b5118ec35279fb64d551d9b38813d2939954dd2df5160d3d9": [
       "12"
     ]
   },
   "omitempty": [
-    "QkCcsJ+pRfpqFoz4sIYQRdblYvIRpwxKHNvPBBeJh2M=",
     "X0cRp5bBEWtRGOw1J5+2TVUdmziBPSk5lU3S31Fg09k=",
     "SOTAo46Q+TUtHQlIlEZEPr0XsZBPTwAC/olMLD9iRXo=",
-    "Zdx8F59oNHzxL4bhxR5U6K7u1XnUxxUIK7igOCwagVM="
+    "Zdx8F59oNHzxL4bhxR5U6K7u1XnUxxUIK7igOCwagVM=",
+    "QkCcsJ+pRfpqFoz4sIYQRdblYvIRpwxKHNvPBBeJh2M="
   ],
   "ExpectedError": "slashable attestation",
   "AnyError": false

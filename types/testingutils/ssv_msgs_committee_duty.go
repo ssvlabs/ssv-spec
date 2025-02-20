@@ -2,7 +2,6 @@ package testingutils
 
 import (
 	"fmt"
-	"sort"
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -77,7 +76,9 @@ var PostConsensusAttestationMsgForKeySetWithSlot = func(keySetMap map[phase0.Val
 
 	var ret *types.PartialSignatureMessages
 	// Get post consensus for attestations for each validator in shares
-	for valIdx, ks := range keySetMap {
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
 		pSigMsgs := postConsensusAttestationMsg(ks.Shares[id], id, slot, false, false, valIdx)
 		if ret == nil {
 			ret = pSigMsgs
@@ -103,19 +104,9 @@ var PostConsensusPartiallyWrongAttestationMsgForKeySet = func(keySetMap map[phas
 
 	var ret *types.PartialSignatureMessages
 
-	validatorIndexes := make([]phase0.ValidatorIndex, 0)
-	for valIdx := range keySetMap {
-		validatorIndexes = append(validatorIndexes, valIdx)
-	}
-	sort.Slice(validatorIndexes, func(i, j int) bool {
-		return validatorIndexes[i] < validatorIndexes[j]
-	})
-
-	for _, valIdx := range validatorIndexes {
-		ks, ok := keySetMap[valIdx]
-		if !ok {
-			panic("validator index not in key set map")
-		}
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
 
 		invalidMsgFlag := (msgIndex < numValid)
 
@@ -279,7 +270,9 @@ var PostConsensusAttestationAndSyncCommitteeMsgForKeySetWithSlot = func(keySetMa
 
 	var ret *types.PartialSignatureMessages
 	// Get post consensus for attestations for each validator in shares
-	for valIdx, ks := range keySetMap {
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
 		pSigMsgs := postConsensusAttestationMsg(ks.Shares[id], id, slot, false, false, valIdx)
 		if ret == nil {
 			ret = pSigMsgs
@@ -288,7 +281,9 @@ var PostConsensusAttestationAndSyncCommitteeMsgForKeySetWithSlot = func(keySetMa
 		}
 	}
 	// Get post consensus for sync committees for each validator in shares
-	for valIdx, ks := range keySetMap {
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
 		pSigMsgs := postConsensusSyncCommitteeMsg(ks.Shares[id], id, slot, false, false, valIdx)
 		if ret == nil {
 			ret = pSigMsgs
@@ -314,19 +309,9 @@ var PostConsensusPartiallyWrongAttestationAndSyncCommitteeMsgForKeySet = func(ke
 
 	var ret *types.PartialSignatureMessages
 
-	validatorIndexes := make([]phase0.ValidatorIndex, 0)
-	for valIdx := range keySetMap {
-		validatorIndexes = append(validatorIndexes, valIdx)
-	}
-	sort.Slice(validatorIndexes, func(i, j int) bool {
-		return validatorIndexes[i] < validatorIndexes[j]
-	})
-
-	for _, valIdx := range validatorIndexes {
-		ks, ok := keySetMap[valIdx]
-		if !ok {
-			panic("validator index not in key set map")
-		}
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
 
 		invalidMsgFlag := (msgIndex < numValid)
 
@@ -454,7 +439,9 @@ var PostConsensusSyncCommitteeMsgForKeySetWithSlot = func(keySetMap map[phase0.V
 
 	var ret *types.PartialSignatureMessages
 	// Get post consensus for sync committees for each validator in shares
-	for valIdx, ks := range keySetMap {
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
 		pSigMsgs := postConsensusSyncCommitteeMsg(ks.Shares[id], id, slot, false, false, valIdx)
 		if ret == nil {
 			ret = pSigMsgs
@@ -480,19 +467,9 @@ var PostConsensusPartiallyWrongSyncCommitteeMsgForKeySet = func(keySetMap map[ph
 
 	var ret *types.PartialSignatureMessages
 
-	validatorIndexes := make([]phase0.ValidatorIndex, 0)
-	for valIdx := range keySetMap {
-		validatorIndexes = append(validatorIndexes, valIdx)
-	}
-	sort.Slice(validatorIndexes, func(i, j int) bool {
-		return validatorIndexes[i] < validatorIndexes[j]
-	})
-
-	for _, valIdx := range validatorIndexes {
-		ks, ok := keySetMap[valIdx]
-		if !ok {
-			panic("validator index not in key set map")
-		}
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
 
 		invalidMsgFlag := (msgIndex < numValid)
 
