@@ -23,6 +23,7 @@ var (
 	DomainSyncCommitteeSelectionProof = [4]byte{0x08, 0x00, 0x00, 0x00}
 	DomainContributionAndProof        = [4]byte{0x09, 0x00, 0x00, 0x00}
 	DomainApplicationBuilder          = [4]byte{0x00, 0x00, 0x00, 0x01}
+	DomainCommitBoost                 = [4]byte{0x6d, 0x6d, 0x6f, 0x43}
 
 	DomainError = [4]byte{0x99, 0x99, 0x99, 0x99}
 )
@@ -49,6 +50,8 @@ const (
 	BNRoleValidatorRegistration
 	BNRoleVoluntaryExit
 
+	BNRolePreconfirmation
+
 	BNRoleUnknown = math.MaxUint64
 )
 
@@ -69,6 +72,8 @@ func (r BeaconRole) String() string {
 		return "VALIDATOR_REGISTRATION"
 	case BNRoleVoluntaryExit:
 		return "VOLUNTARY_EXIT"
+	case BNRolePreconfirmation:
+		return "PRECONFIRMATION"
 	default:
 		return "UNDEFINED"
 	}
@@ -115,6 +120,8 @@ func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
 		return RoleValidatorRegistration
 	case BNRoleVoluntaryExit:
 		return RoleVoluntaryExit
+	case BNRolePreconfirmation:
+		return RolePreconfirmation
 	}
 	return RoleUnknown
 }

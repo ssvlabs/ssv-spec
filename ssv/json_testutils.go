@@ -164,6 +164,24 @@ func (c *Committee) UnmarshalJSON(data []byte) error {
 
 // Runners
 
+// PreconfRunner
+func (r *PreconfRunner) Encode() ([]byte, error) {
+	return json.Marshal(r)
+}
+
+func (r *PreconfRunner) Decode(data []byte) error {
+	return json.Unmarshal(data, &r)
+}
+
+func (r *PreconfRunner) GetRoot() ([32]byte, error) {
+	marshaledRoot, err := r.Encode()
+	if err != nil {
+		return [32]byte{}, errors.Wrap(err, "could not encode PreconfRunner")
+	}
+	ret := sha256.Sum256(marshaledRoot)
+	return ret, nil
+}
+
 // ProposerRunner
 func (r *ProposerRunner) Encode() ([]byte, error) {
 	return json.Marshal(r)
