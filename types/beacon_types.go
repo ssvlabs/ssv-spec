@@ -23,7 +23,8 @@ var (
 	DomainSyncCommitteeSelectionProof = [4]byte{0x08, 0x00, 0x00, 0x00}
 	DomainContributionAndProof        = [4]byte{0x09, 0x00, 0x00, 0x00}
 	DomainApplicationBuilder          = [4]byte{0x00, 0x00, 0x00, 0x01}
-	DomainCommitBoost                 = [4]byte{0x6d, 0x6d, 0x6f, 0x43}
+	// commit boost domain: https://github.com/Commit-Boost/commit-boost-client/blob/c5a16eec53b7e6ce0ee5c18295565f1a0aa6e389/crates/common/src/constants.rs#L3
+	DomainCommitBoost = [4]byte{0x6d, 0x6d, 0x6f, 0x43}
 
 	DomainError = [4]byte{0x99, 0x99, 0x99, 0x99}
 )

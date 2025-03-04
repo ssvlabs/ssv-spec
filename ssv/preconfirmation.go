@@ -56,7 +56,12 @@ func NewPreconfRunner(
 }
 
 func (r *PreconfRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
-	return r.BaseRunner.baseStartNewDuty(r, duty, quorum)
+	if err := r.ShouldProcessDuty(duty); err != nil {
+		return errors.Wrap(err, "can't start duty")
+	}
+
+	r.BaseRunner.baseSetupForNewDuty(duty, quorum)
+	return r.executeDuty(duty)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
@@ -185,7 +190,7 @@ func (r *PreconfRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, p
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get preconf request root")
 	}
-	return []ssz.HashRoot{preconfRequest}, phase0.DomainType{}, nil
+	return []ssz.HashRoot{preconfRequest}, types.DomainCommitBoost, nil
 }
 
 func (r *PreconfRunner) executeDuty(duty types.Duty) error {
@@ -195,6 +200,15 @@ func (r *PreconfRunner) executeDuty(duty types.Duty) error {
 	}
 	if err := r.BaseRunner.decide(r, duty.DutySlot(), &request); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
+	}
+	return nil
+}
+
+// override ShouldProcessDuty to allow multiple duties in the same slot
+func (r *PreconfRunner) ShouldProcessDuty(duty types.Duty) error {
+	if r.BaseRunner.QBFTController.Height > qbft.Height(duty.DutySlot()) && r.BaseRunner.QBFTController.Height != 0 {
+		return errors.Errorf("duty for slot %d already passed. Current height is %d", duty.DutySlot(),
+			r.BaseRunner.QBFTController.Height)
 	}
 	return nil
 }

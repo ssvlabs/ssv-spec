@@ -121,8 +121,10 @@ func (b *BeaconVote) Decode(data []byte) error {
 }
 
 // PreconfRequest is used as the data to be agreed on consensus for the PreconfRunner
+// https://github.com/Commit-Boost/commit-boost-client/blob/main/crates/common/src/commit/request.rs#L82
 type PreconfRequest struct {
-	Root [32]byte `ssz-size:"32"`
+	PubKey phase0.BLSPubKey `ssz-size:"48"`
+	Root   [32]byte         `ssz-size:"32"`
 }
 
 // Encode the PreconfRequest object
