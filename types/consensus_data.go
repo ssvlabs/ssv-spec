@@ -120,6 +120,23 @@ func (b *BeaconVote) Decode(data []byte) error {
 	return b.UnmarshalSSZ(data)
 }
 
+// PreconfRequest is used as the data to be agreed on consensus for the PreconfRunner
+// https://github.com/Commit-Boost/commit-boost-client/blob/main/crates/common/src/commit/request.rs#L82
+type PreconfRequest struct {
+	PubKey phase0.BLSPubKey `ssz-size:"48"`
+	Root   [32]byte         `ssz-size:"32"`
+}
+
+// Encode the PreconfRequest object
+func (p *PreconfRequest) Encode() ([]byte, error) {
+	return p.MarshalSSZ()
+}
+
+// Decode the PreconfRequest object
+func (p *PreconfRequest) Decode(data []byte) error {
+	return p.UnmarshalSSZ(data)
+}
+
 // ValidatorConsensusData holds all relevant duty and data Decided on by consensus
 type ValidatorConsensusData struct {
 	// Duty max size is
@@ -300,6 +317,14 @@ func (ci *ValidatorConsensusData) GetAggregateAndProof() (*spec.VersionedAggrega
 
 func (ci *ValidatorConsensusData) GetSyncCommitteeContributions() (Contributions, error) {
 	ret := Contributions{}
+	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+		return nil, errors.Wrap(err, "could not unmarshal ssz")
+	}
+	return ret, nil
+}
+
+func (ci *ValidatorConsensusData) GetPreconfRequest() (*PreconfRequest, error) {
+	ret := &PreconfRequest{}
 	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
 		return nil, errors.Wrap(err, "could not unmarshal ssz")
 	}
