@@ -184,6 +184,8 @@ func (cid *ValidatorConsensusData) Validate() error {
 		return errors.New("validator registration has no consensus data")
 	case BNRoleVoluntaryExit:
 		return errors.New("voluntary exit has no consensus data")
+	case BNRolePreconfCommitment:
+		return errors.New("preconf commitment has no consensus data")
 	default:
 		return errors.New("unknown duty role")
 	}
