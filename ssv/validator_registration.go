@@ -33,7 +33,6 @@ func NewValidatorRegistrationRunner(
 	operatorSigner *types.OperatorSigner,
 	gasLimit uint64,
 ) (Runner, error) {
-
 	if len(share) != 1 {
 		return nil, errors.New("must have one share")
 	}
