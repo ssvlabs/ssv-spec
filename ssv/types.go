@@ -110,5 +110,5 @@ type BeaconNode interface {
 
 type PreconfSidecar interface {
 	GetNewRequest() (types.PreconfRequest, error)
-	SubmitCommitment(requestRoot [32]byte, signature phase0.BLSSignature) error
+	SubmitCommitment(requestRoot phase0.Root, signature phase0.BLSSignature) error
 }

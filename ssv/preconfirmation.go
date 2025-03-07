@@ -18,19 +18,19 @@ type PreconfRunner struct {
 	signer         types.BeaconSigner
 	operatorSigner *types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
+
+	requestRoot phase0.Root
 }
 
 func NewPreconfRunner(
 	beaconNetwork types.BeaconNetwork,
 	share map[phase0.ValidatorIndex]*types.Share,
-	qbftController *qbft.Controller,
 	beacon BeaconNode,
 	preconf PreconfSidecar,
 	network Network,
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
 	valCheck qbft.ProposedValueCheckF,
-	highestDecidedSlot phase0.Slot,
 ) (Runner, error) {
 
 	if len(share) != 1 {
@@ -39,11 +39,9 @@ func NewPreconfRunner(
 
 	return &PreconfRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType:     types.RolePreconfirmation,
-			BeaconNetwork:      beaconNetwork,
-			Share:              share,
-			QBFTController:     qbftController,
-			highestDecidedSlot: highestDecidedSlot,
+			RunnerRoleType: types.RolePreconfirmation,
+			BeaconNetwork:  beaconNetwork,
+			Share:          share,
 		},
 
 		beacon:         beacon,
@@ -52,6 +50,7 @@ func NewPreconfRunner(
 		signer:         signer,
 		operatorSigner: operatorSigner,
 		valCheck:       valCheck,
+		requestRoot:    phase0.Root{},
 	}, nil
 }
 
@@ -70,36 +69,76 @@ func (r *PreconfRunner) HasRunningDuty() bool {
 }
 
 func (r *PreconfRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
-	return errors.New("no pre consensus phase for preconf runner")
-}
-
-func (r *PreconfRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
-	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg, &types.ValidatorConsensusData{})
+	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
-		return errors.Wrap(err, "failed processing consensus message")
+		return errors.Wrap(err, "failed processing validator registration message")
 	}
 
-	// Decided returns true only once so if it is true it must be for the current running instance
-	if !decided {
+	if !quorum {
 		return nil
 	}
 
-	// specific duty sig
-	cd := decidedValue.(*types.ValidatorConsensusData)
-	requestRoot, err := cd.GetPreconfRequest()
+	root := roots[0]
+	fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey[:], r.GetShare().ValidatorIndex)
 	if err != nil {
-		return errors.Wrap(err, "could not get aggregate and proof")
+		// If the reconstructed signature verification failed, fall back to verifying each partial signature
+		r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PreConsensusContainer, root, r.GetShare().Committee,
+			r.GetShare().ValidatorIndex)
+		return errors.Wrap(err, "got pre-consensus quorum but it has invalid signatures")
+	}
+	specSig := phase0.BLSSignature{}
+	copy(specSig[:], fullSig)
+
+	if err := r.GetPreconfSidecar().SubmitCommitment(r.requestRoot, specSig); err != nil {
+		return errors.Wrap(err, "could not submit to commitment to sidecar")
 	}
 
-	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.ValidatorDuty), requestRoot,
-		cd.Duty.Slot,
+	r.GetState().Finished = true
+	r.requestRoot = phase0.Root{}
+	return nil
+}
+
+func (r *PreconfRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
+	return errors.New("no consensus phase for preconfirmation")
+}
+
+func (r *PreconfRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
+	return errors.New("no post consensus phase for preconfirmation")
+}
+
+func (r *PreconfRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+	if r.BaseRunner.State == nil || r.BaseRunner.State.StartingDuty == nil || r.requestRoot == (phase0.Root{}) {
+		return nil, types.DomainError, errors.New("no running duty or preconf request")
+	}
+	preconfRequest := types.PreconfRequest{
+		Root:   r.requestRoot,
+		PubKey: phase0.BLSPubKey(r.GetShare().ValidatorPubKey),
+	}
+	return []ssz.HashRoot{&preconfRequest}, types.DomainCommitBoost, nil
+}
+
+// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
+func (r *PreconfRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+	return nil, [4]byte{}, errors.New("no post consensus roots for validator registration")
+}
+
+func (r *PreconfRunner) executeDuty(duty types.Duty) error {
+	request, err := r.GetPreconfSidecar().GetNewRequest()
+	if err != nil {
+		return errors.Wrap(err, "failed to get preconf request")
+	}
+
+	r.requestRoot = request.Root
+
+	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.ValidatorDuty), &request,
+		duty.DutySlot(),
 		types.DomainCommitBoost)
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
-		Slot:     cd.Duty.Slot,
+		Slot:     duty.DutySlot(),
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
@@ -133,82 +172,15 @@ func (r *PreconfRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) erro
 	return nil
 }
 
-func (r *PreconfRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
-	quorum, roots, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
-	if err != nil {
-		return errors.Wrap(err, "failed processing post consensus message")
-	}
-
-	if !quorum {
-		return nil
-	}
-
-	for _, root := range roots {
-		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey[:], r.GetShare().ValidatorIndex)
-		if err != nil {
-			// If the reconstructed signature verification failed, fall back to verifying each partial signature
-			for _, root := range roots {
-				r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PostConsensusContainer, root,
-					r.GetShare().Committee, r.GetShare().ValidatorIndex)
-			}
-			return errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
-		}
-		specSig := phase0.BLSSignature{}
-		copy(specSig[:], sig)
-
-		cd := &types.ValidatorConsensusData{}
-		err = cd.Decode(r.GetState().DecidedValue)
-		if err != nil {
-			return errors.Wrap(err, "could not create consensus data")
-		}
-		preconfRequest, err := cd.GetPreconfRequest()
-		if err != nil {
-			return errors.Wrap(err, "could not get preconf request root")
-		}
-
-		if err := r.GetPreconfSidecar().SubmitCommitment(preconfRequest.Root, specSig); err != nil {
-			return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed aggregate")
-		}
-	}
-	r.GetState().Finished = true
-	return nil
-}
-
-func (r *PreconfRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return nil, [4]byte{}, errors.New("no post consensus roots for preconfirmation")
-}
-
-// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *PreconfRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	cd := &types.ValidatorConsensusData{}
-	err := cd.Decode(r.GetState().DecidedValue)
-	if err != nil {
-		return nil, phase0.DomainType{}, errors.Wrap(err, "could not create consensus data")
-	}
-
-	preconfRequest, err := cd.GetPreconfRequest()
-	if err != nil {
-		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get preconf request root")
-	}
-	return []ssz.HashRoot{preconfRequest}, types.DomainCommitBoost, nil
-}
-
-func (r *PreconfRunner) executeDuty(duty types.Duty) error {
-	request, err := r.GetPreconfSidecar().GetNewRequest()
-	if err != nil {
-		return errors.Wrap(err, "failed to get attestation data")
-	}
-	if err := r.BaseRunner.decide(r, duty.DutySlot(), &request); err != nil {
-		return errors.Wrap(err, "can't start new duty runner instance for duty")
-	}
-	return nil
-}
-
 // override ShouldProcessDuty to allow multiple duties in the same slot
 func (r *PreconfRunner) ShouldProcessDuty(duty types.Duty) error {
 	if r.BaseRunner.QBFTController.Height > qbft.Height(duty.DutySlot()) && r.BaseRunner.QBFTController.Height != 0 {
 		return errors.Errorf("duty for slot %d already passed. Current height is %d", duty.DutySlot(),
 			r.BaseRunner.QBFTController.Height)
+	}
+	// multiple preconf duties are allowed in the same slot, but only one can be running at a time
+	if r.HasRunningDuty() || r.requestRoot != (phase0.Root{}) {
+		return errors.Errorf("has a running duty, try after the current duty finishes")
 	}
 	return nil
 }
