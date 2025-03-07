@@ -212,6 +212,17 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			km,
 			opSigner,
 		)
+	case types.RolePreconfirmation:
+		runner, err = ssv.NewPreconfRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			NewTestingBeaconNode(),
+			NewTestingPreconfSidecar(),
+			net,
+			km,
+			opSigner,
+			valCheck,
+		)
 	case UnknownDutyType:
 		runner, err = ssv.NewCommitteeRunner(
 			types.BeaconTestNetwork,
@@ -368,6 +379,17 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			net,
 			km,
 			opSigner,
+		)
+	case types.RolePreconfirmation:
+		runner, err = ssv.NewPreconfRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			NewTestingBeaconNode(),
+			NewTestingPreconfSidecar(),
+			net,
+			km,
+			opSigner,
+			valCheck,
 		)
 	case UnknownDutyType:
 		runner, err = ssv.NewCommitteeRunner(

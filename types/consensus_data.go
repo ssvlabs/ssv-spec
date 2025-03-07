@@ -124,7 +124,7 @@ func (b *BeaconVote) Decode(data []byte) error {
 // https://github.com/Commit-Boost/commit-boost-client/blob/main/crates/common/src/commit/request.rs#L82
 type PreconfRequest struct {
 	PubKey phase0.BLSPubKey `ssz-size:"48"`
-	Root   [32]byte         `ssz-size:"32"`
+	Root   phase0.Root      `ssz-size:"32"`
 }
 
 // Encode the PreconfRequest object
