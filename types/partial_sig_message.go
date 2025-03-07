@@ -20,6 +20,8 @@ const (
 	ValidatorRegistrationPartialSig
 	// VoluntaryExitPartialSig is a partial signature over a VoluntaryExit object
 	VoluntaryExitPartialSig
+	// PreconfCommitmentPartialSig is a partial signature over a PreconfCommitment object
+	PreconfCommitmentPartialSig
 )
 
 type PartialSignatureMessages struct {
