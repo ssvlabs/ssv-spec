@@ -53,6 +53,10 @@ var VoluntaryExitRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleVoluntaryExit, keySet)
 }
 
+var PreconfRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.RolePreconfirmation, keySet)
+}
+
 var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(UnknownDutyType, keySet)
 }

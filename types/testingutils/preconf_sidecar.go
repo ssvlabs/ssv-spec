@@ -17,8 +17,7 @@ func NewTestingPreconfSidecar() *TestingPreconfSidecar {
 // GetNewRequest returns a new preconf request
 func (sidecar *TestingPreconfSidecar) GetNewRequest() (types.PreconfRequest, error) {
 	request := types.PreconfRequest{
-		PubKey: TestingValidatorPubKey,
-		Root:   TestingPreconfRoot,
+		Root: TestingPreconfRoot,
 	}
 	return request, nil
 }

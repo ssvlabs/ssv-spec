@@ -111,8 +111,7 @@ func (r *PreconfRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, ph
 		return nil, types.DomainError, errors.New("no running duty or preconf request")
 	}
 	preconfRequest := types.PreconfRequest{
-		Root:   r.requestRoot,
-		PubKey: phase0.BLSPubKey(r.GetShare().ValidatorPubKey),
+		Root: r.requestRoot,
 	}
 	return []ssz.HashRoot{&preconfRequest}, types.DomainCommitBoost, nil
 }

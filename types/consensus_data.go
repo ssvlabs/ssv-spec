@@ -123,8 +123,7 @@ func (b *BeaconVote) Decode(data []byte) error {
 // PreconfRequest is used as the data to be agreed on consensus for the PreconfRunner
 // https://github.com/Commit-Boost/commit-boost-client/blob/main/crates/common/src/commit/request.rs#L82
 type PreconfRequest struct {
-	PubKey phase0.BLSPubKey `ssz-size:"48"`
-	Root   phase0.Root      `ssz-size:"32"`
+	Root phase0.Root `ssz-size:"32"`
 }
 
 // Encode the PreconfRequest object
@@ -201,6 +200,8 @@ func (cid *ValidatorConsensusData) Validate() error {
 		return errors.New("validator registration has no consensus data")
 	case BNRoleVoluntaryExit:
 		return errors.New("voluntary exit has no consensus data")
+	case BNRolePreconfirmation:
+		return errors.New("preconfirmation has no consensus data")
 	default:
 		return errors.New("unknown duty role")
 	}
