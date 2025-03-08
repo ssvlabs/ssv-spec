@@ -135,15 +135,15 @@ func (r *PreconfRunner) executeDuty(duty types.Duty) error {
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
-	postConsensusMsg := &types.PartialSignatureMessages{
-		Type:     types.PostConsensusPartialSig,
+	preConsensusMsg := &types.PartialSignatureMessages{
+		Type:     types.PreconfPartialSig,
 		Slot:     duty.DutySlot(),
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
 
-	encodedMsg, err := postConsensusMsg.Encode()
+	encodedMsg, err := preConsensusMsg.Encode()
 	if err != nil {
 		return err
 	}
