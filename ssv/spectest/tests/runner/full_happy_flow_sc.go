@@ -242,7 +242,7 @@ func fullHappyFlowPreconfSC() *comparable.StateComparison {
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				StartingDuty: &testingutils.TestingPreconfirmationDuty,
+				StartingDuty: &testingutils.TestingPreconfDuty,
 				Finished:     true,
 			}
 			return ret

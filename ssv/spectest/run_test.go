@@ -522,6 +522,10 @@ func baseRunnerForRole(role types.RunnerRole, base *ssv.BaseRunner, ks *testingu
 		ret := testingutils.VoluntaryExitRunner(ks)
 		ret.(*ssv.VoluntaryExitRunner).BaseRunner = base
 		return ret
+	case types.RolePreconfirmation:
+		ret := testingutils.PreconfRunner(ks)
+		ret.(*ssv.PreconfRunner).BaseRunner = base
+		return ret
 	case testingutils.UnknownDutyType:
 		ret := testingutils.UnknownDutyTypeRunner(ks)
 		ret.(*ssv.CommitteeRunner).BaseRunner = base

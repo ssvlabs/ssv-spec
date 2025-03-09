@@ -25,9 +25,16 @@ var TestingSignedPreconfRequest = func(ks *TestKeySet) phase0.BLSSignature {
 // Preconfirmation Duty
 // ==================================================
 
-var TestingPreconfirmationDuty = types.ValidatorDuty{
+var TestingPreconfDuty = types.ValidatorDuty{
 	Type:           types.BNRolePreconfirmation,
 	PubKey:         TestingValidatorPubKey,
 	Slot:           TestingDutySlot,
+	ValidatorIndex: TestingValidatorIndex,
+}
+
+var TestingPreconfDutyNextEpoch = types.ValidatorDuty{
+	Type:           types.BNRolePreconfirmation,
+	PubKey:         TestingValidatorPubKey,
+	Slot:           TestingDutySlot2,
 	ValidatorIndex: TestingValidatorIndex,
 }

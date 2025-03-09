@@ -71,7 +71,7 @@ func (r *PreconfRunner) HasRunningDuty() bool {
 func (r *PreconfRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
 	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
-		return errors.Wrap(err, "failed processing validator registration message")
+		return errors.Wrap(err, "failed processing preconfirmation message")
 	}
 
 	if !quorum {
@@ -118,7 +118,7 @@ func (r *PreconfRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, ph
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *PreconfRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return nil, [4]byte{}, errors.New("no post consensus roots for validator registration")
+	return nil, [4]byte{}, errors.New("no post consensus roots for preconfirmation")
 }
 
 func (r *PreconfRunner) executeDuty(duty types.Duty) error {
@@ -173,12 +173,12 @@ func (r *PreconfRunner) executeDuty(duty types.Duty) error {
 
 // override ShouldProcessDuty to allow multiple duties in the same slot
 func (r *PreconfRunner) ShouldProcessDuty(duty types.Duty) error {
-	if r.BaseRunner.QBFTController.Height > qbft.Height(duty.DutySlot()) && r.BaseRunner.QBFTController.Height != 0 {
+	if r.GetState() != nil && r.GetState().StartingDuty.DutySlot() > duty.DutySlot() {
 		return errors.Errorf("duty for slot %d already passed. Current height is %d", duty.DutySlot(),
 			r.BaseRunner.QBFTController.Height)
 	}
 	// multiple preconf duties are allowed in the same slot, but only one can be running at a time
-	if r.HasRunningDuty() || r.requestRoot != (phase0.Root{}) {
+	if r.requestRoot != (phase0.Root{}) || r.HasRunningDuty() {
 		return errors.Errorf("has a running duty, try after the current duty finishes")
 	}
 	return nil
@@ -193,7 +193,7 @@ func (r *PreconfRunner) GetNetwork() Network {
 }
 
 func (r *PreconfRunner) GetBeaconNode() BeaconNode {
-	return nil
+	return r.beacon
 }
 
 func (r *PreconfRunner) GetPreconfSidecar() PreconfSidecar {

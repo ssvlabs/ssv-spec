@@ -113,6 +113,35 @@ func invalidQuorumThenValidQuorumVoluntaryExitSC() *comparable.StateComparison {
 	}
 }
 
+// invalidThenQuorumPreconfSC returns state comparison object for the invalid then quorum Preconfirmation versioned spec test
+func invalidQuorumThenValidQuorumPreconfSC() *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+
+	return &comparable.StateComparison{
+		ExpectedState: func() ssv.Runner {
+			ret := testingutils.PreconfRunner(ks)
+			ret.GetBaseRunner().State = &ssv.State{
+				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(3),
+					[]*types.SignedSSVMessage{
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[2], 2))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[3], 3))),
+					},
+				),
+				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(3),
+					[]*types.SignedSSVMessage{},
+				),
+				StartingDuty: &testingutils.TestingPreconfDuty,
+				Finished:     true,
+			}
+
+			return ret
+		}(),
+	}
+}
+
 // invalidThenQuorumProposerSC returns state comparison object for the invalid then quorum Proposer versioned spec test
 func invalidQuorumThenValidQuorumProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()

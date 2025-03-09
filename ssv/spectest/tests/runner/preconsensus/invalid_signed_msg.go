@@ -84,6 +84,19 @@ func InvalidSignedMessage() tests.SpecTest {
 				},
 				ExpectedError: expectedError,
 			},
+			{
+				Name:   "preconfirmation",
+				Runner: testingutils.PreconfRunner(ks),
+				Duty:   &testingutils.TestingPreconfDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageWithSigner(0, ks.OperatorKeys[1], testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1))),
+				},
+				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedError: expectedError,
+			},
 		},
 	}
 

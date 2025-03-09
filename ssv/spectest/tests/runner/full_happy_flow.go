@@ -81,7 +81,7 @@ func FullHappyFlow() tests.SpecTest {
 			{
 				Name:   "preconfirmation",
 				Runner: testingutils.PreconfRunner(ks),
-				Duty:   &testingutils.TestingPreconfirmationDuty,
+				Duty:   &testingutils.TestingPreconfDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[2], 2))),

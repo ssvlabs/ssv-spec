@@ -77,6 +77,25 @@ func Finished() tests.SpecTest {
 					testingutils.PreConsensusValidatorRegistrationNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
+			{
+				Name:   "preconfirmation (same epoch)",
+				Runner: finishRunner(testingutils.PreconfRunner(ks), &testingutils.TestingPreconfDuty, false),
+				// preconfirmation duty can be run again in the same epoch
+				Duty:      &testingutils.TestingPreconfDuty,
+				Threshold: ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+			},
+			{
+				Name:      "preconfirmation (next epoch)",
+				Runner:    finishRunner(testingutils.PreconfRunner(ks), &testingutils.TestingPreconfDuty, false),
+				Duty:      &testingutils.TestingPreconfDutyNextEpoch,
+				Threshold: ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusPreconfNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+			},
 		},
 	}
 

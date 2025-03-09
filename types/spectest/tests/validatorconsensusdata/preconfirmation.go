@@ -15,7 +15,7 @@ func Preconfirmation() *ValidatorConsensusDataTest {
 	}
 
 	cd := types.ValidatorConsensusData{
-		Duty:    testingutils.TestingPreconfirmationDuty,
+		Duty:    testingutils.TestingPreconfDuty,
 		Version: spec.DataVersionCapella,
 		DataSSZ: dataByts,
 	}

@@ -120,6 +120,22 @@ func InvalidMessageSlot() tests.SpecTest {
 				},
 				ExpectedError: "no post consensus phase for voluntary exit",
 			},
+			{
+				Name:   "preconfirmation",
+				Runner: testingutils.PreconfRunner(ks),
+				Duty:   &testingutils.TestingPreconfDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[2], 2))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[3], 3))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, invalidateSlot(testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)))),
+				},
+				PostDutyRunnerStateRoot: "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedError: "no post consensus phase for preconfirmation",
+			},
 		},
 	}
 

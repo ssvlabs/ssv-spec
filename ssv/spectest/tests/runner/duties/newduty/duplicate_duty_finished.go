@@ -15,6 +15,8 @@ import (
 //   - Runner is assigned a duty
 //   - Runner finishes the duty
 //   - Runner is assigned the same duty again
+//
+// Preconfirmation duty is not included because multiple duties in the same slot are allowed
 func DuplicateDutyFinished() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 

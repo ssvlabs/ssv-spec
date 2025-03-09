@@ -1,0 +1,156 @@
+{
+  "BaseRunner": {
+    "State": {
+      "PreConsensusContainer": {
+        "Signatures": {
+          "1": {
+            "9639224bd092b8339238bea8c68f1b11641b575c2ec52da6bc4fd5f9e0fe1f0c": {
+              "1": "ou1imJbnza/rdKvzzqyDwtBezhnpHBPaW9YyT8pAipTdS8lUws0/FOAKm4q0IyLqEUZuZfOw4qUHLMYjo6k6tQvg1bcpizz1EhHOkYM9YcL3KK78WZS4+f8Zv9NKnA96",
+              "2": "rJOu9ONiqmfCmVdHKqNnSOV5nOIgbhtQPEOcZKS76GyUGE1lgJyItjAgL9rFtGy+BwTMXCUp79ObFfPrbNXtX6IMIulJXjjW3xh2Iky+CJjLCleG/EK67rSkIDsGH66L",
+              "3": "gLMiL9Hg+7Y5wJPt1soYKG/+o5AcyxSRlRNt5gNlNKFr35yQaK/TelxSpQK61pusEUgjYuigq5/xwAOjAv92n3OSVGjIVGalOvFWpOrooTVoLtAkd8dRezqqtSQsmcut",
+              "4": "kY7WtjQ1X/T8LrMVTd4BG5YZ0DTvn2naSQjTGDJ6SROUp2KpLuZf9VafG87zd0F+ApVeKTtl0pUn8I9Qz5Q3dDleUk6SKTdrCwAu0DPNWFPchJJ20jNbYGF1T9k0GhHH",
+              "5": "uP3gmuN3NwsSs+4nGeK62UK6SZ7nDuahvzApgzkkW5dBpoQRNSoSEySm2x+HxdVSC4qMtJSLfnl+9AO//N/lRJ7Kp+W8CpZCdtEVwmK9XJNunf08LxhQMz/9tMJySNFr"
+            }
+          }
+        },
+        "Quorum": 5
+      },
+      "PostConsensusContainer": {
+        "Signatures": {},
+        "Quorum": 5
+      },
+      "RunningInstance": null,
+      "DecidedValue": null,
+      "Finished": true,
+      "ValidatorDuty": {
+        "Type": 7,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "12",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 0,
+        "CommitteeLength": 0,
+        "CommitteesAtSlot": 0,
+        "ValidatorCommitteeIndex": 0,
+        "ValidatorSyncCommitteeIndices": null
+      }
+    },
+    "Share": {
+      "1": {
+        "ValidatorIndex": "1",
+        "ValidatorPubKey": [
+          142,
+          128,
+          6,
+          101,
+          81,
+          168,
+          27,
+          49,
+          130,
+          88,
+          112,
+          158,
+          218,
+          247,
+          221,
+          31,
+          99,
+          205,
+          104,
+          106,
+          14,
+          77,
+          184,
+          178,
+          155,
+          187,
+          122,
+          207,
+          230,
+          86,
+          8,
+          103,
+          122,
+          245,
+          165,
+          39,
+          217,
+          68,
+          142,
+          228,
+          120,
+          53,
+          72,
+          94,
+          2,
+          181,
+          11,
+          192
+        ],
+        "SharePubKey": "pgeB9Ugap70IWdx7qiW7a/5Sui+4l3+5o8E9G7Jwft5FpQ//kRMQ8JHjF1CS3Ayd",
+        "Committee": [
+          {
+            "SharePubKey": "pgeB9Ugap70IWdx7qiW7a/5Sui+4l3+5o8E9G7Jwft5FpQ//kRMQ8JHjF1CS3Ayd",
+            "Signer": 1
+          },
+          {
+            "SharePubKey": "jXMElrInKT59Ivf870VECBSYqoRdTtqhs7Or/D+Qc2MY93LkXDd6Gk5EPv2tvwkR",
+            "Signer": 2
+          },
+          {
+            "SharePubKey": "rkjWpS2fbSz6YIt7WZh1uz/Ta5PIUobPIHtkeGBU4ThuB7FiNUTE5z1OvVd59zb/",
+            "Signer": 3
+          },
+          {
+            "SharePubKey": "uUAZ/1poWAPUaMIEoLiaOBdsfoYOi0UyOIzBZ2ubkkhvnlx1KQMnNYKACivwHB95",
+            "Signer": 4
+          },
+          {
+            "SharePubKey": "goikQONEw8kSjkdq2ejAonhyRiZEYfKJ29AhfksG45MjLCSCYKjtp3Uv7sPcgXpE",
+            "Signer": 5
+          },
+          {
+            "SharePubKey": "t7peJG6pEiaHaGK5C1xgtZyEv5P6Hbncm4LXr/0rielwAtcEC2obSlUbuBKcfEQH",
+            "Signer": 6
+          },
+          {
+            "SharePubKey": "lEKsE9YbFjwNewZRv5c/1jTXFaGJudKyyBP47EoWVsDtEmsINEmYmBbObebc/x6Y",
+            "Signer": 7
+          }
+        ],
+        "DomainType": [
+          0,
+          0,
+          3,
+          1
+        ],
+        "FeeRecipientAddress": [
+          83,
+          89,
+          83,
+          181,
+          166,
+          4,
+          0,
+          116,
+          148,
+          140,
+          241,
+          133,
+          234,
+          167,
+          210,
+          171,
+          189,
+          102,
+          128,
+          143
+        ],
+        "Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      }
+    },
+    "QBFTController": null,
+    "BeaconNetwork": "now_test_network",
+    "RunnerRoleType": 6
+  }
+}
