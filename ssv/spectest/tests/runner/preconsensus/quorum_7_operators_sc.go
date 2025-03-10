@@ -119,6 +119,37 @@ func quorum7OperatorsVoluntaryExitSC() *comparable.StateComparison {
 	}
 }
 
+// quorum7OperatorsPreconfSC returns state comparison object for the Quorum7Operators preconfirmation versioned spec test
+func quorum7OperatorsPreconfSC() *comparable.StateComparison {
+	ks := testingutils.Testing7SharesSet()
+
+	return &comparable.StateComparison{
+		ExpectedState: func() ssv.Runner {
+			ret := testingutils.PreconfRunner(ks)
+			ret.GetBaseRunner().State = &ssv.State{
+				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(5),
+					[]*types.SignedSSVMessage{
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[2], 2))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[3], 3))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[4], 4))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[5], 5))),
+					},
+				),
+				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(5),
+					[]*types.SignedSSVMessage{},
+				),
+				StartingDuty: &testingutils.TestingPreconfDuty,
+				Finished:     true,
+			}
+
+			return ret
+		}(),
+	}
+}
+
 // quorum7OperatorsProposerSC returns state comparison object for the Quorum7Operators Proposer versioned spec test
 func quorum7OperatorsProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing7SharesSet()

@@ -92,6 +92,33 @@ func duplicateMsgVoluntaryExitSC() *comparable.StateComparison {
 	}
 }
 
+// duplicateMsgPreconfSC returns state comparison object for the DuplicateMsg Preconf versioned spec test
+func duplicateMsgPreconfSC() *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+
+	return &comparable.StateComparison{
+		ExpectedState: func() ssv.Runner {
+			ret := testingutils.PreconfRunner(ks)
+			ret.GetBaseRunner().State = &ssv.State{
+				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(3),
+					[]*types.SignedSSVMessage{
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1))),
+					},
+				),
+				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(3),
+					[]*types.SignedSSVMessage{},
+				),
+				StartingDuty: &testingutils.TestingPreconfDuty,
+				Finished:     false,
+			}
+
+			return ret
+		}(),
+	}
+}
+
 // duplicateMsgProposerSC returns state comparison object for the DuplicateMsg Proposer versioned spec test
 func duplicateMsgProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()

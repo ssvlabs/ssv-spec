@@ -1114,6 +1114,327 @@
       }
     },
     {
+      "Name": "preconfirmation",
+      "Runner": {
+        "BaseRunner": {
+          "State": null,
+          "Share": {
+            "1": {
+              "ValidatorIndex": "1",
+              "ValidatorPubKey": [
+                142,
+                128,
+                6,
+                101,
+                81,
+                168,
+                27,
+                49,
+                130,
+                88,
+                112,
+                158,
+                218,
+                247,
+                221,
+                31,
+                99,
+                205,
+                104,
+                106,
+                14,
+                77,
+                184,
+                178,
+                155,
+                187,
+                122,
+                207,
+                230,
+                86,
+                8,
+                103,
+                122,
+                245,
+                165,
+                39,
+                217,
+                68,
+                142,
+                228,
+                120,
+                53,
+                72,
+                94,
+                2,
+                181,
+                11,
+                192
+              ],
+              "SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+              "Committee": [
+                {
+                  "SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+                  "Signer": 1
+                },
+                {
+                  "SharePubKey": "przr4wl9dBcbQMcSoDHOsDcds9PEAs8s5pG5Eg87q3XU1W36DzdZFUSZm/GMU1Pt",
+                  "Signer": 2
+                },
+                {
+                  "SharePubKey": "gJDgt2ZqRezF1O90GKyZ8J5sskQCn+pqCn/Mvp7gi8U53g36Zr5rq8hJPdmd0amN",
+                  "Signer": 3
+                },
+                {
+                  "SharePubKey": "p8CidrcKXuM5XH1tJlXtYFKKolLU0h7KX8xSI+UMxCvRaLKAq3q1MXNU3d/PPfnk",
+                  "Signer": 4
+                }
+              ],
+              "DomainType": [
+                0,
+                0,
+                3,
+                1
+              ],
+              "FeeRecipientAddress": [
+                83,
+                89,
+                83,
+                181,
+                166,
+                4,
+                0,
+                116,
+                148,
+                140,
+                241,
+                133,
+                234,
+                167,
+                210,
+                171,
+                189,
+                102,
+                128,
+                143
+              ],
+              "Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+            }
+          },
+          "QBFTController": null,
+          "BeaconNetwork": "now_test_network",
+          "RunnerRoleType": 6
+        }
+      },
+      "Messages": [
+        {
+          "Signatures": [
+            "t+za667xs9VTtSTeG6sQJRuV5dJ+1HOGA47tHXmcOyQIPIyghNlQzl5NwwGOdatz5U9mvoOsywwK7XlmlsZcsBYpLxdRaQgV0Z3EtSeIr8I5ex6GDcAscfserZQd6C+uGKt0qOaYZ8vfzKMJ68w0u3K9xsx2ccZPILR8EdH5HQzNo5cFpLYdlnsAyMWMEy8vmeg8ktKhuvbgv+olwf6A7ZkV9KtP9VauUZQnjvvfnfN1wmbm+Xtn2jTSt44hG3I8UTKI3dLwS5qT9j51dCu58I1XFYGnOVN3XeHvYmTGHRCGXM6lWnV/ISneXFF+WjVb2TxkoNjRnVfCL0EjGmIJ2g=="
+          ],
+          "OperatorIDs": [
+            1
+          ],
+          "SSVMessage": {
+            "MsgType": 1,
+            "MsgID": [
+              0,
+              0,
+              3,
+              1,
+              6,
+              0,
+              0,
+              0,
+              142,
+              128,
+              6,
+              101,
+              81,
+              168,
+              27,
+              49,
+              130,
+              88,
+              112,
+              158,
+              218,
+              247,
+              221,
+              31,
+              99,
+              205,
+              104,
+              106,
+              14,
+              77,
+              184,
+              178,
+              155,
+              187,
+              122,
+              207,
+              230,
+              86,
+              8,
+              103,
+              122,
+              245,
+              165,
+              39,
+              217,
+              68,
+              142,
+              228,
+              120,
+              53,
+              72,
+              94,
+              2,
+              181,
+              11,
+              192
+            ],
+            "Data": "BgAAAAAAAAAMAAAAAAAAABQAAACVgsJlra+vo0pYDeMt+5y7nhN0W58S2xr2ls2J5GMetvzy/0PE/5sJQQHsFeHmbr8GmQwLINEzihUNJ7Hc93RKNK61DbiIv5kc4R9VRUsmjWwtevKsqZG9P4YLIFMXQg+WOSJL0JK4M5I4vqjGjxsRZBtXXC7FLaa8T9X54P4fDAEAAAAAAAAAAQAAAAAAAAA="
+          },
+          "FullData": null
+        },
+        {
+          "Signatures": [
+            "t+za667xs9VTtSTeG6sQJRuV5dJ+1HOGA47tHXmcOyQIPIyghNlQzl5NwwGOdatz5U9mvoOsywwK7XlmlsZcsBYpLxdRaQgV0Z3EtSeIr8I5ex6GDcAscfserZQd6C+uGKt0qOaYZ8vfzKMJ68w0u3K9xsx2ccZPILR8EdH5HQzNo5cFpLYdlnsAyMWMEy8vmeg8ktKhuvbgv+olwf6A7ZkV9KtP9VauUZQnjvvfnfN1wmbm+Xtn2jTSt44hG3I8UTKI3dLwS5qT9j51dCu58I1XFYGnOVN3XeHvYmTGHRCGXM6lWnV/ISneXFF+WjVb2TxkoNjRnVfCL0EjGmIJ2g=="
+          ],
+          "OperatorIDs": [
+            1
+          ],
+          "SSVMessage": {
+            "MsgType": 1,
+            "MsgID": [
+              0,
+              0,
+              3,
+              1,
+              6,
+              0,
+              0,
+              0,
+              142,
+              128,
+              6,
+              101,
+              81,
+              168,
+              27,
+              49,
+              130,
+              88,
+              112,
+              158,
+              218,
+              247,
+              221,
+              31,
+              99,
+              205,
+              104,
+              106,
+              14,
+              77,
+              184,
+              178,
+              155,
+              187,
+              122,
+              207,
+              230,
+              86,
+              8,
+              103,
+              122,
+              245,
+              165,
+              39,
+              217,
+              68,
+              142,
+              228,
+              120,
+              53,
+              72,
+              94,
+              2,
+              181,
+              11,
+              192
+            ],
+            "Data": "BgAAAAAAAAAMAAAAAAAAABQAAACVgsJlra+vo0pYDeMt+5y7nhN0W58S2xr2ls2J5GMetvzy/0PE/5sJQQHsFeHmbr8GmQwLINEzihUNJ7Hc93RKNK61DbiIv5kc4R9VRUsmjWwtevKsqZG9P4YLIFMXQg+WOSJL0JK4M5I4vqjGjxsRZBtXXC7FLaa8T9X54P4fDAEAAAAAAAAAAQAAAAAAAAA="
+          },
+          "FullData": null
+        }
+      ],
+      "DecidedSlashable": false,
+      "PostDutyRunnerStateRoot": "a094800bbd7541aa253112c730cddd8e9abcab6b61b1127a2ee242d87d52bf0c",
+      "OutputMessages": [
+        {
+          "Type": 6,
+          "Slot": "12",
+          "Messages": [
+            {
+              "PartialSignature": "lYLCZa2vr6NKWA3jLfucu54TdFufEtsa9pbNieRjHrb88v9DxP+bCUEB7BXh5m6/BpkMCyDRM4oVDSex3Pd0SjSutQ24iL+ZHOEfVUVLJo1sLXryrKmRvT+GCyBTF0IP",
+              "SigningRoot": [
+                150,
+                57,
+                34,
+                75,
+                208,
+                146,
+                184,
+                51,
+                146,
+                56,
+                190,
+                168,
+                198,
+                143,
+                27,
+                17,
+                100,
+                27,
+                87,
+                92,
+                46,
+                197,
+                45,
+                166,
+                188,
+                79,
+                213,
+                249,
+                224,
+                254,
+                31,
+                12
+              ],
+              "Signer": 1,
+              "ValidatorIndex": "1"
+            }
+          ]
+        }
+      ],
+      "BeaconBroadcastedRoots": null,
+      "DontStartDuty": false,
+      "ExpectedError": "",
+      "ValidatorDuty": {
+        "Type": 7,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "12",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 0,
+        "CommitteeLength": 0,
+        "CommitteesAtSlot": 0,
+        "ValidatorCommitteeIndex": 0,
+        "ValidatorSyncCommitteeIndices": null
+      }
+    },
+    {
       "Name": "aggregator selection proof (phase0)",
       "Runner": {
         "BaseRunner": {

@@ -73,6 +73,23 @@ func PostQuorum() tests.SpecTest {
 				},
 				ExpectedError: "failed processing voluntary exit message: invalid pre-consensus message: no running duty",
 			},
+			{
+				Name:   "preconfirmation",
+				Runner: testingutils.PreconfRunner(ks),
+				Duty:   &testingutils.TestingPreconfDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[2], 2))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[3], 3))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[4], 4))),
+				},
+				PostDutyRunnerStateRoot: postQuorumPreconfSC().Root(),
+				PostDutyRunnerState:     postQuorumPreconfSC().ExpectedState,
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedError: "failed processing preconfirmation message: invalid pre-consensus message: no running duty",
+			},
 		},
 	}
 

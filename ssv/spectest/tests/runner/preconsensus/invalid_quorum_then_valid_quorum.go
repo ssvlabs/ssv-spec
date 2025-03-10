@@ -77,6 +77,24 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 				},
 				ExpectedError: expectedError,
 			},
+			{
+				Name:   "preconfirmation",
+				Runner: testingutils.PreconfRunner(ks),
+				Duty:   &testingutils.TestingPreconfDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfWrongBeaconSigMsg(ks.Shares[1], 1))),
+
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[2], 2))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[3], 3))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[4], 4))),
+				},
+				PostDutyRunnerStateRoot: invalidQuorumThenValidQuorumPreconfSC().Root(),
+				PostDutyRunnerState:     invalidQuorumThenValidQuorumPreconfSC().ExpectedState,
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedError: expectedError,
+			},
 		},
 	}
 

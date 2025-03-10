@@ -81,6 +81,19 @@ func TooManyRoots() tests.SpecTest {
 				},
 				ExpectedError: "failed processing voluntary exit message: invalid pre-consensus message: wrong expected roots count",
 			},
+			{
+				Name:   "preconfirmation",
+				Runner: testingutils.PreconfRunner(ks),
+				Duty:   &testingutils.TestingPreconfDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfTooManyRootsMsg(ks.Shares[1], 1))),
+				},
+				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedError: "failed processing preconfirmation message: invalid pre-consensus message: wrong expected roots count",
+			},
 		},
 	}
 

@@ -83,6 +83,30 @@ func postFinishVoluntaryExitSC() *comparable.StateComparison {
 	}
 }
 
+// postFinishPreconfSC returns state comparison object for the PostFinish Preconf versioned spec test
+func postFinishPreconfSC() *comparable.StateComparison {
+	ks := testingutils.Testing4SharesSet()
+
+	return &comparable.StateComparison{
+		ExpectedState: func() ssv.Runner {
+			ret := testingutils.PreconfRunner(ks)
+			ret.GetBaseRunner().State = &ssv.State{
+				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(3),
+					[]*types.SignedSSVMessage{},
+				),
+				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
+					ssv.NewPartialSigContainer(3),
+					[]*types.SignedSSVMessage{},
+				),
+				StartingDuty: &testingutils.TestingPreconfDuty,
+				Finished:     true,
+			}
+			return ret
+		}(),
+	}
+}
+
 // postFinishProposerSC returns state comparison object for the PostFinish Proposer versioned spec test
 func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
