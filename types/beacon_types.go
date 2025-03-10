@@ -161,6 +161,18 @@ func (pcd *PreconfCommitmentDuty) RunnerRole() RunnerRole {
 	return RolePreconfCommitment
 }
 
+func (pcd *PreconfCommitmentDuty) HashTreeRoot() ([32]byte, error) {
+	return SSZBytes(pcd[:]).HashTreeRoot()
+}
+
+func (pcd *PreconfCommitmentDuty) GetTree() (*ssz.Node, error) {
+	return SSZBytes(pcd[:]).GetTree()
+}
+
+func (pcd *PreconfCommitmentDuty) HashTreeRootWith(hh ssz.HashWalker) error {
+	return SSZBytes(pcd[:]).HashTreeRootWith(hh)
+}
+
 // Available networks.
 const (
 	// MainNetwork represents the main network.
