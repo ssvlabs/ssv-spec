@@ -184,6 +184,9 @@ const (
 	// PraterNetwork represents the Prater test network.
 	PraterNetwork BeaconNetwork = "prater"
 
+	// MekongNetwork represents the Mekong test network.
+	MekongNetwork BeaconNetwork = "mekong"
+
 	// BeaconTestNetwork is a simple test network with a custom genesis time
 	BeaconTestNetwork BeaconNetwork = "now_test_network"
 )
@@ -200,6 +203,8 @@ func NetworkFromString(n string) BeaconNetwork {
 		return HoleskyNetwork
 	case string(PraterNetwork):
 		return PraterNetwork
+	case string(MekongNetwork):
+		return MekongNetwork
 	case string(BeaconTestNetwork):
 		return BeaconTestNetwork
 	default:
@@ -216,6 +221,8 @@ func (n BeaconNetwork) ForkVersion() [4]byte {
 		return [4]byte{0x01, 0x01, 0x70, 0x00}
 	case PraterNetwork:
 		return [4]byte{0x00, 0x00, 0x10, 0x20}
+	case MekongNetwork:
+		return [4]byte{0x10, 0x63, 0x76, 0x24}
 	case BeaconTestNetwork:
 		return [4]byte{0x99, 0x99, 0x99, 0x99}
 	default:
@@ -232,6 +239,8 @@ func (n BeaconNetwork) MinGenesisTime() uint64 {
 		return 1695902400
 	case PraterNetwork:
 		return 1616508000
+	case MekongNetwork:
+		return 1730822340 + 60 // genesis delay
 	case BeaconTestNetwork:
 		return 1616508000
 	default:
