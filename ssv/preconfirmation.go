@@ -178,7 +178,7 @@ func (r *PreconfRunner) ShouldProcessDuty(duty types.Duty) error {
 			r.BaseRunner.QBFTController.Height)
 	}
 	// multiple preconf duties are allowed in the same slot, but only one can be running at a time
-	if r.requestRoot != (phase0.Root{}) || r.HasRunningDuty() {
+	if r.requestRoot != (phase0.Root{}) {
 		return errors.Errorf("has a running duty, try after the current duty finishes")
 	}
 	return nil

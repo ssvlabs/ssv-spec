@@ -81,15 +81,5 @@ var PreconfMsg = func(
 		msgs.Messages = append(msgs.Messages, msg)
 	}
 
-	msg := &types.PartialSignatureMessage{
-		PartialSignature: signed[:],
-		SigningRoot:      root,
-		Signer:           id,
-		ValidatorIndex:   TestingValidatorIndex,
-	}
-	if wrongRoot {
-		msg.SigningRoot = [32]byte{}
-	}
-
 	return &msgs
 }

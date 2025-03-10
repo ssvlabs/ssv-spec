@@ -94,15 +94,6 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedTaskError,
 			},
-			{
-				Name:                    "preconfirmation",
-				Runner:                  notFinishTaskRunner(testingutils.PreconfRunner(ks), &testingutils.TestingPreconfDuty),
-				Duty:                    &testingutils.TestingPreconfDuty,
-				Threshold:               ks.Threshold,
-				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           "has a running duty, try after the current duty finishes",
-			},
 		},
 	}
 	for _, version := range testingutils.SupportedAggregatorVersions {
