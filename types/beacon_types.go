@@ -151,7 +151,7 @@ func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
 	return RoleUnknown
 }
 
-type PreconfCommitmentDuty SSZBytes
+type PreconfCommitmentDuty [32]byte
 
 func (pcd *PreconfCommitmentDuty) DutySlot() spec.Slot {
 	return 0 // TODO - do we need to specify a proper slot for preconf-commitment here ?
