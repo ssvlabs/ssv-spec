@@ -24,6 +24,5 @@ func (sidecar *TestingPreconfSidecar) GetNewRequest() (types.PreconfRequest, err
 
 // SubmitCommitment submits a commitment to the node
 func (sidecar *TestingPreconfSidecar) SubmitCommitment(requestRoot phase0.Root, signature phase0.BLSSignature) error {
-	// TODO: verify signature?
 	return nil
 }
