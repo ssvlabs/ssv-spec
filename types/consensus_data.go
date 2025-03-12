@@ -131,11 +131,11 @@ type ValidatorConsensusData struct {
 	// We do not need to support such a big DataSSZ size as 2^50 represents 1000X the actual block gas limit
 	// Upcoming 40M gas limit produces 40M / 16 (call data cost) = 2,500,000 bytes (https://eips.ethereum.org/EIPS/eip-4488)
 	// Explanation on why transaction sizes are so big https://github.com/ethereum/consensus-specs/pull/2686
-	// Adding to the rest of the data (see script below), we have: 1,315,964 + 2,500,000  = 3,815,964 bytes ~<= 2^22
+	// Adding to the rest of the data (see script below), we have: 1,709,324 + 2,500,000  = 4,209,324 bytes
 	// Python script for Deneb.BlockContents without transactions:
 	// 		# Constants
-	// 		KZG_PROOFS_SIZE = 6 * 48  # KZGProofs size
-	// 		BLOBS_SIZE = 6 * 131072  # Blobs size
+	// 		KZG_PROOFS_SIZE = 9 * 48  # KZGProofs size
+	// 		BLOBS_SIZE = 9 * 131072  # Blobs size
 	// 		BEACON_BLOCK_OVERHEAD = 2 * 32 + 2 * 8  # Additional overhead for BeaconBlock
 	// 		# Components of BeaconBlockBody
 	// 		ETH1_DATA_SIZE = 96 + 2 * 32 + 8 + 32  # ETH1Data
@@ -156,7 +156,7 @@ type ValidatorConsensusData struct {
 	// 		)
 	// 		# Total size of Deneb.BlockContents and BeaconBlock without transactions
 	// 		total_size_without_execution_payload = KZG_PROOFS_SIZE + BLOBS_SIZE + BEACON_BLOCK_OVERHEAD + beacon_block_body_size_without_transactions
-	DataSSZ []byte `ssz-max:"4194304"` // 2^22
+	DataSSZ []byte `ssz-max:"4209324"` // 2^22
 }
 
 func (cid *ValidatorConsensusData) Validate() error {
