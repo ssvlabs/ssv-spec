@@ -7,9 +7,9 @@ import (
 const (
 	maxSizeSignedSSVMessageFromQBFTWithNoJustification  = 3700
 	maxSizeSignedSSVMessageFromQBFTWith1Justification   = 51852
-	maxSizeSignedSSVMessageFromQBFTWith2Justification   = 4920512
+	maxSizeSignedSSVMessageFromQBFTWith2Justification   = 9114588
 	maxSizeSignedSSVMessageFromPartialSignatureMessages = 221316
-	maxSizeFullData                                     = 4194532
+	maxSizeFullData                                     = 8388836
 )
 
 func maxSignedSSVMessageFromObject(obj types.Encoder) *types.SignedSSVMessage {
