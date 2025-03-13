@@ -131,11 +131,11 @@ type ValidatorConsensusData struct {
 	// We do not need to support such a big DataSSZ size as 2^50 represents 1000X the actual block gas limit
 	// Upcoming 40M gas limit produces 40M / 16 (call data cost) = 2,500,000 bytes (https://eips.ethereum.org/EIPS/eip-4488)
 	// Explanation on why transaction sizes are so big https://github.com/ethereum/consensus-specs/pull/2686
-	// Adding to the rest of the data (see script below), we have: 1,315,964 + 2,500,000  = 3,815,964 bytes ~<= 2^22
+	// Adding to the rest of the data (see script below), we have: 3,291,849 + 2,500,000  = 5,791,849 bytes ~<= 2^23
 	// Python script for Deneb.BlockContents without transactions:
 	// 		# Constants
-	// 		KZG_PROOFS_SIZE = 6 * 48  # KZGProofs size
-	// 		BLOBS_SIZE = 6 * 131072  # Blobs size
+	// 		KZG_PROOFS_SIZE = 9 * 48  # KZGProofs size
+	// 		BLOBS_SIZE = 9 * 131072  # Blobs size
 	// 		BEACON_BLOCK_OVERHEAD = 2 * 32 + 2 * 8  # Additional overhead for BeaconBlock
 	// 		# Components of BeaconBlockBody
 	// 		ETH1_DATA_SIZE = 96 + 2 * 32 + 8 + 32  # ETH1Data
@@ -148,15 +148,17 @@ type ValidatorConsensusData struct {
 	// 		EXECUTION_PAYLOAD_NO_TRANSACTIONS = 32 + 20 + 2*32 + 256 + 32 + 4*8 + 3*32 + 16 * (2*8 + 20 + 8) + 8 + 8
 	// 		BLS_TO_EXECUTION_CHANGES_SIZE = 16 * (96 + (8 + 48 + 20))  # BLSToExecutionChanges
 	// 		KZG_COMMITMENT_SIZE = 4096 * 48  # KZGCommitment
+	//		EXECUTION_REQUESTS_SIZE = (1 + 8192 * (1 + 48 + 32 + 8 + 96 + 8)) + (1 + 16 * (1 + 20 + 48 + 8)) + (1 + 2 * (1 + 20 +  48 + 48)) # Deposits + Withdrawls + Consolidations
 	// 		# BeaconBlockBody total size without transactions
 	// 		beacon_block_body_size_without_transactions = (
 	// 		    ETH1_DATA_SIZE + PROPOSER_SLASHING_SIZE + ATTESTER_SLASHING_SIZE +
 	// 		    ATTESTATION_SIZE + DEPOSIT_SIZE + SIGNED_VOLUNTARY_EXIT_SIZE +
-	// 		    SYNC_AGGREGATE_SIZE + EXECUTION_PAYLOAD_NO_TRANSACTIONS + BLS_TO_EXECUTION_CHANGES_SIZE + KZG_COMMITMENT_SIZE
+	// 		    SYNC_AGGREGATE_SIZE + EXECUTION_PAYLOAD_NO_TRANSACTIONS + BLS_TO_EXECUTION_CHANGES_SIZE + KZG_COMMITMENT_SIZE + EXECUTION_REQUESTS_SIZE
 	// 		)
 	// 		# Total size of Deneb.BlockContents and BeaconBlock without transactions
 	// 		total_size_without_execution_payload = KZG_PROOFS_SIZE + BLOBS_SIZE + BEACON_BLOCK_OVERHEAD + beacon_block_body_size_without_transactions
-	DataSSZ []byte `ssz-max:"4194304"` // 2^22
+	//		print(total_size_without_execution_payload)
+	DataSSZ []byte `ssz-max:"8388608"` // 2^23 to account for potential gas limit increases
 }
 
 func (cid *ValidatorConsensusData) Validate() error {

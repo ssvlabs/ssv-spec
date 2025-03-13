@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	maxSizeDataSSZ = 4194304
+	maxSizeDataSSZ = 8388608
 )
 
 func maxValidatorDuty() types.ValidatorDuty {
