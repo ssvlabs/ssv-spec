@@ -44,7 +44,7 @@ func MaxConsensusData() *StructureSizeTest {
 	return &StructureSizeTest{
 		Name:                  "max ValidatorConsensusData",
 		Object:                maxConsensusData(),
-		ExpectedEncodedLength: maxSizeFullData,
+		ExpectedEncodedLength: maxSizeFullConsensusData,
 		IsMaxSize:             true,
 	}
 }

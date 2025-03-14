@@ -66,7 +66,7 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 
 	if test.ExpectedRoot != hex.EncodeToString(r[:]) {
 		fmt.Printf("expected: %v\n", test.ExpectedRoot)
-		fmt.Printf("actuak: %v\n", hex.EncodeToString(r[:]))
+		fmt.Printf("actual: %v\n", hex.EncodeToString(r[:]))
 		// diff := typescomparable.PrintDiff(test.ExpectedState, msg)
 		require.Fail(t, "post state not equal", "")
 	}

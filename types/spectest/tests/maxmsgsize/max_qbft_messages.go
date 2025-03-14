@@ -12,7 +12,7 @@ const (
 )
 
 func maxFullData() []byte {
-	fullData := [maxSizeFullData]byte{}
+	fullData := [maxSizeFullConsensusData]byte{}
 	return fullData[:]
 }
 
