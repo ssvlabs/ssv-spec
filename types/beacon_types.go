@@ -155,6 +155,9 @@ const (
 	// HoleskyNetwork represents the Holesky test network.
 	HoleskyNetwork BeaconNetwork = "holesky"
 
+	// HoodiNetwork represents the Hoodi test network.
+	HoodiNetwork BeaconNetwork = "hoodi"
+
 	// PraterNetwork represents the Prater test network.
 	PraterNetwork BeaconNetwork = "prater"
 
@@ -172,6 +175,8 @@ func NetworkFromString(n string) BeaconNetwork {
 		return MainNetwork
 	case string(HoleskyNetwork):
 		return HoleskyNetwork
+	case string(HoodiNetwork):
+		return HoodiNetwork
 	case string(PraterNetwork):
 		return PraterNetwork
 	case string(BeaconTestNetwork):
@@ -188,6 +193,8 @@ func (n BeaconNetwork) ForkVersion() [4]byte {
 		return [4]byte{0, 0, 0, 0}
 	case HoleskyNetwork:
 		return [4]byte{0x01, 0x01, 0x70, 0x00}
+	case HoodiNetwork:
+		return [4]byte{0x10, 0x00, 0x09, 0x10}
 	case PraterNetwork:
 		return [4]byte{0x00, 0x00, 0x10, 0x20}
 	case BeaconTestNetwork:
@@ -204,6 +211,8 @@ func (n BeaconNetwork) MinGenesisTime() uint64 {
 		return 1606824023
 	case HoleskyNetwork:
 		return 1695902400
+	case HoodiNetwork:
+		return 1742212800 + 600
 	case PraterNetwork:
 		return 1616508000
 	case BeaconTestNetwork:
