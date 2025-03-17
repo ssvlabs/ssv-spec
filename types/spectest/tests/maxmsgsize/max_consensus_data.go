@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	maxSizeDataSSZ = 4194304
+	maxSizeDataSSZ = 8388608
 )
 
 func maxValidatorDuty() types.ValidatorDuty {
@@ -44,7 +44,7 @@ func MaxConsensusData() *StructureSizeTest {
 	return &StructureSizeTest{
 		Name:                  "max ValidatorConsensusData",
 		Object:                maxConsensusData(),
-		ExpectedEncodedLength: maxSizeFullData,
+		ExpectedEncodedLength: maxSizeFullConsensusData,
 		IsMaxSize:             true,
 	}
 }
