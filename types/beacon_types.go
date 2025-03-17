@@ -161,6 +161,9 @@ const (
 	// PraterNetwork represents the Prater test network.
 	PraterNetwork BeaconNetwork = "prater"
 
+	// SepoliaNetwork represents the Sepolia test network.
+	SepoliaNetwork BeaconNetwork = "sepolia"
+
 	// BeaconTestNetwork is a simple test network with a custom genesis time
 	BeaconTestNetwork BeaconNetwork = "now_test_network"
 )
@@ -179,6 +182,8 @@ func NetworkFromString(n string) BeaconNetwork {
 		return HoodiNetwork
 	case string(PraterNetwork):
 		return PraterNetwork
+	case string(SepoliaNetwork):
+		return SepoliaNetwork
 	case string(BeaconTestNetwork):
 		return BeaconTestNetwork
 	default:
@@ -197,6 +202,8 @@ func (n BeaconNetwork) ForkVersion() [4]byte {
 		return [4]byte{0x10, 0x00, 0x09, 0x10}
 	case PraterNetwork:
 		return [4]byte{0x00, 0x00, 0x10, 0x20}
+	case SepoliaNetwork:
+		return [4]byte{0x90, 0x00, 0x00, 0x69}
 	case BeaconTestNetwork:
 		return [4]byte{0x99, 0x99, 0x99, 0x99}
 	default:
@@ -215,6 +222,8 @@ func (n BeaconNetwork) MinGenesisTime() uint64 {
 		return 1742212800 + 600
 	case PraterNetwork:
 		return 1616508000
+	case SepoliaNetwork:
+		return 1655733600
 	case BeaconTestNetwork:
 		return 1616508000
 	default:
