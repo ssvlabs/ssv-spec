@@ -1,6 +1,8 @@
 package types
 
-import "github.com/attestantio/go-eth2-client/spec/phase0"
+import (
+	"github.com/attestantio/go-eth2-client/spec/phase0"
+)
 
 // PreconfRequest is used as the data to be agreed on consensus for the PreconfRunner
 // https://github.com/Commit-Boost/commit-boost-client/blob/main/crates/common/src/commit/request.rs#L82
@@ -31,4 +33,19 @@ func (p *SignedPreconfRequest) Encode() ([]byte, error) {
 // Decode the SignedPreconfRequest object
 func (p *SignedPreconfRequest) Decode(data []byte) error {
 	return p.UnmarshalSSZ(data)
+}
+
+type PreconfDuty struct {
+	RequestRoot phase0.Root `ssz-size:"32"`
+	Slot        phase0.Slot `ssz-size:"8"`
+}
+
+// DutySlot implements Duty.
+func (p PreconfDuty) DutySlot() phase0.Slot {
+	return p.Slot
+}
+
+// RunnerRole implements Duty.
+func (p PreconfDuty) RunnerRole() RunnerRole {
+	return RolePreconfirmation
 }

@@ -30,7 +30,6 @@ func NewPreconfRunner(
 	network Network,
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
-	valCheck qbft.ProposedValueCheckF,
 ) (Runner, error) {
 
 	if len(share) != 1 {
@@ -49,7 +48,6 @@ func NewPreconfRunner(
 		network:        network,
 		signer:         signer,
 		operatorSigner: operatorSigner,
-		valCheck:       valCheck,
 		requestRoot:    phase0.Root{},
 	}, nil
 }

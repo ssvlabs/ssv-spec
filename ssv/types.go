@@ -20,6 +20,9 @@ func (ci DutyRunners) DutyRunnerForMsgID(msgID types.MessageID) Runner {
 	return ci[role]
 }
 
+// PreconfRunners is a map of preconf runners mapped by request root.
+type PreconfRunners map[phase0.Root]Runner
+
 // Network is the network interface for SSV
 type Network interface {
 	p2p.Broadcaster

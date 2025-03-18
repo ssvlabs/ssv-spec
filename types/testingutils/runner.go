@@ -225,7 +225,6 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			net,
 			km,
 			opSigner,
-			valCheck,
 		)
 	case UnknownDutyType:
 		runner, err = ssv.NewCommitteeRunner(
@@ -393,7 +392,6 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			net,
 			km,
 			opSigner,
-			valCheck,
 		)
 	case UnknownDutyType:
 		runner, err = ssv.NewCommitteeRunner(
