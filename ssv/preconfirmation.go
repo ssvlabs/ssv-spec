@@ -53,10 +53,6 @@ func NewPreconfRunner(
 }
 
 func (r *PreconfRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
-	if err := r.ShouldProcessDuty(duty); err != nil {
-		return errors.Wrap(err, "can't start duty")
-	}
-
 	r.BaseRunner.baseSetupForNewDuty(duty, quorum)
 	return r.executeDuty(duty)
 }
@@ -133,15 +129,21 @@ func (r *PreconfRunner) executeDuty(duty types.Duty) error {
 	if err != nil {
 		return errors.Wrap(err, "failed signing attestation data")
 	}
+
 	preConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PreconfPartialSig,
 		Slot:     duty.DutySlot(),
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
+	CBPreConsensusMsg := &types.CBPartialSignature{
+		RequestRoot: r.requestRoot,
+		PartialSig:  *preConsensusMsg,
+	}
+
 	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
 
-	encodedMsg, err := preConsensusMsg.Encode()
+	encodedMsg, err := CBPreConsensusMsg.Encode()
 	if err != nil {
 		return err
 	}
@@ -165,19 +167,6 @@ func (r *PreconfRunner) executeDuty(duty types.Duty) error {
 
 	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial post consensus sig")
-	}
-	return nil
-}
-
-// override ShouldProcessDuty to allow multiple duties in the same slot
-func (r *PreconfRunner) ShouldProcessDuty(duty types.Duty) error {
-	if r.GetState() != nil && r.GetState().StartingDuty.DutySlot() > duty.DutySlot() {
-		return errors.Errorf("duty for slot %d already passed. Current height is %d", duty.DutySlot(),
-			r.BaseRunner.QBFTController.Height)
-	}
-	// multiple preconf duties are allowed in the same slot, but only one can be running at a time
-	if r.requestRoot != (phase0.Root{}) {
-		return errors.Errorf("has a running duty, try after the current duty finishes")
 	}
 	return nil
 }

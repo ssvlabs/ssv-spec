@@ -78,8 +78,15 @@ func (v *ValidatorCommitBoost) ProcessMessage(signedSSVMessage *types.SignedSSVM
 
 	msg := signedSSVMessage.SSVMessage
 
+	cbPartialSigMsg := &types.CBPartialSignature{}
+	if err := cbPartialSigMsg.Decode(msg.GetData()); err != nil {
+		return errors.Wrap(err, "could not get commit boost partial sig message from network message")
+	}
+
+	requestRoot := cbPartialSigMsg.RequestRoot
+
 	// Get runner
-	dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.GetID())
+	dutyRunner := v.PreconfRunners[requestRoot]
 	if dutyRunner == nil {
 		return errors.Errorf("could not get duty runner for msg ID")
 	}

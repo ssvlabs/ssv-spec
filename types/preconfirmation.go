@@ -35,17 +35,17 @@ func (p *SignedPreconfRequest) Decode(data []byte) error {
 	return p.UnmarshalSSZ(data)
 }
 
-type PreconfDuty struct {
+type CBPartialSignature struct {
 	RequestRoot phase0.Root `ssz-size:"32"`
-	Slot        phase0.Slot `ssz-size:"8"`
+	PartialSig  PartialSignatureMessages
 }
 
-// DutySlot implements Duty.
-func (p PreconfDuty) DutySlot() phase0.Slot {
-	return p.Slot
+// Encode the CBPartialSignature object
+func (p *CBPartialSignature) Encode() ([]byte, error) {
+	return p.MarshalSSZ()
 }
 
-// RunnerRole implements Duty.
-func (p PreconfDuty) RunnerRole() RunnerRole {
-	return RolePreconfirmation
+// Decode the CBPartialSignature object
+func (p *CBPartialSignature) Decode(data []byte) error {
+	return p.UnmarshalSSZ(data)
 }
