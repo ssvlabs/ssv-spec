@@ -758,7 +758,7 @@
       }
     },
     {
-      "Name": "preconfirmation",
+      "Name": "commit boost signing",
       "Runner": {
         "BaseRunner": {
           "State": {
@@ -896,13 +896,13 @@
       "Messages": [
         {
           "Signatures": [
-            "t+za667xs9VTtSTeG6sQJRuV5dJ+1HOGA47tHXmcOyQIPIyghNlQzl5NwwGOdatz5U9mvoOsywwK7XlmlsZcsBYpLxdRaQgV0Z3EtSeIr8I5ex6GDcAscfserZQd6C+uGKt0qOaYZ8vfzKMJ68w0u3K9xsx2ccZPILR8EdH5HQzNo5cFpLYdlnsAyMWMEy8vmeg8ktKhuvbgv+olwf6A7ZkV9KtP9VauUZQnjvvfnfN1wmbm+Xtn2jTSt44hG3I8UTKI3dLwS5qT9j51dCu58I1XFYGnOVN3XeHvYmTGHRCGXM6lWnV/ISneXFF+WjVb2TxkoNjRnVfCL0EjGmIJ2g=="
+            "cF3MphMDaoIBRjTYTLpOKp1NQLfnv/JDqHW5wzI6Pof03fl4iBCo937BP5mjof3TxeX3OybZ0FXCQhlD8KjazxYun1F5itbJ/dfgjo2dfhHjuS0E9WY4X6okljClV8jNAsQ7GwMQqwCPm5tl0WYdC1tB50uwWsrVvUwAipaF9KqQ9vEjUB6GuqJCF1zuJUTN3Z73rWRUfHphu/0s/1sKDJFwEQnplRp7WJPO1x1ZwmtZumkEa9MgNk0tnbs4l83SHu1DjZLIYVhNbkGRrsoQMzZxd1W3PFjUS2C2PUa7ghiIW+fGBUOJ7PhdiBAUzZTiwqemn9GOCf3sVENOCdk7Fg=="
           ],
           "OperatorIDs": [
             1
           ],
           "SSVMessage": {
-            "MsgType": 1,
+            "MsgType": 2,
             "MsgID": [
               0,
               0,
@@ -961,27 +961,32 @@
               11,
               192
             ],
-            "Data": "BgAAAAAAAAAMAAAAAAAAABQAAACVgsJlra+vo0pYDeMt+5y7nhN0W58S2xr2ls2J5GMetvzy/0PE/5sJQQHsFeHmbr8GmQwLINEzihUNJ7Hc93RKNK61DbiIv5kc4R9VRUsmjWwtevKsqZG9P4YLIFMXQg+WOSJL0JK4M5I4vqjGjxsRZBtXXC7FLaa8T9X54P4fDAEAAAAAAAAAAQAAAAAAAAA="
+            "Data": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIkAAAABgAAAAAAAAAMAAAAAAAAABQAAACVgsJlra+vo0pYDeMt+5y7nhN0W58S2xr2ls2J5GMetvzy/0PE/5sJQQHsFeHmbr8GmQwLINEzihUNJ7Hc93RKNK61DbiIv5kc4R9VRUsmjWwtevKsqZG9P4YLIFMXQg+WOSJL0JK4M5I4vqjGjxsRZBtXXC7FLaa8T9X54P4fDAEAAAAAAAAAAQAAAAAAAAA="
           },
           "FullData": null
         }
       ],
       "DecidedSlashable": false,
-      "PostDutyRunnerStateRoot": "bb8cc21c0004d545f5259a895b9023c348f376bfe4c626dd35b6eee17f465714",
+      "PostDutyRunnerStateRoot": "26cb06f288fd0e255b3d308d6f05d1b68c938f2f5f25007954bec4fce22d36aa",
       "OutputMessages": [],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": true,
-      "ExpectedError": "failed processing preconfirmation message: invalid pre-consensus message: no running duty",
-      "ValidatorDuty": {
-        "Type": 7,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-        "Slot": "12",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 0,
-        "CommitteeLength": 0,
-        "CommitteesAtSlot": 0,
-        "ValidatorCommitteeIndex": 0,
-        "ValidatorSyncCommitteeIndices": null
+      "ExpectedError": "failed processing commit boost signing message: invalid pre-consensus message: no running duty",
+      "CBSigningDuty": {
+        "Request": {
+          "Root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+        },
+        "Duty": {
+          "Type": 7,
+          "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+          "Slot": "12",
+          "ValidatorIndex": "1",
+          "CommitteeIndex": 0,
+          "CommitteeLength": 0,
+          "CommitteesAtSlot": 0,
+          "ValidatorCommitteeIndex": 0,
+          "ValidatorSyncCommitteeIndices": null
+        }
       }
     },
     {

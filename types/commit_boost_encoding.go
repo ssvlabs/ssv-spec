@@ -63,13 +63,13 @@ func (c *CBSigningRequest) GetTree() (*ssz.Node, error) {
 	return ssz.ProofTree(c)
 }
 
-// MarshalSSZ ssz marshals the CBPartialSignature object
-func (c *CBPartialSignature) MarshalSSZ() ([]byte, error) {
+// MarshalSSZ ssz marshals the CBPartialSignatures object
+func (c *CBPartialSignatures) MarshalSSZ() ([]byte, error) {
 	return ssz.MarshalSSZ(c)
 }
 
-// MarshalSSZTo ssz marshals the CBPartialSignature object to a target array
-func (c *CBPartialSignature) MarshalSSZTo(buf []byte) (dst []byte, err error) {
+// MarshalSSZTo ssz marshals the CBPartialSignatures object to a target array
+func (c *CBPartialSignatures) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	offset := int(36)
 
@@ -87,8 +87,8 @@ func (c *CBPartialSignature) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	return
 }
 
-// UnmarshalSSZ ssz unmarshals the CBPartialSignature object
-func (c *CBPartialSignature) UnmarshalSSZ(buf []byte) error {
+// UnmarshalSSZ ssz unmarshals the CBPartialSignatures object
+func (c *CBPartialSignatures) UnmarshalSSZ(buf []byte) error {
 	var err error
 	size := uint64(len(buf))
 	if size < 36 {
@@ -120,8 +120,8 @@ func (c *CBPartialSignature) UnmarshalSSZ(buf []byte) error {
 	return err
 }
 
-// SizeSSZ returns the ssz encoded size in bytes for the CBPartialSignature object
-func (c *CBPartialSignature) SizeSSZ() (size int) {
+// SizeSSZ returns the ssz encoded size in bytes for the CBPartialSignatures object
+func (c *CBPartialSignatures) SizeSSZ() (size int) {
 	size = 36
 
 	// Field (1) 'PartialSig'
@@ -130,13 +130,13 @@ func (c *CBPartialSignature) SizeSSZ() (size int) {
 	return
 }
 
-// HashTreeRoot ssz hashes the CBPartialSignature object
-func (c *CBPartialSignature) HashTreeRoot() ([32]byte, error) {
+// HashTreeRoot ssz hashes the CBPartialSignatures object
+func (c *CBPartialSignatures) HashTreeRoot() ([32]byte, error) {
 	return ssz.HashWithDefaultHasher(c)
 }
 
-// HashTreeRootWith ssz hashes the CBPartialSignature object with a hasher
-func (c *CBPartialSignature) HashTreeRootWith(hh ssz.HashWalker) (err error) {
+// HashTreeRootWith ssz hashes the CBPartialSignatures object with a hasher
+func (c *CBPartialSignatures) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	indx := hh.Index()
 
 	// Field (0) 'RequestRoot'
@@ -151,7 +151,7 @@ func (c *CBPartialSignature) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	return
 }
 
-// GetTree ssz hashes the CBPartialSignature object
-func (c *CBPartialSignature) GetTree() (*ssz.Node, error) {
+// GetTree ssz hashes the CBPartialSignatures object
+func (c *CBPartialSignatures) GetTree() (*ssz.Node, error) {
 	return ssz.ProofTree(c)
 }

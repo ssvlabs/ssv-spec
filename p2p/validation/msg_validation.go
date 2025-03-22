@@ -30,6 +30,10 @@ func MsgValidation(runner ssv.Runner) MsgValidatorFunc {
 			if validatePartialSigMsg(runner, signedSSVMsg.SSVMessage.Data) != nil {
 				return pubsub.ValidationReject
 			}
+		case types.CommitBoostPartialSignatureMsgType:
+			if validateCBParitalSigMsg(runner, signedSSVMsg.SSVMessage.Data) != nil {
+				return pubsub.ValidationReject
+			}
 		default:
 			return pubsub.ValidationReject
 		}
@@ -95,6 +99,18 @@ func validatePartialSigMsg(runner ssv.Runner, data []byte) error {
 		return runner.GetBaseRunner().ValidatePostConsensusMsg(runner, signedMsg)
 	}
 	return runner.GetBaseRunner().ValidatePreConsensusMsg(runner, signedMsg)
+}
+
+func validateCBParitalSigMsg(runner ssv.Runner, data []byte) error {
+	signedMsg := &types.CBPartialSignatures{}
+	if err := signedMsg.Decode(data); err != nil {
+		return err
+	}
+
+	if signedMsg.PartialSig.Type == types.PostConsensusPartialSig {
+		return runner.GetBaseRunner().ValidatePostConsensusMsg(runner, &signedMsg.PartialSig)
+	}
+	return runner.GetBaseRunner().ValidatePreConsensusMsg(runner, &signedMsg.PartialSig)
 }
 
 func validateFutureMsg(

@@ -6,7 +6,7 @@ import (
 )
 
 var TestingCBSigningRequest = &types.CBSigningRequest{
-	Root: TestingPreconfRoot,
+	Root: phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 }
 
 var TestingCBSigningRequestWrong = &types.CBSigningRequest{
@@ -22,19 +22,25 @@ var TestingSignedCBSigningRequest = func(ks *TestKeySet) phase0.BLSSignature {
 }
 
 // ==================================================
-// Preconfirmation Duty
+// Commit-Boost Signing Duty
 // ==================================================
 
-var TestingPreconfDuty = types.ValidatorDuty{
-	Type:           types.BNRoleCBSigning,
-	PubKey:         TestingValidatorPubKey,
-	Slot:           TestingDutySlot,
-	ValidatorIndex: TestingValidatorIndex,
+var TestingCBSigningDuty = types.CBSigningDuty{
+	Request: *TestingCBSigningRequest,
+	Duty: types.ValidatorDuty{
+		Type:           types.BNRoleCBSigning,
+		PubKey:         TestingValidatorPubKey,
+		Slot:           TestingDutySlot,
+		ValidatorIndex: TestingValidatorIndex,
+	},
 }
 
-var TestingPreconfDutyNextEpoch = types.ValidatorDuty{
-	Type:           types.BNRoleCBSigning,
-	PubKey:         TestingValidatorPubKey,
-	Slot:           TestingDutySlot2,
-	ValidatorIndex: TestingValidatorIndex,
+var TestingCBSigningDutyNextEpoch = types.CBSigningDuty{
+	Request: *TestingCBSigningRequest,
+	Duty: types.ValidatorDuty{
+		Type:           types.BNRoleCBSigning,
+		PubKey:         TestingValidatorPubKey,
+		Slot:           TestingDutySlot2,
+		ValidatorIndex: TestingValidatorIndex,
+	},
 }

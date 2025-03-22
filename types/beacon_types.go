@@ -74,7 +74,7 @@ func (r BeaconRole) String() string {
 	case BNRoleVoluntaryExit:
 		return "VOLUNTARY_EXIT"
 	case BNRoleCBSigning:
-		return "PRECONFIRMATION"
+		return "CB_SIGNING"
 	default:
 		return "UNDEFINED"
 	}

@@ -1535,7 +1535,7 @@
       }
     },
     {
-      "Name": "preconfirmation",
+      "Name": "commit boost signing",
       "Runner": {
         "BaseRunner": {
           "State": null,
@@ -1650,13 +1650,13 @@
       "Messages": [
         {
           "Signatures": [
-            "Uh/gqi3BAXYNodSBJIlkWrXcS2xnU53lWC2QcYxv8OwGbcRbd3G2C8QSa7KDouwgy55CP55Dk4gwsaSEHd2GJnMcCnewto0p3auTPRTMe67pgCXrksW3d03ZZJc6KAtwnoPcgRj/F2KIRFy4fOgv7ILp1Xt1vgye2l5cAFwOUKTJGr0rc3hX5nHmSPcAyjXKJol1zXXJB1omtcSEQKruw3yV8FBM3F957LAkxPCGE/sqhQYHjCIgYw0tIT0Gx++DdSApGtYcaZ3KPCkw9StFZy09FBU/EzoHen6VkX0TFM4l3ansJHsdzGJ7nFYII3z7AaXLjxpwFgYFK+0kPY2eYQ=="
+            "w8O5apC4lNoUxYizoQkB5XmlsG1HEntEEqrAiJB7b5ro/xB0gNy2h6avsQn69vuYBNmTX6Stu0jZE9XSUpg6SaPAr4wVQnwCBeZE7joZQC93+QaQQocOjMvENtv7knI3EmG2nr8sXoArskrPicFXi0tlo7UrBRJuOt63J7U06GeeqVt//GqYA51NbvYM3kliXXCyT0pLdIBEDvckNIpvo5FWAWVqBd2WJ5871WzxZlggOhwvmu3vu/vyruZ8VrDL9AwVaKGXt7XmXmgG6Z5gzWYbD/c65y6WF2AS4Q2AVweKrXWAD+1JKhJZOAkK6NaS/M9mLWDUQ8rAUvu/Bmok7g=="
           ],
           "OperatorIDs": [
             1
           ],
           "SSVMessage": {
-            "MsgType": 1,
+            "MsgType": 2,
             "MsgID": [
               0,
               0,
@@ -1715,7 +1715,7 @@
               11,
               192
             ],
-            "Data": "BgAAAAAAAAAyAAAAAAAAABQAAACVgsJlra+vo0pYDeMt+5y7nhN0W58S2xr2ls2J5GMetvzy/0PE/5sJQQHsFeHmbr8GmQwLINEzihUNJ7Hc93RKNK61DbiIv5kc4R9VRUsmjWwtevKsqZG9P4YLIFMXQg+WOSJL0JK4M5I4vqjGjxsRZBtXXC7FLaa8T9X54P4fDAEAAAAAAAAAAQAAAAAAAAA="
+            "Data": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIkAAAABgAAAAAAAAAyAAAAAAAAABQAAACVgsJlra+vo0pYDeMt+5y7nhN0W58S2xr2ls2J5GMetvzy/0PE/5sJQQHsFeHmbr8GmQwLINEzihUNJ7Hc93RKNK61DbiIv5kc4R9VRUsmjWwtevKsqZG9P4YLIFMXQg+WOSJL0JK4M5I4vqjGjxsRZBtXXC7FLaa8T9X54P4fDAEAAAAAAAAAAQAAAAAAAAA="
           },
           "FullData": null
         }
@@ -1771,17 +1771,22 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "failed processing preconfirmation message: invalid pre-consensus message: invalid partial sig slot",
-      "ValidatorDuty": {
-        "Type": 7,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-        "Slot": "12",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 0,
-        "CommitteeLength": 0,
-        "CommitteesAtSlot": 0,
-        "ValidatorCommitteeIndex": 0,
-        "ValidatorSyncCommitteeIndices": null
+      "ExpectedError": "failed processing commit boost signing message: invalid pre-consensus message: invalid partial sig slot",
+      "CBSigningDuty": {
+        "Request": {
+          "Root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+        },
+        "Duty": {
+          "Type": 7,
+          "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+          "Slot": "12",
+          "ValidatorIndex": "1",
+          "CommitteeIndex": 0,
+          "CommitteeLength": 0,
+          "CommitteesAtSlot": 0,
+          "ValidatorCommitteeIndex": 0,
+          "ValidatorSyncCommitteeIndices": null
+        }
       }
     },
     {

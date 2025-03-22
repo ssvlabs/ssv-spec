@@ -113,8 +113,8 @@ func invalidQuorumThenValidQuorumVoluntaryExitSC() *comparable.StateComparison {
 	}
 }
 
-// invalidThenQuorumPreconfSC returns state comparison object for the invalid then quorum Preconfirmation versioned spec test
-func invalidQuorumThenValidQuorumPreconfSC() *comparable.StateComparison {
+// invalidThenQuorumCBSigningSC returns state comparison object for the invalid then quorum commit boost signing versioned spec test
+func invalidQuorumThenValidQuorumCBSigningSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	return &comparable.StateComparison{
@@ -124,16 +124,16 @@ func invalidQuorumThenValidQuorumPreconfSC() *comparable.StateComparison {
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[2], 2))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[3], 3))),
+						testingutils.SignCBPartialSigSSVMessage(ks, testingutils.SSVMsgCBSigning(nil, testingutils.PreConsensusCBSigningMsg(ks.Shares[1], 1))),
+						testingutils.SignCBPartialSigSSVMessage(ks, testingutils.SSVMsgCBSigning(nil, testingutils.PreConsensusCBSigningMsg(ks.Shares[2], 2))),
+						testingutils.SignCBPartialSigSSVMessage(ks, testingutils.SSVMsgCBSigning(nil, testingutils.PreConsensusCBSigningMsg(ks.Shares[3], 3))),
 					},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				StartingDuty: &testingutils.TestingPreconfDuty,
+				StartingDuty: &testingutils.TestingCBSigningDuty,
 				Finished:     true,
 			}
 

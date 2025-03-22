@@ -57,17 +57,17 @@ func NoRunningDuty() tests.SpecTest {
 				ExpectedError:           "failed processing voluntary exit message: invalid pre-consensus message: no running duty",
 			},
 			{
-				Name:   "preconfirmation",
+				Name:   "commit boost signing",
 				Runner: testingutils.CBSigningRunner(ks),
-				Duty:   &testingutils.TestingPreconfDuty,
+				Duty:   &testingutils.TestingCBSigningDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1))),
+					testingutils.SignCBPartialSigSSVMessage(ks, testingutils.SSVMsgCBSigning(nil, testingutils.PreConsensusCBSigningMsg(ks.Shares[1], 1))),
 				},
-				PostDutyRunnerStateRoot: noRunningDutyPreconfSC().Root(),
-				PostDutyRunnerState:     noRunningDutyPreconfSC().ExpectedState,
+				PostDutyRunnerStateRoot: noRunningDutyCBSigningSC().Root(),
+				PostDutyRunnerState:     noRunningDutyCBSigningSC().ExpectedState,
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing preconfirmation message: invalid pre-consensus message: no running duty",
+				ExpectedError:           "failed processing commit boost signing message: invalid pre-consensus message: no running duty",
 			},
 		},
 	}

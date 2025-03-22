@@ -1525,7 +1525,7 @@
       }
     },
     {
-      "Name": "preconfirmation",
+      "Name": "commit boost signing",
       "Runner": {
         "BaseRunner": {
           "State": null,
@@ -1644,7 +1644,7 @@
             1
           ],
           "SSVMessage": {
-            "MsgType": 1,
+            "MsgType": 2,
             "MsgID": [
               0,
               0,
@@ -1703,7 +1703,7 @@
               11,
               192
             ],
-            "Data": "BgAAAAAAAAAMAAAAAAAAABQAAACVgsJlra+vo0pYDeMt+5y7nhN0W58S2xr2ls2J5GMetvzy/0PE/5sJQQHsFeHmbr8GmQwLINEzihUNJ7Hc93RKNK61DbiIv5kc4R9VRUsmjWwtevKsqZG9P4YLIFMXQg+WOSJL0JK4M5I4vqjGjxsRZBtXXC7FLaa8T9X54P4fDAEAAAAAAAAAAQAAAAAAAAA="
+            "Data": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIkAAAABgAAAAAAAAAMAAAAAAAAABQAAACVgsJlra+vo0pYDeMt+5y7nhN0W58S2xr2ls2J5GMetvzy/0PE/5sJQQHsFeHmbr8GmQwLINEzihUNJ7Hc93RKNK61DbiIv5kc4R9VRUsmjWwtevKsqZG9P4YLIFMXQg+WOSJL0JK4M5I4vqjGjxsRZBtXXC7FLaa8T9X54P4fDAEAAAAAAAAAAQAAAAAAAAA="
           },
           "FullData": null
         }
@@ -1760,16 +1760,21 @@
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "invalid SignedSSVMessage: no signatures",
-      "ValidatorDuty": {
-        "Type": 7,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-        "Slot": "12",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 0,
-        "CommitteeLength": 0,
-        "CommitteesAtSlot": 0,
-        "ValidatorCommitteeIndex": 0,
-        "ValidatorSyncCommitteeIndices": null
+      "CBSigningDuty": {
+        "Request": {
+          "Root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+        },
+        "Duty": {
+          "Type": 7,
+          "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+          "Slot": "12",
+          "ValidatorIndex": "1",
+          "CommitteeIndex": 0,
+          "CommitteeLength": 0,
+          "CommitteesAtSlot": 0,
+          "ValidatorCommitteeIndex": 0,
+          "ValidatorSyncCommitteeIndices": null
+        }
       }
     },
     {

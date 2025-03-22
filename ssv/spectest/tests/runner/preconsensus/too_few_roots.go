@@ -83,15 +83,15 @@ func TooFewRoots() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 			{
-				Name:   "preconfirmation",
+				Name:   "commit boost signing",
 				Runner: testingutils.CBSigningRunner(ks),
-				Duty:   &testingutils.TestingPreconfDuty,
+				Duty:   &testingutils.TestingCBSigningDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfTooFewRootsMsg(ks.Shares[1], 1))),
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgCBSigning(nil, testingutils.PreConsensusCBSigningTooFewRootsMsg(ks.Shares[1], 1))),
 				},
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusCBSigningMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 				ExpectedError: expectedError,
 			},

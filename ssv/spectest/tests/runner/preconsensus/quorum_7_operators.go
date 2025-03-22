@@ -75,20 +75,20 @@ func Quorum7Operators() tests.SpecTest {
 				},
 			},
 			{
-				Name:   "preconfirmation",
+				Name:   "commit boost signing",
 				Runner: testingutils.CBSigningRunner(ks),
-				Duty:   &testingutils.TestingPreconfDuty,
+				Duty:   &testingutils.TestingCBSigningDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[2], 2))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[3], 3))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[4], 4))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[5], 5))),
+					testingutils.SignCBPartialSigSSVMessage(ks, testingutils.SSVMsgCBSigning(nil, testingutils.PreConsensusCBSigningMsg(ks.Shares[1], 1))),
+					testingutils.SignCBPartialSigSSVMessage(ks, testingutils.SSVMsgCBSigning(nil, testingutils.PreConsensusCBSigningMsg(ks.Shares[2], 2))),
+					testingutils.SignCBPartialSigSSVMessage(ks, testingutils.SSVMsgCBSigning(nil, testingutils.PreConsensusCBSigningMsg(ks.Shares[3], 3))),
+					testingutils.SignCBPartialSigSSVMessage(ks, testingutils.SSVMsgCBSigning(nil, testingutils.PreConsensusCBSigningMsg(ks.Shares[4], 4))),
+					testingutils.SignCBPartialSigSSVMessage(ks, testingutils.SSVMsgCBSigning(nil, testingutils.PreConsensusCBSigningMsg(ks.Shares[5], 5))),
 				},
-				PostDutyRunnerStateRoot: quorum7OperatorsPreconfSC().Root(),
-				PostDutyRunnerState:     quorum7OperatorsPreconfSC().ExpectedState,
+				PostDutyRunnerStateRoot: quorum7OperatorsCBSigningSC().Root(),
+				PostDutyRunnerState:     quorum7OperatorsCBSigningSC().ExpectedState,
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusCBSigningMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
 		},

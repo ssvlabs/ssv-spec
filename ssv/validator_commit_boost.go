@@ -48,9 +48,17 @@ func (v *ValidatorCommitBoost) HandleRequestSignature(keyType string, pubkey typ
 		return phase0.BLSSignature{}, errors.New("invalid pubkey")
 	}
 
-	err := v.StartDuty(types.CBSigningRequest{
-		Root: objectRoot,
-	})
+	var signingDuty = types.CBSigningDuty{
+		Request: types.CBSigningRequest{
+			Root: objectRoot,
+		},
+		Duty: types.ValidatorDuty{
+			Slot:           v.BeaconNetwork.EstimatedCurrentSlot(),
+			ValidatorIndex: v.Share.ValidatorIndex,
+		},
+	}
+
+	err := v.StartDuty(signingDuty)
 	if err != nil {
 		return phase0.BLSSignature{}, errors.Wrap(err, "failed to start duty")
 	}
@@ -64,24 +72,20 @@ func (v *ValidatorCommitBoost) HandleRequestSignature(keyType string, pubkey typ
 	return sig, nil
 }
 
-// StartDuty starts a preconf duty for a validator given a signing request
-func (v *ValidatorCommitBoost) StartDuty(request types.CBSigningRequest) error {
-	_, exist := v.CBSigningRunners[request.Root]
+// StartDuty starts a cb signing duty for a validator given a signing request
+func (v *ValidatorCommitBoost) StartDuty(duty types.CBSigningDuty) error {
+	_, exist := v.CBSigningRunners[duty.Request.Root]
 	if exist {
-		return errors.Errorf("duty runner for request %s already exists", request.Root.String())
+		return errors.Errorf("duty runner for request %s already exists", duty.Request.Root.String())
 	}
 	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
 	shareMap[v.Share.ValidatorIndex] = v.Share
 	dutyRunner, err := NewCBSigningRunner(v.BeaconNetwork, shareMap, v.Beacon, v.Network, v.Signer, v.OperatorSigner)
 	if err != nil {
-		return errors.Wrap(err, "failed to create new preconf runner")
+		return errors.Wrap(err, "failed to create new commit-boost signing runner")
 	}
-	v.CBSigningRunners[request.Root] = *dutyRunner
-	var signingDuty = types.CBSigningDuty{
-		Request: request,
-		Slot:    v.BeaconNetwork.EstimatedCurrentSlot(),
-	}
-	return dutyRunner.StartNewDuty(&signingDuty, v.CommitteeMember.GetQuorum())
+	v.CBSigningRunners[duty.Request.Root] = *dutyRunner
+	return dutyRunner.StartNewDuty(duty, v.CommitteeMember.GetQuorum())
 }
 
 // ProcessMessage processes Network Message of all types
@@ -98,7 +102,7 @@ func (v *ValidatorCommitBoost) ProcessMessage(signedSSVMessage *types.SignedSSVM
 
 	msg := signedSSVMessage.SSVMessage
 
-	cbPartialSigMsg := &types.CBPartialSignature{}
+	cbPartialSigMsg := &types.CBPartialSignatures{}
 	if err := cbPartialSigMsg.Decode(msg.GetData()); err != nil {
 		return errors.Wrap(err, "could not get commit boost partial sig message from network message")
 	}
@@ -117,27 +121,22 @@ func (v *ValidatorCommitBoost) ProcessMessage(signedSSVMessage *types.SignedSSVM
 	}
 
 	switch msg.GetType() {
-	case types.SSVPartialSignatureMsgType:
-		// Decode
-		psigMsgs := &types.PartialSignatureMessages{}
-		if err := psigMsgs.Decode(msg.GetData()); err != nil {
-			return errors.Wrap(err, "could not get post consensus Message from network Message")
-		}
-
+	case types.CommitBoostPartialSignatureMsgType:
+		psigMsgs := cbPartialSigMsg.PartialSig
 		// Validate
 		if len(signedSSVMessage.OperatorIDs) != 1 {
 			return errors.New("PartialSignatureMessage has more than 1 signer")
 		}
 
-		if err := psigMsgs.ValidateForSigner(signedSSVMessage.OperatorIDs[0]); err != nil {
+		if err := cbPartialSigMsg.PartialSig.ValidateForSigner(signedSSVMessage.OperatorIDs[0]); err != nil {
 			return errors.Wrap(err, "invalid PartialSignatureMessages")
 		}
 
 		// Process
-		if psigMsgs.Type == types.PostConsensusPartialSig {
-			return dutyRunner.ProcessPostConsensus(psigMsgs)
+		if cbPartialSigMsg.PartialSig.Type == types.PostConsensusPartialSig {
+			return dutyRunner.ProcessPostConsensus(&psigMsgs)
 		}
-		return dutyRunner.ProcessPreConsensus(psigMsgs)
+		return dutyRunner.ProcessPreConsensus(&psigMsgs)
 	default:
 		return errors.New("unknown msg")
 	}

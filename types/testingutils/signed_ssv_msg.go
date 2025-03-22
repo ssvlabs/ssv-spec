@@ -79,6 +79,28 @@ var SignPartialSigSSVMessage = func(ks *TestKeySet, msg *types.SSVMessage) *type
 	return SignedSSVMessageWithSigner(signer, ks.OperatorKeys[signer], msg)
 }
 
+var SignCBPartialSigSSVMessage = func(ks *TestKeySet, msg *types.SSVMessage) *types.SignedSSVMessage {
+
+	// Discover message's signer
+	if msg.MsgType != types.CommitBoostPartialSignatureMsgType {
+		panic("type different than SSVCommitBoostPartialSignatureMsgType to sign partial signature ssv message")
+	}
+
+	cbPartialSig := &types.CBPartialSignatures{}
+	if err := cbPartialSig.Decode(msg.Data); err != nil {
+		panic(err)
+	}
+	var signer types.OperatorID
+	if len(cbPartialSig.PartialSig.Messages) == 0 {
+		signer = 1
+	} else {
+		signer = cbPartialSig.PartialSig.Messages[0].Signer
+	}
+
+	// Convert SSVMessage to SignedSSVMessage
+	return SignedSSVMessageWithSigner(signer, ks.OperatorKeys[signer], msg)
+}
+
 var SignedSSVMessageWithSigner = func(operatorID types.OperatorID, rsaSK *rsa.PrivateKey, ssvMessage *types.SSVMessage) *types.SignedSSVMessage {
 
 	data, err := ssvMessage.Encode()

@@ -20,30 +20,30 @@ func (r *CBSigningRequest) Decode(data []byte) error {
 	return r.UnmarshalSSZ(data)
 }
 
-type CBPartialSignature struct {
+type CBPartialSignatures struct {
 	RequestRoot phase0.Root `ssz-size:"32"`
 	PartialSig  PartialSignatureMessages
 }
 
-// Encode the CBPartialSignature object
-func (p *CBPartialSignature) Encode() ([]byte, error) {
+// Encode the CBPartialSignatures object
+func (p *CBPartialSignatures) Encode() ([]byte, error) {
 	return p.MarshalSSZ()
 }
 
-// Decode the CBPartialSignature object
-func (p *CBPartialSignature) Decode(data []byte) error {
+// Decode the CBPartialSignatures object
+func (p *CBPartialSignatures) Decode(data []byte) error {
 	return p.UnmarshalSSZ(data)
 }
 
 type CBSigningDuty struct {
 	Request CBSigningRequest
-	Slot    phase0.Slot `ssz-size:"8"`
+	Duty    ValidatorDuty
 }
 
-func (d *CBSigningDuty) DutySlot() phase0.Slot {
-	return d.Slot
+func (d CBSigningDuty) DutySlot() phase0.Slot {
+	return d.Duty.Slot
 }
 
-func (d *CBSigningDuty) RunnerRole() RunnerRole {
+func (d CBSigningDuty) RunnerRole() RunnerRole {
 	return RoleCBSigning
 }

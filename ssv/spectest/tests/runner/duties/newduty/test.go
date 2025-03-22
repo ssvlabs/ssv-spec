@@ -208,6 +208,7 @@ func (t *StartNewRunnerDutySpecTest) MarshalJSON() ([]byte, error) {
 		ExpectedError           string
 		ValidatorDuty           *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
 		CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+		CBSigningDuty           *types.CBSigningDuty `json:"CBSigningDuty,omitempty"`
 	}
 
 	alias := &StartNewRunnerDutySpecTestAlias{
@@ -224,6 +225,8 @@ func (t *StartNewRunnerDutySpecTest) MarshalJSON() ([]byte, error) {
 			alias.ValidatorDuty = duty
 		} else if committeeDuty, ok := t.Duty.(*types.CommitteeDuty); ok {
 			alias.CommitteeDuty = committeeDuty
+		} else if cbSigningDuty, ok := t.Duty.(*types.CBSigningDuty); ok {
+			alias.CBSigningDuty = cbSigningDuty
 		} else {
 			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't ValidatorDuty or CommitteeDuty")
 		}

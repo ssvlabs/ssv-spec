@@ -6,8 +6,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// Preconfirmation tests an invalid consensus data for preconfirmation (has no consensus data)
-func Preconfirmation() *ValidatorConsensusDataTest {
+// CBSigning tests an invalid consensus data for commit boost signing (has no consensus data)
+func CBSigning() *ValidatorConsensusDataTest {
 
 	dataByts, err := testingutils.TestingCBSigningRequest.MarshalSSZ()
 	if err != nil {
@@ -15,14 +15,14 @@ func Preconfirmation() *ValidatorConsensusDataTest {
 	}
 
 	cd := types.ValidatorConsensusData{
-		Duty:    testingutils.TestingPreconfDuty,
+		Duty:    testingutils.TestingCBSigningDuty.Duty,
 		Version: spec.DataVersionCapella,
 		DataSSZ: dataByts,
 	}
 
 	return &ValidatorConsensusDataTest{
-		Name:          "preconfirmation",
+		Name:          "commit boost signing",
 		ConsensusData: cd,
-		ExpectedError: "preconfirmation has no consensus data",
+		ExpectedError: "commit-boost signing has no consensus data",
 	}
 }

@@ -107,6 +107,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 
 	var v *ssv.Validator
 	var c *ssv.Committee
+	var cb *ssv.ValidatorCommitBoost
 	var lastErr error
 	switch test.Runner.(type) {
 	case *ssv.CommitteeRunner:
@@ -133,6 +134,20 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 					test.Runner.GetSigner().(*testingutils.TestingKeyManager).AddSlashableSlot(validatorShare.
 						SharePubKey, slot)
 				}
+			}
+		}
+
+	case *ssv.CBSigningRunner:
+		cb = testingutils.BaseValidatorCommitBoost(testingutils.KeySetForShare(share))
+
+		if !test.DontStartDuty {
+			duty := test.Duty.(*types.CBSigningDuty)
+			lastErr = cb.StartDuty(*duty)
+		}
+		for _, msg := range test.Messages {
+			err := cb.ProcessMessage(msg)
+			if err != nil {
+				lastErr = err
 			}
 		}
 
@@ -230,6 +245,7 @@ type MsgProcessingSpecTestAlias struct {
 	ExpectedError           string
 	ValidatorDuty           *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
 	CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+	CBSigningDuty           *types.CBSigningDuty `json:"CBSigningDuty,omitempty"`
 }
 
 func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
@@ -251,6 +267,8 @@ func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
 			alias.ValidatorDuty = duty
 		} else if committeeDuty, ok := t.Duty.(*types.CommitteeDuty); ok {
 			alias.CommitteeDuty = committeeDuty
+		} else if cbSigningDuty, ok := t.Duty.(*types.CBSigningDuty); ok {
+			alias.CBSigningDuty = cbSigningDuty
 		} else {
 			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't ValidatorDuty or CommitteeDuty")
 		}

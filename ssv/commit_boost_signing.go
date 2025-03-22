@@ -64,7 +64,7 @@ func (r *CBSigningRunner) HasRunningDuty() bool {
 func (r *CBSigningRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
 	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
-		return errors.Wrap(err, "failed processing preconfirmation message")
+		return errors.Wrap(err, "failed processing commit-boost signing message")
 	}
 
 	if !quorum {
@@ -90,16 +90,19 @@ func (r *CBSigningRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureM
 }
 
 func (r *CBSigningRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
-	return errors.New("no consensus phase for preconfirmation")
+	return errors.New("no consensus phase for commit-boost signing")
 }
 
 func (r *CBSigningRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
-	return errors.New("no post consensus phase for preconfirmation")
+	return errors.New("no post consensus phase for commit-boost signing")
 }
 
 func (r *CBSigningRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	if r.BaseRunner.State == nil || r.BaseRunner.State.StartingDuty == nil || r.requestRoot == (phase0.Root{}) {
-		return nil, types.DomainError, errors.New("no running duty or commit-boost signing request")
+	if r.BaseRunner.State == nil || r.BaseRunner.State.StartingDuty == nil {
+		return nil, types.DomainError, errors.New("no running duty")
+	}
+	if r.requestRoot == (phase0.Root{}) {
+		return nil, types.DomainError, errors.New("no request root")
 	}
 	CBSigningRequest := types.CBSigningRequest{
 		Root: r.requestRoot,
@@ -109,7 +112,7 @@ func (r *CBSigningRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, 
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *CBSigningRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return nil, [4]byte{}, errors.New("no post consensus roots for preconfirmation")
+	return nil, [4]byte{}, errors.New("no post consensus roots for commit-boost signing")
 }
 
 func (r *CBSigningRunner) executeDuty(duty types.Duty) error {
@@ -134,7 +137,7 @@ func (r *CBSigningRunner) executeDuty(duty types.Duty) error {
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	CBPreConsensusMsg := &types.CBPartialSignature{
+	CBPreConsensusMsg := &types.CBPartialSignatures{
 		RequestRoot: r.requestRoot,
 		PartialSig:  *preConsensusMsg,
 	}
@@ -147,7 +150,7 @@ func (r *CBSigningRunner) executeDuty(duty types.Duty) error {
 	}
 
 	ssvMsg := &types.SSVMessage{
-		MsgType: types.SSVPartialSignatureMsgType,
+		MsgType: types.CommitBoostPartialSignatureMsgType,
 		MsgID:   msgID,
 		Data:    encodedMsg,
 	}

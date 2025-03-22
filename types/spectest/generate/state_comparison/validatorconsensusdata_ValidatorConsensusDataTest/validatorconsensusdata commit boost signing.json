@@ -1,5 +1,5 @@
 {
-		"Name": "preconfirmation",
+		"Name": "commit boost signing",
 		"ConsensusData": {
 				"Duty": {
 						"Type": 7,
@@ -15,5 +15,5 @@
 				"Version": "capella",
 				"DataSSZ": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQI="
 		},
-		"ExpectedError": "preconfirmation has no consensus data"
+		"ExpectedError": "commit-boost signing has no consensus data"
 }

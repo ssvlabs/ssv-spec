@@ -83,8 +83,8 @@ func postFinishVoluntaryExitSC() *comparable.StateComparison {
 	}
 }
 
-// postFinishPreconfSC returns state comparison object for the PostFinish Preconf versioned spec test
-func postFinishPreconfSC() *comparable.StateComparison {
+// postFinishCBSigningSC returns state comparison object for the PostFinish CBSigning versioned spec test
+func postFinishCBSigningSC() *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 
 	return &comparable.StateComparison{
@@ -99,7 +99,7 @@ func postFinishPreconfSC() *comparable.StateComparison {
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				StartingDuty: &testingutils.TestingPreconfDuty,
+				StartingDuty: &testingutils.TestingCBSigningDuty,
 				Finished:     true,
 			}
 			return ret

@@ -1535,7 +1535,7 @@
       }
     },
     {
-      "Name": "preconfirmation",
+      "Name": "commit boost signing",
       "Runner": {
         "BaseRunner": {
           "State": null,
@@ -1650,13 +1650,13 @@
       "Messages": [
         {
           "Signatures": [
-            "NuCCwqCgcz4hA+Yn6NTgcJsgx2xFpZ9VK5SJC6/TMRNLNWzPT/Lu+y4k/e3YSuw9e6NLipYxWKZzMv813MPi+QtosuDQ8jUhYsEWTnhB5i5l/saem/1WSCcmHFstmfBEbLpxaOZs2pDrTBVEqt87Gse5FfeZNIH6ByvfJRNh3F9v7vSdbXyh4NBl0PWpCIw2ffSZYaUFdkQq1ZOYzHqh/kgu+fbiDGiC/kNfwSF+PcFOnMgg0MDdhNMjg9Fcb3aKogbH29QKTkXRFxIez5DZm7ZxERY/pRYn1Djmb9QweM/wRr94mtmX4ej+zkpzvNg916C1DJ8+DJL3/z+CJMEUrA=="
+            "Qo8ckqGa1HnircJVNGy+i+z54NsBP0CuVFs18Ji4vA0N0mI1VLdMCG7rbIMGJx5mOg1LD4QKm9EVyUODdLoUDeeTjk90P2UDULeAhRb2pr0/AJ+LyWg+yRB1bqNjPv133AA0Jmx9U/742RQz5NflsM5Ke/gHPNrLCHOoz2TQ06QF3TCpBCDwAAJ5Cm1Ty0xu6P7Tsbq5QCqr2fBel713UXI+s+oOW5y77fHVTsQAGuPGMxQfglbDCdabM+M/OpK/un1OUboFQxk6bKWvnGtWvAivO4amUeupBXv6CAxqHcMXkTI6gqtPLE8UJ9RdKeg1SzyYYqYXXMhVKd+IznX2kw=="
           ],
           "OperatorIDs": [
             1
           ],
           "SSVMessage": {
-            "MsgType": 1,
+            "MsgType": 2,
             "MsgID": [
               0,
               0,
@@ -1715,7 +1715,7 @@
               11,
               192
             ],
-            "Data": "BgAAAAAAAAAMAAAAAAAAABQAAACrNeIyKUdzcpRqb0hYA05r9h1Dpqou8j++K6/7H+HyGoQxDD6+awP+PIydBceJYCACrv8lVHvdFG1NOkIgWRBrX/n5gOXbhrW5fOwXT1fxP8oXgwpI3dr4FKLIlMv52zbYRbNKajJ6fTjDQ+4P9ov8BhQVE8iAeapvBfucqn6kxwEAAAAAAAAAAQAAAAAAAAA="
+            "Data": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIkAAAABgAAAAAAAAAMAAAAAAAAABQAAACrNeIyKUdzcpRqb0hYA05r9h1Dpqou8j++K6/7H+HyGoQxDD6+awP+PIydBceJYCACrv8lVHvdFG1NOkIgWRBrX/n5gOXbhrW5fOwXT1fxP8oXgwpI3dr4FKLIlMv52zbYRbNKajJ6fTjDQ+4P9ov8BhQVE8iAeapvBfucqn6kxwEAAAAAAAAAAQAAAAAAAAA="
           },
           "FullData": null
         }
@@ -1771,17 +1771,22 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "failed processing preconfirmation message: invalid pre-consensus message: wrong signing root",
-      "ValidatorDuty": {
-        "Type": 7,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-        "Slot": "12",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 0,
-        "CommitteeLength": 0,
-        "CommitteesAtSlot": 0,
-        "ValidatorCommitteeIndex": 0,
-        "ValidatorSyncCommitteeIndices": null
+      "ExpectedError": "failed processing commit boost signing message: invalid pre-consensus message: wrong signing root",
+      "CBSigningDuty": {
+        "Request": {
+          "Root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+        },
+        "Duty": {
+          "Type": 7,
+          "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+          "Slot": "12",
+          "ValidatorIndex": "1",
+          "CommitteeIndex": 0,
+          "CommitteeLength": 0,
+          "CommitteesAtSlot": 0,
+          "ValidatorCommitteeIndex": 0,
+          "ValidatorSyncCommitteeIndices": null
+        }
       }
     },
     {

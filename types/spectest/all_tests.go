@@ -82,7 +82,7 @@ var AllTests = []SpecTest{
 
 	validatorconsensusdata.ValidatorRegistration(),
 	validatorconsensusdata.VoluntaryExit(),
-	validatorconsensusdata.Preconfirmation(),
+	validatorconsensusdata.CBSigning(),
 
 	consensusdataproposer.VersionedBlockValidation(),
 	consensusdataproposer.VersionedBlindedBlockValidation(),
@@ -112,7 +112,7 @@ var AllTests = []SpecTest{
 	duty.MapSyncCommitteeContribution(),
 	duty.MapValidatorRegistration(),
 	duty.MapVoluntaryExit(),
-	duty.MapPreconf(),
+	duty.MapCBSigning(),
 	duty.MapUnknownRole(),
 
 	beaconvote.BeaconVoteEncoding(),

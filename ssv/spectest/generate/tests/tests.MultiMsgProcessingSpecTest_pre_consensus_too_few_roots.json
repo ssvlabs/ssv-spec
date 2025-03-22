@@ -1535,7 +1535,7 @@
       }
     },
     {
-      "Name": "preconfirmation",
+      "Name": "commit boost signing",
       "Runner": {
         "BaseRunner": {
           "State": null,
@@ -1650,13 +1650,13 @@
       "Messages": [
         {
           "Signatures": [
-            "AEFPjzDEPD6Ns4xG5DOW8oZ+2R64ucFDvEYqUrdLTh/LgfW4yYRZZ4g/1u98sICTsf5MPHbTNz14p17KrSyZI5WFpfvjsXUlzkx/uc2swlfe89NF60YKHxPTnT4W9n80z6E/q6X483SirKzkUX9y5pA3rsq6rsi8h+Tf4CyOctNBUYUHqXRDFUzXY6J3VLndxF7vvvoeeOGK6Nmo/PIjiRgBzl/SLFuUSMJxPHpjfhUjQvLsBAr2Xw7Il7dCEFlCONatfYRBub/J1GA5teq1OSwvD78WBzF5yp+B87luqCsm89jlzlT0ILe8Lq8Up5AG2b6uGUPMz/KvZhZucG6cDQ=="
+            "YwTSSbGOc/zkMO9/Rmu6KzuXtrh+IUVySDhAGfKkGfWXJeNm9HIc1Mtuvspam7q1quxDwNVpOy0AAi7u2RIGjwq+Hs0aRKypBw2FGwsibAl5NnLFvtJNnynKIs0Iyyk4kYOgyBylLt1bFynoXsB2wwJD0+P/UVe724HNYEn2rH0kCkHrda9t/zlRkXkZwbDwF0bK3bL05BtgWATcdUOPTsrVnaB996gLbwJyfAv4RrPI0oEGWiZ06NKPcLHd899c+TOMs9sg42sg5aFf2h9IOHxQmm099eIyOED+Rn6vWcbWahohjEyPVtlcVtRch+/kV1GLvLYfu79GrzmOnj9Vuw=="
           ],
           "OperatorIDs": [
             1
           ],
           "SSVMessage": {
-            "MsgType": 1,
+            "MsgType": 2,
             "MsgID": [
               0,
               0,
@@ -1715,7 +1715,7 @@
               11,
               192
             ],
-            "Data": "BgAAAAAAAAAMAAAAAAAAABQAAAA="
+            "Data": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIkAAAABgAAAAAAAAAMAAAAAAAAABQAAAA="
           },
           "FullData": null
         }
@@ -1772,16 +1772,21 @@
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "invalid PartialSignatureMessages: no PartialSignatureMessages messages",
-      "ValidatorDuty": {
-        "Type": 7,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-        "Slot": "12",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 0,
-        "CommitteeLength": 0,
-        "CommitteesAtSlot": 0,
-        "ValidatorCommitteeIndex": 0,
-        "ValidatorSyncCommitteeIndices": null
+      "CBSigningDuty": {
+        "Request": {
+          "Root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+        },
+        "Duty": {
+          "Type": 7,
+          "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+          "Slot": "12",
+          "ValidatorIndex": "1",
+          "CommitteeIndex": 0,
+          "CommitteeLength": 0,
+          "CommitteesAtSlot": 0,
+          "ValidatorCommitteeIndex": 0,
+          "ValidatorSyncCommitteeIndices": null
+        }
       }
     },
     {

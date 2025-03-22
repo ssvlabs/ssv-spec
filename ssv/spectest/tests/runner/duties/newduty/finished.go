@@ -78,22 +78,22 @@ func Finished() tests.SpecTest {
 				},
 			},
 			{
-				Name:   "preconfirmation (same epoch)",
-				Runner: finishRunner(testingutils.CBSigningRunner(ks), &testingutils.TestingPreconfDuty, false),
-				// preconfirmation duty can be run again in the same epoch
-				Duty:      &testingutils.TestingPreconfDuty,
+				Name:   "commit boost signing (same epoch)",
+				Runner: finishRunner(testingutils.CBSigningRunner(ks), &testingutils.TestingCBSigningDuty, false),
+				// commit boost signing duty can be run again in the same epoch
+				Duty:      &testingutils.TestingCBSigningDuty,
 				Threshold: ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusCBSigningMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
 			{
-				Name:      "preconfirmation (next epoch)",
-				Runner:    finishRunner(testingutils.CBSigningRunner(ks), &testingutils.TestingPreconfDuty, false),
-				Duty:      &testingutils.TestingPreconfDutyNextEpoch,
+				Name:      "commit boost signing (next epoch)",
+				Runner:    finishRunner(testingutils.CBSigningRunner(ks), &testingutils.TestingCBSigningDuty, false),
+				Duty:      &testingutils.TestingCBSigningDutyNextEpoch,
 				Threshold: ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusPreconfNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusCBSigningNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
 		},

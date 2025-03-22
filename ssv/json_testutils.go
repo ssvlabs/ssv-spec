@@ -42,6 +42,7 @@ func (pcs *State) MarshalJSON() ([]byte, error) {
 		Finished               bool
 		ValidatorDuty          *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
 		CommitteeDuty          *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+		CBSigningDuty          *types.CBSigningDuty `json:"CBSigningDuty,omitempty"`
 	}
 
 	alias := &StateAlias{
@@ -57,6 +58,8 @@ func (pcs *State) MarshalJSON() ([]byte, error) {
 			alias.ValidatorDuty = validatorDuty
 		} else if committeeDuty, ok := pcs.StartingDuty.(*types.CommitteeDuty); ok {
 			alias.CommitteeDuty = committeeDuty
+		} else if cbSigningDuty, ok := pcs.StartingDuty.(*types.CBSigningDuty); ok {
+			alias.CBSigningDuty = cbSigningDuty
 		} else {
 			return nil, errors.New("can't marshal because BaseRunner.State.StartingDuty isn't ValidatorDuty or CommitteeDuty")
 		}

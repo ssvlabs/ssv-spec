@@ -110,8 +110,3 @@ type BeaconNode interface {
 	DomainCalls
 	VersionCalls
 }
-
-type PreconfSidecar interface {
-	GetNewRequest() (types.CBSigningRequest, error)
-	SubmitCommitment(requestRoot phase0.Root, signature phase0.BLSSignature) error
-}

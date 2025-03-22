@@ -1362,7 +1362,7 @@
       }
     },
     {
-      "Name": "preconfirmation (same epoch)",
+      "Name": "commit boost signing (same epoch)",
       "Runner": {
         "BaseRunner": {
           "State": {
@@ -1377,16 +1377,21 @@
             "RunningInstance": null,
             "DecidedValue": null,
             "Finished": true,
-            "ValidatorDuty": {
-              "Type": 7,
-              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-              "Slot": "12",
-              "ValidatorIndex": "1",
-              "CommitteeIndex": 0,
-              "CommitteeLength": 0,
-              "CommitteesAtSlot": 0,
-              "ValidatorCommitteeIndex": 0,
-              "ValidatorSyncCommitteeIndices": null
+            "CBSigningDuty": {
+              "Request": {
+                "Root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+              },
+              "Duty": {
+                "Type": 7,
+                "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+                "Slot": "12",
+                "ValidatorIndex": "1",
+                "CommitteeIndex": 0,
+                "CommitteeLength": 0,
+                "CommitteesAtSlot": 0,
+                "ValidatorCommitteeIndex": 0,
+                "ValidatorSyncCommitteeIndices": null
+              }
             }
           },
           "Share": {
@@ -1546,20 +1551,25 @@
         }
       ],
       "ExpectedError": "",
-      "ValidatorDuty": {
-        "Type": 7,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-        "Slot": "12",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 0,
-        "CommitteeLength": 0,
-        "CommitteesAtSlot": 0,
-        "ValidatorCommitteeIndex": 0,
-        "ValidatorSyncCommitteeIndices": null
+      "CBSigningDuty": {
+        "Request": {
+          "Root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+        },
+        "Duty": {
+          "Type": 7,
+          "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+          "Slot": "12",
+          "ValidatorIndex": "1",
+          "CommitteeIndex": 0,
+          "CommitteeLength": 0,
+          "CommitteesAtSlot": 0,
+          "ValidatorCommitteeIndex": 0,
+          "ValidatorSyncCommitteeIndices": null
+        }
       }
     },
     {
-      "Name": "preconfirmation (next epoch)",
+      "Name": "commit boost signing (next epoch)",
       "Runner": {
         "BaseRunner": {
           "State": {
@@ -1574,16 +1584,21 @@
             "RunningInstance": null,
             "DecidedValue": null,
             "Finished": true,
-            "ValidatorDuty": {
-              "Type": 7,
-              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-              "Slot": "12",
-              "ValidatorIndex": "1",
-              "CommitteeIndex": 0,
-              "CommitteeLength": 0,
-              "CommitteesAtSlot": 0,
-              "ValidatorCommitteeIndex": 0,
-              "ValidatorSyncCommitteeIndices": null
+            "CBSigningDuty": {
+              "Request": {
+                "Root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+              },
+              "Duty": {
+                "Type": 7,
+                "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+                "Slot": "12",
+                "ValidatorIndex": "1",
+                "CommitteeIndex": 0,
+                "CommitteeLength": 0,
+                "CommitteesAtSlot": 0,
+                "ValidatorCommitteeIndex": 0,
+                "ValidatorSyncCommitteeIndices": null
+              }
             }
           },
           "Share": {
@@ -1743,16 +1758,21 @@
         }
       ],
       "ExpectedError": "",
-      "ValidatorDuty": {
-        "Type": 7,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-        "Slot": "50",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 0,
-        "CommitteeLength": 0,
-        "CommitteesAtSlot": 0,
-        "ValidatorCommitteeIndex": 0,
-        "ValidatorSyncCommitteeIndices": null
+      "CBSigningDuty": {
+        "Request": {
+          "Root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+        },
+        "Duty": {
+          "Type": 7,
+          "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+          "Slot": "50",
+          "ValidatorIndex": "1",
+          "CommitteeIndex": 0,
+          "CommitteeLength": 0,
+          "CommitteesAtSlot": 0,
+          "ValidatorCommitteeIndex": 0,
+          "ValidatorSyncCommitteeIndices": null
+        }
       }
     },
     {
