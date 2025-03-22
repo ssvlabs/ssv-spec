@@ -20,5 +20,5 @@ package types
 //go:generate go install golang.org/x/tools/cmd/goimports@latest
 //go:generate goimports -w consensus_data_encoding.go
 
-//go:generate rm -f ./preconfirmation_encoding.go
-//go:generate go run github.com/ferranbt/fastssz/sszgen --path preconfirmation.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.24.0/spec/phase0
+//go:generate rm -f ./commit_boost_encoding.go
+//go:generate go run github.com/ferranbt/fastssz/sszgen --path commit_boost.go --include $GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.24.0/spec/phase0,./partial_sig_message.go,./signer.go,./operator.go --exclude-objs CBSigningDuty

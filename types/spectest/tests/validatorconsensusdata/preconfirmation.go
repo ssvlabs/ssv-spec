@@ -9,7 +9,7 @@ import (
 // Preconfirmation tests an invalid consensus data for preconfirmation (has no consensus data)
 func Preconfirmation() *ValidatorConsensusDataTest {
 
-	dataByts, err := testingutils.TestingPreconfRequest.MarshalSSZ()
+	dataByts, err := testingutils.TestingCBSigningRequest.MarshalSSZ()
 	if err != nil {
 		panic(err.Error())
 	}

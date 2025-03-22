@@ -6,7 +6,7 @@ import "github.com/ssvlabs/ssv-spec/types"
 func MapPreconf() *DutySpecTest {
 	return &DutySpecTest{
 		Name:       "map preconf role",
-		BeaconRole: types.BNRolePreconfirmation,
-		RunnerRole: types.RolePreconfirmation,
+		BeaconRole: types.BNRoleCBSigning,
+		RunnerRole: types.RoleCBSigning,
 	}
 }

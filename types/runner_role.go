@@ -12,7 +12,7 @@ const (
 	RoleValidatorRegistration
 	RoleVoluntaryExit
 
-	RolePreconfirmation
+	RoleCBSigning
 
 	RoleUnknown = -1
 )
@@ -32,8 +32,8 @@ func (r RunnerRole) String() string {
 		return "VALIDATOR_REGISTRATION_RUNNER"
 	case RoleVoluntaryExit:
 		return "VOLUNTARY_EXIT_RUNNER"
-	case RolePreconfirmation:
-		return "PRECONF_RUNNER"
+	case RoleCBSigning:
+		return "CB_SIGNING_RUNNER"
 	default:
 		return "UNDEFINED"
 	}

@@ -12,7 +12,7 @@ import (
 // ==================================================
 
 var SSVMsgPreconf = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RolePreconfirmation))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCBSigning))
 }
 
 // ==================================================
@@ -55,18 +55,18 @@ var PreconfMsg = func(
 	beacon := NewTestingBeaconNode()
 	d, _ := beacon.DomainData(TestingDutyEpoch, types.DomainCommitBoost)
 
-	signed, root, _ := signer.SignBeaconObject(TestingPreconfRequest, d,
+	signed, root, _ := signer.SignBeaconObject(TestingCBSigningRequest, d,
 		beaconSK.GetPublicKey().Serialize(),
 		types.DomainCommitBoost)
 	if wrongRoot {
-		signed, root, _ = signer.SignBeaconObject(TestingPreconfRequestWrong, d, beaconSK.GetPublicKey().Serialize(), types.DomainCommitBoost)
+		signed, root, _ = signer.SignBeaconObject(TestingCBSigningRequestWrong, d, beaconSK.GetPublicKey().Serialize(), types.DomainCommitBoost)
 	}
 	if wrongBeaconSig {
-		signed, root, _ = signer.SignBeaconObject(TestingPreconfRequest, d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainCommitBoost)
+		signed, root, _ = signer.SignBeaconObject(TestingCBSigningRequest, d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainCommitBoost)
 	}
 
 	msgs := types.PartialSignatureMessages{
-		Type:     types.PreconfPartialSig,
+		Type:     types.CBSigningPartialSig,
 		Slot:     slot,
 		Messages: []*types.PartialSignatureMessage{},
 	}

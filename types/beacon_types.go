@@ -51,7 +51,7 @@ const (
 	BNRoleValidatorRegistration
 	BNRoleVoluntaryExit
 
-	BNRolePreconfirmation
+	BNRoleCBSigning
 
 	BNRoleUnknown = math.MaxUint64
 )
@@ -73,7 +73,7 @@ func (r BeaconRole) String() string {
 		return "VALIDATOR_REGISTRATION"
 	case BNRoleVoluntaryExit:
 		return "VOLUNTARY_EXIT"
-	case BNRolePreconfirmation:
+	case BNRoleCBSigning:
 		return "PRECONFIRMATION"
 	default:
 		return "UNDEFINED"
@@ -121,8 +121,8 @@ func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
 		return RoleValidatorRegistration
 	case BNRoleVoluntaryExit:
 		return RoleVoluntaryExit
-	case BNRolePreconfirmation:
-		return RolePreconfirmation
+	case BNRoleCBSigning:
+		return RoleCBSigning
 	}
 	return RoleUnknown
 }

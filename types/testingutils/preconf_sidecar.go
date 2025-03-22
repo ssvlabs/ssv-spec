@@ -15,8 +15,8 @@ func NewTestingPreconfSidecar() *TestingPreconfSidecar {
 }
 
 // GetNewRequest returns a new preconf request
-func (sidecar *TestingPreconfSidecar) GetNewRequest() (types.PreconfRequest, error) {
-	request := types.PreconfRequest{
+func (sidecar *TestingPreconfSidecar) GetNewRequest() (types.CBSigningRequest, error) {
+	request := types.CBSigningRequest{
 		Root: TestingPreconfRoot,
 	}
 	return request, nil

@@ -53,8 +53,8 @@ var VoluntaryExitRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleVoluntaryExit, keySet)
 }
 
-var PreconfRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RolePreconfirmation, keySet)
+var CBSigningRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.RoleCBSigning, keySet)
 }
 
 var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
@@ -216,8 +216,8 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			km,
 			opSigner,
 		)
-	case types.RolePreconfirmation:
-		runner, err = ssv.NewPreconfRunner(
+	case types.RoleCBSigning:
+		runner, err = ssv.NewCBSigningRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			NewTestingBeaconNode(),
@@ -383,8 +383,8 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			km,
 			opSigner,
 		)
-	case types.RolePreconfirmation:
-		runner, err = ssv.NewPreconfRunner(
+	case types.RoleCBSigning:
+		runner, err = ssv.NewCBSigningRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			NewTestingBeaconNode(),
