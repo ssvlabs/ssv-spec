@@ -75,7 +75,7 @@ func PostFinish() tests.SpecTest {
 			{
 				Name: "preconfirmation",
 				Runner: finishRunner(
-					testingutils.PreconfRunner(ks),
+					testingutils.CBSigningRunner(ks),
 					&testingutils.TestingPreconfDuty,
 				),
 				Duty: &testingutils.TestingPreconfDuty,

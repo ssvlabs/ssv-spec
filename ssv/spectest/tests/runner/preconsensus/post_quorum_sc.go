@@ -120,7 +120,7 @@ func postQuorumPreconfSC() *comparable.StateComparison {
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
-			ret := testingutils.PreconfRunner(ks)
+			ret := testingutils.CBSigningRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),

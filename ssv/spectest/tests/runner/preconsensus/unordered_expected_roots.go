@@ -74,7 +74,7 @@ func UnorderedExpectedRoots() tests.SpecTest {
 			},
 			{
 				Name:   "preconfirmation",
-				Runner: testingutils.PreconfRunner(ks),
+				Runner: testingutils.CBSigningRunner(ks),
 				Duty:   &testingutils.TestingPreconfDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1))),

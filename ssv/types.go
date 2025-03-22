@@ -20,8 +20,8 @@ func (ci DutyRunners) DutyRunnerForMsgID(msgID types.MessageID) Runner {
 	return ci[role]
 }
 
-// PreconfRunners is a map of preconf runners mapped by request root.
-type PreconfRunners map[phase0.Root]Runner
+// CBSigningRunners is a map of commit-boost signing runners mapped by request root.
+type CBSigningRunners map[phase0.Root]CBSigningRunner
 
 // Network is the network interface for SSV
 type Network interface {
@@ -112,6 +112,6 @@ type BeaconNode interface {
 }
 
 type PreconfSidecar interface {
-	GetNewRequest() (types.PreconfRequest, error)
+	GetNewRequest() (types.CBSigningRequest, error)
 	SubmitCommitment(requestRoot phase0.Root, signature phase0.BLSSignature) error
 }

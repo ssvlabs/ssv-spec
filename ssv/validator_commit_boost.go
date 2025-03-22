@@ -7,59 +7,79 @@ import (
 )
 
 type ValidatorCommitBoost struct {
-	PreconfRunners  PreconfRunners
-	BeaconNetwork   types.BeaconNetwork
-	Network         Network
-	Beacon          BeaconNode
-	PreconfSidecar  PreconfSidecar
-	CommitteeMember *types.CommitteeMember
-	Share           *types.Share
-	Signer          types.BeaconSigner
-	OperatorSigner  *types.OperatorSigner
+	CBSigningRunners CBSigningRunners
+	BeaconNetwork    types.BeaconNetwork
+	Network          Network
+	Beacon           BeaconNode
+	CommitteeMember  *types.CommitteeMember
+	Share            *types.Share
+	Signer           types.BeaconSigner
+	OperatorSigner   *types.OperatorSigner
 }
 
 func NewValidatorCommitBoost(
 	beaconNetwork types.BeaconNetwork,
 	network Network,
 	beacon BeaconNode,
-	preconfSidecar PreconfSidecar,
 	committeeMember *types.CommitteeMember,
 	share *types.Share,
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
-	runners map[phase0.Root]Runner,
 ) *ValidatorCommitBoost {
 	return &ValidatorCommitBoost{
-		BeaconNetwork:   beaconNetwork,
-		PreconfRunners:  runners,
-		Network:         network,
-		Beacon:          beacon,
-		PreconfSidecar:  preconfSidecar,
-		Share:           share,
-		CommitteeMember: committeeMember,
-		Signer:          signer,
-		OperatorSigner:  operatorSigner,
+		BeaconNetwork:    beaconNetwork,
+		CBSigningRunners: make(CBSigningRunners),
+		Network:          network,
+		Beacon:           beacon,
+		Share:            share,
+		CommitteeMember:  committeeMember,
+		Signer:           signer,
+		OperatorSigner:   operatorSigner,
 	}
 }
 
+func (v *ValidatorCommitBoost) HandleRequestSignature(keyType string, pubkey types.ValidatorPK, objectRoot phase0.Root) (phase0.BLSSignature, error) {
+	// Proxy key is not supported currently
+	if keyType != "consensus" {
+		return phase0.BLSSignature{}, errors.New("invalid key type")
+	}
+
+	if pubkey != v.Share.ValidatorPubKey {
+		return phase0.BLSSignature{}, errors.New("invalid pubkey")
+	}
+
+	err := v.StartDuty(types.CBSigningRequest{
+		Root: objectRoot,
+	})
+	if err != nil {
+		return phase0.BLSSignature{}, errors.Wrap(err, "failed to start duty")
+	}
+
+	dutyRunner, exist := v.CBSigningRunners[objectRoot]
+	if !exist {
+		return phase0.BLSSignature{}, errors.Errorf("could not get duty runner for request %s", objectRoot.String())
+	}
+	sig := dutyRunner.GetSignature()
+
+	return sig, nil
+}
+
 // StartDuty starts a preconf duty for a validator given a signing request
-func (v *ValidatorCommitBoost) StartDuty(request types.PreconfRequest) error {
-	_, exist := v.PreconfRunners[request.Root]
+func (v *ValidatorCommitBoost) StartDuty(request types.CBSigningRequest) error {
+	_, exist := v.CBSigningRunners[request.Root]
 	if exist {
 		return errors.Errorf("duty runner for request %s already exists", request.Root.String())
 	}
 	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
 	shareMap[v.Share.ValidatorIndex] = v.Share
-	dutyRunner, err := NewPreconfRunner(v.BeaconNetwork, shareMap, v.Beacon, v.PreconfSidecar, v.Network, v.Signer, v.OperatorSigner)
+	dutyRunner, err := NewCBSigningRunner(v.BeaconNetwork, shareMap, v.Beacon, v.Network, v.Signer, v.OperatorSigner)
 	if err != nil {
 		return errors.Wrap(err, "failed to create new preconf runner")
 	}
-	v.PreconfRunners[request.Root] = dutyRunner
-	var signingDuty = types.ValidatorDuty{
-		Type:           types.BNRolePreconfirmation,
-		PubKey:         phase0.BLSPubKey(v.Share.ValidatorPubKey),
-		Slot:           v.BeaconNetwork.EstimatedCurrentSlot(), //TODO: check if this is correct
-		ValidatorIndex: v.Share.ValidatorIndex,
+	v.CBSigningRunners[request.Root] = *dutyRunner
+	var signingDuty = types.CBSigningDuty{
+		Request: request,
+		Slot:    v.BeaconNetwork.EstimatedCurrentSlot(),
 	}
 	return dutyRunner.StartNewDuty(&signingDuty, v.CommitteeMember.GetQuorum())
 }
@@ -86,9 +106,9 @@ func (v *ValidatorCommitBoost) ProcessMessage(signedSSVMessage *types.SignedSSVM
 	requestRoot := cbPartialSigMsg.RequestRoot
 
 	// Get runner
-	dutyRunner := v.PreconfRunners[requestRoot]
-	if dutyRunner == nil {
-		return errors.Errorf("could not get duty runner for msg ID")
+	dutyRunner, exist := v.CBSigningRunners[requestRoot]
+	if !exist {
+		return errors.Errorf("could not get duty runner for request %s", requestRoot.String())
 	}
 
 	// Validate message for runner

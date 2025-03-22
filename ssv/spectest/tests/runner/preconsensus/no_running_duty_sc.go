@@ -47,7 +47,7 @@ func noRunningDutyPreconfSC() *comparable.StateComparison {
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
-			return testingutils.PreconfRunner(ks)
+			return testingutils.CBSigningRunner(ks)
 		}(),
 	}
 }

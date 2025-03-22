@@ -91,7 +91,7 @@ func InvalidSignedMessageNoSigners() tests.SpecTest {
 			},
 			{
 				Name:   "preconfirmation",
-				Runner: testingutils.PreconfRunner(ks),
+				Runner: testingutils.CBSigningRunner(ks),
 				Duty:   &testingutils.TestingPreconfDuty,
 				Messages: []*types.SignedSSVMessage{
 					noSigners(testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgPreconf(nil, testingutils.PreConsensusPreconfMsg(ks.Shares[1], 1)))),

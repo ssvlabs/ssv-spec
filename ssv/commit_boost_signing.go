@@ -9,60 +9,59 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-type PreconfRunner struct {
+type CBSigningRunner struct {
 	BaseRunner *BaseRunner
 
 	beacon         BeaconNode
-	preconf        PreconfSidecar
 	network        Network
 	signer         types.BeaconSigner
 	operatorSigner *types.OperatorSigner
 	valCheck       qbft.ProposedValueCheckF
 
 	requestRoot phase0.Root
+	requestSig  chan phase0.BLSSignature
 }
 
-func NewPreconfRunner(
+func NewCBSigningRunner(
 	beaconNetwork types.BeaconNetwork,
 	share map[phase0.ValidatorIndex]*types.Share,
 	beacon BeaconNode,
-	preconf PreconfSidecar,
 	network Network,
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
-) (Runner, error) {
+) (*CBSigningRunner, error) {
 
 	if len(share) != 1 {
 		return nil, errors.New("must have one share")
 	}
 
-	return &PreconfRunner{
+	return &CBSigningRunner{
 		BaseRunner: &BaseRunner{
-			RunnerRoleType: types.RolePreconfirmation,
+			RunnerRoleType: types.RoleCBSigning,
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
 		},
 
 		beacon:         beacon,
-		preconf:        preconf,
 		network:        network,
 		signer:         signer,
 		operatorSigner: operatorSigner,
 		requestRoot:    phase0.Root{},
+		requestSig:     make(chan phase0.BLSSignature, 1),
 	}, nil
 }
 
-func (r *PreconfRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
+func (r *CBSigningRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	r.BaseRunner.baseSetupForNewDuty(duty, quorum)
 	return r.executeDuty(duty)
 }
 
 // HasRunningDuty returns true if a duty is already running (StartNewDuty called and returned nil)
-func (r *PreconfRunner) HasRunningDuty() bool {
+func (r *CBSigningRunner) HasRunningDuty() bool {
 	return r.BaseRunner.hasRunningDuty()
 }
 
-func (r *PreconfRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
+func (r *CBSigningRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
 	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing preconfirmation message")
@@ -83,43 +82,42 @@ func (r *PreconfRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMes
 	specSig := phase0.BLSSignature{}
 	copy(specSig[:], fullSig)
 
-	if err := r.GetPreconfSidecar().SubmitCommitment(r.requestRoot, specSig); err != nil {
-		return errors.Wrap(err, "could not submit to commitment to sidecar")
-	}
+	r.requestSig <- specSig
 
 	r.GetState().Finished = true
 	r.requestRoot = phase0.Root{}
 	return nil
 }
 
-func (r *PreconfRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
+func (r *CBSigningRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
 	return errors.New("no consensus phase for preconfirmation")
 }
 
-func (r *PreconfRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
+func (r *CBSigningRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
 	return errors.New("no post consensus phase for preconfirmation")
 }
 
-func (r *PreconfRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *CBSigningRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	if r.BaseRunner.State == nil || r.BaseRunner.State.StartingDuty == nil || r.requestRoot == (phase0.Root{}) {
-		return nil, types.DomainError, errors.New("no running duty or preconf request")
+		return nil, types.DomainError, errors.New("no running duty or commit-boost signing request")
 	}
-	preconfRequest := types.PreconfRequest{
+	CBSigningRequest := types.CBSigningRequest{
 		Root: r.requestRoot,
 	}
-	return []ssz.HashRoot{&preconfRequest}, types.DomainCommitBoost, nil
+	return []ssz.HashRoot{&CBSigningRequest}, types.DomainCommitBoost, nil
 }
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *PreconfRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *CBSigningRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	return nil, [4]byte{}, errors.New("no post consensus roots for preconfirmation")
 }
 
-func (r *PreconfRunner) executeDuty(duty types.Duty) error {
-	request, err := r.GetPreconfSidecar().GetNewRequest()
-	if err != nil {
-		return errors.Wrap(err, "failed to get preconf request")
+func (r *CBSigningRunner) executeDuty(duty types.Duty) error {
+	cbSigningDuty, ok := duty.(*types.CBSigningDuty)
+	if !ok {
+		return errors.New("duty is not a CBSigningDuty")
 	}
+	request := cbSigningDuty.Request
 
 	r.requestRoot = request.Root
 
@@ -131,7 +129,7 @@ func (r *PreconfRunner) executeDuty(duty types.Duty) error {
 	}
 
 	preConsensusMsg := &types.PartialSignatureMessages{
-		Type:     types.PreconfPartialSig,
+		Type:     types.CBSigningPartialSig,
 		Slot:     duty.DutySlot(),
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
@@ -171,23 +169,19 @@ func (r *PreconfRunner) executeDuty(duty types.Duty) error {
 	return nil
 }
 
-func (r *PreconfRunner) GetBaseRunner() *BaseRunner {
+func (r *CBSigningRunner) GetBaseRunner() *BaseRunner {
 	return r.BaseRunner
 }
 
-func (r *PreconfRunner) GetNetwork() Network {
+func (r *CBSigningRunner) GetNetwork() Network {
 	return r.network
 }
 
-func (r *PreconfRunner) GetBeaconNode() BeaconNode {
+func (r *CBSigningRunner) GetBeaconNode() BeaconNode {
 	return r.beacon
 }
 
-func (r *PreconfRunner) GetPreconfSidecar() PreconfSidecar {
-	return r.preconf
-}
-
-func (r *PreconfRunner) GetShare() *types.Share {
+func (r *CBSigningRunner) GetShare() *types.Share {
 	// there is only one share
 	for _, share := range r.BaseRunner.Share {
 		return share
@@ -195,18 +189,22 @@ func (r *PreconfRunner) GetShare() *types.Share {
 	return nil
 }
 
-func (r *PreconfRunner) GetState() *State {
+func (r *CBSigningRunner) GetState() *State {
 	return r.BaseRunner.State
 }
 
-func (r *PreconfRunner) GetValCheckF() qbft.ProposedValueCheckF {
+func (r *CBSigningRunner) GetValCheckF() qbft.ProposedValueCheckF {
 	return r.valCheck
 }
 
-func (r *PreconfRunner) GetSigner() types.BeaconSigner {
+func (r *CBSigningRunner) GetSigner() types.BeaconSigner {
 	return r.signer
 }
 
-func (r *PreconfRunner) GetOperatorSigner() *types.OperatorSigner {
+func (r *CBSigningRunner) GetOperatorSigner() *types.OperatorSigner {
 	return r.operatorSigner
+}
+
+func (r *CBSigningRunner) GetSignature() phase0.BLSSignature {
+	return <-r.requestSig
 }
