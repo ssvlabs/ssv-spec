@@ -875,7 +875,7 @@
       "OutputMessages": [],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": true,
-      "ExpectedError": "failed processing commit boost signing message: invalid pre-consensus message: no running duty",
+      "ExpectedError": "could not get duty runner for request 0x0102030405060708090a0102030405060708090a0102030405060708090a0102",
       "CBSigningDuty": {
         "Request": {
           "Root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"

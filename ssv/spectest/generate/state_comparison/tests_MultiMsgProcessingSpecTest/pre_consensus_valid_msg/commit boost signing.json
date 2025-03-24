@@ -1,35 +1,6 @@
 {
   "BaseRunner": {
-    "State": {
-      "PreConsensusContainer": {
-        "Signatures": {
-          "1": {
-            "9639224bd092b8339238bea8c68f1b11641b575c2ec52da6bc4fd5f9e0fe1f0c": {
-              "1": "lYLCZa2vr6NKWA3jLfucu54TdFufEtsa9pbNieRjHrb88v9DxP+bCUEB7BXh5m6/BpkMCyDRM4oVDSex3Pd0SjSutQ24iL+ZHOEfVUVLJo1sLXryrKmRvT+GCyBTF0IP"
-            }
-          }
-        },
-        "Quorum": 3
-      },
-      "PostConsensusContainer": {
-        "Signatures": {},
-        "Quorum": 3
-      },
-      "RunningInstance": null,
-      "DecidedValue": null,
-      "Finished": false,
-      "ValidatorDuty": {
-        "Type": 7,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-        "Slot": "12",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 0,
-        "CommitteeLength": 0,
-        "CommitteesAtSlot": 0,
-        "ValidatorCommitteeIndex": 0,
-        "ValidatorSyncCommitteeIndices": null
-      }
-    },
+    "State": null,
     "Share": {
       "1": {
         "ValidatorIndex": "1",

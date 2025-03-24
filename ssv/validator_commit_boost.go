@@ -84,7 +84,7 @@ func (v *ValidatorCommitBoost) StartDuty(duty types.CBSigningDuty) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to create new commit-boost signing runner")
 	}
-	v.CBSigningRunners[duty.Request.Root] = *dutyRunner
+	v.CBSigningRunners[duty.Request.Root] = dutyRunner
 	return dutyRunner.StartNewDuty(duty, v.CommitteeMember.GetQuorum())
 }
 

@@ -198,6 +198,16 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 			panic("cant unmarshal beacon duty")
 		}
 		testDuty = duty
+	} else if _, ok := m["CBSigningDuty"]; ok {
+		byts, err := json.Marshal(m["CBSigningDuty"])
+		if err != nil {
+			panic("cant marshal cb signing duty")
+		}
+		duty := &types.CBSigningDuty{}
+		err = json.Unmarshal(byts, duty)
+		if err != nil {
+			panic("cant unmarshal cb signing duty")
+		}
 	} else {
 		panic("no beacon or committee duty")
 	}
@@ -264,6 +274,16 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 			panic("cant unmarshal beacon duty")
 		}
 		testDuty = duty
+	} else if _, ok := m["CBSigningDuty"]; ok {
+		byts, err := json.Marshal(m["CBSigningDuty"])
+		if err != nil {
+			panic("cant marshal cb signing duty")
+		}
+		duty := &types.CBSigningDuty{}
+		err = json.Unmarshal(byts, duty)
+		if err != nil {
+			panic("cant unmarshal cb signing duty")
+		}
 	} else {
 		panic("no beacon or committee duty")
 	}

@@ -134,7 +134,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusCBSigningMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "no post consensus phase for commit boost signing",
+				ExpectedError: "no post consensus phase for commit-boost signing",
 			},
 		},
 	}

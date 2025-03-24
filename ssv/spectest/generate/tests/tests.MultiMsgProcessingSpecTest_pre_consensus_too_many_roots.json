@@ -1771,7 +1771,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "failed processing commit boost signing message: invalid pre-consensus message: wrong expected roots count",
+      "ExpectedError": "failed processing commit-boost signing message: invalid pre-consensus message: wrong expected roots count",
       "CBSigningDuty": {
         "Request": {
           "Root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"

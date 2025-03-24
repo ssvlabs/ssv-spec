@@ -1,37 +1,6 @@
 {
   "BaseRunner": {
-    "State": {
-      "PreConsensusContainer": {
-        "Signatures": {
-          "1": {
-            "9639224bd092b8339238bea8c68f1b11641b575c2ec52da6bc4fd5f9e0fe1f0c": {
-              "1": "lYLCZa2vr6NKWA3jLfucu54TdFufEtsa9pbNieRjHrb88v9DxP+bCUEB7BXh5m6/BpkMCyDRM4oVDSex3Pd0SjSutQ24iL+ZHOEfVUVLJo1sLXryrKmRvT+GCyBTF0IP",
-              "2": "rfNIm+iCmWDA0pDoXtaftqVx7akgf773xBnHlLkHtbkenc8swOG7JTuSdhWjKLFYAdVcB635yWneETOfEWaCt80vGuBKMPMA6vqQz9A2IE7NGF2H8T20IPrja0D4iOhC",
-              "3": "izSlvI3+SxJd1M/xTECL8QumtH0//wqhrUQl0X0C/nySj8MWgFdVHf6f8BeGgf+bDfvVn7Fofncvf7z2jbnB5a+Bsb6dQMNAK6R2yJ1vIYUZOUGeVaujHCETr7g1sugq"
-            }
-          }
-        },
-        "Quorum": 3
-      },
-      "PostConsensusContainer": {
-        "Signatures": {},
-        "Quorum": 3
-      },
-      "RunningInstance": null,
-      "DecidedValue": null,
-      "Finished": true,
-      "ValidatorDuty": {
-        "Type": 7,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-        "Slot": "12",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 0,
-        "CommitteeLength": 0,
-        "CommitteesAtSlot": 0,
-        "ValidatorCommitteeIndex": 0,
-        "ValidatorSyncCommitteeIndices": null
-      }
-    },
+    "State": null,
     "Share": {
       "1": {
         "ValidatorIndex": "1",

@@ -1,39 +1,6 @@
 {
   "BaseRunner": {
-    "State": {
-      "PreConsensusContainer": {
-        "Signatures": {
-          "1": {
-            "9639224bd092b8339238bea8c68f1b11641b575c2ec52da6bc4fd5f9e0fe1f0c": {
-              "1": "ou1imJbnza/rdKvzzqyDwtBezhnpHBPaW9YyT8pAipTdS8lUws0/FOAKm4q0IyLqEUZuZfOw4qUHLMYjo6k6tQvg1bcpizz1EhHOkYM9YcL3KK78WZS4+f8Zv9NKnA96",
-              "2": "rJOu9ONiqmfCmVdHKqNnSOV5nOIgbhtQPEOcZKS76GyUGE1lgJyItjAgL9rFtGy+BwTMXCUp79ObFfPrbNXtX6IMIulJXjjW3xh2Iky+CJjLCleG/EK67rSkIDsGH66L",
-              "3": "gLMiL9Hg+7Y5wJPt1soYKG/+o5AcyxSRlRNt5gNlNKFr35yQaK/TelxSpQK61pusEUgjYuigq5/xwAOjAv92n3OSVGjIVGalOvFWpOrooTVoLtAkd8dRezqqtSQsmcut",
-              "4": "kY7WtjQ1X/T8LrMVTd4BG5YZ0DTvn2naSQjTGDJ6SROUp2KpLuZf9VafG87zd0F+ApVeKTtl0pUn8I9Qz5Q3dDleUk6SKTdrCwAu0DPNWFPchJJ20jNbYGF1T9k0GhHH",
-              "5": "uP3gmuN3NwsSs+4nGeK62UK6SZ7nDuahvzApgzkkW5dBpoQRNSoSEySm2x+HxdVSC4qMtJSLfnl+9AO//N/lRJ7Kp+W8CpZCdtEVwmK9XJNunf08LxhQMz/9tMJySNFr"
-            }
-          }
-        },
-        "Quorum": 5
-      },
-      "PostConsensusContainer": {
-        "Signatures": {},
-        "Quorum": 5
-      },
-      "RunningInstance": null,
-      "DecidedValue": null,
-      "Finished": true,
-      "ValidatorDuty": {
-        "Type": 7,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-        "Slot": "12",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 0,
-        "CommitteeLength": 0,
-        "CommitteesAtSlot": 0,
-        "ValidatorCommitteeIndex": 0,
-        "ValidatorSyncCommitteeIndices": null
-      }
-    },
+    "State": null,
     "Share": {
       "1": {
         "ValidatorIndex": "1",

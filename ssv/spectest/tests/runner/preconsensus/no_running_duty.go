@@ -67,7 +67,7 @@ func NoRunningDuty() tests.SpecTest {
 				PostDutyRunnerState:     noRunningDutyCBSigningSC().ExpectedState,
 				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing commit boost signing message: invalid pre-consensus message: no running duty",
+				ExpectedError:           fmt.Sprintf("could not get duty runner for request %s", testingutils.TestingCBSigningRequest.Root),
 			},
 		},
 	}

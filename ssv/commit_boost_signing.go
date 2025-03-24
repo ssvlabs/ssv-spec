@@ -85,7 +85,6 @@ func (r *CBSigningRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureM
 	r.requestSig <- specSig
 
 	r.GetState().Finished = true
-	r.requestRoot = phase0.Root{}
 	return nil
 }
 
@@ -116,15 +115,19 @@ func (r *CBSigningRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot,
 }
 
 func (r *CBSigningRunner) executeDuty(duty types.Duty) error {
-	cbSigningDuty, ok := duty.(*types.CBSigningDuty)
-	if !ok {
+	cbSigningDuty := types.CBSigningDuty{}
+	if cb, ok := duty.(*types.CBSigningDuty); ok {
+		cbSigningDuty = *cb
+	} else if cb, ok := duty.(types.CBSigningDuty); ok {
+		cbSigningDuty = cb
+	} else {
 		return errors.New("duty is not a CBSigningDuty")
 	}
 	request := cbSigningDuty.Request
 
 	r.requestRoot = request.Root
 
-	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.ValidatorDuty), &request,
+	msg, err := r.BaseRunner.signBeaconObject(r, &cbSigningDuty.Duty, &request,
 		duty.DutySlot(),
 		types.DomainCommitBoost)
 	if err != nil {

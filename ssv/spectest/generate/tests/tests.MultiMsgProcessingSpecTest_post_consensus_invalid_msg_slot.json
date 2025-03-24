@@ -2799,7 +2799,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "no post consensus phase for commit boost signing",
+      "ExpectedError": "no post consensus phase for commit-boost signing",
       "CBSigningDuty": {
         "Request": {
           "Root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"

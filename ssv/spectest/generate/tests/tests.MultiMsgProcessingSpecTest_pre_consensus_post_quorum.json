@@ -1993,7 +1993,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "failed processing commit boost signing message: invalid pre-consensus message: no running duty",
+      "ExpectedError": "failed processing commit-boost signing message: invalid pre-consensus message: no running duty",
       "CBSigningDuty": {
         "Request": {
           "Root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"

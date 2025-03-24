@@ -14,14 +14,14 @@ import (
 // DutyRunners is a map of duty runners mapped by msg id hex.
 type DutyRunners map[types.RunnerRole]Runner
 
-// DutyRunnerForMsgID returns a Runner from the provided msg ID, or nil if not found
+// DutyRunnerForMsgID returns a Runner from the provided msg ID, or nil if not foundS
 func (ci DutyRunners) DutyRunnerForMsgID(msgID types.MessageID) Runner {
 	role := msgID.GetRoleType()
 	return ci[role]
 }
 
 // CBSigningRunners is a map of commit-boost signing runners mapped by request root.
-type CBSigningRunners map[phase0.Root]CBSigningRunner
+type CBSigningRunners map[phase0.Root]*CBSigningRunner
 
 // Network is the network interface for SSV
 type Network interface {

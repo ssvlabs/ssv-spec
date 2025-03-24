@@ -88,7 +88,7 @@ func PostQuorum() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusCBSigningMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing commit boost signing message: invalid pre-consensus message: no running duty",
+				ExpectedError: "failed processing commit-boost signing message: invalid pre-consensus message: no running duty",
 			},
 		},
 	}

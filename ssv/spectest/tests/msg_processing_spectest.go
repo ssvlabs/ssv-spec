@@ -64,6 +64,8 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 		network = runnerInstance.GetNetwork().(*testingutils.TestingNetwork)
 		beaconNetwork = runnerInstance.GetBeaconNode().(*testingutils.TestingBeaconNode)
 		committee = c.CommitteeMember.Committee
+	case *ssv.CBSigningRunner:
+
 	default:
 		network = v.Network.(*testingutils.TestingNetwork)
 		committee = v.CommitteeMember.Committee
@@ -138,10 +140,17 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 		}
 
 	case *ssv.CBSigningRunner:
+		v = testingutils.BaseValidator(testingutils.KeySetForShare(share))
+		v.DutyRunners[test.Runner.GetBaseRunner().RunnerRoleType] = test.Runner
+		v.Network = test.Runner.GetNetwork()
+
 		cb = testingutils.BaseValidatorCommitBoost(testingutils.KeySetForShare(share))
 
 		if !test.DontStartDuty {
-			duty := test.Duty.(*types.CBSigningDuty)
+			duty, ok := test.Duty.(*types.CBSigningDuty)
+			if !ok {
+				panic("duty is not CBSigningDuty")
+			}
 			lastErr = cb.StartDuty(*duty)
 		}
 		for _, msg := range test.Messages {
@@ -269,8 +278,10 @@ func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
 			alias.CommitteeDuty = committeeDuty
 		} else if cbSigningDuty, ok := t.Duty.(*types.CBSigningDuty); ok {
 			alias.CBSigningDuty = cbSigningDuty
+		} else if cbSigningDuty, ok := t.Duty.(types.CBSigningDuty); ok {
+			alias.CBSigningDuty = &cbSigningDuty
 		} else {
-			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't ValidatorDuty or CommitteeDuty")
+			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't ValidatorDuty, CommitteeDuty, or CBSigningDuty")
 		}
 	}
 	byts, err := json.Marshal(alias)
@@ -302,6 +313,10 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 		t.Duty = aux.ValidatorDuty
 	} else if aux.CommitteeDuty != nil {
 		t.Duty = aux.CommitteeDuty
+	} else if aux.CBSigningDuty != nil {
+		t.Duty = aux.CBSigningDuty
+	} else {
+		return errors.New("can't unmarshal StartNewRunnerDutySpecTest because t.Duty isn't ValidatorDuty, CommitteeDuty, or CBSigningDuty")
 	}
 
 	return nil
