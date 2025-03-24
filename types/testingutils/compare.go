@@ -14,10 +14,21 @@ import (
 func filterPartialSigs(messages []*types.SSVMessage) []*types.SSVMessage {
 	ret := make([]*types.SSVMessage, 0)
 	for _, msg := range messages {
-		if msg.MsgType != types.SSVPartialSignatureMsgType {
-			continue
+		if msg.MsgType == types.SSVPartialSignatureMsgType {
+			ret = append(ret, msg)
+		} else if msg.MsgType == types.CommitBoostPartialSignatureMsgType {
+			CBMsg := &types.CBPartialSignatures{}
+			CBMsg.Decode(msg.Data)
+			partialSigMsg, err := CBMsg.PartialSig.Encode()
+			if err != nil {
+				panic(err)
+			}
+			ret = append(ret, &types.SSVMessage{
+				MsgType: types.SSVPartialSignatureMsgType,
+				MsgID:   msg.MsgID,
+				Data:    partialSigMsg,
+			})
 		}
-		ret = append(ret, msg)
 	}
 	return ret
 }

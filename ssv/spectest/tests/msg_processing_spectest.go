@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"log"
 	"os"
 	"reflect"
 	"testing"
@@ -43,7 +44,7 @@ func (test *MsgProcessingSpecTest) TestName() string {
 
 // RunAsPartOfMultiTest runs the test as part of a MultiMsgProcessingSpecTest
 func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
-	v, c, lastErr := test.runPreTesting()
+	v, c, cb, lastErr := test.runPreTesting()
 
 	if len(test.ExpectedError) != 0 {
 		require.EqualError(t, lastErr, test.ExpectedError)
@@ -65,7 +66,9 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 		beaconNetwork = runnerInstance.GetBeaconNode().(*testingutils.TestingBeaconNode)
 		committee = c.CommitteeMember.Committee
 	case *ssv.CBSigningRunner:
-
+		network = cb.Network.(*testingutils.TestingNetwork)
+		committee = cb.CommitteeMember.Committee
+		beaconNetwork = test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode)
 	default:
 		network = v.Network.(*testingutils.TestingNetwork)
 		committee = v.CommitteeMember.Committee
@@ -93,7 +96,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	test.RunAsPartOfMultiTest(t)
 }
 
-func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committee, error) {
+func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committee, *ssv.ValidatorCommitBoost, error) {
 	var share *types.Share
 	ketSetMap := make(map[phase0.ValidatorIndex]*testingutils.TestKeySet)
 	if len(test.Runner.GetBaseRunner().Share) == 0 {
@@ -140,16 +143,15 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 		}
 
 	case *ssv.CBSigningRunner:
-		v = testingutils.BaseValidator(testingutils.KeySetForShare(share))
-		v.DutyRunners[test.Runner.GetBaseRunner().RunnerRoleType] = test.Runner
-		v.Network = test.Runner.GetNetwork()
 
 		cb = testingutils.BaseValidatorCommitBoost(testingutils.KeySetForShare(share))
 
 		if !test.DontStartDuty {
 			duty, ok := test.Duty.(*types.CBSigningDuty)
 			if !ok {
-				panic("duty is not CBSigningDuty")
+				log.Printf("name: %v", test.Name)
+				log.Printf("duty: %v", test.Duty)
+				panic("duty is not a CBSigningDuty")
 			}
 			lastErr = cb.StartDuty(*duty)
 		}
@@ -176,7 +178,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 		}
 	}
 
-	return v, c, lastErr
+	return v, c, cb, lastErr
 }
 
 // IsQBFTProposalMessage checks if the message is a QBFT proposal message
@@ -231,7 +233,7 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 }
 
 func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
-	_, _, lastErr := test.runPreTesting()
+	_, _, _, lastErr := test.runPreTesting()
 	if lastErr != nil && len(test.ExpectedError) == 0 {
 		return nil, lastErr
 	}
