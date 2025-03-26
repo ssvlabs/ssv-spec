@@ -47,3 +47,11 @@ func (d CBSigningDuty) DutySlot() phase0.Slot {
 func (d CBSigningDuty) RunnerRole() RunnerRole {
 	return RoleCBSigning
 }
+
+func (d CBSigningDuty) Encode() ([]byte, error) {
+	return d.MarshalSSZ()
+}
+
+func (d *CBSigningDuty) Decode(data []byte) error {
+	return d.UnmarshalSSZ(data)
+}

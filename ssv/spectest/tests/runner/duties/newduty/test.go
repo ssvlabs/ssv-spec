@@ -55,12 +55,18 @@ func (test *StartNewRunnerDutySpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	if len(broadcastedMsgs) > 0 {
 		index := 0
 		for _, msg := range broadcastedMsgs {
-			if msg.MsgType != types.SSVPartialSignatureMsgType {
+			msg1 := &types.PartialSignatureMessages{}
+			switch msg.MsgType {
+			case types.SSVPartialSignatureMsgType:
+				require.NoError(t, msg1.Decode(msg.Data))
+			case types.CommitBoostPartialSignatureMsgType:
+				CBMsg := &types.CBPartialSignatures{}
+				require.NoError(t, CBMsg.Decode(msg.Data))
+				msg1 = &CBMsg.PartialSig
+			default:
 				continue
 			}
 
-			msg1 := &types.PartialSignatureMessages{}
-			require.NoError(t, msg1.Decode(msg.Data))
 			msg2 := test.OutputMessages[index]
 			require.Len(t, msg1.Messages, len(msg2.Messages))
 

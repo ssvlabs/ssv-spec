@@ -208,6 +208,7 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 		if err != nil {
 			panic("cant unmarshal cb signing duty")
 		}
+		testDuty = duty
 	} else {
 		panic("no beacon or committee duty")
 	}
@@ -284,6 +285,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		if err != nil {
 			panic("cant unmarshal cb signing duty")
 		}
+		testDuty = duty
 	} else {
 		panic("no beacon or committee duty")
 	}
@@ -363,6 +365,13 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 		err = getDecoder().Decode(&committeeDuty)
 		if err == nil {
 			inputs = append(inputs, committeeDuty)
+			continue
+		}
+
+		cbSigningDuty := &types.CBSigningDuty{}
+		err = getDecoder().Decode(&cbSigningDuty)
+		if err == nil {
+			inputs = append(inputs, cbSigningDuty)
 			continue
 		}
 

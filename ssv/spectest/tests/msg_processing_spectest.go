@@ -4,7 +4,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"log"
 	"os"
 	"reflect"
 	"testing"
@@ -149,8 +148,6 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 		if !test.DontStartDuty {
 			duty, ok := test.Duty.(*types.CBSigningDuty)
 			if !ok {
-				log.Printf("name: %v", test.Name)
-				log.Printf("duty: %v", test.Duty)
 				panic("duty is not a CBSigningDuty")
 			}
 			lastErr = cb.StartDuty(*duty)
