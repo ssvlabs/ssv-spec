@@ -3,15 +3,16 @@ package comparable
 import (
 	"encoding/json"
 	"fmt"
-	spec2 "github.com/attestantio/go-eth2-client/spec"
-	"github.com/bloxapp/ssv-spec/types"
-	ssz "github.com/ferranbt/fastssz"
-	"github.com/google/go-cmp/cmp"
-	"github.com/stretchr/testify/require"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	spec2 "github.com/attestantio/go-eth2-client/spec"
+	ssz "github.com/ferranbt/fastssz"
+	"github.com/google/go-cmp/cmp"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/stretchr/testify/require"
 )
 
 func NoErrorEncoding(obj ssz.Marshaler) []byte {
@@ -25,13 +26,13 @@ func NoErrorEncoding(obj ssz.Marshaler) []byte {
 // FixIssue178 fixes consensus data fields which are nil instead of empty slice
 // If we change the fields in ssv_msgs.go it will break a lot of roots, we're slowly fixing them
 // SHOULD BE REMOVED once all tests are fixes
-// see https://github.com/bloxapp/ssv-spec/issues/178
-func FixIssue178(input *types.ConsensusData, version spec2.DataVersion) *types.ConsensusData {
+// see https://github.com/ssvlabs/ssv-spec/issues/178
+func FixIssue178(input *types.ValidatorConsensusData, version spec2.DataVersion) *types.ValidatorConsensusData {
 	byts, err := input.Encode()
 	if err != nil {
 		panic(err.Error())
 	}
-	ret := &types.ConsensusData{}
+	ret := &types.ValidatorConsensusData{}
 	if err := ret.Decode(byts); err != nil {
 		panic(err.Error())
 	}
@@ -46,7 +47,8 @@ func UnmarshalStateComparison[T types.Root](basedir string, testName string, tes
 	basedir = filepath.Join(basedir, "generate")
 	scDir := GetSCDir(basedir, testType)
 	path := filepath.Join(scDir, fmt.Sprintf("%s.json", testName))
-	byteValue, err := os.ReadFile(path)
+
+	byteValue, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
 		return nilT, err
 	}
@@ -64,7 +66,7 @@ func readStateComparison(basedir string, testName string, testType string) (map[
 	basedir = filepath.Join(basedir, "generate")
 	scDir := GetSCDir(basedir, testType)
 	path := filepath.Join(scDir, fmt.Sprintf("%s.json", testName))
-	byteValue, err := os.ReadFile(path)
+	byteValue, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
 		return nil, err
 	}

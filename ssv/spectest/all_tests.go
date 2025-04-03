@@ -1,19 +1,22 @@
 package spectest
 
 import (
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/dutyexe"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/partialsigcontainer"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/consensus"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/postconsensus"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/runner/preconsensus"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck/valcheckproposer"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	committeemultipleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/multipleduty"
+	committeesingleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/singleduty"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/dutyexe"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/consensus"
+	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/postconsensus"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/preconsensus"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckproposer"
 )
 
 var AllTests = []tests.TestF{
@@ -27,7 +30,7 @@ var AllTests = []tests.TestF{
 	postconsensus.PostFinish,
 	postconsensus.NoRunningDuty,
 	postconsensus.InvalidMessageSignature,
-	postconsensus.InvalidBeaconSignature,
+	postconsensus.InvalidBeaconSignatureInQuorum,
 	postconsensus.DuplicateMsgDifferentRoots,
 	postconsensus.DuplicateMsgDifferentRootsThenQuorum,
 	postconsensus.DuplicateMsg,
@@ -35,6 +38,7 @@ var AllTests = []tests.TestF{
 	postconsensus.PreDecided,
 	postconsensus.PostQuorum,
 	postconsensus.InvalidMessage,
+	postconsensus.InvalidOperatorSignature,
 	postconsensus.InvalidMessageSlot,
 	postconsensus.ValidMessage,
 	postconsensus.ValidMessage7Operators,
@@ -46,6 +50,19 @@ var AllTests = []tests.TestF{
 	postconsensus.Quorum13Operators,
 	postconsensus.InvalidDecidedValue,
 	postconsensus.InvalidThenQuorum,
+	postconsensus.InvalidQuorumThenValidQuorum,
+	postconsensus.InconsistentOperatorSigner,
+	postconsensus.NilSSVMessage,
+	postconsensus.InvalidValidatorIndex,
+	postconsensus.InvalidValidatorIndexQuorum,
+	postconsensus.InvalidAndValidValidatorIndexesQuorum,
+	postconsensus.PartialInvalidRootQuorumThenValidQuorum,
+	postconsensus.PartialInvalidSigQuorumThenValidQuorum,
+	postconsensus.MixedCommittees,
+	postconsensus.InvalidSignedMessageNoSignature,
+	postconsensus.InvalidSignedMessageEmptySignature,
+	postconsensus.InvalidSignedMessageDifferentLength,
+	postconsensus.InvalidSignedMessageNoSigners,
 
 	newduty.ConsensusNotStarted,
 	newduty.NotDecided,
@@ -59,6 +76,27 @@ var AllTests = []tests.TestF{
 	newduty.DuplicateDutyNotFinished,
 	newduty.FirstHeight,
 
+	committeesingleduty.StartDuty,
+	committeesingleduty.StartNoDuty,
+	committeesingleduty.ValidBeaconVote,
+	committeesingleduty.WrongBeaconVote,
+	committeesingleduty.Decided,
+	committeesingleduty.HappyFlow,
+	committeesingleduty.PastMessageDutyNotFinished,
+	committeesingleduty.PastMessageDutyFinished,
+	committeesingleduty.PastMessageDutyDoesNotExist,
+	committeesingleduty.ProposalWithConsensusData,
+	committeesingleduty.WrongMessageID,
+	committeesingleduty.StartWithNoSharesForDuty,
+	committeesingleduty.MissingSomeShares,
+
+	committeemultipleduty.SequencedDecidedDuties,
+	committeemultipleduty.SequencedHappyFlowDuties,
+	committeemultipleduty.ShuffledDecidedDuties,
+	committeemultipleduty.ShuffledHappyFlowDutiesWithTheSameValidators,
+	committeemultipleduty.ShuffledHappyFlowDutiesWithDifferentValidators,
+	committeemultipleduty.FailedThanSuccessfulDuties,
+
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
 	consensus.InvalidDecidedValue,
@@ -71,6 +109,15 @@ var AllTests = []tests.TestF{
 	consensus.ValidDecided10Operators,
 	consensus.ValidDecided13Operators,
 	consensus.ValidMessage,
+	consensus.InvalidSignature,
+	consensus.DecidedSlashableAttestation,
+	consensus.NoSigners,
+	consensus.NonUniqueSigners,
+	consensus.ZeroSigner,
+	consensus.NoSignatures,
+	consensus.EmptySignature,
+	consensus.SignersAndSignaturesWithDifferentLength,
+	consensus.NilSSVMessage,
 
 	synccommitteeaggregator.SomeAggregatorQuorum,
 	synccommitteeaggregator.NoneAggregatorQuorum,
@@ -81,38 +128,12 @@ var AllTests = []tests.TestF{
 	proposer.BlindedRunnerAcceptsNormalBlock,
 	proposer.NormalProposerAcceptsBlindedBlock,
 
-	// pre_consensus_justifications.PastSlot,
-	// pre_consensus_justifications.InvalidData,
-	// pre_consensus_justifications.FutureHeight,
-	// pre_consensus_justifications.PastHeight,
-	// pre_consensus_justifications.InvalidMsgType,
-	// pre_consensus_justifications.WrongBeaconRole,
-	// pre_consensus_justifications.InvalidConsensusData,
-	// pre_consensus_justifications.InvalidSlot,
-	// pre_consensus_justifications.UnknownSigner,
-	// pre_consensus_justifications.InvalidJustificationSignature,
-	// pre_consensus_justifications.DuplicateJustificationSigner,
-	// pre_consensus_justifications.DuplicateRoots,
-	// pre_consensus_justifications.InconsistentRootCount,
-	// pre_consensus_justifications.InconsistentRoots,
-	// pre_consensus_justifications.InvalidJustification,
-	// pre_consensus_justifications.MissingQuorum,
-	// pre_consensus_justifications.DecidedInstance,
-	// pre_consensus_justifications.ExistingValidPreConsensus,
-	// pre_consensus_justifications.Valid,
-	// pre_consensus_justifications.Valid7Operators,
-	// pre_consensus_justifications.Valid10Operators,
-	// pre_consensus_justifications.Valid13Operators,
-	// pre_consensus_justifications.ValidFirstHeight,
-	// pre_consensus_justifications.ValidNoRunningDuty,
-	// pre_consensus_justifications.ValidRoundChangeMsg,
-	// pre_consensus_justifications.HappyFlow,
-
 	preconsensus.NoRunningDuty,
 	preconsensus.TooFewRoots,
 	preconsensus.TooManyRoots,
 	preconsensus.UnorderedExpectedRoots,
 	preconsensus.InvalidSignedMessage,
+	preconsensus.InvalidOperatorSignature,
 	preconsensus.InvalidExpectedRoot,
 	preconsensus.DuplicateMsg,
 	preconsensus.DuplicateMsgDifferentRoots,
@@ -130,21 +151,31 @@ var AllTests = []tests.TestF{
 	preconsensus.ValidMessage13Operators,
 	preconsensus.InconsistentBeaconSigner,
 	preconsensus.UnknownSigner,
-	preconsensus.InvalidBeaconSignature,
+	preconsensus.InvalidBeaconSignatureInQuorum,
 	preconsensus.InvalidMessageSignature,
 	preconsensus.InvalidThenQuorum,
+	preconsensus.InvalidQuorumThenValidQuorum,
+	preconsensus.InconsistentOperatorSigner,
+	preconsensus.NilSSVMessage,
+	preconsensus.InvalidSignedMessageNoSigners,
+	preconsensus.InvalidSignedMessageNoSignatures,
+	preconsensus.InvalidSignedMessageEmptySignature,
+	preconsensus.InvalidSignedMessageDifferentLength,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,
 	valcheckduty.WrongDutyType,
 	valcheckduty.FarFutureDutySlot,
+
 	valcheckattestations.Slashable,
 	valcheckattestations.SourceHigherThanTarget,
 	valcheckattestations.FarFutureTarget,
-	valcheckattestations.CommitteeIndexMismatch,
-	valcheckattestations.SlotMismatch,
-	valcheckattestations.ConsensusDataNil,
+	valcheckattestations.BeaconVoteDataNil,
 	valcheckattestations.Valid,
+	valcheckattestations.MinoritySlashable,
+	valcheckattestations.MajoritySlashable,
+	valcheckattestations.ValidNonSlashableSlot,
+
 	valcheckproposer.BlindedBlock,
 
 	dutyexe.WrongDutyRole,
@@ -154,4 +185,8 @@ var AllTests = []tests.TestF{
 	partialsigcontainer.Duplicate,
 	partialsigcontainer.DuplicateQuorum,
 	partialsigcontainer.Invalid,
+
+	runnerconstruction.OneShare,
+	runnerconstruction.NoShares,
+	runnerconstruction.ManyShares,
 }

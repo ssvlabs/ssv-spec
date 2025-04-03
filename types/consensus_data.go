@@ -4,9 +4,11 @@ import (
 	"github.com/attestantio/go-eth2-client/api"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
 	apiv1deneb "github.com/attestantio/go-eth2-client/api/v1/deneb"
+	apiv1electra "github.com/attestantio/go-eth2-client/api/v1/electra"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
+	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -69,7 +71,7 @@ func (c *Contributions) UnmarshalSSZ(buf []byte) error {
 func (c *Contributions) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	dst = buf
 	if size := len(*c); size > 13 {
-		return nil, ssz.ErrListTooBigFn("ConsensusData.SyncCommitteeContribution", size, 13)
+		return nil, ssz.ErrListTooBigFn("ValidatorConsensusData.SyncCommitteeContribution", size, 13)
 	}
 
 	offset := 4 * len(*c)
@@ -101,40 +103,39 @@ func (c Contributions) SizeSSZ() int {
 	return size
 }
 
-// ConsensusData holds all relevant duty and data Decided on by consensus
-type ConsensusData struct {
+// BeaconVote is used as the data to be agreed on consensus for the CommitteeRunner
+type BeaconVote struct {
+	BlockRoot phase0.Root `ssz-size:"32"`
+	Source    *phase0.Checkpoint
+	Target    *phase0.Checkpoint
+}
+
+// Encode the BeaconVote object
+func (b *BeaconVote) Encode() ([]byte, error) {
+	return b.MarshalSSZ()
+}
+
+// Decode the BeaconVote object
+func (b *BeaconVote) Decode(data []byte) error {
+	return b.UnmarshalSSZ(data)
+}
+
+// ValidatorConsensusData holds all relevant duty and data Decided on by consensus
+type ValidatorConsensusData struct {
 	// Duty max size is
-	// 			8 + 48 + 6*8 + 13*8 = 208 ~= 2^8
-	Duty    Duty
+	// 			8 + 48 + 6*8 + 13*8 + 1 = 209
+	Duty    ValidatorDuty
 	Version spec.DataVersion
-	// PreConsensusJustifications max size is
-	//			13*SignedPartialSignatureMessage(2^16) ~= 2^20
-	PreConsensusJustifications []*SignedPartialSignatureMessage `ssz-max:"13"`
-	// DataSSZ has max size as following
-	// Biggest object is a Deneb.BlockContents with:
-	// - KZGProofs: 6 * 48 = 288
-	// - Blobs: 6 * 131072 = 786432
-	// - A BeaconBlock: 2*32+2*8 + BeaconBlockBody
-	// BeaconBlockBody is
-	//			96 + ETH1Data(2*32+8) + 32 +
-	//			16*ProposerSlashing(2*SignedBeaconBlockHeader(96 + 3*32 + 2*8)) +
-	//			2*AttesterSlashing(2*IndexedAttestation(2048 + 96 + AttestationData(2*8 + 32 + 2*(8+32)))) +
-	//			128*Attestation(2048 + 96 + AttestationData(2*8 + 32 + 2*(8+32))) +
-	//			16*Deposit(33*32 + 48 + 32 + 8 + 96) +
-	//			16*SignedVoluntaryExit(96 + 2*8) +
-	//			SyncAggregate(64 + 96) +
-	//			ExecutionPayload(32 + 20 + 2*32 + 256 + 32 + 4*8 + 3*32 + 1048576*1073741824 + 16 * (2*8 + 20 + 8) + 8 + 8) +
-	//			BLSToExecutionChanges(16 * (96 + (8 + 48 + 20))) +
-	//			KZGCommitment(4096 * 48)
-	// = 1315964 (everything but transactions) + 2^50 (transaction list)
+	// DataSSZ's max size if the size of the biggest object Deneb.BlockContents.
+	// Per definition, Deneb.BlockContents has a field for transaction of size 2^50.
 	// We do not need to support such a big DataSSZ size as 2^50 represents 1000X the actual block gas limit
 	// Upcoming 40M gas limit produces 40M / 16 (call data cost) = 2,500,000 bytes (https://eips.ethereum.org/EIPS/eip-4488)
-	// Adding to the rest of the data, we have: 1,315,964 + 2,500,000  = 3,815,964 bytes ~<= 2^22
 	// Explanation on why transaction sizes are so big https://github.com/ethereum/consensus-specs/pull/2686
+	// Adding to the rest of the data (see script below), we have: 3,291,849 + 2,500,000  = 5,791,849 bytes ~<= 2^23
 	// Python script for Deneb.BlockContents without transactions:
 	// 		# Constants
-	// 		KZG_PROOFS_SIZE = 6 * 48  # KZGProofs size
-	// 		BLOBS_SIZE = 6 * 131072  # Blobs size
+	// 		KZG_PROOFS_SIZE = 9 * 48  # KZGProofs size
+	// 		BLOBS_SIZE = 9 * 131072  # Blobs size
 	// 		BEACON_BLOCK_OVERHEAD = 2 * 32 + 2 * 8  # Additional overhead for BeaconBlock
 	// 		# Components of BeaconBlockBody
 	// 		ETH1_DATA_SIZE = 96 + 2 * 32 + 8 + 32  # ETH1Data
@@ -147,28 +148,23 @@ type ConsensusData struct {
 	// 		EXECUTION_PAYLOAD_NO_TRANSACTIONS = 32 + 20 + 2*32 + 256 + 32 + 4*8 + 3*32 + 16 * (2*8 + 20 + 8) + 8 + 8
 	// 		BLS_TO_EXECUTION_CHANGES_SIZE = 16 * (96 + (8 + 48 + 20))  # BLSToExecutionChanges
 	// 		KZG_COMMITMENT_SIZE = 4096 * 48  # KZGCommitment
+	//		EXECUTION_REQUESTS_SIZE = (1 + 8192 * (1 + 48 + 32 + 8 + 96 + 8)) + (1 + 16 * (1 + 20 + 48 + 8)) + (1 + 2 * (1 + 20 +  48 + 48)) # Deposits + Withdrawls + Consolidations
 	// 		# BeaconBlockBody total size without transactions
 	// 		beacon_block_body_size_without_transactions = (
 	// 		    ETH1_DATA_SIZE + PROPOSER_SLASHING_SIZE + ATTESTER_SLASHING_SIZE +
 	// 		    ATTESTATION_SIZE + DEPOSIT_SIZE + SIGNED_VOLUNTARY_EXIT_SIZE +
-	// 		    SYNC_AGGREGATE_SIZE + EXECUTION_PAYLOAD_NO_TRANSACTIONS + BLS_TO_EXECUTION_CHANGES_SIZE + KZG_COMMITMENT_SIZE
+	// 		    SYNC_AGGREGATE_SIZE + EXECUTION_PAYLOAD_NO_TRANSACTIONS + BLS_TO_EXECUTION_CHANGES_SIZE + KZG_COMMITMENT_SIZE + EXECUTION_REQUESTS_SIZE
 	// 		)
 	// 		# Total size of Deneb.BlockContents and BeaconBlock without transactions
 	// 		total_size_without_execution_payload = KZG_PROOFS_SIZE + BLOBS_SIZE + BEACON_BLOCK_OVERHEAD + beacon_block_body_size_without_transactions
-	DataSSZ []byte `ssz-max:"4194304"` // 2^22
+	//		print(total_size_without_execution_payload)
+	DataSSZ []byte `ssz-max:"8388608"` // 2^23 to account for potential gas limit increases
 }
 
-func (cid *ConsensusData) Validate() error {
+func (cid *ValidatorConsensusData) Validate() error {
 	switch cid.Duty.Type {
-	case BNRoleAttester:
-		if _, err := cid.GetAttestationData(); err != nil {
-			return err
-		}
-		if len(cid.PreConsensusJustifications) > 0 {
-			return errors.New("attester invalid justifications")
-		}
 	case BNRoleAggregator:
-		if _, err := cid.GetAggregateAndProof(); err != nil {
+		if _, _, err := cid.GetAggregateAndProof(); err != nil {
 			return err
 		}
 	case BNRoleProposer:
@@ -182,14 +178,6 @@ func (cid *ConsensusData) Validate() error {
 		if err1 == nil && err2 == nil {
 			return errors.New("no beacon data")
 		}
-	case BNRoleSyncCommittee:
-		if len(cid.PreConsensusJustifications) > 0 {
-			return errors.New("sync committee invalid justifications")
-		}
-		if _, err := cid.GetSyncCommitteeBlockRoot(); err != nil {
-			return err
-		}
-		return nil
 	case BNRoleSyncCommitteeContribution:
 		if _, err := cid.GetSyncCommitteeContributions(); err != nil {
 			return err
@@ -204,16 +192,8 @@ func (cid *ConsensusData) Validate() error {
 	return nil
 }
 
-func (ci *ConsensusData) GetAttestationData() (*phase0.AttestationData, error) {
-	ret := &phase0.AttestationData{}
-	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-		return nil, errors.Wrap(err, "could not unmarshal ssz")
-	}
-	return ret, nil
-}
-
 // GetBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
-func (ci *ConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot ssz.HashRoot, err error) {
+func (ci *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot ssz.HashRoot, err error) {
 	switch ci.Version {
 	case spec.DataVersionCapella:
 		ret := &capella.BeaconBlock{}
@@ -227,13 +207,19 @@ func (ci *ConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
 		return &api.VersionedProposal{Deneb: ret, Version: ci.Version}, ret.Block, nil
+	case spec.DataVersionElectra:
+		ret := &apiv1electra.BlockContents{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return &api.VersionedProposal{Electra: ret, Version: ci.Version}, ret.Block, nil
 	default:
 		return nil, nil, errors.Errorf("unknown block version %s", ci.Version.String())
 	}
 }
 
 // GetBlindedBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
-func (ci *ConsensusData) GetBlindedBlockData() (*api.VersionedBlindedProposal, ssz.HashRoot, error) {
+func (ci *ValidatorConsensusData) GetBlindedBlockData() (*api.VersionedBlindedProposal, ssz.HashRoot, error) {
 	switch ci.Version {
 	case spec.DataVersionCapella:
 		ret := &apiv1capella.BlindedBeaconBlock{}
@@ -247,28 +233,74 @@ func (ci *ConsensusData) GetBlindedBlockData() (*api.VersionedBlindedProposal, s
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
 		return &api.VersionedBlindedProposal{Deneb: ret, Version: ci.Version}, ret, nil
+	case spec.DataVersionElectra:
+		ret := &apiv1electra.BlindedBeaconBlock{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+		return &api.VersionedBlindedProposal{Electra: ret, Version: ci.Version}, ret, nil
 	default:
 		return nil, nil, errors.Errorf("unknown blinded block version %s", ci.Version.String())
 	}
 }
 
-func (ci *ConsensusData) GetAggregateAndProof() (*phase0.AggregateAndProof, error) {
-	ret := &phase0.AggregateAndProof{}
-	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-		return nil, errors.Wrap(err, "could not unmarshal ssz")
+func (ci *ValidatorConsensusData) GetAggregateAndProof() (*spec.VersionedAggregateAndProof, ssz.HashRoot, error) {
+
+	switch ci.Version {
+	case spec.DataVersionPhase0:
+		ret := &phase0.AggregateAndProof{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+
+		return &spec.VersionedAggregateAndProof{Version: ci.Version, Phase0: ret}, ret, nil
+
+	case spec.DataVersionAltair:
+		ret := &phase0.AggregateAndProof{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+
+		return &spec.VersionedAggregateAndProof{Version: ci.Version, Altair: ret}, ret, nil
+
+	case spec.DataVersionBellatrix:
+		ret := &phase0.AggregateAndProof{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+
+		return &spec.VersionedAggregateAndProof{Version: ci.Version, Bellatrix: ret}, ret, nil
+
+	case spec.DataVersionCapella:
+		ret := &phase0.AggregateAndProof{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+
+		return &spec.VersionedAggregateAndProof{Version: ci.Version, Capella: ret}, ret, nil
+
+	case spec.DataVersionDeneb:
+		ret := &phase0.AggregateAndProof{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+
+		return &spec.VersionedAggregateAndProof{Version: ci.Version, Deneb: ret}, ret, nil
+
+	case spec.DataVersionElectra:
+		ret := &electra.AggregateAndProof{}
+		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
+
+		return &spec.VersionedAggregateAndProof{Version: ci.Version, Electra: ret}, ret, nil
+
+	default:
+		return nil, nil, errors.New("unknown version for aggregate and proof")
 	}
-	return ret, nil
 }
 
-func (ci *ConsensusData) GetSyncCommitteeBlockRoot() (phase0.Root, error) {
-	ret := SSZ32Bytes{}
-	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-		return phase0.Root{}, errors.Wrap(err, "could not unmarshal ssz")
-	}
-	return phase0.Root(ret), nil
-}
-
-func (ci *ConsensusData) GetSyncCommitteeContributions() (Contributions, error) {
+func (ci *ValidatorConsensusData) GetSyncCommitteeContributions() (Contributions, error) {
 	ret := Contributions{}
 	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
 		return nil, errors.Wrap(err, "could not unmarshal ssz")
@@ -276,10 +308,10 @@ func (ci *ConsensusData) GetSyncCommitteeContributions() (Contributions, error) 
 	return ret, nil
 }
 
-func (cid *ConsensusData) Encode() ([]byte, error) {
+func (cid *ValidatorConsensusData) Encode() ([]byte, error) {
 	return cid.MarshalSSZ()
 }
 
-func (cid *ConsensusData) Decode(data []byte) error {
+func (cid *ValidatorConsensusData) Decode(data []byte) error {
 	return cid.UnmarshalSSZ(data)
 }

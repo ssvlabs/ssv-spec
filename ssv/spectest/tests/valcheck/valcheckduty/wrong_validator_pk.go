@@ -5,16 +5,16 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // WrongValidatorPK tests duty.PubKey wrong
 func WrongValidatorPK() tests.SpecTest {
-	consensusDataBytsF := func(cd *types.ConsensusData) []byte {
-		cdCopy := &types.ConsensusData{}
+	consensusDataBytsF := func(cd *types.ValidatorConsensusData) []byte {
+		cdCopy := &types.ValidatorConsensusData{}
 		b, _ := json.Marshal(cd)
 		if err := json.Unmarshal(b, cdCopy); err != nil {
 			panic(err.Error())
@@ -30,38 +30,38 @@ func WrongValidatorPK() tests.SpecTest {
 		Name: "wrong validator PK",
 		Tests: []*valcheck.SpecTest{
 			{
+				Name:       "committee",
+				Network:    types.BeaconTestNetwork,
+				RunnerRole: types.RoleCommittee,
+				Input:      testingutils.TestBeaconVoteByts,
+				// No error since input doesn't contain validator public key
+			},
+			{
 				Name:          "sync committee aggregator",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleSyncCommitteeContribution,
+				RunnerRole:    types.RoleSyncCommitteeContribution,
 				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
 				ExpectedError: expectedErr,
 			},
 			{
-				Name:          "sync committee",
+				Name:          "aggregator phase0",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleSyncCommittee,
-				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeConsensusData),
+				RunnerRole:    types.RoleAggregator,
+				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
 				ExpectedError: expectedErr,
 			},
 			{
-				Name:          "aggregator",
+				Name:          "aggregator electra",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleAggregator,
-				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData),
+				RunnerRole:    types.RoleAggregator,
+				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionElectra)),
 				ExpectedError: expectedErr,
 			},
 			{
 				Name:          "proposer",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleProposer,
+				RunnerRole:    types.RoleProposer,
 				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
-				ExpectedError: expectedErr,
-			},
-			{
-				Name:          "attester",
-				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleAttester,
-				Input:         consensusDataBytsF(testingutils.TestAttesterConsensusData),
 				ExpectedError: expectedErr,
 			},
 		},

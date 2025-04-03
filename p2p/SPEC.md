@@ -151,10 +151,8 @@ message SSVMessage {
 enum MsgType {
   // consensus/QBFT messages
   Consensus              = 0;
-  // sync messages
-  Sync                   = 1;
   // partial signatures sent post consensus
-  Signature = 2;
+  Signature = 1;
 }
 ```
 
@@ -179,225 +177,9 @@ More information regarding the protocol can be found in [iBFT annotated paper (B
 ### Message Structure
 
 Messages structure and more information can be found in 
-[ssv-spec/types](https://github.com/bloxapp/ssv-spec/blob/main/types/messages.go).
+[ssv-spec/types](https://github.com/ssvlabs/ssv-spec/blob/main/types/messages.go).
 
 ---
-
-## Sync Protocols
-
-There are several sync protocols, 
-tha main purpose is to enable operator nodes to sync past decided message or to catch up with round changes.
-
-In order to participate in some validator's consensus, a peer will first use sync protocols to align on past information.
-
-Sync is done over streams as pubsub is not suitable in this case due to several reasons such as:
-- API nature is request/response, unlike broadcasting in consensus messages
-- Bandwidth - only one peer (usually) needs the data, it would be a waste to send redundant messages across the network.
-
-### Message Structure
-
-`SyncMessage` structure is used by all sync protocols, the type of message is specified in a dedicated field:
-
-
-<details>
-  <summary><b>protobuf</b></summary>
-
-  ```protobuf
-  syntax = "proto3";
-
-  message SyncMessage {
-    // protocol is the type of sync message
-    string protocol       = 1;
-    // params holds the requests parameters
-    repeated bytes params = 3;
-    // data holds the results
-    repeated bytes data   = 4;
-    // status code of the operation
-    uint32 status_code  = 5;
-  }
-  
-  enum StatusCode {
-    Success = 0;
-    // no results were found
-    NotFound = 1;
-    // failed due to bad request
-    BadRequest = 2;
-    // failed due to internal error
-    InternalError = 3;
-    // limits were exceeded
-    Backoff = 4;
-  }
-  ```
-</details>
-
-A successful response message usually includes a list of results in `data` field:
-```
-{
-  "protocol": "<protocol>",
-  "data": [ ... ],
-  "statusCode": 0,
-}
-```
-
-An error response has an empty `data` field, and the `statusCode` field 
-contains the actual error code (see protobuf enum above):
-```
-{
-  "protocol": "<protocol>",
-  "data": [],
-  "statusCode": 1, // not found
-}
-```
-
-### Protocols
-
-SSV nodes use the following stream protocols:
-
-### 1. Highest Decided
-
-This protocol is used by a node to find out what is the highest decided message for a specific QBFT instance.
-All the nodes in the network should support this protocol.
-
-`/ssv/sync/decided/highest/0.0.1`
-
-<details>
-  <summary>examples</summary>
-
-Request:
-  ```json
-  {
-    "protocol": "/ssv/sync/decided/highest/0.0.1",
-    "identifier": "...",
-  }
-  ```
-
-Response:
-  ```json
-  {
-    "protocol": "/ssv/sync/decided/highest/0.0.1",
-    "identifier": "...",
-    "statusCode": 0,
-    "data": [
-      {
-        "message": {
-          "type": 3,
-          "round": 1,
-          "identifier": "...",
-          "height": 7943,
-          "value": "Xmcg...sPM="
-        },
-        "signature": "g5y....7Dv",
-        "signer_ids": [1,2,4]
-      }
-    ]
-  }
-  ```
-</details>
-
-### 2. Decided History
-
-This protocol enables to sync historical decided messages in some specific range.
-
-The request should specify the desired range, while the response will include all 
-the found messages for that range.
-
-**NOTE** that this protocol is optional. by default nodes won't save history,
-only those who turn on the corresponding flag will support this protocol.
-
-`/ssv/sync/decided/history/0.0.1`
-
-<details>
-  <summary>examples</summary>
-
-Request:
-  ```json
-  {
-    "protocol": "/ssv/sync/decided/history/0.0.1",
-    "identifier": "...",
-    "params": ["1200", "1225"]
-  }
-  ```
-
-Response:
-  ```json
-{
-  "protocol": "/ssv/sync/decided/history/0.0.1",
-  "identifier": "...",
-  "params": ["1200", "1225"]
-  "statusCode": 0,
-  "data": [{
-      "message": {
-        "type": 3,
-        "round": 1,
-        "identifier": "...",
-        "height": 1200,
-        "value": "Xmcg...sPM="
-      },
-      "signature": "g5y....7Dv",
-      "signer_ids": [1,2,4]
-    },
-    // ... 1201-1224
-    {
-      "message": {
-        "type": 3,
-        "round": 1,
-        "identifier": "...",
-        "height": 1225,
-        "value": "Xmcg...sPM="
-      },
-      "signature": "g5y....7Dv",
-      "signer_ids": [1,2,4]
-    }
-  ]
-}
-  ```
-</details>
-
-### 3. Last Change Round
-
-This protocol enables a node to catch up with change round messages.
-All the nodes in the network should support this protocol.
-
-`/ssv/sync/last_change_round/0.0.1`
-
-<details>
-  <summary>examples</summary>
-
-Request:
-  ```json
-  {
-    "protocol": "/ssv/sync/decided/history/0.0.1",
-    "identifier": "...",
-    "params": ["7554"]
-  }
-  ```
-
-Response:
-  ```json
-  {
-    "protocol": "/ssv/sync/decided/history/0.0.1",
-    "identifier": "...",
-    "params": ["7554"],
-    "statusCode": 0,
-    "data": [
-      {
-        "message": {
-          "type": 4,
-          "round": 6,
-          "identifier": "...",
-          "seq_number": 7554,
-          "value": "Xmcg...sPM="
-        },
-        "signature": "g5y....7Dv",
-        "signer_ids": [1]
-      }
-    ]
-  }
-  ```
-</details>
-
----
-
 
 ## Handshake Protocol
 
@@ -514,18 +296,15 @@ of all the committees in the subnets they participate.
 that should store the last decided message of each committee in the network.
 Having such redundancy of decided messages helps to maintain the multiple states (per validator) across the network.
 
-**Validators Mapping**
+**Committee Mapping**
 
-Validator's public key is mapped to a subnet using a hash function,
-which helps to distribute validators across subnets in a balanced, distributed way:
+The committee ID is a hash of the operators IDs.
+This helps to distribute committees across subnets in a balanced, distributed way:
 
-`hash(validatiorPubKey) % num_of_subnets`
+`committee_id % num_of_subnets`
 
 Deterministic mapping is ensured as long as the number of subnets doesn't change,
 therefore it's a fixed number.
-
-A dynamic number of subnets (e.g. `log(numOfValidators)`) was also considered,
-but requires consistent hashing technics that can be investigated if we need so in the future.
 
 <br />
 

@@ -1,6 +1,6 @@
 package messages
 
-import "github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+import "github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 
 // CreateCommit tests creating a commit msg
 func CreateCommit() tests.SpecTest {
@@ -9,6 +9,6 @@ func CreateCommit() tests.SpecTest {
 		Name:         "create commit",
 		Value:        [32]byte{1, 2, 3, 4},
 		Round:        10,
-		ExpectedRoot: "0834b51f3c87d4aba362d7e2eeb4172d22e0ef18d4dfadd37e8c9ceb62c7719d",
+		ExpectedRoot: "22763e542ac1faba4c01c9aefee5b96dc23889c1fb079e46e00a13c9fcc367c7",
 	}
 }

@@ -3,12 +3,12 @@ package postconsensus
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
-	ssvcomparable "github.com/bloxapp/ssv-spec/ssv/spectest/comparable"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv"
+	ssvcomparable "github.com/ssvlabs/ssv-spec/ssv/spectest/comparable"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 // duplicateMsgDifferentRootsSyncCommitteeContributionSC returns state comparison object for the DuplicateMsgDifferentRoots SyncCommitteeContribution versioned spec test
@@ -24,21 +24,21 @@ func duplicateMsgDifferentRootsSyncCommitteeContributionSC() *comparable.StateCo
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{
-						testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
+					[]*types.SignedSSVMessage{
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
 					},
 				),
-				DecidedValue: cd,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -47,139 +47,7 @@ func duplicateMsgDifferentRootsSyncCommitteeContributionSC() *comparable.StateCo
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
-			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-
-			return ret
-		}(),
-	}
-}
-
-// duplicateMsgDifferentRootsSyncCommitteeSC returns state comparison object for the DuplicateMsgDifferentRoots SyncCommittee versioned spec test
-// it ignores the invalid duplicate message and doesn't insert it to the container
-func duplicateMsgDifferentRootsSyncCommitteeSC() *comparable.StateComparison {
-	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestSyncCommitteeConsensusData
-	cdBytes := testingutils.TestSyncCommitteeConsensusDataByts
-
-	return &comparable.StateComparison{
-		ExpectedState: func() ssv.Runner {
-			ret := testingutils.SyncCommitteeRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{
-						testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
-					},
-				),
-				DecidedValue: cd,
-				StartingDuty: &cd.Duty,
-				Finished:     false,
-			}
-			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
-					ID:                ret.GetBaseRunner().QBFTController.Identifier,
-					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
-					LastPreparedRound: qbft.NoRound,
-					Decided:           true,
-					DecidedValue:      cdBytes,
-				},
-			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
-			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-
-			return ret
-		}(),
-	}
-}
-
-// duplicateMsgDifferentRootsAggregatorSC returns state comparison object for the DuplicateMsgDifferentRoots Aggregator versioned spec test
-// it ignores the invalid duplicate message and doesn't insert it to the container
-func duplicateMsgDifferentRootsAggregatorSC() *comparable.StateComparison {
-	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestAggregatorConsensusData
-	cdBytes := testingutils.TestAggregatorConsensusDataByts
-
-	return &comparable.StateComparison{
-		ExpectedState: func() ssv.Runner {
-			ret := testingutils.AggregatorRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{
-						testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
-					},
-				),
-				DecidedValue: cd,
-				StartingDuty: &cd.Duty,
-				Finished:     false,
-			}
-			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
-					ID:                ret.GetBaseRunner().QBFTController.Identifier,
-					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
-					LastPreparedRound: qbft.NoRound,
-					Decided:           true,
-					DecidedValue:      cdBytes,
-				},
-			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
-			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-
-			return ret
-		}(),
-	}
-}
-
-// duplicateMsgDifferentRootsAttesterSC returns state comparison object for the DuplicateMsgDifferentRoots Attester versioned spec test
-// it ignores the invalid duplicate message and doesn't insert it to the container
-func duplicateMsgDifferentRootsAttesterSC() *comparable.StateComparison {
-	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestAttesterConsensusData
-	cdBytes := testingutils.TestAttesterConsensusDataByts
-
-	return &comparable.StateComparison{
-		ExpectedState: func() ssv.Runner {
-			ret := testingutils.AttesterRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{
-						testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
-					},
-				),
-				DecidedValue: cd,
-				StartingDuty: &cd.Duty,
-				Finished:     false,
-			}
-			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
-					ID:                ret.GetBaseRunner().QBFTController.Identifier,
-					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
-					LastPreparedRound: qbft.NoRound,
-					Decided:           true,
-					DecidedValue:      cdBytes,
-				},
-			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -200,21 +68,21 @@ func duplicateMsgDifferentRootsProposerSC(version spec.DataVersion) *comparable.
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+					[]*types.SignedSSVMessage{
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
 					},
 				),
-				DecidedValue: cd,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -223,7 +91,7 @@ func duplicateMsgDifferentRootsProposerSC(version spec.DataVersion) *comparable.
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -244,21 +112,21 @@ func duplicateMsgDifferentRootsBlindedProposerSC(version spec.DataVersion) *comp
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{
-						testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
+					[]*types.SignedSSVMessage{
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
 					},
 				),
-				DecidedValue: cd,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -267,7 +135,7 @@ func duplicateMsgDifferentRootsBlindedProposerSC(version spec.DataVersion) *comp
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret

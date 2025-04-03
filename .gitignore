@@ -16,9 +16,14 @@
 
 ## IDE
 .idea
+.DS_Store
+.vscode
 
 # binaries
 .bin
 
 # CI
 bin
+
+# large test files
+tests.json

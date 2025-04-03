@@ -2,16 +2,17 @@ package qbft
 
 import (
 	"bytes"
-	"github.com/bloxapp/ssv-spec/types"
+
 	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // uponPrepare process prepare message
 // Assumes prepare message is valid!
-func (i *Instance) uponPrepare(signedPrepare *SignedMessage, prepareMsgContainer *MsgContainer) error {
-	hasQuorumBefore := HasQuorum(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round))
+func (i *Instance) uponPrepare(msg *ProcessingMessage, prepareMsgContainer *MsgContainer) error {
+	hasQuorumBefore := HasQuorum(i.State.CommitteeMember, prepareMsgContainer.MessagesForRound(i.State.Round))
 
-	addedMsg, err := prepareMsgContainer.AddFirstMsgForSignerAndRound(signedPrepare)
+	addedMsg, err := prepareMsgContainer.AddFirstMsgForSignerAndRound(msg)
 	if err != nil {
 		return errors.Wrap(err, "could not add prepare msg to container")
 	}
@@ -23,16 +24,16 @@ func (i *Instance) uponPrepare(signedPrepare *SignedMessage, prepareMsgContainer
 		return nil // already moved to commit stage
 	}
 
-	if !HasQuorum(i.State.Share, prepareMsgContainer.MessagesForRound(i.State.Round)) {
+	if !HasQuorum(i.State.CommitteeMember, prepareMsgContainer.MessagesForRound(i.State.Round)) {
 		return nil // no quorum yet
 	}
 
-	proposedRoot := i.State.ProposalAcceptedForCurrentRound.Message.Root
+	proposedRoot := i.State.ProposalAcceptedForCurrentRound.QBFTMessage.Root
 
-	i.State.LastPreparedValue = i.State.ProposalAcceptedForCurrentRound.FullData
+	i.State.LastPreparedValue = i.State.ProposalAcceptedForCurrentRound.SignedMessage.FullData
 	i.State.LastPreparedRound = i.State.Round
 
-	commitMsg, err := CreateCommit(i.State, i.config, proposedRoot)
+	commitMsg, err := CreateCommit(i.State, i.signer, proposedRoot)
 	if err != nil {
 		return errors.Wrap(err, "could not create commit msg")
 	}
@@ -46,7 +47,7 @@ func (i *Instance) uponPrepare(signedPrepare *SignedMessage, prepareMsgContainer
 
 // getRoundChangeJustification returns the round change justification for the current round.
 // The justification is a quorum of signed prepare messages that agree on state.LastPreparedValue
-func getRoundChangeJustification(state *State, config IConfig, prepareMsgContainer *MsgContainer) ([]*SignedMessage, error) {
+func getRoundChangeJustification(state *State, prepareMsgContainer *MsgContainer) ([]*ProcessingMessage, error) {
 	if state.LastPreparedValue == nil {
 		return nil, nil
 	}
@@ -57,21 +58,20 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 	}
 
 	prepareMsgs := prepareMsgContainer.MessagesForRound(state.LastPreparedRound)
-	ret := make([]*SignedMessage, 0)
+	ret := make([]*ProcessingMessage, 0)
 	for _, msg := range prepareMsgs {
-		if err := validSignedPrepareForHeightRoundAndRoot(
-			config,
+		if err := validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 			msg,
 			state.Height,
 			state.LastPreparedRound,
 			r,
-			state.Share.Committee,
+			state.CommitteeMember.Committee,
 		); err == nil {
 			ret = append(ret, msg)
 		}
 	}
 
-	if !HasQuorum(state.Share, ret) {
+	if !HasQuorum(state.CommitteeMember, ret) {
 		return nil, nil
 	}
 	return ret, nil
@@ -79,36 +79,55 @@ func getRoundChangeJustification(state *State, config IConfig, prepareMsgContain
 
 // validSignedPrepareForHeightRoundAndRoot known in dafny spec as validSignedPrepareForHeightRoundAndDigest
 // https://entethalliance.github.io/client-spec/qbft_spec.html#dfn-qbftspecification
-func validSignedPrepareForHeightRoundAndRoot(
-	config IConfig,
-	signedPrepare *SignedMessage,
+func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
+	msg *ProcessingMessage,
 	height Height,
 	round Round,
 	root [32]byte,
 	operators []*types.Operator) error {
-	if signedPrepare.Message.MsgType != PrepareMsgType {
+
+	if msg.QBFTMessage.MsgType != PrepareMsgType {
 		return errors.New("prepare msg type is wrong")
 	}
-	if signedPrepare.Message.Height != height {
+	if msg.QBFTMessage.Height != height {
 		return errors.New("wrong msg height")
 	}
-	if signedPrepare.Message.Round != round {
+	if msg.QBFTMessage.Round != round {
 		return errors.New("wrong msg round")
 	}
 
-	if err := signedPrepare.Validate(); err != nil {
+	if err := msg.Validate(); err != nil {
 		return errors.Wrap(err, "prepareData invalid")
 	}
 
-	if !bytes.Equal(signedPrepare.Message.Root[:], root[:]) {
-		return errors.New("proposed data mistmatch")
+	if !bytes.Equal(msg.QBFTMessage.Root[:], root[:]) {
+		return errors.New("proposed data mismatch")
 	}
 
-	if len(signedPrepare.GetSigners()) != 1 {
+	if len(msg.SignedMessage.OperatorIDs) != 1 {
 		return errors.New("msg allows 1 signer")
 	}
 
-	if err := signedPrepare.Signature.VerifyByOperators(signedPrepare, config.GetSignatureDomainType(), types.QBFTSignatureType, operators); err != nil {
+	if !msg.SignedMessage.CheckSignersInCommittee(operators) {
+		return errors.New("signer not in committee")
+	}
+
+	return nil
+}
+
+func validSignedPrepareForHeightRoundAndRootVerifySignature(
+	msg *ProcessingMessage,
+	height Height,
+	round Round,
+	root [32]byte,
+	operators []*types.Operator) error {
+
+	if err := validSignedPrepareForHeightRoundAndRootIgnoreSignature(msg, height, round, root, operators); err != nil {
+		return err
+	}
+
+	// Verify signature
+	if err := types.Verify(msg.SignedMessage, operators); err != nil {
 		return errors.Wrap(err, "msg signature invalid")
 	}
 
@@ -127,7 +146,7 @@ Prepare(
                         )
                 );
 */
-func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) (*SignedMessage, error) {
+func CreatePrepare(state *State, signer *types.OperatorSigner, newRound Round, root [32]byte) (*types.SignedSSVMessage, error) {
 	msg := &Message{
 		MsgType:    PrepareMsgType,
 		Height:     state.Height,
@@ -136,15 +155,6 @@ func CreatePrepare(state *State, config IConfig, newRound Round, root [32]byte) 
 
 		Root: root,
 	}
-	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed signing prepare msg")
-	}
 
-	signedMsg := &SignedMessage{
-		Signature: sig,
-		Signers:   []types.OperatorID{state.Share.OperatorID},
-		Message:   *msg,
-	}
-	return signedMsg, nil
+	return Sign(msg, state.CommitteeMember.OperatorID, signer)
 }

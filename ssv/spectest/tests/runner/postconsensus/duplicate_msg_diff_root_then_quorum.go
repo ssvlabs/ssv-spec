@@ -5,15 +5,15 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // DuplicateMsgDifferentRootsThenQuorum tests that it can successfully reach a quorum and end the duty even after receiving the following error:
 // - a duplicate SignedPartialSignatureMessage (from same signer) but with different roots
 func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
+
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "failed processing post consensus message: invalid post-consensus message: wrong signing root"
 
@@ -28,15 +28,15 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
 				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusWrongSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)),
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks)),
-					testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks)),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusWrongSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks))),
 				},
 				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
@@ -45,76 +45,102 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 				DontStartDuty: true,
 				ExpectedError: expectedError,
 			},
-			{
-				Name: "sync committee",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeRunner(ks),
-					&testingutils.TestingSyncCommitteeDuty,
-					testingutils.TestSyncCommitteeConsensusData,
-				),
-				Duty: &testingutils.TestingSyncCommitteeDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusWrongSyncCommitteeMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2)),
-					testingutils.SSVMsgSyncCommittee(nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3)),
-				},
-				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumSyncCommitteeSC().Root(),
-				PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumSyncCommitteeSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks)),
-				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
-			},
-			{
-				Name: "aggregator",
-				Runner: decideRunner(
-					testingutils.AggregatorRunner(ks),
-					&testingutils.TestingAggregatorDuty,
-					testingutils.TestAggregatorConsensusData,
-				),
-				Duty: &testingutils.TestingAggregatorDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusWrongAggregatorMsg(ks.Shares[1], 1)),
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2)),
-					testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3)),
-				},
-				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumAggregatorSC().Root(),
-				PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumAggregatorSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks)),
-				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
-			},
-			{
-				Name: "attester",
-				Runner: decideRunner(
-					testingutils.AttesterRunner(ks),
-					&testingutils.TestingAttesterDuty,
-					testingutils.TestAttesterConsensusData,
-				),
-				Duty: &testingutils.TestingAttesterDuty,
-				Messages: []*types.SSVMessage{
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusWrongAttestationMsg(ks.Shares[1], 1, qbft.FirstHeight)),
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, qbft.FirstHeight)),
-					testingutils.SSVMsgAttester(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, qbft.FirstHeight)),
-				},
-				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumAttesterSC().Root(),
-				PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumAttesterSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedAttestation(ks)),
-				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
-			},
 		},
+	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name: fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner: decideRunner(
+				testingutils.AggregatorRunner(ks),
+				testingutils.TestingAggregatorDuty(version),
+				testingutils.TestAggregatorConsensusData(version),
+			),
+			Duty: testingutils.TestingAggregatorDuty(version),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusWrongAggregatorMsg(ks.Shares[1], 1, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3, version))),
+			},
+			OutputMessages: []*types.PartialSignatureMessages{},
+			BeaconBroadcastedRoots: []string{
+				testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks, version)),
+			},
+			DontStartDuty: true,
+			ExpectedError: expectedError,
+		},
+		)
+	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+
+			{
+				Name: fmt.Sprintf("attester (%s)", version.String()),
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterDuty(version),
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusWrongAttestationMsg(ks.Shares[1], 1, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, version))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObject(ks, version)),
+				},
+				DontStartDuty: true,
+				// No error is expected for this duty because it don't overwrite (in state) the previous message
+			},
+			{
+				Name: fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeDuty(version),
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingSyncCommitteeDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusWrongSyncCommitteeMsg(ks.Shares[1], 1, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3, version))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks, version)),
+				},
+				DontStartDuty: true,
+				// No error is expected for this duty because it don't overwrite (in state) the previous message
+			},
+			{
+				Name: fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner: decideCommitteeRunner(
+					testingutils.CommitteeRunner(ks),
+					testingutils.TestingAttesterAndSyncCommitteeDuties(version),
+					&testingutils.TestBeaconVote,
+				),
+				Duty: testingutils.TestingAttesterAndSyncCommitteeDuties(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusWrongAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[2], 2, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[3], 3, version))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObject(ks, version)),
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks, version)),
+				},
+				DontStartDuty: true,
+				// No error is expected for this duty because it don't overwrite (in state) the previous message
+			},
+		}...)
 	}
 
 	// proposerV creates a test specification for versioned proposer.
@@ -127,15 +153,15 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 				testingutils.TestProposerConsensusDataV(version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusWrongProposerMsgV(ks.Shares[1], 1, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusWrongProposerMsgV(ks.Shares[1], 1, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 			},
 			PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumProposerSC(version).Root(),
 			PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			OutputMessages:          []*types.PartialSignatureMessages{},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
@@ -154,15 +180,15 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 				testingutils.TestProposerBlindedBlockConsensusDataV(version),
 			),
 			Duty: testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SSVMessage{
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusWrongProposerMsgV(ks.Shares[1], 1, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)),
-				testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)),
+			Messages: []*types.SignedSSVMessage{
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusWrongProposerMsgV(ks.Shares[1], 1, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 			},
 			PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumBlindedProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.SignedPartialSignatureMessage{},
+			OutputMessages:          []*types.PartialSignatureMessages{},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
 			},

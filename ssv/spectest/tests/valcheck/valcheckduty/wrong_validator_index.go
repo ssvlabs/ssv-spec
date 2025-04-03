@@ -5,16 +5,16 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // WrongValidatorIndex tests duty.ValidatorIndex wrong
 func WrongValidatorIndex() tests.SpecTest {
-	consensusDataBytsF := func(cd *types.ConsensusData) []byte {
-		cdCopy := &types.ConsensusData{}
+	consensusDataBytsF := func(cd *types.ValidatorConsensusData) []byte {
+		cdCopy := &types.ValidatorConsensusData{}
 		b, _ := json.Marshal(cd)
 		if err := json.Unmarshal(b, cdCopy); err != nil {
 			panic(err.Error())
@@ -30,39 +30,39 @@ func WrongValidatorIndex() tests.SpecTest {
 		Name: "wrong validator index",
 		Tests: []*valcheck.SpecTest{
 			{
+				Name:       "committee",
+				Network:    types.BeaconTestNetwork,
+				RunnerRole: types.RoleCommittee,
+				Input:      testingutils.TestBeaconVoteByts,
+				// No error since input doesn't contain validator index
+			},
+			{
 				Name:          "sync committee aggregator",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleSyncCommitteeContribution,
+				RunnerRole:    types.RoleSyncCommitteeContribution,
 				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
 				ExpectedError: expectedErr,
 			},
 			{
-				Name:          "sync committee",
+				Name:          "aggregator phase0",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleSyncCommittee,
-				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeConsensusData),
+				RunnerRole:    types.RoleAggregator,
+				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
 				ExpectedError: expectedErr,
 			},
 			{
-				Name:          "aggregator",
+				Name:          "aggregator electra",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleAggregator,
-				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData),
+				RunnerRole:    types.RoleAggregator,
+				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionElectra)),
 				ExpectedError: expectedErr,
 			},
 			{
 				Name:          "proposer",
 				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleProposer,
+				RunnerRole:    types.RoleProposer,
 				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
 				ExpectedError: expectedErr,
-			},
-			{
-				Name:          "attester",
-				Network:       types.BeaconTestNetwork,
-				BeaconRole:    types.BNRoleAttester,
-				Input:         consensusDataBytsF(testingutils.TestAttesterConsensusData),
-				ExpectedError: "duty invalid: wrong validator index",
 			},
 		},
 	}

@@ -1,20 +1,20 @@
 package valcheckattestations
 
 import (
-	goEthSpec "github.com/attestantio/go-eth2-client/spec"
+	"encoding/hex"
+
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests/valcheck"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // Slashable tests a slashable AttestationData
 func Slashable() tests.SpecTest {
-	attestationData := &spec.AttestationData{
-		Slot:            testingutils.TestingDutySlot,
-		Index:           50,
-		BeaconBlockRoot: spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	data := &types.BeaconVote{
+		BlockRoot: spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 		Source: &spec.Checkpoint{
 			Epoch: 0,
 			Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
@@ -25,35 +25,24 @@ func Slashable() tests.SpecTest {
 		},
 	}
 
-	attestationDataBytes, _ := attestationData.MarshalSSZ()
-
-	data := &types.ConsensusData{
-		Duty: types.Duty{
-			Type:                    types.BNRoleAttester,
-			PubKey:                  testingutils.TestingValidatorPubKey,
-			Slot:                    testingutils.TestingDutySlot,
-			ValidatorIndex:          testingutils.TestingValidatorIndex,
-			CommitteeIndex:          50,
-			CommitteesAtSlot:        36,
-			CommitteeLength:         128,
-			ValidatorCommitteeIndex: 11,
-		},
-		Version: goEthSpec.DataVersionPhase0,
-		DataSSZ: attestationDataBytes,
-	}
-
-	r, _ := attestationData.HashTreeRoot()
-
 	input, _ := data.Encode()
 
+	keySet := testingutils.Testing4SharesSet()
+	sharePKBytes := keySet.Shares[1].Serialize()
+	shareString := hex.EncodeToString(sharePKBytes)
+
 	return &valcheck.SpecTest{
-		Name:       "attestation value check slashable",
-		Network:    types.BeaconTestNetwork,
-		BeaconRole: types.BNRoleAttester,
-		Input:      input,
-		AnyError:   true,
-		SlashableDataRoots: [][]byte{
-			r[:],
+		Name:          "attestation value check slashable",
+		Network:       types.BeaconTestNetwork,
+		RunnerRole:    types.RoleCommittee,
+		DutySlot:      testingutils.TestingDutySlot,
+		Input:         input,
+		ExpectedError: "slashable attestation",
+		SlashableSlots: map[string][]phase0.Slot{
+			shareString: {
+				testingutils.TestingDutySlot,
+			},
 		},
+		ShareValidatorsPK: []types.ShareValidatorPK{sharePKBytes},
 	}
 }

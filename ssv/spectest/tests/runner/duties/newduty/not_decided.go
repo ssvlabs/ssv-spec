@@ -5,28 +5,27 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/ssv/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // NotDecided tests starting duty before finished or decided
 func NotDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	// TODO: check error
-	// nolint
-	startRunner := func(r ssv.Runner, duty *types.Duty) ssv.Runner {
+	startRunner := func(r ssv.Runner, duty types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
 			r.GetBaseRunner().QBFTController.GetConfig(),
-			r.GetBaseRunner().Share,
+			r.GetBaseRunner().QBFTController.CommitteeMember,
 			r.GetBaseRunner().QBFTController.Identifier,
-			qbft.Height(duty.Slot))
+			qbft.Height(duty.DutySlot()),
+			r.GetBaseRunner().QBFTController.OperatorSigner)
 		r.GetBaseRunner().QBFTController.StoredInstances = append(r.GetBaseRunner().QBFTController.StoredInstances, r.GetBaseRunner().State.RunningInstance)
-		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.Slot)
+		r.GetBaseRunner().QBFTController.Height = qbft.Height(duty.DutySlot())
 		return r
 	}
 
@@ -37,39 +36,53 @@ func NotDecided() tests.SpecTest {
 				Name:                    "sync committee aggregator",
 				Runner:                  startRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
 				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: notDecidedSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     notDecidedSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
+				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
 			},
-			{
-				Name:                    "sync committee",
-				Runner:                  startRunner(testingutils.SyncCommitteeRunner(ks), &testingutils.TestingSyncCommitteeDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeDutyNextEpoch,
-				PostDutyRunnerStateRoot: notDecidedSyncCommitteeSC().Root(),
-				PostDutyRunnerState:     notDecidedSyncCommitteeSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
-			},
-			{
-				Name:                    "aggregator",
-				Runner:                  startRunner(testingutils.AggregatorRunner(ks), &testingutils.TestingAggregatorDuty),
-				Duty:                    &testingutils.TestingAggregatorDutyNextEpoch,
-				PostDutyRunnerStateRoot: notDecidedAggregatorSC().Root(),
-				PostDutyRunnerState:     notDecidedAggregatorSC().ExpectedState,
-				OutputMessages: []*types.SignedPartialSignatureMessage{
-					testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
-			},
-			{
-				Name:                    "attester",
-				Runner:                  startRunner(testingutils.AttesterRunner(ks), &testingutils.TestingAttesterDuty),
-				Duty:                    &testingutils.TestingAttesterDutyNextEpoch,
-				PostDutyRunnerStateRoot: notDecidedAttesterSC().Root(),
-				PostDutyRunnerState:     notDecidedAttesterSC().ExpectedState,
-				OutputMessages:          []*types.SignedPartialSignatureMessage{},
+		},
+	}
+
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
+			Name:      fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner:    startRunner(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty(version)),
+			Duty:      testingutils.TestingAggregatorDutyNextEpoch(version),
+			Threshold: ks.Threshold,
+			OutputMessages: []*types.PartialSignatureMessages{
+				testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
 		},
+		)
+	}
+
+	for _, version := range testingutils.SupportedAttestationVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{
+			{
+				Name:           fmt.Sprintf("attester (%s)", version.String()),
+				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty(version)),
+				Duty:           testingutils.TestingAttesterDutyNextEpoch(version),
+				Threshold:      ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty(version)),
+				Duty:           testingutils.TestingSyncCommitteeDutyNextEpoch(version),
+				Threshold:      ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+			{
+				Name:           fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties(version)),
+				Duty:           testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch(version),
+				Threshold:      ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{},
+			},
+		}...)
 	}
 
 	// proposerV creates a test specification for versioned proposer.
@@ -78,9 +91,10 @@ func NotDecided() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer (%s)", version.String()),
 			Runner:                  startRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(version)),
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
+			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: notDecidedProposerSC(version).Root(),
 			PostDutyRunnerState:     notDecidedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
 		}
@@ -92,9 +106,10 @@ func NotDecided() tests.SpecTest {
 			Name:                    fmt.Sprintf("proposer blinded block (%s)", version.String()),
 			Runner:                  startRunner(testingutils.ProposerBlindedBlockRunner(ks), testingutils.TestingProposerDutyV(version)),
 			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
+			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: notDecidedBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     notDecidedBlindedProposerSC(version).ExpectedState,
-			OutputMessages: []*types.SignedPartialSignatureMessage{
+			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
 		}

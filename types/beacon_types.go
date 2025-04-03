@@ -1,6 +1,7 @@
 package types
 
 import (
+	"math"
 	"time"
 
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
@@ -38,7 +39,6 @@ const DefaultGasLimit = 30_000_000
 // BeaconRole type of the validator role for a specific duty
 type BeaconRole uint64
 
-// List of roles
 const (
 	BNRoleAttester BeaconRole = iota
 	BNRoleAggregator
@@ -48,6 +48,8 @@ const (
 
 	BNRoleValidatorRegistration
 	BNRoleVoluntaryExit
+
+	BNRoleUnknown = math.MaxUint64
 )
 
 // String returns name of the role
@@ -72,8 +74,13 @@ func (r BeaconRole) String() string {
 	}
 }
 
-// Duty represent data regarding the duty type with the duty data
-type Duty struct {
+type Duty interface {
+	DutySlot() spec.Slot
+	RunnerRole() RunnerRole
+}
+
+// ValidatorDuty represent data regarding the duty type with the duty data
+type ValidatorDuty struct {
 	// Type is the duty type (attest, propose)
 	Type BeaconRole
 	// PubKey is the public key of the validator that should attest.
@@ -94,6 +101,52 @@ type Duty struct {
 	ValidatorSyncCommitteeIndices []uint64 `ssz-max:"13"`
 }
 
+func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
+	switch dutyRole {
+	case BNRoleAttester, BNRoleSyncCommittee:
+		return RoleCommittee
+	case BNRoleProposer:
+		return RoleProposer
+	case BNRoleAggregator:
+		return RoleAggregator
+	case BNRoleSyncCommitteeContribution:
+		return RoleSyncCommitteeContribution
+	case BNRoleValidatorRegistration:
+		return RoleValidatorRegistration
+	case BNRoleVoluntaryExit:
+		return RoleVoluntaryExit
+	}
+	return RoleUnknown
+}
+
+func (bd *ValidatorDuty) DutySlot() spec.Slot {
+	return bd.Slot
+}
+
+func (bd *ValidatorDuty) RunnerRole() RunnerRole {
+	return MapDutyToRunnerRole(bd.Type)
+}
+
+// GetValidatorIndex returns the validator index
+func (bd *ValidatorDuty) GetValidatorIndex() spec.ValidatorIndex {
+	return bd.ValidatorIndex
+}
+
+type CommitteeDuty struct {
+	Slot            spec.Slot
+	ValidatorDuties []*ValidatorDuty
+}
+
+func (cd *CommitteeDuty) DutySlot() spec.Slot {
+	return cd.Slot
+}
+
+func (cd *CommitteeDuty) RunnerRole() RunnerRole {
+	return RoleCommittee
+}
+
+//
+
 // Available networks.
 const (
 	// MainNetwork represents the main network.
@@ -102,8 +155,14 @@ const (
 	// HoleskyNetwork represents the Holesky test network.
 	HoleskyNetwork BeaconNetwork = "holesky"
 
+	// HoodiNetwork represents the Hoodi test network.
+	HoodiNetwork BeaconNetwork = "hoodi"
+
 	// PraterNetwork represents the Prater test network.
 	PraterNetwork BeaconNetwork = "prater"
+
+	// SepoliaNetwork represents the Sepolia test network.
+	SepoliaNetwork BeaconNetwork = "sepolia"
 
 	// BeaconTestNetwork is a simple test network with a custom genesis time
 	BeaconTestNetwork BeaconNetwork = "now_test_network"
@@ -119,8 +178,12 @@ func NetworkFromString(n string) BeaconNetwork {
 		return MainNetwork
 	case string(HoleskyNetwork):
 		return HoleskyNetwork
+	case string(HoodiNetwork):
+		return HoodiNetwork
 	case string(PraterNetwork):
 		return PraterNetwork
+	case string(SepoliaNetwork):
+		return SepoliaNetwork
 	case string(BeaconTestNetwork):
 		return BeaconTestNetwork
 	default:
@@ -135,8 +198,12 @@ func (n BeaconNetwork) ForkVersion() [4]byte {
 		return [4]byte{0, 0, 0, 0}
 	case HoleskyNetwork:
 		return [4]byte{0x01, 0x01, 0x70, 0x00}
+	case HoodiNetwork:
+		return [4]byte{0x10, 0x00, 0x09, 0x10}
 	case PraterNetwork:
 		return [4]byte{0x00, 0x00, 0x10, 0x20}
+	case SepoliaNetwork:
+		return [4]byte{0x90, 0x00, 0x00, 0x69}
 	case BeaconTestNetwork:
 		return [4]byte{0x99, 0x99, 0x99, 0x99}
 	default:
@@ -151,8 +218,12 @@ func (n BeaconNetwork) MinGenesisTime() uint64 {
 		return 1606824023
 	case HoleskyNetwork:
 		return 1695902400
+	case HoodiNetwork:
+		return 1742212800 + 600
 	case PraterNetwork:
 		return 1616508000
+	case SepoliaNetwork:
+		return 1655733600
 	case BeaconTestNetwork:
 		return 1616508000
 	default:

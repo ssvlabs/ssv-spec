@@ -1,23 +1,10 @@
 package qbft
 
 import (
-	"crypto/sha256"
-	"encoding/json"
-
-	"github.com/pkg/errors"
-
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
-type signing interface {
-	// GetSigner returns a Signer instance
-	GetSigner() types.SSVSigner
-	// GetSignatureDomainType returns the Domain type used for signatures
-	GetSignatureDomainType() types.DomainType
-}
-
 type IConfig interface {
-	signing
 	// GetValueCheckF returns value check function
 	GetValueCheckF() ProposedValueCheckF
 	// GetProposerF returns func used to calculate proposer
@@ -26,26 +13,17 @@ type IConfig interface {
 	GetNetwork() Network
 	// GetTimer returns round timer
 	GetTimer() Timer
+	// GetCutOffRound returns the round that stops the instance
+	GetCutOffRound() Round
 }
 
 type Config struct {
-	Signer      types.SSVSigner
-	SigningPK   []byte
 	Domain      types.DomainType
 	ValueCheckF ProposedValueCheckF
 	ProposerF   ProposerF
 	Network     Network
 	Timer       Timer
-}
-
-// GetSigner returns a Signer instance
-func (c *Config) GetSigner() types.SSVSigner {
-	return c.Signer
-}
-
-// GetSigningPubKey returns the public key used to sign all QBFT messages
-func (c *Config) GetSigningPubKey() []byte {
-	return c.SigningPK
+	CutOffRound Round
 }
 
 // GetSignatureDomainType returns the Domain type used for signatures
@@ -73,14 +51,18 @@ func (c *Config) GetTimer() Timer {
 	return c.Timer
 }
 
+func (c *Config) GetCutOffRound() Round {
+	return c.CutOffRound
+}
+
 type State struct {
-	Share                           *types.Share
+	CommitteeMember                 *types.CommitteeMember
 	ID                              []byte // instance Identifier
 	Round                           Round
 	Height                          Height
 	LastPreparedRound               Round
 	LastPreparedValue               []byte
-	ProposalAcceptedForCurrentRound *SignedMessage
+	ProposalAcceptedForCurrentRound *ProcessingMessage
 	Decided                         bool
 	DecidedValue                    []byte
 
@@ -88,24 +70,4 @@ type State struct {
 	PrepareContainer     *MsgContainer
 	CommitContainer      *MsgContainer
 	RoundChangeContainer *MsgContainer
-}
-
-// GetRoot returns the state's deterministic root
-func (s *State) GetRoot() ([32]byte, error) {
-	marshaledRoot, err := s.Encode()
-	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode state")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret, nil
-}
-
-// Encode returns a msg encoded bytes or error
-func (s *State) Encode() ([]byte, error) {
-	return json.Marshal(s)
-}
-
-// Decode returns error if decoding failed
-func (s *State) Decode(data []byte) error {
-	return json.Unmarshal(data, &s)
 }

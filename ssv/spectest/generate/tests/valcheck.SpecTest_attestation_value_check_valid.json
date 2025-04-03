@@ -1,0 +1,11 @@
+{
+  "Name": "attestation value check valid",
+  "Network": "prater",
+  "RunnerRole": 0,
+  "DutySlot": "12",
+  "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+  "SlashableSlots": null,
+  "omitempty": null,
+  "ExpectedError": "",
+  "AnyError": false
+}

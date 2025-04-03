@@ -1,6 +1,6 @@
 package messages
 
-import "github.com/bloxapp/ssv-spec/qbft/spectest/tests"
+import "github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 
 // CreatePrepare tests creating a prepare msg
 func CreatePrepare() tests.SpecTest {
@@ -9,6 +9,6 @@ func CreatePrepare() tests.SpecTest {
 		Name:         "create prepare",
 		Value:        [32]byte{1, 2, 3, 4},
 		Round:        10,
-		ExpectedRoot: "2eba5b18818e0ec94f5c02ff7abc8ca932ed5d1f32a115197fbaa14247a39cb2",
+		ExpectedRoot: "b6404cc0c4dbdc2fa8bfcbebcd75344dfa976da4a8c2487191aa34c8d64af441",
 	}
 }

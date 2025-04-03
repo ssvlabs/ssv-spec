@@ -1,13 +1,12 @@
 package qbft
 
 import (
-	"encoding/json"
 	"fmt"
 	"sync"
 
 	"github.com/pkg/errors"
 
-	"github.com/bloxapp/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 type ProposedValueCheckF func(data []byte) error
@@ -18,6 +17,7 @@ type ProposerF func(state *State, round Round) types.OperatorID
 type Instance struct {
 	State  *State
 	config IConfig
+	signer *types.OperatorSigner
 
 	processMsgF *types.ThreadSafeF
 	startOnce   sync.Once
@@ -28,13 +28,14 @@ type Instance struct {
 
 func NewInstance(
 	config IConfig,
-	share *types.Share,
+	committeeMember *types.CommitteeMember,
 	identifier []byte,
 	height Height,
+	signer *types.OperatorSigner,
 ) *Instance {
 	return &Instance{
 		State: &State{
-			Share:                share,
+			CommitteeMember:      committeeMember,
 			ID:                   identifier,
 			Round:                FirstRound,
 			Height:               height,
@@ -45,6 +46,7 @@ func NewInstance(
 			RoundChangeContainer: NewMsgContainer(),
 		},
 		config:      config,
+		signer:      signer,
 		processMsgF: types.NewThreadSafeF(),
 	}
 }
@@ -63,13 +65,11 @@ func (i *Instance) Start(value []byte, height Height) {
 		i.config.GetTimer().TimeoutForRound(FirstRound)
 
 		// propose if this node is the proposer
-		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.Share.OperatorID {
-			proposal, err := CreateProposal(i.State, i.config, i.StartValue, nil, nil)
-			// nolint
+		if proposer(i.State, i.GetConfig(), FirstRound) == i.State.CommitteeMember.OperatorID {
+			proposal, err := CreateProposal(i.State, i.signer, i.StartValue, nil, nil)
 			if err != nil {
 				fmt.Printf("%s\n", err.Error())
 			}
-			// nolint
 			if err := i.Broadcast(proposal); err != nil {
 				fmt.Printf("%s\n", err.Error())
 			}
@@ -77,28 +77,16 @@ func (i *Instance) Start(value []byte, height Height) {
 	})
 }
 
-func (i *Instance) Broadcast(msg *SignedMessage) error {
+func (i *Instance) Broadcast(msg *types.SignedSSVMessage) error {
 	if !i.CanProcessMessages() {
 		return errors.New("instance stopped processing messages")
 	}
-	byts, err := msg.Encode()
-	if err != nil {
-		return errors.Wrap(err, "could not encode message")
-	}
 
-	msgID := types.MessageID{}
-	copy(msgID[:], msg.Message.Identifier)
-
-	msgToBroadcast := &types.SSVMessage{
-		MsgType: types.SSVConsensusMsgType,
-		MsgID:   msgID,
-		Data:    byts,
-	}
-	return i.config.GetNetwork().Broadcast(msgToBroadcast)
+	return i.GetConfig().GetNetwork().Broadcast(msg.SSVMessage.GetID(), msg)
 }
 
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error
-func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []byte, aggregatedCommit *SignedMessage, err error) {
+func (i *Instance) ProcessMsg(msg *ProcessingMessage) (decided bool, decidedValue []byte, aggregatedCommit *types.SignedSSVMessage, err error) {
 	if !i.CanProcessMessages() {
 		return false, nil, nil, errors.New("instance stopped processing messages")
 	}
@@ -108,7 +96,7 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 	}
 
 	res := i.processMsgF.Run(func() interface{} {
-		switch msg.Message.MsgType {
+		switch msg.QBFTMessage.MsgType {
 		case ProposalMsgType:
 			return i.uponProposal(msg, i.State.ProposeContainer)
 		case PrepareMsgType:
@@ -132,36 +120,34 @@ func (i *Instance) ProcessMsg(msg *SignedMessage) (decided bool, decidedValue []
 	return i.State.Decided, i.State.DecidedValue, aggregatedCommit, nil
 }
 
-func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
+func (i *Instance) BaseMsgValidation(msg *ProcessingMessage) error {
 	if err := msg.Validate(); err != nil {
-		return errors.Wrap(err, "invalid signed message")
+		return err
 	}
 
-	if msg.Message.Round < i.State.Round {
+	if msg.QBFTMessage.Round < i.State.Round {
 		return errors.New("past round")
 	}
 
-	switch msg.Message.MsgType {
+	switch msg.QBFTMessage.MsgType {
 	case ProposalMsgType:
 		return isValidProposal(
 			i.State,
 			i.config,
 			msg,
 			i.config.GetValueCheckF(),
-			i.State.Share.Committee,
 		)
 	case PrepareMsgType:
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
 		if proposedMsg == nil {
 			return errors.New("did not receive proposal for this round")
 		}
-		return validSignedPrepareForHeightRoundAndRoot(
-			i.config,
+		return validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 			msg,
 			i.State.Height,
 			i.State.Round,
-			proposedMsg.Message.Root,
-			i.State.Share.Committee,
+			proposedMsg.QBFTMessage.Root,
+			i.State.CommitteeMember.Committee,
 		)
 	case CommitMsgType:
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
@@ -169,15 +155,14 @@ func (i *Instance) BaseMsgValidation(msg *SignedMessage) error {
 			return errors.New("did not receive proposal for this round")
 		}
 		return validateCommit(
-			i.config,
 			msg,
 			i.State.Height,
 			i.State.Round,
 			i.State.ProposalAcceptedForCurrentRound,
-			i.State.Share.Committee,
+			i.State.CommitteeMember.Committee,
 		)
 	case RoundChangeMsgType:
-		return validRoundChangeForData(i.State, i.config, msg, i.State.Height, msg.Message.Round, msg.FullData)
+		return validRoundChangeForDataIgnoreSignature(i.State, i.config, msg, i.State.Height, msg.QBFTMessage.Round, msg.SignedMessage.FullData)
 	default:
 		return errors.New("signed message type not supported")
 	}
@@ -201,22 +186,7 @@ func (i *Instance) GetHeight() Height {
 	return i.State.Height
 }
 
-// GetRoot returns the state's deterministic root
-func (i *Instance) GetRoot() ([32]byte, error) {
-	return i.State.GetRoot()
-}
-
-// Encode implementation
-func (i *Instance) Encode() ([]byte, error) {
-	return json.Marshal(i)
-}
-
-// Decode implementation
-func (i *Instance) Decode(data []byte) error {
-	return json.Unmarshal(data, &i)
-}
-
 // CanProcessMessages will return true if instance can process messages
 func (i *Instance) CanProcessMessages() bool {
-	return !i.forceStop && int(i.State.Round) < CutoffRound
+	return !i.forceStop && i.State.Round < i.config.GetCutOffRound()
 }

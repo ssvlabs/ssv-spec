@@ -1,0 +1,82 @@
+{
+		"Name": "non unique signers",
+		"Messages": [
+				{
+						"Signatures": [
+								"AQIDBA==",
+								"AgMEBQ==",
+								"AgMEBQ=="
+						],
+						"OperatorIDs": [
+								1,
+								2,
+								2
+						],
+						"SSVMessage": {
+								"MsgType": 1,
+								"MsgID": [
+										0,
+										0,
+										3,
+										1,
+										1,
+										0,
+										0,
+										0,
+										142,
+										128,
+										6,
+										101,
+										81,
+										168,
+										27,
+										49,
+										130,
+										88,
+										112,
+										158,
+										218,
+										247,
+										221,
+										31,
+										99,
+										205,
+										104,
+										106,
+										14,
+										77,
+										184,
+										178,
+										155,
+										187,
+										122,
+										207,
+										230,
+										86,
+										8,
+										103,
+										122,
+										245,
+										165,
+										39,
+										217,
+										68,
+										142,
+										228,
+										120,
+										53,
+										72,
+										94,
+										2,
+										181,
+										11,
+										192
+								],
+								"Data": "AQAAAAAAAAAMAAAAAAAAABQAAACqYtWxqJS9TpuMtuxKg8vDgJM1H2V559u7tsvDiPWthvEQzZmecz+I5Gy02sZh6egKStIzFEk5lQEFG5kqiltYv76DvXtLIAPPczcX1wyMtA/y/XO8wILRIHH+Np8+mbTkiuaucDdgUACrzQm/z9biDJ1EUaIwDERr+4LeutIfvQEAAAAAAAAAAQAAAAAAAAA="
+						},
+						"FullData": null
+				}
+		],
+		"ExpectedError": "non unique signer",
+		"RSAPublicKey": null
+}

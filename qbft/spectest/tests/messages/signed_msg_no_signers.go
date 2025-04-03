@@ -1,23 +1,22 @@
 package messages
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // SignedMsgNoSigners tests SignedMessage len(signers) == 0
 func SignedMsgNoSigners() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	msg := testingutils.TestingCommitMessage(ks.Shares[1], types.OperatorID(1))
-	msg.Signers = nil
+	msg := testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1))
+	msg.OperatorIDs = nil
 
 	return &tests.MsgSpecTest{
 		Name: "no signers",
-		Messages: []*qbft.SignedMessage{
+		Messages: []*types.SignedSSVMessage{
 			msg,
 		},
-		ExpectedError: "message signers is empty",
+		ExpectedError: "no signers",
 	}
 }

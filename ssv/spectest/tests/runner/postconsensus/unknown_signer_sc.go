@@ -3,12 +3,12 @@ package postconsensus
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
-	ssvcomparable "github.com/bloxapp/ssv-spec/ssv/spectest/comparable"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv"
+	ssvcomparable "github.com/ssvlabs/ssv-spec/ssv/spectest/comparable"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 // unknownSignerSyncCommitteeContributionSC returns state comparison object for the UnknownSigner SyncCommitteeContribution versioned spec test
@@ -24,19 +24,19 @@ func unknownSignerSyncCommitteeContributionSC() *comparable.StateComparison {
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: cd,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -45,133 +45,7 @@ func unknownSignerSyncCommitteeContributionSC() *comparable.StateComparison {
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
-			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-
-			return ret
-		}(),
-	}
-}
-
-// unknownSignerSyncCommitteeSC returns state comparison object for the UnknownSigner SyncCommittee versioned spec test
-// The unknown signer is ignored and not added to the post-consensus container
-func unknownSignerSyncCommitteeSC() *comparable.StateComparison {
-	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestSyncCommitteeConsensusData
-	cdBytes := testingutils.TestSyncCommitteeConsensusDataByts
-
-	return &comparable.StateComparison{
-		ExpectedState: func() ssv.Runner {
-			ret := testingutils.SyncCommitteeRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				DecidedValue: cd,
-				StartingDuty: &cd.Duty,
-				Finished:     false,
-			}
-			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
-					ID:                ret.GetBaseRunner().QBFTController.Identifier,
-					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
-					LastPreparedRound: qbft.NoRound,
-					Decided:           true,
-					DecidedValue:      cdBytes,
-				},
-			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
-			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-
-			return ret
-		}(),
-	}
-}
-
-// unknownSignerAggregatorSC returns state comparison object for the UnknownSigner Aggregator versioned spec test
-// The unknown signer is ignored and not added to the post-consensus container
-func unknownSignerAggregatorSC() *comparable.StateComparison {
-	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestAggregatorConsensusData
-	cdBytes := testingutils.TestAggregatorConsensusDataByts
-
-	return &comparable.StateComparison{
-		ExpectedState: func() ssv.Runner {
-			ret := testingutils.AggregatorRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				DecidedValue: cd,
-				StartingDuty: &cd.Duty,
-				Finished:     false,
-			}
-			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
-					ID:                ret.GetBaseRunner().QBFTController.Identifier,
-					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
-					LastPreparedRound: qbft.NoRound,
-					Decided:           true,
-					DecidedValue:      cdBytes,
-				},
-			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
-			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
-
-			return ret
-		}(),
-	}
-}
-
-// unknownSignerAttesterSC returns state comparison object for the UnknownSigner Attester versioned spec test
-// The unknown signer is ignored and not added to the post-consensus container
-func unknownSignerAttesterSC() *comparable.StateComparison {
-	ks := testingutils.Testing4SharesSet()
-	cd := testingutils.TestAttesterConsensusData
-	cdBytes := testingutils.TestAttesterConsensusDataByts
-
-	return &comparable.StateComparison{
-		ExpectedState: func() ssv.Runner {
-			ret := testingutils.AttesterRunner(ks)
-			ret.GetBaseRunner().State = &ssv.State{
-				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
-					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
-				),
-				DecidedValue: cd,
-				StartingDuty: &cd.Duty,
-				Finished:     false,
-			}
-			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
-				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
-					ID:                ret.GetBaseRunner().QBFTController.Identifier,
-					Round:             qbft.FirstRound,
-					Height:            qbft.FirstHeight,
-					LastPreparedRound: qbft.NoRound,
-					Decided:           true,
-					DecidedValue:      cdBytes,
-				},
-			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -192,19 +66,19 @@ func unknownSignerProposerSC(version spec.DataVersion) *comparable.StateComparis
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: cd,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -213,7 +87,7 @@ func unknownSignerProposerSC(version spec.DataVersion) *comparable.StateComparis
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret
@@ -234,19 +108,19 @@ func unknownSignerBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
 				PostConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
-					[]*types.SSVMessage{},
+					[]*types.SignedSSVMessage{},
 				),
-				DecidedValue: cd,
+				DecidedValue: testingutils.EncodeConsensusDataTest(cd),
 				StartingDuty: &cd.Duty,
 				Finished:     false,
 			}
 			ret.GetBaseRunner().State.RunningInstance = &qbft.Instance{
 				State: &qbft.State{
-					Share:             testingutils.TestingShare(ks),
+					CommitteeMember:   testingutils.TestingCommitteeMember(ks),
 					ID:                ret.GetBaseRunner().QBFTController.Identifier,
 					Round:             qbft.FirstRound,
 					Height:            qbft.FirstHeight,
@@ -255,7 +129,7 @@ func unknownSignerBlindedProposerSC(version spec.DataVersion) *comparable.StateC
 					DecidedValue:      cdBytes,
 				},
 			}
-			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SSVMessage{})
+			comparable.SetMessages(ret.GetBaseRunner().State.RunningInstance, []*types.SignedSSVMessage{})
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
 
 			return ret

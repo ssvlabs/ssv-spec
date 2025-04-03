@@ -1,24 +1,23 @@
 package messages
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // CreateRoundChangePreviouslyPrepared tests creating a round change msg,previously prepared
 func CreateRoundChangePreviouslyPrepared() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return &tests.CreateMsgSpecTest{
-		CreateType: tests.CreateProposal,
+		CreateType: tests.CreateRoundChange,
 		Name:       "create round change previously prepared",
 		Value:      [32]byte{1, 2, 3, 4},
-		PrepareJustifications: []*qbft.SignedMessage{
-			testingutils.TestingPrepareMessage(ks.Shares[1], types.OperatorID(1)),
-			testingutils.TestingPrepareMessage(ks.Shares[2], types.OperatorID(2)),
-			testingutils.TestingPrepareMessage(ks.Shares[3], types.OperatorID(3)),
+		PrepareJustifications: []*types.SignedSSVMessage{
+			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+			testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
+			testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 		},
-		ExpectedRoot: "a095b2f42e32e62980d9675cfcf3a58ed4da4d05b63463e182a451461de3b44e",
+		ExpectedRoot: "05da5d07657444faa8e0de69b82cbcec63e8e52251887ab6cfff29da72f4adeb",
 	}
 }

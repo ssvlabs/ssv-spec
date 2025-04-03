@@ -1,41 +1,42 @@
 package latemsg
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
-	"github.com/herumi/bls-eth-go-binary/bls"
+	"crypto/rsa"
+
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // FullFlowAfterDecided tests a decided msg for round 1 followed by a full proposal, prepare, commit for round 2
 func FullFlowAfterDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	rcMsgs := []*qbft.SignedMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+	rcMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
 
-	msgs := []*qbft.SignedMessage{
+	msgs := []*types.SignedSSVMessage{
 		testingutils.TestingCommitMultiSignerMessage(
-			[]*bls.SecretKey{ks.Shares[1], ks.Shares[2], ks.Shares[3]},
+			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 			[]types.OperatorID{1, 2, 3},
 		),
 
 		testingutils.TestingProposalMessageWithParams(
-			ks.Shares[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
+			ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), nil,
 		),
 
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingPrepareMessageWithRound(ks.Shares[3], types.OperatorID(3), 2),
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 
-		testingutils.TestingCommitMessageWithRound(ks.Shares[1], types.OperatorID(1), 2),
-		testingutils.TestingCommitMessageWithRound(ks.Shares[2], types.OperatorID(2), 2),
-		testingutils.TestingCommitMessageWithRound(ks.Shares[4], types.OperatorID(4), 2),
+		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
+		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
+		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[4], types.OperatorID(4), 2),
 	}
 
 	return &tests.ControllerSpecTest{
@@ -48,8 +49,8 @@ func FullFlowAfterDecided() tests.SpecTest {
 					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
 				},
-				ControllerPostRoot: "ac8cbc7f074702dd643312cf277d894b35079706116237e3eb41a82914ee69e9",
 			},
 		},
+		ExpectedError: "not processing consensus message since instance is already decided",
 	}
 }

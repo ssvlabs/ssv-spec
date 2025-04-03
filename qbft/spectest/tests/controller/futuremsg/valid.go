@@ -1,9 +1,10 @@
 package futuremsg
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // ValidMsg tests future msg valid msg. This is a valid msg that is not yet ready to be processed.
@@ -12,7 +13,8 @@ func ValidMsg() tests.SpecTest {
 	identifier := []byte{1, 2, 3, 4}
 
 	msg := testingutils.TestingPrepareMessageWithParams(
-		ks.Shares[3], 3, 3, 10, identifier[:], testingutils.TestingQBFTRootData)
+		ks.OperatorKeys[3], 3, 3, 10, identifier[:], testingutils.TestingQBFTRootData,
+	)
 
 	// create base controller
 	contr := createBaseController()
@@ -22,7 +24,7 @@ func ValidMsg() tests.SpecTest {
 		RunInstanceData: []*tests.RunInstanceData{
 			{
 				InputValue:          []byte{1, 2, 3, 4},
-				InputMessages:       []*qbft.SignedMessage{msg},
+				InputMessages:       []*types.SignedSSVMessage{msg},
 				ControllerPostState: contr,
 			},
 		},
@@ -32,10 +34,13 @@ func ValidMsg() tests.SpecTest {
 
 func createBaseController() *qbft.Controller {
 	id := []byte{1, 2, 3, 4}
-	config := testingutils.TestingConfig(testingutils.Testing4SharesSet())
+	ks := testingutils.Testing4SharesSet()
+	config := testingutils.TestingConfig(ks)
 	contr := testingutils.NewTestingQBFTController(
 		id[:],
-		testingutils.TestingShare(testingutils.Testing4SharesSet()),
-		config)
+		testingutils.TestingCommitteeMember(ks),
+		config,
+		testingutils.TestingOperatorSigner(ks),
+	)
 	return contr
 }

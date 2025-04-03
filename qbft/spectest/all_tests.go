@@ -1,19 +1,19 @@
 package spectest
 
 import (
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/commit"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/decided"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/futuremsg"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/latemsg"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/controller/processmsg"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/messages"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/prepare"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposal"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/proposer"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/roundchange"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/startinstance"
-	"github.com/bloxapp/ssv-spec/qbft/spectest/tests/timeout"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/commit"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/controller/decided"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/controller/futuremsg"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/controller/latemsg"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/controller/processmsg"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/messages"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/prepare"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/proposal"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/proposer"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/roundchange"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/startinstance"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/timeout"
 )
 
 var AllTests = []tests.TestF{
@@ -96,6 +96,7 @@ var AllTests = []tests.TestF{
 	messages.ProposeDataEncoding,
 	messages.SignedMsgNoSigners,
 	messages.SignedMsgDuplicateSigners,
+
 	messages.SignedMsgMultiSigners,
 	messages.GetRoot,
 	messages.RoundChangeJustificationsUnmarshalling,
@@ -156,7 +157,6 @@ var AllTests = []tests.TestF{
 	proposal.SecondProposalForRound,
 	proposal.WrongHeight,
 	proposal.WrongProposer,
-	proposal.WrongSignature,
 	proposal.UnknownSigner,
 	proposal.ForceStop,
 	proposal.PostCutoff,
@@ -170,7 +170,6 @@ var AllTests = []tests.TestF{
 	prepare.PostDecided,
 	prepare.WrongData,
 	prepare.WrongHeight,
-	prepare.WrongSignature,
 	prepare.UnknownSigner,
 	prepare.PrepareQuorumTriggeredTwice,
 	prepare.PrepareQuorumTriggeredTwiceLateCommit,
@@ -190,17 +189,16 @@ var AllTests = []tests.TestF{
 	commit.DuplicateSigners,
 	commit.NoPrevAcceptedProposal,
 	commit.WrongHeight,
-	commit.WrongSignature,
 	commit.UnknownSigner,
 	commit.InvalidValCheck,
 	commit.NoPrepareQuorum,
 	commit.NoCommitQuorum,
 	commit.ForceStop,
 	commit.PostCutoff,
+	commit.SortedDecided,
 
 	roundchange.HappyFlow,
 	roundchange.WrongHeight,
-	roundchange.WrongSig,
 	roundchange.UnknownSigner,
 	roundchange.MultiSigner,
 	roundchange.QuorumNotPrepared,
@@ -235,4 +233,7 @@ var AllTests = []tests.TestF{
 	roundchange.JustificationPastRound,
 	roundchange.ForceStop,
 	roundchange.PostCutoff,
+	roundchange.EmptySigners,
+	roundchange.NonUniqueSigner,
+	roundchange.ZeroSigner,
 }

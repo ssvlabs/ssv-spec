@@ -2,21 +2,22 @@ package synccommitteeaggregator
 
 import (
 	"encoding/hex"
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/types/testingutils/comparable"
 	"os"
 	"reflect"
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+
 	"github.com/stretchr/testify/require"
 
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 type SyncCommitteeAggregatorProofSpecTest struct {
 	Name                    string
-	Messages                []*types.SSVMessage
+	Messages                []*types.SignedSSVMessage
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     string
 	ProofRootsMap           map[string]bool // if true then root returned from beacon node will be an aggregator
@@ -45,9 +46,9 @@ func (test *SyncCommitteeAggregatorProofSpecTest) Run(t *testing.T) {
 
 func (test *SyncCommitteeAggregatorProofSpecTest) runPreTesting() (ssv.Runner, error) {
 	ks := testingutils.Testing4SharesSet()
-	share := testingutils.TestingShare(ks)
-	v := testingutils.BaseValidator(keySetForShare(share))
-	r := v.DutyRunners[types.BNRoleSyncCommitteeContribution]
+	committeeMember := testingutils.TestingCommitteeMember(ks)
+	v := testingutils.BaseValidator(testingutils.KeySetForCommitteeMember(committeeMember))
+	r := v.DutyRunners[types.RoleSyncCommitteeContribution]
 	r.GetBeaconNode().(*testingutils.TestingBeaconNode).SetSyncCommitteeAggregatorRootHexes(test.ProofRootsMap)
 	v.Beacon = r.GetBeaconNode()
 
@@ -59,19 +60,6 @@ func (test *SyncCommitteeAggregatorProofSpecTest) runPreTesting() (ssv.Runner, e
 		}
 	}
 	return r, lastErr
-}
-
-func keySetForShare(share *types.Share) *testingutils.TestKeySet {
-	if share.Quorum == 5 {
-		return testingutils.Testing7SharesSet()
-	}
-	if share.Quorum == 7 {
-		return testingutils.Testing10SharesSet()
-	}
-	if share.Quorum == 9 {
-		return testingutils.Testing13SharesSet()
-	}
-	return testingutils.Testing4SharesSet()
 }
 
 func (test *SyncCommitteeAggregatorProofSpecTest) GetPostState() (interface{}, error) {
