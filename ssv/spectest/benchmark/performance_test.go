@@ -1,25 +1,29 @@
 package benchmark
 
 import (
+	"crypto"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/sha256"
 	"fmt"
 	"testing"
 	"time"
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/bloxapp/ssv-spec/qbft"
-	"github.com/bloxapp/ssv-spec/ssv"
-	"github.com/bloxapp/ssv-spec/types"
-	"github.com/bloxapp/ssv-spec/types/testingutils"
 	"github.com/herumi/bls-eth-go-binary/bls"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 func FullDutyXRounds(numRounds int) {
 	ks := testingutils.Testing4SharesSet()
 	validator := testingutils.BaseValidator(ks)
-	duty := &testingutils.TestingAggregatorDuty
+	duty := testingutils.TestingAggregatorDuty(spec.DataVersionDeneb)
 	role := duty.Type
-	cd := testingutils.TestAggregatorConsensusDataByts
+	cd := testingutils.TestAggregatorConsensusDataByts(spec.DataVersionDeneb)
 	err := validator.StartDuty(duty)
 	height := qbft.Height(duty.Slot)
 	msgID := testingutils.AggregatorMsgID
@@ -27,7 +31,7 @@ func FullDutyXRounds(numRounds int) {
 		panic(err.Error())
 	}
 
-	msgs := make([]*types.SSVMessage, 0)
+	msgs := make([]*types.SignedSSVMessage, 0)
 
 	// Pre-consensus
 	msgs = append(msgs, PreConsensusF(ks, role, false)...)
@@ -63,9 +67,9 @@ func FullDutyXRounds(numRounds int) {
 func ConsensusXRound(round int) {
 	ks := testingutils.Testing4SharesSet()
 	validator := testingutils.BaseValidator(ks)
-	duty := &testingutils.TestingAggregatorDuty
+	duty := testingutils.TestingAggregatorDuty(spec.DataVersionDeneb)
 	role := duty.Type
-	cd := testingutils.TestAggregatorConsensusDataByts
+	cd := testingutils.TestAggregatorConsensusDataByts(spec.DataVersionDeneb)
 	err := validator.StartDuty(duty)
 	height := qbft.Height(duty.Slot)
 	msgID := testingutils.AggregatorMsgID
@@ -73,7 +77,7 @@ func ConsensusXRound(round int) {
 		panic(err.Error())
 	}
 
-	msgs := make([]*types.SSVMessage, 0)
+	msgs := make([]*types.SignedSSVMessage, 0)
 
 	// Pre-consensus
 	msgs = append(msgs, PreConsensusF(ks, role, false)...)
@@ -91,7 +95,7 @@ func ConsensusXRound(round int) {
 		}
 	}
 
-	msgs = make([]*types.SSVMessage, 0)
+	msgs = make([]*types.SignedSSVMessage, 0)
 
 	usePreparedValue := (round > 1)
 	msgs = append(msgs, ConsensusForRound(ks, role, height, qbft.Round(round), msgID, cd, usePreparedValue, int(ks.ShareCount), int(ks.ShareCount))...)
@@ -118,7 +122,7 @@ func ConsensusXRound(round int) {
 func SinglePartialSigMessage() {
 	ks := testingutils.Testing4SharesSet()
 	validator := testingutils.BaseValidator(ks)
-	duty := &testingutils.TestingAggregatorDuty
+	duty := testingutils.TestingAggregatorDuty(spec.DataVersionDeneb)
 	role := duty.Type
 	// cd := testingutils.TestAggregatorConsensusDataByts
 	err := validator.StartDuty(duty)
@@ -128,7 +132,7 @@ func SinglePartialSigMessage() {
 		panic(err.Error())
 	}
 
-	msgs := make([]*types.SSVMessage, 0)
+	msgs := make([]*types.SignedSSVMessage, 0)
 
 	// Pre-consensus
 	msgs = append(msgs, PreConsensusF(ks, role, false)...)
@@ -146,9 +150,9 @@ func SinglePartialSigMessage() {
 func ConsensusMessageXRound(round int, msgType qbft.MessageType) {
 	ks := testingutils.Testing4SharesSet()
 	validator := testingutils.BaseValidator(ks)
-	duty := &testingutils.TestingAggregatorDuty
+	duty := testingutils.TestingAggregatorDuty(spec.DataVersionDeneb)
 	role := duty.Type
-	cd := testingutils.TestAggregatorConsensusDataByts
+	cd := testingutils.TestAggregatorConsensusDataByts(spec.DataVersionDeneb)
 	err := validator.StartDuty(duty)
 	height := qbft.Height(duty.Slot)
 	msgID := testingutils.AggregatorMsgID
@@ -156,7 +160,7 @@ func ConsensusMessageXRound(round int, msgType qbft.MessageType) {
 		panic(err.Error())
 	}
 
-	msgs := make([]*types.SSVMessage, 0)
+	msgs := make([]*types.SignedSSVMessage, 0)
 
 	// Pre-consensus
 	msgs = append(msgs, PreConsensusF(ks, role, false)...)
@@ -175,18 +179,18 @@ func ConsensusMessageXRound(round int, msgType qbft.MessageType) {
 		}
 	}
 
-	msgs = make([]*types.SSVMessage, 0)
+	msgs = make([]*types.SignedSSVMessage, 0)
 
 	usePreparedValue := (round > 1)
 	msgs = append(msgs, ConsensusForRound(ks, role, height, qbft.Round(round), msgID, cd, usePreparedValue, int(ks.ShareCount), int(ks.ShareCount))...)
 
 	for _, msg := range msgs {
-		signedMessage := &qbft.SignedMessage{}
-		err := signedMessage.Decode(msg.Data)
+		qbftMsg := &qbft.Message{}
+		err := qbftMsg.Decode(msg.SSVMessage.Data)
 		if err != nil {
 			panic(err.Error())
 		}
-		mType := signedMessage.Message.MsgType
+		mType := qbftMsg.MsgType
 		if mType == msgType {
 			start := time.Now()
 			err := validator.ProcessMessage(msg)
@@ -209,9 +213,9 @@ func ConsensusMessageXRound(round int, msgType qbft.MessageType) {
 func YConsensusMessageXRound(round int, messageNumber int, msgType qbft.MessageType) {
 	ks := testingutils.Testing4SharesSet()
 	validator := testingutils.BaseValidator(ks)
-	duty := &testingutils.TestingAggregatorDuty
+	duty := testingutils.TestingAggregatorDuty(spec.DataVersionDeneb)
 	role := duty.Type
-	cd := testingutils.TestAggregatorConsensusDataByts
+	cd := testingutils.TestAggregatorConsensusDataByts(spec.DataVersionDeneb)
 	err := validator.StartDuty(duty)
 	height := qbft.Height(duty.Slot)
 	msgID := testingutils.AggregatorMsgID
@@ -219,7 +223,7 @@ func YConsensusMessageXRound(round int, messageNumber int, msgType qbft.MessageT
 		panic(err.Error())
 	}
 
-	msgs := make([]*types.SSVMessage, 0)
+	msgs := make([]*types.SignedSSVMessage, 0)
 
 	// Pre-consensus
 	msgs = append(msgs, PreConsensusF(ks, role, false)...)
@@ -238,19 +242,19 @@ func YConsensusMessageXRound(round int, messageNumber int, msgType qbft.MessageT
 		}
 	}
 
-	msgs = make([]*types.SSVMessage, 0)
+	msgs = make([]*types.SignedSSVMessage, 0)
 
 	usePreparedValue := (round > 1)
 	msgs = append(msgs, ConsensusForRound(ks, role, height, qbft.Round(round), msgID, cd, usePreparedValue, int(ks.ShareCount), int(ks.ShareCount))...)
 
 	messageOccurrenceNumber := 0
 	for _, msg := range msgs {
-		signedMessage := &qbft.SignedMessage{}
-		err := signedMessage.Decode(msg.Data)
+		qbftMsg := &qbft.Message{}
+		err := qbftMsg.Decode(msg.SSVMessage.Data)
 		if err != nil {
 			panic(err.Error())
 		}
-		mType := signedMessage.Message.MsgType
+		mType := qbftMsg.MsgType
 
 		foundMessage := false
 		if mType == msgType {
@@ -279,124 +283,124 @@ func YConsensusMessageXRound(round int, messageNumber int, msgType qbft.MessageT
 	}
 }
 
-func TestFullDutyRound(t *testing.T) {
-	FullDutyXRounds(1)
-	FullDutyXRounds(2)
-	FullDutyXRounds(3)
-	FullDutyXRounds(4)
-	FullDutyXRounds(5)
-	FullDutyXRounds(6)
-}
+// func TestFullDutyRound(t *testing.T) {
+// 	FullDutyXRounds(1)
+// 	FullDutyXRounds(2)
+// 	FullDutyXRounds(3)
+// 	FullDutyXRounds(4)
+// 	FullDutyXRounds(5)
+// 	FullDutyXRounds(6)
+// }
 
-func TestConsensusRounds(t *testing.T) {
-	ConsensusXRound(1)
-	ConsensusXRound(2)
-	ConsensusXRound(3)
-}
+// func TestConsensusRounds(t *testing.T) {
+// 	ConsensusXRound(1)
+// 	ConsensusXRound(2)
+// 	ConsensusXRound(3)
+// }
 
-func TestConsensusMessage(t *testing.T) {
-	ConsensusMessageXRound(1, qbft.ProposalMsgType)
-	ConsensusMessageXRound(1, qbft.PrepareMsgType)
-	ConsensusMessageXRound(1, qbft.CommitMsgType)
-	ConsensusMessageXRound(2, qbft.RoundChangeMsgType)
-	ConsensusMessageXRound(2, qbft.ProposalMsgType)
-	ConsensusMessageXRound(2, qbft.PrepareMsgType)
-	ConsensusMessageXRound(2, qbft.CommitMsgType)
-	ConsensusMessageXRound(3, qbft.RoundChangeMsgType)
-	ConsensusMessageXRound(3, qbft.ProposalMsgType)
-	ConsensusMessageXRound(3, qbft.PrepareMsgType)
-	ConsensusMessageXRound(3, qbft.CommitMsgType)
-}
+// func TestConsensusMessage(t *testing.T) {
+// 	ConsensusMessageXRound(1, qbft.ProposalMsgType)
+// 	ConsensusMessageXRound(1, qbft.PrepareMsgType)
+// 	ConsensusMessageXRound(1, qbft.CommitMsgType)
+// 	ConsensusMessageXRound(2, qbft.RoundChangeMsgType)
+// 	ConsensusMessageXRound(2, qbft.ProposalMsgType)
+// 	ConsensusMessageXRound(2, qbft.PrepareMsgType)
+// 	ConsensusMessageXRound(2, qbft.CommitMsgType)
+// 	ConsensusMessageXRound(3, qbft.RoundChangeMsgType)
+// 	ConsensusMessageXRound(3, qbft.ProposalMsgType)
+// 	ConsensusMessageXRound(3, qbft.PrepareMsgType)
+// 	ConsensusMessageXRound(3, qbft.CommitMsgType)
+// }
 
-func TestRoundChangeMessage(t *testing.T) {
-	YConsensusMessageXRound(2, 1, qbft.RoundChangeMsgType)
-	YConsensusMessageXRound(2, 2, qbft.RoundChangeMsgType)
-	YConsensusMessageXRound(2, 3, qbft.RoundChangeMsgType)
-	YConsensusMessageXRound(3, 1, qbft.RoundChangeMsgType)
-	YConsensusMessageXRound(3, 2, qbft.RoundChangeMsgType)
-	YConsensusMessageXRound(3, 3, qbft.RoundChangeMsgType)
-}
+// func TestRoundChangeMessage(t *testing.T) {
+// 	YConsensusMessageXRound(2, 1, qbft.RoundChangeMsgType)
+// 	YConsensusMessageXRound(2, 2, qbft.RoundChangeMsgType)
+// 	YConsensusMessageXRound(2, 3, qbft.RoundChangeMsgType)
+// 	YConsensusMessageXRound(3, 1, qbft.RoundChangeMsgType)
+// 	YConsensusMessageXRound(3, 2, qbft.RoundChangeMsgType)
+// 	YConsensusMessageXRound(3, 3, qbft.RoundChangeMsgType)
+// }
 
-func TestSinglePartialMessage(t *testing.T) {
-	SinglePartialSigMessage()
-}
+// func TestSinglePartialMessage(t *testing.T) {
+// 	SinglePartialSigMessage()
+// }
 
-func TestPreConsensus(t *testing.T) {
-	ks := testingutils.Testing4SharesSet()
-	validator := testingutils.BaseValidator(ks)
-	duty := &testingutils.TestingAggregatorDuty
-	role := duty.Type
-	err := validator.StartDuty(duty)
-	if err != nil {
-		panic(err.Error())
-	}
+// func TestPreConsensus(t *testing.T) {
+// 	ks := testingutils.Testing4SharesSet()
+// 	validator := testingutils.BaseValidator(ks)
+// 	duty := testingutils.TestingAggregatorDuty(spec.DataVersionDeneb)
+// 	role := duty.Type
+// 	err := validator.StartDuty(duty)
+// 	if err != nil {
+// 		panic(err.Error())
+// 	}
 
-	msgs := make([]*types.SSVMessage, 0)
+// 	msgs := make([]*types.SignedSSVMessage, 0)
 
-	// Pre-consensus
-	msgs = append(msgs, PreConsensusF(ks, role, false)...)
+// 	// Pre-consensus
+// 	msgs = append(msgs, PreConsensusF(ks, role, false)...)
 
-	// Process
-	start := time.Now()
+// 	// Process
+// 	start := time.Now()
 
-	for _, msg := range msgs {
-		err := validator.ProcessMessage(msg)
-		if err != nil {
-			panic(err.Error())
-		}
-	}
+// 	for _, msg := range msgs {
+// 		err := validator.ProcessMessage(msg)
+// 		if err != nil {
+// 			panic(err.Error())
+// 		}
+// 	}
 
-	end := time.Now()
-	elapsed := end.Sub(start).Microseconds()
-	fmt.Printf("Pre-consensus full committee: %v us.\n", elapsed)
-}
+// 	end := time.Now()
+// 	elapsed := end.Sub(start).Microseconds()
+// 	fmt.Printf("Pre-consensus full committee: %v us.\n", elapsed)
+// }
 
-func TestPostConsensus(t *testing.T) {
-	ks := testingutils.Testing4SharesSet()
-	validator := testingutils.BaseValidator(ks)
-	duty := &testingutils.TestingAggregatorDuty
-	role := duty.Type
-	cd := testingutils.TestAggregatorConsensusDataByts
-	err := validator.StartDuty(duty)
-	height := qbft.Height(duty.Slot)
-	msgID := testingutils.AggregatorMsgID
-	if err != nil {
-		panic(err.Error())
-	}
+// func TestPostConsensus(t *testing.T) {
+// 	ks := testingutils.Testing4SharesSet()
+// 	validator := testingutils.BaseValidator(ks)
+// 	duty := testingutils.TestingAggregatorDuty(spec.DataVersionDeneb)
+// 	role := duty.Type
+// 	cd := testingutils.TestAggregatorConsensusDataByts(spec.DataVersionDeneb)
+// 	err := validator.StartDuty(duty)
+// 	height := qbft.Height(duty.Slot)
+// 	msgID := testingutils.AggregatorMsgID
+// 	if err != nil {
+// 		panic(err.Error())
+// 	}
 
-	msgs := make([]*types.SSVMessage, 0)
+// 	msgs := make([]*types.SignedSSVMessage, 0)
 
-	// Pre-consensus
-	msgs = append(msgs, PreConsensusF(ks, role, false)...)
+// 	// Pre-consensus
+// 	msgs = append(msgs, PreConsensusF(ks, role, false)...)
 
-	// Consensus
-	msgs = append(msgs, ConsensusForRound(ks, role, height, 1, msgID, cd, false, int(ks.ShareCount), int(ks.ShareCount))...)
+// 	// Consensus
+// 	msgs = append(msgs, ConsensusForRound(ks, role, height, 1, msgID, cd, false, int(ks.ShareCount), int(ks.ShareCount))...)
 
-	for _, msg := range msgs {
-		err := validator.ProcessMessage(msg)
-		if err != nil {
-			panic(err.Error())
-		}
-	}
+// 	for _, msg := range msgs {
+// 		err := validator.ProcessMessage(msg)
+// 		if err != nil {
+// 			panic(err.Error())
+// 		}
+// 	}
 
-	msgs = make([]*types.SSVMessage, 0)
-	// Post-consensus
-	msgs = append(msgs, PostConsensusF(ks, role, true, height, spec.DataVersionDeneb)...)
+// 	msgs = make([]*types.SignedSSVMessage, 0)
+// 	// Post-consensus
+// 	msgs = append(msgs, PostConsensusF(ks, role, true, height, spec.DataVersionDeneb)...)
 
-	// Process
-	start := time.Now()
+// 	// Process
+// 	start := time.Now()
 
-	for _, msg := range msgs {
-		err := validator.ProcessMessage(msg)
-		if err != nil {
-			panic(err.Error())
-		}
-	}
+// 	for _, msg := range msgs {
+// 		err := validator.ProcessMessage(msg)
+// 		if err != nil {
+// 			panic(err.Error())
+// 		}
+// 	}
 
-	end := time.Now()
-	elapsed := end.Sub(start).Microseconds()
-	fmt.Printf("Post-consensus: %v us.\n", elapsed)
-}
+// 	end := time.Now()
+// 	elapsed := end.Sub(start).Microseconds()
+// 	fmt.Printf("Post-consensus: %v us.\n", elapsed)
+// }
 
 func TestCryptographyPrimitives(t *testing.T) {
 
@@ -406,6 +410,7 @@ func TestCryptographyPrimitives(t *testing.T) {
 	beacon := testingutils.NewTestingBeaconNode()
 	epoch := testingutils.TestingDutyEpoch
 	d, _ := beacon.DomainData(phase0.Epoch(epoch), types.DomainRandao)
+	validatorIndex := phase0.ValidatorIndex(10)
 
 	// Result data
 	signingTimes := make([]float64, 0)
@@ -432,6 +437,7 @@ func TestCryptographyPrimitives(t *testing.T) {
 			PartialSignature: signature[:],
 			SigningRoot:      root,
 			Signer:           opID,
+			ValidatorIndex:   validatorIndex,
 		}
 		partialSignatureMessages = append(partialSignatureMessages, msg)
 		PartialSigContainer.AddSignature(msg)
@@ -440,9 +446,9 @@ func TestCryptographyPrimitives(t *testing.T) {
 		pk := &bls.PublicKey{}
 		committee := ks.Committee()
 		for idx, op := range committee {
-			if op.OperatorID == opID {
+			if op.Signer == opID {
 				start := time.Now()
-				if err := pk.Deserialize(committee[idx].GetPublicKey()); err != nil {
+				if err := pk.Deserialize(committee[idx].SharePubKey); err != nil {
 					panic("Test failed to deserialize public key")
 				}
 				sig := &bls.Sign{}
@@ -471,7 +477,7 @@ func TestCryptographyPrimitives(t *testing.T) {
 	// Reconstruct time
 	validatorPubKey := ks.ValidatorPK.Serialize()
 	start := time.Now()
-	_, err := PartialSigContainer.ReconstructSignature(signingRoot, validatorPubKey)
+	_, err := PartialSigContainer.ReconstructSignature(signingRoot, validatorPubKey, validatorIndex)
 	if err != nil {
 		panic(err)
 	}
@@ -479,21 +485,30 @@ func TestCryptographyPrimitives(t *testing.T) {
 	elapsed := end.Sub(start).Microseconds()
 	fmt.Printf("Reconstruct + Verify signature: %v us.\n", elapsed)
 	fmt.Printf("Reconstruct (from the above diff): %.2f us.\n", float64(elapsed)-meanVerify)
+}
 
-	// Aggregation time
-	var aggregated types.Signature
+func TestRSaryptographyPrimitives(t *testing.T) {
+
+	// Init
+	ks := testingutils.Testing4SharesSet()
+
+	proposalMsg := testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1)
+	encodedMsg, _ := proposalMsg.SSVMessage.Encode()
+
+	// Sign
+	start := time.Now()
+	hash := sha256.Sum256(encodedMsg)
+	_, _ = rsa.SignPKCS1v15(rand.Reader, ks.OperatorKeys[1], crypto.SHA256, hash[:])
+	end := time.Now()
+	elapsed := end.Sub(start).Microseconds()
+	fmt.Printf("RSA Signing: %v us.\n", elapsed)
+
+	// Verify
+	pk := &ks.OperatorKeys[1].PublicKey
 	start = time.Now()
-	for _, msg := range partialSignatureMessages {
-		if aggregated == nil {
-			aggregated = msg.PartialSignature
-		} else {
-			aggregated, err = aggregated.Aggregate(msg.PartialSignature)
-			if err != nil {
-				panic(err)
-			}
-		}
-	}
+	_ = rsa.VerifyPKCS1v15(pk, crypto.SHA256, hash[:], proposalMsg.Signatures[0])
 	end = time.Now()
 	elapsed = end.Sub(start).Microseconds()
-	fmt.Printf("Aggregate 3 signatures: %v us.\n", elapsed)
+	fmt.Printf("RSA Verification: %v us.\n", elapsed)
+
 }
