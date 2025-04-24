@@ -29,7 +29,7 @@ type Instance struct {
 func NewInstance(
 	config IConfig,
 	committeeMember *types.CommitteeMember,
-	identifier []byte,
+	identifier Identifier,
 	height Height,
 	signer *types.OperatorSigner,
 ) *Instance {
