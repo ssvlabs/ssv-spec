@@ -9,7 +9,7 @@ var SSVDecidingMsgsForCommitteeRunner = func(beaconVote *types.BeaconVote, ks *T
 	id := CommitteeMsgID(ks)
 
 	// consensus
-	qbftMsgs := SSVDecidingMsgsForHeightAndBeaconVote(beaconVote, id[:], height, ks)
+	qbftMsgs := SSVDecidingMsgsForHeightAndBeaconVote(beaconVote, qbft.Identifier(id), height, ks)
 	return qbftMsgs
 }
 
@@ -54,7 +54,7 @@ var SSVDecidingMsgsV = func(consensusData *types.ValidatorConsensusData, ks *Tes
 	}
 
 	// consensus and post consensus
-	qbftMsgs := SSVDecidingMsgsForHeight(consensusData, id[:], qbft.Height(consensusData.Duty.Slot), ks)
+	qbftMsgs := SSVDecidingMsgsForHeight(consensusData, qbft.Identifier(id), qbft.Height(consensusData.Duty.Slot), ks)
 	base = append(base, qbftMsgs...)
 	return base
 }
@@ -101,7 +101,7 @@ var ExpectedSSVDecidingMsgsV = func(consensusData *types.ValidatorConsensusData,
 	}
 
 	// consensus and post consensus
-	qbftMsgs := SSVExpectedDecidingMsgsForHeight(consensusData, id[:], qbft.Height(consensusData.Duty.Slot), ks)
+	qbftMsgs := SSVExpectedDecidingMsgsForHeight(consensusData, qbft.Identifier(id), qbft.Height(consensusData.Duty.Slot), ks)
 	base = append(base, qbftMsgs...)
 	return base
 }
