@@ -16,7 +16,7 @@ func InvalidRoundChangeJustificationsUnmarshalling() tests.SpecTest {
 		MsgType:                  qbft.ProposalMsgType,
 		Height:                   qbft.FirstHeight,
 		Round:                    qbft.FirstRound,
-		Identifier:               []byte{1, 2, 3, 4},
+		Identifier:               testingutils.TestingIdentifier,
 		Root:                     testingutils.DifferentRoot,
 		RoundChangeJustification: [][]byte{{1}},
 	})

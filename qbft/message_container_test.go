@@ -81,9 +81,6 @@ func TestMsgContainer_Marshaling(t *testing.T) {
 
 func MessageWithSigners(signers []types.OperatorID, msg *qbft.Message) *qbft.ProcessingMessage {
 
-	msgID := [56]byte{}
-	copy(msgID[:], msg.Identifier)
-
 	encodedMsg, err := msg.Encode()
 	if err != nil {
 		panic(err)
@@ -91,7 +88,7 @@ func MessageWithSigners(signers []types.OperatorID, msg *qbft.Message) *qbft.Pro
 
 	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVConsensusMsgType,
-		MsgID:   msgID,
+		MsgID:   types.MessageID(msg.Identifier),
 		Data:    encodedMsg,
 	}
 	return testingutils.ToProcessingMessage(&types.SignedSSVMessage{

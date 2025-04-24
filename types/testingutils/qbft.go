@@ -107,22 +107,22 @@ var TestingCommitteeMember = func(keysSet *TestKeySet) *types.CommitteeMember {
 }
 
 var BaseInstance = func() *qbft.Instance {
-	return baseInstance(TestingCommitteeMember(Testing4SharesSet()), Testing4SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingCommitteeMember(Testing4SharesSet()), Testing4SharesSet(), TestingIdentifier)
 }
 
 var SevenOperatorsInstance = func() *qbft.Instance {
-	return baseInstance(TestingCommitteeMember(Testing7SharesSet()), Testing7SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingCommitteeMember(Testing7SharesSet()), Testing7SharesSet(), TestingIdentifier)
 }
 
 var TenOperatorsInstance = func() *qbft.Instance {
-	return baseInstance(TestingCommitteeMember(Testing10SharesSet()), Testing10SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingCommitteeMember(Testing10SharesSet()), Testing10SharesSet(), TestingIdentifier)
 }
 
 var ThirteenOperatorsInstance = func() *qbft.Instance {
-	return baseInstance(TestingCommitteeMember(Testing13SharesSet()), Testing13SharesSet(), []byte{1, 2, 3, 4})
+	return baseInstance(TestingCommitteeMember(Testing13SharesSet()), Testing13SharesSet(), TestingIdentifier)
 }
 
-var baseInstance = func(committeeMember *types.CommitteeMember, keySet *TestKeySet, identifier []byte) *qbft.Instance {
+var baseInstance = func(committeeMember *types.CommitteeMember, keySet *TestKeySet, identifier qbft.Identifier) *qbft.Instance {
 	ret := qbft.NewInstance(
 		TestingConfig(keySet), committeeMember, identifier, qbft.FirstHeight,
 		TestingOperatorSigner(keySet),
@@ -131,7 +131,7 @@ var baseInstance = func(committeeMember *types.CommitteeMember, keySet *TestKeyS
 	return ret
 }
 
-func NewTestingQBFTController(identifier []byte, share *types.CommitteeMember, config qbft.IConfig,
+func NewTestingQBFTController(identifier qbft.Identifier, share *types.CommitteeMember, config qbft.IConfig,
 	signer *types.OperatorSigner) *qbft.Controller {
 	return qbft.NewController(
 		identifier,

@@ -10,10 +10,10 @@ import (
 // ValidMsg tests future msg valid msg. This is a valid msg that is not yet ready to be processed.
 func ValidMsg() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	identifier := []byte{1, 2, 3, 4}
+	identifier := testingutils.TestingIdentifier
 
 	msg := testingutils.TestingPrepareMessageWithParams(
-		ks.OperatorKeys[3], 3, 3, 10, identifier[:], testingutils.TestingQBFTRootData,
+		ks.OperatorKeys[3], 3, 3, 10, identifier, testingutils.TestingQBFTRootData,
 	)
 
 	// create base controller
@@ -33,11 +33,11 @@ func ValidMsg() tests.SpecTest {
 }
 
 func createBaseController() *qbft.Controller {
-	id := []byte{1, 2, 3, 4}
+	id := testingutils.TestingIdentifier
 	ks := testingutils.Testing4SharesSet()
 	config := testingutils.TestingConfig(ks)
 	contr := testingutils.NewTestingQBFTController(
-		id[:],
+		id,
 		testingutils.TestingCommitteeMember(ks),
 		config,
 		testingutils.TestingOperatorSigner(ks),

@@ -46,14 +46,14 @@ const (
 
 type Message struct {
 	MsgType    MessageType
-	Height     Height // QBFT instance Height
-	Round      Round  // QBFT round for which the msg is for
-	Identifier []byte `ssz-max:"56"` // instance Identifier this msg belongs to
+	Height     Height     // QBFT instance Height
+	Round      Round      // QBFT round for which the msg is for
+	Identifier Identifier `ssz-size:"56"` // instance Identifier this msg belongs to
 
 	Root                     [32]byte `ssz-size:"32"`
 	DataRound                Round    // The last round that obtained a Prepare quorum
-	RoundChangeJustification [][]byte `ssz-max:"13,51852"`
-	PrepareJustification     [][]byte `ssz-max:"13,3700"`
+	RoundChangeJustification [][]byte `ssz-max:"13,51796"`
+	PrepareJustification     [][]byte `ssz-max:"13,3696"`
 }
 
 // Creates a Message object from bytes
@@ -90,9 +90,6 @@ func (msg *Message) GetRoot() ([32]byte, error) {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (msg *Message) Validate() error {
-	if len(msg.Identifier) == 0 {
-		return errors.New("message identifier is invalid")
-	}
 	if _, err := msg.GetRoundChangeJustifications(); err != nil {
 		return err
 	}
@@ -144,8 +141,7 @@ func Sign(msg *Message, operatorID types.OperatorID, operatorSigner *types.Opera
 		return nil, errors.Wrap(err, "could not encode message")
 	}
 
-	msgID := types.MessageID{}
-	copy(msgID[:], msg.Identifier)
+	msgID := types.MessageID(msg.Identifier)
 
 	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVConsensusMsgType,

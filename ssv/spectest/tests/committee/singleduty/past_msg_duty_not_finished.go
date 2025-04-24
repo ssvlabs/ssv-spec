@@ -22,7 +22,7 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	decidedValue := testingutils.TestBeaconVoteByts
-	msgID := testingutils.CommitteeMsgID(ks)
+	msgID := qbft.Identifier(testingutils.CommitteeMsgID(ks))
 
 	multiSpecTest := &committee.MultiCommitteeSpecTest{
 		Name:  "past msg duty not finished",

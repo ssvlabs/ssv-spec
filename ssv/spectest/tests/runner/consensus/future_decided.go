@@ -18,7 +18,7 @@ func FutureDecided() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	getID := func(role types.RunnerRole) []byte {
+	getID := func(role types.RunnerRole) qbft.Identifier {
 		if role == types.RoleCommittee {
 			opIDs := make([]types.OperatorID, len(ks.Committee()))
 			for i, member := range ks.Committee() {
@@ -26,10 +26,10 @@ func FutureDecided() tests.SpecTest {
 			}
 			committeeID := types.GetCommitteeID(opIDs)
 			ret := types.NewMsgID(testingutils.TestingSSVDomainType, committeeID[:], role)
-			return ret[:]
+			return qbft.Identifier(ret)
 		}
 		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
-		return ret[:]
+		return qbft.Identifier(ret)
 	}
 
 	errStr := "failed processing consensus message: decided wrong instance"

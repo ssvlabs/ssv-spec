@@ -6,9 +6,9 @@ import (
 )
 
 const (
-	maxSizeQBFTMessageWithNoJustification = 132
-	maxSizeQBFTMessageWith1Justification  = 48284
-	maxSizeQBFTMessageWith2Justification  = 722412
+	maxSizeQBFTMessageWithNoJustification = 128
+	maxSizeQBFTMessageWith1Justification  = 48228
+	maxSizeQBFTMessageWith2Justification  = 721628
 )
 
 func maxFullData() []byte {
@@ -23,7 +23,7 @@ func maxQbftMessageNoJustification() *qbft.Message {
 		MsgType:                  qbft.PrepareMsgType,
 		Height:                   1,
 		Round:                    1,
-		Identifier:               msgID[:],
+		Identifier:               msgID,
 		Root:                     [32]byte{},
 		DataRound:                1,
 		RoundChangeJustification: make([][]byte, 0),
