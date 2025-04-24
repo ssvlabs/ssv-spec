@@ -8,7 +8,6 @@ import (
 	"sync"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 	ssz "github.com/ferranbt/fastssz"
@@ -29,7 +28,7 @@ type TestingKeyStorage struct {
 	ecdsaKeys      map[string]*ecdsa.PrivateKey
 	encryptionKeys map[string]*rsa.PrivateKey
 	domain         types.DomainType
-	signatureCache map[string]map[string]map[spec.Domain]*SignOutput
+	signatureCache map[string]map[string]map[phase0.Domain]*SignOutput
 }
 
 type TestingKeyManager struct {
@@ -66,7 +65,7 @@ func NewTestingKeyStorage() *TestingKeyStorage {
 			ecdsaKeys:      map[string]*ecdsa.PrivateKey{},
 			encryptionKeys: nil,
 			domain:         TestingSSVDomainType,
-			signatureCache: make(map[string]map[string]map[spec.Domain]*SignOutput),
+			signatureCache: make(map[string]map[string]map[phase0.Domain]*SignOutput),
 		}
 
 		testingSharesSets := []*TestKeySet{Testing4SharesSet(), Testing7SharesSet(), Testing10SharesSet(), Testing13SharesSet()}
@@ -101,13 +100,13 @@ func NewTestingKeyStorage() *TestingKeyStorage {
 func (km *TestingKeyManager) AddSlashableSlot(pk types.ShareValidatorPK, slot phase0.Slot) {
 	entry := hex.EncodeToString(pk)
 	if km.slashableSlots[entry] == nil {
-		km.slashableSlots[entry] = make([]spec.Slot, 0)
+		km.slashableSlots[entry] = make([]phase0.Slot, 0)
 	}
 	km.slashableSlots[entry] = append(km.slashableSlots[entry], slot)
 }
 
 // IsAttestationSlashable returns error if attestation is slashable
-func (km *TestingKeyManager) IsAttestationSlashable(pk types.ShareValidatorPK, data *spec.AttestationData) error {
+func (km *TestingKeyManager) IsAttestationSlashable(pk types.ShareValidatorPK, data *phase0.AttestationData) error {
 	entry := hex.EncodeToString(pk)
 	for _, slot := range km.slashableSlots[entry] {
 		if slot == data.Slot {
@@ -130,11 +129,11 @@ func (km *TestingKeyManager) SignRoot(data types.Root, sigType types.SignatureTy
 }
 
 // IsBeaconBlockSlashable returns error if the given block is slashable
-func (km *TestingKeyManager) IsBeaconBlockSlashable(pk []byte, slot spec.Slot) error {
+func (km *TestingKeyManager) IsBeaconBlockSlashable(pk []byte, slot phase0.Slot) error {
 	return nil
 }
 
-func (km *TestingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte, domainType spec.DomainType) (types.Signature, [32]byte, error) {
+func (km *TestingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain phase0.Domain, pk []byte, domainType phase0.DomainType) (types.Signature, [32]byte, error) {
 	mu.Lock()
 	defer mu.Unlock()
 
@@ -152,7 +151,7 @@ func (km *TestingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain spec.Doma
 		}
 
 		sig := k.SignByte(r[:])
-		blsSig := spec.BLSSignature{}
+		blsSig := phase0.BLSSignature{}
 		copy(blsSig[:], sig.Serialize())
 
 		sigString := sig.Serialize()
@@ -199,7 +198,7 @@ func (km *TestingKeyManager) RemoveShare(pubKey string) error {
 	return nil
 }
 
-func (km *TestingKeyManager) hasSignRequest(pk string, obj ssz.HashRoot, domain spec.Domain) (*SignOutput, bool) {
+func (km *TestingKeyManager) hasSignRequest(pk string, obj ssz.HashRoot, domain phase0.Domain) (*SignOutput, bool) {
 	if _, exists := km.keyStorage.signatureCache[pk]; !exists {
 		return &SignOutput{}, false
 	}
@@ -217,9 +216,9 @@ func (km *TestingKeyManager) hasSignRequest(pk string, obj ssz.HashRoot, domain 
 	return km.keyStorage.signatureCache[pk][root][domain], true
 }
 
-func (km *TestingKeyManager) storeSignRequest(pk string, obj ssz.HashRoot, domain spec.Domain, sig types.Signature, r [32]byte) {
+func (km *TestingKeyManager) storeSignRequest(pk string, obj ssz.HashRoot, domain phase0.Domain, sig types.Signature, r [32]byte) {
 	if _, exists := km.keyStorage.signatureCache[pk]; !exists {
-		km.keyStorage.signatureCache[pk] = make(map[string]map[spec.Domain]*SignOutput)
+		km.keyStorage.signatureCache[pk] = make(map[string]map[phase0.Domain]*SignOutput)
 	}
 	objRoot, err := obj.HashTreeRoot()
 	if err != nil {
@@ -227,7 +226,7 @@ func (km *TestingKeyManager) storeSignRequest(pk string, obj ssz.HashRoot, domai
 	}
 	root := hex.EncodeToString(objRoot[:])
 	if _, exists := km.keyStorage.signatureCache[pk][root]; !exists {
-		km.keyStorage.signatureCache[pk][root] = make(map[spec.Domain]*SignOutput)
+		km.keyStorage.signatureCache[pk][root] = make(map[phase0.Domain]*SignOutput)
 	}
 	km.keyStorage.signatureCache[pk][root][domain] = &SignOutput{Signature: sig, Root: r}
 }
