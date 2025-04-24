@@ -5,6 +5,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
+type Identifier [56]byte // QBFT identifier present in the controller, state and messages
+
 type Round uint64
 type Height uint64
 

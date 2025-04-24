@@ -57,7 +57,7 @@ func (c *Config) GetCutOffRound() Round {
 
 type State struct {
 	CommitteeMember                 *types.CommitteeMember
-	ID                              []byte // instance Identifier
+	ID                              Identifier // instance Identifier
 	Round                           Round
 	Height                          Height
 	LastPreparedRound               Round
