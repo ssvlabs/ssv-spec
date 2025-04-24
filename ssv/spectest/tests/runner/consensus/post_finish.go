@@ -35,7 +35,7 @@ func PostFinish() tests.SpecTest {
 						[]*rsa.PrivateKey{ks.OperatorKeys[4]},
 						[]types.OperatorID{4},
 						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.SyncCommitteeContributionMsgID,
+						qbft.Identifier(testingutils.SyncCommitteeContributionMsgID),
 						testingutils.TestSyncCommitteeContributionConsensusDataByts,
 					),
 				),
@@ -71,7 +71,7 @@ func PostFinish() tests.SpecTest {
 					[]*rsa.PrivateKey{ks.OperatorKeys[4]},
 					[]types.OperatorID{4},
 					qbft.Height(testingutils.TestingDutySlotV(version)),
-					testingutils.AggregatorMsgID,
+					qbft.Identifier(testingutils.AggregatorMsgID),
 					testingutils.TestAggregatorConsensusDataByts(version),
 				),
 			),
@@ -103,7 +103,7 @@ func PostFinish() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, version))),
 					// commit msg
-					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData([]*rsa.PrivateKey{ks.OperatorKeys[4]}, []types.OperatorID{4}, height, testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData([]*rsa.PrivateKey{ks.OperatorKeys[4]}, []types.OperatorID{4}, height, qbft.Identifier(testingutils.CommitteeMsgID(ks)), testingutils.TestBeaconVoteByts),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version),
@@ -124,7 +124,7 @@ func PostFinish() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3, version))),
 					// commit msg
-					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData([]*rsa.PrivateKey{ks.OperatorKeys[4]}, []types.OperatorID{4}, height, testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData([]*rsa.PrivateKey{ks.OperatorKeys[4]}, []types.OperatorID{4}, height, qbft.Identifier(testingutils.CommitteeMsgID(ks)), testingutils.TestBeaconVoteByts),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version),
@@ -145,7 +145,7 @@ func PostFinish() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[2], 2, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[3], 3, version))),
 					// commit msg
-					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData([]*rsa.PrivateKey{ks.OperatorKeys[4]}, []types.OperatorID{4}, height, testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
+					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData([]*rsa.PrivateKey{ks.OperatorKeys[4]}, []types.OperatorID{4}, height, qbft.Identifier(testingutils.CommitteeMsgID(ks)), testingutils.TestBeaconVoteByts),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version),
@@ -180,7 +180,7 @@ func PostFinish() tests.SpecTest {
 					[]*rsa.PrivateKey{ks.OperatorKeys[4]},
 					[]types.OperatorID{4},
 					qbft.Height(testingutils.TestingDutySlotV(version)),
-					testingutils.ProposerMsgID,
+					qbft.Identifier(testingutils.ProposerMsgID),
 					testingutils.TestProposerConsensusDataBytsV(version),
 				),
 			),
@@ -214,7 +214,7 @@ func PostFinish() tests.SpecTest {
 					[]*rsa.PrivateKey{ks.OperatorKeys[4]},
 					[]types.OperatorID{4},
 					qbft.Height(testingutils.TestingDutySlotV(version)),
-					testingutils.ProposerMsgID,
+					qbft.Identifier(testingutils.ProposerMsgID),
 					testingutils.TestProposerBlindedBlockConsensusDataBytsV(version),
 				),
 			),

@@ -18,7 +18,7 @@ func MissingSomeShares() tests.SpecTest {
 
 	// Message ID
 	ks := testingutils.TestingKeySetMap[phase0.ValidatorIndex(1)]
-	msgID := testingutils.CommitteeMsgID(ks)
+	msgID := qbft.Identifier(testingutils.CommitteeMsgID(ks))
 
 	// Committee's validator indexes
 	committeeShareValidators := []int{1, 3, 5, 7, 9}

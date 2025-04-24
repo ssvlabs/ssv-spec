@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,9 +21,9 @@ func WrongDutyRole() tests.SpecTest {
 		return ret
 	}
 	// Wrong ID for SignedMessage
-	getWrongID := func(role types.RunnerRole) []byte {
+	getWrongID := func(role types.RunnerRole) qbft.Identifier {
 		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role+1)
-		return ret[:]
+		return qbft.Identifier(ret)
 	}
 
 	// Function to get decided message with wrong ID for role
