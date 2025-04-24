@@ -24,7 +24,7 @@ func InvalidIdentifier() tests.SpecTest {
 						MsgType:    qbft.ProposalMsgType,
 						Height:     qbft.FirstHeight,
 						Round:      qbft.FirstRound,
-						Identifier: identifier[:],
+						Identifier: qbft.Identifier(identifier),
 						Root:       testingutils.TestingQBFTRootData,
 					}),
 				},
