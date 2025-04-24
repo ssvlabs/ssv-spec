@@ -41,7 +41,8 @@ var PostConsensusCommitteeMsgForDuty = func(duty *types.CommitteeDuty, keySetMap
 
 		ks := keySetMap[validatorDuty.ValidatorIndex]
 
-		if validatorDuty.Type == types.BNRoleAttester {
+		switch validatorDuty.Type {
+		case types.BNRoleAttester:
 			attData := TestingAttestationDataForValidatorDuty(validatorDuty)
 			pSigMsgs := postConsensusAttestationMsgForAttestationData(ks.Shares[id], id, duty.Slot, attData, validatorDuty.ValidatorIndex)
 			if ret == nil {
@@ -49,14 +50,14 @@ var PostConsensusCommitteeMsgForDuty = func(duty *types.CommitteeDuty, keySetMap
 			} else {
 				ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
 			}
-		} else if validatorDuty.Type == types.BNRoleSyncCommittee {
+		case types.BNRoleSyncCommittee:
 			pSigMsgs := postConsensusSyncCommitteeMsg(ks.Shares[id], id, duty.Slot, false, false, validatorDuty.ValidatorIndex)
 			if ret == nil {
 				ret = pSigMsgs
 			} else {
 				ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
 			}
-		} else {
+		default:
 			panic(fmt.Sprintf("type %v not expected", validatorDuty.Type))
 		}
 	}
