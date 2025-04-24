@@ -3,11 +3,11 @@ package maxmsgsize
 import "github.com/ssvlabs/ssv-spec/types"
 
 const (
-	expectedSizePrepareSignedSSVMessage                  = 484
-	expectedSizeCommitSignedSSVMessage                   = 484
-	expectedSizeDecidedSignedSSVMessage                  = 1020
-	expectedSizeRoundChangeSignedSSVMessage              = 1948
-	expectedSizeProposalSignedSSVMessage                 = 7916
+	expectedSizePrepareSignedSSVMessage                  = 480
+	expectedSizeCommitSignedSSVMessage                   = 480
+	expectedSizeDecidedSignedSSVMessage                  = 1016
+	expectedSizeRoundChangeSignedSSVMessage              = 1932
+	expectedSizeProposalSignedSSVMessage                 = 7852
 	expectedSizePartialSignatureMessagesSignedSSVMessage = 628
 )
 

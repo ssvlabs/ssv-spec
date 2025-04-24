@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	maxSizeSSVMessageFromQBFTMessage              = 722480
+	maxSizeSSVMessageFromQBFTMessage              = 721696
 	maxSizeSSVMessageFromPartialSignatureMessages = 217816
 )
 

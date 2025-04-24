@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	expectedSizePrepareQBFTMessage     = 132
-	expectedSizeCommitQBFTMessage      = 132
-	expectedSizeRoundChangeQBFTMessage = 1596
-	expectedSizeProposalQBFTMessage    = 7452
+	expectedSizePrepareQBFTMessage     = 128
+	expectedSizeCommitQBFTMessage      = 128
+	expectedSizeRoundChangeQBFTMessage = 1580
+	expectedSizeProposalQBFTMessage    = 7388
 )
 
 func expectedPrepare() *qbft.Message {
@@ -19,7 +19,7 @@ func expectedPrepare() *qbft.Message {
 		MsgType:    qbft.PrepareMsgType,
 		Height:     1,
 		Round:      1,
-		Identifier: msgID[:],
+		Identifier: msgID,
 		Root:       [32]byte{},
 	}
 
@@ -33,7 +33,7 @@ func expectedCommit() *qbft.Message {
 		MsgType:    qbft.CommitMsgType,
 		Height:     1,
 		Round:      1,
-		Identifier: msgID[:],
+		Identifier: msgID,
 		Root:       [32]byte{},
 	}
 
@@ -58,7 +58,7 @@ func expectedRoundChange(quorum int) *qbft.Message {
 		MsgType:                  qbft.RoundChangeMsgType,
 		Height:                   1,
 		Round:                    2,
-		Identifier:               msgID[:],
+		Identifier:               msgID,
 		Root:                     [32]byte{},
 		DataRound:                1,
 		RoundChangeJustification: rcJustificationBytes,
@@ -96,7 +96,7 @@ func expectedProposal(quorum int) *qbft.Message {
 		MsgType:                  qbft.RoundChangeMsgType,
 		Height:                   1,
 		Round:                    2,
-		Identifier:               msgID[:],
+		Identifier:               msgID,
 		Root:                     [32]byte{},
 		DataRound:                1,
 		RoundChangeJustification: rcJustificationBytes,
