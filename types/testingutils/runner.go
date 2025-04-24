@@ -140,7 +140,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 		}
 		config.Network = net
 
-		contr = qbft.NewController(identifier[:], committeeMember, config, opSigner)
+		contr = qbft.NewController(qbft.Identifier(identifier), committeeMember, config, opSigner)
 	}
 
 	var runner ssv.Runner
@@ -294,7 +294,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	}
 	config.Network = net
 
-	contr := qbft.NewController(identifier[:], committeeMember, config, opSigner)
+	contr := qbft.NewController(qbft.Identifier(identifier), committeeMember, config, opSigner)
 
 	// Build share map
 	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
@@ -390,7 +390,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 }
 
 // //////////////////////////////// For SSV Tests ////////////////////////////////////////////////////////////////
-var SSVDecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var SSVDecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier qbft.Identifier, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()
@@ -398,7 +398,7 @@ var SSVDecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData,
 	return SSVDecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
 }
 
-var SSVDecidingMsgsForHeightAndBeaconVote = func(beaconVote *types.BeaconVote, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var SSVDecidingMsgsForHeightAndBeaconVote = func(beaconVote *types.BeaconVote, msgIdentifier qbft.Identifier, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	fullData, err := beaconVote.Encode()
 	if err != nil {
 		panic(err)
@@ -411,7 +411,7 @@ var SSVDecidingMsgsForHeightAndBeaconVote = func(beaconVote *types.BeaconVote, m
 	return SSVDecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
 }
 
-var SSVExpectedDecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var SSVExpectedDecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier qbft.Identifier, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()
@@ -419,7 +419,7 @@ var SSVExpectedDecidingMsgsForHeight = func(consensusData *types.ValidatorConsen
 	return SSVExpectedDecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
 }
 
-var SSVDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var SSVDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData []byte, msgIdentifier qbft.Identifier, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	msgs := make([]*types.SignedSSVMessage, 0)
 
 	// proposal
@@ -456,7 +456,7 @@ var SSVDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifi
 	return msgs
 }
 
-var SSVExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var SSVExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData []byte, msgIdentifier qbft.Identifier, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	msgs := make([]*types.SignedSSVMessage, 0)
 
 	// proposal
@@ -494,7 +494,7 @@ var SSVExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msg
 }
 
 // //////////////////// For QBFT TESTS /////////////////////////////////////////////////////////////////////////
-var DecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var DecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier qbft.Identifier, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()
@@ -502,7 +502,7 @@ var DecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, ms
 	return DecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
 }
 
-var ExpectedDecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var ExpectedDecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier qbft.Identifier, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()
@@ -510,7 +510,7 @@ var ExpectedDecidingMsgsForHeight = func(consensusData *types.ValidatorConsensus
 	return ExpectedDecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
 }
 
-var DecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var DecidingMsgsForHeightWithRoot = func(root [32]byte, fullData []byte, msgIdentifier qbft.Identifier, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	msgs := make([]*types.SignedSSVMessage, 0)
 
 	for h := qbft.FirstHeight; h <= height; h++ {
@@ -549,7 +549,7 @@ var DecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier 
 	return msgs
 }
 
-var ExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var ExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData []byte, msgIdentifier qbft.Identifier, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	msgs := make([]*types.SignedSSVMessage, 0)
 
 	for h := qbft.FirstHeight; h <= height; h++ {
