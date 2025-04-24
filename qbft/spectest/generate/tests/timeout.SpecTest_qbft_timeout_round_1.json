@@ -65,7 +65,64 @@
           1
         ]
       },
-      "ID": "AQIDBA==",
+      "ID": [
+        1,
+        2,
+        3,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
       "Round": 1,
       "Height": 0,
       "LastPreparedRound": 0,
@@ -73,7 +130,7 @@
       "ProposalAcceptedForCurrentRound": {
         "SignedMessage": {
           "Signatures": [
-            "w3UJv6FMo17RQc7ewjyw7D39a5mHNKnYS8ZkVBNbyYT56RXYJJ6Kg6TEdCMqwLnNtRE+hI5QvVvFa+7llT2/0jkdQxP7TW8Fph0GTZMBP0Sa6dliDTBvYH9KjahV8uFJ+S/Sq640Ed5FF6vedOh8eYbB7Us0w/aVN1qlufLAC17dcLbaYcnQqkT4fSy4j2hb2vi2Vi3siJcbVDREAo3JHd6K6cmB3bO54hFbkJjEGVAr3ov+l/XrUsu+6dgPkdj3VMkMWOsMZjCxB0sjawdbUvfqqspAAW7eMxGvz+yc03WrodImQUEJaNY7GofeCuUfux5tyRbgycsHU2Qv3zc7cA=="
+            "pNkVVIklwy2uPjEYlopXrZ5JCkAVwZip86IOZ2uOiUvBBNciRjMgL5xw/uUOQCJscxAoJFsTJZp0i6MharexI6X1Ftrc1K07W27tmPVBeoEj0i2WAhj/bUng5Jgm6eXAxb9UgpJzINSmKERb4pim8RSeW3WJLk/M8vFNV2qKW56L+F0MdK2ynr7XLG7ussH4X0CVaNwoBsHotqxKt97Z6yy8i1Y0/jvHTa/kj8sVgfEJe01znwVPFqOn1lWRD81Lwn/yont2lwZAzRH3Udj57I3mXaN+GsxYmevNy7y7FAgfy5hQ/bzqcobdO3crB45maP0lcHc84ecxQu4oPKRfRg=="
           ],
           "OperatorIDs": [
             1
@@ -138,7 +195,7 @@
               0,
               0
             ],
-            "Data": "AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
+            "Data": "AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAQIDBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC+lW+3307zdTFoLViDIAhPyRTD8P7TNSY+W0QGLmwptAAAAAAAAAAAgAAAAIAAAAA="
           },
           "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
         },
@@ -146,7 +203,64 @@
           "MsgType": 0,
           "Height": 0,
           "Round": 1,
-          "Identifier": "AQIDBA==",
+          "Identifier": [
+            1,
+            2,
+            3,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
           "Root": [
             190,
             149,
@@ -203,11 +317,11 @@
     },
     "StartValue": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
   },
-  "PostRoot": "8ed20ba955246b52ad3cf38c6b700393612399ecdaa4d2def414fe476340d5a9",
+  "PostRoot": "537d50889a13e66cf7836e3facf397e10d5fe4ff2f2ba452112c8cdf584757a4",
   "OutputMessages": [
     {
       "Signatures": [
-        "KM+g5XMPrakJGbob600ZHcWYOsE6N2YQngcC2SKBtjw7KxoVcqS1xpYiDenyggodG1Oap8cS/fNsqZondo+SWto1uG+MyuTzhIj4Y+9GcZa5oJp+9l4VEwdD06GAnpJkY026YLcAHzspMvwAi5ldxsk72y+n4iPUVqOaKKKGC1r21XEZsFlAggdCnnjho5w5KuzYXDTYwCbAcyHeMDVLJUfoWEdOlL90aZ5un/RAfmVgTxPbmcpLshZSI3OyUtq3g0QwFJzSeQ0P1xKGtWumiGRtatoTHjV5vMDgapRCfjm/RINEzViokk9kXZxkJ8qv6CmaQWg3A1C+eytNZpHlHA=="
+        "o0Itc5Z22yEjuadltKe8sDmkzXjXROhz5gh2yDchthucV6fKYacI7yuAnw8Go+xbwmDk4GMNZwu3Wt+GQd7LuEEmBixfoe+XNvWfq1aMNct+SV6kpVhvgToGbPVpXfkqvDReJ0Gjdb45aIeAvzGYiLBQrAYrdOFWdmpMLeTZEu8QDWAoyYtrHG+QrNI+3j297zRl2mYeLjyAK2tdJU5me5gg1ocSMnRDZb9eTxCGQqaA0tFxq7+ImIH+VEt7OmiOSVUI5IrylLhpXIp8p5+1/jiY26LTLvjaHsdXmB+IKsz19A6U3RJQkHlIIimDM4Fcc6w7GaBLsLOgrLtUwkPEcA=="
       ],
       "OperatorIDs": [
         1
@@ -272,7 +386,7 @@
           0,
           0
         ],
-        "Data": "AwAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQAAAAUAAAAAECAwQ="
+        "Data": "AwAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAQIDBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAIAAAAA="
       },
       "FullData": null
     }
