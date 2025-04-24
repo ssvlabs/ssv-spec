@@ -5,9 +5,9 @@ import (
 )
 
 const (
-	maxSizeSignedSSVMessageFromQBFTWithNoJustification  = 3700
-	maxSizeSignedSSVMessageFromQBFTWith1Justification   = 51852
-	maxSizeSignedSSVMessageFromQBFTWith2Justification   = 9114816
+	maxSizeSignedSSVMessageFromQBFTWithNoJustification  = 3696
+	maxSizeSignedSSVMessageFromQBFTWith1Justification   = 51796
+	maxSizeSignedSSVMessageFromQBFTWith2Justification   = 9114032
 	maxSizeSignedSSVMessageFromPartialSignatureMessages = 221316
 	maxSizeFullConsensusData                            = 8388836
 )
