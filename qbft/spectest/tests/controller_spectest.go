@@ -75,12 +75,12 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 }
 
 func (test *ControllerSpecTest) generateController() *qbft.Controller {
-	identifier := []byte{1, 2, 3, 4}
+	identifier := testingutils.TestingIdentifier
 	ks := testingutils.Testing4SharesSet()
 	config := testingutils.TestingConfig(ks)
 	committeeMember := testingutils.TestingCommitteeMember(ks)
 	return testingutils.NewTestingQBFTController(
-		identifier[:],
+		identifier,
 		committeeMember,
 		config,
 		testingutils.TestingOperatorSigner(ks),
@@ -182,7 +182,7 @@ func (test *ControllerSpecTest) runInstanceWithData(
 		lastErr = err
 	}
 
-	test.testBroadcastedDecided(t, contr.GetConfig(), contr.Identifier, runData, contr.CommitteeMember.Committee)
+	test.testBroadcastedDecided(t, contr.GetConfig(), contr.Identifier[:], runData, contr.CommitteeMember.Committee)
 
 	// test root
 	r, err := contr.GetRoot()

@@ -28,11 +28,11 @@ func PreviousNotDecided() tests.SpecTest {
 }
 
 func previousNotDecided1SC() *qbftcomparable.StateComparison {
-	identifier := []byte{1, 2, 3, 4}
+	identifier := testingutils.TestingIdentifier
 	ks := testingutils.Testing4SharesSet()
 	config := testingutils.TestingConfig(ks)
 	contr := testingutils.NewTestingQBFTController(
-		identifier[:],
+		identifier,
 		testingutils.TestingCommitteeMember(ks),
 		config,
 		testingutils.TestingOperatorSigner(ks),
@@ -53,11 +53,11 @@ func previousNotDecided1SC() *qbftcomparable.StateComparison {
 }
 
 func previousNotDecided2SC() *qbftcomparable.StateComparison {
-	identifier := []byte{1, 2, 3, 4}
+	identifier := testingutils.TestingIdentifier
 	ks := testingutils.Testing4SharesSet()
 	config := testingutils.TestingConfig(ks)
 	contr := testingutils.NewTestingQBFTController(
-		identifier[:],
+		identifier,
 		testingutils.TestingCommitteeMember(ks),
 		config,
 		testingutils.TestingOperatorSigner(ks),

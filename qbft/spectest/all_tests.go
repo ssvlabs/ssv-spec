@@ -88,8 +88,6 @@ var AllTests = []tests.TestF{
 	messages.RoundChangePrePreparedJustifications,
 	messages.RoundChangeNotPreparedJustifications,
 	messages.CommitDataEncoding,
-	messages.MsgNilIdentifier,
-	messages.MsgNonZeroIdentifier,
 	messages.MsgTypeUnknown,
 	messages.PrepareDataEncoding,
 	messages.PrepareJustificationsUnmarshalling,
