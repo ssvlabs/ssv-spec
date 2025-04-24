@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 	"fmt"
 
+	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -28,7 +29,7 @@ func WrongMessageID() tests.SpecTest {
 			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 			[]types.OperatorID{1, 2, 3},
 			testingutils.TestingDutySlot,
-			msgID[:])
+			qbft.Identifier(msgID))
 
 		signedMessage.SSVMessage.MsgID = msgID
 

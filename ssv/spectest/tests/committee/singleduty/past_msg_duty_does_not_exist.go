@@ -19,7 +19,7 @@ func PastMessageDutyDoesNotExist() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	decidedValue := testingutils.TestBeaconVoteByts
-	msgID := testingutils.CommitteeMsgID(ks)
+	msgID := qbft.Identifier(testingutils.CommitteeMsgID(ks))
 	pastHeight := qbft.Height(10)
 
 	pastProposalMsgF := func() *types.SignedSSVMessage {

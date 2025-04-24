@@ -35,7 +35,7 @@ func NonUniqueSigners() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3))),
 					nonUniqueSigners(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.SyncCommitteeContributionMsgID, testingutils.TestSyncCommitteeContributionConsensusDataByts,
+						ks.OperatorKeys[1], types.OperatorID(1), qbft.Identifier(testingutils.SyncCommitteeContributionMsgID), testingutils.TestSyncCommitteeContributionConsensusDataByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
 				PostDutyRunnerStateRoot: "3430b48cc4265a27d9f99e03355810b09c129b9e3c6cc83b4e7916777d595b2f",
@@ -53,7 +53,7 @@ func NonUniqueSigners() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, spec.DataVersionDeneb))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, spec.DataVersionDeneb))),
 					nonUniqueSigners(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.ProposerMsgID, testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
+						ks.OperatorKeys[1], types.OperatorID(1), qbft.Identifier(testingutils.ProposerMsgID), testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
 						qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)))),
 				},
 				PostDutyRunnerStateRoot: "01694261367dff43d4e85ebbfb1dd5d5081c78832ff693d77f300e0f8ffee071",
@@ -71,7 +71,7 @@ func NonUniqueSigners() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, spec.DataVersionDeneb))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, spec.DataVersionDeneb))),
 					nonUniqueSigners(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.ProposerMsgID, testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
+						ks.OperatorKeys[1], types.OperatorID(1), qbft.Identifier(testingutils.ProposerMsgID), testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
 						qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)))),
 				},
 				PostDutyRunnerStateRoot: "755134a5855f13a1e4a15b4b2a034a172c21f88a2af99e247d2cf4818aea30fe",
@@ -89,7 +89,7 @@ func NonUniqueSigners() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3))),
 					nonUniqueSigners(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.ValidatorRegistrationMsgID, testingutils.TestAttesterConsensusDataByts,
+						ks.OperatorKeys[1], types.OperatorID(1), qbft.Identifier(testingutils.ValidatorRegistrationMsgID), testingutils.TestAttesterConsensusDataByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
 				PostDutyRunnerStateRoot: "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
@@ -110,7 +110,7 @@ func NonUniqueSigners() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[2], 2))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[3], 3))),
 					nonUniqueSigners(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.VoluntaryExitMsgID, testingutils.TestAttesterConsensusDataByts,
+						ks.OperatorKeys[1], types.OperatorID(1), qbft.Identifier(testingutils.VoluntaryExitMsgID), testingutils.TestAttesterConsensusDataByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
 				PostDutyRunnerStateRoot: "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
@@ -135,7 +135,7 @@ func NonUniqueSigners() tests.SpecTest {
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2, version))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3, version))),
 				nonUniqueSigners(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-					ks.OperatorKeys[1], types.OperatorID(1), testingutils.AggregatorMsgID, testingutils.TestAggregatorConsensusDataByts(version),
+					ks.OperatorKeys[1], types.OperatorID(1), qbft.Identifier(testingutils.AggregatorMsgID), testingutils.TestAggregatorConsensusDataByts(version),
 					qbft.Height(testingutils.TestingDutySlot))),
 			},
 			PostDutyRunnerStateRoot: "7134f3bfe0c675263254aadb1f73e452454418290f411b891090b2c76c5ae428",
@@ -155,7 +155,7 @@ func NonUniqueSigners() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterDuty(version),
 				Messages: []*types.SignedSSVMessage{
 					nonUniqueSigners(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
+						ks.OperatorKeys[1], types.OperatorID(1), qbft.Identifier(testingutils.CommitteeMsgID(ks)), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
@@ -167,7 +167,7 @@ func NonUniqueSigners() tests.SpecTest {
 				Duty:   testingutils.TestingSyncCommitteeDuty(version),
 				Messages: []*types.SignedSSVMessage{
 					nonUniqueSigners(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
+						ks.OperatorKeys[1], types.OperatorID(1), qbft.Identifier(testingutils.CommitteeMsgID(ks)), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},
@@ -179,7 +179,7 @@ func NonUniqueSigners() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties(version),
 				Messages: []*types.SignedSSVMessage{
 					nonUniqueSigners(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
+						ks.OperatorKeys[1], types.OperatorID(1), qbft.Identifier(testingutils.CommitteeMsgID(ks)), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{},

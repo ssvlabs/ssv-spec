@@ -27,7 +27,7 @@ func ProposeBlindedBlockDecidedRegular() tests.SpecTest {
 				[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 				[]types.OperatorID{1, 2, 3},
 				qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
-				testingutils.ProposerMsgID,
+				qbft.Identifier(testingutils.ProposerMsgID),
 				testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
 			),
 
