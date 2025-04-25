@@ -102,6 +102,9 @@ func (msg *Message) Validate() error {
 	if msg.MsgType > RoundChangeMsgType {
 		return errors.New("message type is invalid")
 	}
+	if msg.Round == NoRound {
+		return errors.New("message round is invalid")
+	}
 	return nil
 }
 
