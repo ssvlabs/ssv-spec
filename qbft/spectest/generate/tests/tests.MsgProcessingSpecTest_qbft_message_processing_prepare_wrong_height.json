@@ -65,7 +65,7 @@
           1
         ]
       },
-      "ID": "AQIDBA==",
+      "ID": "AQIDBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
       "Round": 1,
       "Height": 0,
       "LastPreparedRound": 0,
@@ -73,7 +73,7 @@
       "ProposalAcceptedForCurrentRound": {
         "SignedMessage": {
           "Signatures": [
-            "w3UJv6FMo17RQc7ewjyw7D39a5mHNKnYS8ZkVBNbyYT56RXYJJ6Kg6TEdCMqwLnNtRE+hI5QvVvFa+7llT2/0jkdQxP7TW8Fph0GTZMBP0Sa6dliDTBvYH9KjahV8uFJ+S/Sq640Ed5FF6vedOh8eYbB7Us0w/aVN1qlufLAC17dcLbaYcnQqkT4fSy4j2hb2vi2Vi3siJcbVDREAo3JHd6K6cmB3bO54hFbkJjEGVAr3ov+l/XrUsu+6dgPkdj3VMkMWOsMZjCxB0sjawdbUvfqqspAAW7eMxGvz+yc03WrodImQUEJaNY7GofeCuUfux5tyRbgycsHU2Qv3zc7cA=="
+            "CzU9/GbbgfT1J/6fnAe07EDzLIirezU9AfNDzGNfautfsVAs4CKX/dQNXon/teMl7QeoZGEswQ2LqT7KuKvtaaX8QYXoO2+aTzpnI996omxXcYMf1UW3+kEfG+PeTqLzJgOR/y1iK4Fwry+znYDBJqbW2MhLFdSlqIIGB1FRQyM9HR+2fVncaLJdNAh6DPrjqXlgBHpvtiqFHLYPfPVER1+Yd18nufjUoUhamPlkaDzTsQq1TmPgYZf5+GCRmhS5zs+UwDf+fNwSnCfAjtvHHkmpLOtGDTrvWVoIj5XJmR3Nm3E8bXu2DY7Cpjj2LUS2swDLPQDl+LbzQdMfpj6yrQ=="
           ],
           "OperatorIDs": [
             1
@@ -138,7 +138,7 @@
               0,
               0
             ],
-            "Data": "AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
+            "Data": "AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
           },
           "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
         },
@@ -146,7 +146,7 @@
           "MsgType": 0,
           "Height": 0,
           "Round": 1,
-          "Identifier": "AQIDBA==",
+          "Identifier": "AQIDBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
           "Root": [
             190,
             149,
@@ -207,7 +207,7 @@
   "InputMessages": [
     {
       "Signatures": [
-        "tHLYZlifvCOPN2PyKpZfEYZGDgn3ChG6edKjH6MwEKKmAMSrerHuclLjh9KtRGMak2bhQz/tglC6khzLxOaPf46nrU38pQQNfNLgSYmZySe1Ko27PzBd8QpnzATBWajeZ4993pypsbWaQ+iK1HRiv6iUJ7UauotPRp/O4GBzRNfKXwltbkR52MxJHhHTtOrUjCOIAhg5TdyHEzigQkCOfzC3zGXSJlKtGRsYCFuWgQr3kHC+7bOlSJS0FXUgiw5qJYjSdeTyiFcqJQkh+Gu6F5HC8TJgO2iQJO0e7H/dyzcMB04sk4qDSr1iAIA+vL9PFClRCLsFDq+Jx0yb32sYKg=="
+        "Ma7PThiKuPcJecOEcdQ3fIpT0BW4XIvjcBpBTwnBq65Zj40Y6hDNmVxieeFcvvIuUqHyosFU/ef4mXIDHJ2LxqCatI0cWI7KEf9N2z1Rs7KJai3ZuoRes0i3OuDQMwgdrxxdZSIjiC+Vh5s5/2mALyLrpdzC9bnXT62P6rxMV1h1Xrw2umwlyceFvriJzxEV595KxP2i0H7Z6u3yhZEHYyvKGJe7SwEMySBYDYD5+6ARveEceSY94m9LAIFJAuCNupl/oRfbqRW++iomCcejrJx9K69rEUpikU2EIxouSWkGK6ASEQsrq+hBvR6S71rbaajxLwlVX7x3zJDSvPOM8w=="
       ],
       "OperatorIDs": [
         1
@@ -272,7 +272,7 @@
           0,
           0
         ],
-        "Data": "AQAAAAAAAAACAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
+        "Data": "AQAAAAAAAAACAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
       },
       "FullData": null
     }
