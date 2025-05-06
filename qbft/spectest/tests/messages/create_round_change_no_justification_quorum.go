@@ -32,7 +32,7 @@ func CreateRoundChangeNoJustificationQuorumSC() *comparable.StateComparison {
 		MsgType:                  qbft.RoundChangeMsgType,
 		Height:                   0,
 		Round:                    1,
-		Identifier:               []byte{1, 2, 3, 4},
+		Identifier:               testingutils.TestingIdentifier,
 		Root:                     testingutils.TestingQBFTRootData,
 		DataRound:                1,
 		RoundChangeJustification: [][]byte{},
