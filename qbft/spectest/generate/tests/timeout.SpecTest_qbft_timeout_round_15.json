@@ -65,7 +65,7 @@
           1
         ]
       },
-      "ID": "AQIDBA==",
+      "ID": "AQIDBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
       "Round": 15,
       "Height": 0,
       "LastPreparedRound": 0,
@@ -73,7 +73,7 @@
       "ProposalAcceptedForCurrentRound": {
         "SignedMessage": {
           "Signatures": [
-            "gDkIUPr+eEzQGYVZstjil9joqRJGs99zhiFGV3YbwYl2FPYHs90x9Bu0ydFYbKOD1B3iRL0G+7IG69lKUYbSYyPWifpEjIC8xv6zFBLInQXeKuRrCbCTKqxlO1Fqx0oRNug/zMPdd7LznVJ0nHEJVJj4/IN6esh/q0KmUhUJR7QmB5o29AR8eNOUQAYamjGOMzjECIKUo04PZyTxRCJ71Wmr0HujOOoNtGR6MbthuRkPYegdqTJm781LetvXu66z9DMJkeS1huk26vaNS5MEyToUu/4VWbHRU/smmyQKjgXtNPxlPv7ul9MhOPkyQ4jjke23hXtR2c4zpEA5bh3vhw=="
+            "hvPbjG5LqWjN6o/NZAZFTS328tjCtfz/X7sEhyMC4rjt6wymbgBD4cqfGtnvDgHCdghYu5n1xXRSKo4y0NUuktH+pApAKF/9PNKAIbPU6UPVrhdXgj7VG72L03MeyGG58qycrzLG7CLHkGMUQGG/PwXacJovWdd7rtwYKcXvIjLGVGcab7iJOrYU370UAhgd9gvF7xusZHGDtU06xd0823Pp5q0hxbHzDwBE3Hwt3iQ8aIQD4jkzHhzVU8ikTSYv4/CLFGI4GOC070q+x6lD8yLfpXkYD2SpYLQf0KdXW0JUokuESCl8aZlkBmmKcXn8x9G9apvRYkxcBc13SaCd3Q=="
           ],
           "OperatorIDs": [
             1
@@ -138,7 +138,7 @@
               0,
               0
             ],
-            "Data": "AAAAAAAAAAAAAAAAAAAAAA8AAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
+            "Data": "AAAAAAAAAAAAAAAAAAAAAA8AAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
           },
           "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
         },
@@ -146,7 +146,7 @@
           "MsgType": 0,
           "Height": 0,
           "Round": 15,
-          "Identifier": "AQIDBA==",
+          "Identifier": "AQIDBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
           "Root": [
             190,
             149,
@@ -203,7 +203,7 @@
     },
     "StartValue": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
   },
-  "PostRoot": "14c0b5f1c7b6ddfe4408649456e3688e998de1a3978e3d2a6873a8035cec5cdf",
+  "PostRoot": "8426141823db82796c78e621372d679a8a906232184d34586b4a86a6bf0ab40c",
   "OutputMessages": null,
   "ExpectedTimerState": {
     "Timeouts": 0,
