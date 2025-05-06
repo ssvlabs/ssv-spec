@@ -14,7 +14,7 @@ func MsgTypeUnknown() tests.SpecTest {
 		MsgType:    4,
 		Height:     qbft.FirstHeight,
 		Round:      qbft.FirstRound,
-		Identifier: []byte{1, 2, 3, 4},
+		Identifier: testingutils.TestingIdentifier,
 		Root:       testingutils.TestingQBFTRootData,
 	})
 
