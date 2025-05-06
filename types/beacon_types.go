@@ -239,7 +239,7 @@ func (n BeaconNetwork) SlotDurationSec() time.Duration {
 
 // SlotsPerEpoch returns number of slots per one epoch
 func (n BeaconNetwork) SlotsPerEpoch() uint64 {
-	return 32
+	return 8
 }
 
 // EstimatedCurrentSlot returns the estimation of the current slot
