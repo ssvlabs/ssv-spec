@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/attestantio/go-eth2-client/spec/phase0"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
@@ -34,7 +33,7 @@ type TestingKeyStorage struct {
 
 type TestingKeyManager struct {
 	keyStorage     *TestingKeyStorage
-	slashableSlots map[string][]phase0.Slot // Validator Key -> List of slots
+	slashableSlots map[string][]spec.Slot // Validator Key -> List of slots
 }
 
 var (
@@ -43,10 +42,10 @@ var (
 )
 
 func NewTestingKeyManager() *TestingKeyManager {
-	return NewTestingKeyManagerWithSlashableSlots(map[string][]phase0.Slot{})
+	return NewTestingKeyManagerWithSlashableSlots(map[string][]spec.Slot{})
 }
 
-func NewTestingKeyManagerWithSlashableSlots(slashableSlots map[string][]phase0.Slot) *TestingKeyManager {
+func NewTestingKeyManagerWithSlashableSlots(slashableSlots map[string][]spec.Slot) *TestingKeyManager {
 
 	return &TestingKeyManager{
 		keyStorage:     NewTestingKeyStorage(),
@@ -98,7 +97,7 @@ func NewTestingKeyStorage() *TestingKeyStorage {
 }
 
 // AddSlashableDataRoot adds a slashable slot for the validator to the key manager
-func (km *TestingKeyManager) AddSlashableSlot(pk types.ShareValidatorPK, slot phase0.Slot) {
+func (km *TestingKeyManager) AddSlashableSlot(pk types.ShareValidatorPK, slot spec.Slot) {
 	entry := hex.EncodeToString(pk)
 	if km.slashableSlots[entry] == nil {
 		km.slashableSlots[entry] = make([]spec.Slot, 0)

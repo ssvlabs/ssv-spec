@@ -221,18 +221,18 @@ var TestingSignedCommitteeBeaconObjectSSZRoot = func(duty *types.CommitteeDuty, 
 
 		ks := ksMap[validatorDuty.ValidatorIndex]
 
-		if validatorDuty.Type == types.BNRoleAttester {
-
+		switch validatorDuty.Type {
+		case types.BNRoleAttester:
 			attResponse := TestingAttestationResponseBeaconObjectForDuty(ks, version, validatorDuty)
 			ret = append(ret, GetSSZRootNoError(attResponse))
-		} else if validatorDuty.Type == types.BNRoleSyncCommittee {
+		case types.BNRoleSyncCommittee:
 			ret = append(ret, GetSSZRootNoError(&altair.SyncCommitteeMessage{
 				Slot:            validatorDuty.Slot,
 				BeaconBlockRoot: TestingBlockRoot,
 				ValidatorIndex:  validatorDuty.ValidatorIndex,
 				Signature:       signBeaconObject(types.SSZBytes(TestingBlockRoot[:]), types.DomainSyncCommittee, ks),
 			}))
-		} else {
+		default:
 			panic(fmt.Sprintf("type %v not expected", validatorDuty.Type))
 		}
 	}

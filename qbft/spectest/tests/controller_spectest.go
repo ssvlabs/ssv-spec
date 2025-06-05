@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"bytes"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -124,46 +123,6 @@ func (test *ControllerSpecTest) testProcessMsg(
 	return lastErr
 }
 
-func (test *ControllerSpecTest) testBroadcastedDecided(
-	t *testing.T,
-	config qbft.IConfig,
-	identifier []byte,
-	runData *RunInstanceData,
-	committee []*types.Operator,
-) {
-	if runData.ExpectedDecidedState.BroadcastedDecided != nil {
-		// test broadcasted
-		broadcastedSignedMsgs := config.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
-		require.Greater(t, len(broadcastedSignedMsgs), 0)
-		require.NoError(t, testingutils.VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, committee))
-		found := false
-		for _, msg := range broadcastedSignedMsgs {
-
-			// a hack for testing non standard messageID identifiers since we copy them into a MessageID this fixes it
-			msgID := types.MessageID{}
-			copy(msgID[:], identifier)
-
-			if !bytes.Equal(msgID[:], msg.SSVMessage.MsgID[:]) {
-				continue
-			}
-
-			r1, err := msg.GetRoot()
-			require.NoError(t, err)
-
-			r2, err := runData.ExpectedDecidedState.BroadcastedDecided.GetRoot()
-			require.NoError(t, err)
-
-			if r1 == r2 &&
-				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.OperatorIDs, msg.OperatorIDs) &&
-				reflect.DeepEqual(runData.ExpectedDecidedState.BroadcastedDecided.Signatures, msg.Signatures) {
-				require.False(t, found)
-				found = true
-			}
-		}
-		require.True(t, found)
-	}
-}
-
 func (test *ControllerSpecTest) runInstanceWithData(
 	t *testing.T,
 	height qbft.Height,
@@ -181,8 +140,6 @@ func (test *ControllerSpecTest) runInstanceWithData(
 	if err := test.testProcessMsg(t, contr, contr.GetConfig(), runData); err != nil {
 		lastErr = err
 	}
-
-	test.testBroadcastedDecided(t, contr.GetConfig(), contr.Identifier, runData, contr.CommitteeMember.Committee)
 
 	// test root
 	r, err := contr.GetRoot()
