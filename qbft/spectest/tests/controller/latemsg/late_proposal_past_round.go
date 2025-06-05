@@ -1,8 +1,6 @@
 package latemsg
 
 import (
-	"crypto/rsa"
-
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -49,11 +47,6 @@ func LateProposalPastRound() tests.SpecTest {
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 1,
-					BroadcastedDecided: testingutils.TestingCommitMultiSignerMessageWithRound(
-						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
-						[]types.OperatorID{1, 2, 3},
-						2,
-					),
 				},
 			},
 		},

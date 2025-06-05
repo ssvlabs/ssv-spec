@@ -29,11 +29,6 @@ func LateCommitPastInstance() tests.SpecTest {
 			InputValue:    []byte{1, 2, 3, 4},
 			InputMessages: msgPerHeight[height],
 			ExpectedDecidedState: tests.DecidedState{
-				BroadcastedDecided: testingutils.TestingCommitMultiSignerMessageWithHeight(
-					[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
-					[]types.OperatorID{1, 2, 3},
-					height,
-				),
 				DecidedVal: testingutils.TestingQBFTFullData,
 				DecidedCnt: 1,
 			},

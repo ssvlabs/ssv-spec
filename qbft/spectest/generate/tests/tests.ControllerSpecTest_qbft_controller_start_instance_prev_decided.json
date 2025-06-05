@@ -506,8 +506,7 @@
       "ExpectedTimerState": null,
       "ExpectedDecidedState": {
         "DecidedVal": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
-        "DecidedCnt": 1,
-        "BroadcastedDecided": null
+        "DecidedCnt": 1
       },
       "omitempty": null
     },
@@ -518,8 +517,7 @@
       "ExpectedTimerState": null,
       "ExpectedDecidedState": {
         "DecidedVal": null,
-        "DecidedCnt": 0,
-        "BroadcastedDecided": null
+        "DecidedCnt": 0
       },
       "omitempty": null
     }

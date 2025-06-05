@@ -11,8 +11,7 @@
       },
       "ExpectedDecidedState": {
         "DecidedVal": null,
-        "DecidedCnt": 0,
-        "BroadcastedDecided": null
+        "DecidedCnt": 0
       },
       "omitempty": null
     }

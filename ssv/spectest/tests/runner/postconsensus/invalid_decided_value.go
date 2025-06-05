@@ -12,6 +12,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
+// TODO: update this test as well, although it's passing
+
 // InvalidDecidedValue tests an invalid decided value
 func InvalidDecidedValue() tests.SpecTest {
 

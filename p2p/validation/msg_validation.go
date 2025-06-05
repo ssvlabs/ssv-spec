@@ -63,17 +63,9 @@ func validateConsensusMsg(runner ssv.Runner, signedMsg *types.SignedSSVMessage) 
 	/**
 	Main controller processing flow
 	_______________________________
-	All decided msgs are processed the same, out of instance
 	All valid future msgs are saved in a container and can trigger highest decided futuremsg
 	All other msgs (not future or decided) are processed normally by an existing instance (if found)
 	*/
-	isDecided, err := qbft.IsDecidedMsg(contr.CommitteeMember, msg)
-	if err != nil {
-		return err
-	}
-	if isDecided {
-		return qbft.ValidateDecided(contr.GetConfig(), msg, contr.CommitteeMember)
-	}
 
 	if msg.QBFTMessage.Height > contr.Height {
 		return validateFutureMsg(contr.GetConfig(), signedMsg, contr.CommitteeMember)
