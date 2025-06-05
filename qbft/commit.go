@@ -137,23 +137,6 @@ func baseCommitValidationIgnoreSignature(
 	return nil
 }
 
-func baseCommitValidationVerifySignature(
-	msg *ProcessingMessage,
-	height Height,
-	operators []*types.Operator) error {
-
-	if err := baseCommitValidationIgnoreSignature(msg, height, operators); err != nil {
-		return err
-	}
-
-	// verify signature
-	if err := types.Verify(msg.SignedMessage, operators); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
-	}
-
-	return nil
-}
-
 func validateCommit(
 	msg *ProcessingMessage,
 	height Height,

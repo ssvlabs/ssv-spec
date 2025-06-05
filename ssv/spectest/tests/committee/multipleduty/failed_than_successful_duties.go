@@ -14,7 +14,7 @@ import (
 func FailedThanSuccessfulDuties() tests.SpecTest {
 
 	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "failed than successful duties",
+		Name:  "failed then successful duties",
 		Tests: []*committee.CommitteeSpecTest{},
 	}
 
@@ -30,21 +30,21 @@ func FailedThanSuccessfulDuties() tests.SpecTest {
 
 					multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
 						{
-							Name:                   fmt.Sprintf("%v fails %v sucessful for %v attestation (%s)", numFailedDuties, numSuccessfulDuties, numValidators, version.String()),
+							Name:                   fmt.Sprintf("%v fails %v successful for %v attestation (%s)", numFailedDuties, numSuccessfulDuties, numValidators, version.String()),
 							Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
 							Input:                  testingutils.CommitteeInputForDutiesWithFailuresThanSuccess(numValidators, 0, numFailedDuties, numSuccessfulDuties, version),
 							OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numFailedDuties+numSuccessfulDuties, numValidators, 0, version),
 							BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDutiesWithStartingSlot(numSuccessfulDuties, numValidators, 0, slot, version),
 						},
 						{
-							Name:                   fmt.Sprintf("%v fails %v sucessful for %v sync committee (%s)", numFailedDuties, numSuccessfulDuties, numValidators, version.String()),
+							Name:                   fmt.Sprintf("%v fails %v successful for %v sync committee (%s)", numFailedDuties, numSuccessfulDuties, numValidators, version.String()),
 							Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
 							Input:                  testingutils.CommitteeInputForDutiesWithFailuresThanSuccess(0, numValidators, numFailedDuties, numSuccessfulDuties, version),
 							OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numFailedDuties+numSuccessfulDuties, 0, numValidators, version),
 							BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDutiesWithStartingSlot(numSuccessfulDuties, 0, numValidators, slot, version),
 						},
 						{
-							Name:                   fmt.Sprintf("%v fails %v sucessful for %v attestations %v sync committees (%s)", numFailedDuties, numSuccessfulDuties, numValidators, numValidators, version.String()),
+							Name:                   fmt.Sprintf("%v fails %v successful for %v attestations %v sync committees (%s)", numFailedDuties, numSuccessfulDuties, numValidators, numValidators, version.String()),
 							Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
 							Input:                  testingutils.CommitteeInputForDutiesWithFailuresThanSuccess(numValidators, numValidators, numFailedDuties, numSuccessfulDuties, version),
 							OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numFailedDuties+numSuccessfulDuties, numValidators, numValidators, version),

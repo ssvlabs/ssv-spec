@@ -3,7 +3,6 @@ package valcheckattestations
 import (
 	"encoding/hex"
 
-	"github.com/attestantio/go-eth2-client/spec/phase0"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
@@ -38,9 +37,9 @@ func MajoritySlashable() tests.SpecTest {
 	}
 
 	// Make slashable map with majority
-	slashableMap := make(map[string][]phase0.Slot)
+	slashableMap := make(map[string][]spec.Slot)
 	for i := 0; i < int(keySet.Threshold); i++ {
-		slashableMap[sharesPKString[i]] = []phase0.Slot{testingutils.TestingDutySlot}
+		slashableMap[sharesPKString[i]] = []spec.Slot{testingutils.TestingDutySlot}
 	}
 
 	return &valcheck.SpecTest{

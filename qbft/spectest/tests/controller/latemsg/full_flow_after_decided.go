@@ -1,8 +1,6 @@
 package latemsg
 
 import (
-	"crypto/rsa"
-
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -20,10 +18,13 @@ func FullFlowAfterDecided() tests.SpecTest {
 	}
 
 	msgs := []*types.SignedSSVMessage{
-		testingutils.TestingCommitMultiSignerMessage(
-			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
-			[]types.OperatorID{1, 2, 3},
+		testingutils.TestingProposalMessageWithRound(
+			ks.OperatorKeys[1], types.OperatorID(1), 1,
 		),
+
+		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 1),
+		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 1),
+		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 1),
 
 		testingutils.TestingProposalMessageWithParams(
 			ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData,

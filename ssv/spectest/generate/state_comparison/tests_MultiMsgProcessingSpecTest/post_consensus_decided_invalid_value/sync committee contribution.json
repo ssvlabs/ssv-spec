@@ -98,8 +98,8 @@
           "LastPreparedRound": 0,
           "LastPreparedValue": null,
           "ProposalAcceptedForCurrentRound": null,
-          "Decided": true,
-          "DecidedValue": "EAAAAAEAAAAAAAAAfAAAAGQAAAAAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvADAAAAAAAAAABAAAAAAAAAAMAAAAAAAAAgAAAAAAAAAAkAAAAAAAAAAsAAAAAAAAAbAAAAA==",
+          "Decided": false,
+          "DecidedValue": null,
           "ProposeContainer": {
             "Msgs": {}
           },
@@ -107,130 +107,7 @@
             "Msgs": {}
           },
           "CommitContainer": {
-            "Msgs": {
-              "1": [
-                {
-                  "SignedMessage": {
-                    "Signatures": [
-                      "tsXhRB7MqjFyy0N3KkTgwqTS8lamPH5YT6U+afFhGwBYHkTB8Kd8SZsWQ5qaNrHRGbjlke3ssvb1uWaWm2npyMEOofwhr9tJ33MKMcYQwjXwTQI+P85m4rgftuLiikDFnrAnwNsLbohBv1SOedQ0pnNnzexseVK193c8HqZZ8s6M9T8Uu9ne94Ac5qVp+OrqmdZxeEs39zolySteqgNFZ/fh3cXSOnUweaCAuoJrgnqODKXo1UPfimtEZYGShUId09kJWE6o9yq+2xy5ep8dA3dR+12Vv3NnSBReKoO62emh80Dv2pHmei/G5TzsrCax3kO6br83489JvzUtysuyyA==",
-                      "TK5dEnlDPU2jSMgcD8uJonq9QPsCq53LQ55XlpvxqGmnufLRveLz1D5RRsTmxCXaLs3/q6cfmsbZ2Z5SGTu8ozsUWEMIa2q/tFyi0WkxvnHbozURordrQ89LtidhnEQNYBZBqGin/7FTY2/TE/wuTNASxDfiwan8nIw+h5EftZAbhVj14NVGjUBQhEx9ER/Th8z5U7WSIzPEPcgbYgzKI7CkM1FOi/5E+y9jygA/l9/hSc5W38laK9ACpfI401yk/ZxdzvFbPLGOdqrnkENAjyI20yrdbdxlm422hVEC86tRIg0FFxHIS21h1J1FB6tqfIPQYZv5FUOtZj/shxAz5w==",
-                      "PudTzUVhzJDzo2rPHtrxL+dMWx9uiETP2egISmcQLqa+a+o9/jwsKLWPuS7g9+YuQIETlS9jCzDz/AJEiyPJV60GeogSJIA+CfgKtGjsMQ1r0mepZZb19RjH88e1E65qbtfT6kLKcWtZWdZ6CJjKZMXyx4tzYCTpVbZ9zj961i3wIPG0XVwIcvw28zcHe72Skwk/0js6sv7hl8RJfGjB7Y9aBpINgh48Of0nmCbEAl6XgcpMG4MuX1Tp2BNpjtxAI6pWbj6miObq1jcTec37vpOTdL08jbzxpFr5l100qsEFBhRBpsH7M+WvtijwG8Zptr6MnJ7W90mAZb6FwP72DA=="
-                    ],
-                    "OperatorIDs": [
-                      1,
-                      2,
-                      3
-                    ],
-                    "SSVMessage": {
-                      "MsgType": 0,
-                      "MsgID": [
-                        0,
-                        0,
-                        3,
-                        1,
-                        3,
-                        0,
-                        0,
-                        0,
-                        142,
-                        128,
-                        6,
-                        101,
-                        81,
-                        168,
-                        27,
-                        49,
-                        130,
-                        88,
-                        112,
-                        158,
-                        218,
-                        247,
-                        221,
-                        31,
-                        99,
-                        205,
-                        104,
-                        106,
-                        14,
-                        77,
-                        184,
-                        178,
-                        155,
-                        187,
-                        122,
-                        207,
-                        230,
-                        86,
-                        8,
-                        103,
-                        122,
-                        245,
-                        165,
-                        39,
-                        217,
-                        68,
-                        142,
-                        228,
-                        120,
-                        53,
-                        72,
-                        94,
-                        2,
-                        181,
-                        11,
-                        192
-                      ],
-                      "Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAEynJAnyRbK4DE/ss+6LbF1tsuVVVarZgckPowAQRNDhAAAAAAAAAACEAAAAhAAAAAAAAwEDAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
-                    },
-                    "FullData": "EAAAAAEAAAAAAAAAfAAAAGQAAAAAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvADAAAAAAAAAABAAAAAAAAAAMAAAAAAAAAgAAAAAAAAAAkAAAAAAAAAAsAAAAAAAAAbAAAAA=="
-                  },
-                  "QBFTMessage": {
-                    "MsgType": 2,
-                    "Height": 12,
-                    "Round": 1,
-                    "Identifier": "AAADAQMAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
-                    "Root": [
-                      76,
-                      167,
-                      36,
-                      9,
-                      242,
-                      69,
-                      178,
-                      184,
-                      12,
-                      79,
-                      236,
-                      179,
-                      238,
-                      139,
-                      108,
-                      93,
-                      109,
-                      178,
-                      229,
-                      85,
-                      85,
-                      170,
-                      217,
-                      129,
-                      201,
-                      15,
-                      163,
-                      0,
-                      16,
-                      68,
-                      208,
-                      225
-                    ],
-                    "DataRound": 0,
-                    "RoundChangeJustification": [],
-                    "PrepareJustification": []
-                  }
-                }
-              ]
-            }
+            "Msgs": {}
           },
           "RoundChangeContainer": {
             "Msgs": {}
@@ -434,8 +311,8 @@
             "LastPreparedRound": 0,
             "LastPreparedValue": null,
             "ProposalAcceptedForCurrentRound": null,
-            "Decided": true,
-            "DecidedValue": "EAAAAAEAAAAAAAAAfAAAAGQAAAAAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvADAAAAAAAAAABAAAAAAAAAAMAAAAAAAAAgAAAAAAAAAAkAAAAAAAAAAsAAAAAAAAAbAAAAA==",
+            "Decided": false,
+            "DecidedValue": null,
             "ProposeContainer": {
               "Msgs": {}
             },
@@ -443,130 +320,7 @@
               "Msgs": {}
             },
             "CommitContainer": {
-              "Msgs": {
-                "1": [
-                  {
-                    "SignedMessage": {
-                      "Signatures": [
-                        "tsXhRB7MqjFyy0N3KkTgwqTS8lamPH5YT6U+afFhGwBYHkTB8Kd8SZsWQ5qaNrHRGbjlke3ssvb1uWaWm2npyMEOofwhr9tJ33MKMcYQwjXwTQI+P85m4rgftuLiikDFnrAnwNsLbohBv1SOedQ0pnNnzexseVK193c8HqZZ8s6M9T8Uu9ne94Ac5qVp+OrqmdZxeEs39zolySteqgNFZ/fh3cXSOnUweaCAuoJrgnqODKXo1UPfimtEZYGShUId09kJWE6o9yq+2xy5ep8dA3dR+12Vv3NnSBReKoO62emh80Dv2pHmei/G5TzsrCax3kO6br83489JvzUtysuyyA==",
-                        "TK5dEnlDPU2jSMgcD8uJonq9QPsCq53LQ55XlpvxqGmnufLRveLz1D5RRsTmxCXaLs3/q6cfmsbZ2Z5SGTu8ozsUWEMIa2q/tFyi0WkxvnHbozURordrQ89LtidhnEQNYBZBqGin/7FTY2/TE/wuTNASxDfiwan8nIw+h5EftZAbhVj14NVGjUBQhEx9ER/Th8z5U7WSIzPEPcgbYgzKI7CkM1FOi/5E+y9jygA/l9/hSc5W38laK9ACpfI401yk/ZxdzvFbPLGOdqrnkENAjyI20yrdbdxlm422hVEC86tRIg0FFxHIS21h1J1FB6tqfIPQYZv5FUOtZj/shxAz5w==",
-                        "PudTzUVhzJDzo2rPHtrxL+dMWx9uiETP2egISmcQLqa+a+o9/jwsKLWPuS7g9+YuQIETlS9jCzDz/AJEiyPJV60GeogSJIA+CfgKtGjsMQ1r0mepZZb19RjH88e1E65qbtfT6kLKcWtZWdZ6CJjKZMXyx4tzYCTpVbZ9zj961i3wIPG0XVwIcvw28zcHe72Skwk/0js6sv7hl8RJfGjB7Y9aBpINgh48Of0nmCbEAl6XgcpMG4MuX1Tp2BNpjtxAI6pWbj6miObq1jcTec37vpOTdL08jbzxpFr5l100qsEFBhRBpsH7M+WvtijwG8Zptr6MnJ7W90mAZb6FwP72DA=="
-                      ],
-                      "OperatorIDs": [
-                        1,
-                        2,
-                        3
-                      ],
-                      "SSVMessage": {
-                        "MsgType": 0,
-                        "MsgID": [
-                          0,
-                          0,
-                          3,
-                          1,
-                          3,
-                          0,
-                          0,
-                          0,
-                          142,
-                          128,
-                          6,
-                          101,
-                          81,
-                          168,
-                          27,
-                          49,
-                          130,
-                          88,
-                          112,
-                          158,
-                          218,
-                          247,
-                          221,
-                          31,
-                          99,
-                          205,
-                          104,
-                          106,
-                          14,
-                          77,
-                          184,
-                          178,
-                          155,
-                          187,
-                          122,
-                          207,
-                          230,
-                          86,
-                          8,
-                          103,
-                          122,
-                          245,
-                          165,
-                          39,
-                          217,
-                          68,
-                          142,
-                          228,
-                          120,
-                          53,
-                          72,
-                          94,
-                          2,
-                          181,
-                          11,
-                          192
-                        ],
-                        "Data": "AgAAAAAAAAAMAAAAAAAAAAEAAAAAAAAATAAAAEynJAnyRbK4DE/ss+6LbF1tsuVVVarZgckPowAQRNDhAAAAAAAAAACEAAAAhAAAAAAAAwEDAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
-                      },
-                      "FullData": "EAAAAAEAAAAAAAAAfAAAAGQAAAAAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvADAAAAAAAAAABAAAAAAAAAAMAAAAAAAAAgAAAAAAAAAAkAAAAAAAAAAsAAAAAAAAAbAAAAA=="
-                    },
-                    "QBFTMessage": {
-                      "MsgType": 2,
-                      "Height": 12,
-                      "Round": 1,
-                      "Identifier": "AAADAQMAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
-                      "Root": [
-                        76,
-                        167,
-                        36,
-                        9,
-                        242,
-                        69,
-                        178,
-                        184,
-                        12,
-                        79,
-                        236,
-                        179,
-                        238,
-                        139,
-                        108,
-                        93,
-                        109,
-                        178,
-                        229,
-                        85,
-                        85,
-                        170,
-                        217,
-                        129,
-                        201,
-                        15,
-                        163,
-                        0,
-                        16,
-                        68,
-                        208,
-                        225
-                      ],
-                      "DataRound": 0,
-                      "RoundChangeJustification": [],
-                      "PrepareJustification": []
-                    }
-                  }
-                ]
-              }
+              "Msgs": {}
             },
             "RoundChangeContainer": {
               "Msgs": {}

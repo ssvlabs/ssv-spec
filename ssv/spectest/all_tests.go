@@ -97,9 +97,6 @@ var AllTests = []tests.TestF{
 	committeemultipleduty.ShuffledHappyFlowDutiesWithDifferentValidators,
 	committeemultipleduty.FailedThanSuccessfulDuties,
 
-	consensus.FutureDecidedNoInstance,
-	consensus.FutureDecided,
-	consensus.InvalidDecidedValue,
 	consensus.FutureMessage,
 	consensus.PastMessage,
 	consensus.PostFinish,

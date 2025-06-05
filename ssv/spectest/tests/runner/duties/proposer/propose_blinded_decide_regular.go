@@ -1,8 +1,6 @@
 package proposer
 
 import (
-	"crypto/rsa"
-
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/qbft"
 
@@ -23,9 +21,30 @@ func ProposeBlindedBlockDecidedRegular() tests.SpecTest {
 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, spec.DataVersionDeneb))),
 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, spec.DataVersionDeneb))),
 
-			testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-				[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
-				[]types.OperatorID{1, 2, 3},
+			testingutils.TestingProposalMessageWithIdentifierAndFullData(
+				ks.OperatorKeys[1],
+				types.OperatorID(1),
+				testingutils.ProposerMsgID,
+				testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
+				qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
+			),
+			testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(
+				ks.OperatorKeys[1],
+				types.OperatorID(1),
+				qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
+				testingutils.ProposerMsgID,
+				testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
+			),
+			testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(
+				ks.OperatorKeys[2],
+				types.OperatorID(2),
+				qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
+				testingutils.ProposerMsgID,
+				testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
+			),
+			testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(
+				ks.OperatorKeys[3],
+				types.OperatorID(3),
 				qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
 				testingutils.ProposerMsgID,
 				testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),

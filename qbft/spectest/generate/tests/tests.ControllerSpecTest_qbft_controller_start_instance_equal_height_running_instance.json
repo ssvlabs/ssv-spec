@@ -8,8 +8,7 @@
       "ExpectedTimerState": null,
       "ExpectedDecidedState": {
         "DecidedVal": null,
-        "DecidedCnt": 0,
-        "BroadcastedDecided": null
+        "DecidedCnt": 0
       },
       "omitempty": 0
     },
@@ -20,8 +19,7 @@
       "ExpectedTimerState": null,
       "ExpectedDecidedState": {
         "DecidedVal": null,
-        "DecidedCnt": 0,
-        "BroadcastedDecided": null
+        "DecidedCnt": 0
       },
       "omitempty": 0
     }

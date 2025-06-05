@@ -506,82 +506,7 @@
       "ExpectedTimerState": null,
       "ExpectedDecidedState": {
         "DecidedVal": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
-        "DecidedCnt": 1,
-        "BroadcastedDecided": {
-          "Signatures": [
-            "GfE8aDUxusaQMSTteNUd48JIy+lw6uRaqg16gvVD/c6143K0dv8252oUIP7Hno1PtCBd53JobukPE08pFXlNCxKadbXD57N1IGL3ovRpb3M6imeKoaHzn/lTuYlmPYrzc5KFuFK3rbEBjq2/OLK24PCZeWa288IY+jX9U+i7byWCBR/PyJQPTzjK9P7uyNuGHQDYcKoT6B8r/2O6woxMSxFjCGTw0K7yUhQEJrmYaQbUvg/T0S2/n4GUirNHqVj011t2MnrBW1RvQcDWI++JkjdtxgwmzcjdKLj+ouANn8QWJzFtvPOcD2dMU0ph3VVZYA95j/yOBlum4NVzC+Qf7Q==",
-            "XX/d0mB7UQg6xMbREXJtYiF7B0a3VUre9ng5oBs6e4A6U1mFzxT6RI6KqgtKcyGTqSCMFRxCpxQt2qiRuF1PUWf5NcrZUfeNfIHDex89ATB41dgcyVqquINe0ADGx9f5/xak6Eqeg81/AlBFRbxAQXqc9K1FwMKnvrPKKsyQekOoHdLbUbVvohPIK1BTOVUlxmZ9FOf/Jb6WNb/1u+npYiQusFsn1LozPB8faeQrcmvupvoDnr4qACZoYHloRvyjNh7Djl3LQcZNb9NeiCjdYw1pufKUCXS946GvjA0e+obHiYlf6Uke0lJCw+RM3DAXqYszhEYy+/2NYS4/dLjeDQ==",
-            "CNsE9cMHmMDMhJaW+zLrqpahENjGjayrxiPm+wBDQykGz5hHVCTBE5x0CjV+Oz7zkVmoLmlJxjRzKOInfW1TkklzY0X70EYhdXtL67XkNOLOVi9/46HOFTH1x9QgF7InO4bhoggCSoEUZpJWkRqX5FY831q27fHbMK9dOvNkdaVNfPPSFi05jXIwRUPpUZLYDa04ob21lPSQ7y50v3CUBJKgzt5yyZq22KqIKNf+92SJcY/Pc6HHJAV5TRbWAz8BFycrQVchFl9+Rs8qRA7Y4P1Bq/38wSs48EBBaFAIiBsKCkHiv2iX468QrlbQyj/JAoASFi0IHfQk0P+WbGoQ1w=="
-          ],
-          "OperatorIDs": [
-            1,
-            2,
-            3
-          ],
-          "SSVMessage": {
-            "MsgType": 0,
-            "MsgID": [
-              1,
-              2,
-              3,
-              4,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0
-            ],
-            "Data": "AgAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
-          },
-          "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
-        }
+        "DecidedCnt": 1
       },
       "omitempty": null
     },
@@ -1090,82 +1015,7 @@
       "ExpectedTimerState": null,
       "ExpectedDecidedState": {
         "DecidedVal": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
-        "DecidedCnt": 1,
-        "BroadcastedDecided": {
-          "Signatures": [
-            "DQnpqzNAvhk4luMRDEX9Jdcj1p8fpAIsDzv+ffuFQGxOZ2PH/aEqLb7XKTtcKx+nU3Rhj4uAXk1yzHoOlLqkCfRMlZsKQH5Xc8b8t5LC3ypOoYfNean0c3UJ2zleD58z2x9qyCqZQ+2rHvuHlB1YDk+VnW1fEjbQE08HOcG8wbl2mFxi2y/tO8nI6QekKrjpQBzit//wm1m3jj6HqFBPmD3gm+cvFjlkVA9Dz0a7jnga8gk59x2cOChNKB6LYz/9N0KEZsquyl+H3y09syHRoUbzmS+rgBUOAXjOFJFuexjmSlNt2KKFPMi2cj27kRMeQyPKooyWW8v7r5WIT2+8jQ==",
-            "hUzuWXGYGYLzivfUiDfFfHyGH8gAA1n4CYujeI3gcvmIFY7OpkOp+K4khd49gzJSM8oRdVXNFl+HCxboEmtt/yjDeL8kd12AbMLIKTEwUKPNbtIedCXiBm3hVzV7RyjsUg45oJV6LFG89B9aBKRi7Na1kc4ESqASID6vdiEN8mWWmzLs1mn4BqVXJuFuSxkKx187BV66yAG9taf5ZUzOtJXIprGCX5iI5wAd7WJK5MjPZNYuhUF0ES0Qy2D6sUSq6zwedv0pEztj5kUXbCIlDgaEzZvrl/SFtTAPmY8Qc30IjlNQhcxJ7Yj1KvW9Atzhdt1I/5X0iFiyOcL1lUOj7A==",
-            "JW5Z0YITuw9+EsRryDy/ZWpHKca36T9j5aq4vbJKF68NoEIOoAxmwTLeHhZD4Y05E3jrSMQID0z2RlLlioXwouEyCmKd10eQ0MoOYSD0WBK0a6Y30Q1KIDBQKplJOVU5BFw/W3eftLjc+j/Pbl6fuqZZTy0S6wNEEhwGyMmYI85RRsK6qXcmc3RYzM09mSwhF6NvHgPQWa0HoJzTie3nJoHZmSGDSyOgA/hfNfQU3ip/6dkuN/l5KP4q3C/hbOCD88kSGKexAXkDc8unoIsnus3hg9IoZZXAOD/zpwUBAXw0yO1R6dYCFGKGh6CnXIe4s2ACqyHZdQ6n30e5XXr/8A=="
-          ],
-          "OperatorIDs": [
-            1,
-            2,
-            3
-          ],
-          "SSVMessage": {
-            "MsgType": 0,
-            "MsgID": [
-              1,
-              2,
-              3,
-              4,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0
-            ],
-            "Data": "AgAAAAAAAAABAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
-          },
-          "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
-        }
+        "DecidedCnt": 1
       },
       "omitempty": null
     },
@@ -1248,8 +1098,7 @@
       "ExpectedTimerState": null,
       "ExpectedDecidedState": {
         "DecidedVal": null,
-        "DecidedCnt": 0,
-        "BroadcastedDecided": null
+        "DecidedCnt": 0
       },
       "omitempty": null
     }

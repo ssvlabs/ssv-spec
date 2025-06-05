@@ -1,8 +1,6 @@
 package decided
 
 import (
-	"crypto/rsa"
-
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -17,7 +15,10 @@ func MultiDecidedInstances() tests.SpecTest {
 		return &tests.RunInstanceData{
 			InputValue: []byte{1, 2, 3, 4},
 			InputMessages: []*types.SignedSSVMessage{
-				testingutils.TestingCommitMultiSignerMessageWithHeight([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 2, 3}, height),
+				testingutils.TestingProposalMessageWithHeight(ks.OperatorKeys[1], 1, height),
+				testingutils.TestingCommitMessageWithHeight(ks.OperatorKeys[1], 1, height),
+				testingutils.TestingCommitMessageWithHeight(ks.OperatorKeys[2], 2, height),
+				testingutils.TestingCommitMessageWithHeight(ks.OperatorKeys[3], 3, height),
 			},
 			ExpectedDecidedState: tests.DecidedState{
 				DecidedCnt: 1,

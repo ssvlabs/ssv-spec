@@ -1,7 +1,6 @@
 package ssv
 
 import (
-	"github.com/attestantio/go-eth2-client/spec/phase0"
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -232,7 +231,7 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, signedMessage *types.S
 }
 
 // decide input param can be a BeaconVote or ValidatorConsensusData
-func (b *BaseRunner) decide(runner Runner, slot phase0.Slot, input types.Encoder) error {
+func (b *BaseRunner) decide(runner Runner, slot spec.Slot, input types.Encoder) error {
 	byts, err := input.Encode()
 	if err != nil {
 		return errors.Wrap(err, "could not encode input data for consensus")
