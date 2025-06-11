@@ -13,11 +13,12 @@ func CreateProposalNotPreviouslyPrepared() tests.SpecTest {
 		CreateType: tests.CreateProposal,
 		Name:       "create proposal not previously prepared",
 		Value:      [32]byte{1, 2, 3, 4},
+		Round:      10,
 		RoundChangeJustifications: []*types.SignedSSVMessage{
 			testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 			testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
 			testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 		},
-		ExpectedRoot: "39e9ac7d177bf75fffa99354d498ffea607dc473a68b3d12b6425b15efda9c9e",
+		ExpectedRoot: "373d38164afdb7d5b4f995bdb49c92c9b4b76621f078f5f4ffaf113a2c1a9aa7",
 	}
 }
