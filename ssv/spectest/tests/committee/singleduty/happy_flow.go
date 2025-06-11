@@ -17,7 +17,7 @@ import (
 func HappyFlow() tests.SpecTest {
 
 	ks := testingutils.TestingKeySetMap[phase0.ValidatorIndex(1)]
-	msgID := testingutils.CommitteeMsgID(ks)
+	msgID := qbft.Identifier(testingutils.CommitteeMsgID(ks))
 
 	multiSpecTest := &committee.MultiCommitteeSpecTest{
 		Name:  "happy flow",

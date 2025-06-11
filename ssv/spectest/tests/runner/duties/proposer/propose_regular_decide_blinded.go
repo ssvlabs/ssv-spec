@@ -29,7 +29,7 @@ func ProposeRegularBlockDecidedBlinded() tests.SpecTest {
 				},
 				[]types.OperatorID{1, 2, 3},
 				qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
-				testingutils.ProposerMsgID,
+				qbft.Identifier(testingutils.ProposerMsgID),
 				testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
 			),
 

@@ -41,7 +41,7 @@ func PastMessage() tests.SpecTest {
 			MsgType:    qbft.ProposalMsgType,
 			Height:     qbft.FirstHeight,
 			Round:      qbft.FirstRound,
-			Identifier: id,
+			Identifier: qbft.Identifier(id),
 			Root:       root,
 		}
 		signed := testingutils.SignQBFTMsg(ks.OperatorKeys[1], 1, msg)
@@ -97,7 +97,7 @@ func PastMessage() tests.SpecTest {
 				Duty:   &testingutils.TestingValidatorRegistrationDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.ValidatorRegistrationMsgID,
+						ks.OperatorKeys[1], types.OperatorID(1), qbft.Identifier(testingutils.ValidatorRegistrationMsgID),
 						testingutils.TestAttesterConsensusDataByts, qbft.Height(testingutils.TestingDutySlot)),
 				},
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
@@ -112,7 +112,7 @@ func PastMessage() tests.SpecTest {
 				Duty:   &testingutils.TestingVoluntaryExitDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.VoluntaryExitMsgID,
+						ks.OperatorKeys[1], types.OperatorID(1), qbft.Identifier(testingutils.VoluntaryExitMsgID),
 						testingutils.TestAttesterConsensusDataByts, qbft.Height(testingutils.TestingDutySlot)),
 				},
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",

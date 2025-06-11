@@ -58,7 +58,7 @@ func postFinishSyncCommitteeContributionSC() *comparable.StateComparison {
 				ret.GetBaseRunner().State.RunningInstance,
 				append(
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.RoleSyncCommitteeContribution)[3:10],
-					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.SyncCommitteeContributionMsgID, cdBytes),
+					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, qbft.Identifier(testingutils.SyncCommitteeContributionMsgID), cdBytes),
 				),
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
@@ -116,7 +116,7 @@ func postFinishProposerSC(version spec.DataVersion) *comparable.StateComparison 
 				append(
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.RoleProposer)[3:10],
 					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4),
-						qbft.Height(testingutils.TestingDutySlotV(version)), testingutils.ProposerMsgID, cdBytes),
+						qbft.Height(testingutils.TestingDutySlotV(version)), qbft.Identifier(testingutils.ProposerMsgID), cdBytes),
 				),
 			)
 			ret.GetBaseRunner().QBFTController.StoredInstances = append(ret.GetBaseRunner().QBFTController.StoredInstances, ret.GetBaseRunner().State.RunningInstance)
@@ -174,7 +174,7 @@ func postFinishBlindedProposerSC(version spec.DataVersion) *comparable.StateComp
 				append(
 					testingutils.ExpectedSSVDecidingMsgsV(cd, ks, types.RoleProposer)[3:10],
 					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4],
-						types.OperatorID(4), qbft.Height(testingutils.TestingDutySlotV(version)), testingutils.ProposerMsgID,
+						types.OperatorID(4), qbft.Height(testingutils.TestingDutySlotV(version)), qbft.Identifier(testingutils.ProposerMsgID),
 						cdBytes),
 				),
 			)

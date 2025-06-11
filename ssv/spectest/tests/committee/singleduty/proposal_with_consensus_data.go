@@ -16,7 +16,7 @@ import (
 func ProposalWithConsensusData() tests.SpecTest {
 
 	ks := testingutils.TestingKeySetMap[phase0.ValidatorIndex(1)]
-	msgID := testingutils.CommitteeMsgID(ks)
+	msgID := qbft.Identifier(testingutils.CommitteeMsgID(ks))
 	numValidators := 30
 	validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 	ksMap := testingutils.KeySetMapForValidators(numValidators)

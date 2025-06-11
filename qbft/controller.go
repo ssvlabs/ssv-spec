@@ -11,7 +11,7 @@ import (
 
 // Controller is a QBFT coordinator responsible for starting and following the entire life cycle of multiple QBFT InstanceContainer
 type Controller struct {
-	Identifier []byte
+	Identifier Identifier
 	Height     Height // incremental Height for InstanceContainer
 	// StoredInstances stores the last HistoricalInstanceCapacity in an array for message processing purposes.
 	StoredInstances InstanceContainer
@@ -20,7 +20,7 @@ type Controller struct {
 	config          IConfig
 }
 
-func NewController(identifier []byte, committeeMember *types.CommitteeMember, config IConfig,
+func NewController(identifier Identifier, committeeMember *types.CommitteeMember, config IConfig,
 	signer *types.OperatorSigner) *Controller {
 	return &Controller{
 		Identifier:      identifier,
@@ -130,7 +130,7 @@ func (c *Controller) UponExistingInstanceMsg(msg *ProcessingMessage) (*types.Sig
 // BaseMsgValidation returns error if msg is invalid (base validation)
 func (c *Controller) BaseMsgValidation(msg *ProcessingMessage) error {
 	// verify msg belongs to controller
-	if !bytes.Equal(c.Identifier, msg.QBFTMessage.Identifier) {
+	if !bytes.Equal(c.Identifier[:], msg.QBFTMessage.Identifier[:]) {
 		return errors.New("message doesn't belong to Identifier")
 	}
 	return nil
@@ -141,7 +141,7 @@ func (c *Controller) InstanceForHeight(height Height) *Instance {
 }
 
 // GetIdentifier returns QBFT Identifier, used to identify messages
-func (c *Controller) GetIdentifier() []byte {
+func (c *Controller) GetIdentifier() Identifier {
 	return c.Identifier
 }
 
