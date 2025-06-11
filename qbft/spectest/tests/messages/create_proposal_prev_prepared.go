@@ -13,6 +13,7 @@ func CreateProposalPreviouslyPrepared() tests.SpecTest {
 		CreateType: tests.CreateProposal,
 		Name:       "create proposal previously prepared",
 		Value:      [32]byte{1, 2, 3, 4},
+		Round:      10,
 		RoundChangeJustifications: []*types.SignedSSVMessage{
 			testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 			testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),

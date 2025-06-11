@@ -35,10 +35,10 @@
 				0
 		],
 		"StateValue": null,
-		"Round": 0,
+		"Round": 10,
 		"RoundChangeJustifications": null,
 		"PrepareJustifications": null,
 		"CreateType": "createProposal",
-		"ExpectedRoot": "1de0e306d96df1f4012b11927780f5c4575f2e1810e523219135b4027d9cb1c8",
+		"ExpectedRoot": "43c23219aaf744537a2e8b3896937a2e9aa24a8eaf8fcabf8ec7376f76669f3c",
 		"ExpectedError": ""
 }
