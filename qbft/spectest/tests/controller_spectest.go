@@ -75,7 +75,7 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 }
 
 func (test *ControllerSpecTest) generateController() *qbft.Controller {
-	identifier := []byte{1, 2, 3, 4}
+	identifier := testingutils.TestingIdentifier
 	ks := testingutils.Testing4SharesSet()
 	config := testingutils.TestingConfig(ks)
 	committeeMember := testingutils.TestingCommitteeMember(ks)
