@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/ssvlabs/ssv-spec/types/spectest"
+	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
@@ -17,6 +18,11 @@ import (
 
 var testsDir = "tests"
 var stateComparisonDir = "state_comparison"
+
+// toHexJSON recursively converts ExpectedRoot ([32]byte) and ExpectedRoots ([][32]byte) fields to hex string(s) for JSON output
+func toHexJSON(v interface{}) ([]byte, error) {
+	return json.MarshalIndent(utils.ConvertToHexMap(reflect.ValueOf(v)), "", "  ")
+}
 
 func main() {
 	clearStateComparisonFolder()
@@ -39,7 +45,7 @@ func main() {
 		panic(err.Error())
 	}
 	for name, test := range all {
-		byts, err := json.MarshalIndent(test, "", "  ")
+		byts, err := toHexJSON(test)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -50,7 +56,7 @@ func main() {
 	}
 
 	// write large tests.json file
-	byts, err := json.MarshalIndent(all, "", "  ")
+	byts, err := toHexJSON(all)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -90,7 +96,9 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 	}
 	log.Printf("writing state comparison json: %s\n", name)
 
-	byts, err := json.MarshalIndent(post, "", "		")
+	// TODO: hex encoding for state comparison tests is not working
+	// byts, err := toHexJSON(post)
+	byts, err := json.MarshalIndent(post, "", "  ")
 	if err != nil {
 		panic(err.Error())
 	}

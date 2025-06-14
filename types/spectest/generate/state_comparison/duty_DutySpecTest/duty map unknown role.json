@@ -1,5 +1,5 @@
 {
-		"Name": "map unknown role",
-		"BeaconRole": 2147483647,
-		"RunnerRole": -1
+  "Name": "map unknown role",
+  "BeaconRole": 2147483647,
+  "RunnerRole": -1
 }

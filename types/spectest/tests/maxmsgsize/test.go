@@ -35,6 +35,7 @@ func (test *StructureSizeTest) Run(t *testing.T) {
 	require.Equal(t, test.ExpectedEncodedLength, len(encodedObject))
 }
 
+// TODO: this type of test is not hex encoded as it uses a custom json unmarshaller
 // Custom JSON unmarshaller for StructureSizeTest since json can't unmarshal the types.Encoder interface
 func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 	// Define alias with a decodable Object field
@@ -42,8 +43,7 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 		Name                  string
 		ExpectedEncodedLength int
 		IsMaxSize             bool
-
-		Object interface{}
+		Object                interface{}
 	}
 
 	// Unmarshal alias
