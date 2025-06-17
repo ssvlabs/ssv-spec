@@ -2,12 +2,13 @@ package beacon
 
 import (
 	"encoding/hex"
+	"reflect"
+	"testing"
+
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
-	"reflect"
-	"testing"
 )
 
 type DepositDataSpecTest struct {

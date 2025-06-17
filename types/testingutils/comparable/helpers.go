@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	"encoding/hex"
+
 	spec2 "github.com/attestantio/go-eth2-client/spec"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/google/go-cmp/cmp"
@@ -52,6 +54,7 @@ func UnmarshalStateComparison[T types.Root](basedir string, testName string, tes
 		return nilT, err
 	}
 
+	// err = utils.UnmarshalJSONWithHex(byteValue, targetState)
 	err = json.Unmarshal(byteValue, targetState)
 	if err != nil {
 		return nilT, err
@@ -113,8 +116,48 @@ func CompareWithJson(t *testing.T, test any, testName string, testType string) {
 	expectedTestMap, err := GetExpectedStateFromScFile(testName, testType)
 	require.NoError(t, err)
 
+	// Convert hex strings to byte arrays for SigningRoot
+	convertSigningRootToBytes(testMap)
+	convertSigningRootToBytes(expectedTestMap)
+
 	diff := cmp.Diff(testMap, expectedTestMap)
 	if diff != "" {
 		t.Errorf("%s inputs changed. %v", testName, diff)
+	}
+}
+
+// convertSigningRootToBytes recursively converts hex strings to byte arrays for SigningRoot fields
+func convertSigningRootToBytes(m map[string]interface{}) {
+	for k, v := range m {
+		switch vv := v.(type) {
+		case map[string]interface{}:
+			convertSigningRootToBytes(vv)
+		case []interface{}:
+			for _, item := range vv {
+				if m, ok := item.(map[string]interface{}); ok {
+					convertSigningRootToBytes(m)
+				}
+			}
+		case string:
+			if k == "SigningRoot" || k == "ExpectedBlkRoot" || k == "ExpectedCdRoot" || k == "ExpectedRoot" {
+				// Remove 0x prefix if present
+				hexStr := vv
+				hexStr = strings.TrimPrefix(hexStr, "0x")
+				bytes, err := hex.DecodeString(hexStr)
+				if err == nil {
+					// Convert bytes to array of float64
+					floatArray := make([]float64, len(bytes))
+					for i, b := range bytes {
+						floatArray[i] = float64(b)
+					}
+					// Convert []float64 to []any to match the expected type
+					anyArray := make([]interface{}, len(floatArray))
+					for i, f := range floatArray {
+						anyArray[i] = f
+					}
+					m[k] = anyArray
+				}
+			}
+		}
 	}
 }

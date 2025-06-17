@@ -2,11 +2,11 @@ package maxmsgsize
 
 import (
 	"encoding/json"
-	"strings"
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/stretchr/testify/require"
 )
 
@@ -29,13 +29,16 @@ func (test *StructureSizeTest) Run(t *testing.T) {
 	// Check if object respects SSZ tags sizes
 	checkSSZTags(t, getReflectValueForObject(test.Object), test.IsMaxSize)
 
+	// TODO: this is not working, fix this
+	// Convert hex values to bytes before encoding
+	utils.ConvertHexToBytes(test.Object)
+
 	// Check expected size
 	encodedObject, err := test.Object.Encode()
 	require.NoError(t, err)
 	require.Equal(t, test.ExpectedEncodedLength, len(encodedObject))
 }
 
-// TODO: this type of test is not hex encoded as it uses a custom json unmarshaller
 // Custom JSON unmarshaller for StructureSizeTest since json can't unmarshal the types.Encoder interface
 func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 	// Define alias with a decodable Object field
@@ -61,12 +64,6 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	var getDecoder = func() *json.Decoder {
-		decoder := json.NewDecoder(strings.NewReader(string(byts)))
-		decoder.DisallowUnknownFields()
-		return decoder
-	}
-
 	var possibleObjects = []types.Encoder{
 		&qbft.Message{},
 		&types.PartialSignatureMessage{},
@@ -78,8 +75,8 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 	}
 
 	for _, obj := range possibleObjects {
-		err := getDecoder().Decode(&obj)
-		if err == nil {
+		// Try to unmarshal with hex handling
+		if err := utils.UnmarshalJSONWithHex(byts, obj); err == nil {
 			t.Object = obj
 			return nil
 		}
