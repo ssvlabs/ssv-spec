@@ -216,17 +216,21 @@ func ConvertHexToBytes(v interface{}) {
 							copy(version[:], bytes)
 							val[k] = version
 						case strings.HasSuffix(k, "Root"):
-							var root [32]byte
-							// Remove 0x prefix if present
-							hexStr := vv
-							hexStr = strings.TrimPrefix(hexStr, "0x")
-							bytes, err = hex.DecodeString(hexStr)
-							if err != nil || len(bytes) != 32 {
-								// If still not 32 bytes, raise error
-								panic(fmt.Errorf("invalid root: %s", vv))
+							if k == "ExpectedSigningRoot" {
+								val[k] = vv
+							} else {
+								var root [32]byte
+								// Remove 0x prefix if present
+								hexStr := vv
+								// hexStr = strings.TrimPrefix(hexStr, "0x")
+								bytes, err = hex.DecodeString(hexStr)
+								if err != nil || len(bytes) != 32 {
+									// If still not 32 bytes, raise error
+									panic(fmt.Errorf("invalid root: %s", vv))
+								}
+								copy(root[:], bytes)
+								val[k] = root
 							}
-							copy(root[:], bytes)
-							val[k] = root
 						default:
 							val[k] = bytes
 						}
@@ -293,8 +297,8 @@ func ConvertHexToBytes(v interface{}) {
 						}
 						copy(domainType[:], bytes)
 						val[k] = domainType
-					} else if k == "ExpectedSigningRoot" {
-						// Keep ExpectedSigningRoot as a hex string
+					} else if k == "WithdrawalCredentials" {
+						// Keep WithdrawalCredentials as a string
 						val[k] = vv
 					} else if k == "Slot" {
 						// Special handling for Slot - treat as uint64
