@@ -24,8 +24,10 @@ func (test *DepositDataSpecTest) TestName() string {
 }
 
 func (test *DepositDataSpecTest) Run(t *testing.T) {
-	validatorPK, _ := hex.DecodeString(test.ValidatorPK)
-	withdrawalCredentials, _ := hex.DecodeString(test.WithdrawalCredentials)
+	validatorPK, err := hex.DecodeString(test.ValidatorPK)
+	require.NoError(t, err)
+	withdrawalCredentials, err := hex.DecodeString(test.WithdrawalCredentials)
+	require.NoError(t, err)
 
 	r, _, err := testingutils.GenerateETHDepositData(
 		validatorPK,

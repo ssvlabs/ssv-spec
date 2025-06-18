@@ -311,8 +311,7 @@ func ConvertHexToBytes(v interface{}) {
 					} else if k == "WithdrawalCredentials" {
 						// Keep WithdrawalCredentials as a string
 						val[k] = vv
-					} else if k == "Slot" {
-						// Special handling for Slot - treat as uint64
+					} else if k == "Slot" || k == "ValidatorPK" {
 						val[k] = vv
 					} else {
 						val[k] = bytes
