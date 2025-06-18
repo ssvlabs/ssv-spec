@@ -166,8 +166,17 @@ func ConvertToHexMap(v reflect.Value) interface{} {
 			}
 			// Get the field name from the parent struct if available
 			fieldName := ""
-			if v.CanAddr() && v.Addr().Type().Name() != "" {
-				fieldName = v.Addr().Type().Name()
+			if v.CanAddr() {
+				// Try to get the field name from the parent struct
+				parent := v.Addr().Type()
+				if parent.Kind() == reflect.Struct {
+					for i := 0; i < parent.NumField(); i++ {
+						if parent.Field(i).Type == v.Type() {
+							fieldName = parent.Field(i).Name
+							break
+						}
+					}
+				}
 			}
 			// Add 0x prefix for specific fields
 			if fieldName == "PubKey" || fieldName == "Signature" {
@@ -207,32 +216,34 @@ func ConvertHexToBytes(v interface{}) {
 			case string:
 				// Try to decode as hex first
 				if bytes, err := hex.DecodeString(vv); err == nil {
-					// If the key ends with "Version" or "Root", it's likely a fixed-size array
-					if strings.HasSuffix(k, "Version") || strings.HasSuffix(k, "Root") {
-						// Convert to fixed-size array if needed
-						switch {
-						case strings.HasSuffix(k, "Version"):
-							var version [4]byte
-							copy(version[:], bytes)
-							val[k] = version
-						case strings.HasSuffix(k, "Root"):
-							if k == "ExpectedSigningRoot" {
-								val[k] = vv
-							} else {
-								var root [32]byte
-								// Remove 0x prefix if present
-								hexStr := vv
-								// hexStr = strings.TrimPrefix(hexStr, "0x")
-								bytes, err = hex.DecodeString(hexStr)
-								if err != nil || len(bytes) != 32 {
-									// If still not 32 bytes, raise error
-									panic(fmt.Errorf("invalid root: %s", vv))
-								}
-								copy(root[:], bytes)
-								val[k] = root
+					// If the key ends with "Version", it's a fixed-size array
+					if strings.HasSuffix(k, "Version") {
+						var version [4]byte
+						copy(version[:], bytes)
+						val[k] = version
+					} else if strings.HasSuffix(k, "Root") {
+						if k == "ExpectedSigningRoot" {
+							val[k] = vv
+						} else if k == "BlockRoot" {
+							// Add 0x prefix for BlockRoot
+							if !strings.HasPrefix(vv, "0x") {
+								vv = "0x" + vv
 							}
-						default:
-							val[k] = bytes
+							val[k] = vv
+						} else {
+							// For other roots, remove 0x prefix if present
+							hexStr := vv
+							if strings.HasPrefix(hexStr, "0x") {
+								hexStr = strings.TrimPrefix(hexStr, "0x")
+							}
+							bytes, err = hex.DecodeString(hexStr)
+							if err != nil || len(bytes) != 32 {
+								// If still not 32 bytes, raise error
+								panic(fmt.Errorf("invalid root: %s", vv))
+							}
+							var root [32]byte
+							copy(root[:], bytes)
+							val[k] = root
 						}
 					} else if k == "MsgID" {
 						// Special handling for MsgID
@@ -424,6 +435,22 @@ func UnmarshalJSONWithHex(data []byte, v interface{}) error {
 	var m map[string]interface{}
 	if err := json.Unmarshal(data, &m); err != nil {
 		return err
+	}
+
+	// Handle Root fields in Source and Target maps
+	if source, ok := m["Source"].(map[string]interface{}); ok {
+		if root, ok := source["Root"].(string); ok {
+			if !strings.HasPrefix(root, "0x") {
+				source["Root"] = "0x" + root
+			}
+		}
+	}
+	if target, ok := m["Target"].(map[string]interface{}); ok {
+		if root, ok := target["Root"].(string); ok {
+			if !strings.HasPrefix(root, "0x") {
+				target["Root"] = "0x" + root
+			}
+		}
 	}
 
 	// Convert hex strings to bytes

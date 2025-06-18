@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	"encoding/base64"
 	"encoding/hex"
 
 	spec2 "github.com/attestantio/go-eth2-client/spec"
@@ -133,13 +134,47 @@ func convertSigningRootToBytes(m map[string]interface{}) {
 		case map[string]interface{}:
 			convertSigningRootToBytes(vv)
 		case []interface{}:
-			for _, item := range vv {
-				if m, ok := item.(map[string]interface{}); ok {
-					convertSigningRootToBytes(m)
+			// Check if this is a Signatures array
+			if k == "Signatures" {
+				// Convert each signature to base64 string
+				for i, item := range vv {
+					if str, ok := item.(string); ok {
+						// Remove 0x prefix if present
+						hexStr := strings.TrimPrefix(str, "0x")
+						bytes, err := hex.DecodeString(hexStr)
+						if err == nil {
+							// Convert to base64
+							vv[i] = base64.StdEncoding.EncodeToString(bytes)
+						}
+					}
+				}
+			} else if k == "MessageIDs" {
+				// Convert each MessageID to float64 array
+				for i, item := range vv {
+					if str, ok := item.(string); ok {
+						// Remove 0x prefix if present
+						hexStr := strings.TrimPrefix(str, "0x")
+						bytes, err := hex.DecodeString(hexStr)
+						if err == nil {
+							// Convert bytes to array of interface{}
+							anyArray := make([]interface{}, len(bytes))
+							for j, b := range bytes {
+								anyArray[j] = float64(b)
+							}
+							vv[i] = anyArray
+						}
+					}
+				}
+			} else {
+				// For other arrays, recursively process each item
+				for _, item := range vv {
+					if m, ok := item.(map[string]interface{}); ok {
+						convertSigningRootToBytes(m)
+					}
 				}
 			}
 		case string:
-			if k == "SigningRoot" || k == "ExpectedBlkRoot" || k == "ExpectedCdRoot" || k == "ExpectedRoot" {
+			if k == "SigningRoot" || k == "ExpectedBlkRoot" || k == "ExpectedCdRoot" || k == "ExpectedRoot" || k == "MsgID" || k == "CommitteeID" || k == "DomainType" || k == "ForkVersion" {
 				// Remove 0x prefix if present
 				hexStr := vv
 				hexStr = strings.TrimPrefix(hexStr, "0x")
@@ -156,6 +191,15 @@ func convertSigningRootToBytes(m map[string]interface{}) {
 						anyArray[i] = f
 					}
 					m[k] = anyArray
+				}
+			} else if k == "SSVOperatorPubKey" || k == "PartialSignature" || k == "FullData" {
+				// Remove 0x prefix if present
+				hexStr := vv
+				hexStr = strings.TrimPrefix(hexStr, "0x")
+				bytes, err := hex.DecodeString(hexStr)
+				if err == nil {
+					// Convert to base64
+					m[k] = base64.StdEncoding.EncodeToString(bytes)
 				}
 			}
 		}

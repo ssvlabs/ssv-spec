@@ -97,8 +97,7 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 	log.Printf("writing state comparison json: %s\n", name)
 
 	// TODO: hex encoding for state comparison tests is not working
-	// byts, err := toHexJSON(post)
-	byts, err := json.MarshalIndent(post, "", "  ")
+	byts, err := toHexJSON(post)
 	if err != nil {
 		panic(err.Error())
 	}
