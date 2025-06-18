@@ -2,6 +2,7 @@ package tests
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"testing"
@@ -9,6 +10,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
@@ -33,6 +35,66 @@ type CreateMsgSpecTest struct {
 	ExpectedRoot                                     string
 	ExpectedState                                    types.Root `json:"-"` // Field is ignored by encoding/json"
 	ExpectedError                                    string
+}
+
+// UnmarshalJSON implements custom JSON unmarshaling for CreateMsgSpecTest
+// This is a workaround to handle the ExpectedRoot field which is a string as it conflicts with EncodingTest.ExpectedRoot which is a [32]byte
+func (test *CreateMsgSpecTest) UnmarshalJSON(data []byte) error {
+	// First, unmarshal into a raw map to extract ExpectedRoot
+	var raw map[string]interface{}
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+
+	// Extract ExpectedRoot as string before hex processing
+	var expectedRoot string
+	if er, ok := raw["ExpectedRoot"].(string); ok {
+		expectedRoot = er
+	}
+
+	// Remove ExpectedRoot from raw map so it doesn't get hex processed
+	delete(raw, "ExpectedRoot")
+
+	// Marshal the remaining data back to JSON
+	remainingData, err := json.Marshal(raw)
+	if err != nil {
+		return err
+	}
+
+	// Create a temporary struct without ExpectedRoot for hex processing
+	type CreateMsgSpecTestWithoutExpectedRoot struct {
+		Name                                             string
+		Value                                            [32]byte
+		StateValue                                       []byte
+		Round                                            qbft.Round
+		RoundChangeJustifications, PrepareJustifications []*types.SignedSSVMessage
+		CreateType                                       string
+		ExpectedState                                    types.Root `json:"-"`
+		ExpectedError                                    string
+	}
+
+	temp := &CreateMsgSpecTestWithoutExpectedRoot{}
+
+	// Use UnmarshalJSONWithHex for all other fields
+	if err := utils.UnmarshalJSONWithHex(remainingData, temp); err != nil {
+		return err
+	}
+
+	// Copy all fields from temp to test
+	test.Name = temp.Name
+	test.Value = temp.Value
+	test.StateValue = temp.StateValue
+	test.Round = temp.Round
+	test.RoundChangeJustifications = temp.RoundChangeJustifications
+	test.PrepareJustifications = temp.PrepareJustifications
+	test.CreateType = temp.CreateType
+	test.ExpectedState = temp.ExpectedState
+	test.ExpectedError = temp.ExpectedError
+
+	// Set ExpectedRoot as string
+	test.ExpectedRoot = expectedRoot
+
+	return nil
 }
 
 func (test *CreateMsgSpecTest) Run(t *testing.T) {

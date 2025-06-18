@@ -73,11 +73,29 @@ func ConvertToHexMap(v reflect.Value) interface{} {
 		t := v.Type()
 		for i := 0; i < v.NumField(); i++ {
 			field := v.Field(i)
-			fieldName := t.Field(i).Name
+			fieldType := t.Field(i)
+			fieldName := fieldType.Name
+
+			// Check for JSON tag to see if field should be ignored
+			jsonTag := fieldType.Tag.Get("json")
+			if jsonTag == "-" {
+				// Skip fields with json:"-" tag
+				continue
+			}
+
+			// Extract JSON field name from tag
+			jsonFieldName := fieldName
+			if jsonTag != "" {
+				// Split by comma to handle options like "name,omitempty"
+				parts := strings.Split(jsonTag, ",")
+				if parts[0] != "" {
+					jsonFieldName = parts[0]
+				}
+			}
 
 			// Special handling for Version field - convert to string
 			if fieldName == "Version" {
-				om.fields = append(om.fields, fieldInfo{name: fieldName, value: field.Interface().(spec.DataVersion).String()})
+				om.fields = append(om.fields, fieldInfo{name: jsonFieldName, value: field.Interface().(spec.DataVersion).String()})
 				continue
 			}
 
@@ -88,7 +106,7 @@ func ConvertToHexMap(v reflect.Value) interface{} {
 					for j := 0; j < field.Len(); j++ {
 						bytes[j] = byte(field.Index(j).Uint())
 					}
-					om.fields = append(om.fields, fieldInfo{name: fieldName, value: base64.StdEncoding.EncodeToString(bytes)})
+					om.fields = append(om.fields, fieldInfo{name: jsonFieldName, value: base64.StdEncoding.EncodeToString(bytes)})
 					continue
 				}
 			}
@@ -100,13 +118,13 @@ func ConvertToHexMap(v reflect.Value) interface{} {
 					for j := 0; j < field.Len(); j++ {
 						bytes[j] = byte(field.Index(j).Uint())
 					}
-					om.fields = append(om.fields, fieldInfo{name: fieldName, value: "0x" + hex.EncodeToString(bytes)})
+					om.fields = append(om.fields, fieldInfo{name: jsonFieldName, value: "0x" + hex.EncodeToString(bytes)})
 					continue
 				}
 			}
 
 			// For all other fields, recursively process
-			om.fields = append(om.fields, fieldInfo{name: fieldName, value: ConvertToHexMap(field)})
+			om.fields = append(om.fields, fieldInfo{name: jsonFieldName, value: ConvertToHexMap(field)})
 		}
 		return om
 	case reflect.Slice:
@@ -202,8 +220,29 @@ func ConvertToHexMap(v reflect.Value) interface{} {
 		}
 		return m
 	default:
-		// For all other types, return the value as is
-		return v.Interface()
+		// For all other types, check if we can access the value
+		if v.CanInterface() {
+			return v.Interface()
+		} else {
+			// If we can't access the interface, try to get the value in a different way
+			switch v.Kind() {
+			case reflect.Bool:
+				return v.Bool()
+			case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+				return v.Int()
+			case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+				return v.Uint()
+			case reflect.Float32, reflect.Float64:
+				return v.Float()
+			case reflect.String:
+				return v.String()
+			case reflect.Complex64, reflect.Complex128:
+				return v.Complex()
+			default:
+				// For other types that we can't access, return a placeholder
+				return fmt.Sprintf("<%s>", v.Type().String())
+			}
+		}
 	}
 }
 
@@ -222,7 +261,7 @@ func ConvertHexToBytes(v interface{}) {
 						copy(version[:], bytes)
 						val[k] = version
 					} else if strings.HasSuffix(k, "Root") {
-						if k == "ExpectedSigningRoot" {
+						if k == "ExpectedSigningRoot" || k == "ControllerPostRoot" || k == "PostRoot" {
 							val[k] = vv
 						} else if k == "BlockRoot" {
 							// Add 0x prefix for BlockRoot
@@ -237,13 +276,17 @@ func ConvertHexToBytes(v interface{}) {
 								hexStr = strings.TrimPrefix(hexStr, "0x")
 							}
 							bytes, err = hex.DecodeString(hexStr)
-							if err != nil || len(bytes) != 32 {
+							if err != nil {
 								// If still not 32 bytes, raise error
 								panic(fmt.Errorf("invalid root: %s", vv))
 							}
-							var root [32]byte
-							copy(root[:], bytes)
-							val[k] = root
+							if len(bytes) == 32 {
+								var root [32]byte
+								copy(root[:], bytes)
+								val[k] = root
+							} else {
+								val[k] = bytes
+							}
 						}
 					} else if k == "MsgID" {
 						// Special handling for MsgID
@@ -308,6 +351,18 @@ func ConvertHexToBytes(v interface{}) {
 						}
 						copy(domainType[:], bytes)
 						val[k] = domainType
+					} else if k == "Value" {
+						// Special handling for Value field (32-byte array)
+						var value [32]byte
+						hexStr := vv
+						hexStr = strings.TrimPrefix(hexStr, "0x")
+						bytes, err = hex.DecodeString(hexStr)
+						if err != nil || len(bytes) != 32 {
+							// If still not 32 bytes, raise error
+							panic(fmt.Errorf("invalid Value: %s", vv))
+						}
+						copy(value[:], bytes)
+						val[k] = value
 					} else if k == "WithdrawalCredentials" {
 						// Keep WithdrawalCredentials as a string
 						val[k] = vv
@@ -325,6 +380,8 @@ func ConvertHexToBytes(v interface{}) {
 						val[k] = vv
 					}
 				}
+			case float64:
+				val[k] = vv
 			case []interface{}:
 				// Special handling for OperatorIDs and ValidatorSyncCommitteeIndices
 				if k == "OperatorIDs" || k == "ValidatorSyncCommitteeIndices" {
@@ -344,6 +401,60 @@ func ConvertHexToBytes(v interface{}) {
 						}
 					}
 					val[k] = indices
+				} else if k == "Heights" {
+					// Special handling for Heights and Rounds arrays
+					values := make([]uint64, len(vv))
+					for i, value := range vv {
+						switch value := value.(type) {
+						case float64:
+							values[i] = uint64(value)
+						case string:
+							valueNum, err := strconv.ParseUint(value, 10, 64)
+							if err != nil {
+								panic(fmt.Errorf("invalid height/round: %s", value))
+							}
+							values[i] = valueNum
+						default:
+							panic(fmt.Errorf("invalid height/round type: %T", value))
+						}
+					}
+					val[k] = values
+				} else if k == "Rounds" {
+					// Special handling for Rounds array
+					rounds := make([]uint64, len(vv))
+					for i, round := range vv {
+						switch round := round.(type) {
+						case float64:
+							rounds[i] = uint64(round)
+						case string:
+							roundNum, err := strconv.ParseUint(round, 10, 64)
+							if err != nil {
+								panic(fmt.Errorf("invalid round: %s", round))
+							}
+							rounds[i] = roundNum
+						default:
+							panic(fmt.Errorf("invalid round type: %T", round))
+						}
+					}
+					val[k] = rounds
+				} else if k == "Proposers" {
+					// Special handling for Proposers array
+					proposers := make([]uint64, len(vv))
+					for i, proposer := range vv {
+						switch proposer := proposer.(type) {
+						case float64:
+							proposers[i] = uint64(proposer)
+						case string:
+							proposerNum, err := strconv.ParseUint(proposer, 10, 64)
+							if err != nil {
+								panic(fmt.Errorf("invalid proposer: %s", proposer))
+							}
+							proposers[i] = proposerNum
+						default:
+							panic(fmt.Errorf("invalid proposer type: %T", proposer))
+						}
+					}
+					val[k] = proposers
 				} else if k == "MessageIDs" {
 					// Special handling for MessageIDs array
 					messageIDs := make([][56]byte, len(vv))
@@ -362,6 +473,24 @@ func ConvertHexToBytes(v interface{}) {
 						}
 					}
 					val[k] = messageIDs
+				} else if k == "ExpectedRoots" {
+					// Special handling for ExpectedRoots array
+					expectedRoots := make([][32]byte, len(vv))
+					for i, root := range vv {
+						switch root := root.(type) {
+						case string:
+							hexStr := root
+							hexStr = strings.TrimPrefix(hexStr, "0x")
+							bytes, err := hex.DecodeString(hexStr)
+							if err != nil || len(bytes) != 32 {
+								panic(fmt.Errorf("invalid ExpectedRoot: %s", root))
+							}
+							copy(expectedRoots[i][:], bytes)
+						default:
+							panic(fmt.Errorf("invalid ExpectedRoot type: %T", root))
+						}
+					}
+					val[k] = expectedRoots
 				} else {
 					// Check if it's an array of integers (byte array)
 					if len(vv) > 0 {
@@ -418,6 +547,11 @@ func ConvertHexToBytes(v interface{}) {
 	}
 }
 
+// toHexJSON recursively converts ExpectedRoot ([32]byte) and ExpectedRoots ([][32]byte) fields to hex string(s) for JSON output
+func ToHexJSON(v interface{}) ([]byte, error) {
+	return json.MarshalIndent(ConvertToHexMap(reflect.ValueOf(v)), "", "  ")
+}
+
 // UnmarshalJSONWithHex handles unmarshaling of JSON with hex strings into structs with byte arrays
 func UnmarshalJSONWithHex(data []byte, v interface{}) error {
 	// Check if the type has a custom UnmarshalJSON method
@@ -430,37 +564,66 @@ func UnmarshalJSONWithHex(data []byte, v interface{}) error {
 		}
 	}
 
-	// First unmarshal into a map
-	var m map[string]interface{}
-	if err := json.Unmarshal(data, &m); err != nil {
-		return err
-	}
-
-	// Handle Root fields in Source and Target maps
-	if source, ok := m["Source"].(map[string]interface{}); ok {
-		if root, ok := source["Root"].(string); ok {
-			if !strings.HasPrefix(root, "0x") {
-				source["Root"] = "0x" + root
-			}
-		}
-	}
-	if target, ok := m["Target"].(map[string]interface{}); ok {
-		if root, ok := target["Root"].(string); ok {
-			if !strings.HasPrefix(root, "0x") {
-				target["Root"] = "0x" + root
-			}
+	// Check if the JSON is an array or object
+	var firstChar byte
+	for i := 0; i < len(data); i++ {
+		if data[i] != ' ' && data[i] != '\n' && data[i] != '\r' && data[i] != '\t' {
+			firstChar = data[i]
+			break
 		}
 	}
 
-	// Convert hex strings to bytes
-	ConvertHexToBytes(m)
+	if firstChar == '[' {
+		// Handle array
+		var arr []interface{}
+		if err := json.Unmarshal(data, &arr); err != nil {
+			return err
+		}
 
-	// Marshal back to JSON
-	jsonBytes, err := json.Marshal(m)
-	if err != nil {
-		return err
+		// Convert hex strings to bytes in the array
+		ConvertHexToBytes(arr)
+
+		// Marshal back to JSON
+		jsonBytes, err := json.Marshal(arr)
+		if err != nil {
+			return err
+		}
+
+		// Unmarshal into the target struct
+		return json.Unmarshal(jsonBytes, v)
+	} else {
+		// Handle object
+		var m map[string]interface{}
+		if err := json.Unmarshal(data, &m); err != nil {
+			return err
+		}
+
+		// Handle Root fields in Source and Target maps
+		if source, ok := m["Source"].(map[string]interface{}); ok {
+			if root, ok := source["Root"].(string); ok {
+				if !strings.HasPrefix(root, "0x") {
+					source["Root"] = "0x" + root
+				}
+			}
+		}
+		if target, ok := m["Target"].(map[string]interface{}); ok {
+			if root, ok := target["Root"].(string); ok {
+				if !strings.HasPrefix(root, "0x") {
+					target["Root"] = "0x" + root
+				}
+			}
+		}
+
+		// Convert hex strings to bytes
+		ConvertHexToBytes(m)
+
+		// Marshal back to JSON
+		jsonBytes, err := json.Marshal(m)
+		if err != nil {
+			return err
+		}
+
+		// Unmarshal into the target struct
+		return json.Unmarshal(jsonBytes, v)
 	}
-
-	// Unmarshal into the target struct
-	return json.Unmarshal(jsonBytes, v)
 }

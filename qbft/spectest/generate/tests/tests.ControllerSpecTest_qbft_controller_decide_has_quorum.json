@@ -2,13 +2,13 @@
   "Name": "decide has quorum",
   "RunInstanceData": [
     {
-      "InputValue": "AQIDBA==",
+      "InputValue": "01020304",
       "InputMessages": [
         {
           "Signatures": [
-            "Caps0+zPRHpd35/dDeMiUyr7xrxVPprIiQgbQcipEDrv+H24GxEe1iNstAK6WPueVjXAfcI2LPrIbrBncVMC5VL2W8vhaS5Ql/u4kZrfcWNCnxf9hGksozITLfo25lhFGWINzaqlmtchdIx8ZoRObSlQGznIdQQlsvRKZu2vlFLohk3WZRyVUAx6prh6oyocQcyyATL+zDyB68DZR8JNp9iXcdWSWUZygFrluxX5Lf54dikvzqtuBkBsP2pDRwITFGtJQQPsy754libshKmH+j6HS0k33xeXDQICli4qufclVL/C2G2wMByPU1ynH7f7RfqXGkdmlEPBMVP3jOVxBg==",
-            "TMvIdHW8fHert/6XTSCsnFPmn5hRvFuBDGnC7JtmgKgZFgeS5dMV6KpF1zA1+i16MTlrJIh1rNsy0pm5Y8k5MdPxYPgGSQbTAdoICF6soWnKsmyUecZqOxooW2ZBaNU0QGjdS1os+uVnyVzOs90SYchfLdLUYzdjyQWhwPHwR8KJYNcu7b45djsgSlZWHDABQDx7fLBeqx7sgoChXZLsCzGLe/t4oqagil9qkrrZpxaf0VufXv5f91HvcRzuY74LtYlvgtzyROi1rNZKSOW4mFTXkK6sKUq2it0Po3QdCQ8XU57ILLEuH8IGYU+a9a9Q99ON3FQ5Jp13ncoHDGUbEA==",
-            "LCJo0c7PttyVtzlyA8MknshQrReT1IVMq7XZT/XdjwftxZWG9rExAgS01Zsui9qdlB/Y0U0SiC0LICqLCxOT03j55xP1guwp1OfT/CLmVNc5DslYYCNWoejX17yjQYPWjD1Hl/TvkUcxMtUBcVIul2rOc8b5kjmClTMoLUGN7xFVWd1D0AmbYkxvHHMr5M7f+fVWHSGwY06QY21Omf+0NXp5n4xKcWZpw0TcWpj6V+ETu+kkJFvqkBlLurceqDel//BeuUfICDVHKBaudjHg08dUNbq+obFefsKVGok0NVG/19u8PQdE6MTruBJ8sHYUmfuY4taJy99xLN0c7IRRCQ=="
+            "09aa6cd3eccf447a5ddf9fdd0de322532afbc6bc553e9ac889081b41c8a9103aeff87db81b111ed6236cb402ba58fb9e5635c07dc2362cfac86eb067715302e552f65bcbe1692e5097fbb8919adf7163429f17fd84692ca332132dfa36e6584519620dcdaaa59ad721748c7c66844e6d29501b39c8750425b2f44a66edaf9452e8864dd6651c95500c7aa6b87aa32a1c41ccb20132fecc3c81ebc0d947c24da7d89771d592594672805ae5bb15f92dfe7876292fceab6e06406c3f6a43470213146b494103eccbbe789626ec84a987fa3e874b4937df17970d0202962e2ab9f72554bfc2d86db0301c8f535ca71fb7fb45fa971a47669443c13153f78ce57106",
+            "4ccbc87475bc7c77abb7fe974d20ac9c53e69f9851bc5b810c69c2ec9b6680a819160792e5d315e8aa45d73035fa2d7a31396b248875acdb32d299b963c93931d3f160f8064906d301da08085eaca169cab26c9479c66a3b1a285b664168d5344068dd4b5a2cfae567c95cceb3dd1261c85f2dd2d4633763c905a1c0f1f047c28960d72eedbe39763b204a56561c3001403c7b7cb05eab1eec8280a15d92ec0b318b7bfb78a2a6a08a5f6a92bad9a7169fd15b9f5efe5ff751ef711cee63be0bb5896f82dcf244e8b5acd64a48e5b89854d790aeac294ab68add0fa3741d090f17539ec82cb12e1fc206614f9af5af50f7d38ddc5439269d779dca070c651b10",
+            "2c2268d1cecfb6dc95b7397203c3249ec850ad1793d4854cabb5d94ff5dd8f07edc59586f6b1310204b4d59b2e8bda9d941fd8d14d12882d0b202a8b0b1393d378f9e713f582ec29d4e7d3fc22e654d7390ec958602356a1e8d7d7bca34183d68c3d4797f4ef91473132d50171522e976ace73c6f99239829533282d418def115559dd43d0099b624c6f1c732be4cedff9f5561d21b0634e90636d4e99ffb4357a799f8c4a716669c344dc5a98fa57e113bbe924245bea90194bbab71ea837a5fff05eb947c80835472816ae7631e0d3c75435babea1b15e7ec2951a89343551bfd7dbbc3d0744e8c4ebb8127cb0761499fb98e2d689cbdf712cdd1cec845109"
           ],
           "OperatorIDs": [
             1,
@@ -17,73 +17,16 @@
           ],
           "SSVMessage": {
             "MsgType": 0,
-            "MsgID": [
-              1,
-              2,
-              3,
-              4,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0
-            ],
+            "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
             "Data": "AgAAAAAAAAAKAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
           },
-          "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+          "FullData": "010203040506070809010203040506070809010203040506070809"
         }
       ],
       "ControllerPostRoot": "",
       "ExpectedTimerState": null,
       "ExpectedDecidedState": {
-        "DecidedVal": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
+        "DecidedVal": "010203040506070809010203040506070809010203040506070809",
         "DecidedCnt": 1,
         "BroadcastedDecided": null
       },

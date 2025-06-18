@@ -2,75 +2,18 @@
   "Name": "future valid msg",
   "RunInstanceData": [
     {
-      "InputValue": "AQIDBA==",
+      "InputValue": "01020304",
       "InputMessages": [
         {
           "Signatures": [
-            "rzDzjSYG8mKTWsBG+Hu7R6PsCg7skV+YWc+qnWnZ/Khb1FD5cgUGrl+0Z0s8p0o59vtYorj9mSWe93c7qKEUjHoZEYlGvpSMeZ4uhQaPa8v7Kd4xyPrLCBs0t5CId/0mBqmpJofXYxlm+krWql9LvWblPscZjPxFV+FBxyNc1b9AKiVY8f/8ExN+Z4StsZNUdUDxBboiRU6IdO5ZoMsqyN8QdaRspZqPk3HFT7z3psJaFF7WwduzeSl1ZQ2Jnu+sgpVkU+qmwZan9DtAcGAq5erbXXFBb1rj780ph2NKvT+o3snY5ib3kGhnVkfM/svDWYF9DiTV4WjrbGynjPZ6Bg=="
+            "af30f38d2606f262935ac046f87bbb47a3ec0a0eec915f9859cfaa9d69d9fca85bd450f9720506ae5fb4674b3ca74a39f6fb58a2b8fd99259ef7773ba8a1148c7a19118946be948c799e2e85068f6bcbfb29de31c8facb081b34b7908877fd2606a9a92687d7631966fa4ad6aa5f4bbd66e53ec7198cfc4557e141c7235cd5bf402a2558f1fffc13137e6784adb193547540f105ba22454e8874ee59a0cb2ac8df1075a46ca59a8f9371c54fbcf7a6c25a145ed6c1dbb3792975650d899eefac82956453eaa6c196a7f43b4070602ae5eadb5d71416f5ae3efcd2987634abd3fa8dec9d8e626f79068675647ccfecbc359817d0e24d5e168eb6c6ca78cf67a06"
           ],
           "OperatorIDs": [
             3
           ],
           "SSVMessage": {
             "MsgType": 0,
-            "MsgID": [
-              1,
-              2,
-              3,
-              4,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0
-            ],
+            "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
             "Data": "AQAAAAAAAAAKAAAAAAAAAAMAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
           },
           "FullData": null

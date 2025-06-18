@@ -1,258 +1,54 @@
 {
-		"Name": "create proposal not previously prepared",
-		"Value": [
-				1,
-				2,
-				3,
-				4,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0
-		],
-		"StateValue": null,
-		"Round": 0,
-		"RoundChangeJustifications": [
-				{
-						"Signatures": [
-								"AucqM1ArfwpQZizUjZrSxjGLxgrpSPk/ki8qTvkDqwP0gRTbxgZqTzlLfg4msUFQvB7sBvpiekA5/x8liIRcHX6YXsGPNUtlHvKkYwBOE2QgktBTWLXi+fiMnvUH6WOYQd0yOT3P/fxvkvaxjszZzCI3xn8dZ201rcgBbQQF9Ag2vSJmKVBzP7UrOcnHgw1zKrbwKNUS0twgwv9gbO8DioHzZPVx3UYH3g9sCECHlKbYnNhBk//yP4swFd/GJX/TjnhcInXvheMA/OmsxgOakK+LTUgJROuU/O7+tuIi7kCLQsvK4kM67XPpdif4jHEhIfuJukC6S5bkLelAMBp26w=="
-						],
-						"OperatorIDs": [
-								1
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
-						},
-						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
-				},
-				{
-						"Signatures": [
-								"GsCg+TMW0TfUFjUpOPM8EVi565kgwfeuJ9c02qnK0rhgHjEKhql6ZRI/8f4nYTRSzjbpmwLzBgoxqPRMI5PMxRA/NPLRB7WH4gnEdLWtvx32QDpU14rLQSVnOz9cq+rXK9ZpDLx02Na9AnlEHHyHIXove9owdx4vfDAwGH9MxtpzTmvT7GYrxxj5GSXNK4bFSdscnCv+UiCQsMIDMYdmlNTehZGjurxWMvjgQQxf3fUF8CqukDuS92Tsm0UWpoa5Igim6kkjmo9kfTnwob0SYsR6K21ZqbIkQt2a+xFb+reAREhHMPa8/GsLP9M2hM/YPJa1FoBQt0g8HHmAbHEwzQ=="
-						],
-						"OperatorIDs": [
-								2
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
-						},
-						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
-				},
-				{
-						"Signatures": [
-								"QZ3Gkgf/KDZ7bynFvFE77lHgyAnn37pupGvrG6mRq1D+3DX7Fv7Evy3EG7j9JG1ISnXItNzTb1xsWr8LQhj07FIoZ/Nftt6hu5B4FzJapbA7/u6rVpfRfmvzDto797I/lFhXKvR0+gVNMoZOAq4msxRGg1nwK+MD0f0TKzM83edJ+IOlJSBB6vWKtveGz0FsJfPD67SATyBRMknIwqTa4HzLRb7op8fsMW1DXUaiEAacZ4I2vNb1Os82ld1s1bCRpSRznnAUBbnupRnUt8JZUX7jGwkLYD+lrwG71xihDUqHnxDIMNSkVvelrwGuAtRwYIr2cOIU89EirPYHNlMVQw=="
-						],
-						"OperatorIDs": [
-								3
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
-						},
-						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
-				}
-		],
-		"PrepareJustifications": null,
-		"CreateType": "createProposal",
-		"ExpectedRoot": "39e9ac7d177bf75fffa99354d498ffea607dc473a68b3d12b6425b15efda9c9e",
-		"ExpectedError": ""
+  "Name": "create proposal not previously prepared",
+  "Value": "0102030400000000000000000000000000000000000000000000000000000000",
+  "StateValue": null,
+  "Round": 0,
+  "RoundChangeJustifications": [
+    {
+      "Signatures": [
+        "02e72a33502b7f0a50662cd48d9ad2c6318bc60ae948f93f922f2a4ef903ab03f48114dbc6066a4f394b7e0e26b14150bc1eec06fa627a4039ff1f2588845c1d7e985ec18f354b651ef2a463004e13642092d05358b5e2f9f88c9ef507e9639841dd32393dcffdfc6f92f6b18eccd9cc2237c67f1d676d35adc8016d0405f40836bd22662950733fb52b39c9c7830d732ab6f028d512d2dc20c2ff606cef038a81f364f571dd4607de0f6c08408794a6d89cd84193fff23f8b3015dfc6257fd38e785c2275ef85e300fce9acc6039a90af8b4d480944eb94fceefeb6e222ee408b42cbcae2433aed73e97627f88c712121fb89ba40ba4b96e42de940301a76eb"
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
+      },
+      "FullData": "010203040506070809010203040506070809010203040506070809"
+    },
+    {
+      "Signatures": [
+        "1ac0a0f93316d137d416352938f33c1158b9eb9920c1f7ae27d734daa9cad2b8601e310a86a97a65123ff1fe27613452ce36e99b02f3060a31a8f44c2393ccc5103f34f2d107b587e209c474b5adbf1df6403a54d78acb4125673b3f5cabead72bd6690cbc74d8d6bd0279441c7c87217a2f7bda30771e2f7c3030187f4cc6da734e6bd3ec662bc718f91925cd2b86c549db1c9c2bfe522090b0c20331876694d4de8591a3babc5632f8e0410c5fddf505f02aae903b92f764ec9b4516a686b92208a6ea49239a8f647d39f0a1bd1262c47a2b6d59a9b22442dd9afb115bfab78044484730f6bcfc6b0b3fd33684cfd83c96b5168050b7483c1c79806c7130cd"
+      ],
+      "OperatorIDs": [
+        2
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
+      },
+      "FullData": "010203040506070809010203040506070809010203040506070809"
+    },
+    {
+      "Signatures": [
+        "419dc69207ff28367b6f29c5bc513bee51e0c809e7dfba6ea46beb1ba991ab50fedc35fb16fec4bf2dc41bb8fd246d484a75c8b4dcd36f5c6c5abf0b4218f4ec522867f35fb6dea1bb907817325aa5b03bfeeeab5697d17e6bf30eda3bf7b23f9458572af474fa054d32864e02ae26b314468359f02be303d1fd132b333cdde749f883a5252041eaf58ab6f786cf416c25f3c3ebb4804f20513249c8c2a4dae07ccb45bee8a7c7ec316d435d46a210069c678236bcd6f53acf3695dd6cd5b091a524739e701405b9eea519d4b7c259517ee31b090b603fa5af01bbd718a10d4a879f10c830d4a456f7a5af01ae02d470608af670e214f3d122acf60736531543"
+      ],
+      "OperatorIDs": [
+        3
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
+      },
+      "FullData": "010203040506070809010203040506070809010203040506070809"
+    }
+  ],
+  "PrepareJustifications": null,
+  "CreateType": "createProposal",
+  "ExpectedRoot": "39e9ac7d177bf75fffa99354d498ffea607dc473a68b3d12b6425b15efda9c9e",
+  "ExpectedError": ""
 }

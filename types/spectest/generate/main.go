@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -18,11 +17,6 @@ import (
 
 var testsDir = "tests"
 var stateComparisonDir = "state_comparison"
-
-// toHexJSON recursively converts ExpectedRoot ([32]byte) and ExpectedRoots ([][32]byte) fields to hex string(s) for JSON output
-func toHexJSON(v interface{}) ([]byte, error) {
-	return json.MarshalIndent(utils.ConvertToHexMap(reflect.ValueOf(v)), "", "  ")
-}
 
 func main() {
 	clearStateComparisonFolder()
@@ -45,7 +39,7 @@ func main() {
 		panic(err.Error())
 	}
 	for name, test := range all {
-		byts, err := toHexJSON(test)
+		byts, err := utils.ToHexJSON(test)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -56,7 +50,7 @@ func main() {
 	}
 
 	// write large tests.json file
-	byts, err := toHexJSON(all)
+	byts, err := utils.ToHexJSON(all)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -97,7 +91,7 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 	log.Printf("writing state comparison json: %s\n", name)
 
 	// TODO: hex encoding for state comparison tests is not working
-	byts, err := toHexJSON(post)
+	byts, err := utils.ToHexJSON(post)
 	if err != nil {
 		panic(err.Error())
 	}

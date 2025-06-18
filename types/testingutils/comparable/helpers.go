@@ -15,6 +15,7 @@ import (
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/google/go-cmp/cmp"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/stretchr/testify/require"
 )
 
@@ -55,8 +56,7 @@ func UnmarshalStateComparison[T types.Root](basedir string, testName string, tes
 		return nilT, err
 	}
 
-	// err = utils.UnmarshalJSONWithHex(byteValue, targetState)
-	err = json.Unmarshal(byteValue, targetState)
+	err = utils.UnmarshalJSONWithHex(byteValue, targetState)
 	if err != nil {
 		return nilT, err
 	}
@@ -174,7 +174,7 @@ func convertSigningRootToBytes(m map[string]interface{}) {
 				}
 			}
 		case string:
-			if k == "SigningRoot" || k == "ExpectedBlkRoot" || k == "ExpectedCdRoot" || k == "ExpectedRoot" || k == "MsgID" || k == "CommitteeID" || k == "DomainType" || k == "ForkVersion" {
+			if k == "SigningRoot" || k == "ExpectedBlkRoot" || k == "ExpectedCdRoot" || k == "ExpectedRoot" || k == "MsgID" || k == "CommitteeID" || k == "DomainType" || k == "ForkVersion" || k == "Value" {
 				// Remove 0x prefix if present
 				hexStr := vv
 				hexStr = strings.TrimPrefix(hexStr, "0x")
@@ -192,7 +192,7 @@ func convertSigningRootToBytes(m map[string]interface{}) {
 					}
 					m[k] = anyArray
 				}
-			} else if k == "SSVOperatorPubKey" || k == "PartialSignature" || k == "FullData" {
+			} else if k == "SSVOperatorPubKey" || k == "PartialSignature" || k == "FullData" || k == "StateValue" {
 				// Remove 0x prefix if present
 				hexStr := vv
 				hexStr = strings.TrimPrefix(hexStr, "0x")

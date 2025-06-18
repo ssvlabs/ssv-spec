@@ -3,7 +3,6 @@ package tests
 import (
 	"bytes"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -14,6 +13,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
@@ -212,7 +212,7 @@ func (test *ControllerSpecTest) overrideStateComparison(t *testing.T) {
 	byteValue, err := os.ReadFile(filepath.Clean(path))
 	require.NoError(t, err)
 	sc := make([]*qbft.Controller, len(test.RunInstanceData))
-	require.NoError(t, json.Unmarshal(byteValue, &sc))
+	require.NoError(t, utils.UnmarshalJSONWithHex(byteValue, &sc))
 
 	for i, runData := range test.RunInstanceData {
 		runData.ControllerPostState = sc[i]

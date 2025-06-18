@@ -3,74 +3,17 @@
   "Messages": [
     {
       "Signatures": [
-        "ll3bFRuhGAEwz0LYFDll1DU9mL7EMzaloD1uklMJXuxfbCPuZybljTdIIdqzPIRrSbON330aiuA50ZTF3auPId1P1Yit8WcOzIlXZVL06Xnez2aOziLkPvLxU7TfuRK1JNdYpvGR0ln3i3we8bq5GVU8NCwAfSE4QhTDXtoDJnzJtJFohnuX/n5yxxg5nCmSkL28VGAUvM6C1KaousJPxcXZ6x6UPMdx8GrJYKaZgyxpMDdlLSblMVQ/pS4OTRdqXmpOVHptr/gVQ2kPEw7aJhrVaXrl0n7/Oa2Ez+dYzSrTn7/31qrt5uAkHJwHSFy3fyLMXHc38swTU5fJcOPoZw=="
+        "965ddb151ba1180130cf42d8143965d4353d98bec43336a5a03d6e9253095eec5f6c23ee6726e58d374821dab33c846b49b38ddf7d1a8ae039d194c5ddab8f21dd4fd588adf1670ecc89576552f4e979decf668ece22e43ef2f153b4dfb912b524d758a6f191d259f78b7c1ef1bab919553c342c007d21384214c35eda03267cc9b49168867b97fe7e72c718399c299290bdbc546014bcce82d4a6a8bac24fc5c5d9eb1e943cc771f06ac960a699832c693037652d26e531543fa52e0e4d176a5e6a4e547a6daff81543690f130eda261ad5697ae5d27eff39ad84cfe758cd2ad39fbff7d6aaede6e0241c9c07485cb77f22cc5c7737f2cc135397c970e3e867"
       ],
       "OperatorIDs": [
         1
       ],
       "SSVMessage": {
         "MsgType": 0,
-        "MsgID": [
-          1,
-          2,
-          3,
-          4,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
         "Data": "AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAKvfODt6/P6iC11yzHeWCOb6cPkT/N/2FJdMBlqvhRH5AAAAAAAAAABQAAAAUAAAAAECAwQEAAAAAQ=="
       },
-      "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+      "FullData": "010203040506070809010203040506070809010203040506070809"
     }
   ],
   "EncodedMessages": null,

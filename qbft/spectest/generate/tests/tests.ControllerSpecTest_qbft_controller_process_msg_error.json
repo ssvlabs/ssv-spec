@@ -2,78 +2,21 @@
   "Name": "process msg error",
   "RunInstanceData": [
     {
-      "InputValue": "AQIDBA==",
+      "InputValue": "01020304",
       "InputMessages": [
         {
           "Signatures": [
-            "MsQjtnAWOIegKa4i+lFXYC34I4p39QUyos3YV3OY5qv6sW8GxvrR74XZJz+x9m3mGllcxZB/kjcNP8f5bcuhjE6KYYpCEVBjWv2jTpr20eOEWgFZmCZibzbDoahYzQpc3aUhnNlSUSRWkUApI4LIZDfO8dYmFPMQIJ6+9mmLR0IkzWDdY1TOf1TtUTP3QBp2FCUm26BNaagtWdeT7accmHhXkMDhUnNLj1MSM2A/BAYSF6AtHB8hYPkWUaVKbrWD/W7yrbwcyrx0VpVgfMgLrRTvuFCQszi+0PpxHVG0G4tWWTK3E2QZAcjuGLEMGH6+jDHy3yOYe7N8S/ObhN2+YA=="
+            "32c423b670163887a029ae22fa5157602df8238a77f50532a2cdd8577398e6abfab16f06c6fad1ef85d9273fb1f66de61a595cc5907f92370d3fc7f96dcba18c4e8a618a421150635afda34e9af6d1e3845a01599826626f36c3a1a858cd0a5cdda5219cd9525124569140292382c86437cef1d62614f310209ebef6698b474224cd60dd6354ce7f54ed5133f7401a76142526dba04d69a82d59d793eda71c98785790c0e152734b8f531233603f04061217a02d1c1f2160f91651a54a6eb583fd6ef2adbc1ccabc745695607cc80bad14efb85090b338bed0fa711d51b41b8b565932b713641901c8ee18b10c187ebe8c31f2df23987bb37c4bf39b84ddbe60"
           ],
           "OperatorIDs": [
             1
           ],
           "SSVMessage": {
             "MsgType": 0,
-            "MsgID": [
-              1,
-              2,
-              3,
-              4,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0
-            ],
+            "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
             "Data": "AAAAAAAAAAAAAAAAAAAAAGQAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
           },
-          "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+          "FullData": "010203040506070809010203040506070809010203040506070809"
         }
       ],
       "ControllerPostRoot": "",

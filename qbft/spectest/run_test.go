@@ -2,15 +2,17 @@ package spectest
 
 import (
 	"encoding/json"
-	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/timeout"
 	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/timeout"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	tests2 "github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 )
@@ -48,7 +50,7 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &tests2.MsgProcessingSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
 
 				// a little trick we do to instantiate all the internal instance params
 				preByts, _ := typedTest.Pre.Encode()
@@ -70,7 +72,7 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &tests2.MsgSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
 
 				tests[testName] = typedTest
 				typedTest.Run(t)
@@ -78,7 +80,7 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &tests2.ControllerSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
 
 				tests[testName] = typedTest
 				typedTest.Run(t)
@@ -86,7 +88,7 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &tests2.CreateMsgSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
 
 				tests[testName] = typedTest
 				typedTest.Run(t)
@@ -94,7 +96,7 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &tests2.RoundRobinSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
 
 				tests[testName] = typedTest
 				typedTest.Run(t)
@@ -102,7 +104,7 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &timeout.SpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
 
 				// a little trick we do to instantiate all the internal instance params
 				preByts, _ := typedTest.Pre.Encode()

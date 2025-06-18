@@ -2,13 +2,13 @@
   "Name": "decide invalid value (should pass)",
   "RunInstanceData": [
     {
-      "InputValue": "AQIDBA==",
+      "InputValue": "01020304",
       "InputMessages": [
         {
           "Signatures": [
-            "a9uJOU2KhTJtzTAu8J10HtRHC12mhiPY2BjMUHNSQrstXxfktlRReSn2FJu0nZcqSAKC5ajJIDCpvMwHmVuWrsF2riBhQ9uGbiHwyldVxrUtczRYpgquKik/EGjcxeCBl9X4L8k27sxxxyfGq07GlQyfwuvf4T4e350eblJTYA75jMSeKUP6D12WbpckOVwpsjbK++wzJZUNKW8fNMk/kr4iZngDVWZLGe987N1XkGc7uzhA15JI1EiKyGHMGQLkDRUe/IzC7yA9MjQFGdjdCMLwEHAz6RR4XSShefobcr2cfoaEcVG3QhcO0eLnncqrXd5ebVnuHkVoUQx9jH7QOg==",
-            "L29+qUy+0Hcdh22L4LAwUfIGJuMVhNM3iU+6zNUTKc8dfmiytCrelJhrssuv7edP39sQBLmw2wGVVbjyZwDLdaTMhsCR62odlgaAmNSQqI0v1WSo4n//pl3Qip8EFCB1LcsKxLkLwVNnO5h0/ogsDVVGxl0hhsXfEAIvjTwAg6hdmMG4uVS/g1bIlgoSzh00C2KDI8Tc9X+0KfNuXMPqXamHiehVYv5AX1Xl9/gXMDwRs+oNU+IUT8l3XfuWxK2iVS2XxOeXt13MkACWrPswgcs9EWOEvCBD9f6GExq+ysWXEFZCHsZbs29onu9UnXdwvVHl5+tZT+CcDll4k6iQ0w==",
-            "g9AlyC4xrh+sghW83Y0eKvFzG0wIep4QbMs7WxoIH0GtTbQM41NuSDt5edHwsSfTi/OgCaS+B4+6MQN7UhGSQ06zlV44t/mPaagSWzxq5du4qimJgKf3FhP5Nzv6iE5cMunO/XSQYUXVutlJIS8eLjNsg7OdCv85Ou+c1k6z7BfUIOfTmJK+Feo2E0dHOY5bHLSx6elLhLfLACquNVqtfYVvdNLe+29j9jD8VEI68U6NiLQjTHVi+rFrD6PndKFWBMTN61gPMBkaMdv81c1m1cAY42avx3O7kaF6BbivEhUp43EBv9xS1Mw74IqSsgBt3PT+k/ndbvRufSv1spFOTg=="
+            "6bdb89394d8a85326dcd302ef09d741ed4470b5da68623d8d818cc50735242bb2d5f17e4b654517929f6149bb49d972a480282e5a8c92030a9bccc07995b96aec176ae206143db866e21f0ca5755c6b52d733458a60aae2a293f1068dcc5e08197d5f82fc936eecc71c727c6ab4ec6950c9fc2ebdfe13e1edf9d1e6e5253600ef98cc49e2943fa0f5d966e9724395c29b236cafbec3325950d296f1f34c93f92be2266780355664b19ef7cecdd5790673bbb3840d79248d4488ac861cc1902e40d151efc8cc2ef203d32340519d8dd08c2f0107033e914785d24a179fa1b72bd9c7e86847151b742170ed1e2e79dcaab5dde5e6d59ee1e4568510c7d8c7ed03a",
+            "2f6f7ea94cbed0771d876d8be0b03051f20626e31584d337894fbaccd51329cf1d7e68b2b42ade94986bb2cbafede74fdfdb1004b9b0db019555b8f26700cb75a4cc86c091eb6a1d96068098d490a88d2fd564a8e27fffa65dd08a9f041420752dcb0ac4b90bc153673b9874fe882c0d5546c65d2186c5df10022f8d3c0083a85d98c1b8b954bf8356c8960a12ce1d340b628323c4dcf57fb429f36e5cc3ea5da98789e85562fe405f55e5f7f817303c11b3ea0d53e2144fc9775dfb96c4ada2552d97c4e797b75dcc900096acfb3081cb3d116384bc2043f5fe86131abecac5971056421ec65bb36f689eef549d7770bd51e5e7eb594fe09c0e597893a890d3",
+            "83d025c82e31ae1fac8215bcdd8d1e2af1731b4c087a9e106ccb3b5b1a081f41ad4db40ce3536e483b7979d1f0b127d38bf3a009a4be078fba31037b521192434eb3955e38b7f98f69a8125b3c6ae5dbb8aa298980a7f71613f9373bfa884e5c32e9cefd74906145d5bad949212f1e2e336c83b39d0aff393aef9cd64eb3ec17d420e7d39892be15ea36134747398e5b1cb4b1e9e94b84b7cb002aae355aad7d856f74d2defb6f63f630fc54423af14e8d88b4234c7562fab16b0fa3e774a15604c4cdeb580f30191a31dbfcd5cd66d5c018e366afc773bb91a17a05b8af121529e37101bfdc52d4cc3be08a92b2006ddcf4fe93f9dd6ef46e7d2bf5b2914e4e"
           ],
           "OperatorIDs": [
             1,
@@ -17,73 +17,16 @@
           ],
           "SSVMessage": {
             "MsgType": 0,
-            "MsgID": [
-              1,
-              2,
-              3,
-              4,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0
-            ],
+            "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
             "Data": "AgAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAACfs0KWY52+KL9Jk1CffChGZA+jq44TkeJAlQXVvCJ3RAAAAAAAAAABQAAAAUAAAAAECAwQ="
           },
-          "FullData": "AQEBAQ=="
+          "FullData": "01010101"
         }
       ],
       "ControllerPostRoot": "e9b07910c855c96ec8557dbf78d5694484633ec7efe1f62e231b52766b41dacd",
       "ExpectedTimerState": null,
       "ExpectedDecidedState": {
-        "DecidedVal": "AQEBAQ==",
+        "DecidedVal": "01010101",
         "DecidedCnt": 1,
         "BroadcastedDecided": null
       },
