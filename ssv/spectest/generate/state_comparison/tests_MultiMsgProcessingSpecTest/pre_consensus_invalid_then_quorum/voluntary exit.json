@@ -5,9 +5,9 @@
         "Signatures": {
           "1": {
             "921b07b8aa67eab7c38b8214bd22c43ac3d8b7137c09535f843242558db21786": {
-              "1": "kzWpbPb8gucHyXb52aAScQBW3LmuAlm8QSLQJDlfBnvF3HxkDbDWHPGZmSlTYMh/Bl1UORnmfzkOUpH82YKAU9XmAdjL/v0Ud5RMkHVWd2mL0JFRvp27IqyKg8gC92K7",
-              "2": "oatAafZcLe9hP8r8gIKSCiccyq1NRoqJhYkL5J1ioRVPt3O+udVVg6XkVCvvc337Fw9OkS9d3SrvSiRqGBEctVXGG18P2362oSUGjX1MxlXTqQJR0+fRsUGbM7FoBg9z",
-              "3": "oMA1HyQg/WxlynyHFxQNDaFwmMWOS2vZu4C8eaQeuQ4p3BuWqVLhNzZpdWeL6jjSGSI8yNtQpXZYuYcyiSqYylr+PHtI7MDUl0sPWHFv2MJ+/hCKJxZcGwK6Y0toDZlG"
+              "1": "9335a96cf6fc82e707c976f9d9a012710056dcb9ae0259bc4122d024395f067bc5dc7c640db0d61cf19999295360c87f065d543919e67f390e5291fcd9828053d5e601d8cbfefd1477944c90755677698bd09151be9dbb22ac8a83c802f762bb",
+              "2": "a1ab4069f65c2def613fcafc8082920a271ccaad4d468a8985890be49d62a1154fb773beb9d55583a5e4542bef737dfb170f4e912f5ddd2aef4a246a18111cb555c61b5f0fdb7eb6a125068d7d4cc655d3a90251d3e7d1b1419b33b168060f73",
+              "3": "a0c0351f2420fd6c65ca7c8717140d0da17098c58e4b6bd9bb80bc79a41eb90e29dc1b96a952e137366975678bea38d219223cc8db50a57658b98732892a98ca5afe3c7b48ecc0d4974b0f58716fd8c27efe108a27165c1b02ba634b680d9946"
             }
           }
         },
@@ -19,8 +19,7 @@
       },
       "RunningInstance": null,
       "DecidedValue": null,
-      "Finished": true,
-      "ValidatorDuty": {
+      "StartingDuty": {
         "Type": 6,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
         "Slot": "12",
@@ -30,113 +29,40 @@
         "CommitteesAtSlot": 0,
         "ValidatorCommitteeIndex": 0,
         "ValidatorSyncCommitteeIndices": null
-      }
+      },
+      "Finished": true
     },
     "Share": {
       "1": {
         "ValidatorIndex": "1",
-        "ValidatorPubKey": [
-          142,
-          128,
-          6,
-          101,
-          81,
-          168,
-          27,
-          49,
-          130,
-          88,
-          112,
-          158,
-          218,
-          247,
-          221,
-          31,
-          99,
-          205,
-          104,
-          106,
-          14,
-          77,
-          184,
-          178,
-          155,
-          187,
-          122,
-          207,
-          230,
-          86,
-          8,
-          103,
-          122,
-          245,
-          165,
-          39,
-          217,
-          68,
-          142,
-          228,
-          120,
-          53,
-          72,
-          94,
-          2,
-          181,
-          11,
-          192
-        ],
-        "SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+        "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
         "Committee": [
           {
-            "SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+            "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
             "Signer": 1
           },
           {
-            "SharePubKey": "przr4wl9dBcbQMcSoDHOsDcds9PEAs8s5pG5Eg87q3XU1W36DzdZFUSZm/GMU1Pt",
+            "SharePubKey": "a6bcebe3097d74171b40c712a031ceb0371db3d3c402cf2ce691b9120f3bab75d4d56dfa0f37591544999bf18c5353ed",
             "Signer": 2
           },
           {
-            "SharePubKey": "gJDgt2ZqRezF1O90GKyZ8J5sskQCn+pqCn/Mvp7gi8U53g36Zr5rq8hJPdmd0amN",
+            "SharePubKey": "8090e0b7666a45ecc5d4ef7418ac99f09e6cb244029fea6a0a7fccbe9ee08bc539de0dfa66be6babc8493dd99dd1a98d",
             "Signer": 3
           },
           {
-            "SharePubKey": "p8CidrcKXuM5XH1tJlXtYFKKolLU0h7KX8xSI+UMxCvRaLKAq3q1MXNU3d/PPfnk",
+            "SharePubKey": "a7c0a276b70a5ee3395c7d6d2655ed60528aa252d4d21eca5fcc5223e50cc42bd168b280ab7ab5317354dddfcf3df9e4",
             "Signer": 4
           }
         ],
-        "DomainType": [
-          0,
-          0,
-          3,
-          1
-        ],
-        "FeeRecipientAddress": [
-          83,
-          89,
-          83,
-          181,
-          166,
-          4,
-          0,
-          116,
-          148,
-          140,
-          241,
-          133,
-          234,
-          167,
-          210,
-          171,
-          189,
-          102,
-          128,
-          143
-        ],
-        "Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+        "DomainType": "00000301",
+        "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+        "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
       }
     },
     "QBFTController": null,
     "BeaconNetwork": "now_test_network",
-    "RunnerRoleType": 5
+    "RunnerRoleType": 5,
+    "OperatorSigner": null
   }
 }

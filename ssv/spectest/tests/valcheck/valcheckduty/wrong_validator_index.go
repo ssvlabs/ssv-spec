@@ -8,6 +8,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -16,10 +17,10 @@ func WrongValidatorIndex() tests.SpecTest {
 	consensusDataBytsF := func(cd *types.ValidatorConsensusData) []byte {
 		cdCopy := &types.ValidatorConsensusData{}
 		b, _ := json.Marshal(cd)
-		if err := json.Unmarshal(b, cdCopy); err != nil {
+		if err := utils.UnmarshalJSONWithHex(b, cdCopy); err != nil {
 			panic(err.Error())
 		}
-		cdCopy.Duty.ValidatorIndex = testingutils.TestingValidatorIndex + 100
+		cdCopy.Duty.ValidatorIndex = testingutils.TestingWrongValidatorIndex
 
 		ret, _ := cdCopy.Encode()
 		return ret

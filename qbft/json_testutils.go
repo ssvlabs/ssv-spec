@@ -39,6 +39,19 @@ func (c *Controller) GetRoot() ([32]byte, error) {
 	return ret, nil
 }
 
+// // UnmarshalJSON is a custom JSON unmarshaller for Controller
+// func (c *Controller) UnmarshalJSON(data []byte) error {
+// 	type ControllerAlias Controller
+// 	aux := &struct {
+// 		*ControllerAlias
+// 	}{
+// 		ControllerAlias: (*ControllerAlias)(c),
+// 	}
+
+// 	// Use hex-aware unmarshaling
+// 	return utils.UnmarshalJSONWithHex(data, &aux)
+// }
+
 // Instance
 func (i *Instance) Encode() ([]byte, error) {
 	return json.Marshal(i)
@@ -72,23 +85,23 @@ func (i *Instance) MarshalJSON() ([]byte, error) {
 	}
 }
 
-// UnmarshalJSON is a custom JSON unmarshaller for Instance
-func (i *Instance) UnmarshalJSON(data []byte) error {
-	type Alias Instance
-	aux := &struct {
-		ForceStop *bool `json:"forceStop,omitempty"`
-		*Alias
-	}{
-		Alias: (*Alias)(i),
-	}
-	if err := json.Unmarshal(data, &aux); err != nil {
-		return err
-	}
-	if aux.ForceStop != nil {
-		i.forceStop = *aux.ForceStop
-	}
-	return nil
-}
+// // UnmarshalJSON is a custom JSON unmarshaller for Instance
+// func (i *Instance) UnmarshalJSON(data []byte) error {
+// 	type Alias Instance
+// 	aux := &struct {
+// 		ForceStop *bool `json:"forceStop,omitempty"`
+// 		*Alias
+// 	}{
+// 		Alias: (*Alias)(i),
+// 	}
+// 	if err := utils.UnmarshalJSONWithHex(data, &aux); err != nil {
+// 		return err
+// 	}
+// 	if aux.ForceStop != nil {
+// 		i.forceStop = *aux.ForceStop
+// 	}
+// 	return nil
+// }
 
 // State
 

@@ -8,17 +8,16 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/ssvlabs/ssv-spec/qbft"
-
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
-	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
-
 	"github.com/stretchr/testify/require"
 
+	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 type MsgProcessingSpecTest struct {
@@ -262,7 +261,7 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	aux := &MsgProcessingSpecTestAlias{}
 
 	// Unmarshal the JSON data into the auxiliary struct
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := utils.UnmarshalJSONWithHex(data, &aux); err != nil {
 		return err
 	}
 

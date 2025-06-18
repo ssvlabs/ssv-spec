@@ -23,6 +23,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -104,21 +105,21 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &valcheck.SpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
 
 				typedTest.Run(t)
 			case reflect.TypeOf(&valcheck.MultiSpecTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &valcheck.MultiSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
 
 				typedTest.Run(t)
 			case reflect.TypeOf(&synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
 
 				typedTest.Run(t)
 			case reflect.TypeOf(&newduty.MultiStartNewRunnerDutySpecTest{}).String():
@@ -138,7 +139,7 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &partialsigcontainer.PartialSigContainerTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
 
 				typedTest.Run(t)
 			case reflect.TypeOf(&committee.CommitteeSpecTest{}).String():
@@ -161,7 +162,7 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &runnerconstruction.RunnerConstructionSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
 
 				typedTest.Run(t)
 			default:
@@ -176,29 +177,27 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 	baseRunnerMap := runnerMap["BaseRunner"].(map[string]interface{})
 
 	var testDuty types.Duty
-	if _, ok := m["CommitteeDuty"]; ok {
-		byts, err := json.Marshal(m["CommitteeDuty"])
-		if err != nil {
-			panic("cant marshal committee duty")
-		}
-		committeeDuty := &types.CommitteeDuty{}
-		err = json.Unmarshal(byts, committeeDuty)
-		if err != nil {
-			panic("cant unmarshal committee duty")
-		}
-		testDuty = committeeDuty
-	} else if _, ok := m["ValidatorDuty"]; ok {
+	byts, err := json.Marshal(m["CommitteeDuty"])
+	if err != nil {
 		byts, err := json.Marshal(m["ValidatorDuty"])
 		if err != nil {
 			panic("cant marshal beacon duty")
 		}
 		duty := &types.ValidatorDuty{}
-		err = json.Unmarshal(byts, duty)
+		err = utils.UnmarshalJSONWithHex(byts, duty)
 		if err != nil {
 			panic("cant unmarshal beacon duty")
 		}
 		testDuty = duty
 	} else {
+		committeeDuty := &types.CommitteeDuty{}
+		err = utils.UnmarshalJSONWithHex(byts, committeeDuty)
+		if err != nil {
+			panic("cant unmarshal committee duty")
+		}
+		testDuty = committeeDuty
+	}
+	if testDuty == nil {
 		panic("no beacon or committee duty")
 	}
 
@@ -206,7 +205,7 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 	for _, msg := range m["OutputMessages"].([]interface{}) {
 		byts, _ := json.Marshal(msg)
 		typedMsg := &types.PartialSignatureMessages{}
-		require.NoError(t, json.Unmarshal(byts, typedMsg))
+		require.NoError(t, utils.UnmarshalJSONWithHex(byts, typedMsg))
 		outputMsgs = append(outputMsgs, typedMsg)
 	}
 
@@ -216,7 +215,7 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 		if err != nil {
 			panic(err)
 		}
-		err = json.Unmarshal(shareBytes, shareInstance)
+		err = utils.UnmarshalJSONWithHex(shareBytes, shareInstance)
 		if err != nil {
 			panic(err)
 		}
@@ -242,29 +241,27 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	baseRunnerMap := runnerMap["BaseRunner"].(map[string]interface{})
 
 	var testDuty types.Duty
-	if _, ok := m["CommitteeDuty"]; ok {
-		byts, err := json.Marshal(m["CommitteeDuty"])
-		if err != nil {
-			panic("cant marshal committee duty")
-		}
-		committeeDuty := &types.CommitteeDuty{}
-		err = json.Unmarshal(byts, committeeDuty)
-		if err != nil {
-			panic("cant unmarshal committee duty")
-		}
-		testDuty = committeeDuty
-	} else if _, ok := m["ValidatorDuty"]; ok {
+	byts, err := json.Marshal(m["CommitteeDuty"])
+	if err != nil {
 		byts, err := json.Marshal(m["ValidatorDuty"])
 		if err != nil {
 			panic("cant marshal beacon duty")
 		}
 		duty := &types.ValidatorDuty{}
-		err = json.Unmarshal(byts, duty)
+		err = utils.UnmarshalJSONWithHex(byts, duty)
 		if err != nil {
 			panic("cant unmarshal beacon duty")
 		}
 		testDuty = duty
 	} else {
+		committeeDuty := &types.CommitteeDuty{}
+		err = utils.UnmarshalJSONWithHex(byts, committeeDuty)
+		if err != nil {
+			panic("cant unmarshal committee duty")
+		}
+		testDuty = committeeDuty
+	}
+	if testDuty == nil {
 		panic("no beacon or committee duty")
 	}
 
@@ -272,7 +269,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	for _, msg := range m["Messages"].([]interface{}) {
 		byts, _ := json.Marshal(msg)
 		typedMsg := &types.SignedSSVMessage{}
-		require.NoError(t, json.Unmarshal(byts, typedMsg))
+		require.NoError(t, utils.UnmarshalJSONWithHex(byts, typedMsg))
 		msgs = append(msgs, typedMsg)
 	}
 
@@ -281,7 +278,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	for _, msg := range m["OutputMessages"].([]interface{}) {
 		byts, _ := json.Marshal(msg)
 		typedMsg := &types.PartialSignatureMessages{}
-		require.NoError(t, json.Unmarshal(byts, typedMsg))
+		require.NoError(t, utils.UnmarshalJSONWithHex(byts, typedMsg))
 		outputMsgs = append(outputMsgs, typedMsg)
 	}
 
@@ -298,7 +295,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		if err != nil {
 			panic(err)
 		}
-		err = json.Unmarshal(shareBytes, shareInstance)
+		err = utils.UnmarshalJSONWithHex(shareBytes, shareInstance)
 		if err != nil {
 			panic(err)
 		}
@@ -333,34 +330,31 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 			panic(err)
 		}
 
-		var getDecoder = func() *json.Decoder {
-			decoder := json.NewDecoder(strings.NewReader(string(byts)))
-			decoder.DisallowUnknownFields()
-			return decoder
-		}
-
+		// Try to decode as CommitteeDuty first
 		committeeDuty := &types.CommitteeDuty{}
-		err = getDecoder().Decode(&committeeDuty)
+		err = utils.UnmarshalJSONWithHex(byts, committeeDuty)
 		if err == nil {
 			inputs = append(inputs, committeeDuty)
 			continue
 		}
 
+		// Try to decode as ValidatorDuty
 		duty := &types.ValidatorDuty{}
-		err = getDecoder().Decode(&duty)
+		err = utils.UnmarshalJSONWithHex(byts, duty)
 		if err == nil {
 			inputs = append(inputs, duty)
 			continue
 		}
 
+		// Try to decode as SignedSSVMessage
 		msg := &types.SignedSSVMessage{}
-		err = getDecoder().Decode(&msg)
+		err = utils.UnmarshalJSONWithHex(byts, msg)
 		if err == nil {
 			inputs = append(inputs, msg)
 			continue
 		}
 
-		panic(fmt.Sprintf("Unsupported input: %T\n", input))
+		panic(fmt.Sprintf("Unsupported input: %T, error: %v\n", input, err))
 	}
 
 	outputMsgs := make([]*types.PartialSignatureMessages, 0)
@@ -368,7 +362,7 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 	for _, msg := range m["OutputMessages"].([]interface{}) {
 		byts, _ := json.Marshal(msg)
 		typedMsg := &types.PartialSignatureMessages{}
-		require.NoError(t, json.Unmarshal(byts, typedMsg))
+		require.NoError(t, utils.UnmarshalJSONWithHex(byts, typedMsg))
 		outputMsgs = append(outputMsgs, typedMsg)
 	}
 
@@ -396,7 +390,7 @@ func fixCommitteeForRun(t *testing.T, committeeMap map[string]interface{}) *ssv.
 
 	byts, _ := json.Marshal(committeeMap)
 	c := &ssv.Committee{}
-	require.NoError(t, json.Unmarshal(byts, c))
+	require.NoError(t, utils.UnmarshalJSONWithHex(byts, c))
 
 	c.CreateRunnerFn = func(shareMap map[phase0.ValidatorIndex]*types.Share) *ssv.CommitteeRunner {
 		return testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)
@@ -426,7 +420,7 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 
 	base := &ssv.BaseRunner{}
 	byts, _ := json.Marshal(baseRunnerMap)
-	require.NoError(t, json.Unmarshal(byts, &base))
+	require.NoError(t, utils.UnmarshalJSONWithHex(byts, &base))
 
 	ret := baseRunnerForRole(base.RunnerRoleType, base, ks)
 

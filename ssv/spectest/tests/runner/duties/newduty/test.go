@@ -15,8 +15,9 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
-	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+	comparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 type StartNewRunnerDutySpecTest struct {
@@ -248,7 +249,7 @@ func (t *StartNewRunnerDutySpecTest) UnmarshalJSON(data []byte) error {
 	aux := &StartNewRunnerDutySpecTestAlias{}
 
 	// Unmarshal the JSON data into the auxiliary struct
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := utils.UnmarshalJSONWithHex(data, &aux); err != nil {
 		return err
 	}
 

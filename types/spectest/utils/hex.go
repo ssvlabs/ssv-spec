@@ -65,6 +65,12 @@ func ConvertToHexMap(v reflect.Value) interface{} {
 			return nil
 		}
 		return ConvertToHexMap(v.Elem())
+	case reflect.Func:
+		// Skip function types as they can't be marshaled to JSON
+		return nil
+	case reflect.Chan:
+		// Skip channel types as they can't be marshaled to JSON
+		return nil
 	case reflect.Struct:
 		// Use OrderedMap to maintain field order
 		om := &OrderedMap{
@@ -91,6 +97,17 @@ func ConvertToHexMap(v reflect.Value) interface{} {
 				if parts[0] != "" {
 					jsonFieldName = parts[0]
 				}
+			}
+
+			// Check if field is accessible (exported)
+			if !field.CanInterface() {
+				// Skip unexported fields
+				continue
+			}
+
+			// Skip function and channel types
+			if field.Kind() == reflect.Func || field.Kind() == reflect.Chan {
+				continue
 			}
 
 			// Special handling for Version field - convert to string
@@ -363,10 +380,32 @@ func ConvertHexToBytes(v interface{}) {
 						}
 						copy(value[:], bytes)
 						val[k] = value
+					} else if k == "FeeRecipientAddress" {
+						// Special handling for FeeRecipient
+						var feeRecipient [20]byte
+						hexStr := vv
+						hexStr = strings.TrimPrefix(hexStr, "0x")
+						bytes, err = hex.DecodeString(hexStr)
+						if err != nil || len(bytes) != 20 {
+							panic(fmt.Errorf("invalid FeeRecipient: %s", vv))
+						}
+						copy(feeRecipient[:], bytes)
+						val[k] = feeRecipient
+					} else if k == "ValidatorPubKey" {
+						// Special handling for ValidatorPubKey (48-byte BLS public key)
+						var validatorPubKey [48]byte
+						hexStr := vv
+						hexStr = strings.TrimPrefix(hexStr, "0x")
+						bytes, err = hex.DecodeString(hexStr)
+						if err != nil || len(bytes) != 48 {
+							panic(fmt.Errorf("invalid ValidatorPubKey: %s", vv))
+						}
+						copy(validatorPubKey[:], bytes)
+						val[k] = validatorPubKey
 					} else if k == "WithdrawalCredentials" {
 						// Keep WithdrawalCredentials as a string
 						val[k] = vv
-					} else if k == "Slot" || k == "ValidatorPK" {
+					} else if k == "Slot" || k == "DutySlot" || k == "ValidatorPK" || k == "ValidatorIndex" {
 						val[k] = vv
 					} else {
 						val[k] = bytes
@@ -547,8 +586,18 @@ func ConvertHexToBytes(v interface{}) {
 	}
 }
 
-// toHexJSON recursively converts ExpectedRoot ([32]byte) and ExpectedRoots ([][32]byte) fields to hex string(s) for JSON output
 func ToHexJSON(v interface{}) ([]byte, error) {
+	// Check if the type has a custom MarshalJSON method
+	rv := reflect.ValueOf(v)
+	if rv.Kind() == reflect.Ptr {
+		rt := rv.Type().Elem()
+		if _, hasCustom := rt.MethodByName("MarshalJSON"); hasCustom {
+			// If it has a custom MarshalJSON method, use that instead
+			return json.MarshalIndent(v, "", "  ")
+		}
+	}
+
+	// Fall back to our hex conversion for types without custom marshaling
 	return json.MarshalIndent(ConvertToHexMap(reflect.ValueOf(v)), "", "  ")
 }
 
@@ -574,7 +623,7 @@ func UnmarshalJSONWithHex(data []byte, v interface{}) error {
 	}
 
 	if firstChar == '[' {
-		// Handle array
+		// Handle array - unmarshal into generic slice first
 		var arr []interface{}
 		if err := json.Unmarshal(data, &arr); err != nil {
 			return err
@@ -592,7 +641,7 @@ func UnmarshalJSONWithHex(data []byte, v interface{}) error {
 		// Unmarshal into the target struct
 		return json.Unmarshal(jsonBytes, v)
 	} else {
-		// Handle object
+		// Handle object - unmarshal into generic map first
 		var m map[string]interface{}
 		if err := json.Unmarshal(data, &m); err != nil {
 			return err
@@ -613,6 +662,40 @@ func UnmarshalJSONWithHex(data []byte, v interface{}) error {
 				}
 			}
 		}
+
+		// // Special handling for nested SSVMessage.MsgID
+		// if ssvMsg, ok := m["SSVMessage"].(map[string]interface{}); ok {
+		// 	if msgID, ok := ssvMsg["MsgID"].(string); ok {
+		// 		// Convert MsgID string to [56]byte
+		// 		var msgIDBytes [56]byte
+		// 		hexStr := msgID
+		// 		if strings.HasPrefix(hexStr, "0x") {
+		// 			hexStr = strings.TrimPrefix(hexStr, "0x")
+		// 		}
+		// 		bytes, err := hex.DecodeString(hexStr)
+		// 		if err != nil || len(bytes) != 56 {
+		// 			return fmt.Errorf("invalid SSVMessage.MsgID: %s", msgID)
+		// 		}
+		// 		copy(msgIDBytes[:], bytes)
+		// 		ssvMsg["MsgID"] = msgIDBytes
+		// 	}
+		// }
+
+		// // Special handling for CommitteeID fields
+		// if committeeID, ok := m["CommitteeID"].(string); ok {
+		// 	// Convert CommitteeID string to [32]byte
+		// 	var committeeIDBytes [32]byte
+		// 	hexStr := committeeID
+		// 	if strings.HasPrefix(hexStr, "0x") {
+		// 		hexStr = strings.TrimPrefix(hexStr, "0x")
+		// 	}
+		// 	bytes, err := hex.DecodeString(hexStr)
+		// 	if err != nil || len(bytes) != 32 {
+		// 		return fmt.Errorf("invalid CommitteeID: %s", committeeID)
+		// 	}
+		// 	copy(committeeIDBytes[:], bytes)
+		// 	m["CommitteeID"] = committeeIDBytes
+		// }
 
 		// Convert hex strings to bytes
 		ConvertHexToBytes(m)
