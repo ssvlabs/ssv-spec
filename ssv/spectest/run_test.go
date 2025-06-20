@@ -420,7 +420,7 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 
 	base := &ssv.BaseRunner{}
 	byts, _ := json.Marshal(baseRunnerMap)
-	require.NoError(t, utils.UnmarshalJSONWithHex(byts, &base))
+	require.NoError(t, utils.UnmarshalJSONWithHex(byts, base))
 
 	ret := baseRunnerForRole(base.RunnerRoleType, base, ks)
 

@@ -57,6 +57,8 @@ func UnmarshalStateComparison[T types.Root](basedir string, testName string, tes
 	}
 
 	err = utils.UnmarshalJSONWithHex(byteValue, targetState)
+	// err = json.Unmarshal(byteValue, targetState)
+	// utils.ConvertHexToBytes(targetState)
 	if err != nil {
 		return nilT, err
 	}

@@ -8,6 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
 )
 
 // This file adds, as testing utils, the Encode, Decode and GetRoot methods
@@ -66,41 +67,41 @@ func (pcs *State) MarshalJSON() ([]byte, error) {
 	return byts, err
 }
 
-// func (pcs *State) UnmarshalJSON(data []byte) error {
+func (pcs *State) UnmarshalJSON(data []byte) error {
 
-// 	// Create alias without duty
-// 	type StateAlias struct {
-// 		PreConsensusContainer  *PartialSigContainer
-// 		PostConsensusContainer *PartialSigContainer
-// 		RunningInstance        *qbft.Instance
-// 		DecidedValue           []byte
-// 		Finished               bool
-// 		ValidatorDuty          *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
-// 		CommitteeDuty          *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
-// 	}
+	// Create alias without duty
+	type StateAlias struct {
+		PreConsensusContainer  *PartialSigContainer
+		PostConsensusContainer *PartialSigContainer
+		RunningInstance        *qbft.Instance
+		DecidedValue           []byte
+		Finished               bool
+		ValidatorDuty          *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
+		CommitteeDuty          *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+	}
 
-// 	aux := &StateAlias{}
+	aux := &StateAlias{}
 
-// 	// Unmarshal the JSON data into the auxiliary struct
-// 	if err := utils.UnmarshalJSONWithHex(data, &aux); err != nil {
-// 		return err
-// 	}
+	// Unmarshal the JSON data into the auxiliary struct
+	if err := utils.UnmarshalJSONWithHex(data, &aux); err != nil {
+		return err
+	}
 
-// 	pcs.PreConsensusContainer = aux.PreConsensusContainer
-// 	pcs.PostConsensusContainer = aux.PostConsensusContainer
-// 	pcs.RunningInstance = aux.RunningInstance
-// 	pcs.DecidedValue = aux.DecidedValue
-// 	pcs.Finished = aux.Finished
+	pcs.PreConsensusContainer = aux.PreConsensusContainer
+	pcs.PostConsensusContainer = aux.PostConsensusContainer
+	pcs.RunningInstance = aux.RunningInstance
+	pcs.DecidedValue = aux.DecidedValue
+	pcs.Finished = aux.Finished
 
-// 	// Determine which type of duty was marshaled
-// 	if aux.ValidatorDuty != nil {
-// 		pcs.StartingDuty = aux.ValidatorDuty
-// 	} else if aux.CommitteeDuty != nil {
-// 		pcs.StartingDuty = aux.CommitteeDuty
-// 	}
+	// Determine which type of duty was marshaled
+	if aux.ValidatorDuty != nil {
+		pcs.StartingDuty = aux.ValidatorDuty
+	} else if aux.CommitteeDuty != nil {
+		pcs.StartingDuty = aux.CommitteeDuty
+	}
 
-// 	return nil
-// }
+	return nil
+}
 
 // Committee
 func (c *Committee) Encode() ([]byte, error) {
@@ -140,27 +141,27 @@ func (c *Committee) MarshalJSON() ([]byte, error) {
 	return byts, err
 }
 
-// func (c *Committee) UnmarshalJSON(data []byte) error {
+func (c *Committee) UnmarshalJSON(data []byte) error {
 
-// 	type CommitteeAlias struct {
-// 		Runners         map[spec.Slot]*CommitteeRunner
-// 		CommitteeMember types.CommitteeMember
-// 		Share           map[spec.ValidatorIndex]*types.Share
-// 	}
+	type CommitteeAlias struct {
+		Runners         map[spec.Slot]*CommitteeRunner
+		CommitteeMember types.CommitteeMember
+		Share           map[spec.ValidatorIndex]*types.Share
+	}
 
-// 	// Unmarshal the JSON data into the auxiliary struct
-// 	aux := &CommitteeAlias{}
-// 	if err := utils.UnmarshalJSONWithHex(data, &aux); err != nil {
-// 		return err
-// 	}
+	// Unmarshal the JSON data into the auxiliary struct
+	aux := &CommitteeAlias{}
+	if err := utils.UnmarshalJSONWithHex(data, &aux); err != nil {
+		return err
+	}
 
-// 	// Assign fields
-// 	c.Runners = aux.Runners
-// 	c.CommitteeMember = aux.CommitteeMember
-// 	c.Share = aux.Share
+	// Assign fields
+	c.Runners = aux.Runners
+	c.CommitteeMember = aux.CommitteeMember
+	c.Share = aux.Share
 
-// 	return nil
-// }
+	return nil
+}
 
 // Runners
 

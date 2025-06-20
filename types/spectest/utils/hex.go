@@ -11,6 +11,8 @@ import (
 	"strings"
 
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // OrderedMap is a map that preserves field order
@@ -663,50 +665,331 @@ func UnmarshalJSONWithHex(data []byte, v interface{}) error {
 			}
 		}
 
-		// // Special handling for nested SSVMessage.MsgID
-		// if ssvMsg, ok := m["SSVMessage"].(map[string]interface{}); ok {
-		// 	if msgID, ok := ssvMsg["MsgID"].(string); ok {
-		// 		// Convert MsgID string to [56]byte
-		// 		var msgIDBytes [56]byte
-		// 		hexStr := msgID
-		// 		if strings.HasPrefix(hexStr, "0x") {
-		// 			hexStr = strings.TrimPrefix(hexStr, "0x")
-		// 		}
-		// 		bytes, err := hex.DecodeString(hexStr)
-		// 		if err != nil || len(bytes) != 56 {
-		// 			return fmt.Errorf("invalid SSVMessage.MsgID: %s", msgID)
-		// 		}
-		// 		copy(msgIDBytes[:], bytes)
-		// 		ssvMsg["MsgID"] = msgIDBytes
-		// 	}
-		// }
-
-		// // Special handling for CommitteeID fields
-		// if committeeID, ok := m["CommitteeID"].(string); ok {
-		// 	// Convert CommitteeID string to [32]byte
-		// 	var committeeIDBytes [32]byte
-		// 	hexStr := committeeID
-		// 	if strings.HasPrefix(hexStr, "0x") {
-		// 		hexStr = strings.TrimPrefix(hexStr, "0x")
-		// 	}
-		// 	bytes, err := hex.DecodeString(hexStr)
-		// 	if err != nil || len(bytes) != 32 {
-		// 		return fmt.Errorf("invalid CommitteeID: %s", committeeID)
-		// 	}
-		// 	copy(committeeIDBytes[:], bytes)
-		// 	m["CommitteeID"] = committeeIDBytes
-		// }
-
 		// Convert hex strings to bytes
 		ConvertHexToBytes(m)
 
-		// Marshal back to JSON
-		jsonBytes, err := json.Marshal(m)
-		if err != nil {
-			return err
+		// Use direct reflection assignment instead of marshaling back to JSON
+		return assignMapToStruct(m, v)
+	}
+}
+
+// assignMapToStruct uses reflection to directly assign values from a map to a struct
+func assignMapToStruct(m map[string]interface{}, v interface{}) error {
+	rv := reflect.ValueOf(v)
+	if rv.Kind() != reflect.Ptr || rv.IsNil() {
+		return fmt.Errorf("target must be a non-nil pointer")
+	}
+
+	rv = rv.Elem()
+	if rv.Kind() != reflect.Struct {
+		return fmt.Errorf("target must be a struct")
+	}
+
+	rt := rv.Type()
+
+	for i := 0; i < rv.NumField(); i++ {
+		field := rv.Field(i)
+		fieldType := rt.Field(i)
+
+		// Get the JSON field name
+		jsonTag := fieldType.Tag.Get("json")
+		fieldName := fieldType.Name
+		if jsonTag != "" && jsonTag != "-" {
+			// Split by comma to handle options like "name,omitempty"
+			parts := strings.Split(jsonTag, ",")
+			if parts[0] != "" {
+				fieldName = parts[0]
+			}
 		}
 
-		// Unmarshal into the target struct
-		return json.Unmarshal(jsonBytes, v)
+		// Skip if field is not in the map
+		if mapValue, exists := m[fieldName]; !exists {
+			continue
+		} else {
+			// Assign the value from map to struct field
+			if err := assignValueToField(field, mapValue); err != nil {
+				return fmt.Errorf("failed to assign field %s: %v", fieldName, err)
+			}
+		}
 	}
+
+	return nil
+}
+
+// assignValueToField assigns a value from the map to a struct field using reflection
+func assignValueToField(field reflect.Value, value interface{}) error {
+	if !field.CanSet() {
+		return fmt.Errorf("field is not settable")
+	}
+
+	// Handle nil values
+	if value == nil {
+		field.Set(reflect.Zero(field.Type()))
+		return nil
+	}
+
+	valueType := reflect.TypeOf(value)
+	fieldType := field.Type()
+
+	// If types match exactly, assign directly
+	if valueType == fieldType {
+		field.Set(reflect.ValueOf(value))
+		return nil
+	}
+
+	// Handle special cases for byte arrays
+	switch fieldType.Kind() {
+	case reflect.Array:
+		if fieldType.Elem().Kind() == reflect.Uint8 {
+			// Handle [N]byte arrays
+			switch v := value.(type) {
+			case []byte:
+				if len(v) != fieldType.Len() {
+					return fmt.Errorf("byte array length mismatch: expected %d, got %d", fieldType.Len(), len(v))
+				}
+				reflect.Copy(field, reflect.ValueOf(v))
+				return nil
+			case [32]byte:
+				if fieldType.Len() == 32 {
+					field.Set(reflect.ValueOf(v))
+					return nil
+				}
+			case [48]byte:
+				if fieldType.Len() == 48 {
+					field.Set(reflect.ValueOf(v))
+					return nil
+				}
+			case [56]byte:
+				if fieldType.Len() == 56 {
+					field.Set(reflect.ValueOf(v))
+					return nil
+				}
+			case [96]byte:
+				if fieldType.Len() == 96 {
+					field.Set(reflect.ValueOf(v))
+					return nil
+				}
+			case [4]byte:
+				if fieldType.Len() == 4 {
+					field.Set(reflect.ValueOf(v))
+					return nil
+				}
+			case [20]byte:
+				if fieldType.Len() == 20 {
+					field.Set(reflect.ValueOf(v))
+					return nil
+				}
+			}
+		}
+	case reflect.Slice:
+		if fieldType.Elem().Kind() == reflect.Uint8 {
+			// Handle []byte slices
+			if v, ok := value.([]byte); ok {
+				field.Set(reflect.ValueOf(v))
+				return nil
+			}
+		}
+		// Handle other slices
+		if v, ok := value.([]interface{}); ok {
+			slice := reflect.MakeSlice(fieldType, len(v), len(v))
+			for i, elem := range v {
+				if err := assignValueToField(slice.Index(i), elem); err != nil {
+					return fmt.Errorf("failed to assign slice element %d: %v", i, err)
+				}
+			}
+			field.Set(slice)
+			return nil
+		}
+	case reflect.Ptr:
+		// Handle pointer types
+		if value == nil {
+			field.Set(reflect.Zero(fieldType))
+			return nil
+		}
+
+		// Create a new instance of the pointed-to type
+		if field.IsNil() {
+			field.Set(reflect.New(fieldType.Elem()))
+		}
+
+		// Recursively assign to the pointed-to value
+		return assignValueToField(field.Elem(), value)
+	case reflect.Struct:
+		// Handle nested structs
+		if v, ok := value.(map[string]interface{}); ok {
+			return assignMapToStruct(v, field.Addr().Interface())
+		}
+	case reflect.Map:
+		// Handle map types recursively
+		if v, ok := value.(map[string]interface{}); ok {
+			// Create a new map of the correct type
+			mapType := field.Type()
+			newMap := reflect.MakeMap(mapType)
+
+			// Recursively process each key-value pair
+			for key, val := range v {
+				// Convert key to the correct type
+				keyType := mapType.Key()
+				newKey := reflect.New(keyType).Elem()
+
+				// Use the same recursive logic for key conversion
+				if err := assignValueToField(newKey, key); err != nil {
+					return fmt.Errorf("failed to convert map key %v: %v", key, err)
+				}
+
+				// Create a new value of the correct type
+				valueType := mapType.Elem()
+				newValue := reflect.New(valueType).Elem()
+
+				// Recursively assign the value
+				if err := assignValueToField(newValue, val); err != nil {
+					return fmt.Errorf("failed to assign map value for key %s: %v", key, err)
+				}
+
+				// Set the key-value pair in the map
+				newMap.SetMapIndex(newKey, newValue)
+			}
+
+			field.Set(newMap)
+			return nil
+		}
+	case reflect.Interface:
+		// Handle interface types
+		if v, ok := value.(map[string]interface{}); ok {
+			// Special handling for types.Duty interface
+			if fieldType.String() == "types.Duty" {
+				// Check if it's a ValidatorDuty by looking for Type field
+				if _, hasType := v["Type"]; hasType {
+					// Create a new ValidatorDuty
+					validatorDuty := &types.ValidatorDuty{}
+					if err := assignMapToStruct(v, validatorDuty); err != nil {
+						return fmt.Errorf("failed to convert to ValidatorDuty: %v", err)
+					}
+					field.Set(reflect.ValueOf(validatorDuty))
+					return nil
+				} else {
+					// Check if it's a CommitteeDuty by looking for ValidatorDuties field
+					if _, hasValidatorDuties := v["ValidatorDuties"]; hasValidatorDuties {
+						// Create a new CommitteeDuty
+						committeeDuty := &types.CommitteeDuty{}
+						if err := assignMapToStruct(v, committeeDuty); err != nil {
+							return fmt.Errorf("failed to convert to CommitteeDuty: %v", err)
+						}
+						field.Set(reflect.ValueOf(committeeDuty))
+						return nil
+					}
+				}
+			}
+		}
+	}
+
+	// For other types, try to convert
+	valueReflect := reflect.ValueOf(value)
+	if valueReflect.Type().ConvertibleTo(fieldType) {
+		field.Set(valueReflect.Convert(fieldType))
+		return nil
+	}
+
+	// Handle special type conversions
+	switch fieldType.String() {
+	case "phase0.ValidatorIndex", "phase0.Slot", "qbft.Round", "qbft.Height":
+		// Convert string to ValidatorIndex
+		if str, ok := value.(string); ok {
+			if idx, err := strconv.ParseUint(str, 10, 64); err == nil {
+				// Create a new ValidatorIndex value
+				validatorIndex := reflect.New(fieldType).Elem()
+				validatorIndex.SetUint(idx)
+				field.Set(validatorIndex)
+				return nil
+			}
+		}
+		// Try direct uint64 conversion
+		if idx, ok := value.(uint64); ok {
+			validatorIndex := reflect.New(fieldType).Elem()
+			validatorIndex.SetUint(idx)
+			field.Set(validatorIndex)
+			return nil
+		}
+		// Try float64 conversion (from JSON numbers)
+		if f, ok := value.(float64); ok {
+			validatorIndex := reflect.New(fieldType).Elem()
+			validatorIndex.SetUint(uint64(f))
+			field.Set(validatorIndex)
+			return nil
+		}
+	case "uint64":
+		// Handle string to uint64 conversion for map keys
+		if str, ok := value.(string); ok {
+			if idx, err := strconv.ParseUint(str, 10, 64); err == nil {
+				field.SetUint(idx)
+				return nil
+			}
+		}
+		// Try direct uint64 conversion
+		if idx, ok := value.(uint64); ok {
+			field.SetUint(idx)
+			return nil
+		}
+		// Try float64 conversion (from JSON numbers)
+		if f, ok := value.(float64); ok {
+			field.SetUint(uint64(f))
+			return nil
+		}
+	case "phase0.BLSPubKey":
+		// Handle string to BLSPubKey conversion
+		if str, ok := value.(string); ok {
+			// Remove 0x prefix if present
+			hexStr := strings.TrimPrefix(str, "0x")
+			bytes, err := hex.DecodeString(hexStr)
+			if err != nil || len(bytes) != 48 {
+				return fmt.Errorf("invalid BLS public key: %s", str)
+			}
+			var pubKey phase0.BLSPubKey
+			copy(pubKey[:], bytes)
+			field.Set(reflect.ValueOf(pubKey))
+			return nil
+		}
+		// Try direct [48]byte conversion
+		if pubKey, ok := value.([48]byte); ok {
+			field.Set(reflect.ValueOf(phase0.BLSPubKey(pubKey)))
+			return nil
+		}
+	case "spec.DataVersion":
+		// Handle string to DataVersion conversion
+		if str, ok := value.(string); ok {
+			if idx, err := strconv.ParseUint(str, 10, 64); err == nil {
+				field.SetUint(idx)
+				return nil
+			}
+			return nil
+		}
+		if num, ok := value.(int); ok {
+			field.Set(reflect.ValueOf(spec.DataVersion(num)))
+			return nil
+		}
+		// case "qbft.Round", "qbft.Height":
+		// 	// Convert string/float64 to Round/Height
+		// 	if str, ok := value.(string); ok {
+		// 		if idx, err := strconv.ParseUint(str, 10, 64); err == nil {
+		// 			roundHeight := reflect.New(fieldType).Elem()
+		// 			roundHeight.SetUint(idx)
+		// 			field.Set(roundHeight)
+		// 			return nil
+		// 		}
+		// 	}
+		// 	if f, ok := value.(float64); ok {
+		// 		roundHeight := reflect.New(fieldType).Elem()
+		// 		roundHeight.SetUint(idx)
+		// 		field.Set(roundHeight)
+		// 		return nil
+		// 	}
+		// 	if idx, ok := value.(uint64); ok {
+		// 		roundHeight := reflect.New(fieldType).Elem()
+		// 		roundHeight.SetUint(idx)
+		// 		field.Set(roundHeight)
+		// 		return nil
+		// 	}
+	}
+
+	return fmt.Errorf("cannot assign %T to %s", value, fieldType)
 }
