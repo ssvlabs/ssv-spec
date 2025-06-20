@@ -119,7 +119,7 @@ func ConvertToHexMap(v reflect.Value) interface{} {
 				continue
 			}
 
-			// Special handling for Data and DataSSZ fields - use base64 encoding
+			// Special handling for data fields
 			if fieldName == "Data" || fieldName == "DataSSZ" || fieldName == "DataCd" || fieldName == "DataBlk" {
 				if field.Type().Elem().Kind() == reflect.Uint8 {
 					bytes := make([]byte, field.Len())

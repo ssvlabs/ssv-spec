@@ -1,0 +1,11 @@
+{
+  "Name": "attestation value check source higher than target",
+  "Network": "now_test_network",
+  "RunnerRole": 0,
+  "DutySlot": "12",
+  "Input": "0102030405060708090a0102030405060708090a0102030405060708090a010201000000000000000102030405060708090a0102030405060708090a0102030405060708090a010200000000000000000102030405060708090a0102030405060708090a0102030405060708090a0102",
+  "SlashableSlots": null,
+  "omitempty": null,
+  "ExpectedError": "attestation data source \u003e= target",
+  "AnyError": false
+}

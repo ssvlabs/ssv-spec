@@ -1,0 +1,12 @@
+{
+  "Name": "no shares",
+  "Shares": {},
+  "RoleError": {
+    "AGGREGATOR_RUNNER": "must have one share",
+    "COMMITTEE_RUNNER": "no shares",
+    "PROPOSER_RUNNER": "must have one share",
+    "SYNC_COMMITTEE_CONTRIBUTION_RUNNER": "must have one share",
+    "VALIDATOR_REGISTRATION_RUNNER": "must have one share",
+    "VOLUNTARY_EXIT_RUNNER": "must have one share"
+  }
+}

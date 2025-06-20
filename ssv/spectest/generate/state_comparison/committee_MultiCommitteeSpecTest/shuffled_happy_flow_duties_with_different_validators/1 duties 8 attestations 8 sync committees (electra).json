@@ -1,0 +1,1341 @@
+{
+  "Runners": {
+    "7424012": {
+      "BaseRunner": {
+        "State": {
+          "PreConsensusContainer": {
+            "Signatures": {},
+            "Quorum": 3
+          },
+          "PostConsensusContainer": {
+            "Signatures": {
+              "1": {
+                "6e882d0d39f9b1c2c4bfeba049192918f686e715addf1a0fddc9df4c277eef72": {
+                  "1": "96d35f817c751aba0a0b4b38a5bd3c3a4d9a55543bb2c1c4a169008a961a31a9504ade6d0159c103ff30c5d49f978f7a0ac9758fc51310e1d88af2344c514ce3add244c43c3da4e6f04f373a28ffb8bea8c3c64cb0cff3e3d712d2ed3210f0e4",
+                  "2": "91b18e3e5940bf18c130707542711db7c888fb0054af68927d4f0dadcfaf6e293714e9957e6c573ad7747821832684590525a56786033fe31bcee8488de3186b338ca19f570ef2bc6d222764ac8dd2a72af8065eae60f4d12f66df0ab428dd2e",
+                  "3": "900c6d96c52515e61321bace8515828978ca6a94549d9caf2a89760d5921ff6734b35a5c16a0cf6091541e595881806b160e4bfbddd82d6028051daefeaffe1d4adb9b60a7c01d272c3035640d533fafd85db0447caa0d5e27c8e940963f13c3"
+                },
+                "85794142e7b2a4c66a79a68377705fb95f84197a4d2ca354d3b72580a0b7529e": {
+                  "1": "a8c99eab22cafbc83296aec6c8a8572b17062c5d646637f1abcccb7bca5315fdee3094c1176e8902a73f6aa04cd6b7a502a88809f73f51b476afd7b5a3f18172dbf5470c43f02ccbfd7fc019ac1b6bb507a242c495f91a59db38a492d5ab9378",
+                  "2": "a483271b5dc9207fbcde422c8a803df0883239527d3aaef52a56e5d874516e95956099d9557c2d70517f67e32d62cf3100945f29df67d2bc340a806ba761217ee99fe5c840f0957659745e9f325669a862861e6f3dcebb31ce41604ec6cd8129",
+                  "3": "955cd22148b484aff0f95a7d72eaa3389a62d8250f375dc5c472b0be903d9c73f3ddbe72e3109528693bea376541d3ce0d0c08e67bf8063b6c84ed9a0ee57cdd1e6fa2e60c1ef832dec13da2e017fc49d9ceaac1171054f17d48161e247d36d0"
+                }
+              },
+              "2": {
+                "6e882d0d39f9b1c2c4bfeba049192918f686e715addf1a0fddc9df4c277eef72": {
+                  "1": "a7a6e99ef1e0e2f9985bbd08e195ecf8084e0a73976245ca289a454728cb664d3507a9f3439ded3ea839e16907d340f6003618605076a3223704a5f443954ae51b095f4bd064dfd4d957d45a43ffaaf1b9daef49525fa07595df47634d072082",
+                  "2": "909b5306e4d125ed09c7bf6dd4dcc3883f870792b4f3542f845cedaa5591a2fecb589adcea531f47fc9ca5aa57745fd40228a97905e45589b5507d6d0a42633d3203dae89c454d8635db1e5218f0cd80a129a49072de5b4a19abdd74d20fe85c",
+                  "3": "b8ff52be122bae11d06a1e677ee53b143646a18cb8368cb28b9b0d7e78c5465bdcb49dcdcd0a01a0a57d8459fc0a4b4004990d00ca0132785cf312baf4771bb89152388a84b03ffd9d7c8bb818efc25d607826b75e4860b6a5dc99ad9ba50242"
+                },
+                "85794142e7b2a4c66a79a68377705fb95f84197a4d2ca354d3b72580a0b7529e": {
+                  "1": "b920fef25fe478e34bdc08d5a26a8ca95e95e6e410c3bc2c3645c2f365a039068ebf329deb5c87319c2e24bc1ec78faa0d61f3fdb9674fe7c72b89c373f8c839ffc31d18220af53bd76893dff0f5ed6f510964fe3e80e510177d9f39d456b8a4",
+                  "2": "b2c7b83a95f67636667d614d5c4aed4b891433a99341189f6b68879f2951fcc7bf747e764eb52a0f77d92b65d98c6e5410608b04aff22472dde719772ef5b542209f1fe6593716beba6e98951e052b3a938c6501c18b992b37d8e04ae6d8a5ba",
+                  "3": "905374cefea4934c82d9eaa0b4d110c418bf0a03b8c1ad283d320c254f42ace23381a041ad4ca5f7fac390c42fd0565a085261a9041907f9afbd69aea103fa578b98198af433243eadd7cb5f929a36ecb51eb19d9b8d072b0bddc232a2151d50"
+                }
+              },
+              "3": {
+                "6e882d0d39f9b1c2c4bfeba049192918f686e715addf1a0fddc9df4c277eef72": {
+                  "1": "8d9ddaac4ce8cbede382ed1ade3c913c9aabe4c85b635d4b07475ae51030fbf5f252c6e8edebe6e70444d2603a048d9a02ac2fb09343e0c3be2755eb9e57d6c112e6fbaa56c1d621ae8c4f9d1741914d37295528cfa27f283f3db934756d1a86",
+                  "2": "839a8a04f330d4d93b973bd4812acb8119aa1ea4ad7d4b4b5890ce7acd3c1cd99da8447a2e8894dbaaf91575f2c8cebe13345f7188a2655ce2411a7ea64898814856b56eaa3d5c70a40142f8fa8e8706e513f31d442e4b0f8d2f69b176b03d58",
+                  "3": "8415204aa51e01ad7765ba3b7ff266a13ed7c5d92347fd5682581dfe59e400d1a049c24c48a6a6df631d840820efbb98117bc3acfcd2b3cb4c17df7af5de1b969031215c58d17b2a6be25119e7b1f2b557bb67b739aaec1cfa3c7de0ab5d61c4"
+                },
+                "85794142e7b2a4c66a79a68377705fb95f84197a4d2ca354d3b72580a0b7529e": {
+                  "1": "b137eab36cfcd5edf405c9785cc083f5949081d6c5fd0527ee63afa985e36b26434ea2a6df92b30a524980959413bb4001fa034dc39033e6bc47a79417de275e20937a957573a3c7b1e6c998d83eb87389a50f4eecb34b6652daaac3f4348839",
+                  "2": "92c7750a45a5b9b30549155e77956f707163d3bf93fc48849bc8fafbe469ebaa366b3e0ce691d007c541ca4c3cf3236409fb10cb3e7420843d3620ef158b16ca922d4b15c2ef32f788d1b1bafe1b4510f562fc61bd22f900eb8a97b425f7be0e",
+                  "3": "a3221caf64be05cd70362446d1fda4a6161652618be9f0df815f5f7dfb2bf22baa586a8c481f8e226bbcc263e84dbc2d089f5b7b5a69e0ceed633e887c962c8fed8dffc832ff870d974820378ad57fa376a51618eb98e63656f1a166df799250"
+                }
+              },
+              "4": {
+                "6e882d0d39f9b1c2c4bfeba049192918f686e715addf1a0fddc9df4c277eef72": {
+                  "1": "8a77239e655aef28ee8f8fcb7a1628c740e9350fafc352372160d21789ba13f83d75e139e28af9efc511e1c53504de740bdd028523b94818342386b7daf7c04d16c1acb4fef291b7c22feae52d327a2d7da17309e6c742920110960fa190c31b",
+                  "2": "8122b5c5afda694798db88816d97765f549ed52c9a1d6f3339ada4540985a43e1b57a4e13a2523ac2d21e39d7aa1e673163265880d6973b4d396600a2da946bbb2092d4e5979d6d5f3890630eed76b20745f6de8fbaf0b7a89f625da37f39b69",
+                  "3": "aa1859ff3efe646b58d5b209e64edb00395cd569e36b8ec72324b9103976d62a42ee5efcb9eea990339c851f69e0c6790a261335c34820af2a69c845ca3d3e8d291321f8b7941085588c585ee142bfa01c4d51ab8028db5bebe39d187b930d6a"
+                },
+                "85794142e7b2a4c66a79a68377705fb95f84197a4d2ca354d3b72580a0b7529e": {
+                  "1": "afa464e562392e06931bb215ab27d731e7899e5338aefc65e81a2990ad34c989eaa0f44f273e8b6e2925c23a830f91ba020f31f198f74ec1d0db29aed64be636fac526d5b2d91dcf924ed86d45fdc98231372e9ae8d64085f382b4e97fda7055",
+                  "2": "8db59e4efd0a147a86cbe3c33b3fb434b73e8b4a471066149cd642dd46fed0be92183e5fbd4ec1c3d07dbfb4b111cf4b018b5cdc0049205ff957dafa3548fece75f3160a01755f18c0298f6eddb2567722e99980242a0376752cc975ab5f21c4",
+                  "3": "aa584c835686be3d70a19c363c63f71927e2e963ce65b260c1b6d260576935cbcca092d2c43d278efc6e1857ee24d56417a3c5ec57c28bc279a08ec63ebf2ac263f0c5b860b6f7de8e253a14f5f0447bdb1b52ff75be80722d24dc3781605fc7"
+                }
+              },
+              "5": {
+                "6e882d0d39f9b1c2c4bfeba049192918f686e715addf1a0fddc9df4c277eef72": {
+                  "1": "91ef2ce6d3aba5dcc3dd015ef824132d90d6c1f3a73ff3f11d46a6c4e80b5e97f82d871c9e105b9cf7b6b6d45bb64a5503d533668c9eb83aed5f67296adb409c275b885baad8f3bc1ae9c0a906368bd03eb09343660c9bd0862d02083ad99eb7",
+                  "2": "935be29baf8dd83a47fc9ba498680e0e2b2dee000d352e75cf0d33561bd26e37e1bee28ce9806c118eab00211c148d7007ce68cf783710eba8d03f30223993d4fc326eec865d4eba537aafcb16e3e12651b4d257a0c6fb033ac829b32cad25d2",
+                  "3": "8ea7b38e735f177100271722f7705eb0e9ca6cc7f3b5e047ae782d6652f4311cb6217677286b69e655c04e634c3af5580220c5c2c77a7802f622100b3cde26ae56f3569152598a7e9df3159faedd1f511997f31e7bf60599ba87627e291ca755"
+                },
+                "85794142e7b2a4c66a79a68377705fb95f84197a4d2ca354d3b72580a0b7529e": {
+                  "1": "a2fdcfa6e9f2dade1665c34a57507ecf7913d1a2346fe2154f2a3d7c33f226bfe2271a1076b667802bf09d60fb91cc9c0f4e8e6777fd0a8a917da49529259ff8b31e376c827e5e15cf7eb18dc4029427998ac1d0d89c1807a582dfefc28e8643",
+                  "2": "a5e274b1e8053261d48703794563bde5a03638d65b0f67b5bb726bc8e2092a15d49f0c6cffe659173cf5ca803765c4e8192cee95864139324e6726c337aad3df5774c75ac71cffd8447cbe114598f9b08e83de73da45b140d81b24b49f723176",
+                  "3": "93516ea83684b6d059a4a3182ce9b00bcfa283434291d0ca54c55c16dd0dd086f2ccca20705781fbd9f22e8efb17419a0c5874d13b358ae8379761d390f8b6054e59402b379a03faf3d159dd4c4d34904d3049bc66aabb3c71dccba617faa1b1"
+                }
+              },
+              "6": {
+                "6e882d0d39f9b1c2c4bfeba049192918f686e715addf1a0fddc9df4c277eef72": {
+                  "1": "a421ffaba1e646e27ea346908ce6ee7f70558145989915a8e9e78d3fe3a803e2336df8d3f2ea5da064122577cfeda4280b1baeca49b209ee76ae7ca9ce89fc188b51c0e8b54d395075fc293d0df9ac9b9bb45db21eb3c024c048751ab02bc622",
+                  "2": "a36ce82e946dd30f38982bf59703c36823177e622b84510ef8bcc3ad7c3abd6e45e406223852485e5d5a656790e0157d10208b9832d6dfae576e84e1dde13b829dcd64f7a72e84513ec318370f98d49110af0093ca04815b29eb0e0b5ec33a89",
+                  "3": "a74aed42f1365eab01033160c2f29c2ac0c1fee148a3e01aff9fc5cc80a33d5b0d49d2c1bd4d212d418e33519cd6daec03d42ad8233132cab939f0d332d4fe82408500edf1039682b54352745497ecd3f7e70a4efd18220fb6de73828b00c749"
+                },
+                "85794142e7b2a4c66a79a68377705fb95f84197a4d2ca354d3b72580a0b7529e": {
+                  "1": "99dafff33fbc20f05747abd5e839015a03dfbfe845335ebb603a39827edc266be4c0247e4bff89660f81e0783ca8848300ea88829b7aebccf89ab9732b194f1a220c97cb562c1a130d56331205b532f410c497f40f31e4abd887d959651c2d44",
+                  "2": "b1cd2d74790a2754c03cbf3a491b658ccd29fc7cb37b4b1507a423aa38de62148277189af2f561c179195378e1e3c39408f7600fa70803c0a60551348dc101ed4c8f9626cefa5f28f6cc610232342dea31601dd34d60ad6a692a6a01d78a68b5",
+                  "3": "ae06d6a76116a19ffa7f3b571f8fd73564710f1b3e6b78fc94590673001d339c5f17677c892c69315bf56464b370a3f1016575090e82be6b9e72425662d9f4ac01d407d167184e1fb7517e3bfb5bcc0156c5f88d43c78df46f4047a47a6fec7e"
+                }
+              },
+              "7": {
+                "6e882d0d39f9b1c2c4bfeba049192918f686e715addf1a0fddc9df4c277eef72": {
+                  "1": "906645e662f3146b1643c46aac53939184d1df91dc1a426ff2ef2da8efd3aeba93dc25123a77426167fd11c489387201006527e033165b9c436a9c1f02c2e588c1aef9820762249c0bfa3faecc7fe4711dc9e1e01cd58f0a769a6341453df8c6",
+                  "2": "83b3cc2504a5975358c747d677fb5089387384b4db73c643ed9f17b5095eca6f25ef11fdf67f7b0b31b8d59eb1708bc50bee705b1e4ea029c71f68821c3782d4ec0b80ab5db3a497d5c7759bdb0ab20831c3c60fe5d5dae6afa12fd29a7d3258",
+                  "3": "a4e4f6b45c5d9f880bae32b080632034debe11251a7c45f319419bb2d1d3f3c673cb88224488b69c82b58936414462e1122a4a9a41adf885d3a5eff8b1e7f67c6ae736a92fb04167a972b7b73e50eff4dc7cb58a4bdfcfc4478a1178fdad3cd0"
+                },
+                "85794142e7b2a4c66a79a68377705fb95f84197a4d2ca354d3b72580a0b7529e": {
+                  "1": "89fb860b98eb1a848469b8c5cc808af5f1b7fe4827fec64337aeb4df2d67c1386d180c24d038c52f90538df7a63ccbff04e24f9cb0e82ae84b030a75857a7f629ee0ec5cf1d0a578d29412865d94827b2512d3a0f7b61f092a01d6f1151c9761",
+                  "2": "a57514cc179050d7ef865306ac2c8ae4d2f567a30028cc1fff75c14fe8f6aa43a36c704c7bc24d2d0587ed70b48113ea0079d7a57513f631d12f29f2d619052cb4eda028b7c49bbdfd2c5b427b5440a40ef99b64f3f7046feb367f1a678a7148",
+                  "3": "b9b5ee00c1966f76a9c1b879f772741b72a002ef2449f293c960bf843c4abcde8bfcf6779c7b66daa0fde8c17d87ff5900e935fa8942f1a9bfd046ac663879d559683677d699847ca374655aeaa804cbd55c4932eb156a9bec77bcfecd418aec"
+                }
+              },
+              "8": {
+                "6e882d0d39f9b1c2c4bfeba049192918f686e715addf1a0fddc9df4c277eef72": {
+                  "1": "b10bcfaf18382e9a66fdd531f6c018cdb585cc77e67a76801a9083eb125a030acc28376c08f85e8a3a9b14f272bbf255157af5b1eaaaa6b71fff2436b92eac56d0b5793215d382c4e91b87ce7f698b368481b50a344d88c39aa67ad78f4ef66c",
+                  "2": "8c6bf5b7c4dee2dd088923e8abef99562b4369ae727e80affec6f0de270afb6c4e94c734c2d82d03ff0880a464e1714e1137e3e75e49b0d2be8216493c806cfb25fb7f6a32d1f86bd5dadae2a62d86f9e86c224b23ec99ede76547b5f5051967",
+                  "3": "83c7890c26b3a3fc5f60f61b7217a3acd8662705b7e28ef1065ce0829688ac0df79dcc538a2f66a5a473f09581834ff0107bd672a035115c978597175a1238ce0c91ec2938f93531f13f5b87d3eede077bb2570293e736aee123c9a662237f7c"
+                },
+                "85794142e7b2a4c66a79a68377705fb95f84197a4d2ca354d3b72580a0b7529e": {
+                  "1": "a349644d05b3abe358944a141dac51669f971ccff7f3ec5714e0cd5e1f8088ace46198e5615d5d6a5918a415e62f9840009573686781e2f16c6083c0a4ad1a56c63025b60b12408600619b961d79b9664623528b5eec7a24da39c1a368f3570d",
+                  "2": "a32c6df54a07f85055d7e7d2d06e90515e9440b11f898bcd70aca4b828ea13c74aeaf97f076f5c03266d2a4ebf94893c1610cbdcba4fe8a46da9841dcebfa66a2df23df10949d1472b19fad1f0805fdbc895e44b30e6f4aa01bbc9f970ff319f",
+                  "3": "afe4cae49394914232fa9fa0fe86a362dde173a91afbc57d8886ee3641ac85923b520c27a70100c0f0c92bad90af8c7d12e79dd8564dad82c0579b43e0efafb97ed06421c659f9fd6e416f471cec0b813762c8b920d805acbc25eda28fbfba85"
+                }
+              }
+            },
+            "Quorum": 3
+          },
+          "RunningInstance": {
+            "State": {
+              "CommitteeMember": {
+                "OperatorID": 1,
+                "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a",
+                "FaultyNodes": 1,
+                "Committee": [
+                  {
+                    "OperatorID": 1,
+                    "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                  },
+                  {
+                    "OperatorID": 2,
+                    "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145416d595a503247473471335652526169646d676d610a4f43777a7a383847544c322f747334737832664d614a427774326d63527047534a4c754d41682b514a4549684550635761536272595561374e654836547652770a754d49517657734f78734543664f36677666624c684d78447268666b466736477a4d674a59426d55517571454970624957662b515732684345624233754776380a71693037694930534f307a384b63667842554257366b71364449747a336c4a3667564e4e37533454416e56644b6a3636306e47626e4843653952503334666b720a544b6e5130476f434438787645313753576c593847726173446c496c3531716252446c764572494b742f4471416e5964664e2b2f504b7a4c49324c65506363480a5175574a6a50395176594d686b722f55566772306338526b376e6b76617a6b626b6b4b626b786554324a77382f5637682f7961346838596f507a32424b774e510a63514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                  },
+                  {
+                    "OperatorID": 3,
+                    "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541746f69465455714a704c38347876684d4653414f0a594171624559697a4442506c2f6c4d326331384b73473949415344537a624e6678476e6332704333376a6a72376833626c5378454e59534b4f59564857324e320a7138627a4c427530366b4b30677a735644444a4d4e63386a7056714e2b454972506c496a4e594c326d70355a4e6e617a796157416156566b4e59794d61616a490a417a5479725a2b3677756f51526f69757a53676c75305236657557515a65384363694554315a447243305269686e2b6249426f33653776307a464165773351770a5533496c466f6a7a744a35726a2b4a666c79516155692f7a544379397154506e575746417a74475a3646652f30337568564e307338575a7774327931563162690a48594150597a36326669744356343459726b7a454f6d495367526e33556f6a4f7a6b38764e46596d63435234314c32772f6f3137523044334c67386e7843364d0a4a514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                  },
+                  {
+                    "OperatorID": 4,
+                    "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145417151587a712f3658745645664a545a2f763150770a6b7a536b4e52586270432f343161394c535176736b6b49436447326447772b5161676b4e565970764b517352337741784266446f5171644d6f457638476839780a42615a6166366b4c576b6e615659594e4a65576e36624569446d586a5659444d713564686c396f643955684b344559543872496635616c66794561392b5773390a6f65414c5332316356507052506f62514878735838786f39755143724c784f7163344557383238354b6a35766e516c66704747323157464266624847523458610a2b616d4f66544b506c524c6c6556554d7a77582b377065474a2f3548336a704c466c2b6f46617232432f5944482f454a7a302b4e7136474a6d3731694a374d630a312b63305036464f6179365a715a2b5a446a3964704a642f6d6271597a7933724b3662506f384e764e455948534a664f5244344b6a4e4d49733453317970785a0a49774944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                  }
+                ],
+                "DomainType": "00000301"
+              },
+              "ID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+              "Round": 1,
+              "Height": 7424012,
+              "LastPreparedRound": 1,
+              "LastPreparedValue": "0102030405060708090a0102030405060708090a0102030405060708090a010200000000000000000102030405060708090a0102030405060708090a0102030405060708090a010201000000000000000102030405060708090a0102030405060708090a0102030405060708090a0102",
+              "ProposalAcceptedForCurrentRound": {
+                "SignedMessage": {
+                  "Signatures": [
+                    "7b6fe66161ca089ae127233ed74b2166a806d7b69a4ba41f4fefd9808477726026c85fe394bcae5372636731415627d2dea3a70dc2d0b07e6cda37862fff6493cce8eb25cb32ed97d295f908725c83314b5cfc0b2c50507ad6ec695211fcb80a55e1560829568df92c93c6cd1474b911f5e538274ae1153ae24ede3f889c9b99007f905ac7a9ce495d24440ca6e32da2672206b6e69ce8bf28d736e30875f3bf726d0c287eea7a8f8816a71b02c2fe5c6179a4c096a36b3b8f80b425f18b45161494063f8d298a238b5e76ab3b1e92fd78f4137ede0f4f2ade3790e38d65305c7562f6985fb4a6abb8ddee01da90ebf74ab987f169a54404db380250c356b9c5"
+                  ],
+                  "OperatorIDs": [
+                    1
+                  ],
+                  "SSVMessage": {
+                    "MsgType": 0,
+                    "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                    "Data": "AAAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                  },
+                  "FullData": "0102030405060708090a0102030405060708090a0102030405060708090a010200000000000000000102030405060708090a0102030405060708090a0102030405060708090a010201000000000000000102030405060708090a0102030405060708090a0102030405060708090a0102"
+                },
+                "QBFTMessage": {
+                  "MsgType": 0,
+                  "Height": 7424012,
+                  "Round": 1,
+                  "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                  "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                  "DataRound": 0,
+                  "RoundChangeJustification": [],
+                  "PrepareJustification": []
+                }
+              },
+              "Decided": true,
+              "DecidedValue": "0102030405060708090a0102030405060708090a0102030405060708090a010200000000000000000102030405060708090a0102030405060708090a0102030405060708090a010201000000000000000102030405060708090a0102030405060708090a0102030405060708090a0102",
+              "ProposeContainer": {
+                "Msgs": {
+                  "1": [
+                    {
+                      "SignedMessage": {
+                        "Signatures": [
+                          "7b6fe66161ca089ae127233ed74b2166a806d7b69a4ba41f4fefd9808477726026c85fe394bcae5372636731415627d2dea3a70dc2d0b07e6cda37862fff6493cce8eb25cb32ed97d295f908725c83314b5cfc0b2c50507ad6ec695211fcb80a55e1560829568df92c93c6cd1474b911f5e538274ae1153ae24ede3f889c9b99007f905ac7a9ce495d24440ca6e32da2672206b6e69ce8bf28d736e30875f3bf726d0c287eea7a8f8816a71b02c2fe5c6179a4c096a36b3b8f80b425f18b45161494063f8d298a238b5e76ab3b1e92fd78f4137ede0f4f2ade3790e38d65305c7562f6985fb4a6abb8ddee01da90ebf74ab987f169a54404db380250c356b9c5"
+                        ],
+                        "OperatorIDs": [
+                          1
+                        ],
+                        "SSVMessage": {
+                          "MsgType": 0,
+                          "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                          "Data": "AAAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                        },
+                        "FullData": "0102030405060708090a0102030405060708090a0102030405060708090a010200000000000000000102030405060708090a0102030405060708090a0102030405060708090a010201000000000000000102030405060708090a0102030405060708090a0102030405060708090a0102"
+                      },
+                      "QBFTMessage": {
+                        "MsgType": 0,
+                        "Height": 7424012,
+                        "Round": 1,
+                        "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                        "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                        "DataRound": 0,
+                        "RoundChangeJustification": [],
+                        "PrepareJustification": []
+                      }
+                    }
+                  ]
+                }
+              },
+              "PrepareContainer": {
+                "Msgs": {
+                  "1": [
+                    {
+                      "SignedMessage": {
+                        "Signatures": [
+                          "59a889e2c837b3b0457fd2801c2aacf866ea76076f3790cf79d91b38182c711bebaa8a6fae12b3127f9fd0d4594f901da9cc8718ffed3285aaef05e1e0805a67f985ccfcda42bf585f128b0b10364ce787604afc000c25f61f2c59be4897caa7aaafe7220e951135154c682da750e1e9ed201f547d59f6fce911a640bb789b83dfab0582b77bba3d84483f4015fcfbdbda23a00af9573094aae39359fb87bc1ed27a8b3dd13f8bcf5d6581f0f5628db7952895f1cdc9183eebf321e447e7225fb13ea6636838f1edcca39ae135eee592321414d5b759f91a4071ab364377c5e09b4af85dc803003e86f3a9c27eade9b404b0c5d0144ca95bff56416c14c22465"
+                        ],
+                        "OperatorIDs": [
+                          1
+                        ],
+                        "SSVMessage": {
+                          "MsgType": 0,
+                          "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                          "Data": "AQAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                        },
+                        "FullData": null
+                      },
+                      "QBFTMessage": {
+                        "MsgType": 1,
+                        "Height": 7424012,
+                        "Round": 1,
+                        "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                        "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                        "DataRound": 0,
+                        "RoundChangeJustification": [],
+                        "PrepareJustification": []
+                      }
+                    },
+                    {
+                      "SignedMessage": {
+                        "Signatures": [
+                          "7d8532fd36959b2296be8a7b34144da3a3386030b94f673d931f58342deb345ef28b2e3b872aa5996c2bb9573981f1db1dbc36475448aa650769a6c13cb760746d8c65c2a3cd093c916e9a3bbf6853f456d256a7f02dcf28e55898856d0a1591388268fb64219b9f7d2a82c2f5b3d63e5ab7abeeff14a4f424458fd156f4fcb4ea2e3ef8fdf632f909bde190637f7c8a8a8f12e8dfd05ddc6fcc7b0e32b79f40ac9613fd058621e7f78eef8681a151053a290769c6252ca3af12df4889493ae743b0b92baa50f0a3cb93fedd8772d3e01df917f4ae3f5a5ed7ce69e0b0895747176794fce49da7e3988d6431baf35478ba1b234f5150080a557d3c91775c8430"
+                        ],
+                        "OperatorIDs": [
+                          2
+                        ],
+                        "SSVMessage": {
+                          "MsgType": 0,
+                          "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                          "Data": "AQAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                        },
+                        "FullData": null
+                      },
+                      "QBFTMessage": {
+                        "MsgType": 1,
+                        "Height": 7424012,
+                        "Round": 1,
+                        "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                        "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                        "DataRound": 0,
+                        "RoundChangeJustification": [],
+                        "PrepareJustification": []
+                      }
+                    },
+                    {
+                      "SignedMessage": {
+                        "Signatures": [
+                          "86f31ea7e1accea53393841b641255aba094dbf69a3ebe3ae94a95797c49156b1323b722bd20210f56a8b6b5f6f9cb32f0a7664ff92789c88dcd1fd0405abfcec21d5beb6cf971dbdf6abeca6386563db4bb0d9bb436caa351c2c4c3baa795595b0f406d191aba7cdd37f59e1e5e31955831118acb48824cd74dee9d0611ecfc975384e16386da1e407ecde717d2b1e8345d1256acb5b6931a8b05813816101a0550e1cc7c6eb6043e20ee82fdbd58e5035af3d1eae308c1f4ea9c910161d9f69f7ebfa3b702623a12e6d19300d82b9ec52a74c7cc520ca83c6cf4f5b55df091afebb1577e3cccf945756b7beffa7b06d0aa427d6c141e9ab2f39d4725f08940"
+                        ],
+                        "OperatorIDs": [
+                          3
+                        ],
+                        "SSVMessage": {
+                          "MsgType": 0,
+                          "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                          "Data": "AQAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                        },
+                        "FullData": null
+                      },
+                      "QBFTMessage": {
+                        "MsgType": 1,
+                        "Height": 7424012,
+                        "Round": 1,
+                        "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                        "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                        "DataRound": 0,
+                        "RoundChangeJustification": [],
+                        "PrepareJustification": []
+                      }
+                    }
+                  ]
+                }
+              },
+              "CommitContainer": {
+                "Msgs": {
+                  "1": [
+                    {
+                      "SignedMessage": {
+                        "Signatures": [
+                          "a5d9b26507e7ba6c17b15f2ede36e378c1864212fe95cba39aad49447cfc897b49b3e15a249b14d3429ffb0116950f267142860fc2d6c154be8b3ab9a11b217262f768e1714c3f0d0f63371b5efb83d1cf781a6b24cd8f84e59321ab45526cf0781d300b6ab6bcb16643d65bca96169c28d95337347f91a48ecb892d2b8306cc1234f8521d67addc7cdb18aaac71fad9c6ce653e670d563b1d5decc9d19cc20002652f3c2f0c0b1746e1e080a8497ab1a0591b67d08029bff174d36cd4d63839fed97ed1f7631794bf553d617bbc1dd269e5ad4e672fc65a0c434466768eb49fb655d9ce015d828cfec85b6c3ef129a18aaf9f3959b1970d2aa0c64139cf6907"
+                        ],
+                        "OperatorIDs": [
+                          1
+                        ],
+                        "SSVMessage": {
+                          "MsgType": 0,
+                          "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                          "Data": "AgAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                        },
+                        "FullData": null
+                      },
+                      "QBFTMessage": {
+                        "MsgType": 2,
+                        "Height": 7424012,
+                        "Round": 1,
+                        "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                        "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                        "DataRound": 0,
+                        "RoundChangeJustification": [],
+                        "PrepareJustification": []
+                      }
+                    },
+                    {
+                      "SignedMessage": {
+                        "Signatures": [
+                          "1406f9d74a7c26e0dd9ffbde35b3190d7a2c67c8518abc0be4014a38d1bec74cf4c7289095f5b985706c1400140cbdda69cde8fbff8ce0e1515c91b9486db2e51ed19f1c466359c2f902175b42359a48859a1f3b377b6096f38c754874d19c5fd29ac7cb45af9c7df3a2c3d18db3314a7b4713775c4f9ad31a4dd5e087a37719a1a1184f8c466909b8c5e7a5003f79df2faeca7d83781c5ffd10bf763163bd1840df590266e95371b2279ff0b2b8495b21e69969c2a2ad31b01dd9e40338b8aa7019dcfd8bacaa741821f9c1d46c09dd6a23a6d0085f95b041ba20d4ee8ba20f6f2b82141d4990f217a7367823e9a46bcf0a2c77b51ce7b13b56f1d74c7e5afd"
+                        ],
+                        "OperatorIDs": [
+                          2
+                        ],
+                        "SSVMessage": {
+                          "MsgType": 0,
+                          "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                          "Data": "AgAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                        },
+                        "FullData": null
+                      },
+                      "QBFTMessage": {
+                        "MsgType": 2,
+                        "Height": 7424012,
+                        "Round": 1,
+                        "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                        "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                        "DataRound": 0,
+                        "RoundChangeJustification": [],
+                        "PrepareJustification": []
+                      }
+                    },
+                    {
+                      "SignedMessage": {
+                        "Signatures": [
+                          "5a1f8c28921ce141add6c0b54363de27a9731dfa10cec59eab4c2e7a887d0a6f3a054c2793168b0a3ea1e0076eb21cfc0e88a870a2e876f20018c6a97fc4617f94d0fe22b7767d6f3981b75bf76b7d8bcd3c5af005ae83a0b039090a2177b0cf3581e31c2d0e663a1e22a3d4e20ae50480acebe087021223e4b6349cba1a9232794095e2e1b7ffeb9c212d8ce46cdb50f702d893e3fab41b231ee2fc41812e2e5ec3ea5535b8847713512b76985fda93beb83230943e89e47132513be281f43fbf03323cb679afaccc7f858c24611f576f72f41152b69ff24ebe87fea2baf98134e20a516291762e5f77300b30eddc32fa3d73d9f93e16dc09dfd8f376a08295"
+                        ],
+                        "OperatorIDs": [
+                          3
+                        ],
+                        "SSVMessage": {
+                          "MsgType": 0,
+                          "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                          "Data": "AgAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                        },
+                        "FullData": null
+                      },
+                      "QBFTMessage": {
+                        "MsgType": 2,
+                        "Height": 7424012,
+                        "Round": 1,
+                        "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                        "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                        "DataRound": 0,
+                        "RoundChangeJustification": [],
+                        "PrepareJustification": []
+                      }
+                    }
+                  ]
+                }
+              },
+              "RoundChangeContainer": {
+                "Msgs": {}
+              }
+            },
+            "StartValue": "0102030405060708090a0102030405060708090a0102030405060708090a010200000000000000000102030405060708090a0102030405060708090a0102030405060708090a010201000000000000000102030405060708090a0102030405060708090a0102030405060708090a0102"
+          },
+          "DecidedValue": "0102030405060708090a0102030405060708090a0102030405060708090a010200000000000000000102030405060708090a0102030405060708090a0102030405060708090a010201000000000000000102030405060708090a0102030405060708090a0102030405060708090a0102",
+          "StartingDuty": {
+            "Slot": "7424012",
+            "ValidatorDuties": [
+              {
+                "Type": 0,
+                "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+                "Slot": "7424012",
+                "ValidatorIndex": "1",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": null
+              },
+              {
+                "Type": 0,
+                "PubKey": "0xaa57905889288431b819bee5bc3d77ef1dffcb3d3d0d7be8b748b96f27e0ed23a604e7a5b56c0b402af1810a17b21fe1",
+                "Slot": "7424012",
+                "ValidatorIndex": "2",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": null
+              },
+              {
+                "Type": 0,
+                "PubKey": "0x989069e005b47e318cd427a0c50a0c72a9f14b26c93a26b1220fe66c45ca12c31925ac6b7c3fdb1f57b0775356954b08",
+                "Slot": "7424012",
+                "ValidatorIndex": "3",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": null
+              },
+              {
+                "Type": 0,
+                "PubKey": "0x91f93af57b80c9e8d3885240066c23e606f2d5ba2e700052844b3fbef990db04296cab46c06317b8e469c7a63a421e3d",
+                "Slot": "7424012",
+                "ValidatorIndex": "4",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": null
+              },
+              {
+                "Type": 0,
+                "PubKey": "0x91e4ffe73dfe57e548450a65ffd1d685f6140d97ba1ee2fab7183c91d5cb2d50f53b133a2e2f1345f551381f3e38cf32",
+                "Slot": "7424012",
+                "ValidatorIndex": "5",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": null
+              },
+              {
+                "Type": 0,
+                "PubKey": "0xad91661fd9643f66ee19fae3f1795aca33738c9a25f1c0d8e367df7d3df59332ef5476b00727f3b3a6047ad7542822d7",
+                "Slot": "7424012",
+                "ValidatorIndex": "6",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": null
+              },
+              {
+                "Type": 0,
+                "PubKey": "0xb6bb580b997b8ec19ce4a3f49e77a2483d6ded63c94dbc29ed64c3299b864342c016d18cda03181457bb8921fb33fbae",
+                "Slot": "7424012",
+                "ValidatorIndex": "7",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": null
+              },
+              {
+                "Type": 0,
+                "PubKey": "0xa77558846b46ea9dbd414f9ae93660e945de298af833e93910f5f3f8184e728ce1f04f8fcfb666b7d64afa2367a14e1b",
+                "Slot": "7424012",
+                "ValidatorIndex": "8",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": null
+              },
+              {
+                "Type": 3,
+                "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+                "Slot": "7424012",
+                "ValidatorIndex": "1",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "Type": 3,
+                "PubKey": "0xaa57905889288431b819bee5bc3d77ef1dffcb3d3d0d7be8b748b96f27e0ed23a604e7a5b56c0b402af1810a17b21fe1",
+                "Slot": "7424012",
+                "ValidatorIndex": "2",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "Type": 3,
+                "PubKey": "0x989069e005b47e318cd427a0c50a0c72a9f14b26c93a26b1220fe66c45ca12c31925ac6b7c3fdb1f57b0775356954b08",
+                "Slot": "7424012",
+                "ValidatorIndex": "3",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "Type": 3,
+                "PubKey": "0x91f93af57b80c9e8d3885240066c23e606f2d5ba2e700052844b3fbef990db04296cab46c06317b8e469c7a63a421e3d",
+                "Slot": "7424012",
+                "ValidatorIndex": "4",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "Type": 3,
+                "PubKey": "0x91e4ffe73dfe57e548450a65ffd1d685f6140d97ba1ee2fab7183c91d5cb2d50f53b133a2e2f1345f551381f3e38cf32",
+                "Slot": "7424012",
+                "ValidatorIndex": "5",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "Type": 3,
+                "PubKey": "0xad91661fd9643f66ee19fae3f1795aca33738c9a25f1c0d8e367df7d3df59332ef5476b00727f3b3a6047ad7542822d7",
+                "Slot": "7424012",
+                "ValidatorIndex": "6",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "Type": 3,
+                "PubKey": "0xb6bb580b997b8ec19ce4a3f49e77a2483d6ded63c94dbc29ed64c3299b864342c016d18cda03181457bb8921fb33fbae",
+                "Slot": "7424012",
+                "ValidatorIndex": "7",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "Type": 3,
+                "PubKey": "0xa77558846b46ea9dbd414f9ae93660e945de298af833e93910f5f3f8184e728ce1f04f8fcfb666b7d64afa2367a14e1b",
+                "Slot": "7424012",
+                "ValidatorIndex": "8",
+                "CommitteeIndex": 3,
+                "CommitteeLength": 128,
+                "CommitteesAtSlot": 36,
+                "ValidatorCommitteeIndex": 11,
+                "ValidatorSyncCommitteeIndices": [
+                  0,
+                  1,
+                  2
+                ]
+              }
+            ]
+          },
+          "Finished": true
+        },
+        "Share": {
+          "1": {
+            "ValidatorIndex": "1",
+            "ValidatorPubKey": "b99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+            "SharePubKey": "80b82b474dd16aa44428b8b2e4e154a9d359de83b3416177f888473314370445fb6af54276db4b48c7713f17c74add3b",
+            "Committee": [
+              {
+                "SharePubKey": "80b82b474dd16aa44428b8b2e4e154a9d359de83b3416177f888473314370445fb6af54276db4b48c7713f17c74add3b",
+                "Signer": 1
+              },
+              {
+                "SharePubKey": "a1b7bd16c473c63fa879d64c7f3d445ad7cdaa2f1498777b1c913bb88c6252107f7fc10a1bc8966d29aa6218636f86fc",
+                "Signer": 2
+              },
+              {
+                "SharePubKey": "b14fcbff2e8b867131966bc429d8e868b84a439cbd884dfb828aa656c654ea8abd6b789ca2a13a793d55b5c1c59647fd",
+                "Signer": 3
+              },
+              {
+                "SharePubKey": "a927cfd844b513e9e15a6d672c50a3c24c52fe8255684c7aa04a81ca4877d0d53ad96bdfb16be3faad716038c1060c62",
+                "Signer": 4
+              }
+            ],
+            "DomainType": "00000301",
+            "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+            "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+          },
+          "2": {
+            "ValidatorIndex": "2",
+            "ValidatorPubKey": "aa57905889288431b819bee5bc3d77ef1dffcb3d3d0d7be8b748b96f27e0ed23a604e7a5b56c0b402af1810a17b21fe1",
+            "SharePubKey": "895e63f7eb1e7ea12a891eb087056b50d480b71686dd7b8454e0d950ba6546415faab71213a82d80e4e14285db518fac",
+            "Committee": [
+              {
+                "SharePubKey": "895e63f7eb1e7ea12a891eb087056b50d480b71686dd7b8454e0d950ba6546415faab71213a82d80e4e14285db518fac",
+                "Signer": 1
+              },
+              {
+                "SharePubKey": "b5437f2cb46b9e0c2353abc3f9df981ee5ad297e9673798c5a89840e62b970d8c38e3aae4f3a3f83364836897d8fae9e",
+                "Signer": 2
+              },
+              {
+                "SharePubKey": "81578b87dada3a34955625417c8e8d2c97daa524cb5c3459661c630126d739d953bbb412aecc9365321ef3e6467bb0a6",
+                "Signer": 3
+              },
+              {
+                "SharePubKey": "86b00dfab771bf2581034c57c27df9392a78f1696b200c928a50c8d3868e9e20d34a89786843216056ce3a37537930f8",
+                "Signer": 4
+              }
+            ],
+            "DomainType": "00000301",
+            "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+            "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+          },
+          "3": {
+            "ValidatorIndex": "3",
+            "ValidatorPubKey": "989069e005b47e318cd427a0c50a0c72a9f14b26c93a26b1220fe66c45ca12c31925ac6b7c3fdb1f57b0775356954b08",
+            "SharePubKey": "8b6eedc485b8a38154064cdaf6858786a47400dcc97ede1d1a54ac2403713c5a66b37cfe0431f39a31c5a724f6eb7679",
+            "Committee": [
+              {
+                "SharePubKey": "8b6eedc485b8a38154064cdaf6858786a47400dcc97ede1d1a54ac2403713c5a66b37cfe0431f39a31c5a724f6eb7679",
+                "Signer": 1
+              },
+              {
+                "SharePubKey": "b9cf20ef6a6ad9f210b906680fe04da39121c1a7deeba11badb6780127969e6aab53881b75c461eb219f056d4aba7c7b",
+                "Signer": 2
+              },
+              {
+                "SharePubKey": "81f54ac7c3b5813e61d6654fb0da2538e84818cc4b1d1be4fd4089bba4799cdd6982d89e1df04f032b0f95fbb8ca1ae5",
+                "Signer": 3
+              },
+              {
+                "SharePubKey": "96b5e37c6a5b8cb5bf1566574956ae645a1fdc108f505e7630b8fb0f385234a65c2c22926434f23468956b11fe869e81",
+                "Signer": 4
+              }
+            ],
+            "DomainType": "00000301",
+            "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+            "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+          },
+          "4": {
+            "ValidatorIndex": "4",
+            "ValidatorPubKey": "91f93af57b80c9e8d3885240066c23e606f2d5ba2e700052844b3fbef990db04296cab46c06317b8e469c7a63a421e3d",
+            "SharePubKey": "954bc90e472ac600ce42073d128411e7d347fcdb811c2c002a69dd30fce6d82bb0782c39467a27e3a047410f6c16bde3",
+            "Committee": [
+              {
+                "SharePubKey": "954bc90e472ac600ce42073d128411e7d347fcdb811c2c002a69dd30fce6d82bb0782c39467a27e3a047410f6c16bde3",
+                "Signer": 1
+              },
+              {
+                "SharePubKey": "ab1f3eaf95f9145eb7d1ee643402c82ac4dedba2e9e5c70ac0cdfee72b90972de2c2bb7af03b42bfbf1702420dcc45ac",
+                "Signer": 2
+              },
+              {
+                "SharePubKey": "b6e8f370545edea0ab93ad20afd9bfed07d55d67bb78a6df756ba9826bd1465710621b3e8cc2ab8ddbc6739488860be0",
+                "Signer": 3
+              },
+              {
+                "SharePubKey": "81b37e0c5eaeff679ed1bf9b91d64e110b0259127c7c444beaba4fe9727341706cb24ff671cdd03c6683621665cb87ac",
+                "Signer": 4
+              }
+            ],
+            "DomainType": "00000301",
+            "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+            "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+          },
+          "5": {
+            "ValidatorIndex": "5",
+            "ValidatorPubKey": "91e4ffe73dfe57e548450a65ffd1d685f6140d97ba1ee2fab7183c91d5cb2d50f53b133a2e2f1345f551381f3e38cf32",
+            "SharePubKey": "a42944d71d79ec6f51bc2c87865c54ba102de4e1ac0dde9cff1b0ab0e04aa758944e11e5ad7b33777e7f7544fa9d6833",
+            "Committee": [
+              {
+                "SharePubKey": "a42944d71d79ec6f51bc2c87865c54ba102de4e1ac0dde9cff1b0ab0e04aa758944e11e5ad7b33777e7f7544fa9d6833",
+                "Signer": 1
+              },
+              {
+                "SharePubKey": "acf359444a8357b28f055a36e887d3bbcf8620c39d2e217c198e8831de98e82b5c912e4f5cd9959f0ee6e1711f302770",
+                "Signer": 2
+              },
+              {
+                "SharePubKey": "989c728c2b909f60434fcce20aeb99f4cfbf1dd918464bb3577eeb46bc066f553336448e9b92c6c038c5be293efcd4b1",
+                "Signer": 3
+              },
+              {
+                "SharePubKey": "ae5a882dd2d31de14e043a335200fbb75987a3bb6c60e1b2c21585c6bee16ec4a60ad86b784167683a965d8e46270ae5",
+                "Signer": 4
+              }
+            ],
+            "DomainType": "00000301",
+            "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+            "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+          },
+          "6": {
+            "ValidatorIndex": "6",
+            "ValidatorPubKey": "ad91661fd9643f66ee19fae3f1795aca33738c9a25f1c0d8e367df7d3df59332ef5476b00727f3b3a6047ad7542822d7",
+            "SharePubKey": "b3d6926a426f748b0c81707b71b661a7df9087a0cac0226f52ec195b14c541e779bb109bdae94a7aa055b7d87e12aac6",
+            "Committee": [
+              {
+                "SharePubKey": "b3d6926a426f748b0c81707b71b661a7df9087a0cac0226f52ec195b14c541e779bb109bdae94a7aa055b7d87e12aac6",
+                "Signer": 1
+              },
+              {
+                "SharePubKey": "a9417b34211e82256205f5486919f63366cef856815fca821d155eed71b58162cde997291346a7d0091d3f15053d5e9e",
+                "Signer": 2
+              },
+              {
+                "SharePubKey": "ac1d7c9b0dfcbe11decfdac15b0e7a0e4baaacf48e79d236babe58dd3c955cde72ca95e2e36b74800279d05736d540da",
+                "Signer": 3
+              },
+              {
+                "SharePubKey": "af35dbf73adea3e27547e3d94e86ddaebd2ccb4e4268d92e5299a71fe91ac1e546eb45a75cecb6d15f538f256c4b9813",
+                "Signer": 4
+              }
+            ],
+            "DomainType": "00000301",
+            "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+            "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+          },
+          "7": {
+            "ValidatorIndex": "7",
+            "ValidatorPubKey": "b6bb580b997b8ec19ce4a3f49e77a2483d6ded63c94dbc29ed64c3299b864342c016d18cda03181457bb8921fb33fbae",
+            "SharePubKey": "872f13b1b3b4946fbd3d4d8a6cca9d4d763f57de1a037c2c44819d3ffcb4af85bd2fd936ef5a9c652561a1f67ec1435a",
+            "Committee": [
+              {
+                "SharePubKey": "872f13b1b3b4946fbd3d4d8a6cca9d4d763f57de1a037c2c44819d3ffcb4af85bd2fd936ef5a9c652561a1f67ec1435a",
+                "Signer": 1
+              },
+              {
+                "SharePubKey": "8925fb0407bab4b4737123ba7c44fed113a1d19a67e641cbe5b8eeae3ccc5f418071bc1b3d6e0382cd0ad927aa6ddea5",
+                "Signer": 2
+              },
+              {
+                "SharePubKey": "8b7587a5da0f7ece3a004e34da73f06d104c458c1a1086efe4b27a814b0a8bc684f923804b7f285b9f2953a75fe74bf1",
+                "Signer": 3
+              },
+              {
+                "SharePubKey": "a41f45ef782f396eb4fc68b1bfb2799b2db3fc48f04ff0223ef254c4a28f5afdf63b5703dcdd56eb31fea21a9cb041ee",
+                "Signer": 4
+              }
+            ],
+            "DomainType": "00000301",
+            "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+            "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+          },
+          "8": {
+            "ValidatorIndex": "8",
+            "ValidatorPubKey": "a77558846b46ea9dbd414f9ae93660e945de298af833e93910f5f3f8184e728ce1f04f8fcfb666b7d64afa2367a14e1b",
+            "SharePubKey": "866e6a267560baf7e96f3eaef2963522a5624896a5017e6ce4c36a7d991e91b34055d1e09b37b7637a6051603fa8f648",
+            "Committee": [
+              {
+                "SharePubKey": "866e6a267560baf7e96f3eaef2963522a5624896a5017e6ce4c36a7d991e91b34055d1e09b37b7637a6051603fa8f648",
+                "Signer": 1
+              },
+              {
+                "SharePubKey": "b753d264a998462e72ff7a4c3bf2b4b1ec78144f5612fa72011114be0dcd8268d7d58ceeb6561148fae9c4de6f3ca2f6",
+                "Signer": 2
+              },
+              {
+                "SharePubKey": "8c0328915011459ce9f52b0994ddc18d5c1f048827c591fe258ba487f5b9b8431f6df798f390c208f666a0d4caa9e648",
+                "Signer": 3
+              },
+              {
+                "SharePubKey": "b472ccda74a7c0c17d2cabd9d45197f42ec7f9b814ac483170c13fc20ea100ecb636a164544d6af93b36077989d0b671",
+                "Signer": 4
+              }
+            ],
+            "DomainType": "00000301",
+            "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+            "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+          }
+        },
+        "QBFTController": {
+          "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+          "Height": 7424012,
+          "StoredInstances": [
+            {
+              "State": {
+                "CommitteeMember": {
+                  "OperatorID": 1,
+                  "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a",
+                  "FaultyNodes": 1,
+                  "Committee": [
+                    {
+                      "OperatorID": 1,
+                      "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                    },
+                    {
+                      "OperatorID": 2,
+                      "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145416d595a503247473471335652526169646d676d610a4f43777a7a383847544c322f747334737832664d614a427774326d63527047534a4c754d41682b514a4549684550635761536272595561374e654836547652770a754d49517657734f78734543664f36677666624c684d78447268666b466736477a4d674a59426d55517571454970624957662b515732684345624233754776380a71693037694930534f307a384b63667842554257366b71364449747a336c4a3667564e4e37533454416e56644b6a3636306e47626e4843653952503334666b720a544b6e5130476f434438787645313753576c593847726173446c496c3531716252446c764572494b742f4471416e5964664e2b2f504b7a4c49324c65506363480a5175574a6a50395176594d686b722f55566772306338526b376e6b76617a6b626b6b4b626b786554324a77382f5637682f7961346838596f507a32424b774e510a63514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                    },
+                    {
+                      "OperatorID": 3,
+                      "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541746f69465455714a704c38347876684d4653414f0a594171624559697a4442506c2f6c4d326331384b73473949415344537a624e6678476e6332704333376a6a72376833626c5378454e59534b4f59564857324e320a7138627a4c427530366b4b30677a735644444a4d4e63386a7056714e2b454972506c496a4e594c326d70355a4e6e617a796157416156566b4e59794d61616a490a417a5479725a2b3677756f51526f69757a53676c75305236657557515a65384363694554315a447243305269686e2b6249426f33653776307a464165773351770a5533496c466f6a7a744a35726a2b4a666c79516155692f7a544379397154506e575746417a74475a3646652f30337568564e307338575a7774327931563162690a48594150597a36326669744356343459726b7a454f6d495367526e33556f6a4f7a6b38764e46596d63435234314c32772f6f3137523044334c67386e7843364d0a4a514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                    },
+                    {
+                      "OperatorID": 4,
+                      "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145417151587a712f3658745645664a545a2f763150770a6b7a536b4e52586270432f343161394c535176736b6b49436447326447772b5161676b4e565970764b517352337741784266446f5171644d6f457638476839780a42615a6166366b4c576b6e615659594e4a65576e36624569446d586a5659444d713564686c396f643955684b344559543872496635616c66794561392b5773390a6f65414c5332316356507052506f62514878735838786f39755143724c784f7163344557383238354b6a35766e516c66704747323157464266624847523458610a2b616d4f66544b506c524c6c6556554d7a77582b377065474a2f3548336a704c466c2b6f46617232432f5944482f454a7a302b4e7136474a6d3731694a374d630a312b63305036464f6179365a715a2b5a446a3964704a642f6d6271597a7933724b3662506f384e764e455948534a664f5244344b6a4e4d49733453317970785a0a49774944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                    }
+                  ],
+                  "DomainType": "00000301"
+                },
+                "ID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                "Round": 1,
+                "Height": 7424012,
+                "LastPreparedRound": 1,
+                "LastPreparedValue": "0102030405060708090a0102030405060708090a0102030405060708090a010200000000000000000102030405060708090a0102030405060708090a0102030405060708090a010201000000000000000102030405060708090a0102030405060708090a0102030405060708090a0102",
+                "ProposalAcceptedForCurrentRound": {
+                  "SignedMessage": {
+                    "Signatures": [
+                      "7b6fe66161ca089ae127233ed74b2166a806d7b69a4ba41f4fefd9808477726026c85fe394bcae5372636731415627d2dea3a70dc2d0b07e6cda37862fff6493cce8eb25cb32ed97d295f908725c83314b5cfc0b2c50507ad6ec695211fcb80a55e1560829568df92c93c6cd1474b911f5e538274ae1153ae24ede3f889c9b99007f905ac7a9ce495d24440ca6e32da2672206b6e69ce8bf28d736e30875f3bf726d0c287eea7a8f8816a71b02c2fe5c6179a4c096a36b3b8f80b425f18b45161494063f8d298a238b5e76ab3b1e92fd78f4137ede0f4f2ade3790e38d65305c7562f6985fb4a6abb8ddee01da90ebf74ab987f169a54404db380250c356b9c5"
+                    ],
+                    "OperatorIDs": [
+                      1
+                    ],
+                    "SSVMessage": {
+                      "MsgType": 0,
+                      "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                      "Data": "AAAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                    },
+                    "FullData": "0102030405060708090a0102030405060708090a0102030405060708090a010200000000000000000102030405060708090a0102030405060708090a0102030405060708090a010201000000000000000102030405060708090a0102030405060708090a0102030405060708090a0102"
+                  },
+                  "QBFTMessage": {
+                    "MsgType": 0,
+                    "Height": 7424012,
+                    "Round": 1,
+                    "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                    "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                    "DataRound": 0,
+                    "RoundChangeJustification": [],
+                    "PrepareJustification": []
+                  }
+                },
+                "Decided": true,
+                "DecidedValue": "0102030405060708090a0102030405060708090a0102030405060708090a010200000000000000000102030405060708090a0102030405060708090a0102030405060708090a010201000000000000000102030405060708090a0102030405060708090a0102030405060708090a0102",
+                "ProposeContainer": {
+                  "Msgs": {
+                    "1": [
+                      {
+                        "SignedMessage": {
+                          "Signatures": [
+                            "7b6fe66161ca089ae127233ed74b2166a806d7b69a4ba41f4fefd9808477726026c85fe394bcae5372636731415627d2dea3a70dc2d0b07e6cda37862fff6493cce8eb25cb32ed97d295f908725c83314b5cfc0b2c50507ad6ec695211fcb80a55e1560829568df92c93c6cd1474b911f5e538274ae1153ae24ede3f889c9b99007f905ac7a9ce495d24440ca6e32da2672206b6e69ce8bf28d736e30875f3bf726d0c287eea7a8f8816a71b02c2fe5c6179a4c096a36b3b8f80b425f18b45161494063f8d298a238b5e76ab3b1e92fd78f4137ede0f4f2ade3790e38d65305c7562f6985fb4a6abb8ddee01da90ebf74ab987f169a54404db380250c356b9c5"
+                          ],
+                          "OperatorIDs": [
+                            1
+                          ],
+                          "SSVMessage": {
+                            "MsgType": 0,
+                            "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                            "Data": "AAAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                          },
+                          "FullData": "0102030405060708090a0102030405060708090a0102030405060708090a010200000000000000000102030405060708090a0102030405060708090a0102030405060708090a010201000000000000000102030405060708090a0102030405060708090a0102030405060708090a0102"
+                        },
+                        "QBFTMessage": {
+                          "MsgType": 0,
+                          "Height": 7424012,
+                          "Round": 1,
+                          "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                          "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                          "DataRound": 0,
+                          "RoundChangeJustification": [],
+                          "PrepareJustification": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "PrepareContainer": {
+                  "Msgs": {
+                    "1": [
+                      {
+                        "SignedMessage": {
+                          "Signatures": [
+                            "59a889e2c837b3b0457fd2801c2aacf866ea76076f3790cf79d91b38182c711bebaa8a6fae12b3127f9fd0d4594f901da9cc8718ffed3285aaef05e1e0805a67f985ccfcda42bf585f128b0b10364ce787604afc000c25f61f2c59be4897caa7aaafe7220e951135154c682da750e1e9ed201f547d59f6fce911a640bb789b83dfab0582b77bba3d84483f4015fcfbdbda23a00af9573094aae39359fb87bc1ed27a8b3dd13f8bcf5d6581f0f5628db7952895f1cdc9183eebf321e447e7225fb13ea6636838f1edcca39ae135eee592321414d5b759f91a4071ab364377c5e09b4af85dc803003e86f3a9c27eade9b404b0c5d0144ca95bff56416c14c22465"
+                          ],
+                          "OperatorIDs": [
+                            1
+                          ],
+                          "SSVMessage": {
+                            "MsgType": 0,
+                            "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                            "Data": "AQAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                          },
+                          "FullData": null
+                        },
+                        "QBFTMessage": {
+                          "MsgType": 1,
+                          "Height": 7424012,
+                          "Round": 1,
+                          "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                          "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                          "DataRound": 0,
+                          "RoundChangeJustification": [],
+                          "PrepareJustification": []
+                        }
+                      },
+                      {
+                        "SignedMessage": {
+                          "Signatures": [
+                            "7d8532fd36959b2296be8a7b34144da3a3386030b94f673d931f58342deb345ef28b2e3b872aa5996c2bb9573981f1db1dbc36475448aa650769a6c13cb760746d8c65c2a3cd093c916e9a3bbf6853f456d256a7f02dcf28e55898856d0a1591388268fb64219b9f7d2a82c2f5b3d63e5ab7abeeff14a4f424458fd156f4fcb4ea2e3ef8fdf632f909bde190637f7c8a8a8f12e8dfd05ddc6fcc7b0e32b79f40ac9613fd058621e7f78eef8681a151053a290769c6252ca3af12df4889493ae743b0b92baa50f0a3cb93fedd8772d3e01df917f4ae3f5a5ed7ce69e0b0895747176794fce49da7e3988d6431baf35478ba1b234f5150080a557d3c91775c8430"
+                          ],
+                          "OperatorIDs": [
+                            2
+                          ],
+                          "SSVMessage": {
+                            "MsgType": 0,
+                            "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                            "Data": "AQAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                          },
+                          "FullData": null
+                        },
+                        "QBFTMessage": {
+                          "MsgType": 1,
+                          "Height": 7424012,
+                          "Round": 1,
+                          "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                          "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                          "DataRound": 0,
+                          "RoundChangeJustification": [],
+                          "PrepareJustification": []
+                        }
+                      },
+                      {
+                        "SignedMessage": {
+                          "Signatures": [
+                            "86f31ea7e1accea53393841b641255aba094dbf69a3ebe3ae94a95797c49156b1323b722bd20210f56a8b6b5f6f9cb32f0a7664ff92789c88dcd1fd0405abfcec21d5beb6cf971dbdf6abeca6386563db4bb0d9bb436caa351c2c4c3baa795595b0f406d191aba7cdd37f59e1e5e31955831118acb48824cd74dee9d0611ecfc975384e16386da1e407ecde717d2b1e8345d1256acb5b6931a8b05813816101a0550e1cc7c6eb6043e20ee82fdbd58e5035af3d1eae308c1f4ea9c910161d9f69f7ebfa3b702623a12e6d19300d82b9ec52a74c7cc520ca83c6cf4f5b55df091afebb1577e3cccf945756b7beffa7b06d0aa427d6c141e9ab2f39d4725f08940"
+                          ],
+                          "OperatorIDs": [
+                            3
+                          ],
+                          "SSVMessage": {
+                            "MsgType": 0,
+                            "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                            "Data": "AQAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                          },
+                          "FullData": null
+                        },
+                        "QBFTMessage": {
+                          "MsgType": 1,
+                          "Height": 7424012,
+                          "Round": 1,
+                          "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                          "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                          "DataRound": 0,
+                          "RoundChangeJustification": [],
+                          "PrepareJustification": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "CommitContainer": {
+                  "Msgs": {
+                    "1": [
+                      {
+                        "SignedMessage": {
+                          "Signatures": [
+                            "a5d9b26507e7ba6c17b15f2ede36e378c1864212fe95cba39aad49447cfc897b49b3e15a249b14d3429ffb0116950f267142860fc2d6c154be8b3ab9a11b217262f768e1714c3f0d0f63371b5efb83d1cf781a6b24cd8f84e59321ab45526cf0781d300b6ab6bcb16643d65bca96169c28d95337347f91a48ecb892d2b8306cc1234f8521d67addc7cdb18aaac71fad9c6ce653e670d563b1d5decc9d19cc20002652f3c2f0c0b1746e1e080a8497ab1a0591b67d08029bff174d36cd4d63839fed97ed1f7631794bf553d617bbc1dd269e5ad4e672fc65a0c434466768eb49fb655d9ce015d828cfec85b6c3ef129a18aaf9f3959b1970d2aa0c64139cf6907"
+                          ],
+                          "OperatorIDs": [
+                            1
+                          ],
+                          "SSVMessage": {
+                            "MsgType": 0,
+                            "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                            "Data": "AgAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                          },
+                          "FullData": null
+                        },
+                        "QBFTMessage": {
+                          "MsgType": 2,
+                          "Height": 7424012,
+                          "Round": 1,
+                          "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                          "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                          "DataRound": 0,
+                          "RoundChangeJustification": [],
+                          "PrepareJustification": []
+                        }
+                      },
+                      {
+                        "SignedMessage": {
+                          "Signatures": [
+                            "1406f9d74a7c26e0dd9ffbde35b3190d7a2c67c8518abc0be4014a38d1bec74cf4c7289095f5b985706c1400140cbdda69cde8fbff8ce0e1515c91b9486db2e51ed19f1c466359c2f902175b42359a48859a1f3b377b6096f38c754874d19c5fd29ac7cb45af9c7df3a2c3d18db3314a7b4713775c4f9ad31a4dd5e087a37719a1a1184f8c466909b8c5e7a5003f79df2faeca7d83781c5ffd10bf763163bd1840df590266e95371b2279ff0b2b8495b21e69969c2a2ad31b01dd9e40338b8aa7019dcfd8bacaa741821f9c1d46c09dd6a23a6d0085f95b041ba20d4ee8ba20f6f2b82141d4990f217a7367823e9a46bcf0a2c77b51ce7b13b56f1d74c7e5afd"
+                          ],
+                          "OperatorIDs": [
+                            2
+                          ],
+                          "SSVMessage": {
+                            "MsgType": 0,
+                            "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                            "Data": "AgAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                          },
+                          "FullData": null
+                        },
+                        "QBFTMessage": {
+                          "MsgType": 2,
+                          "Height": 7424012,
+                          "Round": 1,
+                          "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                          "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                          "DataRound": 0,
+                          "RoundChangeJustification": [],
+                          "PrepareJustification": []
+                        }
+                      },
+                      {
+                        "SignedMessage": {
+                          "Signatures": [
+                            "5a1f8c28921ce141add6c0b54363de27a9731dfa10cec59eab4c2e7a887d0a6f3a054c2793168b0a3ea1e0076eb21cfc0e88a870a2e876f20018c6a97fc4617f94d0fe22b7767d6f3981b75bf76b7d8bcd3c5af005ae83a0b039090a2177b0cf3581e31c2d0e663a1e22a3d4e20ae50480acebe087021223e4b6349cba1a9232794095e2e1b7ffeb9c212d8ce46cdb50f702d893e3fab41b231ee2fc41812e2e5ec3ea5535b8847713512b76985fda93beb83230943e89e47132513be281f43fbf03323cb679afaccc7f858c24611f576f72f41152b69ff24ebe87fea2baf98134e20a516291762e5f77300b30eddc32fa3d73d9f93e16dc09dfd8f376a08295"
+                          ],
+                          "OperatorIDs": [
+                            3
+                          ],
+                          "SSVMessage": {
+                            "MsgType": 0,
+                            "MsgID": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                            "Data": "AgAAAAAAAAAMSHEAAAAAAAEAAAAAAAAATAAAAKPSRvrRxF8cwrWiGk8emMZm6LuJC7Obzbu9NEjRpAcPAAAAAAAAAACEAAAAhAAAAAAAAwEAAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrczty"
+                          },
+                          "FullData": null
+                        },
+                        "QBFTMessage": {
+                          "MsgType": 2,
+                          "Height": 7424012,
+                          "Round": 1,
+                          "Identifier": "000003010000000000000000000000000000000000000000cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+                          "Root": "a3d246fad1c45f1cc2b5a21a4f1e98c666e8bb890bb39bcdbbbd3448d1a4070f",
+                          "DataRound": 0,
+                          "RoundChangeJustification": [],
+                          "PrepareJustification": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "RoundChangeContainer": {
+                  "Msgs": {}
+                }
+              },
+              "StartValue": "0102030405060708090a0102030405060708090a0102030405060708090a010200000000000000000102030405060708090a0102030405060708090a0102030405060708090a010201000000000000000102030405060708090a0102030405060708090a0102030405060708090a0102"
+            }
+          ],
+          "CommitteeMember": {
+            "OperatorID": 1,
+            "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+            "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a",
+            "FaultyNodes": 1,
+            "Committee": [
+              {
+                "OperatorID": 1,
+                "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+              },
+              {
+                "OperatorID": 2,
+                "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145416d595a503247473471335652526169646d676d610a4f43777a7a383847544c322f747334737832664d614a427774326d63527047534a4c754d41682b514a4549684550635761536272595561374e654836547652770a754d49517657734f78734543664f36677666624c684d78447268666b466736477a4d674a59426d55517571454970624957662b515732684345624233754776380a71693037694930534f307a384b63667842554257366b71364449747a336c4a3667564e4e37533454416e56644b6a3636306e47626e4843653952503334666b720a544b6e5130476f434438787645313753576c593847726173446c496c3531716252446c764572494b742f4471416e5964664e2b2f504b7a4c49324c65506363480a5175574a6a50395176594d686b722f55566772306338526b376e6b76617a6b626b6b4b626b786554324a77382f5637682f7961346838596f507a32424b774e510a63514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+              },
+              {
+                "OperatorID": 3,
+                "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541746f69465455714a704c38347876684d4653414f0a594171624559697a4442506c2f6c4d326331384b73473949415344537a624e6678476e6332704333376a6a72376833626c5378454e59534b4f59564857324e320a7138627a4c427530366b4b30677a735644444a4d4e63386a7056714e2b454972506c496a4e594c326d70355a4e6e617a796157416156566b4e59794d61616a490a417a5479725a2b3677756f51526f69757a53676c75305236657557515a65384363694554315a447243305269686e2b6249426f33653776307a464165773351770a5533496c466f6a7a744a35726a2b4a666c79516155692f7a544379397154506e575746417a74475a3646652f30337568564e307338575a7774327931563162690a48594150597a36326669744356343459726b7a454f6d495367526e33556f6a4f7a6b38764e46596d63435234314c32772f6f3137523044334c67386e7843364d0a4a514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+              },
+              {
+                "OperatorID": 4,
+                "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145417151587a712f3658745645664a545a2f763150770a6b7a536b4e52586270432f343161394c535176736b6b49436447326447772b5161676b4e565970764b517352337741784266446f5171644d6f457638476839780a42615a6166366b4c576b6e615659594e4a65576e36624569446d586a5659444d713564686c396f643955684b344559543872496635616c66794561392b5773390a6f65414c5332316356507052506f62514878735838786f39755143724c784f7163344557383238354b6a35766e516c66704747323157464266624847523458610a2b616d4f66544b506c524c6c6556554d7a77582b377065474a2f3548336a704c466c2b6f46617232432f5944482f454a7a302b4e7136474a6d3731694a374d630a312b63305036464f6179365a715a2b5a446a3964704a642f6d6271597a7933724b3662506f384e764e455948534a664f5244344b6a4e4d49733453317970785a0a49774944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+              }
+            ],
+            "DomainType": "00000301"
+          }
+        },
+        "BeaconNetwork": "now_test_network",
+        "RunnerRoleType": 0,
+        "OperatorSigner": null
+      }
+    }
+  },
+  "CommitteeMember": {
+    "OperatorID": 1,
+    "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+    "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a",
+    "FaultyNodes": 1,
+    "Committee": [
+      {
+        "OperatorID": 1,
+        "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+      },
+      {
+        "OperatorID": 2,
+        "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145416d595a503247473471335652526169646d676d610a4f43777a7a383847544c322f747334737832664d614a427774326d63527047534a4c754d41682b514a4549684550635761536272595561374e654836547652770a754d49517657734f78734543664f36677666624c684d78447268666b466736477a4d674a59426d55517571454970624957662b515732684345624233754776380a71693037694930534f307a384b63667842554257366b71364449747a336c4a3667564e4e37533454416e56644b6a3636306e47626e4843653952503334666b720a544b6e5130476f434438787645313753576c593847726173446c496c3531716252446c764572494b742f4471416e5964664e2b2f504b7a4c49324c65506363480a5175574a6a50395176594d686b722f55566772306338526b376e6b76617a6b626b6b4b626b786554324a77382f5637682f7961346838596f507a32424b774e510a63514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+      },
+      {
+        "OperatorID": 3,
+        "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541746f69465455714a704c38347876684d4653414f0a594171624559697a4442506c2f6c4d326331384b73473949415344537a624e6678476e6332704333376a6a72376833626c5378454e59534b4f59564857324e320a7138627a4c427530366b4b30677a735644444a4d4e63386a7056714e2b454972506c496a4e594c326d70355a4e6e617a796157416156566b4e59794d61616a490a417a5479725a2b3677756f51526f69757a53676c75305236657557515a65384363694554315a447243305269686e2b6249426f33653776307a464165773351770a5533496c466f6a7a744a35726a2b4a666c79516155692f7a544379397154506e575746417a74475a3646652f30337568564e307338575a7774327931563162690a48594150597a36326669744356343459726b7a454f6d495367526e33556f6a4f7a6b38764e46596d63435234314c32772f6f3137523044334c67386e7843364d0a4a514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+      },
+      {
+        "OperatorID": 4,
+        "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145417151587a712f3658745645664a545a2f763150770a6b7a536b4e52586270432f343161394c535176736b6b49436447326447772b5161676b4e565970764b517352337741784266446f5171644d6f457638476839780a42615a6166366b4c576b6e615659594e4a65576e36624569446d586a5659444d713564686c396f643955684b344559543872496635616c66794561392b5773390a6f65414c5332316356507052506f62514878735838786f39755143724c784f7163344557383238354b6a35766e516c66704747323157464266624847523458610a2b616d4f66544b506c524c6c6556554d7a77582b377065474a2f3548336a704c466c2b6f46617232432f5944482f454a7a302b4e7136474a6d3731694a374d630a312b63305036464f6179365a715a2b5a446a3964704a642f6d6271597a7933724b3662506f384e764e455948534a664f5244344b6a4e4d49733453317970785a0a49774944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+      }
+    ],
+    "DomainType": "00000301"
+  },
+  "Share": {
+    "1": {
+      "ValidatorIndex": "1",
+      "ValidatorPubKey": "b99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+      "SharePubKey": "80b82b474dd16aa44428b8b2e4e154a9d359de83b3416177f888473314370445fb6af54276db4b48c7713f17c74add3b",
+      "Committee": [
+        {
+          "SharePubKey": "80b82b474dd16aa44428b8b2e4e154a9d359de83b3416177f888473314370445fb6af54276db4b48c7713f17c74add3b",
+          "Signer": 1
+        },
+        {
+          "SharePubKey": "a1b7bd16c473c63fa879d64c7f3d445ad7cdaa2f1498777b1c913bb88c6252107f7fc10a1bc8966d29aa6218636f86fc",
+          "Signer": 2
+        },
+        {
+          "SharePubKey": "b14fcbff2e8b867131966bc429d8e868b84a439cbd884dfb828aa656c654ea8abd6b789ca2a13a793d55b5c1c59647fd",
+          "Signer": 3
+        },
+        {
+          "SharePubKey": "a927cfd844b513e9e15a6d672c50a3c24c52fe8255684c7aa04a81ca4877d0d53ad96bdfb16be3faad716038c1060c62",
+          "Signer": 4
+        }
+      ],
+      "DomainType": "00000301",
+      "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+      "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+    },
+    "2": {
+      "ValidatorIndex": "2",
+      "ValidatorPubKey": "aa57905889288431b819bee5bc3d77ef1dffcb3d3d0d7be8b748b96f27e0ed23a604e7a5b56c0b402af1810a17b21fe1",
+      "SharePubKey": "895e63f7eb1e7ea12a891eb087056b50d480b71686dd7b8454e0d950ba6546415faab71213a82d80e4e14285db518fac",
+      "Committee": [
+        {
+          "SharePubKey": "895e63f7eb1e7ea12a891eb087056b50d480b71686dd7b8454e0d950ba6546415faab71213a82d80e4e14285db518fac",
+          "Signer": 1
+        },
+        {
+          "SharePubKey": "b5437f2cb46b9e0c2353abc3f9df981ee5ad297e9673798c5a89840e62b970d8c38e3aae4f3a3f83364836897d8fae9e",
+          "Signer": 2
+        },
+        {
+          "SharePubKey": "81578b87dada3a34955625417c8e8d2c97daa524cb5c3459661c630126d739d953bbb412aecc9365321ef3e6467bb0a6",
+          "Signer": 3
+        },
+        {
+          "SharePubKey": "86b00dfab771bf2581034c57c27df9392a78f1696b200c928a50c8d3868e9e20d34a89786843216056ce3a37537930f8",
+          "Signer": 4
+        }
+      ],
+      "DomainType": "00000301",
+      "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+      "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+    },
+    "3": {
+      "ValidatorIndex": "3",
+      "ValidatorPubKey": "989069e005b47e318cd427a0c50a0c72a9f14b26c93a26b1220fe66c45ca12c31925ac6b7c3fdb1f57b0775356954b08",
+      "SharePubKey": "8b6eedc485b8a38154064cdaf6858786a47400dcc97ede1d1a54ac2403713c5a66b37cfe0431f39a31c5a724f6eb7679",
+      "Committee": [
+        {
+          "SharePubKey": "8b6eedc485b8a38154064cdaf6858786a47400dcc97ede1d1a54ac2403713c5a66b37cfe0431f39a31c5a724f6eb7679",
+          "Signer": 1
+        },
+        {
+          "SharePubKey": "b9cf20ef6a6ad9f210b906680fe04da39121c1a7deeba11badb6780127969e6aab53881b75c461eb219f056d4aba7c7b",
+          "Signer": 2
+        },
+        {
+          "SharePubKey": "81f54ac7c3b5813e61d6654fb0da2538e84818cc4b1d1be4fd4089bba4799cdd6982d89e1df04f032b0f95fbb8ca1ae5",
+          "Signer": 3
+        },
+        {
+          "SharePubKey": "96b5e37c6a5b8cb5bf1566574956ae645a1fdc108f505e7630b8fb0f385234a65c2c22926434f23468956b11fe869e81",
+          "Signer": 4
+        }
+      ],
+      "DomainType": "00000301",
+      "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+      "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+    },
+    "4": {
+      "ValidatorIndex": "4",
+      "ValidatorPubKey": "91f93af57b80c9e8d3885240066c23e606f2d5ba2e700052844b3fbef990db04296cab46c06317b8e469c7a63a421e3d",
+      "SharePubKey": "954bc90e472ac600ce42073d128411e7d347fcdb811c2c002a69dd30fce6d82bb0782c39467a27e3a047410f6c16bde3",
+      "Committee": [
+        {
+          "SharePubKey": "954bc90e472ac600ce42073d128411e7d347fcdb811c2c002a69dd30fce6d82bb0782c39467a27e3a047410f6c16bde3",
+          "Signer": 1
+        },
+        {
+          "SharePubKey": "ab1f3eaf95f9145eb7d1ee643402c82ac4dedba2e9e5c70ac0cdfee72b90972de2c2bb7af03b42bfbf1702420dcc45ac",
+          "Signer": 2
+        },
+        {
+          "SharePubKey": "b6e8f370545edea0ab93ad20afd9bfed07d55d67bb78a6df756ba9826bd1465710621b3e8cc2ab8ddbc6739488860be0",
+          "Signer": 3
+        },
+        {
+          "SharePubKey": "81b37e0c5eaeff679ed1bf9b91d64e110b0259127c7c444beaba4fe9727341706cb24ff671cdd03c6683621665cb87ac",
+          "Signer": 4
+        }
+      ],
+      "DomainType": "00000301",
+      "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+      "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+    },
+    "5": {
+      "ValidatorIndex": "5",
+      "ValidatorPubKey": "91e4ffe73dfe57e548450a65ffd1d685f6140d97ba1ee2fab7183c91d5cb2d50f53b133a2e2f1345f551381f3e38cf32",
+      "SharePubKey": "a42944d71d79ec6f51bc2c87865c54ba102de4e1ac0dde9cff1b0ab0e04aa758944e11e5ad7b33777e7f7544fa9d6833",
+      "Committee": [
+        {
+          "SharePubKey": "a42944d71d79ec6f51bc2c87865c54ba102de4e1ac0dde9cff1b0ab0e04aa758944e11e5ad7b33777e7f7544fa9d6833",
+          "Signer": 1
+        },
+        {
+          "SharePubKey": "acf359444a8357b28f055a36e887d3bbcf8620c39d2e217c198e8831de98e82b5c912e4f5cd9959f0ee6e1711f302770",
+          "Signer": 2
+        },
+        {
+          "SharePubKey": "989c728c2b909f60434fcce20aeb99f4cfbf1dd918464bb3577eeb46bc066f553336448e9b92c6c038c5be293efcd4b1",
+          "Signer": 3
+        },
+        {
+          "SharePubKey": "ae5a882dd2d31de14e043a335200fbb75987a3bb6c60e1b2c21585c6bee16ec4a60ad86b784167683a965d8e46270ae5",
+          "Signer": 4
+        }
+      ],
+      "DomainType": "00000301",
+      "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+      "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+    },
+    "6": {
+      "ValidatorIndex": "6",
+      "ValidatorPubKey": "ad91661fd9643f66ee19fae3f1795aca33738c9a25f1c0d8e367df7d3df59332ef5476b00727f3b3a6047ad7542822d7",
+      "SharePubKey": "b3d6926a426f748b0c81707b71b661a7df9087a0cac0226f52ec195b14c541e779bb109bdae94a7aa055b7d87e12aac6",
+      "Committee": [
+        {
+          "SharePubKey": "b3d6926a426f748b0c81707b71b661a7df9087a0cac0226f52ec195b14c541e779bb109bdae94a7aa055b7d87e12aac6",
+          "Signer": 1
+        },
+        {
+          "SharePubKey": "a9417b34211e82256205f5486919f63366cef856815fca821d155eed71b58162cde997291346a7d0091d3f15053d5e9e",
+          "Signer": 2
+        },
+        {
+          "SharePubKey": "ac1d7c9b0dfcbe11decfdac15b0e7a0e4baaacf48e79d236babe58dd3c955cde72ca95e2e36b74800279d05736d540da",
+          "Signer": 3
+        },
+        {
+          "SharePubKey": "af35dbf73adea3e27547e3d94e86ddaebd2ccb4e4268d92e5299a71fe91ac1e546eb45a75cecb6d15f538f256c4b9813",
+          "Signer": 4
+        }
+      ],
+      "DomainType": "00000301",
+      "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+      "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+    },
+    "7": {
+      "ValidatorIndex": "7",
+      "ValidatorPubKey": "b6bb580b997b8ec19ce4a3f49e77a2483d6ded63c94dbc29ed64c3299b864342c016d18cda03181457bb8921fb33fbae",
+      "SharePubKey": "872f13b1b3b4946fbd3d4d8a6cca9d4d763f57de1a037c2c44819d3ffcb4af85bd2fd936ef5a9c652561a1f67ec1435a",
+      "Committee": [
+        {
+          "SharePubKey": "872f13b1b3b4946fbd3d4d8a6cca9d4d763f57de1a037c2c44819d3ffcb4af85bd2fd936ef5a9c652561a1f67ec1435a",
+          "Signer": 1
+        },
+        {
+          "SharePubKey": "8925fb0407bab4b4737123ba7c44fed113a1d19a67e641cbe5b8eeae3ccc5f418071bc1b3d6e0382cd0ad927aa6ddea5",
+          "Signer": 2
+        },
+        {
+          "SharePubKey": "8b7587a5da0f7ece3a004e34da73f06d104c458c1a1086efe4b27a814b0a8bc684f923804b7f285b9f2953a75fe74bf1",
+          "Signer": 3
+        },
+        {
+          "SharePubKey": "a41f45ef782f396eb4fc68b1bfb2799b2db3fc48f04ff0223ef254c4a28f5afdf63b5703dcdd56eb31fea21a9cb041ee",
+          "Signer": 4
+        }
+      ],
+      "DomainType": "00000301",
+      "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+      "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+    },
+    "8": {
+      "ValidatorIndex": "8",
+      "ValidatorPubKey": "a77558846b46ea9dbd414f9ae93660e945de298af833e93910f5f3f8184e728ce1f04f8fcfb666b7d64afa2367a14e1b",
+      "SharePubKey": "866e6a267560baf7e96f3eaef2963522a5624896a5017e6ce4c36a7d991e91b34055d1e09b37b7637a6051603fa8f648",
+      "Committee": [
+        {
+          "SharePubKey": "866e6a267560baf7e96f3eaef2963522a5624896a5017e6ce4c36a7d991e91b34055d1e09b37b7637a6051603fa8f648",
+          "Signer": 1
+        },
+        {
+          "SharePubKey": "b753d264a998462e72ff7a4c3bf2b4b1ec78144f5612fa72011114be0dcd8268d7d58ceeb6561148fae9c4de6f3ca2f6",
+          "Signer": 2
+        },
+        {
+          "SharePubKey": "8c0328915011459ce9f52b0994ddc18d5c1f048827c591fe258ba487f5b9b8431f6df798f390c208f666a0d4caa9e648",
+          "Signer": 3
+        },
+        {
+          "SharePubKey": "b472ccda74a7c0c17d2cabd9d45197f42ec7f9b814ac483170c13fc20ea100ecb636a164544d6af93b36077989d0b671",
+          "Signer": 4
+        }
+      ],
+      "DomainType": "00000301",
+      "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+      "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+    }
+  }
+}

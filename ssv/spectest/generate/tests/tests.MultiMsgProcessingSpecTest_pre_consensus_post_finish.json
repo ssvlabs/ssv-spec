@@ -1,0 +1,1330 @@
+{
+  "Name": "pre consensus post finish",
+  "Tests": [
+    {
+      "Name": "sync committee aggregator selection proof",
+      "Runner": {
+        "BaseRunner": {
+          "State": {
+            "PreConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "PostConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "RunningInstance": null,
+            "DecidedValue": null,
+            "StartingDuty": {
+              "Type": 4,
+              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "Slot": "12",
+              "ValidatorIndex": "1",
+              "CommitteeIndex": 3,
+              "CommitteeLength": 128,
+              "CommitteesAtSlot": 36,
+              "ValidatorCommitteeIndex": 11,
+              "ValidatorSyncCommitteeIndices": [
+                0,
+                1,
+                2
+              ]
+            },
+            "Finished": true
+          },
+          "Share": {
+            "1": {
+              "ValidatorIndex": "1",
+              "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+              "Committee": [
+                {
+                  "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+                  "Signer": 1
+                },
+                {
+                  "SharePubKey": "a6bcebe3097d74171b40c712a031ceb0371db3d3c402cf2ce691b9120f3bab75d4d56dfa0f37591544999bf18c5353ed",
+                  "Signer": 2
+                },
+                {
+                  "SharePubKey": "8090e0b7666a45ecc5d4ef7418ac99f09e6cb244029fea6a0a7fccbe9ee08bc539de0dfa66be6babc8493dd99dd1a98d",
+                  "Signer": 3
+                },
+                {
+                  "SharePubKey": "a7c0a276b70a5ee3395c7d6d2655ed60528aa252d4d21eca5fcc5223e50cc42bd168b280ab7ab5317354dddfcf3df9e4",
+                  "Signer": 4
+                }
+              ],
+              "DomainType": "00000301",
+              "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+              "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+            }
+          },
+          "QBFTController": {
+            "Identifier": "00000301030000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Height": 0,
+            "StoredInstances": [],
+            "CommitteeMember": {
+              "OperatorID": 1,
+              "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+              "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a",
+              "FaultyNodes": 1,
+              "Committee": [
+                {
+                  "OperatorID": 1,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 2,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145416d595a503247473471335652526169646d676d610a4f43777a7a383847544c322f747334737832664d614a427774326d63527047534a4c754d41682b514a4549684550635761536272595561374e654836547652770a754d49517657734f78734543664f36677666624c684d78447268666b466736477a4d674a59426d55517571454970624957662b515732684345624233754776380a71693037694930534f307a384b63667842554257366b71364449747a336c4a3667564e4e37533454416e56644b6a3636306e47626e4843653952503334666b720a544b6e5130476f434438787645313753576c593847726173446c496c3531716252446c764572494b742f4471416e5964664e2b2f504b7a4c49324c65506363480a5175574a6a50395176594d686b722f55566772306338526b376e6b76617a6b626b6b4b626b786554324a77382f5637682f7961346838596f507a32424b774e510a63514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 3,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541746f69465455714a704c38347876684d4653414f0a594171624559697a4442506c2f6c4d326331384b73473949415344537a624e6678476e6332704333376a6a72376833626c5378454e59534b4f59564857324e320a7138627a4c427530366b4b30677a735644444a4d4e63386a7056714e2b454972506c496a4e594c326d70355a4e6e617a796157416156566b4e59794d61616a490a417a5479725a2b3677756f51526f69757a53676c75305236657557515a65384363694554315a447243305269686e2b6249426f33653776307a464165773351770a5533496c466f6a7a744a35726a2b4a666c79516155692f7a544379397154506e575746417a74475a3646652f30337568564e307338575a7774327931563162690a48594150597a36326669744356343459726b7a454f6d495367526e33556f6a4f7a6b38764e46596d63435234314c32772f6f3137523044334c67386e7843364d0a4a514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 4,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145417151587a712f3658745645664a545a2f763150770a6b7a536b4e52586270432f343161394c535176736b6b49436447326447772b5161676b4e565970764b517352337741784266446f5171644d6f457638476839780a42615a6166366b4c576b6e615659594e4a65576e36624569446d586a5659444d713564686c396f643955684b344559543872496635616c66794561392b5773390a6f65414c5332316356507052506f62514878735838786f39755143724c784f7163344557383238354b6a35766e516c66704747323157464266624847523458610a2b616d4f66544b506c524c6c6556554d7a77582b377065474a2f3548336a704c466c2b6f46617232432f5944482f454a7a302b4e7136474a6d3731694a374d630a312b63305036464f6179365a715a2b5a446a3964704a642f6d6271597a7933724b3662506f384e764e455948534a664f5244344b6a4e4d49733453317970785a0a49774944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                }
+              ],
+              "DomainType": "00000301"
+            }
+          },
+          "BeaconNetwork": "now_test_network",
+          "RunnerRoleType": 3,
+          "OperatorSigner": null
+        }
+      },
+      "Duty": {
+        "Type": 4,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "12",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 3,
+        "CommitteeLength": 128,
+        "CommitteesAtSlot": 36,
+        "ValidatorCommitteeIndex": 11,
+        "ValidatorSyncCommitteeIndices": [
+          0,
+          1,
+          2
+        ]
+      },
+      "Messages": [
+        {
+          "Signatures": [
+            "1272d4c551087da6e139d252ed2c80c936224e80145ad83f64b3a3f4df6b4128b79be64220564f0a492c56416b2241702b76d86166a96cc709ccfa7901bf8800323b3655246f94ee2b79c60ad8111bec1b188a16d88a9982fdfe16c7440b0624320bd78759efbaabd3403dd730cc48e92691e01cb4dbba27b2de62bfe7093018d27f31581422fab17cbf49d8a3903e1576342fab3759840da2730d4bd325bfee93ce78b8dba8a1fb6a688962d65685851d4d81483b17e560328dfd459df63ed546fd65a18561dc96b31676b5580f3c622f823aa596c24f7bdfd13ef6548e897f39f924dbcd3047f047e77b127e64db0ef0abd20adaa31774f17e77703fce6b10"
+          ],
+          "OperatorIDs": [
+            4
+          ],
+          "SSVMessage": {
+            "MsgType": 1,
+            "MsgID": "00000301030000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Data": "AwAAAAAAAAAMAAAAAAAAABQAAACn7WzwbPyta0qy/xYkmzP6+SigQxDgJ8anEXMKFYwDGx0oajVuah1ra+ie6PXy4mMBhvhOjU1BFVNddn8ROxMZVyc/Q6WhU93UiHMFz4G1UUxmBdB15RKFEt5Ix9zeoLqpZ0d2aUJ0W0pkR+P0FPy6X+3pcn7gIalXbJpnCphuUwQAAAAAAAAAAQAAAAAAAACANNtT5GYHcEtnz6293WccWSi4H+U9vsoXJQlRVUZyhvfJAzDrxrgqkcTFkP1BDBQJszIm1GPmqXttmNa6BrInzldMZoiborYp7Jk+nsOMo+1XzNYQYPW3QIK4NxEwxOGZidOrbHWqIq711WiYqTDD9n3gDiQRAwcez4RSPHP8HAQAAAAAAAAAAQAAAAAAAACwTmZvQDDbUzwBXRmOgP104K5B0xhEgcHOMkKEnGEaC6zZ5xNWvuqRX7lIMHXvQecKsZQGg7uZ4TddNcvhKX2vMIthWAdv/+NEOvV0Hpxc/pLFZbacpkQ2NE6cAvxi2U/w83P8sAl0MLCRWzTcAAof8KLpk7wcS/kPAIZ0nz0mnwQAAAAAAAAAAQAAAAAAAAA="
+          },
+          "FullData": null
+        }
+      ],
+      "DecidedSlashable": false,
+      "PostDutyRunnerStateRoot": "fab9ba280e754b8e9bc846e9c3c9cba15e298cc456c288c6cb4392184c3ac00b",
+      "OutputMessages": [],
+      "BeaconBroadcastedRoots": null,
+      "DontStartDuty": true,
+      "ExpectedError": "failed processing sync committee selection proof message: invalid pre-consensus message: no running duty"
+    },
+    {
+      "Name": "validator registration",
+      "Runner": {
+        "BaseRunner": {
+          "State": {
+            "PreConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "PostConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "RunningInstance": null,
+            "DecidedValue": null,
+            "StartingDuty": {
+              "Type": 5,
+              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "Slot": "12",
+              "ValidatorIndex": "1",
+              "CommitteeIndex": 0,
+              "CommitteeLength": 0,
+              "CommitteesAtSlot": 0,
+              "ValidatorCommitteeIndex": 0,
+              "ValidatorSyncCommitteeIndices": null
+            },
+            "Finished": true
+          },
+          "Share": {
+            "1": {
+              "ValidatorIndex": "1",
+              "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+              "Committee": [
+                {
+                  "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+                  "Signer": 1
+                },
+                {
+                  "SharePubKey": "a6bcebe3097d74171b40c712a031ceb0371db3d3c402cf2ce691b9120f3bab75d4d56dfa0f37591544999bf18c5353ed",
+                  "Signer": 2
+                },
+                {
+                  "SharePubKey": "8090e0b7666a45ecc5d4ef7418ac99f09e6cb244029fea6a0a7fccbe9ee08bc539de0dfa66be6babc8493dd99dd1a98d",
+                  "Signer": 3
+                },
+                {
+                  "SharePubKey": "a7c0a276b70a5ee3395c7d6d2655ed60528aa252d4d21eca5fcc5223e50cc42bd168b280ab7ab5317354dddfcf3df9e4",
+                  "Signer": 4
+                }
+              ],
+              "DomainType": "00000301",
+              "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+              "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+            }
+          },
+          "QBFTController": null,
+          "BeaconNetwork": "now_test_network",
+          "RunnerRoleType": 4,
+          "OperatorSigner": null
+        }
+      },
+      "Duty": {
+        "Type": 5,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "12",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 0,
+        "CommitteeLength": 0,
+        "CommitteesAtSlot": 0,
+        "ValidatorCommitteeIndex": 0,
+        "ValidatorSyncCommitteeIndices": null
+      },
+      "Messages": [
+        {
+          "Signatures": [
+            "6857e0c0e880f9aeca93a0fdb98f93d4e6a4795166f9d20e1a5c500caf5e542b65e9170b1681d33eb108222f8c91b709bcd70645861ce4c4099d19b896722205c14d2a271c14bf905de917aec1751f1706445eece3336652bd5500fadf33a7c19f1e096b0e83a6f29c23bcddba879a7c8b8c71b5a94a62386604c9046d13cf8dafa07e921771cbd22af68ab175a2ef790cd303900ac71634b2f6fd7830406e48bc96b5de7951d4a470bc0d7294ae42c9a9536a3dd239e3dcb3b953b75d1fcfbb0235e1e4027c162ea2cf9e8f5077ea3e7c1b3d1016b76781d5faa20035d78d765e2ba641e1aed4864adfa6387bc45f3130e98536a9fb90e9f562e4796a6906ef"
+          ],
+          "OperatorIDs": [
+            1
+          ],
+          "SSVMessage": {
+            "MsgType": 1,
+            "MsgID": "00000301040000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Data": "BAAAAAAAAAAMAAAAAAAAABQAAACRaFj870Md/MVyZww7bDejudmwV1qWus9P39twIj7mEN/O7EgNTQlcTVD6DBNOa/oDVCQfkNqDQTOkzMNHrfH3x49UmLVxTd1Zgy8V27J1pmtdTNKkz1shWAQDf3t8Dh1hRxAHO2JqVrQH8jiIchJiYQS0w45WJ9eHooSzEJUvRgEAAAAAAAAAAQAAAAAAAAA="
+          },
+          "FullData": null
+        }
+      ],
+      "DecidedSlashable": false,
+      "PostDutyRunnerStateRoot": "56f3d16b6961066a13e0c4e7b381646ac5e9c80e68e92a26ae9fcc8f42c767a5",
+      "OutputMessages": [],
+      "BeaconBroadcastedRoots": null,
+      "DontStartDuty": true,
+      "ExpectedError": "failed processing validator registration message: invalid pre-consensus message: no running duty"
+    },
+    {
+      "Name": "voluntary exit",
+      "Runner": {
+        "BaseRunner": {
+          "State": {
+            "PreConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "PostConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "RunningInstance": null,
+            "DecidedValue": null,
+            "StartingDuty": {
+              "Type": 6,
+              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "Slot": "12",
+              "ValidatorIndex": "1",
+              "CommitteeIndex": 0,
+              "CommitteeLength": 0,
+              "CommitteesAtSlot": 0,
+              "ValidatorCommitteeIndex": 0,
+              "ValidatorSyncCommitteeIndices": null
+            },
+            "Finished": true
+          },
+          "Share": {
+            "1": {
+              "ValidatorIndex": "1",
+              "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+              "Committee": [
+                {
+                  "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+                  "Signer": 1
+                },
+                {
+                  "SharePubKey": "a6bcebe3097d74171b40c712a031ceb0371db3d3c402cf2ce691b9120f3bab75d4d56dfa0f37591544999bf18c5353ed",
+                  "Signer": 2
+                },
+                {
+                  "SharePubKey": "8090e0b7666a45ecc5d4ef7418ac99f09e6cb244029fea6a0a7fccbe9ee08bc539de0dfa66be6babc8493dd99dd1a98d",
+                  "Signer": 3
+                },
+                {
+                  "SharePubKey": "a7c0a276b70a5ee3395c7d6d2655ed60528aa252d4d21eca5fcc5223e50cc42bd168b280ab7ab5317354dddfcf3df9e4",
+                  "Signer": 4
+                }
+              ],
+              "DomainType": "00000301",
+              "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+              "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+            }
+          },
+          "QBFTController": null,
+          "BeaconNetwork": "now_test_network",
+          "RunnerRoleType": 5,
+          "OperatorSigner": null
+        }
+      },
+      "Duty": {
+        "Type": 6,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "12",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 0,
+        "CommitteeLength": 0,
+        "CommitteesAtSlot": 0,
+        "ValidatorCommitteeIndex": 0,
+        "ValidatorSyncCommitteeIndices": null
+      },
+      "Messages": [
+        {
+          "Signatures": [
+            "46933afbe26144c9bf20887101c7903b00677c605d337ddc9667681c0b49e10e70a13acf41aaf50a282f21fd8bf7899f1445e07993a1eca3209b0c9c093606a877206f6c416c5a1d785e3a03e02d70247de38caa90c8cad0263570b1aa8757ea998df2469b27957e3804ccb3725bccf152b2fd49ea97233fa35aa476865509e8acb1225fe25a359fde26152f69fb87c1b8982fa096ad69fa992caa82b43508a4779c10c70d2a62e3a0edaea71dd1412a9fc62663e7eed534d1aad9247c718a4f61de763db681ef56604e65f59e5005cc7c39b8624b457984af75743f97d4a9ff7a1c6b63c0759351eaeab210b88527e9dc702535738c0b12c9f31231060ddb10"
+          ],
+          "OperatorIDs": [
+            1
+          ],
+          "SSVMessage": {
+            "MsgType": 1,
+            "MsgID": "00000301050000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Data": "BQAAAAAAAAAMAAAAAAAAABQAAACTNals9vyC5wfJdvnZoBJxAFbcua4CWbxBItAkOV8Ge8XcfGQNsNYc8ZmZKVNgyH8GXVQ5GeZ/OQ5SkfzZgoBT1eYB2Mv+/RR3lEyQdVZ3aYvQkVG+nbsirIqDyAL3YruSGwe4qmfqt8OLghS9IsQ6w9i3E3wJU1+EMkJVjbIXhgEAAAAAAAAAAQAAAAAAAAA="
+          },
+          "FullData": null
+        }
+      ],
+      "DecidedSlashable": false,
+      "PostDutyRunnerStateRoot": "e967e7c4c3f77adf0b16069da6c501018bfbf1ed84933c87fa305e41f680d783",
+      "OutputMessages": [],
+      "BeaconBroadcastedRoots": null,
+      "DontStartDuty": true,
+      "ExpectedError": "failed processing voluntary exit message: invalid pre-consensus message: no running duty"
+    },
+    {
+      "Name": "aggregator selection proof (phase0)",
+      "Runner": {
+        "BaseRunner": {
+          "State": {
+            "PreConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "PostConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "RunningInstance": null,
+            "DecidedValue": null,
+            "StartingDuty": {
+              "Type": 1,
+              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "Slot": "12",
+              "ValidatorIndex": "1",
+              "CommitteeIndex": 22,
+              "CommitteeLength": 128,
+              "CommitteesAtSlot": 36,
+              "ValidatorCommitteeIndex": 11,
+              "ValidatorSyncCommitteeIndices": null
+            },
+            "Finished": true
+          },
+          "Share": {
+            "1": {
+              "ValidatorIndex": "1",
+              "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+              "Committee": [
+                {
+                  "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+                  "Signer": 1
+                },
+                {
+                  "SharePubKey": "a6bcebe3097d74171b40c712a031ceb0371db3d3c402cf2ce691b9120f3bab75d4d56dfa0f37591544999bf18c5353ed",
+                  "Signer": 2
+                },
+                {
+                  "SharePubKey": "8090e0b7666a45ecc5d4ef7418ac99f09e6cb244029fea6a0a7fccbe9ee08bc539de0dfa66be6babc8493dd99dd1a98d",
+                  "Signer": 3
+                },
+                {
+                  "SharePubKey": "a7c0a276b70a5ee3395c7d6d2655ed60528aa252d4d21eca5fcc5223e50cc42bd168b280ab7ab5317354dddfcf3df9e4",
+                  "Signer": 4
+                }
+              ],
+              "DomainType": "00000301",
+              "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+              "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+            }
+          },
+          "QBFTController": {
+            "Identifier": "00000301010000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Height": 0,
+            "StoredInstances": [],
+            "CommitteeMember": {
+              "OperatorID": 1,
+              "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+              "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a",
+              "FaultyNodes": 1,
+              "Committee": [
+                {
+                  "OperatorID": 1,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 2,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145416d595a503247473471335652526169646d676d610a4f43777a7a383847544c322f747334737832664d614a427774326d63527047534a4c754d41682b514a4549684550635761536272595561374e654836547652770a754d49517657734f78734543664f36677666624c684d78447268666b466736477a4d674a59426d55517571454970624957662b515732684345624233754776380a71693037694930534f307a384b63667842554257366b71364449747a336c4a3667564e4e37533454416e56644b6a3636306e47626e4843653952503334666b720a544b6e5130476f434438787645313753576c593847726173446c496c3531716252446c764572494b742f4471416e5964664e2b2f504b7a4c49324c65506363480a5175574a6a50395176594d686b722f55566772306338526b376e6b76617a6b626b6b4b626b786554324a77382f5637682f7961346838596f507a32424b774e510a63514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 3,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541746f69465455714a704c38347876684d4653414f0a594171624559697a4442506c2f6c4d326331384b73473949415344537a624e6678476e6332704333376a6a72376833626c5378454e59534b4f59564857324e320a7138627a4c427530366b4b30677a735644444a4d4e63386a7056714e2b454972506c496a4e594c326d70355a4e6e617a796157416156566b4e59794d61616a490a417a5479725a2b3677756f51526f69757a53676c75305236657557515a65384363694554315a447243305269686e2b6249426f33653776307a464165773351770a5533496c466f6a7a744a35726a2b4a666c79516155692f7a544379397154506e575746417a74475a3646652f30337568564e307338575a7774327931563162690a48594150597a36326669744356343459726b7a454f6d495367526e33556f6a4f7a6b38764e46596d63435234314c32772f6f3137523044334c67386e7843364d0a4a514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 4,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145417151587a712f3658745645664a545a2f763150770a6b7a536b4e52586270432f343161394c535176736b6b49436447326447772b5161676b4e565970764b517352337741784266446f5171644d6f457638476839780a42615a6166366b4c576b6e615659594e4a65576e36624569446d586a5659444d713564686c396f643955684b344559543872496635616c66794561392b5773390a6f65414c5332316356507052506f62514878735838786f39755143724c784f7163344557383238354b6a35766e516c66704747323157464266624847523458610a2b616d4f66544b506c524c6c6556554d7a77582b377065474a2f3548336a704c466c2b6f46617232432f5944482f454a7a302b4e7136474a6d3731694a374d630a312b63305036464f6179365a715a2b5a446a3964704a642f6d6271597a7933724b3662506f384e764e455948534a664f5244344b6a4e4d49733453317970785a0a49774944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                }
+              ],
+              "DomainType": "00000301"
+            }
+          },
+          "BeaconNetwork": "now_test_network",
+          "RunnerRoleType": 1,
+          "OperatorSigner": null
+        }
+      },
+      "Duty": {
+        "Type": 1,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "12",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 22,
+        "CommitteeLength": 128,
+        "CommitteesAtSlot": 36,
+        "ValidatorCommitteeIndex": 11,
+        "ValidatorSyncCommitteeIndices": null
+      },
+      "Messages": [
+        {
+          "Signatures": [
+            "8c3aa5f8b2b942591ad4abc1cb9e0e1d71aebc4dbb2d3b3c62151d3246da42c97d34108e10ed319a450e0ae80326bd9026f04ec29fb8a8f6b4c07faf2dd06aed9e32199d76dcd672cde0f062c181e74d04c6ead6cfc6727978eacae51a425adb4fd260f2f3d249e07a7abf615734a753b9b90c8e45c431ef69611b95b519c42a4b3a2d98e6754730f579069c0d3680757c2c2c7088c804ce3ba2013121cc0bae4e0f2895afd2e431c374c180a7c8031ad955342d5a855f6ec8a4449445130d48b27b2739a788f7d9e0e85e6767a8beebe85c6b9cef58e270fc4d74b5af282802e85bda7b69faf2c42f755f9f165dda23f35cc2105618da7e30f20415a77b4b3e"
+          ],
+          "OperatorIDs": [
+            4
+          ],
+          "SSVMessage": {
+            "MsgType": 1,
+            "MsgID": "00000301010000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Data": "AgAAAAAAAAAMAAAAAAAAABQAAACtwPamWtnJaVqUEH9bYDiAmALUwq2MQBjg4BUKsgo7Kfo1OtTRmGmkhHQKORD4jYAZgZJ/36BexvMeA4F8auGpCZmAXSQXDbxWQe1I+ustKMAAt2F4dO1zwCt19Q8rvMNGJhHSxZK99SFPEk/npSaatz1E78nmzhq+MvgZauUm3gQAAAAAAAAAAQAAAAAAAAA="
+          },
+          "FullData": null
+        }
+      ],
+      "DecidedSlashable": false,
+      "PostDutyRunnerStateRoot": "",
+      "OutputMessages": [],
+      "BeaconBroadcastedRoots": null,
+      "DontStartDuty": true,
+      "ExpectedError": "failed processing selection proof message: invalid pre-consensus message: no running duty"
+    },
+    {
+      "Name": "aggregator selection proof (electra)",
+      "Runner": {
+        "BaseRunner": {
+          "State": {
+            "PreConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "PostConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "RunningInstance": null,
+            "DecidedValue": null,
+            "StartingDuty": {
+              "Type": 1,
+              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "Slot": "7424012",
+              "ValidatorIndex": "1",
+              "CommitteeIndex": 22,
+              "CommitteeLength": 128,
+              "CommitteesAtSlot": 36,
+              "ValidatorCommitteeIndex": 11,
+              "ValidatorSyncCommitteeIndices": null
+            },
+            "Finished": true
+          },
+          "Share": {
+            "1": {
+              "ValidatorIndex": "1",
+              "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+              "Committee": [
+                {
+                  "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+                  "Signer": 1
+                },
+                {
+                  "SharePubKey": "a6bcebe3097d74171b40c712a031ceb0371db3d3c402cf2ce691b9120f3bab75d4d56dfa0f37591544999bf18c5353ed",
+                  "Signer": 2
+                },
+                {
+                  "SharePubKey": "8090e0b7666a45ecc5d4ef7418ac99f09e6cb244029fea6a0a7fccbe9ee08bc539de0dfa66be6babc8493dd99dd1a98d",
+                  "Signer": 3
+                },
+                {
+                  "SharePubKey": "a7c0a276b70a5ee3395c7d6d2655ed60528aa252d4d21eca5fcc5223e50cc42bd168b280ab7ab5317354dddfcf3df9e4",
+                  "Signer": 4
+                }
+              ],
+              "DomainType": "00000301",
+              "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+              "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+            }
+          },
+          "QBFTController": {
+            "Identifier": "00000301010000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Height": 0,
+            "StoredInstances": [],
+            "CommitteeMember": {
+              "OperatorID": 1,
+              "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+              "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a",
+              "FaultyNodes": 1,
+              "Committee": [
+                {
+                  "OperatorID": 1,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 2,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145416d595a503247473471335652526169646d676d610a4f43777a7a383847544c322f747334737832664d614a427774326d63527047534a4c754d41682b514a4549684550635761536272595561374e654836547652770a754d49517657734f78734543664f36677666624c684d78447268666b466736477a4d674a59426d55517571454970624957662b515732684345624233754776380a71693037694930534f307a384b63667842554257366b71364449747a336c4a3667564e4e37533454416e56644b6a3636306e47626e4843653952503334666b720a544b6e5130476f434438787645313753576c593847726173446c496c3531716252446c764572494b742f4471416e5964664e2b2f504b7a4c49324c65506363480a5175574a6a50395176594d686b722f55566772306338526b376e6b76617a6b626b6b4b626b786554324a77382f5637682f7961346838596f507a32424b774e510a63514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 3,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541746f69465455714a704c38347876684d4653414f0a594171624559697a4442506c2f6c4d326331384b73473949415344537a624e6678476e6332704333376a6a72376833626c5378454e59534b4f59564857324e320a7138627a4c427530366b4b30677a735644444a4d4e63386a7056714e2b454972506c496a4e594c326d70355a4e6e617a796157416156566b4e59794d61616a490a417a5479725a2b3677756f51526f69757a53676c75305236657557515a65384363694554315a447243305269686e2b6249426f33653776307a464165773351770a5533496c466f6a7a744a35726a2b4a666c79516155692f7a544379397154506e575746417a74475a3646652f30337568564e307338575a7774327931563162690a48594150597a36326669744356343459726b7a454f6d495367526e33556f6a4f7a6b38764e46596d63435234314c32772f6f3137523044334c67386e7843364d0a4a514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 4,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145417151587a712f3658745645664a545a2f763150770a6b7a536b4e52586270432f343161394c535176736b6b49436447326447772b5161676b4e565970764b517352337741784266446f5171644d6f457638476839780a42615a6166366b4c576b6e615659594e4a65576e36624569446d586a5659444d713564686c396f643955684b344559543872496635616c66794561392b5773390a6f65414c5332316356507052506f62514878735838786f39755143724c784f7163344557383238354b6a35766e516c66704747323157464266624847523458610a2b616d4f66544b506c524c6c6556554d7a77582b377065474a2f3548336a704c466c2b6f46617232432f5944482f454a7a302b4e7136474a6d3731694a374d630a312b63305036464f6179365a715a2b5a446a3964704a642f6d6271597a7933724b3662506f384e764e455948534a664f5244344b6a4e4d49733453317970785a0a49774944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                }
+              ],
+              "DomainType": "00000301"
+            }
+          },
+          "BeaconNetwork": "now_test_network",
+          "RunnerRoleType": 1,
+          "OperatorSigner": null
+        }
+      },
+      "Duty": {
+        "Type": 1,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "7424012",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 22,
+        "CommitteeLength": 128,
+        "CommitteesAtSlot": 36,
+        "ValidatorCommitteeIndex": 11,
+        "ValidatorSyncCommitteeIndices": null
+      },
+      "Messages": [
+        {
+          "Signatures": [
+            "54fc024012f7a21ff7073f75ce22d31b94255f0b112aea0b2920b0bdd765b4a04f8f14101b8ce72af9710bdf59ce5e18483e14408fd458ee06039cd745b0f35ed4cf80ff01db8ba3ca4061170a77e4d607a0f1df1dc514ce1bada43652c3a52df8bbfeb0ee529aa8d0db58d26b539e547ab6ca9c90c46091732f40204382b1a849ef379e71c7df8042822ae3da071783e3fa474decec8c49a1527a7d989d2f5d10b83846f810373e595b47d163db8f5c0c6a0447ebecc5ac32d8e8976cff113edc8fe1a043af7e955789e30a989a1f7a602397b8d4d02c2f1d62742a1cb67364698031117f54e939c98365ccdd591f0d874f6139fef3ccd35222223dce7b7336"
+          ],
+          "OperatorIDs": [
+            4
+          ],
+          "SSVMessage": {
+            "MsgType": 1,
+            "MsgID": "00000301010000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Data": "AgAAAAAAAAAMSHEAAAAAABQAAACB9KmIbALPBDcUg4k5gUYzFggZ2gXy6/TUxMa4GC7UpPCfdyKg9M7npGQ5qNNc2/QCMIS8xA7n/zTzvPCD/0T4gJKAueYBlf1I4iQ8uiq1x9vUqWa+llNP4X0PsRTaxNPcv7c17nbs6+QLloDbm3Q5E1Vc33bwrkjgk9RywxdyhwQAAAAAAAAAAQAAAAAAAAA="
+          },
+          "FullData": null
+        }
+      ],
+      "DecidedSlashable": false,
+      "PostDutyRunnerStateRoot": "",
+      "OutputMessages": [],
+      "BeaconBroadcastedRoots": null,
+      "DontStartDuty": true,
+      "ExpectedError": "failed processing selection proof message: invalid pre-consensus message: no running duty"
+    },
+    {
+      "Name": "randao (capella)",
+      "Runner": {
+        "BaseRunner": {
+          "State": {
+            "PreConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "PostConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "RunningInstance": null,
+            "DecidedValue": null,
+            "StartingDuty": {
+              "Type": 2,
+              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "Slot": "5193728",
+              "ValidatorIndex": "1",
+              "CommitteeIndex": 3,
+              "CommitteeLength": 128,
+              "CommitteesAtSlot": 36,
+              "ValidatorCommitteeIndex": 11,
+              "ValidatorSyncCommitteeIndices": null
+            },
+            "Finished": true
+          },
+          "Share": {
+            "1": {
+              "ValidatorIndex": "1",
+              "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+              "Committee": [
+                {
+                  "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+                  "Signer": 1
+                },
+                {
+                  "SharePubKey": "a6bcebe3097d74171b40c712a031ceb0371db3d3c402cf2ce691b9120f3bab75d4d56dfa0f37591544999bf18c5353ed",
+                  "Signer": 2
+                },
+                {
+                  "SharePubKey": "8090e0b7666a45ecc5d4ef7418ac99f09e6cb244029fea6a0a7fccbe9ee08bc539de0dfa66be6babc8493dd99dd1a98d",
+                  "Signer": 3
+                },
+                {
+                  "SharePubKey": "a7c0a276b70a5ee3395c7d6d2655ed60528aa252d4d21eca5fcc5223e50cc42bd168b280ab7ab5317354dddfcf3df9e4",
+                  "Signer": 4
+                }
+              ],
+              "DomainType": "00000301",
+              "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+              "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+            }
+          },
+          "QBFTController": {
+            "Identifier": "00000301020000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Height": 0,
+            "StoredInstances": [],
+            "CommitteeMember": {
+              "OperatorID": 1,
+              "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+              "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a",
+              "FaultyNodes": 1,
+              "Committee": [
+                {
+                  "OperatorID": 1,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 2,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145416d595a503247473471335652526169646d676d610a4f43777a7a383847544c322f747334737832664d614a427774326d63527047534a4c754d41682b514a4549684550635761536272595561374e654836547652770a754d49517657734f78734543664f36677666624c684d78447268666b466736477a4d674a59426d55517571454970624957662b515732684345624233754776380a71693037694930534f307a384b63667842554257366b71364449747a336c4a3667564e4e37533454416e56644b6a3636306e47626e4843653952503334666b720a544b6e5130476f434438787645313753576c593847726173446c496c3531716252446c764572494b742f4471416e5964664e2b2f504b7a4c49324c65506363480a5175574a6a50395176594d686b722f55566772306338526b376e6b76617a6b626b6b4b626b786554324a77382f5637682f7961346838596f507a32424b774e510a63514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 3,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541746f69465455714a704c38347876684d4653414f0a594171624559697a4442506c2f6c4d326331384b73473949415344537a624e6678476e6332704333376a6a72376833626c5378454e59534b4f59564857324e320a7138627a4c427530366b4b30677a735644444a4d4e63386a7056714e2b454972506c496a4e594c326d70355a4e6e617a796157416156566b4e59794d61616a490a417a5479725a2b3677756f51526f69757a53676c75305236657557515a65384363694554315a447243305269686e2b6249426f33653776307a464165773351770a5533496c466f6a7a744a35726a2b4a666c79516155692f7a544379397154506e575746417a74475a3646652f30337568564e307338575a7774327931563162690a48594150597a36326669744356343459726b7a454f6d495367526e33556f6a4f7a6b38764e46596d63435234314c32772f6f3137523044334c67386e7843364d0a4a514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 4,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145417151587a712f3658745645664a545a2f763150770a6b7a536b4e52586270432f343161394c535176736b6b49436447326447772b5161676b4e565970764b517352337741784266446f5171644d6f457638476839780a42615a6166366b4c576b6e615659594e4a65576e36624569446d586a5659444d713564686c396f643955684b344559543872496635616c66794561392b5773390a6f65414c5332316356507052506f62514878735838786f39755143724c784f7163344557383238354b6a35766e516c66704747323157464266624847523458610a2b616d4f66544b506c524c6c6556554d7a77582b377065474a2f3548336a704c466c2b6f46617232432f5944482f454a7a302b4e7136474a6d3731694a374d630a312b63305036464f6179365a715a2b5a446a3964704a642f6d6271597a7933724b3662506f384e764e455948534a664f5244344b6a4e4d49733453317970785a0a49774944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                }
+              ],
+              "DomainType": "00000301"
+            }
+          },
+          "BeaconNetwork": "now_test_network",
+          "RunnerRoleType": 2,
+          "OperatorSigner": null
+        }
+      },
+      "Duty": {
+        "Type": 2,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "5193728",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 3,
+        "CommitteeLength": 128,
+        "CommitteesAtSlot": 36,
+        "ValidatorCommitteeIndex": 11,
+        "ValidatorSyncCommitteeIndices": null
+      },
+      "Messages": [
+        {
+          "Signatures": [
+            "2a5944607004c2125290c1d8d6d1afb94ffd0d3640df06dace98db7e9e00e35f619c5a3c9074393de4f48f956adef8aa42ab2e4da58db7e35c25c1326d660285dc8a605a8d30244a3f8476d555dcc3d68f5065d3f00cb9e049ba2f80e81a7a0814c3cc9e4beb41f97605dd693f7295b3bd59af23da1ffcac32b25a90ab6b4e0227ec7aee8b50bdc3e9c32f06bf778177368af866039bc6fd5ebe63e990fb63944b4338402eb118c1b95463609e3a285ba10b9b20674d83cdf6ee21aeabb4a390eca20003a680d48d91ade85bb48c763ac16aae2b68260ed47c82a1cafe6983bbea1ab157a116a03a3677486f3153799605e65193637828d7bd3c964a46fd10bb"
+          ],
+          "OperatorIDs": [
+            4
+          ],
+          "SSVMessage": {
+            "MsgType": 1,
+            "MsgID": "00000301020000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Data": "AQAAAAAAAAAAQE8AAAAAABQAAACUtXrRndkg+ZHW6i9n21BVelXmjbjkjVbe6c8a2An1lUlkDxNVVN0DuQW857wu7HkFN9Pk7W8nwP0hrGP38X7Z3j59G5FDRLa9XuoKB7u+Z9URNgTosQnRK7H2058lPwo18sxKuMey2wdzgWX2y8nYiesR5tFPwuNjvZDBALX8wgQAAAAAAAAAAQAAAAAAAAA="
+          },
+          "FullData": null
+        }
+      ],
+      "DecidedSlashable": false,
+      "PostDutyRunnerStateRoot": "0038cebdc4c9202941840019067e1e844a3b22c7a1b9723c926e950024cc1555",
+      "OutputMessages": [],
+      "BeaconBroadcastedRoots": null,
+      "DontStartDuty": true,
+      "ExpectedError": "failed processing randao message: invalid pre-consensus message: no running duty"
+    },
+    {
+      "Name": "randao blinded block (capella)",
+      "Runner": {
+        "BaseRunner": {
+          "State": {
+            "PreConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "PostConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "RunningInstance": null,
+            "DecidedValue": null,
+            "StartingDuty": {
+              "Type": 2,
+              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "Slot": "5193728",
+              "ValidatorIndex": "1",
+              "CommitteeIndex": 3,
+              "CommitteeLength": 128,
+              "CommitteesAtSlot": 36,
+              "ValidatorCommitteeIndex": 11,
+              "ValidatorSyncCommitteeIndices": null
+            },
+            "Finished": true
+          },
+          "Share": {
+            "1": {
+              "ValidatorIndex": "1",
+              "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+              "Committee": [
+                {
+                  "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+                  "Signer": 1
+                },
+                {
+                  "SharePubKey": "a6bcebe3097d74171b40c712a031ceb0371db3d3c402cf2ce691b9120f3bab75d4d56dfa0f37591544999bf18c5353ed",
+                  "Signer": 2
+                },
+                {
+                  "SharePubKey": "8090e0b7666a45ecc5d4ef7418ac99f09e6cb244029fea6a0a7fccbe9ee08bc539de0dfa66be6babc8493dd99dd1a98d",
+                  "Signer": 3
+                },
+                {
+                  "SharePubKey": "a7c0a276b70a5ee3395c7d6d2655ed60528aa252d4d21eca5fcc5223e50cc42bd168b280ab7ab5317354dddfcf3df9e4",
+                  "Signer": 4
+                }
+              ],
+              "DomainType": "00000301",
+              "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+              "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+            }
+          },
+          "QBFTController": {
+            "Identifier": "00000301020000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Height": 0,
+            "StoredInstances": [],
+            "CommitteeMember": {
+              "OperatorID": 1,
+              "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+              "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a",
+              "FaultyNodes": 1,
+              "Committee": [
+                {
+                  "OperatorID": 1,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 2,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145416d595a503247473471335652526169646d676d610a4f43777a7a383847544c322f747334737832664d614a427774326d63527047534a4c754d41682b514a4549684550635761536272595561374e654836547652770a754d49517657734f78734543664f36677666624c684d78447268666b466736477a4d674a59426d55517571454970624957662b515732684345624233754776380a71693037694930534f307a384b63667842554257366b71364449747a336c4a3667564e4e37533454416e56644b6a3636306e47626e4843653952503334666b720a544b6e5130476f434438787645313753576c593847726173446c496c3531716252446c764572494b742f4471416e5964664e2b2f504b7a4c49324c65506363480a5175574a6a50395176594d686b722f55566772306338526b376e6b76617a6b626b6b4b626b786554324a77382f5637682f7961346838596f507a32424b774e510a63514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 3,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541746f69465455714a704c38347876684d4653414f0a594171624559697a4442506c2f6c4d326331384b73473949415344537a624e6678476e6332704333376a6a72376833626c5378454e59534b4f59564857324e320a7138627a4c427530366b4b30677a735644444a4d4e63386a7056714e2b454972506c496a4e594c326d70355a4e6e617a796157416156566b4e59794d61616a490a417a5479725a2b3677756f51526f69757a53676c75305236657557515a65384363694554315a447243305269686e2b6249426f33653776307a464165773351770a5533496c466f6a7a744a35726a2b4a666c79516155692f7a544379397154506e575746417a74475a3646652f30337568564e307338575a7774327931563162690a48594150597a36326669744356343459726b7a454f6d495367526e33556f6a4f7a6b38764e46596d63435234314c32772f6f3137523044334c67386e7843364d0a4a514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 4,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145417151587a712f3658745645664a545a2f763150770a6b7a536b4e52586270432f343161394c535176736b6b49436447326447772b5161676b4e565970764b517352337741784266446f5171644d6f457638476839780a42615a6166366b4c576b6e615659594e4a65576e36624569446d586a5659444d713564686c396f643955684b344559543872496635616c66794561392b5773390a6f65414c5332316356507052506f62514878735838786f39755143724c784f7163344557383238354b6a35766e516c66704747323157464266624847523458610a2b616d4f66544b506c524c6c6556554d7a77582b377065474a2f3548336a704c466c2b6f46617232432f5944482f454a7a302b4e7136474a6d3731694a374d630a312b63305036464f6179365a715a2b5a446a3964704a642f6d6271597a7933724b3662506f384e764e455948534a664f5244344b6a4e4d49733453317970785a0a49774944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                }
+              ],
+              "DomainType": "00000301"
+            }
+          },
+          "BeaconNetwork": "now_test_network",
+          "RunnerRoleType": 2,
+          "OperatorSigner": null
+        }
+      },
+      "Duty": {
+        "Type": 2,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "5193728",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 3,
+        "CommitteeLength": 128,
+        "CommitteesAtSlot": 36,
+        "ValidatorCommitteeIndex": 11,
+        "ValidatorSyncCommitteeIndices": null
+      },
+      "Messages": [
+        {
+          "Signatures": [
+            "2a5944607004c2125290c1d8d6d1afb94ffd0d3640df06dace98db7e9e00e35f619c5a3c9074393de4f48f956adef8aa42ab2e4da58db7e35c25c1326d660285dc8a605a8d30244a3f8476d555dcc3d68f5065d3f00cb9e049ba2f80e81a7a0814c3cc9e4beb41f97605dd693f7295b3bd59af23da1ffcac32b25a90ab6b4e0227ec7aee8b50bdc3e9c32f06bf778177368af866039bc6fd5ebe63e990fb63944b4338402eb118c1b95463609e3a285ba10b9b20674d83cdf6ee21aeabb4a390eca20003a680d48d91ade85bb48c763ac16aae2b68260ed47c82a1cafe6983bbea1ab157a116a03a3677486f3153799605e65193637828d7bd3c964a46fd10bb"
+          ],
+          "OperatorIDs": [
+            4
+          ],
+          "SSVMessage": {
+            "MsgType": 1,
+            "MsgID": "00000301020000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Data": "AQAAAAAAAAAAQE8AAAAAABQAAACUtXrRndkg+ZHW6i9n21BVelXmjbjkjVbe6c8a2An1lUlkDxNVVN0DuQW857wu7HkFN9Pk7W8nwP0hrGP38X7Z3j59G5FDRLa9XuoKB7u+Z9URNgTosQnRK7H2058lPwo18sxKuMey2wdzgWX2y8nYiesR5tFPwuNjvZDBALX8wgQAAAAAAAAAAQAAAAAAAAA="
+          },
+          "FullData": null
+        }
+      ],
+      "DecidedSlashable": false,
+      "PostDutyRunnerStateRoot": "0038cebdc4c9202941840019067e1e844a3b22c7a1b9723c926e950024cc1555",
+      "OutputMessages": [],
+      "BeaconBroadcastedRoots": null,
+      "DontStartDuty": true,
+      "ExpectedError": "failed processing randao message: invalid pre-consensus message: no running duty"
+    },
+    {
+      "Name": "randao (deneb)",
+      "Runner": {
+        "BaseRunner": {
+          "State": {
+            "PreConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "PostConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "RunningInstance": null,
+            "DecidedValue": null,
+            "StartingDuty": {
+              "Type": 2,
+              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "Slot": "7413760",
+              "ValidatorIndex": "1",
+              "CommitteeIndex": 3,
+              "CommitteeLength": 128,
+              "CommitteesAtSlot": 36,
+              "ValidatorCommitteeIndex": 11,
+              "ValidatorSyncCommitteeIndices": null
+            },
+            "Finished": true
+          },
+          "Share": {
+            "1": {
+              "ValidatorIndex": "1",
+              "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+              "Committee": [
+                {
+                  "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+                  "Signer": 1
+                },
+                {
+                  "SharePubKey": "a6bcebe3097d74171b40c712a031ceb0371db3d3c402cf2ce691b9120f3bab75d4d56dfa0f37591544999bf18c5353ed",
+                  "Signer": 2
+                },
+                {
+                  "SharePubKey": "8090e0b7666a45ecc5d4ef7418ac99f09e6cb244029fea6a0a7fccbe9ee08bc539de0dfa66be6babc8493dd99dd1a98d",
+                  "Signer": 3
+                },
+                {
+                  "SharePubKey": "a7c0a276b70a5ee3395c7d6d2655ed60528aa252d4d21eca5fcc5223e50cc42bd168b280ab7ab5317354dddfcf3df9e4",
+                  "Signer": 4
+                }
+              ],
+              "DomainType": "00000301",
+              "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+              "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+            }
+          },
+          "QBFTController": {
+            "Identifier": "00000301020000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Height": 0,
+            "StoredInstances": [],
+            "CommitteeMember": {
+              "OperatorID": 1,
+              "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+              "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a",
+              "FaultyNodes": 1,
+              "Committee": [
+                {
+                  "OperatorID": 1,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 2,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145416d595a503247473471335652526169646d676d610a4f43777a7a383847544c322f747334737832664d614a427774326d63527047534a4c754d41682b514a4549684550635761536272595561374e654836547652770a754d49517657734f78734543664f36677666624c684d78447268666b466736477a4d674a59426d55517571454970624957662b515732684345624233754776380a71693037694930534f307a384b63667842554257366b71364449747a336c4a3667564e4e37533454416e56644b6a3636306e47626e4843653952503334666b720a544b6e5130476f434438787645313753576c593847726173446c496c3531716252446c764572494b742f4471416e5964664e2b2f504b7a4c49324c65506363480a5175574a6a50395176594d686b722f55566772306338526b376e6b76617a6b626b6b4b626b786554324a77382f5637682f7961346838596f507a32424b774e510a63514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 3,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541746f69465455714a704c38347876684d4653414f0a594171624559697a4442506c2f6c4d326331384b73473949415344537a624e6678476e6332704333376a6a72376833626c5378454e59534b4f59564857324e320a7138627a4c427530366b4b30677a735644444a4d4e63386a7056714e2b454972506c496a4e594c326d70355a4e6e617a796157416156566b4e59794d61616a490a417a5479725a2b3677756f51526f69757a53676c75305236657557515a65384363694554315a447243305269686e2b6249426f33653776307a464165773351770a5533496c466f6a7a744a35726a2b4a666c79516155692f7a544379397154506e575746417a74475a3646652f30337568564e307338575a7774327931563162690a48594150597a36326669744356343459726b7a454f6d495367526e33556f6a4f7a6b38764e46596d63435234314c32772f6f3137523044334c67386e7843364d0a4a514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 4,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145417151587a712f3658745645664a545a2f763150770a6b7a536b4e52586270432f343161394c535176736b6b49436447326447772b5161676b4e565970764b517352337741784266446f5171644d6f457638476839780a42615a6166366b4c576b6e615659594e4a65576e36624569446d586a5659444d713564686c396f643955684b344559543872496635616c66794561392b5773390a6f65414c5332316356507052506f62514878735838786f39755143724c784f7163344557383238354b6a35766e516c66704747323157464266624847523458610a2b616d4f66544b506c524c6c6556554d7a77582b377065474a2f3548336a704c466c2b6f46617232432f5944482f454a7a302b4e7136474a6d3731694a374d630a312b63305036464f6179365a715a2b5a446a3964704a642f6d6271597a7933724b3662506f384e764e455948534a664f5244344b6a4e4d49733453317970785a0a49774944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                }
+              ],
+              "DomainType": "00000301"
+            }
+          },
+          "BeaconNetwork": "now_test_network",
+          "RunnerRoleType": 2,
+          "OperatorSigner": null
+        }
+      },
+      "Duty": {
+        "Type": 2,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "7413760",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 3,
+        "CommitteeLength": 128,
+        "CommitteesAtSlot": 36,
+        "ValidatorCommitteeIndex": 11,
+        "ValidatorSyncCommitteeIndices": null
+      },
+      "Messages": [
+        {
+          "Signatures": [
+            "54a9128bad1e81f2329ae5aa28b7d6b34865c7541b0a3a82e8b1fab96efc9b1e0c7af4f5ef5b989c4319ef3ecc0264203b41ec09a9f217fff5f67c8173a8e82133e1ce35b9b4d19724e2772f05042eca924146cb1f92c97ae2a07b246ad713242cbe89e82b8bc438fba83ee3dfb6e0229a9bd8e9f4348ddc8929e40eba12e9845bc1d02d373310eb7bb801bb14b5d365ab5939d2fefeca8f9598c97786ccba39f4959e3f8f8f5ee7df351cd4f7401b89d53039b329cc1abc2cb5a272e8a20386516edb4bca417b6d0f7f6d759c3a5a7d2b946252076318a54bbf15f55f564ea80dedd97bd6708618bee021eb10ca4e6a7d8e6fc4dd3089ee3fa750f6acec4e6e"
+          ],
+          "OperatorIDs": [
+            4
+          ],
+          "SSVMessage": {
+            "MsgType": 1,
+            "MsgID": "00000301020000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Data": "AQAAAAAAAAAAIHEAAAAAABQAAACE9S4VIm8iaHOz5AWxFPHeOfSN5hasdIbXttPFeVvzmzEFwBasGd0txGgRcGNOGEsPMsKShYEzphcBcXv5DVAt6EGY9nkoyCcZZD3c9rMu0UiVAZJXF5XDId0aKFfCnSZRyNzO3TT203s3lKWP5tnZZnZ3l0GNwv0m2tMNH1UL/AQAAAAAAAAAAQAAAAAAAAA="
+          },
+          "FullData": null
+        }
+      ],
+      "DecidedSlashable": false,
+      "PostDutyRunnerStateRoot": "88d52a9142080f2e61f7bb333d42fb8e8da775f7692989946c384e167058d143",
+      "OutputMessages": [],
+      "BeaconBroadcastedRoots": null,
+      "DontStartDuty": true,
+      "ExpectedError": "failed processing randao message: invalid pre-consensus message: no running duty"
+    },
+    {
+      "Name": "randao blinded block (deneb)",
+      "Runner": {
+        "BaseRunner": {
+          "State": {
+            "PreConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "PostConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "RunningInstance": null,
+            "DecidedValue": null,
+            "StartingDuty": {
+              "Type": 2,
+              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "Slot": "7413760",
+              "ValidatorIndex": "1",
+              "CommitteeIndex": 3,
+              "CommitteeLength": 128,
+              "CommitteesAtSlot": 36,
+              "ValidatorCommitteeIndex": 11,
+              "ValidatorSyncCommitteeIndices": null
+            },
+            "Finished": true
+          },
+          "Share": {
+            "1": {
+              "ValidatorIndex": "1",
+              "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+              "Committee": [
+                {
+                  "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+                  "Signer": 1
+                },
+                {
+                  "SharePubKey": "a6bcebe3097d74171b40c712a031ceb0371db3d3c402cf2ce691b9120f3bab75d4d56dfa0f37591544999bf18c5353ed",
+                  "Signer": 2
+                },
+                {
+                  "SharePubKey": "8090e0b7666a45ecc5d4ef7418ac99f09e6cb244029fea6a0a7fccbe9ee08bc539de0dfa66be6babc8493dd99dd1a98d",
+                  "Signer": 3
+                },
+                {
+                  "SharePubKey": "a7c0a276b70a5ee3395c7d6d2655ed60528aa252d4d21eca5fcc5223e50cc42bd168b280ab7ab5317354dddfcf3df9e4",
+                  "Signer": 4
+                }
+              ],
+              "DomainType": "00000301",
+              "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+              "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+            }
+          },
+          "QBFTController": {
+            "Identifier": "00000301020000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Height": 0,
+            "StoredInstances": [],
+            "CommitteeMember": {
+              "OperatorID": 1,
+              "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+              "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a",
+              "FaultyNodes": 1,
+              "Committee": [
+                {
+                  "OperatorID": 1,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 2,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145416d595a503247473471335652526169646d676d610a4f43777a7a383847544c322f747334737832664d614a427774326d63527047534a4c754d41682b514a4549684550635761536272595561374e654836547652770a754d49517657734f78734543664f36677666624c684d78447268666b466736477a4d674a59426d55517571454970624957662b515732684345624233754776380a71693037694930534f307a384b63667842554257366b71364449747a336c4a3667564e4e37533454416e56644b6a3636306e47626e4843653952503334666b720a544b6e5130476f434438787645313753576c593847726173446c496c3531716252446c764572494b742f4471416e5964664e2b2f504b7a4c49324c65506363480a5175574a6a50395176594d686b722f55566772306338526b376e6b76617a6b626b6b4b626b786554324a77382f5637682f7961346838596f507a32424b774e510a63514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 3,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541746f69465455714a704c38347876684d4653414f0a594171624559697a4442506c2f6c4d326331384b73473949415344537a624e6678476e6332704333376a6a72376833626c5378454e59534b4f59564857324e320a7138627a4c427530366b4b30677a735644444a4d4e63386a7056714e2b454972506c496a4e594c326d70355a4e6e617a796157416156566b4e59794d61616a490a417a5479725a2b3677756f51526f69757a53676c75305236657557515a65384363694554315a447243305269686e2b6249426f33653776307a464165773351770a5533496c466f6a7a744a35726a2b4a666c79516155692f7a544379397154506e575746417a74475a3646652f30337568564e307338575a7774327931563162690a48594150597a36326669744356343459726b7a454f6d495367526e33556f6a4f7a6b38764e46596d63435234314c32772f6f3137523044334c67386e7843364d0a4a514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 4,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145417151587a712f3658745645664a545a2f763150770a6b7a536b4e52586270432f343161394c535176736b6b49436447326447772b5161676b4e565970764b517352337741784266446f5171644d6f457638476839780a42615a6166366b4c576b6e615659594e4a65576e36624569446d586a5659444d713564686c396f643955684b344559543872496635616c66794561392b5773390a6f65414c5332316356507052506f62514878735838786f39755143724c784f7163344557383238354b6a35766e516c66704747323157464266624847523458610a2b616d4f66544b506c524c6c6556554d7a77582b377065474a2f3548336a704c466c2b6f46617232432f5944482f454a7a302b4e7136474a6d3731694a374d630a312b63305036464f6179365a715a2b5a446a3964704a642f6d6271597a7933724b3662506f384e764e455948534a664f5244344b6a4e4d49733453317970785a0a49774944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                }
+              ],
+              "DomainType": "00000301"
+            }
+          },
+          "BeaconNetwork": "now_test_network",
+          "RunnerRoleType": 2,
+          "OperatorSigner": null
+        }
+      },
+      "Duty": {
+        "Type": 2,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "7413760",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 3,
+        "CommitteeLength": 128,
+        "CommitteesAtSlot": 36,
+        "ValidatorCommitteeIndex": 11,
+        "ValidatorSyncCommitteeIndices": null
+      },
+      "Messages": [
+        {
+          "Signatures": [
+            "54a9128bad1e81f2329ae5aa28b7d6b34865c7541b0a3a82e8b1fab96efc9b1e0c7af4f5ef5b989c4319ef3ecc0264203b41ec09a9f217fff5f67c8173a8e82133e1ce35b9b4d19724e2772f05042eca924146cb1f92c97ae2a07b246ad713242cbe89e82b8bc438fba83ee3dfb6e0229a9bd8e9f4348ddc8929e40eba12e9845bc1d02d373310eb7bb801bb14b5d365ab5939d2fefeca8f9598c97786ccba39f4959e3f8f8f5ee7df351cd4f7401b89d53039b329cc1abc2cb5a272e8a20386516edb4bca417b6d0f7f6d759c3a5a7d2b946252076318a54bbf15f55f564ea80dedd97bd6708618bee021eb10ca4e6a7d8e6fc4dd3089ee3fa750f6acec4e6e"
+          ],
+          "OperatorIDs": [
+            4
+          ],
+          "SSVMessage": {
+            "MsgType": 1,
+            "MsgID": "00000301020000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Data": "AQAAAAAAAAAAIHEAAAAAABQAAACE9S4VIm8iaHOz5AWxFPHeOfSN5hasdIbXttPFeVvzmzEFwBasGd0txGgRcGNOGEsPMsKShYEzphcBcXv5DVAt6EGY9nkoyCcZZD3c9rMu0UiVAZJXF5XDId0aKFfCnSZRyNzO3TT203s3lKWP5tnZZnZ3l0GNwv0m2tMNH1UL/AQAAAAAAAAAAQAAAAAAAAA="
+          },
+          "FullData": null
+        }
+      ],
+      "DecidedSlashable": false,
+      "PostDutyRunnerStateRoot": "88d52a9142080f2e61f7bb333d42fb8e8da775f7692989946c384e167058d143",
+      "OutputMessages": [],
+      "BeaconBroadcastedRoots": null,
+      "DontStartDuty": true,
+      "ExpectedError": "failed processing randao message: invalid pre-consensus message: no running duty"
+    },
+    {
+      "Name": "randao (electra)",
+      "Runner": {
+        "BaseRunner": {
+          "State": {
+            "PreConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "PostConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "RunningInstance": null,
+            "DecidedValue": null,
+            "StartingDuty": {
+              "Type": 2,
+              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "Slot": "7424012",
+              "ValidatorIndex": "1",
+              "CommitteeIndex": 3,
+              "CommitteeLength": 128,
+              "CommitteesAtSlot": 36,
+              "ValidatorCommitteeIndex": 11,
+              "ValidatorSyncCommitteeIndices": null
+            },
+            "Finished": true
+          },
+          "Share": {
+            "1": {
+              "ValidatorIndex": "1",
+              "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+              "Committee": [
+                {
+                  "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+                  "Signer": 1
+                },
+                {
+                  "SharePubKey": "a6bcebe3097d74171b40c712a031ceb0371db3d3c402cf2ce691b9120f3bab75d4d56dfa0f37591544999bf18c5353ed",
+                  "Signer": 2
+                },
+                {
+                  "SharePubKey": "8090e0b7666a45ecc5d4ef7418ac99f09e6cb244029fea6a0a7fccbe9ee08bc539de0dfa66be6babc8493dd99dd1a98d",
+                  "Signer": 3
+                },
+                {
+                  "SharePubKey": "a7c0a276b70a5ee3395c7d6d2655ed60528aa252d4d21eca5fcc5223e50cc42bd168b280ab7ab5317354dddfcf3df9e4",
+                  "Signer": 4
+                }
+              ],
+              "DomainType": "00000301",
+              "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+              "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+            }
+          },
+          "QBFTController": {
+            "Identifier": "00000301020000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Height": 0,
+            "StoredInstances": [],
+            "CommitteeMember": {
+              "OperatorID": 1,
+              "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+              "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a",
+              "FaultyNodes": 1,
+              "Committee": [
+                {
+                  "OperatorID": 1,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 2,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145416d595a503247473471335652526169646d676d610a4f43777a7a383847544c322f747334737832664d614a427774326d63527047534a4c754d41682b514a4549684550635761536272595561374e654836547652770a754d49517657734f78734543664f36677666624c684d78447268666b466736477a4d674a59426d55517571454970624957662b515732684345624233754776380a71693037694930534f307a384b63667842554257366b71364449747a336c4a3667564e4e37533454416e56644b6a3636306e47626e4843653952503334666b720a544b6e5130476f434438787645313753576c593847726173446c496c3531716252446c764572494b742f4471416e5964664e2b2f504b7a4c49324c65506363480a5175574a6a50395176594d686b722f55566772306338526b376e6b76617a6b626b6b4b626b786554324a77382f5637682f7961346838596f507a32424b774e510a63514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 3,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541746f69465455714a704c38347876684d4653414f0a594171624559697a4442506c2f6c4d326331384b73473949415344537a624e6678476e6332704333376a6a72376833626c5378454e59534b4f59564857324e320a7138627a4c427530366b4b30677a735644444a4d4e63386a7056714e2b454972506c496a4e594c326d70355a4e6e617a796157416156566b4e59794d61616a490a417a5479725a2b3677756f51526f69757a53676c75305236657557515a65384363694554315a447243305269686e2b6249426f33653776307a464165773351770a5533496c466f6a7a744a35726a2b4a666c79516155692f7a544379397154506e575746417a74475a3646652f30337568564e307338575a7774327931563162690a48594150597a36326669744356343459726b7a454f6d495367526e33556f6a4f7a6b38764e46596d63435234314c32772f6f3137523044334c67386e7843364d0a4a514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 4,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145417151587a712f3658745645664a545a2f763150770a6b7a536b4e52586270432f343161394c535176736b6b49436447326447772b5161676b4e565970764b517352337741784266446f5171644d6f457638476839780a42615a6166366b4c576b6e615659594e4a65576e36624569446d586a5659444d713564686c396f643955684b344559543872496635616c66794561392b5773390a6f65414c5332316356507052506f62514878735838786f39755143724c784f7163344557383238354b6a35766e516c66704747323157464266624847523458610a2b616d4f66544b506c524c6c6556554d7a77582b377065474a2f3548336a704c466c2b6f46617232432f5944482f454a7a302b4e7136474a6d3731694a374d630a312b63305036464f6179365a715a2b5a446a3964704a642f6d6271597a7933724b3662506f384e764e455948534a664f5244344b6a4e4d49733453317970785a0a49774944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                }
+              ],
+              "DomainType": "00000301"
+            }
+          },
+          "BeaconNetwork": "now_test_network",
+          "RunnerRoleType": 2,
+          "OperatorSigner": null
+        }
+      },
+      "Duty": {
+        "Type": 2,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "7424012",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 3,
+        "CommitteeLength": 128,
+        "CommitteesAtSlot": 36,
+        "ValidatorCommitteeIndex": 11,
+        "ValidatorSyncCommitteeIndices": null
+      },
+      "Messages": [
+        {
+          "Signatures": [
+            "3076e58960cd2cd17a25025c512273481813d55e8c10712e00e376ccc1b153c839c8ea18e23698264c8375604ac3883ac38c1588e6a0e0012f0978e839866cf34a02bfd0a4f975101e50e8fb46f3f6e5a02735084fe30646accb4f9d458d16a9ad9007badf79ae6c4319e43db2ebd5cb6be28169b022d599e5bee3d9783b0456ec03e18cb4f0bdb3ee12376c267fe0a29051ade6834668dd69a45060b49f4604f32fa71fe9d4241416c3636c9f3dd0df096c07b94249c8312fd33eeb29fe623a423af8458c98cb93cbf6add3eebb8f564d9e86da9f813ff9a3024315e10ae9d88afb6394b990fef865a11e5aec02d783fccb1dddf40240bc6a4305c53a63818e"
+          ],
+          "OperatorIDs": [
+            4
+          ],
+          "SSVMessage": {
+            "MsgType": 1,
+            "MsgID": "00000301020000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Data": "AQAAAAAAAAAMSHEAAAAAABQAAAC4XtoLphbjNIdNhCUkZH2Rd8cewgJh1+1F/2Ige/5Z84Rm3dLK8CwjXkMu8d6Xw8oYv/+f/qoaNCyLWgAZnyQ5tYaZGle2PY2+j2Lpk4n3qX+G1vZOVNs4OnvzHPqz4Io5deivYjIMQvVUeuyE3uc3C0y08c0FTwx0nfQIs/S0igQAAAAAAAAAAQAAAAAAAAA="
+          },
+          "FullData": null
+        }
+      ],
+      "DecidedSlashable": false,
+      "PostDutyRunnerStateRoot": "adba979e387c2d09e4e6a486d6f46bb76c539f6c25b3ac63455ecf5adae4039e",
+      "OutputMessages": [],
+      "BeaconBroadcastedRoots": null,
+      "DontStartDuty": true,
+      "ExpectedError": "failed processing randao message: invalid pre-consensus message: no running duty"
+    },
+    {
+      "Name": "randao blinded block (electra)",
+      "Runner": {
+        "BaseRunner": {
+          "State": {
+            "PreConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "PostConsensusContainer": {
+              "Signatures": {},
+              "Quorum": 3
+            },
+            "RunningInstance": null,
+            "DecidedValue": null,
+            "StartingDuty": {
+              "Type": 2,
+              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "Slot": "7424012",
+              "ValidatorIndex": "1",
+              "CommitteeIndex": 3,
+              "CommitteeLength": 128,
+              "CommitteesAtSlot": 36,
+              "ValidatorCommitteeIndex": 11,
+              "ValidatorSyncCommitteeIndices": null
+            },
+            "Finished": true
+          },
+          "Share": {
+            "1": {
+              "ValidatorIndex": "1",
+              "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+              "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+              "Committee": [
+                {
+                  "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+                  "Signer": 1
+                },
+                {
+                  "SharePubKey": "a6bcebe3097d74171b40c712a031ceb0371db3d3c402cf2ce691b9120f3bab75d4d56dfa0f37591544999bf18c5353ed",
+                  "Signer": 2
+                },
+                {
+                  "SharePubKey": "8090e0b7666a45ecc5d4ef7418ac99f09e6cb244029fea6a0a7fccbe9ee08bc539de0dfa66be6babc8493dd99dd1a98d",
+                  "Signer": 3
+                },
+                {
+                  "SharePubKey": "a7c0a276b70a5ee3395c7d6d2655ed60528aa252d4d21eca5fcc5223e50cc42bd168b280ab7ab5317354dddfcf3df9e4",
+                  "Signer": 4
+                }
+              ],
+              "DomainType": "00000301",
+              "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+              "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+            }
+          },
+          "QBFTController": {
+            "Identifier": "00000301020000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Height": 0,
+            "StoredInstances": [],
+            "CommitteeMember": {
+              "OperatorID": 1,
+              "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
+              "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a",
+              "FaultyNodes": 1,
+              "Committee": [
+                {
+                  "OperatorID": 1,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541794d7a32622b4b5a4a497a427a525a77747062790a4c762f6737593450464c38465462346346347158734558784a6875306c474a6854305959594378594361764d5a6635304e51444f3451436465336c736f4559420a6177306566746b584e69324c582f7877696a33634e3835366432476f3068596632424556324a45336f7a64535372356368692f61547631336c38614d59636a570a30386c79417a6c41557a33586776526964564b6d7878686a415045546633506d70757768616f33596e2f774c385252364f416a434552344b3752632f35766e4b0a6a76426835376c5351663759464f645766676c48634d6358667755352b657661456d5261696f6f617a53427930314b6f3252444270462f7545373773646631430a363554514a766f4b793246304a516276304f5154536a573043507730685332764f7a424e552b7641454558347771426a7a33582b504475394c6277413534576d0a55514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 2,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145416d595a503247473471335652526169646d676d610a4f43777a7a383847544c322f747334737832664d614a427774326d63527047534a4c754d41682b514a4549684550635761536272595561374e654836547652770a754d49517657734f78734543664f36677666624c684d78447268666b466736477a4d674a59426d55517571454970624957662b515732684345624233754776380a71693037694930534f307a384b63667842554257366b71364449747a336c4a3667564e4e37533454416e56644b6a3636306e47626e4843653952503334666b720a544b6e5130476f434438787645313753576c593847726173446c496c3531716252446c764572494b742f4471416e5964664e2b2f504b7a4c49324c65506363480a5175574a6a50395176594d686b722f55566772306338526b376e6b76617a6b626b6b4b626b786554324a77382f5637682f7961346838596f507a32424b774e510a63514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 3,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b4341514541746f69465455714a704c38347876684d4653414f0a594171624559697a4442506c2f6c4d326331384b73473949415344537a624e6678476e6332704333376a6a72376833626c5378454e59534b4f59564857324e320a7138627a4c427530366b4b30677a735644444a4d4e63386a7056714e2b454972506c496a4e594c326d70355a4e6e617a796157416156566b4e59794d61616a490a417a5479725a2b3677756f51526f69757a53676c75305236657557515a65384363694554315a447243305269686e2b6249426f33653776307a464165773351770a5533496c466f6a7a744a35726a2b4a666c79516155692f7a544379397154506e575746417a74475a3646652f30337568564e307338575a7774327931563162690a48594150597a36326669744356343459726b7a454f6d495367526e33556f6a4f7a6b38764e46596d63435234314c32772f6f3137523044334c67386e7843364d0a4a514944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                },
+                {
+                  "OperatorID": 4,
+                  "SSVOperatorPubKey": "2d2d2d2d2d424547494e20525341205055424c4943204b45592d2d2d2d2d0a4d494942496a414e42676b71686b6947397730424151454641414f43415138414d49494243674b43415145417151587a712f3658745645664a545a2f763150770a6b7a536b4e52586270432f343161394c535176736b6b49436447326447772b5161676b4e565970764b517352337741784266446f5171644d6f457638476839780a42615a6166366b4c576b6e615659594e4a65576e36624569446d586a5659444d713564686c396f643955684b344559543872496635616c66794561392b5773390a6f65414c5332316356507052506f62514878735838786f39755143724c784f7163344557383238354b6a35766e516c66704747323157464266624847523458610a2b616d4f66544b506c524c6c6556554d7a77582b377065474a2f3548336a704c466c2b6f46617232432f5944482f454a7a302b4e7136474a6d3731694a374d630a312b63305036464f6179365a715a2b5a446a3964704a642f6d6271597a7933724b3662506f384e764e455948534a664f5244344b6a4e4d49733453317970785a0a49774944415141420a2d2d2d2d2d454e4420525341205055424c4943204b45592d2d2d2d2d0a"
+                }
+              ],
+              "DomainType": "00000301"
+            }
+          },
+          "BeaconNetwork": "now_test_network",
+          "RunnerRoleType": 2,
+          "OperatorSigner": null
+        }
+      },
+      "Duty": {
+        "Type": 2,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "7424012",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 3,
+        "CommitteeLength": 128,
+        "CommitteesAtSlot": 36,
+        "ValidatorCommitteeIndex": 11,
+        "ValidatorSyncCommitteeIndices": null
+      },
+      "Messages": [
+        {
+          "Signatures": [
+            "3076e58960cd2cd17a25025c512273481813d55e8c10712e00e376ccc1b153c839c8ea18e23698264c8375604ac3883ac38c1588e6a0e0012f0978e839866cf34a02bfd0a4f975101e50e8fb46f3f6e5a02735084fe30646accb4f9d458d16a9ad9007badf79ae6c4319e43db2ebd5cb6be28169b022d599e5bee3d9783b0456ec03e18cb4f0bdb3ee12376c267fe0a29051ade6834668dd69a45060b49f4604f32fa71fe9d4241416c3636c9f3dd0df096c07b94249c8312fd33eeb29fe623a423af8458c98cb93cbf6add3eebb8f564d9e86da9f813ff9a3024315e10ae9d88afb6394b990fef865a11e5aec02d783fccb1dddf40240bc6a4305c53a63818e"
+          ],
+          "OperatorIDs": [
+            4
+          ],
+          "SSVMessage": {
+            "MsgType": 1,
+            "MsgID": "00000301020000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "Data": "AQAAAAAAAAAMSHEAAAAAABQAAAC4XtoLphbjNIdNhCUkZH2Rd8cewgJh1+1F/2Ige/5Z84Rm3dLK8CwjXkMu8d6Xw8oYv/+f/qoaNCyLWgAZnyQ5tYaZGle2PY2+j2Lpk4n3qX+G1vZOVNs4OnvzHPqz4Io5deivYjIMQvVUeuyE3uc3C0y08c0FTwx0nfQIs/S0igQAAAAAAAAAAQAAAAAAAAA="
+          },
+          "FullData": null
+        }
+      ],
+      "DecidedSlashable": false,
+      "PostDutyRunnerStateRoot": "adba979e387c2d09e4e6a486d6f46bb76c539f6c25b3ac63455ecf5adae4039e",
+      "OutputMessages": [],
+      "BeaconBroadcastedRoots": null,
+      "DontStartDuty": true,
+      "ExpectedError": "failed processing randao message: invalid pre-consensus message: no running duty"
+    }
+  ]
+}

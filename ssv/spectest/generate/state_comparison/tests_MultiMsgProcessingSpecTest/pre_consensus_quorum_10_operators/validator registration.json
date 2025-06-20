@@ -1,0 +1,96 @@
+{
+  "BaseRunner": {
+    "State": {
+      "PreConsensusContainer": {
+        "Signatures": {
+          "1": {
+            "614710073b626a56b407f238887212626104b4c38e5627d787a284b310952f46": {
+              "1": "92955fe464d51dc3c2e48da6eaa23f8be294d5680f6779087ca12f97243689c159209c02a0357739be1068993ca9351f19f823da7bf53be608473477d9544446d57ac1ebb875d0bacc11ed01887c849d451c9c790fa00d15d05c996423866d6f",
+              "2": "a5dc58370f48b6c371758576bf30a8b25a91ce8a4e6007e727ee6e769c62c9321d63bf30bba3ebddc4efa4f46a6110830ec697cbc701cf88e69557c7d76e2055cc781d748740523322fc637cadf638e79dc26ff680a20d659acaa40ee691afd4",
+              "3": "aa93cc5be0c0130480807d3f669d725e5ac2125050c267739b278d563d840079d2856e991f869ac928c8a796f48905bf0e296905f9b923f6d0787a5d921e6845dd6783ac75766830dc7922a46baea7e012f3b4dbb34c73a2bd574e767f1afbbd",
+              "4": "95906828bad8acf8d8cc2919e27605c4e8ede7067280890f4b0cda01ee525cb80b2baa93b2a765d2813f8dab19226c5415d4050bf6ab1cb3824faed988852f9789cd12fba417bd5263967d57fd54bbd62127f10efcb4db3cb6268a0e53c54783",
+              "5": "8d7914bbf5e78460a84db608662153f4d5e3ef4c5439be0f46b33127dced8ddfcd3d3bf9c94eee1940887a3bfd4779730f82f36c5cc4ab9f7b484274084f443a3e94145b5a5c1aff5a092bb7ab93d69e799ec1615f8c1104d77f3e64c79e1e2c",
+              "6": "83425a32f476a8758809823420489e34e8e625ee2c3a6e1f8787baa495741471883c4729484e39da451f30a683bf1d060ce1cb5d565285814f46b4f8a33b0a7b6ef3acd6c3df7ae6efc759301371933b1c9d62e04bb6c10449da02bcc06fc302",
+              "7": "8792c5a258210f46b035b7f7e0482fb8c6cc4168fa8737311d01daea90d1bd8e7b784b341ef05d640d47742d72f75a44123f37c6daaa8f67b815cf18d6bd83702734a4ba0ab1855d9b3951b82419764748e686e34a4efc465a3d312342c63af8"
+            }
+          }
+        },
+        "Quorum": 7
+      },
+      "PostConsensusContainer": {
+        "Signatures": {},
+        "Quorum": 7
+      },
+      "RunningInstance": null,
+      "DecidedValue": null,
+      "StartingDuty": {
+        "Type": 5,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "12",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 0,
+        "CommitteeLength": 0,
+        "CommitteesAtSlot": 0,
+        "ValidatorCommitteeIndex": 0,
+        "ValidatorSyncCommitteeIndices": null
+      },
+      "Finished": true
+    },
+    "Share": {
+      "1": {
+        "ValidatorIndex": "1",
+        "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "SharePubKey": "b9ac3c33fe194124ec5123580610fa97a0b3abb49c39a234840421508c08c42b09832d0f9b41635deba5f133034661f1",
+        "Committee": [
+          {
+            "SharePubKey": "b9ac3c33fe194124ec5123580610fa97a0b3abb49c39a234840421508c08c42b09832d0f9b41635deba5f133034661f1",
+            "Signer": 1
+          },
+          {
+            "SharePubKey": "933d694c69246f98aa2b3d6de76e2a476add1ee8f91fa03949b115bc7a0f677bb9646220047fe4ad2943554542425203",
+            "Signer": 2
+          },
+          {
+            "SharePubKey": "a1af083aeba8dc6118a4679c79f619bef364d5561b23c7f12cf0d27e0408319bbefebc72caeb56cbcfb6d6e9778a5286",
+            "Signer": 3
+          },
+          {
+            "SharePubKey": "adb6cf13587eb63c13301bd706ad2e41e898ef38e05bc17748753f19b89387a3527e4b145a4c38f9e3f35de405fd0747",
+            "Signer": 4
+          },
+          {
+            "SharePubKey": "a2f7acabaec0efd186424eed90ce568c20edbaeb9ff7ec53f5f180e70937a69a5d746072092bded26778103e6b189368",
+            "Signer": 5
+          },
+          {
+            "SharePubKey": "9341ba1e07ec416365bca8aca373ffb3cd214d5acf9e48f24cfadcd3edae07e3daa6525f7e716f49d9a3901356e0cc9e",
+            "Signer": 6
+          },
+          {
+            "SharePubKey": "8ca26258643d18c4fa11a3c732df8459929f69c641d6c5cf51781662e80e25ade1326d426d31a84575e76114bccb3fd1",
+            "Signer": 7
+          },
+          {
+            "SharePubKey": "ab4ad4d4080d6c8c7043481fa9be43a446ddae238d11fb450d61a139eb1607f2a30269bb4a28eb42431fc9b8bfa8d02d",
+            "Signer": 8
+          },
+          {
+            "SharePubKey": "a1b06d3a55b305d4dece20ad558e45b5eb830023a65f30515df64e36bc9149a0e0bdf425734d6cf907b08faee0611b47",
+            "Signer": 9
+          },
+          {
+            "SharePubKey": "b49ecdb4385e30126c8e279779a9e1ea40bef4e34dbf5d7abcdd2fdb1caa51f12aa9f493dcabbf571deb841bed022745",
+            "Signer": 10
+          }
+        ],
+        "DomainType": "00000301",
+        "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+        "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    "QBFTController": null,
+    "BeaconNetwork": "now_test_network",
+    "RunnerRoleType": 4,
+    "OperatorSigner": null
+  }
+}

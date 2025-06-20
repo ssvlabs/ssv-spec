@@ -112,7 +112,7 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &valcheck.MultiSpecTest{}
-				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, typedTest))
 
 				typedTest.Run(t)
 			case reflect.TypeOf(&synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}).String():
@@ -177,27 +177,49 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 	baseRunnerMap := runnerMap["BaseRunner"].(map[string]interface{})
 
 	var testDuty types.Duty
-	byts, err := json.Marshal(m["CommitteeDuty"])
-	if err != nil {
+	if _, ok := m["CommitteeDuty"]; ok {
+		byts, err := json.Marshal(m["CommitteeDuty"])
+		if err != nil {
+			panic("cant marshal committee duty")
+		}
+		committeeDuty := &types.CommitteeDuty{}
+		err = json.Unmarshal(byts, committeeDuty)
+		if err != nil {
+			panic("cant unmarshal committee duty")
+		}
+		testDuty = committeeDuty
+	} else if _, ok := m["ValidatorDuty"]; ok {
 		byts, err := json.Marshal(m["ValidatorDuty"])
 		if err != nil {
 			panic("cant marshal beacon duty")
 		}
 		duty := &types.ValidatorDuty{}
-		err = utils.UnmarshalJSONWithHex(byts, duty)
+		err = json.Unmarshal(byts, duty)
 		if err != nil {
 			panic("cant unmarshal beacon duty")
 		}
 		testDuty = duty
-	} else {
-		committeeDuty := &types.CommitteeDuty{}
-		err = utils.UnmarshalJSONWithHex(byts, committeeDuty)
+	} else if _, ok := m["Duty"]; ok {
+		byts, err := json.Marshal(m["Duty"])
 		if err != nil {
-			panic("cant unmarshal committee duty")
+			panic("cant marshal duty")
 		}
-		testDuty = committeeDuty
-	}
-	if testDuty == nil {
+		if _, ok := m["Duty"].(map[string]interface{})["ValidatorDuties"]; ok {
+			committeeDuty := &types.CommitteeDuty{}
+			err = json.Unmarshal(byts, committeeDuty)
+			if err != nil {
+				panic("cant unmarshal committee duty")
+			}
+			testDuty = committeeDuty
+		} else {
+			validatorDuty := &types.ValidatorDuty{}
+			err = json.Unmarshal(byts, validatorDuty)
+			if err != nil {
+				panic("cant unmarshal validator duty")
+			}
+			testDuty = validatorDuty
+		}
+	} else {
 		panic("no beacon or committee duty")
 	}
 
@@ -241,27 +263,49 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	baseRunnerMap := runnerMap["BaseRunner"].(map[string]interface{})
 
 	var testDuty types.Duty
-	byts, err := json.Marshal(m["CommitteeDuty"])
-	if err != nil {
+	if _, ok := m["CommitteeDuty"]; ok {
+		byts, err := json.Marshal(m["CommitteeDuty"])
+		if err != nil {
+			panic("cant marshal committee duty")
+		}
+		committeeDuty := &types.CommitteeDuty{}
+		err = json.Unmarshal(byts, committeeDuty)
+		if err != nil {
+			panic("cant unmarshal committee duty")
+		}
+		testDuty = committeeDuty
+	} else if _, ok := m["ValidatorDuty"]; ok {
 		byts, err := json.Marshal(m["ValidatorDuty"])
 		if err != nil {
 			panic("cant marshal beacon duty")
 		}
 		duty := &types.ValidatorDuty{}
-		err = utils.UnmarshalJSONWithHex(byts, duty)
+		err = json.Unmarshal(byts, duty)
 		if err != nil {
 			panic("cant unmarshal beacon duty")
 		}
 		testDuty = duty
-	} else {
-		committeeDuty := &types.CommitteeDuty{}
-		err = utils.UnmarshalJSONWithHex(byts, committeeDuty)
+	} else if _, ok := m["Duty"]; ok {
+		byts, err := json.Marshal(m["Duty"])
 		if err != nil {
-			panic("cant unmarshal committee duty")
+			panic("cant marshal duty")
 		}
-		testDuty = committeeDuty
-	}
-	if testDuty == nil {
+		if _, ok := m["Duty"].(map[string]interface{})["ValidatorDuties"]; ok {
+			committeeDuty := &types.CommitteeDuty{}
+			err = json.Unmarshal(byts, committeeDuty)
+			if err != nil {
+				panic("cant unmarshal committee duty")
+			}
+			testDuty = committeeDuty
+		} else {
+			validatorDuty := &types.ValidatorDuty{}
+			err = json.Unmarshal(byts, validatorDuty)
+			if err != nil {
+				panic("cant unmarshal validator duty")
+			}
+			testDuty = validatorDuty
+		}
+	} else {
 		panic("no beacon or committee duty")
 	}
 
