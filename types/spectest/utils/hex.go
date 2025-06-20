@@ -563,7 +563,37 @@ func ConvertHexToBytes(v interface{}) {
 					}
 				}
 			case map[string]interface{}:
-				ConvertHexToBytes(vv)
+				// Special handling for SlashableSlots map
+				if k == "SlashableSlots" {
+					slashableSlots := make(map[string][]uint64)
+					for slotKey, slotValues := range vv {
+						switch slotValues := slotValues.(type) {
+						case []interface{}:
+							slots := make([]uint64, len(slotValues))
+							for i, slotValue := range slotValues {
+								switch slotValue := slotValue.(type) {
+								case string:
+									// Convert string to uint64 (treat as decimal, not hex)
+									slotNum, err := strconv.ParseUint(slotValue, 10, 64)
+									if err != nil {
+										panic(fmt.Errorf("invalid slot value: %s", slotValue))
+									}
+									slots[i] = slotNum
+								case float64:
+									slots[i] = uint64(slotValue)
+								default:
+									panic(fmt.Errorf("invalid slot value type: %T", slotValue))
+								}
+							}
+							slashableSlots[slotKey] = slots
+						default:
+							panic(fmt.Errorf("invalid slot values type: %T", slotValues))
+						}
+					}
+					val[k] = slashableSlots
+				} else {
+					ConvertHexToBytes(vv)
+				}
 			}
 		}
 	case []interface{}:
@@ -834,17 +864,31 @@ func assignValueToField(field reflect.Value, value interface{}) error {
 				field.Set(reflect.ValueOf(v))
 				return nil
 			}
-		}
-		// Handle other slices
-		if v, ok := value.([]interface{}); ok {
-			slice := reflect.MakeSlice(fieldType, len(v), len(v))
-			for i, elem := range v {
-				if err := assignValueToField(slice.Index(i), elem); err != nil {
-					return fmt.Errorf("failed to assign slice element %d: %v", i, err)
-				}
+			// Handle fixed-size byte arrays converting to slices
+			if v, ok := value.([48]byte); ok {
+				field.Set(reflect.ValueOf(v[:]))
+				return nil
 			}
-			field.Set(slice)
-			return nil
+			if v, ok := value.([32]byte); ok {
+				field.Set(reflect.ValueOf(v[:]))
+				return nil
+			}
+			if v, ok := value.([96]byte); ok {
+				field.Set(reflect.ValueOf(v[:]))
+				return nil
+			}
+			if v, ok := value.([4]byte); ok {
+				field.Set(reflect.ValueOf(v[:]))
+				return nil
+			}
+			if v, ok := value.([20]byte); ok {
+				field.Set(reflect.ValueOf(v[:]))
+				return nil
+			}
+			if v, ok := value.([56]byte); ok {
+				field.Set(reflect.ValueOf(v[:]))
+				return nil
+			}
 		}
 	case reflect.Ptr:
 		// Handle pointer types
@@ -867,6 +911,22 @@ func assignValueToField(field reflect.Value, value interface{}) error {
 		}
 	case reflect.Map:
 		// Handle map types recursively
+		// Special handling for SlashableSlots map
+		if fieldType.String() == "map[string][]phase0.Slot" {
+			if v, ok := value.(map[string][]uint64); ok {
+				slashableSlots := make(map[string][]phase0.Slot)
+				for key, slotValues := range v {
+					slots := make([]phase0.Slot, len(slotValues))
+					for i, slotValue := range slotValues {
+						slots[i] = phase0.Slot(slotValue)
+					}
+					slashableSlots[key] = slots
+				}
+				field.Set(reflect.ValueOf(slashableSlots))
+				return nil
+			}
+		}
+
 		if v, ok := value.(map[string]interface{}); ok {
 			// Create a new map of the correct type
 			mapType := field.Type()
@@ -927,6 +987,37 @@ func assignValueToField(field reflect.Value, value interface{}) error {
 				}
 			}
 		}
+	case reflect.String:
+		// Handle string types
+		if v, ok := value.(string); ok {
+			field.SetString(v)
+			return nil
+		}
+		// Handle fixed-size byte arrays converting to hex strings
+		if v, ok := value.([32]byte); ok {
+			field.SetString(hex.EncodeToString(v[:]))
+			return nil
+		}
+		if v, ok := value.([48]byte); ok {
+			field.SetString("0x" + hex.EncodeToString(v[:]))
+			return nil
+		}
+		if v, ok := value.([96]byte); ok {
+			field.SetString("0x" + hex.EncodeToString(v[:]))
+			return nil
+		}
+		if v, ok := value.([4]byte); ok {
+			field.SetString(hex.EncodeToString(v[:]))
+			return nil
+		}
+		if v, ok := value.([20]byte); ok {
+			field.SetString("0x" + hex.EncodeToString(v[:]))
+			return nil
+		}
+		if v, ok := value.([56]byte); ok {
+			field.SetString(hex.EncodeToString(v[:]))
+			return nil
+		}
 	}
 
 	// For other types, try to convert
@@ -963,6 +1054,34 @@ func assignValueToField(field reflect.Value, value interface{}) error {
 			field.Set(validatorIndex)
 			return nil
 		}
+		// Handle []uint8 (byte array) conversion
+		if bytes, ok := value.([]uint8); ok {
+			if len(bytes) <= 8 {
+				// Convert 1-8 bytes to uint64 (little-endian, as SSZ uses)
+				var idx uint64
+				for i := 0; i < len(bytes); i++ {
+					idx |= uint64(bytes[i]) << (i * 8)
+				}
+				validatorIndex := reflect.New(fieldType).Elem()
+				validatorIndex.SetUint(idx)
+				field.Set(validatorIndex)
+				return nil
+			}
+		}
+		// Handle []byte conversion
+		if bytes, ok := value.([]byte); ok {
+			if len(bytes) <= 8 {
+				// Convert 1-8 bytes to uint64 (little-endian, as SSZ uses)
+				var idx uint64
+				for i := 0; i < len(bytes); i++ {
+					idx |= uint64(bytes[i]) << (i * 8)
+				}
+				validatorIndex := reflect.New(fieldType).Elem()
+				validatorIndex.SetUint(idx)
+				field.Set(validatorIndex)
+				return nil
+			}
+		}
 	case "uint64":
 		// Handle string to uint64 conversion for map keys
 		if str, ok := value.(string); ok {
@@ -980,6 +1099,30 @@ func assignValueToField(field reflect.Value, value interface{}) error {
 		if f, ok := value.(float64); ok {
 			field.SetUint(uint64(f))
 			return nil
+		}
+		// Handle []uint8 (byte array) conversion
+		if bytes, ok := value.([]uint8); ok {
+			if len(bytes) <= 8 {
+				// Convert 1-8 bytes to uint64 (little-endian, as SSZ uses)
+				var idx uint64
+				for i := 0; i < len(bytes); i++ {
+					idx |= uint64(bytes[i]) << (i * 8)
+				}
+				field.SetUint(idx)
+				return nil
+			}
+		}
+		// Handle []byte conversion
+		if bytes, ok := value.([]byte); ok {
+			if len(bytes) <= 8 {
+				// Convert 1-8 bytes to uint64 (little-endian, as SSZ uses)
+				var idx uint64
+				for i := 0; i < len(bytes); i++ {
+					idx |= uint64(bytes[i]) << (i * 8)
+				}
+				field.SetUint(idx)
+				return nil
+			}
 		}
 	case "phase0.BLSPubKey":
 		// Handle string to BLSPubKey conversion
@@ -1013,29 +1156,71 @@ func assignValueToField(field reflect.Value, value interface{}) error {
 			field.Set(reflect.ValueOf(spec.DataVersion(num)))
 			return nil
 		}
-		// case "qbft.Round", "qbft.Height":
-		// 	// Convert string/float64 to Round/Height
-		// 	if str, ok := value.(string); ok {
-		// 		if idx, err := strconv.ParseUint(str, 10, 64); err == nil {
-		// 			roundHeight := reflect.New(fieldType).Elem()
-		// 			roundHeight.SetUint(idx)
-		// 			field.Set(roundHeight)
-		// 			return nil
-		// 		}
-		// 	}
-		// 	if f, ok := value.(float64); ok {
-		// 		roundHeight := reflect.New(fieldType).Elem()
-		// 		roundHeight.SetUint(idx)
-		// 		field.Set(roundHeight)
-		// 		return nil
-		// 	}
-		// 	if idx, ok := value.(uint64); ok {
-		// 		roundHeight := reflect.New(fieldType).Elem()
-		// 		roundHeight.SetUint(idx)
-		// 		field.Set(roundHeight)
-		// 		return nil
-		// 	}
+	case "types.RunnerRole":
+		// Handle string to RunnerRole conversion
+		if str, ok := value.(string); ok {
+			// Try to parse as string representation first
+			if role, found := stringToRunnerRole(str); found {
+				runnerRole := reflect.New(fieldType).Elem()
+				runnerRole.SetInt(int64(role))
+				field.Set(runnerRole)
+				return nil
+			}
+			// Try to parse as numeric string
+			if idx, err := strconv.ParseInt(str, 10, 32); err == nil {
+				runnerRole := reflect.New(fieldType).Elem()
+				runnerRole.SetInt(idx)
+				field.Set(runnerRole)
+				return nil
+			}
+		}
+		// Try direct int32 conversion
+		if idx, ok := value.(int32); ok {
+			runnerRole := reflect.New(fieldType).Elem()
+			runnerRole.SetInt(int64(idx))
+			field.Set(runnerRole)
+			return nil
+		}
+		// Try float64 conversion (from JSON numbers)
+		if f, ok := value.(float64); ok {
+			runnerRole := reflect.New(fieldType).Elem()
+			runnerRole.SetInt(int64(f))
+			field.Set(runnerRole)
+			return nil
+		}
+	}
+
+	// Handle other slices
+	if v, ok := value.([]interface{}); ok {
+		slice := reflect.MakeSlice(fieldType, len(v), len(v))
+		for i, elem := range v {
+			if err := assignValueToField(slice.Index(i), elem); err != nil {
+				return fmt.Errorf("failed to assign slice element %d: %v", i, err)
+			}
+		}
+		field.Set(slice)
+		return nil
 	}
 
 	return fmt.Errorf("cannot assign %T to %s", value, fieldType)
+}
+
+// Helper to convert RunnerRole string to enum value
+func stringToRunnerRole(s string) (types.RunnerRole, bool) {
+	switch s {
+	case "COMMITTEE_RUNNER":
+		return types.RoleCommittee, true
+	case "AGGREGATOR_RUNNER":
+		return types.RoleAggregator, true
+	case "PROPOSER_RUNNER":
+		return types.RoleProposer, true
+	case "SYNC_COMMITTEE_CONTRIBUTION_RUNNER":
+		return types.RoleSyncCommitteeContribution, true
+	case "VALIDATOR_REGISTRATION_RUNNER":
+		return types.RoleValidatorRegistration, true
+	case "VOLUNTARY_EXIT_RUNNER":
+		return types.RoleVoluntaryExit, true
+	default:
+		return types.RoleUnknown, false
+	}
 }

@@ -105,7 +105,7 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &valcheck.SpecTest{}
-				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, typedTest))
 
 				typedTest.Run(t)
 			case reflect.TypeOf(&valcheck.MultiSpecTest{}).String():
@@ -119,7 +119,7 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}
-				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, typedTest))
 
 				typedTest.Run(t)
 			case reflect.TypeOf(&newduty.MultiStartNewRunnerDutySpecTest{}).String():
@@ -139,7 +139,7 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &partialsigcontainer.PartialSigContainerTest{}
-				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, typedTest))
 
 				typedTest.Run(t)
 			case reflect.TypeOf(&committee.CommitteeSpecTest{}).String():
@@ -162,7 +162,7 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &runnerconstruction.RunnerConstructionSpecTest{}
-				require.NoError(t, utils.UnmarshalJSONWithHex(byts, &typedTest))
+				require.NoError(t, utils.UnmarshalJSONWithHex(byts, typedTest))
 
 				typedTest.Run(t)
 			default:
@@ -374,28 +374,30 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 			panic(err)
 		}
 
-		// Try to decode as CommitteeDuty first
-		committeeDuty := &types.CommitteeDuty{}
-		err = utils.UnmarshalJSONWithHex(byts, committeeDuty)
-		if err == nil {
-			inputs = append(inputs, committeeDuty)
-			continue
-		}
-
-		// Try to decode as ValidatorDuty
-		duty := &types.ValidatorDuty{}
-		err = utils.UnmarshalJSONWithHex(byts, duty)
-		if err == nil {
-			inputs = append(inputs, duty)
-			continue
-		}
-
-		// Try to decode as SignedSSVMessage
-		msg := &types.SignedSSVMessage{}
-		err = utils.UnmarshalJSONWithHex(byts, msg)
-		if err == nil {
-			inputs = append(inputs, msg)
-			continue
+		if input.(map[string]interface{})["ValidatorDuties"] != nil {
+			// Try to decode as CommitteeDuty first
+			committeeDuty := &types.CommitteeDuty{}
+			err = json.Unmarshal(byts, committeeDuty)
+			if err == nil {
+				inputs = append(inputs, committeeDuty)
+				continue
+			}
+		} else if input.(map[string]interface{})["ValidatorIndex"] != nil {
+			// Try to decode as ValidatorDuty
+			duty := &types.ValidatorDuty{}
+			err = json.Unmarshal(byts, duty)
+			if err == nil {
+				inputs = append(inputs, duty)
+				continue
+			}
+		} else {
+			// Try to decode as SignedSSVMessage
+			msg := &types.SignedSSVMessage{}
+			err = utils.UnmarshalJSONWithHex(byts, msg)
+			if err == nil {
+				inputs = append(inputs, msg)
+				continue
+			}
 		}
 
 		panic(fmt.Sprintf("Unsupported input: %T, error: %v\n", input, err))
@@ -406,7 +408,7 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 	for _, msg := range m["OutputMessages"].([]interface{}) {
 		byts, _ := json.Marshal(msg)
 		typedMsg := &types.PartialSignatureMessages{}
-		require.NoError(t, utils.UnmarshalJSONWithHex(byts, typedMsg))
+		require.NoError(t, json.Unmarshal(byts, typedMsg))
 		outputMsgs = append(outputMsgs, typedMsg)
 	}
 
@@ -465,7 +467,6 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 	base := &ssv.BaseRunner{}
 	byts, _ := json.Marshal(baseRunnerMap)
 	require.NoError(t, utils.UnmarshalJSONWithHex(byts, base))
-
 	ret := baseRunnerForRole(base.RunnerRoleType, base, ks)
 
 	if ret.GetBaseRunner().QBFTController != nil {
