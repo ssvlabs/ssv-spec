@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"unsafe"
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -145,6 +146,20 @@ func ConvertToHexMap(v reflect.Value) interface{} {
 			// For all other fields, recursively process
 			om.fields = append(om.fields, fieldInfo{name: jsonFieldName, value: ConvertToHexMap(field)})
 		}
+
+		// Special handling for qbft.Instance: add forceStop if true
+		// Check for both qbft.Instance and *qbft.Instance
+		if t.PkgPath() == "github.com/ssvlabs/ssv-spec/qbft" && t.Name() == "Instance" {
+			// Look for unexported field "forceStop"
+			forceStopField, ok := t.FieldByName("forceStop")
+			if ok {
+				forceStopVal := v.FieldByIndex(forceStopField.Index)
+				if forceStopVal.Kind() == reflect.Bool && forceStopVal.Bool() {
+					om.fields = append(om.fields, fieldInfo{name: "forceStop", value: true})
+				}
+			}
+		}
+
 		return om
 	case reflect.Slice:
 		// Handle nil slices
@@ -673,6 +688,15 @@ func UnmarshalJSONWithHex(data []byte, v interface{}) error {
 	}
 }
 
+// Helper to set unexported bool field using unsafe
+func setUnexportedBoolField(structVal reflect.Value, fieldName string, value bool) {
+	field := structVal.FieldByName(fieldName)
+	if !field.IsValid() {
+		return
+	}
+	reflect.NewAt(field.Type(), unsafe.Pointer(field.UnsafeAddr())).Elem().SetBool(value)
+}
+
 // assignMapToStruct uses reflection to directly assign values from a map to a struct
 func assignMapToStruct(m map[string]interface{}, v interface{}) error {
 	rv := reflect.ValueOf(v)
@@ -703,12 +727,33 @@ func assignMapToStruct(m map[string]interface{}, v interface{}) error {
 		}
 
 		// Skip if field is not in the map
-		if mapValue, exists := m[fieldName]; !exists {
+		mapValue, exists := m[fieldName]
+		if !exists {
 			continue
-		} else {
-			// Assign the value from map to struct field
-			if err := assignValueToField(field, mapValue); err != nil {
-				return fmt.Errorf("failed to assign field %s: %v", fieldName, err)
+		}
+
+		// Assign the value from map to struct field
+		if err := assignValueToField(field, mapValue); err != nil {
+			// Special handling for qbft.Instance.forceStop (unexported)
+			if rt.PkgPath() == "github.com/ssvlabs/ssv-spec/qbft" && rt.Name() == "Instance" && fieldType.Name == "forceStop" {
+				if b, ok := mapValue.(bool); ok {
+					setUnexportedBoolField(rv, "forceStop", b)
+					continue
+				}
+			}
+			return fmt.Errorf("failed to assign field %s: %v", fieldName, err)
+		}
+	}
+
+	// Also handle forceStop if present as ForceStop or forceStop in the map (for custom JSON)
+	if rt.PkgPath() == "github.com/ssvlabs/ssv-spec/qbft" && rt.Name() == "Instance" {
+		if vMap, ok := m["forceStop"]; ok {
+			if b, ok := vMap.(bool); ok {
+				setUnexportedBoolField(rv, "forceStop", b)
+			}
+		} else if vMap, ok := m["ForceStop"]; ok {
+			if b, ok := vMap.(bool); ok {
+				setUnexportedBoolField(rv, "forceStop", b)
 			}
 		}
 	}
@@ -719,7 +764,8 @@ func assignMapToStruct(m map[string]interface{}, v interface{}) error {
 // assignValueToField assigns a value from the map to a struct field using reflection
 func assignValueToField(field reflect.Value, value interface{}) error {
 	if !field.CanSet() {
-		return fmt.Errorf("field is not settable")
+		// Instead of returning error, just skip for unexported fields (except for special handling above)
+		return nil
 	}
 
 	// Handle nil values

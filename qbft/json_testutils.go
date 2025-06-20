@@ -6,7 +6,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
-)	
+)
 
 // This file adds, as testing utils, the Encode, Decode and GetRoot methods
 // so that structures follow the types.Encoder and types.Root interface
