@@ -7,7 +7,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
+	hexencoding "github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/stretchr/testify/require"
 )
 
@@ -89,7 +89,7 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 	}
 
 	// Try to unmarshal with hex handling
-	if err := utils.UnmarshalJSONWithHex(byts, correctType); err != nil {
+	if err := hexencoding.UnmarshalJSONWithHex(byts, correctType); err != nil {
 		return err
 	}
 	t.Object = correctType

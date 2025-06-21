@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/pkg/errors"
-	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
+	hexencoding "github.com/ssvlabs/ssv-spec/types/spectest/utils"
 )
 
 // This file adds, as testing utils, the Encode, Decode and GetRoot methods
@@ -50,7 +50,7 @@ func (c *Controller) UnmarshalJSON(data []byte) error {
 	}
 
 	// Use hex-aware unmarshaling
-	return utils.UnmarshalJSONWithHex(data, &aux)
+	return hexencoding.UnmarshalJSONWithHex(data, &aux)
 }
 
 // Instance
@@ -95,7 +95,7 @@ func (i *Instance) UnmarshalJSON(data []byte) error {
 	}{
 		Alias: (*Alias)(i),
 	}
-	if err := utils.UnmarshalJSONWithHex(data, &aux); err != nil {
+	if err := hexencoding.UnmarshalJSONWithHex(data, &aux); err != nil {
 		return err
 	}
 	if aux.ForceStop != nil {

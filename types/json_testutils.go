@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 )
@@ -105,10 +106,10 @@ func (v *ValidatorPK) UnmarshalJSON(data []byte) error {
 func (p *PartialSignatureMessage) UnmarshalJSON(data []byte) error {
 	// Define a temporary struct to unmarshal into
 	type tempPartialSignatureMessage struct {
-		PartialSignature string `json:"PartialSignature"`
-		SigningRoot      string `json:"SigningRoot"`
-		Signer           uint64 `json:"Signer"`
-		ValidatorIndex   string `json:"ValidatorIndex"`
+		PartialSignature string      `json:"PartialSignature"`
+		SigningRoot      interface{} `json:"SigningRoot"`
+		Signer           uint64      `json:"Signer"`
+		ValidatorIndex   string      `json:"ValidatorIndex"`
 	}
 
 	var temp tempPartialSignatureMessage
@@ -116,29 +117,55 @@ func (p *PartialSignatureMessage) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("failed to unmarshal PartialSignatureMessage: %w", err)
 	}
 
-	// Convert PartialSignature from hex string to bytes
-	partialSigHex := temp.PartialSignature
-	if len(partialSigHex) > 2 && partialSigHex[:2] == "0x" {
-		partialSigHex = partialSigHex[2:]
+	if temp.PartialSignature == "" {
+		p.PartialSignature = nil // or make this []byte{}, depending on your requirement
+	} else {
+		partialSigHex := temp.PartialSignature
+		partialSigHex = strings.TrimPrefix(partialSigHex, "0x")
+		partialSigBytes, err := hex.DecodeString(partialSigHex)
+		if err != nil {
+			partialSigBytes, err = base64.StdEncoding.DecodeString(temp.PartialSignature)
+			if err != nil {
+				return fmt.Errorf("failed to decode PartialSignature (tried hex and base64): %w", err)
+			}
+		}
+		p.PartialSignature = partialSigBytes
 	}
-	partialSigBytes, err := hex.DecodeString(partialSigHex)
-	if err != nil {
-		return fmt.Errorf("failed to decode PartialSignature hex: %w", err)
-	}
-	if len(partialSigBytes) != 96 {
-		return fmt.Errorf("invalid PartialSignature length: expected 96, got %d", len(partialSigBytes))
-	}
-	p.PartialSignature = partialSigBytes
 
-	// Convert SigningRoot from hex string to [32]byte
-	signingRootHex := temp.SigningRoot
-	if len(signingRootHex) > 2 && signingRootHex[:2] == "0x" {
-		signingRootHex = signingRootHex[2:]
+	// Convert SigningRoot from hex string or byte array to [32]byte
+	var signingRootBytes []byte
+	switch signingRoot := temp.SigningRoot.(type) {
+	case string:
+		// Handle hex string
+		signingRootHex := signingRoot
+		if len(signingRootHex) > 2 && signingRootHex[:2] == "0x" {
+			signingRootHex = signingRootHex[2:]
+		}
+		var err error
+		signingRootBytes, err = hex.DecodeString(signingRootHex)
+		if err != nil {
+			return fmt.Errorf("failed to decode SigningRoot hex: %w", err)
+		}
+	case []interface{}:
+		// Handle byte array
+		signingRootBytes = make([]byte, len(signingRoot))
+		for i, b := range signingRoot {
+			switch v := b.(type) {
+			case float64:
+				signingRootBytes[i] = byte(v)
+			case int:
+				signingRootBytes[i] = byte(v)
+			default:
+				return fmt.Errorf("invalid byte type in SigningRoot array: %T", b)
+			}
+		}
+	case []byte:
+		// Handle direct byte array
+		signingRootBytes = signingRoot
+	default:
+		return fmt.Errorf("invalid SigningRoot type: %T", temp.SigningRoot)
 	}
-	signingRootBytes, err := hex.DecodeString(signingRootHex)
-	if err != nil {
-		return fmt.Errorf("failed to decode SigningRoot hex: %w", err)
-	}
+
 	if len(signingRootBytes) != 32 {
 		return fmt.Errorf("invalid SigningRoot length: expected 32, got %d", len(signingRootBytes))
 	}

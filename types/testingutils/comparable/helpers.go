@@ -15,7 +15,7 @@ import (
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/google/go-cmp/cmp"
 	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
+	hexencoding "github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/stretchr/testify/require"
 )
 
@@ -56,9 +56,26 @@ func UnmarshalStateComparison[T types.Root](basedir string, testName string, tes
 		return nilT, err
 	}
 
-	err = utils.UnmarshalJSONWithHex(byteValue, targetState)
-	// err = json.Unmarshal(byteValue, targetState)
-	// utils.ConvertHexToBytes(targetState)
+	err = hexencoding.UnmarshalJSONWithHex(byteValue, targetState)
+	if err != nil {
+		return nilT, err
+	}
+
+	return targetState, nil
+}
+
+func SSVUnmarshalStateComparison[T types.Root](basedir string, testName string, testType string, targetState T) (T, error) {
+	var nilT T
+	basedir = filepath.Join(basedir, "generate")
+	scDir := GetSCDir(basedir, testType)
+	path := filepath.Join(scDir, fmt.Sprintf("%s.json", testName))
+
+	byteValue, err := os.ReadFile(filepath.Clean(path))
+	if err != nil {
+		return nilT, err
+	}
+
+	err = hexencoding.SSVUnmarshalJSONWithHex(byteValue, targetState)
 	if err != nil {
 		return nilT, err
 	}

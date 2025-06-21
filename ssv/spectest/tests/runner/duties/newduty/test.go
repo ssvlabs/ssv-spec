@@ -15,7 +15,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
+	hexencoding "github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	comparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
@@ -183,7 +183,7 @@ func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, nam
 	}
 	basedir, err := os.Getwd()
 	require.NoError(t, err)
-	runner, err = comparable.UnmarshalStateComparison(basedir, name, testType, runner)
+	runner, err = comparable.SSVUnmarshalStateComparison(basedir, name, testType, runner)
 	require.NoError(t, err)
 
 	// override
@@ -249,7 +249,7 @@ func (t *StartNewRunnerDutySpecTest) UnmarshalJSON(data []byte) error {
 	aux := &StartNewRunnerDutySpecTestAlias{}
 
 	// Unmarshal the JSON data into the auxiliary struct
-	if err := utils.UnmarshalJSONWithHex(data, &aux); err != nil {
+	if err := hexencoding.SSVUnmarshalJSONWithHex(data, &aux); err != nil {
 		return err
 	}
 

@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/spectest/utils"
+	hexencoding "github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
@@ -76,7 +76,7 @@ func (test *CreateMsgSpecTest) UnmarshalJSON(data []byte) error {
 	temp := &CreateMsgSpecTestWithoutExpectedRoot{}
 
 	// Use UnmarshalJSONWithHex for all other fields
-	if err := utils.UnmarshalJSONWithHex(remainingData, temp); err != nil {
+	if err := hexencoding.UnmarshalJSONWithHex(remainingData, temp); err != nil {
 		return err
 	}
 
