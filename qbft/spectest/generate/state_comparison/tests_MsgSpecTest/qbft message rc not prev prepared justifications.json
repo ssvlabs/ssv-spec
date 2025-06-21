@@ -1,0 +1,22 @@
+{
+  "Name": "rc not prev prepared justifications",
+  "Messages": [
+    {
+      "Signatures": [
+        "454621d9807b6496f61483d43da2c3a93a3e0db62d2571a04a88c87da9d1861f9aac806be8750f793d6cfad872a942edcd74bef1daf286551ffec7d9d663db05bb9193febdfd146ead470f009c74e064a8a2e2d46f45b688b8c2fe87b469b21d66262500d6a6a235cb21881822a03bca605108c5a7d754291d78a43a2574d65448c8b7ec4c8056a9a4193e2e64e39f59a8470c5c91866f38f51297be626d3a035aecc903498dd6cee079f4f7cdb84c280c32d1a4bf25ad228d989fb485f85f72dc49f8ee6b89508044256824b379832273524fd49882b6fe6b0e15146c0b8df3804cdd1ce81055a9b13dba1d7d96bc3a312041224c91f9a3dc7e3c4865e6c697"
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AwAAAAAAAAAAAAAAAAAAAAoAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAABQAAAAUAAAAAECAwQ="
+      },
+      "FullData": null
+    }
+  ],
+  "EncodedMessages": null,
+  "ExpectedRoots": null,
+  "ExpectedError": ""
+}

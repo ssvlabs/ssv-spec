@@ -2,10 +2,12 @@ package qbft
 
 import (
 	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
+	"strings"
 
 	"github.com/pkg/errors"
-	hexencoding "github.com/ssvlabs/ssv-spec/types/spectest/utils"
 )
 
 // This file adds, as testing utils, the Encode, Decode and GetRoot methods
@@ -49,8 +51,7 @@ func (c *Controller) UnmarshalJSON(data []byte) error {
 		ControllerAlias: (*ControllerAlias)(c),
 	}
 
-	// Use hex-aware unmarshaling
-	return hexencoding.UnmarshalJSONWithHex(data, &aux)
+	return json.Unmarshal(data, aux)
 }
 
 // Instance
@@ -95,7 +96,7 @@ func (i *Instance) UnmarshalJSON(data []byte) error {
 	}{
 		Alias: (*Alias)(i),
 	}
-	if err := hexencoding.UnmarshalJSONWithHex(data, &aux); err != nil {
+	if err := json.Unmarshal(data, &aux); err != nil {
 		return err
 	}
 	if aux.ForceStop != nil {
@@ -139,4 +140,74 @@ func (c *MsgContainer) GetRoot() ([32]byte, error) {
 	}
 	ret := sha256.Sum256(marshaledRoot)
 	return ret, nil
+}
+
+// Message
+func (m *Message) UnmarshalJSON(data []byte) error {
+	type Alias Message
+	aux := &struct {
+		Root interface{} `json:"Root"`
+		*Alias
+	}{
+		Alias: (*Alias)(m),
+	}
+
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	// Handle Root field conversion
+	if aux.Root != nil {
+		switch root := aux.Root.(type) {
+		case string:
+			// Try hex string first
+			hexStr := root
+			if strings.HasPrefix(hexStr, "0x") {
+				hexStr = strings.TrimPrefix(hexStr, "0x")
+			}
+			if bytes, err := hex.DecodeString(hexStr); err == nil {
+				if len(bytes) != 32 {
+					return errors.New("Root must be exactly 32 bytes")
+				}
+				copy(m.Root[:], bytes)
+				return nil
+			}
+
+			// Try base64 string
+			if bytes, err := base64.StdEncoding.DecodeString(root); err == nil {
+				if len(bytes) != 32 {
+					return errors.New("Root must be exactly 32 bytes")
+				}
+				copy(m.Root[:], bytes)
+				return nil
+			}
+
+			return errors.New("Root string must be valid hex or base64")
+		case []interface{}:
+			// Handle array of numbers
+			if len(root) != 32 {
+				return errors.New("Root must be exactly 32 bytes")
+			}
+			for i, v := range root {
+				switch val := v.(type) {
+				case float64:
+					m.Root[i] = byte(val)
+				case int:
+					m.Root[i] = byte(val)
+				default:
+					return errors.New("invalid type in Root array")
+				}
+			}
+		case []byte:
+			// Handle byte array
+			if len(root) != 32 {
+				return errors.New("Root must be exactly 32 bytes")
+			}
+			copy(m.Root[:], root)
+		default:
+			return errors.New("Root must be a hex/base64 string, byte array, or array of numbers")
+		}
+	}
+
+	return nil
 }
