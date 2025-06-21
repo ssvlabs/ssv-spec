@@ -653,20 +653,19 @@ func ConvertHexToBytes(v interface{}) {
 						copy(version[:], bytes)
 						val[k] = version
 					} else if strings.HasSuffix(k, "Root") {
-						if k == "ExpectedSigningRoot" || k == "ControllerPostRoot" || k == "PostRoot" {
+						switch k {
+						case "ExpectedSigningRoot", "ControllerPostRoot", "PostRoot":
 							val[k] = vv
-						} else if k == "BlockRoot" {
+						case "BlockRoot":
 							// Add 0x prefix for BlockRoot
 							if !strings.HasPrefix(vv, "0x") {
 								vv = "0x" + vv
 							}
 							val[k] = vv
-						} else {
+						default:
 							// For other roots, remove 0x prefix if present
 							hexStr := vv
-							if strings.HasPrefix(hexStr, "0x") {
-								hexStr = strings.TrimPrefix(hexStr, "0x")
-							}
+							hexStr = strings.TrimPrefix(hexStr, "0x")
 							bytes, err = hex.DecodeString(hexStr)
 							if err != nil {
 								// If still not 32 bytes, raise error
@@ -684,9 +683,7 @@ func ConvertHexToBytes(v interface{}) {
 						// Special handling for MsgID
 						var msgID [56]byte
 						hexStr := vv
-						if strings.HasPrefix(hexStr, "0x") {
-							hexStr = strings.TrimPrefix(hexStr, "0x")
-						}
+						hexStr = strings.TrimPrefix(hexStr, "0x")
 						bytes, err = hex.DecodeString(hexStr)
 						if err != nil || len(bytes) != 56 {
 							// If still not 56 bytes, raise error
@@ -798,7 +795,8 @@ func ConvertHexToBytes(v interface{}) {
 				val[k] = vv
 			case []interface{}:
 				// Special handling for OperatorIDs and ValidatorSyncCommitteeIndices
-				if k == "OperatorIDs" || k == "ValidatorSyncCommitteeIndices" {
+				switch k {
+				case "OperatorIDs", "ValidatorSyncCommitteeIndices":
 					indices := make([]uint64, len(vv))
 					for i, id := range vv {
 						switch id := id.(type) {
@@ -815,7 +813,7 @@ func ConvertHexToBytes(v interface{}) {
 						}
 					}
 					val[k] = indices
-				} else if k == "Heights" {
+				case "Heights":
 					// Special handling for Heights and Rounds arrays
 					values := make([]uint64, len(vv))
 					for i, value := range vv {
@@ -833,7 +831,7 @@ func ConvertHexToBytes(v interface{}) {
 						}
 					}
 					val[k] = values
-				} else if k == "Rounds" {
+				case "Rounds":
 					// Special handling for Rounds array
 					rounds := make([]uint64, len(vv))
 					for i, round := range vv {
@@ -851,7 +849,7 @@ func ConvertHexToBytes(v interface{}) {
 						}
 					}
 					val[k] = rounds
-				} else if k == "Proposers" {
+				case "Proposers":
 					// Special handling for Proposers array
 					proposers := make([]uint64, len(vv))
 					for i, proposer := range vv {
@@ -869,7 +867,7 @@ func ConvertHexToBytes(v interface{}) {
 						}
 					}
 					val[k] = proposers
-				} else if k == "MessageIDs" {
+				case "MessageIDs":
 					// Special handling for MessageIDs array
 					messageIDs := make([][56]byte, len(vv))
 					for i, msgID := range vv {
@@ -887,7 +885,7 @@ func ConvertHexToBytes(v interface{}) {
 						}
 					}
 					val[k] = messageIDs
-				} else if k == "ExpectedRoots" {
+				case "ExpectedRoots":
 					// Special handling for ExpectedRoots array
 					expectedRoots := make([][32]byte, len(vv))
 					for i, root := range vv {
@@ -905,7 +903,7 @@ func ConvertHexToBytes(v interface{}) {
 						}
 					}
 					val[k] = expectedRoots
-				} else {
+				default:
 					// Check if it's an array of integers (byte array)
 					if len(vv) > 0 {
 						if _, ok := vv[0].(float64); ok {

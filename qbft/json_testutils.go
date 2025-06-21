@@ -162,9 +162,7 @@ func (m *Message) UnmarshalJSON(data []byte) error {
 		case string:
 			// Try hex string first
 			hexStr := root
-			if strings.HasPrefix(hexStr, "0x") {
-				hexStr = strings.TrimPrefix(hexStr, "0x")
-			}
+			hexStr = strings.TrimPrefix(hexStr, "0x")
 			if bytes, err := hex.DecodeString(hexStr); err == nil {
 				if len(bytes) != 32 {
 					return errors.New("Root must be exactly 32 bytes")

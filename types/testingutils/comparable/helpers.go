@@ -154,7 +154,8 @@ func convertSigningRootToBytes(m map[string]interface{}) {
 			convertSigningRootToBytes(vv)
 		case []interface{}:
 			// Check if this is a Signatures array
-			if k == "Signatures" {
+			switch k {
+			case "Signatures":
 				// Convert each signature to base64 string
 				for i, item := range vv {
 					if str, ok := item.(string); ok {
@@ -167,7 +168,7 @@ func convertSigningRootToBytes(m map[string]interface{}) {
 						}
 					}
 				}
-			} else if k == "MessageIDs" {
+			case "MessageIDs":
 				// Convert each MessageID to float64 array
 				for i, item := range vv {
 					if str, ok := item.(string); ok {
@@ -184,7 +185,7 @@ func convertSigningRootToBytes(m map[string]interface{}) {
 						}
 					}
 				}
-			} else {
+			default:
 				// For other arrays, recursively process each item
 				for _, item := range vv {
 					if m, ok := item.(map[string]interface{}); ok {
@@ -193,7 +194,8 @@ func convertSigningRootToBytes(m map[string]interface{}) {
 				}
 			}
 		case string:
-			if k == "SigningRoot" || k == "ExpectedBlkRoot" || k == "ExpectedCdRoot" || k == "ExpectedRoot" || k == "MsgID" || k == "CommitteeID" || k == "DomainType" || k == "ForkVersion" || k == "Value" {
+			switch k {
+			case "SigningRoot", "ExpectedBlkRoot", "ExpectedCdRoot", "ExpectedRoot", "MsgID", "CommitteeID", "DomainType", "ForkVersion", "Value":
 				// Remove 0x prefix if present
 				hexStr := vv
 				hexStr = strings.TrimPrefix(hexStr, "0x")
@@ -211,7 +213,7 @@ func convertSigningRootToBytes(m map[string]interface{}) {
 					}
 					m[k] = anyArray
 				}
-			} else if k == "SSVOperatorPubKey" || k == "PartialSignature" || k == "FullData" || k == "StateValue" {
+			case "SSVOperatorPubKey", "PartialSignature", "FullData", "StateValue":
 				// Remove 0x prefix if present
 				hexStr := vv
 				hexStr = strings.TrimPrefix(hexStr, "0x")
