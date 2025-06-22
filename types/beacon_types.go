@@ -49,6 +49,8 @@ const (
 	BNRoleValidatorRegistration
 	BNRoleVoluntaryExit
 
+	BNRolePreconfCommitment
+
 	BNRoleUnknown = math.MaxUint64
 )
 
@@ -69,6 +71,8 @@ func (r BeaconRole) String() string {
 		return "VALIDATOR_REGISTRATION"
 	case BNRoleVoluntaryExit:
 		return "VOLUNTARY_EXIT"
+	case BNRolePreconfCommitment:
+		return "PRECONF_COMMITMENT"
 	default:
 		return "UNDEFINED"
 	}
@@ -101,24 +105,6 @@ type ValidatorDuty struct {
 	ValidatorSyncCommitteeIndices []uint64 `ssz-max:"13"`
 }
 
-func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
-	switch dutyRole {
-	case BNRoleAttester, BNRoleSyncCommittee:
-		return RoleCommittee
-	case BNRoleProposer:
-		return RoleProposer
-	case BNRoleAggregator:
-		return RoleAggregator
-	case BNRoleSyncCommitteeContribution:
-		return RoleSyncCommitteeContribution
-	case BNRoleValidatorRegistration:
-		return RoleValidatorRegistration
-	case BNRoleVoluntaryExit:
-		return RoleVoluntaryExit
-	}
-	return RoleUnknown
-}
-
 func (bd *ValidatorDuty) DutySlot() spec.Slot {
 	return bd.Slot
 }
@@ -145,7 +131,47 @@ func (cd *CommitteeDuty) RunnerRole() RunnerRole {
 	return RoleCommittee
 }
 
-//
+func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
+	switch dutyRole {
+	case BNRoleAttester, BNRoleSyncCommittee:
+		return RoleCommittee
+	case BNRoleProposer:
+		return RoleProposer
+	case BNRoleAggregator:
+		return RoleAggregator
+	case BNRoleSyncCommitteeContribution:
+		return RoleSyncCommitteeContribution
+	case BNRoleValidatorRegistration:
+		return RoleValidatorRegistration
+	case BNRoleVoluntaryExit:
+		return RoleVoluntaryExit
+	case BNRolePreconfCommitment:
+		return RolePreconfCommitment
+	}
+	return RoleUnknown
+}
+
+type PreconfCommitmentDuty [32]byte
+
+func (pcd *PreconfCommitmentDuty) DutySlot() spec.Slot {
+	return 0 // TODO - do we need to specify a proper slot for preconf-commitment here ?
+}
+
+func (pcd *PreconfCommitmentDuty) RunnerRole() RunnerRole {
+	return RolePreconfCommitment
+}
+
+func (pcd *PreconfCommitmentDuty) HashTreeRoot() ([32]byte, error) {
+	return SSZBytes(pcd[:]).HashTreeRoot()
+}
+
+func (pcd *PreconfCommitmentDuty) GetTree() (*ssz.Node, error) {
+	return SSZBytes(pcd[:]).GetTree()
+}
+
+func (pcd *PreconfCommitmentDuty) HashTreeRootWith(hh ssz.HashWalker) error {
+	return SSZBytes(pcd[:]).HashTreeRootWith(hh)
+}
 
 // Available networks.
 const (

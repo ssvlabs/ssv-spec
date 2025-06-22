@@ -12,6 +12,8 @@ const (
 	RoleValidatorRegistration
 	RoleVoluntaryExit
 
+	RolePreconfCommitment
+
 	RoleUnknown = -1
 )
 
@@ -30,6 +32,8 @@ func (r RunnerRole) String() string {
 		return "VALIDATOR_REGISTRATION_RUNNER"
 	case RoleVoluntaryExit:
 		return "VOLUNTARY_EXIT_RUNNER"
+	case RolePreconfCommitment:
+		return "PRECONF_COMMITMENT_RUNNER"
 	default:
 		return "UNDEFINED"
 	}
