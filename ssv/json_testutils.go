@@ -4,10 +4,11 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
+	hexencoding "github.com/ssvlabs/ssv-spec/types/spectest/utils"
 )
 
 // This file adds, as testing utils, the Encode, Decode and GetRoot methods
@@ -82,7 +83,7 @@ func (pcs *State) UnmarshalJSON(data []byte) error {
 	aux := &StateAlias{}
 
 	// Unmarshal the JSON data into the auxiliary struct
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := hexencoding.SSVUnmarshalJSONWithHex(data, &aux); err != nil {
 		return err
 	}
 
@@ -123,9 +124,9 @@ func (c *Committee) GetRoot() ([32]byte, error) {
 func (c *Committee) MarshalJSON() ([]byte, error) {
 
 	type CommitteeAlias struct {
-		Runners         map[spec.Slot]*CommitteeRunner
+		Runners         map[phase0.Slot]*CommitteeRunner
 		CommitteeMember types.CommitteeMember
-		Share           map[spec.ValidatorIndex]*types.Share
+		Share           map[phase0.ValidatorIndex]*types.Share
 	}
 
 	// Create object and marshal
@@ -143,14 +144,14 @@ func (c *Committee) MarshalJSON() ([]byte, error) {
 func (c *Committee) UnmarshalJSON(data []byte) error {
 
 	type CommitteeAlias struct {
-		Runners         map[spec.Slot]*CommitteeRunner
+		Runners         map[phase0.Slot]*CommitteeRunner
 		CommitteeMember types.CommitteeMember
-		Share           map[spec.ValidatorIndex]*types.Share
+		Share           map[phase0.ValidatorIndex]*types.Share
 	}
 
 	// Unmarshal the JSON data into the auxiliary struct
 	aux := &CommitteeAlias{}
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := hexencoding.SSVUnmarshalJSONWithHex(data, &aux); err != nil {
 		return err
 	}
 

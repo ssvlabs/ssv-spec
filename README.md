@@ -32,7 +32,7 @@ type Message struct {
 ```
 
 #### Partial Signature Message
-Used for pre and post consensus sigantures for collecting partial BN signatures and then reconstructing them
+Used for pre and post consensus signatures for collecting partial BN signatures and then reconstructing them
 ```go
 type PartialSignatureMessage struct {
     Type             PartialSigMsgType

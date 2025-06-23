@@ -223,7 +223,6 @@ var TestingSignedCommitteeBeaconObjectSSZRoot = func(duty *types.CommitteeDuty, 
 
 		switch validatorDuty.Type {
 		case types.BNRoleAttester:
-
 			attResponse := TestingAttestationResponseBeaconObjectForDuty(ks, version, validatorDuty)
 			ret = append(ret, GetSSZRootNoError(attResponse))
 		case types.BNRoleSyncCommittee:

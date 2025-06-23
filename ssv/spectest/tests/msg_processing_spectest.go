@@ -8,17 +8,16 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/ssvlabs/ssv-spec/qbft"
-
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
-	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
-
 	"github.com/stretchr/testify/require"
 
+	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
+	hexencoding "github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 type MsgProcessingSpecTest struct {
@@ -192,7 +191,7 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 	}
 	basedir, err := os.Getwd()
 	require.NoError(t, err)
-	runner, err = typescomparable.UnmarshalStateComparison(basedir, name, testType, runner)
+	runner, err = typescomparable.SSVUnmarshalStateComparison(basedir, name, testType, runner)
 	require.NoError(t, err)
 
 	// override
@@ -262,7 +261,7 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	aux := &MsgProcessingSpecTestAlias{}
 
 	// Unmarshal the JSON data into the auxiliary struct
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := hexencoding.SSVUnmarshalJSONWithHex(data, &aux); err != nil {
 		return err
 	}
 

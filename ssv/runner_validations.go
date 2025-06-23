@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"sort"
 
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -33,7 +33,7 @@ func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, psigMsgs *types.Part
 
 // Verify each signature in container removing the invalid ones
 func (b *BaseRunner) FallBackAndVerifyEachSignature(container *PartialSigContainer, root [32]byte,
-	committee []*types.ShareMember, validatorIndex spec.ValidatorIndex) {
+	committee []*types.ShareMember, validatorIndex phase0.ValidatorIndex) {
 
 	signatures := container.GetSignatures(validatorIndex, root)
 
@@ -106,7 +106,7 @@ func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val types.Encod
 	return nil
 }
 
-func (b *BaseRunner) verifyExpectedRoot(runner Runner, psigMsgs *types.PartialSignatureMessages, expectedRootObjs []ssz.HashRoot, domain spec.DomainType) error {
+func (b *BaseRunner) verifyExpectedRoot(runner Runner, psigMsgs *types.PartialSignatureMessages, expectedRootObjs []ssz.HashRoot, domain phase0.DomainType) error {
 	if len(expectedRootObjs) != len(psigMsgs.Messages) {
 		return errors.New("wrong expected roots count")
 	}

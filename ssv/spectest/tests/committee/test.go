@@ -104,7 +104,7 @@ func overrideStateComparison(t *testing.T, test *CommitteeSpecTest, name string,
 	committee := &ssv.Committee{}
 	basedir, err := os.Getwd()
 	require.NoError(t, err)
-	committee, err = typescomparable.UnmarshalStateComparison(basedir, name, testType, committee)
+	committee, err = typescomparable.SSVUnmarshalStateComparison(basedir, name, testType, committee)
 	require.NoError(t, err)
 
 	// override

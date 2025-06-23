@@ -2,7 +2,7 @@
   "Name": "start instance equal height running instance",
   "RunInstanceData": [
     {
-      "InputValue": "AQIDBA==",
+      "InputValue": "01020304",
       "InputMessages": null,
       "ControllerPostRoot": "",
       "ExpectedTimerState": null,
@@ -14,7 +14,7 @@
       "omitempty": 0
     },
     {
-      "InputValue": "AQIDBA==",
+      "InputValue": "01020304",
       "InputMessages": null,
       "ControllerPostRoot": "",
       "ExpectedTimerState": null,
