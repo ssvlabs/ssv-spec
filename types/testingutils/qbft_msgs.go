@@ -8,7 +8,10 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-var TestingIdentifier = []byte{1, 2, 3, 4}
+var TestingIdentifier = func() []byte {
+	identifier := [56]byte{1, 2, 3, 4}
+	return identifier[:]
+}()
 
 var DifferentFullData = append(TestingQBFTFullData, []byte("different")...)
 var DifferentRoot = func() [32]byte {

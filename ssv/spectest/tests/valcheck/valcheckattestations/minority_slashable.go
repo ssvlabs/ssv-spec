@@ -3,7 +3,7 @@ package valcheckattestations
 import (
 	"encoding/hex"
 
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -14,11 +14,11 @@ import (
 func MinoritySlashable() tests.SpecTest {
 	data := &types.BeaconVote{
 		BlockRoot: testingutils.TestingBlockRoot,
-		Source: &spec.Checkpoint{
+		Source: &phase0.Checkpoint{
 			Epoch: 0,
 			Root:  testingutils.TestingBlockRoot,
 		},
-		Target: &spec.Checkpoint{
+		Target: &phase0.Checkpoint{
 			Epoch: 1,
 			Root:  testingutils.TestingBlockRoot,
 		},
@@ -37,7 +37,7 @@ func MinoritySlashable() tests.SpecTest {
 	}
 
 	// Make slashable map with minority
-	slashableMap := map[string][]spec.Slot{
+	slashableMap := map[string][]phase0.Slot{
 		sharesPKString[0]: {
 			testingutils.TestingDutySlot,
 		},

@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -124,9 +124,9 @@ func (c *Committee) GetRoot() ([32]byte, error) {
 func (c *Committee) MarshalJSON() ([]byte, error) {
 
 	type CommitteeAlias struct {
-		Runners         map[spec.Slot]*CommitteeRunner
+		Runners         map[phase0.Slot]*CommitteeRunner
 		CommitteeMember types.CommitteeMember
-		Share           map[spec.ValidatorIndex]*types.Share
+		Share           map[phase0.ValidatorIndex]*types.Share
 	}
 
 	// Create object and marshal
@@ -144,9 +144,9 @@ func (c *Committee) MarshalJSON() ([]byte, error) {
 func (c *Committee) UnmarshalJSON(data []byte) error {
 
 	type CommitteeAlias struct {
-		Runners         map[spec.Slot]*CommitteeRunner
+		Runners         map[phase0.Slot]*CommitteeRunner
 		CommitteeMember types.CommitteeMember
-		Share           map[spec.ValidatorIndex]*types.Share
+		Share           map[phase0.ValidatorIndex]*types.Share
 	}
 
 	// Unmarshal the JSON data into the auxiliary struct

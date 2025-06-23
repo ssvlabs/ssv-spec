@@ -1,7 +1,7 @@
 package ssv
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
@@ -9,7 +9,7 @@ import (
 )
 
 func (b *BaseRunner) signBeaconObject(runner Runner, duty *types.ValidatorDuty,
-	obj ssz.HashRoot, slot spec.Slot, domainType spec.DomainType) (*types.PartialSignatureMessage, error) {
+	obj ssz.HashRoot, slot phase0.Slot, domainType phase0.DomainType) (*types.PartialSignatureMessage, error) {
 	epoch := runner.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(slot)
 	domain, err := runner.GetBeaconNode().DomainData(epoch, domainType)
 	if err != nil {
@@ -34,7 +34,7 @@ func (b *BaseRunner) signBeaconObject(runner Runner, duty *types.ValidatorDuty,
 // Validate message content without verifying signatures
 func (b *BaseRunner) validatePartialSigMsgForSlot(
 	psigMsgs *types.PartialSignatureMessages,
-	slot spec.Slot,
+	slot phase0.Slot,
 ) error {
 	if err := psigMsgs.Validate(); err != nil {
 		return errors.Wrap(err, "PartialSignatureMessages invalid")

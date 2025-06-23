@@ -134,6 +134,17 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	}
 	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r[:]))
 
+	// Validate message
+	err = msg.Validate()
+	require.NoError(t, err)
+
+	qbftMsg := &qbft.Message{}
+	err = qbftMsg.Decode(msg.SSVMessage.Data)
+	require.NoError(t, err)
+
+	err = qbftMsg.Validate()
+	require.NoError(t, err)
+
 	typescomparable.CompareWithJson(t, test, test.TestName(), reflect.TypeOf(test).String())
 }
 
@@ -141,7 +152,8 @@ func (test *CreateMsgSpecTest) createCommit() (*types.SignedSSVMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
-		ID:              []byte{1, 2, 3, 4},
+		ID:              testingutils.TestingIdentifier,
+		Round:           test.Round,
 	}
 	signer := testingutils.TestingOperatorSigner(ks)
 
@@ -152,7 +164,8 @@ func (test *CreateMsgSpecTest) createPrepare() (*types.SignedSSVMessage, error) 
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
-		ID:              []byte{1, 2, 3, 4},
+		ID:              testingutils.TestingIdentifier,
+		Round:           test.Round,
 	}
 	signer := testingutils.TestingOperatorSigner(ks)
 
@@ -163,7 +176,8 @@ func (test *CreateMsgSpecTest) createProposal() (*types.SignedSSVMessage, error)
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
-		ID:              []byte{1, 2, 3, 4},
+		ID:              testingutils.TestingIdentifier,
+		Round:           test.Round,
 	}
 	signer := testingutils.TestingOperatorSigner(ks)
 
@@ -175,8 +189,9 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		CommitteeMember:  testingutils.TestingCommitteeMember(ks),
-		ID:               []byte{1, 2, 3, 4},
+		ID:               testingutils.TestingIdentifier,
 		PrepareContainer: qbft.NewMsgContainer(),
+		Round:            test.Round,
 	}
 	signer := testingutils.TestingOperatorSigner(ks)
 
