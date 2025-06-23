@@ -34,7 +34,7 @@ const MaxEffectiveBalanceInGwei uint64 = 32000000000
 const BLSWithdrawalPrefixByte = byte(0)
 
 // DefaultGasLimit sets gas limit used in validator registrations.
-const DefaultGasLimit = 30_000_000
+const DefaultGasLimit = 36_000_000
 
 // BeaconRole type of the validator role for a specific duty
 type BeaconRole uint64
