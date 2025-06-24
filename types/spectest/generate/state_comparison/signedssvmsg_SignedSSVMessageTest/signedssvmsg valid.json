@@ -1,5 +1,6 @@
 {
 		"Name": "valid",
+		"Type": "Signed SSV message",
 		"Messages": [
 				{
 						"Signatures": [

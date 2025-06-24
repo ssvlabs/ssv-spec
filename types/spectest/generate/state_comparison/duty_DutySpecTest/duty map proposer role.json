@@ -1,5 +1,6 @@
 {
 		"Name": "map proposer role",
+		"Type": "Duty",
 		"BeaconRole": 2,
 		"RunnerRole": 2
 }

@@ -1,5 +1,6 @@
 {
   "Name": "expected commit qbftMessage",
+  "Type": "Structure size",
   "Object": {
     "MsgType": 2,
     "Height": 1,

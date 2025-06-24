@@ -14,11 +14,12 @@ func HasQuorum3f1() *CommitteeMemberTest {
 
 	msg := testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3], ks.OperatorKeys[4]}, []types.OperatorID{1, 2, 3, 4})
 
-	return &CommitteeMemberTest{
-		Name:                  "has quorum 3f1",
-		CommitteeMember:       *committeeMember,
-		Message:               *msg,
-		ExpectedHasQuorum:     true,
-		ExpectedFullCommittee: true,
-	}
+	return NewCommitteeMemberTest(
+		"has quorum 3f1",
+		*committeeMember,
+		*msg,
+		true,
+		true,
+		"",
+	)
 }

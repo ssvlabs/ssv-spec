@@ -1,5 +1,6 @@
 {
   "Name": "valid electra block",
+  "Type": "Validator consensus data",
   "ConsensusData": {
     "Duty": {
       "Type": 2,

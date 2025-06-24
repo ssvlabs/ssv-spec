@@ -9,6 +9,7 @@ import (
 
 type EncryptionSpecTest struct {
 	Name      string
+	Type      string
 	SKPem     []byte
 	PKPem     []byte
 	PlainText []byte
@@ -39,4 +40,14 @@ func (test *EncryptionSpecTest) Run(t *testing.T) {
 	plain, err := types.Decrypt(sk, cipher)
 	require.NoError(t, err)
 	require.EqualValues(t, test.PlainText, plain)
+}
+
+func NewEncryptionSpecTest(name string, skPem []byte, pkPem []byte, plainText []byte) *EncryptionSpecTest {
+	return &EncryptionSpecTest{
+		Name:      name,
+		Type:      "Encryption",
+		SKPem:     skPem,
+		PKPem:     pkPem,
+		PlainText: plainText,
+	}
 }

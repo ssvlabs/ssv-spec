@@ -12,10 +12,11 @@ func PartialSigValid() *MsgSpecTest {
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)
 
-	return &MsgSpecTest{
-		Name: "partial sig valid",
-		Messages: []*types.PartialSignatureMessages{
-			msg,
-		},
-	}
+	return NewMsgSpecTest(
+		"partial sig valid",
+		[]*types.PartialSignatureMessages{msg},
+		nil,
+		nil,
+		"",
+	)
 }

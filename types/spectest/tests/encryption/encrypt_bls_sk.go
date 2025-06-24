@@ -19,10 +19,10 @@ func EncryptBLSSK() *EncryptionSpecTest {
 
 	blsSK := ks.Shares[1]
 
-	return &EncryptionSpecTest{
-		Name:      "bls secret key encryption",
-		SKPem:     skPem,
-		PKPem:     pkPem,
-		PlainText: blsSK.Serialize(),
-	}
+	return NewEncryptionSpecTest(
+		"bls secret key encryption",
+		skPem,
+		pkPem,
+		blsSK.Serialize(),
+	)
 }

@@ -10,15 +10,16 @@ func NonUniqueSigner() *SignedSSVMessageTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	return &SignedSSVMessageTest{
-		Name: "non unique signers",
-		Messages: []*types.SignedSSVMessage{
+	return NewSignedSSVMessageTest(
+		"non unique signers",
+		[]*types.SignedSSVMessage{
 			{
 				OperatorIDs: []types.OperatorID{1, 2, 2},
 				Signatures:  [][]byte{{1, 2, 3, 4}, {2, 3, 4, 5}, {2, 3, 4, 5}},
 				SSVMessage:  testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
-		ExpectedError: "non unique signer",
-	}
+		"non unique signer",
+		nil,
+	)
 }

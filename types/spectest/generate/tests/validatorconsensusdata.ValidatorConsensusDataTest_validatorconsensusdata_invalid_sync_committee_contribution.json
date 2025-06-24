@@ -1,5 +1,6 @@
 {
   "Name": "invalid sync committee contribution",
+  "Type": "Validator consensus data",
   "ConsensusData": {
     "Duty": {
       "Type": 4,

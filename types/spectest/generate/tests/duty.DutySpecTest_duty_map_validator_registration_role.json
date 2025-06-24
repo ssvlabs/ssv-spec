@@ -1,5 +1,6 @@
 {
   "Name": "map validator registration role",
+  "Type": "Duty",
   "BeaconRole": 5,
   "RunnerRole": 4
 }

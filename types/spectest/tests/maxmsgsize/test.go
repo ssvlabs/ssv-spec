@@ -12,6 +12,7 @@ import (
 
 type StructureSizeTest struct {
 	Name                  string
+	Type                  string
 	Object                types.Encoder
 	ExpectedEncodedLength int
 	IsMaxSize             bool
@@ -86,4 +87,14 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 	}
 
 	panic("unknown type")
+}
+
+func NewStructureSizeTest(name string, object types.Encoder, expectedEncodedLength int, isMaxSize bool) *StructureSizeTest {
+	return &StructureSizeTest{
+		Name:                  name,
+		Type:                  "Structure size",
+		Object:                object,
+		ExpectedEncodedLength: expectedEncodedLength,
+		IsMaxSize:             isMaxSize,
+	}
 }

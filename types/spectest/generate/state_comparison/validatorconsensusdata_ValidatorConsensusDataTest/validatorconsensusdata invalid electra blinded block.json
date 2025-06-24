@@ -1,5 +1,6 @@
 {
 		"Name": "invalid electra blinded block",
+		"Type": "Validator consensus data",
 		"ConsensusData": {
 				"Duty": {
 						"Type": 2,

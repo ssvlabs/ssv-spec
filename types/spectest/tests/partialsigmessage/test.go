@@ -12,6 +12,7 @@ import (
 
 type MsgSpecTest struct {
 	Name            string
+	Type            string
 	Messages        []*types.PartialSignatureMessages
 	EncodedMessages [][]byte
 	ExpectedRoots   [][32]byte
@@ -65,4 +66,15 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 
 func (tests *MsgSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
+}
+
+func NewMsgSpecTest(name string, messages []*types.PartialSignatureMessages, encodedMessages [][]byte, expectedRoots [][32]byte, expectedError string) *MsgSpecTest {
+	return &MsgSpecTest{
+		Name:            name,
+		Type:            "Message",
+		Messages:        messages,
+		EncodedMessages: encodedMessages,
+		ExpectedRoots:   expectedRoots,
+		ExpectedError:   expectedError,
+	}
 }

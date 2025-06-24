@@ -16,8 +16,8 @@ func Encoding() *EncodingTest {
 		panic(err.Error())
 	}
 
-	return &EncodingTest{
-		Name: "encoding",
-		Data: byts,
-	}
+	return NewEncodingTest(
+		"encoding",
+		byts,
+	)
 }

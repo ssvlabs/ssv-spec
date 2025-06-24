@@ -1,5 +1,6 @@
 {
 		"Name": "expected PartialSignatureMessage",
+		"Type": "Structure size",
 		"Object": {
 				"PartialSignature": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 				"SigningRoot": [

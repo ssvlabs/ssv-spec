@@ -16,9 +16,9 @@ func Encoding() *EncodingTest {
 		panic(err.Error())
 	}
 
-	return &EncodingTest{
-		Name:         "share encoding",
-		Data:         byts,
-		ExpectedRoot: root,
-	}
+	return NewEncodingTest(
+		"share encoding",
+		byts,
+		root,
+	)
 }

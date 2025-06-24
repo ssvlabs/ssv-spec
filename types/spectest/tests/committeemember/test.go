@@ -12,6 +12,7 @@ import (
 
 type CommitteeMemberTest struct {
 	Name                  string
+	Type                  string
 	CommitteeMember       types.CommitteeMember
 	Message               types.SignedSSVMessage
 	ExpectedHasQuorum     bool
@@ -52,4 +53,16 @@ func (test *CommitteeMemberTest) Run(t *testing.T) {
 	require.Equal(t, test.ExpectedFullCommittee, (len(test.CommitteeMember.Committee) == numSigners))
 
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
+}
+
+func NewCommitteeMemberTest(name string, committeeMember types.CommitteeMember, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedError string) *CommitteeMemberTest {
+	return &CommitteeMemberTest{
+		Name:                  name,
+		Type:                  "Committee member",
+		CommitteeMember:       committeeMember,
+		Message:               message,
+		ExpectedHasQuorum:     expectedHasQuorum,
+		ExpectedFullCommittee: expectedFullCommittee,
+		ExpectedError:         expectedError,
+	}
 }

@@ -11,6 +11,7 @@ import (
 
 type SSZSpecTest struct {
 	Name          string
+	Type          string
 	Data          []byte
 	ExpectedRoot  [32]byte
 	ExpectedError string
@@ -38,4 +39,14 @@ func (test *SSZSpecTest) Run(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, root)
 	require.EqualValues(t, test.ExpectedRoot, root)
+}
+
+func NewSSZSpecTest(name string, data []byte, expectedRoot [32]byte, expectedError string) *SSZSpecTest {
+	return &SSZSpecTest{
+		Name:          name,
+		Type:          "SSZ spec test",
+		Data:          data,
+		ExpectedRoot:  expectedRoot,
+		ExpectedError: expectedError,
+	}
 }

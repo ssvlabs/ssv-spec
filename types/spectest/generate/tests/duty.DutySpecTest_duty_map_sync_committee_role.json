@@ -1,5 +1,6 @@
 {
   "Name": "map sync committee role",
+  "Type": "Duty",
   "BeaconRole": 3,
   "RunnerRole": 0
 }

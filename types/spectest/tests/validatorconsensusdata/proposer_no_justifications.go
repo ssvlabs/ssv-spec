@@ -12,8 +12,9 @@ func ProposerNoJustifications() *ValidatorConsensusDataTest {
 
 	cd := testingutils.TestProposerConsensusDataV(spec.DataVersionCapella)
 
-	return &ValidatorConsensusDataTest{
-		Name:          "proposer no justification",
-		ConsensusData: *cd,
-	}
+	return NewValidatorConsensusDataTest(
+		"proposer no justification",
+		*cd,
+		"",
+	)
 }

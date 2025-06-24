@@ -1,5 +1,6 @@
 {
 		"Name": "proposer no justification",
+		"Type": "Validator consensus data",
 		"ConsensusData": {
 				"Duty": {
 						"Type": 2,

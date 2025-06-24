@@ -20,9 +20,9 @@ func VoluntaryExit() *ValidatorConsensusDataTest {
 		DataSSZ: dataByts,
 	}
 
-	return &ValidatorConsensusDataTest{
-		Name:          "voluntary exit",
-		ConsensusData: cd,
-		ExpectedError: "voluntary exit has no consensus data",
-	}
+	return NewValidatorConsensusDataTest(
+		"voluntary exit",
+		cd,
+		"voluntary exit has no consensus data",
+	)
 }

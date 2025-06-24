@@ -18,9 +18,9 @@ func BeaconVoteEncoding() *EncodingTest {
 		panic(err.Error())
 	}
 
-	return &EncodingTest{
-		Name:         "beacon vote encoding",
-		Data:         byts,
-		ExpectedRoot: root,
-	}
+	return NewEncodingTest(
+		"beacon vote encoding",
+		byts,
+		root,
+	)
 }

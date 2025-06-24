@@ -1,5 +1,6 @@
 {
   "Name": "map aggregator role",
+  "Type": "Duty",
   "BeaconRole": 1,
   "RunnerRole": 1
 }

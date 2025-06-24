@@ -1,5 +1,6 @@
 {
   "Name": "map attester role",
+  "Type": "Duty",
   "BeaconRole": 0,
   "RunnerRole": 0
 }

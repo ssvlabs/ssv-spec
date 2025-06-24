@@ -15,11 +15,11 @@ func InconsistentSignedMessage() *MsgSpecTest {
 
 	msg.Messages = append(msg.Messages, msgWithDifferentSigner.Messages...)
 
-	return &MsgSpecTest{
-		Name: "inconsistent signed message",
-		Messages: []*types.PartialSignatureMessages{
-			msg,
-		},
-		ExpectedError: "inconsistent signers",
-	}
+	return NewMsgSpecTest(
+		"inconsistent signed message",
+		[]*types.PartialSignatureMessages{msg},
+		nil,
+		nil,
+		"inconsistent signers",
+	)
 }

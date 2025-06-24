@@ -1,5 +1,6 @@
 {
   "Name": "no signers",
+  "Type": "Signed SSV message",
   "Messages": [
     {
       "Signatures": [

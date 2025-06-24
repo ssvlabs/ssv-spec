@@ -1,5 +1,6 @@
 {
 		"Name": "map voluntary exit role",
+		"Type": "Duty",
 		"BeaconRole": 6,
 		"RunnerRole": 5
 }

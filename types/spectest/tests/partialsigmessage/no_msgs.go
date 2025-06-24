@@ -13,9 +13,11 @@ func NoMsgs() *MsgSpecTest {
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)
 	msg.Messages = []*types.PartialSignatureMessage{}
 
-	return &MsgSpecTest{
-		Name:          "no messages",
-		Messages:      []*types.PartialSignatureMessages{msg},
-		ExpectedError: "no PartialSignatureMessages messages",
-	}
+	return NewMsgSpecTest(
+		"no messages",
+		[]*types.PartialSignatureMessages{msg},
+		nil,
+		nil,
+		"no PartialSignatureMessages messages",
+	)
 }

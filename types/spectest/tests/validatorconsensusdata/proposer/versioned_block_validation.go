@@ -20,6 +20,7 @@ func VersionedBlockValidation() *ProposerSpecTest {
 
 	return &ProposerSpecTest{
 		Name:            "consensus data versioned block validation",
+		Type:            "Proposer",
 		DataCd:          testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
 		DataBlk:         testingutils.TestingBeaconBlockBytesV(spec.DataVersionDeneb),
 		ExpectedCdRoot:  expectedCdRoot,

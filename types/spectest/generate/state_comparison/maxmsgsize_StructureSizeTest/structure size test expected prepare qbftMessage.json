@@ -1,5 +1,6 @@
 {
 		"Name": "expected prepare qbftMessage",
+		"Type": "Structure size",
 		"Object": {
 				"MsgType": 1,
 				"Height": 1,

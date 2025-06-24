@@ -20,12 +20,13 @@ func VersionedBlindedBlockConsensusDataNil() *ProposerSpecTest {
 		panic(err.Error())
 	}
 
-	return &ProposerSpecTest{
-		Name:            "consensus data versioned blinded block corrupted consensus data",
-		DataCd:          cdSSZ,
-		DataBlk:         nil,
-		ExpectedCdRoot:  [32]byte{},
-		ExpectedBlkRoot: [32]byte{},
-		ExpectedError:   "could not unmarshal ssz: incorrect size",
-	}
+	return NewProposerSpecTest(
+		"consensus data versioned blinded block corrupted consensus data",
+		false,
+		cdSSZ,
+		nil,
+		[32]byte{},
+		[32]byte{},
+		"could not unmarshal ssz: incorrect size",
+	)
 }

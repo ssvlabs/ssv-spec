@@ -1,5 +1,6 @@
 {
   "Name": "validator registration",
+  "Type": "Validator consensus data",
   "ConsensusData": {
     "Duty": {
       "Type": 5,

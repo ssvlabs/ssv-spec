@@ -1,5 +1,6 @@
 {
 		"Name": "beacon vote encoding",
+		"Type": "Encoding",
 		"Data": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
 		"ExpectedRoot": [
 				15,

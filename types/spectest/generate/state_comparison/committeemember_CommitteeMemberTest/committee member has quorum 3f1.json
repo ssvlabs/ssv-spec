@@ -1,5 +1,6 @@
 {
 		"Name": "has quorum 3f1",
+		"Type": "Committee member",
 		"CommitteeMember": {
 				"OperatorID": 1,
 				"CommitteeID": [

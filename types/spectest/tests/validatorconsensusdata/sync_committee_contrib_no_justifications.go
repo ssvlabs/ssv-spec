@@ -17,8 +17,9 @@ func SyncCommitteeContributionNoJustifications() *ValidatorConsensusDataTest {
 		DataSSZ: testingutils.TestingContributionsDataBytes,
 	}
 
-	return &ValidatorConsensusDataTest{
-		Name:          "sync committee contribution with no pre-consensus justification",
-		ConsensusData: cd,
-	}
+	return NewValidatorConsensusDataTest(
+		"sync committee contribution with no pre-consensus justification",
+		cd,
+		"",
+	)
 }

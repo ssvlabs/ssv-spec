@@ -7,8 +7,9 @@ import (
 
 // CapellaBlockValidation tests a valid consensus data with capella block
 func CapellaBlockValidation() *ValidatorConsensusDataTest {
-	return &ValidatorConsensusDataTest{
-		Name:          "valid capella block",
-		ConsensusData: *testingutils.TestProposerConsensusDataV(spec.DataVersionCapella),
-	}
+	return NewValidatorConsensusDataTest(
+		"valid capella block",
+		*testingutils.TestProposerConsensusDataV(spec.DataVersionCapella),
+		"",
+	)
 }

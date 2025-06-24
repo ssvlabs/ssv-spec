@@ -20,6 +20,7 @@ func VersionedBlindedBlockValidation() *ProposerSpecTest {
 
 	return &ProposerSpecTest{
 		Name:            "consensus data versioned blinded block validation",
+		Type:            "Proposer",
 		Blinded:         true,
 		DataCd:          testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
 		DataBlk:         testingutils.TestingBlindedBeaconBlockBytesV(spec.DataVersionDeneb),

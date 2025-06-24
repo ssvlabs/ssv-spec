@@ -1,5 +1,6 @@
 {
 		"Name": "max PartialSignatureMessages for pre-consensus",
+		"Type": "Structure size",
 		"Object": {
 				"Type": 1,
 				"Slot": "1",

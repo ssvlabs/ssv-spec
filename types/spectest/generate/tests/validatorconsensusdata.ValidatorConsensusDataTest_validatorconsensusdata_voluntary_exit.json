@@ -1,5 +1,6 @@
 {
   "Name": "voluntary exit",
+  "Type": "Validator consensus data",
   "ConsensusData": {
     "Duty": {
       "Type": 6,

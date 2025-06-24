@@ -1,5 +1,6 @@
 {
   "Name": "inconsistent signed message",
+  "Type": "Message",
   "Messages": [
     {
       "Type": 1,

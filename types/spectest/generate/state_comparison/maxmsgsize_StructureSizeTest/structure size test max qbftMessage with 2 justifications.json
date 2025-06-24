@@ -1,5 +1,6 @@
 {
 		"Name": "max qbftMessage with 2 justifications",
+		"Type": "Structure size",
 		"Object": {
 				"MsgType": 1,
 				"Height": 1,

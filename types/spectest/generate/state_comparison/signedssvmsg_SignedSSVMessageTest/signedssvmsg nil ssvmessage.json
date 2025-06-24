@@ -1,5 +1,6 @@
 {
 		"Name": "nil ssvmessage",
+		"Type": "Signed SSV message",
 		"Messages": [
 				{
 						"Signatures": [

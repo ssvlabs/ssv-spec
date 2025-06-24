@@ -1,5 +1,6 @@
 {
 		"Name": "valid meta data when type ContributionProofs",
+		"Type": "Message",
 		"Messages": [
 				{
 						"Type": 3,

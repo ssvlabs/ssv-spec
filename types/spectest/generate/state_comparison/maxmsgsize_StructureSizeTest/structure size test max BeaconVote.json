@@ -1,5 +1,6 @@
 {
 		"Name": "max BeaconVote",
+		"Type": "Structure size",
 		"Object": {
 				"BlockRoot": "0x0100000000000000000000000000000000000000000000000000000000000000",
 				"Source": {

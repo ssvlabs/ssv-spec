@@ -18,11 +18,11 @@ func ConsensusDataEncoding(name string, cd *types.ValidatorConsensusData) *Encod
 		panic(err.Error())
 	}
 
-	return &EncodingTest{
-		Name:         name,
-		Data:         byts,
-		ExpectedRoot: root,
-	}
+	return NewEncodingTest(
+		name,
+		byts,
+		root,
+	)
 }
 
 func ProposerConsensusDataEncoding() *EncodingTest {

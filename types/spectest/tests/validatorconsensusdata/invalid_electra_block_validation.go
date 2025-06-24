@@ -16,9 +16,9 @@ func InvalidElectraBlockValidation() *ValidatorConsensusDataTest {
 		Version: version,
 		DataSSZ: []byte{},
 	}
-	return &ValidatorConsensusDataTest{
-		Name:          "invalid electra block",
-		ConsensusData: *cd,
-		ExpectedError: "could not unmarshal ssz: incorrect size",
-	}
+	return NewValidatorConsensusDataTest(
+		"invalid electra block",
+		*cd,
+		"could not unmarshal ssz: incorrect size",
+	)
 }

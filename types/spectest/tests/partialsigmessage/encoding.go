@@ -19,9 +19,9 @@ func Encoding() *EncodingTest {
 		panic(err.Error())
 	}
 
-	return &EncodingTest{
-		Name:         "SignedPartialSignatureMessage encoding",
-		Data:         byts,
-		ExpectedRoot: root,
-	}
+	return NewEncodingTest(
+		"PartialSignatureMessages encoding",
+		byts,
+		root,
+	)
 }

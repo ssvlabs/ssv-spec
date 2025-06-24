@@ -1,5 +1,6 @@
 {
   "Name": "max SSVMessage from qbftMessage",
+  "Type": "Structure size",
   "Object": {
     "MsgType": 1,
     "MsgID": [

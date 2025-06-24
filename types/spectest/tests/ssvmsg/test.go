@@ -13,6 +13,7 @@ import (
 
 type SSVMessageTest struct {
 	Name               string
+	Type               string
 	MessageIDs         []types.MessageID
 	BelongsToValidator bool
 }
@@ -32,4 +33,13 @@ func (test *SSVMessageTest) Run(t *testing.T) {
 	}
 
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
+}
+
+func NewSSVMessageTest(name string, messageIDs []types.MessageID, belongsToValidator bool) *SSVMessageTest {
+	return &SSVMessageTest{
+		Name:               name,
+		Type:               "SSV message",
+		MessageIDs:         messageIDs,
+		BelongsToValidator: belongsToValidator,
+	}
 }

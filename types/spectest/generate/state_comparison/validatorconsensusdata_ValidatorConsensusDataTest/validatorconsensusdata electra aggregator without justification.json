@@ -1,5 +1,6 @@
 {
 		"Name": "electra aggregator without justification",
+		"Type": "Validator consensus data",
 		"ConsensusData": {
 				"Duty": {
 						"Type": 1,

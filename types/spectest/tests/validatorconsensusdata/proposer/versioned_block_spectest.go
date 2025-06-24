@@ -1,9 +1,10 @@
 package consensusdataproposer
 
 import (
-	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	reflect2 "reflect"
 	"testing"
+
+	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/stretchr/testify/require"
@@ -13,6 +14,7 @@ import (
 
 type ProposerSpecTest struct {
 	Name            string
+	Type            string
 	Blinded         bool
 	DataCd          []byte
 	DataBlk         []byte
@@ -121,4 +123,17 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 	require.EqualValues(t, test.DataCd, byts)
 
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
+}
+
+func NewProposerSpecTest(name string, blinded bool, dataCd []byte, dataBlk []byte, expectedBlkRoot [32]byte, expectedCdRoot [32]byte, expectedError string) *ProposerSpecTest {
+	return &ProposerSpecTest{
+		Name:            name,
+		Type:            "Proposer",
+		Blinded:         blinded,
+		DataCd:          dataCd,
+		DataBlk:         dataBlk,
+		ExpectedBlkRoot: expectedBlkRoot,
+		ExpectedCdRoot:  expectedCdRoot,
+		ExpectedError:   expectedError,
+	}
 }

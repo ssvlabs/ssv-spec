@@ -1,5 +1,6 @@
 {
   "Name": "partial root valid",
+  "Type": "Message",
   "Messages": [
     {
       "Type": 0,

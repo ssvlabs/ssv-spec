@@ -1,5 +1,6 @@
 {
   "Name": "signers and signatures with different length",
+  "Type": "Signed SSV message",
   "Messages": [
     {
       "Signatures": [

@@ -1,5 +1,6 @@
 {
   "Name": "invalid phase0 aggregator data",
+  "Type": "Validator consensus data",
   "ConsensusData": {
     "Duty": {
       "Type": 1,

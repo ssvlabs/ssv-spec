@@ -13,6 +13,7 @@ import (
 
 type SignedSSVMessageTest struct {
 	Name          string
+	Type          string
 	Messages      []*types.SignedSSVMessage
 	ExpectedError string
 	RSAPublicKey  [][]byte
@@ -56,5 +57,15 @@ func (test *SignedSSVMessageTest) Run(t *testing.T) {
 		} else {
 			require.NoError(t, err)
 		}
+	}
+}
+
+func NewSignedSSVMessageTest(name string, messages []*types.SignedSSVMessage, expectedError string, rsaPublicKey [][]byte) *SignedSSVMessageTest {
+	return &SignedSSVMessageTest{
+		Name:          name,
+		Type:          "Signed SSV message",
+		Messages:      messages,
+		ExpectedError: expectedError,
+		RSAPublicKey:  rsaPublicKey,
 	}
 }

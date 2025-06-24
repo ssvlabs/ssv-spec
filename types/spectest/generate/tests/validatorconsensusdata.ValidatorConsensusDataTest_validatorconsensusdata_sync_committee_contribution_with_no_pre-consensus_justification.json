@@ -1,5 +1,6 @@
 {
   "Name": "sync committee contribution with no pre-consensus justification",
+  "Type": "Validator consensus data",
   "ConsensusData": {
     "Duty": {
       "Type": 4,

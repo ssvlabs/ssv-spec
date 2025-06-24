@@ -1,5 +1,6 @@
 {
   "Name": "valid deneb block",
+  "Type": "Validator consensus data",
   "ConsensusData": {
     "Duty": {
       "Type": 2,
