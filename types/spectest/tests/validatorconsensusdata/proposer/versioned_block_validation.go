@@ -18,12 +18,13 @@ func VersionedBlockValidation() *ProposerSpecTest {
 		panic(err.Error())
 	}
 
-	return &ProposerSpecTest{
-		Name:            "consensus data versioned block validation",
-		Type:            "Proposer",
-		DataCd:          testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
-		DataBlk:         testingutils.TestingBeaconBlockBytesV(spec.DataVersionDeneb),
-		ExpectedCdRoot:  expectedCdRoot,
-		ExpectedBlkRoot: expectedBlkRoot,
-	}
+	return NewProposerSpecTest(
+		"consensus data versioned block validation",
+		false,
+		testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
+		testingutils.TestingBeaconBlockBytesV(spec.DataVersionDeneb),
+		expectedBlkRoot,
+		expectedCdRoot,
+		"",
+	)
 }
