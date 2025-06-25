@@ -1,5 +1,6 @@
 {
   "Name": "no previous accepted proposal",
+  "Type": "",
   "Pre": {
     "State": {
       "CommitteeMember": {

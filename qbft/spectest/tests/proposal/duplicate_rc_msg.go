@@ -18,15 +18,19 @@ func DuplicateRCMsg() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
 	}
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData, testingutils.MarshalJustifications(rcMsgs), nil),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:           "duplicate rc msg justification",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: change round has no quorum",
-	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"duplicate rc msg justification",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: proposal not justified: change round has no quorum",
+		nil,
+	)
 }

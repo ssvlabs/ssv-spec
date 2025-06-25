@@ -1,5 +1,6 @@
 {
   "Name": "commit data != prepared data",
+  "Type": "",
   "Pre": {
     "State": {
       "CommitteeMember": {

@@ -19,11 +19,11 @@ func MsgNilIdentifier() tests.SpecTest {
 		Root:       testingutils.TestingQBFTRootData,
 	})
 
-	return &tests.MsgSpecTest{
-		Name: "msg identifier nil",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		ExpectedError: "message identifier is invalid",
-	}
+	return tests.NewMsgSpecTest(
+		"msg identifier nil",
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		"message identifier is invalid",
+	)
 }

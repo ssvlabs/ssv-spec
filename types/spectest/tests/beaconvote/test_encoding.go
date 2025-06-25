@@ -41,7 +41,7 @@ func (test *EncodingTest) Run(t *testing.T) {
 func NewEncodingTest(name string, data []byte, expectedRoot [32]byte) *EncodingTest {
 	return &EncodingTest{
 		Name:         name,
-		Type:         "Encoding",
+		Type:         "Beacon vote encoding",
 		Data:         data,
 		ExpectedRoot: expectedRoot,
 	}

@@ -1,5 +1,6 @@
 {
   "Name": "wrong proposal height",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

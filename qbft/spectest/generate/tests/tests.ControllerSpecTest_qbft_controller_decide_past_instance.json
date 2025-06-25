@@ -1,5 +1,6 @@
 {
   "Name": "decide past instance",
+  "Type": "",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

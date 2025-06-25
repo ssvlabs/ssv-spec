@@ -1,5 +1,6 @@
 {
   "Name": "start instance valid",
+  "Type": "Controller",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

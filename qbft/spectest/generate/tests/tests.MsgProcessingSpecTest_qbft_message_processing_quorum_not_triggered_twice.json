@@ -1,5 +1,6 @@
 {
   "Name": "quorum not triggered twice",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

@@ -11,17 +11,20 @@ import (
 func InvalidValueCheck() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessageWithIdentifierAndFullData(
 			ks.OperatorKeys[1], types.OperatorID(1), testingutils.TestingIdentifier, testingutils.TestingInvalidValueCheck,
 			qbft.FirstHeight),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:           "invalid proposal value check",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: proposal fullData invalid: invalid value",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"invalid proposal value check",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: proposal not justified: proposal fullData invalid: invalid value",
+		nil,
+	)
 }

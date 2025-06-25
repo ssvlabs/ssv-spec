@@ -1,5 +1,6 @@
 {
 		"Name": "marshal justifications with full data",
+		"Type": "Messages (qbft)",
 		"Messages": [
 				{
 						"Signatures": [

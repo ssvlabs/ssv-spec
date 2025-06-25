@@ -1,5 +1,6 @@
 {
   "Name": "4 member committee",
+  "Type": "Round Robin",
   "Share": {
     "OperatorID": 1,
     "CommitteeID": [

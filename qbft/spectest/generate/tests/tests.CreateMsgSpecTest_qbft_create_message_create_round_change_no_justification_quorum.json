@@ -1,10 +1,11 @@
 {
   "Name": "create round change no justification quorum",
+  "Type": "Create message",
   "Value": [
-    0,
-    0,
-    0,
-    0,
+    1,
+    2,
+    3,
+    4,
     0,
     0,
     0,

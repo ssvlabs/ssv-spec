@@ -1,5 +1,6 @@
 {
   "Name": "happy flow seven operators",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

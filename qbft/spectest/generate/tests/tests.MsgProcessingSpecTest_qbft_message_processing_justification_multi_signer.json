@@ -1,5 +1,6 @@
 {
   "Name": "justification multi signer",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -162,7 +163,7 @@
       "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "invalid signed message: round change justification invalid: msg allows 1 signer",
   "ExpectedTimerState": null
 }

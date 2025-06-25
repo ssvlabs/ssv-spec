@@ -1,5 +1,6 @@
 {
   "Name": "different proposal round change justification",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

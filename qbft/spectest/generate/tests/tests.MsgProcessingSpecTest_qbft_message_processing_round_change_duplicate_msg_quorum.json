@@ -1,5 +1,6 @@
 {
   "Name": "round change duplicate msg quorum",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

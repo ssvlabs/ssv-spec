@@ -10,7 +10,7 @@ func TenOperators() SpecTest {
 	pre := testingutils.TenOperatorsInstance()
 	ks := testingutils.Testing10SharesSet()
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
@@ -29,13 +29,20 @@ func TenOperators() SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[6], types.OperatorID(6)),
 		testingutils.TestingCommitMessage(ks.OperatorKeys[7], types.OperatorID(7)),
 	}
-	return &MsgProcessingSpecTest{
-		Name:          "happy flow ten operators",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-		},
+
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
+
+	return NewMsgProcessingSpecTest(
+		"happy flow ten operators",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
 }

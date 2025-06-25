@@ -25,16 +25,20 @@ func PastRoundProposalPrevPrepared() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 8),
 	}
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 8, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs)),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:           "proposal past round (not prev prepared)",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: past round",
-	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"proposal past round (not prev prepared)",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: past round",
+		nil,
+	)
 }

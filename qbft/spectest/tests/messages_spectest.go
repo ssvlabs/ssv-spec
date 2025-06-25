@@ -11,6 +11,7 @@ import (
 // MsgSpecTest tests encoding and decoding of a msg
 type MsgSpecTest struct {
 	Name            string
+	Type            string
 	Messages        []*types.SignedSSVMessage
 	EncodedMessages [][]byte
 	ExpectedRoots   [][32]byte
@@ -60,4 +61,15 @@ func (test *MsgSpecTest) TestName() string {
 
 func (test *MsgSpecTest) GetPostState() (interface{}, error) {
 	return test, nil
+}
+
+func NewMsgSpecTest(name string, messages []*types.SignedSSVMessage, encodedMessages [][]byte, expectedRoots [][32]byte, expectedError string) *MsgSpecTest {
+	return &MsgSpecTest{
+		Name:            name,
+		Type:            "Messages (qbft)",
+		Messages:        messages,
+		EncodedMessages: encodedMessages,
+		ExpectedRoots:   expectedRoots,
+		ExpectedError:   expectedError,
+	}
 }

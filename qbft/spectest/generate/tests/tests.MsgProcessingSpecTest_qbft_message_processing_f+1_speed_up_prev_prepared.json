@@ -1,5 +1,6 @@
 {
   "Name": "f+1 speed up prev prepared",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

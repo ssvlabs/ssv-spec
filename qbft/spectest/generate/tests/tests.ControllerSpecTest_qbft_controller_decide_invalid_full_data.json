@@ -1,5 +1,6 @@
 {
   "Name": "decide invalid full data",
+  "Type": "",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

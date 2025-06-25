@@ -9,14 +9,16 @@ import (
 func EqualHeightNoRunningInstance() tests.SpecTest {
 	height := qbft.Height(2)
 
-	return &tests.ControllerSpecTest{
-		Name: "start instance for current height with no running instance",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"start instance for current height with no running instance",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				Height:     &height,
 			},
 		},
-		StartHeight: &height,
-	}
+		nil,
+		"",
+		&height,
+	)
 }

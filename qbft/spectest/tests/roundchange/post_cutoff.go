@@ -13,14 +13,18 @@ func PostCutoff() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 15
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 16),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "round cutoff round change message",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "instance stopped processing messages",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"round cutoff round change message",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"instance stopped processing messages",
+		nil,
+	)
 }

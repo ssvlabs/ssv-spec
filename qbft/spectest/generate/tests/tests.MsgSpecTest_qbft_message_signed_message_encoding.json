@@ -1,5 +1,6 @@
 {
   "Name": "signed message encoding",
+  "Type": "Messages (qbft)",
   "Messages": [
     {
       "Signatures": [

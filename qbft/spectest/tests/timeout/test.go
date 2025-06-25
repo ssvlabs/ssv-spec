@@ -15,6 +15,7 @@ import (
 
 type SpecTest struct {
 	Name               string
+	Type               string
 	Pre                *qbft.Instance
 	PostRoot           string
 	PostState          types.Root `json:"-"` // Field is ignored by encoding/json
@@ -68,4 +69,17 @@ func (test *SpecTest) Run(t *testing.T) {
 
 func (test *SpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
+}
+
+func NewSpecTest(name string, pre *qbft.Instance, postRoot string, postState types.Root, outputMessages []*types.SignedSSVMessage, expectedTimerState *testingutils.TimerState, expectedError string) *SpecTest {
+	return &SpecTest{
+		Name:               name,
+		Type:               "Timeout",
+		Pre:                pre,
+		PostRoot:           postRoot,
+		PostState:          postState,
+		OutputMessages:     outputMessages,
+		ExpectedTimerState: expectedTimerState,
+		ExpectedError:      expectedError,
+	}
 }

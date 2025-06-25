@@ -1,5 +1,6 @@
 {
   "Name": "single consensus msg",
+  "Type": "",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

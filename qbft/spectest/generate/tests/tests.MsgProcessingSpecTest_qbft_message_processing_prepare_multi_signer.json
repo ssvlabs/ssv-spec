@@ -1,5 +1,6 @@
 {
   "Name": "prepare multi signer",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

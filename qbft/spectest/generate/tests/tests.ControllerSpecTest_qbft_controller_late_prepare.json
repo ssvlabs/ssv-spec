@@ -1,5 +1,6 @@
 {
   "Name": "late prepare",
+  "Type": "",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

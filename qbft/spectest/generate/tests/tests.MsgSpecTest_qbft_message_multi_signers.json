@@ -1,5 +1,6 @@
 {
   "Name": "multi signers",
+  "Type": "Messages (qbft)",
   "Messages": [
     {
       "Signatures": [

@@ -19,11 +19,11 @@ func MsgNonZeroIdentifier() tests.SpecTest {
 		Root:       testingutils.TestingQBFTRootData,
 	})
 
-	return &tests.MsgSpecTest{
-		Name: "msg identifier len == 0",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		ExpectedError: "message identifier is invalid",
-	}
+	return tests.NewMsgSpecTest(
+		"msg identifier len == 0",
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		"message identifier is invalid",
+	)
 }

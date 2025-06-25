@@ -1,5 +1,6 @@
 {
   "Name": "force stop prepare message",
+  "Type": "Message processing",
   "Pre": {
     "forceStop": true,
     "State": {

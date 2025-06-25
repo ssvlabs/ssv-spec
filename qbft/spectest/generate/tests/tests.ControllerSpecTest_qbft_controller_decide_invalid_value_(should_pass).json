@@ -1,5 +1,6 @@
 {
   "Name": "decide invalid value (should pass)",
+  "Type": "",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

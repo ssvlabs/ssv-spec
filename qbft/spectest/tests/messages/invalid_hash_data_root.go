@@ -21,10 +21,11 @@ func InvalidHashDataRoot() tests.SpecTest {
 
 	msg.FullData = testingutils.TestingQBFTFullData
 
-	return &tests.MsgSpecTest{
-		Name: "invalid hash data root",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-	}
+	return tests.NewMsgSpecTest(
+		"invalid hash data root",
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		"",
+	)
 }

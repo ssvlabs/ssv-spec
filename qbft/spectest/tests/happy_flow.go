@@ -13,27 +13,33 @@ func HappyFlow() SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := happyFlowStateComparison()
 
-	return &MsgProcessingSpecTest{
-		Name:      "happy flow",
-		Pre:       pre,
-		PostRoot:  sc.Root(),
-		PostState: sc.ExpectedState,
-		InputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+	inputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[2], types.OperatorID(2)),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[3], types.OperatorID(3)),
-		},
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-		},
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[2], types.OperatorID(2)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 	}
+
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+	}
+
+	return NewMsgProcessingSpecTest(
+		"happy flow",
+		pre,
+		sc.Root(),
+		sc.ExpectedState,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
 }
 
 func happyFlowStateComparison() *qbftcomparable.StateComparison {

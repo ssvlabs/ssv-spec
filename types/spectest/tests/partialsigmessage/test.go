@@ -71,7 +71,7 @@ func (tests *MsgSpecTest) GetPostState() (interface{}, error) {
 func NewMsgSpecTest(name string, messages []*types.PartialSignatureMessages, encodedMessages [][]byte, expectedRoots [][32]byte, expectedError string) *MsgSpecTest {
 	return &MsgSpecTest{
 		Name:            name,
-		Type:            "Message",
+		Type:            "Messages (types)",
 		Messages:        messages,
 		EncodedMessages: encodedMessages,
 		ExpectedRoots:   expectedRoots,

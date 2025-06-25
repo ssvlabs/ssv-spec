@@ -1,5 +1,6 @@
 {
   "Name": "decide unknown signer",
+  "Type": "",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

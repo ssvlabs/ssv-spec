@@ -1,5 +1,6 @@
 {
   "Name": "msg identifier nil",
+  "Type": "Messages (qbft)",
   "Messages": [
     {
       "Signatures": [

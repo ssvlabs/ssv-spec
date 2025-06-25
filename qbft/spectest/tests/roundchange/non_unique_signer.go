@@ -21,15 +21,18 @@ func NonUniqueSigner() tests.SpecTest {
 	)
 	msg.OperatorIDs = []types.OperatorID{types.OperatorID(1), types.OperatorID(1)}
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		msg,
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:           "round change non unique signer",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: invalid SignedSSVMessage: non unique signer",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"round change non unique signer",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: invalid SignedSSVMessage: non unique signer",
+		nil,
+	)
 }

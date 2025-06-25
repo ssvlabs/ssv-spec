@@ -1,5 +1,6 @@
 {
   "Name": "second proposal for round",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

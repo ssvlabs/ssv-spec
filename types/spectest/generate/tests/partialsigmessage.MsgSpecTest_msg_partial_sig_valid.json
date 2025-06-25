@@ -1,6 +1,6 @@
 {
   "Name": "partial sig valid",
-  "Type": "Message",
+  "Type": "Messages (types)",
   "Messages": [
     {
       "Type": 0,

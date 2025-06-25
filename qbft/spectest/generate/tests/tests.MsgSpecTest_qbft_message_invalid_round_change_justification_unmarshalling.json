@@ -1,5 +1,6 @@
 {
   "Name": "invalid round change justification unmarshalling",
+  "Type": "Messages (qbft)",
   "Messages": [
     {
       "Signatures": [

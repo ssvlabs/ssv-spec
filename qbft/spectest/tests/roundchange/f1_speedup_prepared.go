@@ -17,19 +17,24 @@ func F1SpeedupPrevPrepared() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 	}
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 10),
 		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.OperatorKeys[3], types.OperatorID(3), 10,
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
-
-	return &tests.MsgProcessingSpecTest{
-		Name:          "f+1 speed up prev prepared",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingRoundChangeMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight,
-				[32]byte{}, 0, [][]byte{}),
-		},
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight,
+			[32]byte{}, 0, [][]byte{}),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"f+1 speed up prev prepared",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
 }

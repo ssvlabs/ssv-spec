@@ -1,5 +1,6 @@
 {
   "Name": "prepare wrong data",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

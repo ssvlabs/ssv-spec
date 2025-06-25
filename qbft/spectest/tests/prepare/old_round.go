@@ -23,13 +23,18 @@ func OldRound() tests.SpecTest {
 		ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 		testingutils.MarshalJustifications(rcMsgs), nil))
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], 1, 9),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "prepare prev round",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "invalid signed message: past round",
-	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"prepare prev round",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: past round",
+		nil,
+	)
 }

@@ -1,5 +1,6 @@
 {
   "Name": "commit no prepare quorum",
+  "Type": "",
   "Pre": {
     "State": {
       "CommitteeMember": {

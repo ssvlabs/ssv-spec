@@ -1,5 +1,6 @@
 {
   "Name": "round 5",
+  "Type": "Timeout",
   "Pre": {
     "State": {
       "CommitteeMember": {

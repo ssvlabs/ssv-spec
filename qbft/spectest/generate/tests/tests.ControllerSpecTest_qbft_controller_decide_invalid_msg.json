@@ -1,5 +1,6 @@
 {
   "Name": "decide invalid msg",
+  "Type": "",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

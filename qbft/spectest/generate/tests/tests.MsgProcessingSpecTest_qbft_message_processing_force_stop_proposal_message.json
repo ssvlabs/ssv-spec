@@ -1,5 +1,6 @@
 {
   "Name": "force stop proposal message",
+  "Type": "Message processing",
   "Pre": {
     "forceStop": true,
     "State": {

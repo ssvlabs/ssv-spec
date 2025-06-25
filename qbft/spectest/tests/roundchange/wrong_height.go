@@ -12,15 +12,18 @@ func WrongHeight() tests.SpecTest {
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithRoundAndHeight(ks.OperatorKeys[1], types.OperatorID(1), 2, 2),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:           "round change invalid height",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: wrong msg height",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"round change invalid height",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: wrong msg height",
+		nil,
+	)
 }

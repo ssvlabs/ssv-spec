@@ -1,5 +1,6 @@
 {
   "Name": "round change past round",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -304,7 +305,7 @@
       "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "invalid signed message: past round",
   "ExpectedTimerState": null
 }

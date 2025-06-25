@@ -1,5 +1,6 @@
 {
   "Name": "start instance for current height with no running instance",
+  "Type": "Controller",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

@@ -17,27 +17,30 @@ func Round2() tests.SpecTest {
 	pre.State.Round = 2
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2))
 
-	return &SpecTest{
-		Name:      "round 2",
-		Pre:       pre,
-		PostRoot:  sc.Root(),
-		PostState: sc.ExpectedState,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.SignQBFTMsg(ks.OperatorKeys[1], types.OperatorID(1), &qbft.Message{
-				MsgType:                  qbft.RoundChangeMsgType,
-				Height:                   qbft.FirstHeight,
-				Round:                    3,
-				Identifier:               testingutils.TestingIdentifier,
-				Root:                     [32]byte{},
-				RoundChangeJustification: [][]byte{},
-				PrepareJustification:     [][]byte{},
-			}),
-		},
-		ExpectedTimerState: &testingutils.TimerState{
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.SignQBFTMsg(ks.OperatorKeys[1], types.OperatorID(1), &qbft.Message{
+			MsgType:                  qbft.RoundChangeMsgType,
+			Height:                   qbft.FirstHeight,
+			Round:                    3,
+			Identifier:               testingutils.TestingIdentifier,
+			Root:                     [32]byte{},
+			RoundChangeJustification: [][]byte{},
+			PrepareJustification:     [][]byte{},
+		}),
+	}
+
+	return NewSpecTest(
+		"round 2",
+		pre,
+		sc.Root(),
+		sc.ExpectedState,
+		outputMessages,
+		&testingutils.TimerState{
 			Timeouts: 1,
 			Round:    3,
 		},
-	}
+		"",
+	)
 }
 
 func round2StateComparison() *comparable.StateComparison {

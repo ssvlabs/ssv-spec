@@ -23,6 +23,7 @@ const (
 
 type CreateMsgSpecTest struct {
 	Name string
+	Type string
 	// ISSUE 217: rename to root
 	Value [32]byte
 	// ISSUE 217: rename to value
@@ -158,4 +159,20 @@ func (test *CreateMsgSpecTest) TestName() string {
 
 func (test *CreateMsgSpecTest) GetPostState() (interface{}, error) {
 	return test, nil
+}
+
+func NewCreateMsgSpecTest(name string, value [32]byte, stateValue []byte, round qbft.Round, roundChangeJustifications []*types.SignedSSVMessage, prepareJustifications []*types.SignedSSVMessage, createType string, expectedRoot string, expectedState types.Root, expectedError string) *CreateMsgSpecTest {
+	return &CreateMsgSpecTest{
+		Name:                      name,
+		Type:                      "Create message",
+		Value:                     value,
+		StateValue:                stateValue,
+		Round:                     round,
+		RoundChangeJustifications: roundChangeJustifications,
+		PrepareJustifications:     prepareJustifications,
+		CreateType:                createType,
+		ExpectedRoot:              expectedRoot,
+		ExpectedState:             expectedState,
+		ExpectedError:             expectedError,
+	}
 }

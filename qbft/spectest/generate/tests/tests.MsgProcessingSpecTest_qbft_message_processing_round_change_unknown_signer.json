@@ -1,5 +1,6 @@
 {
   "Name": "round change unknown signer",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -162,7 +163,7 @@
       "FullData": null
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "invalid signed message: signer not in committee",
   "ExpectedTimerState": null
 }

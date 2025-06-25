@@ -1,5 +1,6 @@
 {
   "Name": "round change justification not proposer",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

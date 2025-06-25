@@ -1,5 +1,6 @@
 {
 		"Name": "valid hash data root",
+		"Type": "Messages (qbft)",
 		"Messages": [
 				{
 						"Signatures": [

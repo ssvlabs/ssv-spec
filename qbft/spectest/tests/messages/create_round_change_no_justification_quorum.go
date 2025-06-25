@@ -13,18 +13,23 @@ import (
 // The result should be an unjustified round change.
 func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	sc := CreateRoundChangeNoJustificationQuorumSC()
-	return &tests.CreateMsgSpecTest{
-		CreateType:    tests.CreateRoundChange,
-		Name:          "create round change no justification quorum",
-		StateValue:    testingutils.TestingQBFTFullData,
-		ExpectedState: sc.ExpectedState,
-		PrepareJustifications: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
-		},
-		ExpectedRoot: sc.Root(),
+	prepareJustifications := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
 	}
+	sc := CreateRoundChangeNoJustificationQuorumSC()
+	return tests.NewCreateMsgSpecTest(
+		"create round change no justification quorum",
+		[32]byte{1, 2, 3, 4},
+		testingutils.TestingQBFTFullData,
+		0,
+		nil,
+		prepareJustifications,
+		tests.CreateRoundChange,
+		sc.Root(),
+		sc.ExpectedState,
+		"",
+	)
 }
 
 func CreateRoundChangeNoJustificationQuorumSC() *comparable.StateComparison {

@@ -1,5 +1,6 @@
 {
   "Name": "force stop commit message",
+  "Type": "",
   "Pre": {
     "forceStop": true,
     "State": {

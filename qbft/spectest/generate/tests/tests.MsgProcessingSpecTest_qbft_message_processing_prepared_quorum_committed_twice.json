@@ -1,5 +1,6 @@
 {
   "Name": "prepared quorum committed twice",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

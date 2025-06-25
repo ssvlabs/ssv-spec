@@ -1,5 +1,6 @@
 {
   "Name": "proposal first round justification",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

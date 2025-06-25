@@ -1,5 +1,6 @@
 {
   "Name": "previously prepared proposal",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

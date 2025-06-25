@@ -12,22 +12,27 @@ func F1Speedup() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 10),
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 10),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "f+1 speed up",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingRoundChangeMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight,
-				[32]byte{}, 0, [][]byte{}),
-		},
-		ExpectedTimerState: &testingutils.TimerState{
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight,
+			[32]byte{}, 0, [][]byte{}),
+	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"f+1 speed up",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"",
+		&testingutils.TimerState{
 			Timeouts: 1,
 			Round:    qbft.Round(10),
 		},
-	}
+	)
 }

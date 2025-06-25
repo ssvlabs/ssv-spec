@@ -13,14 +13,18 @@ func ForceStop() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.ForceStop()
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "force stop proposal message",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "instance stopped processing messages",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"force stop proposal message",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"instance stopped processing messages",
+		nil,
+	)
 }

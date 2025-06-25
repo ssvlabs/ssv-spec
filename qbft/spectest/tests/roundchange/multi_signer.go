@@ -14,7 +14,7 @@ func MultiSigner() tests.SpecTest {
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingMultiSignerRoundChangeMessageWithRound(
 			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2]},
 			[]types.OperatorID{types.OperatorID(1), types.OperatorID(2)},
@@ -22,11 +22,14 @@ func MultiSigner() tests.SpecTest {
 		),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:           "round change multi signers",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: msg allows 1 signer",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"round change multi signers",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: msg allows 1 signer",
+		nil,
+	)
 }

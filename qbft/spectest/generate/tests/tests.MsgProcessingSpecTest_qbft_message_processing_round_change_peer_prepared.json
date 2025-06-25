@@ -1,5 +1,6 @@
 {
   "Name": "round change peer prepared",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

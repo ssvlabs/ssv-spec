@@ -13,21 +13,24 @@ func DuplicateMsgDifferentRoot() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
 	sc := duplicateMsgDifferentRootStateComparison()
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 		testingutils.TestingProposalMessageDifferentRoot(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "proposal duplicate message different value",
-		Pre:           pre,
-		PostRoot:      sc.Root(),
-		PostState:     sc.ExpectedState,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-		},
-		ExpectedError: "invalid signed message: proposal is not valid with current state",
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"proposal duplicate message different value",
+		pre,
+		sc.Root(),
+		sc.ExpectedState,
+		inputMessages,
+		outputMessages,
+		"invalid signed message: proposal is not valid with current state",
+		nil,
+	)
 }
 
 func duplicateMsgDifferentRootStateComparison() *comparable.StateComparison {

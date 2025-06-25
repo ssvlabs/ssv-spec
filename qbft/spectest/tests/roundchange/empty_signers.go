@@ -19,11 +19,14 @@ func EmptySigners() tests.SpecTest {
 		msg,
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:           "round change empty signer",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: invalid SignedSSVMessage: no signers",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"round change empty signer",
+		pre,
+		"",
+		nil,
+		msgs,
+		nil,
+		"invalid signed message: invalid SignedSSVMessage: no signers",
+		nil,
+	)
 }

@@ -40,16 +40,11 @@ func PrepareJustificationsUnmarshalling() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &tests.MsgSpecTest{
-		Name: "prepare justification unmarshalling",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		EncodedMessages: [][]byte{
-			encodedMsg,
-		},
-		ExpectedRoots: [][32]byte{
-			msgRoot,
-		},
-	}
+	return tests.NewMsgSpecTest(
+		"prepare justification unmarshalling",
+		[]*types.SignedSSVMessage{msg},
+		[][]byte{encodedMsg},
+		[][32]byte{msgRoot},
+		"",
+	)
 }

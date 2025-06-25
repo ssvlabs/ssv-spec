@@ -11,9 +11,9 @@ import (
 // PostFutureDecided tests starting a new instance after deciding with future decided msg
 func PostFutureDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
-		Name: "start instance post future decided",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"start instance post future decided",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -34,6 +34,8 @@ func PostFutureDecided() tests.SpecTest {
 				},
 			},
 		},
-		ExpectedError: "attempting to start an instance with a past height",
-	}
+		nil,
+		"attempting to start an instance with a past height",
+		nil,
+	)
 }

@@ -1,5 +1,6 @@
 {
   "Name": "msg identifier len == 0",
+  "Type": "Messages (qbft)",
   "Messages": [
     {
       "Signatures": [

@@ -1,5 +1,6 @@
 {
   "Name": "round change not prepared",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

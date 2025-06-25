@@ -23,10 +23,14 @@ func F1DuplicateSigner() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:           "round change f+1 duplicate",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"round change f+1 duplicate",
+		pre,
+		"",
+		nil,
+		msgs,
+		nil,
+		"",
+		nil,
+	)
 }

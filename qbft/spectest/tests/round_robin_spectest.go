@@ -1,14 +1,16 @@
 package tests
 
 import (
+	"testing"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 type RoundRobinSpecTest struct {
 	Name      string
+	Type      string
 	Share     *types.CommitteeMember
 	Heights   []qbft.Height
 	Rounds    []qbft.Round
@@ -35,4 +37,15 @@ func (test *RoundRobinSpecTest) TestName() string {
 
 func (test *RoundRobinSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
+}
+
+func NewRoundRobinSpecTest(name string, share *types.CommitteeMember, heights []qbft.Height, rounds []qbft.Round, proposers []types.OperatorID) *RoundRobinSpecTest {
+	return &RoundRobinSpecTest{
+		Name:      name,
+		Type:      "Round Robin",
+		Share:     share,
+		Heights:   heights,
+		Rounds:    rounds,
+		Proposers: proposers,
+	}
 }

@@ -22,16 +22,19 @@ func JustificationMultiSigners() tests.SpecTest {
 			[]types.OperatorID{2, 3},
 		),
 	}
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.OperatorKeys[1], types.OperatorID(1), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:           "justification multi signer",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: round change justification invalid: msg allows 1 signer",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"justification multi signer",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: round change justification invalid: msg allows 1 signer",
+		nil,
+	)
 }

@@ -1,5 +1,6 @@
 {
   "Name": "proposal post prepare",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

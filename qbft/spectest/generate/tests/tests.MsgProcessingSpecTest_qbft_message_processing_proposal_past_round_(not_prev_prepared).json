@@ -1,5 +1,6 @@
 {
   "Name": "proposal past round (not prev prepared)",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -162,7 +163,7 @@
       "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "invalid signed message: past round",
   "ExpectedTimerState": null
 }

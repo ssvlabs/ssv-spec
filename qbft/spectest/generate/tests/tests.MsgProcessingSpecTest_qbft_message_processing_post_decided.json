@@ -1,5 +1,6 @@
 {
   "Name": "post decided",
+  "Type": "",
   "Pre": {
     "State": {
       "CommitteeMember": {

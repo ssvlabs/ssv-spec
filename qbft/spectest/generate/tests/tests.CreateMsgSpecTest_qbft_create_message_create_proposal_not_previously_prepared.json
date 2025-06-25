@@ -1,5 +1,6 @@
 {
   "Name": "create proposal not previously prepared",
+  "Type": "Create message",
   "Value": [
     1,
     2,

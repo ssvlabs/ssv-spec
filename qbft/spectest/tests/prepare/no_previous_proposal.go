@@ -11,14 +11,18 @@ func NoPreviousProposal() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "no previous proposal for prepare",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "invalid signed message: did not receive proposal for this round",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"no previous proposal for prepare",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: did not receive proposal for this round",
+		nil,
+	)
 }

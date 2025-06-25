@@ -1,5 +1,6 @@
 {
   "Name": "proposal duplicate message different value",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

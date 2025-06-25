@@ -1,5 +1,6 @@
 {
 		"Name": "invalid hash data root",
+		"Type": "Messages (qbft)",
 		"Messages": [
 				{
 						"Signatures": [

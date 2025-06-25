@@ -1,5 +1,6 @@
 {
   "Name": "no signers",
+  "Type": "Messages (qbft)",
   "Messages": [
     {
       "Signatures": [

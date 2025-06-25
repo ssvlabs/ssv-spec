@@ -36,22 +36,28 @@ func HappyFlow() tests.SpecTest {
 		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
 		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	)
-	return &tests.MsgProcessingSpecTest{
-		Name:          "round change happy flow",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-			testingutils.TestingRoundChangeMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
-				[32]byte{}, 0, nil),
-			testingutils.TestingProposalMessageWithRoundAndRC(ks.OperatorKeys[1], types.OperatorID(1), 2,
-				testingutils.MarshalJustifications(rcMsgs)),
-			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
-			testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
-		},
-		ExpectedTimerState: &testingutils.TimerState{
+
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingRoundChangeMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
+			[32]byte{}, 0, nil),
+		testingutils.TestingProposalMessageWithRoundAndRC(ks.OperatorKeys[1], types.OperatorID(1), 2,
+			testingutils.MarshalJustifications(rcMsgs)),
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
+		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
+	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"round change happy flow",
+		pre,
+		"",
+		nil,
+		msgs,
+		outputMessages,
+		"",
+		&testingutils.TimerState{
 			Timeouts: 1,
 			Round:    qbft.Round(2),
 		},
-	}
+	)
 }

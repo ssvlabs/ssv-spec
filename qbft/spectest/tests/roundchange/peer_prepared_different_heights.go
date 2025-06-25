@@ -23,7 +23,7 @@ func PeerPreparedDifferentHeights() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 3),
 		testingutils.TestingRoundChangeMessageWithParamsAndFullData(
 			ks.OperatorKeys[2], types.OperatorID(2), 3, qbft.FirstHeight, testingutils.TestingQBFTRootData,
@@ -32,14 +32,20 @@ func PeerPreparedDifferentHeights() tests.SpecTest {
 			testingutils.TestingQBFTRootData, 2, testingutils.MarshalJustifications(prepareMsgs2), testingutils.TestingQBFTFullData),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "round change peer prepared different heights",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 3, qbft.FirstHeight,
-				testingutils.TestingQBFTRootData,
-				testingutils.MarshalJustifications(msgs), testingutils.MarshalJustifications(prepareMsgs2)),
-		},
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 3, qbft.FirstHeight,
+			testingutils.TestingQBFTRootData,
+			testingutils.MarshalJustifications(inputMessages), testingutils.MarshalJustifications(prepareMsgs2)),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"round change peer prepared different heights",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
 }

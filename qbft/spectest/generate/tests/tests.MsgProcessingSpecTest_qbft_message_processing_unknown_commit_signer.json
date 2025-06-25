@@ -1,5 +1,6 @@
 {
   "Name": "unknown commit signer",
+  "Type": "",
   "Pre": {
     "State": {
       "CommitteeMember": {

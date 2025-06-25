@@ -1,5 +1,6 @@
 {
   "Name": "prepare happy flow",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

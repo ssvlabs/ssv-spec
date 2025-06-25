@@ -1,5 +1,6 @@
 {
   "Name": "create commit",
+  "Type": "Create message",
   "Value": [
     1,
     2,

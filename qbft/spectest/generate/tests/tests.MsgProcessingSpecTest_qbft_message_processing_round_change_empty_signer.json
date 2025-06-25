@@ -1,5 +1,6 @@
 {
   "Name": "round change empty signer",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -160,7 +161,7 @@
       "FullData": null
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "invalid signed message: invalid SignedSSVMessage: no signers",
   "ExpectedTimerState": null
 }

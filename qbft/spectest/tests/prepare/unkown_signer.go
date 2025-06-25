@@ -13,13 +13,18 @@ func UnknownSigner() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)))
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(5)),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "prepare unknown signer",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "invalid signed message: signer not in committee",
-	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"prepare unknown signer",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: signer not in committee",
+		nil,
+	)
 }

@@ -1,5 +1,6 @@
 {
   "Name": "duplicate prepare message",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

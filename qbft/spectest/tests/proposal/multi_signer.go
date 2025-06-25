@@ -12,17 +12,21 @@ import (
 func MultiSigner() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingMultiSignerProposalMessage(
 			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2]},
 			[]types.OperatorID{1, 2},
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:           "proposal multi signer",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: msg allows 1 signer",
-	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"proposal multi signer",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: msg allows 1 signer",
+		nil,
+	)
 }

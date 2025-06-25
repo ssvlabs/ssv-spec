@@ -1,5 +1,6 @@
 {
   "Name": "marshal RC and Prepare justifications",
+  "Type": "Messages (qbft)",
   "Messages": [
     {
       "Signatures": [

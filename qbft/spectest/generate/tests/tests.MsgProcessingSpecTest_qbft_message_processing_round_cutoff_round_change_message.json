@@ -1,5 +1,6 @@
 {
   "Name": "round cutoff round change message",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

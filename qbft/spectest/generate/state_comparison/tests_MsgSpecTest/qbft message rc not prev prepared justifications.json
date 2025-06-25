@@ -1,5 +1,6 @@
 {
 		"Name": "rc not prev prepared justifications",
+		"Type": "Messages (qbft)",
 		"Messages": [
 				{
 						"Signatures": [

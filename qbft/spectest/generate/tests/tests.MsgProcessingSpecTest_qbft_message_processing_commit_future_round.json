@@ -1,5 +1,6 @@
 {
   "Name": "commit future round",
+  "Type": "",
   "Pre": {
     "State": {
       "CommitteeMember": {

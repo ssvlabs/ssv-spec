@@ -1,5 +1,6 @@
 {
   "Name": "quorum not triggered twice justification ignored",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

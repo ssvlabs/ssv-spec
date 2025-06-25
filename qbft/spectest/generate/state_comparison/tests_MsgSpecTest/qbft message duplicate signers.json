@@ -1,5 +1,6 @@
 {
 		"Name": "duplicate signers",
+		"Type": "Messages (qbft)",
 		"Messages": [
 				{
 						"Signatures": [

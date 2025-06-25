@@ -1,5 +1,6 @@
 {
   "Name": "force stop round change message",
+  "Type": "Message processing",
   "Pre": {
     "forceStop": true,
     "State": {

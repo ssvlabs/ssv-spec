@@ -17,18 +17,18 @@ func Round15() tests.SpecTest {
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[1],
 		types.OperatorID(1), 15))
 
-	return &SpecTest{
-		Name:      "round 15",
-		Pre:       pre,
-		PostRoot:  sc.Root(),
-		PostState: sc.ExpectedState,
-
-		ExpectedTimerState: &testingutils.TimerState{
+	return NewSpecTest(
+		"round 15",
+		pre,
+		sc.Root(),
+		sc.ExpectedState,
+		nil,
+		&testingutils.TimerState{
 			Timeouts: 0,
 			Round:    0,
 		},
-		ExpectedError: "instance stopped processing timeouts",
-	}
+		"instance stopped processing timeouts",
+	)
 }
 
 func round15StateComparison() *comparable.StateComparison {

@@ -1,5 +1,6 @@
 {
   "Name": "decide duplicate msg",
+  "Type": "",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

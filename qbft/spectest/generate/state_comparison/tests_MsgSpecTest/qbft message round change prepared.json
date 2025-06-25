@@ -1,5 +1,6 @@
 {
 		"Name": "round change prepared",
+		"Type": "Messages (qbft)",
 		"Messages": [
 				{
 						"Signatures": [

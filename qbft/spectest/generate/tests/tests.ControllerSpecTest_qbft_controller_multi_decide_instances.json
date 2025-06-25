@@ -1,5 +1,6 @@
 {
   "Name": "multi decide instances",
+  "Type": "",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

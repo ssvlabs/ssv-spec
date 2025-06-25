@@ -1,5 +1,6 @@
 {
   "Name": "round change happy flow",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

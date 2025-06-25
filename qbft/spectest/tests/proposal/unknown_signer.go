@@ -10,13 +10,18 @@ import (
 func UnknownSigner() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessage(ks.OperatorKeys[2], types.OperatorID(5)),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "unknown proposal signer",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "invalid signed message: signer not in committee",
-	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"unknown proposal signer",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: signer not in committee",
+		nil,
+	)
 }

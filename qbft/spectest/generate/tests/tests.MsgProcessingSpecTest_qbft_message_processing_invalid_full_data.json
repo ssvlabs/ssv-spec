@@ -1,5 +1,6 @@
 {
   "Name": "invalid full data",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

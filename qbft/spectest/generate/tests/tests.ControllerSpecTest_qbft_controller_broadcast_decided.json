@@ -1,5 +1,6 @@
 {
   "Name": "broadcast decided",
+  "Type": "",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

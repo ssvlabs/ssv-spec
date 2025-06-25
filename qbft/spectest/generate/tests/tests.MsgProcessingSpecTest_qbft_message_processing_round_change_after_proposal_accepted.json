@@ -1,5 +1,6 @@
 {
   "Name": "round change after proposal accepted",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

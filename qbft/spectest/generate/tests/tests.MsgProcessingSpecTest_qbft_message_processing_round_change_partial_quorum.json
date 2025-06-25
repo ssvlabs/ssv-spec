@@ -1,5 +1,6 @@
 {
   "Name": "round change partial quorum",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

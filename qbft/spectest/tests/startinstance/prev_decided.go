@@ -12,9 +12,9 @@ import (
 func PreviousDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return &tests.ControllerSpecTest{
-		Name: "start instance prev decided",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"start instance prev decided",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(
@@ -34,7 +34,10 @@ func PreviousDecided() tests.SpecTest {
 				ControllerPostState: previousDecidedStateComparison(1, false).ExpectedState,
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 }
 
 func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comparable.StateComparison {

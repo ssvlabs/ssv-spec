@@ -132,7 +132,7 @@ var AllTests = []tests.TestF{
 	proposal.NotPreparedPreviouslyJustification,
 	proposal.PreparedPreviouslyJustification,
 	proposal.DifferentJustifications,
-	proposal.JustificationsNotHeighest,
+	proposal.JustificationsNotHighest,
 	proposal.DuplicateMsg,
 	proposal.DuplicateMsgDifferentRoot,
 	proposal.FirstRoundJustification,

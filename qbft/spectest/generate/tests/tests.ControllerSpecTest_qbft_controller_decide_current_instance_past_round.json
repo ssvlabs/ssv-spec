@@ -1,5 +1,6 @@
 {
   "Name": "decide current instance past round",
+  "Type": "",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

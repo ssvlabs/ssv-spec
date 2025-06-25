@@ -1,5 +1,6 @@
 {
   "Name": "create prepare",
+  "Type": "Create message",
   "Value": [
     1,
     2,

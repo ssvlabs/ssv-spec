@@ -1,6 +1,6 @@
 {
 		"Name": "message signer 0",
-		"Type": "Message",
+		"Type": "Messages (types)",
 		"Messages": [
 				{
 						"Type": 1,

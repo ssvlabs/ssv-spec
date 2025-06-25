@@ -1,5 +1,6 @@
 {
 		"Name": "prepare data encoding",
+		"Type": "Messages (qbft)",
 		"Messages": [
 				{
 						"Signatures": [

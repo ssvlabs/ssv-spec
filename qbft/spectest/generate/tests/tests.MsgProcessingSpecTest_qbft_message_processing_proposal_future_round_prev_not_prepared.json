@@ -1,5 +1,6 @@
 {
   "Name": "proposal future round prev not prepared",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

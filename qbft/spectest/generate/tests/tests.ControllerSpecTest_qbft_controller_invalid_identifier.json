@@ -1,5 +1,6 @@
 {
   "Name": "invalid identifier",
+  "Type": "",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

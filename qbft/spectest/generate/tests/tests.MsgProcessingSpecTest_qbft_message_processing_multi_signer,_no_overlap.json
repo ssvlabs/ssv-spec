@@ -1,5 +1,6 @@
 {
   "Name": "multi signer, no overlap",
+  "Type": "",
   "Pre": {
     "State": {
       "CommitteeMember": {

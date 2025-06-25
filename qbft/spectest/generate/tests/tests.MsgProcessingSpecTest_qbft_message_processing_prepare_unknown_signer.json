@@ -1,5 +1,6 @@
 {
   "Name": "prepare unknown signer",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

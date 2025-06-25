@@ -1,5 +1,6 @@
 {
   "Name": "wrong commit height",
+  "Type": "",
   "Pre": {
     "State": {
       "CommitteeMember": {

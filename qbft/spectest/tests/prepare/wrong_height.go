@@ -13,13 +13,18 @@ func WrongHeight() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)))
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingPrepareMessageWithHeight(ks.OperatorKeys[1], types.OperatorID(1), 2),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "prepare wrong height",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "invalid signed message: wrong msg height",
-	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"prepare wrong height",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: wrong msg height",
+		nil,
+	)
 }

@@ -1,5 +1,6 @@
 {
 		"Name": "create round change",
+		"Type": "Create message",
 		"Value": [
 				1,
 				2,

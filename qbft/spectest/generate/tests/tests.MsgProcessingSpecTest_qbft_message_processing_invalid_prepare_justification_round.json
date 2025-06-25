@@ -1,5 +1,6 @@
 {
   "Name": "invalid prepare justification round",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -162,7 +163,7 @@
       "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: wrong msg round",
   "ExpectedTimerState": null
 }

@@ -1,5 +1,6 @@
 {
   "Name": "duplicate commit message",
+  "Type": "",
   "Pre": {
     "State": {
       "CommitteeMember": {

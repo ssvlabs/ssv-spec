@@ -16,10 +16,11 @@ func SignedMsgMultiSigners() tests.SpecTest {
 		[]types.OperatorID{1, 2, 3},
 	)
 
-	return &tests.MsgSpecTest{
-		Name: "multi signers",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-	}
+	return tests.NewMsgSpecTest(
+		"multi signers",
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		"",
+	)
 }

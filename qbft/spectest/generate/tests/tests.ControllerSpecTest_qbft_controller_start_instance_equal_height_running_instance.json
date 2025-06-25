@@ -1,5 +1,6 @@
 {
   "Name": "start instance equal height running instance",
+  "Type": "Controller",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

@@ -1,5 +1,6 @@
 {
   "Name": "process msg error",
+  "Type": "",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

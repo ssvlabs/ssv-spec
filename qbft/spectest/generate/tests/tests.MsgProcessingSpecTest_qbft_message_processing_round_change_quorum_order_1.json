@@ -1,5 +1,6 @@
 {
   "Name": "round change quorum order 1",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

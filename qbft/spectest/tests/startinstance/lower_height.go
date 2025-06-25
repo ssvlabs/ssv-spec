@@ -10,9 +10,9 @@ func LowerHeight() tests.SpecTest {
 	height1 := qbft.Height(1)
 	firstHeight := qbft.FirstHeight
 
-	return &tests.ControllerSpecTest{
-		Name: "start instance lower height",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"start instance lower height",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				Height:     &height1,
@@ -22,6 +22,8 @@ func LowerHeight() tests.SpecTest {
 				Height:     &firstHeight,
 			},
 		},
-		ExpectedError: "attempting to start an instance with a past height",
-	}
+		nil,
+		"attempting to start an instance with a past height",
+		nil,
+	)
 }

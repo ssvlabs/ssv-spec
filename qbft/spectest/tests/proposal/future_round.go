@@ -27,22 +27,28 @@ func FutureRound() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 10),
 	}
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "proposal future round prev prepared",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 10),
-		},
-		ExpectedTimerState: &testingutils.TimerState{
+
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 10),
+	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"proposal future round prev prepared",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"",
+		&testingutils.TimerState{
 			Timeouts: 1,
 			Round:    qbft.Round(10),
 		},
-	}
+	)
 }

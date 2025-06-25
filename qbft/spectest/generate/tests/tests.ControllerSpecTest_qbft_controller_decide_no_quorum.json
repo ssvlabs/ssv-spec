@@ -1,5 +1,6 @@
 {
   "Name": "decide no quorum",
+  "Type": "",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

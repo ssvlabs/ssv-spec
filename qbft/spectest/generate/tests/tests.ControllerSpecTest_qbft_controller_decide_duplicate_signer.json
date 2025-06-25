@@ -1,5 +1,6 @@
 {
   "Name": "decide duplicate signer",
+  "Type": "",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

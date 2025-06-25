@@ -6,13 +6,15 @@ import (
 
 // NilValue tests a starting an instance for a nil value (not passing value check)
 func NilValue() tests.SpecTest {
-	return &tests.ControllerSpecTest{
-		Name: "start instance nil value",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"start instance nil value",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: nil,
 			},
 		},
-		ExpectedError: "value invalid: invalid value",
-	}
+		nil,
+		"value invalid: invalid value",
+		nil,
+	)
 }

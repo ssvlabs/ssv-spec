@@ -10,7 +10,7 @@ func ThirteenOperators() SpecTest {
 	pre := testingutils.ThirteenOperatorsInstance()
 	ks := testingutils.Testing13SharesSet()
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
@@ -33,13 +33,20 @@ func ThirteenOperators() SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[8], types.OperatorID(8)),
 		testingutils.TestingCommitMessage(ks.OperatorKeys[9], types.OperatorID(9)),
 	}
-	return &MsgProcessingSpecTest{
-		Name:          "happy flow thirteen operators",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-		},
+
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
+
+	return NewMsgProcessingSpecTest(
+		"happy flow thirteen operators",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
 }

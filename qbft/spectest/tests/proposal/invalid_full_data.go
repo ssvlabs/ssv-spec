@@ -13,10 +13,16 @@ func InvalidFullData() tests.SpecTest {
 	msg := testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1))
 	msg.FullData = nil
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "invalid full data",
-		Pre:           pre,
-		InputMessages: []*types.SignedSSVMessage{msg},
-		ExpectedError: "invalid signed message: H(data) != root",
-	}
+	inputMessages := []*types.SignedSSVMessage{msg}
+
+	return tests.NewMsgProcessingSpecTest(
+		"invalid full data",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: H(data) != root",
+		nil,
+	)
 }

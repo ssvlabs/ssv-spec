@@ -18,16 +18,20 @@ func DuplicateMsg() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 	}
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 5),
 		testingutils.TestingRoundChangeMessageWithParamsAndFullData(ks.OperatorKeys[1], types.OperatorID(1), 5, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData, qbft.FirstRound, testingutils.MarshalJustifications(prepareMsgs), testingutils.TestingQBFTFullData),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:           "round change duplicate msg",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"round change duplicate msg",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"",
+		nil,
+	)
 }

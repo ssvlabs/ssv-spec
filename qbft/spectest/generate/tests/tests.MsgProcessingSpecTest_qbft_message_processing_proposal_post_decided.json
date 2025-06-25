@@ -1,5 +1,6 @@
 {
   "Name": "proposal post decided",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {

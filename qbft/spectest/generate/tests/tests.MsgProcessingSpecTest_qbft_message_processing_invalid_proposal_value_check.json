@@ -1,5 +1,6 @@
 {
   "Name": "invalid proposal value check",
+  "Type": "Message processing",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -162,7 +163,7 @@
       "FullData": "AQEBAQ=="
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "invalid signed message: proposal not justified: proposal fullData invalid: invalid value",
   "ExpectedTimerState": null
 }

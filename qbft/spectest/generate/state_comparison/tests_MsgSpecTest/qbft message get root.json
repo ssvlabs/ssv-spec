@@ -1,5 +1,6 @@
 {
 		"Name": "get root",
+		"Type": "Messages (qbft)",
 		"Messages": [
 				{
 						"Signatures": [

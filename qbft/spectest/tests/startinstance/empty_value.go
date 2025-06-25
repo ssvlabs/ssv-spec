@@ -6,13 +6,15 @@ import (
 
 // EmptyValue tests a starting an instance for an empty value (not passing value check)
 func EmptyValue() tests.SpecTest {
-	return &tests.ControllerSpecTest{
-		Name: "start instance empty value",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"start instance empty value",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{},
 			},
 		},
-		ExpectedError: "value invalid: invalid value",
-	}
+		nil,
+		"value invalid: invalid value",
+		nil,
+	)
 }

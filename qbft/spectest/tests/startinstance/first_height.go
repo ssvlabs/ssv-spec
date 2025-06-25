@@ -8,9 +8,9 @@ import (
 
 // FirstHeight tests a starting the first instance
 func FirstHeight() tests.SpecTest {
-	return &tests.ControllerSpecTest{
-		Name: "start instance first height",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"start instance first height",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				ExpectedDecidedState: tests.DecidedState{
@@ -22,5 +22,8 @@ func FirstHeight() tests.SpecTest {
 				},
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 }

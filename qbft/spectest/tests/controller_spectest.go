@@ -36,6 +36,7 @@ type RunInstanceData struct {
 
 type ControllerSpecTest struct {
 	Name            string
+	Type            string
 	RunInstanceData []*RunInstanceData
 	OutputMessages  []*types.SignedSSVMessage
 	ExpectedError   string
@@ -261,4 +262,15 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 		ret[i] = copied
 	}
 	return ret, nil
+}
+
+func NewControllerSpecTest(name string, runInstanceData []*RunInstanceData, outputMessages []*types.SignedSSVMessage, expectedError string, startHeight *qbft.Height) *ControllerSpecTest {
+	return &ControllerSpecTest{
+		Name:            name,
+		Type:            "Controller",
+		RunInstanceData: runInstanceData,
+		OutputMessages:  outputMessages,
+		ExpectedError:   expectedError,
+		StartHeight:     startHeight,
+	}
 }
