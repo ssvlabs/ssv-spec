@@ -9,11 +9,15 @@ import (
 
 // Valid tests valid data
 func Valid() tests.SpecTest {
-	return &valcheck.SpecTest{
-		Name:       "attestation value check valid",
-		Network:    types.PraterNetwork,
-		RunnerRole: types.RoleCommittee,
-		DutySlot:   testingutils.TestingDutySlot,
-		Input:      testingutils.TestBeaconVoteByts,
-	}
+	return valcheck.NewSpecTest(
+		"attestation value check valid",
+		types.PraterNetwork,
+		types.RoleCommittee,
+		testingutils.TestingDutySlot,
+		testingutils.TestBeaconVoteByts,
+		nil,
+		nil,
+		"",
+		false,
+	)
 }

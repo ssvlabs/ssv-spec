@@ -21,9 +21,9 @@ func NilSSVMessage() tests.SpecTest {
 		SSVMessage:  nil,
 	}
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus nil ssvmessage",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus nil ssvmessage",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -70,7 +70,7 @@ func NilSSVMessage() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

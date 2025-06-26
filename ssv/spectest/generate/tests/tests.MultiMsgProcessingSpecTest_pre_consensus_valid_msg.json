@@ -1,5 +1,6 @@
 {
   "Name": "pre consensus valid msg",
+  "Type": "SSV multi message processing",
   "Tests": [
     {
       "Name": "sync committee aggregator selection proof",

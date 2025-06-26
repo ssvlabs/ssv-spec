@@ -1,5 +1,6 @@
 {
   "Name": "post consensus invalid and valid validator index quorum",
+  "Type": "SSV multi message processing",
   "Tests": [
     {
       "Name": "attester (phase0)",

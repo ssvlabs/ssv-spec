@@ -29,17 +29,14 @@ func MissingSomeShares() tests.SpecTest {
 	// Duty's validator indexes
 	dutyValidators := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "start committee duty with missing shares",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 
 		slot := testingutils.TestingDutySlotV(version)
 		height := qbft.Height(slot)
 
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+		tests = append(tests, []*committee.CommitteeSpecTest{
 
 			{
 				Name:      fmt.Sprintf("attestation (%s)", version.String()),
@@ -126,6 +123,8 @@ func MissingSomeShares() tests.SpecTest {
 			},
 		}...)
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest("start committee duty with missing shares", tests)
 
 	return multiSpecTest
 }

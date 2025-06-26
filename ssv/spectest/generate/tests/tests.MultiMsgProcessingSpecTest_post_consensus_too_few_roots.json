@@ -1,5 +1,6 @@
 {
   "Name": "post consensus too few roots",
+  "Type": "SSV multi message processing",
   "Tests": [
     {
       "Name": "sync committee contribution",

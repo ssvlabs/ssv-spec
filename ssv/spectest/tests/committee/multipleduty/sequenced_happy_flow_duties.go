@@ -12,10 +12,7 @@ import (
 // SequencedHappyFlowDuties performs the happy flow of a sequence of duties
 func SequencedHappyFlowDuties() tests.SpecTest {
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "sequenced happy flow duties",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		// TODO add 500
@@ -25,7 +22,7 @@ func SequencedHappyFlowDuties() tests.SpecTest {
 				ksMap := testingutils.KeySetMapForValidators(numValidators)
 				shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
-				multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+				tests = append(tests, []*committee.CommitteeSpecTest{
 					{
 						Name:                   fmt.Sprintf("%v duties %v attestation (%s)", numSequencedDuties, numValidators, version.String()),
 						Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
@@ -51,6 +48,8 @@ func SequencedHappyFlowDuties() tests.SpecTest {
 			}
 		}
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest("sequenced happy flow duties", tests)
 
 	return multiSpecTest
 }

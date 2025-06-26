@@ -16,9 +16,9 @@ func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "SignedSSVMessage has an invalid signature: unknown signer"
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus unknown signer",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus unknown signer",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -38,7 +38,7 @@ func UnknownSigner() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

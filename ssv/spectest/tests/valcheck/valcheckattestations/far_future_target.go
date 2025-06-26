@@ -24,12 +24,15 @@ func FarFutureTarget() tests.SpecTest {
 
 	input, _ := data.Encode()
 
-	return &valcheck.SpecTest{
-		Name:          "attestation value check far future target",
-		Network:       types.BeaconTestNetwork,
-		RunnerRole:    types.RoleCommittee,
-		DutySlot:      testingutils.TestingDutySlot,
-		Input:         input,
-		ExpectedError: "attestation data target epoch is into far future",
-	}
+	return valcheck.NewSpecTest(
+		"attestation value check far future target",
+		types.BeaconTestNetwork,
+		types.RoleCommittee,
+		testingutils.TestingDutySlot,
+		input,
+		nil,
+		nil,
+		"attestation data target epoch is into far future",
+		false,
+	)
 }

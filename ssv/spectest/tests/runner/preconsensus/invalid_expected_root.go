@@ -13,9 +13,9 @@ import (
 // InvalidExpectedRoot tests 1 expected root which doesn't match the signed root
 func InvalidExpectedRoot() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus invalid expected roots",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus invalid expected roots",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -82,7 +82,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 				ExpectedError: "failed processing voluntary exit message: invalid pre-consensus message: wrong signing root",
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

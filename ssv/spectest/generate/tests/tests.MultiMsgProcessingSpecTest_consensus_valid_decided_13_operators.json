@@ -1,5 +1,6 @@
 {
   "Name": "consensus valid decided 13 operators",
+  "Type": "SSV multi message processing",
   "Tests": [
     {
       "Name": "sync committee contribution",

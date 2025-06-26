@@ -55,9 +55,9 @@ func PostInvalidDecided() tests.SpecTest {
 		return r
 	}
 
-	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty post invalid decided",
-		Tests: []*StartNewRunnerDutySpecTest{
+	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
+		"new duty post invalid decided",
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name: "sync committee aggregator",
 				Runner: decideWrong(testingutils.SyncCommitteeContributionRunner(ks),
@@ -82,7 +82,7 @@ func PostInvalidDecided() tests.SpecTest {
 				},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{

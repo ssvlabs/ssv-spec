@@ -19,10 +19,7 @@ func HappyFlow() tests.SpecTest {
 	ks := testingutils.TestingKeySetMap[phase0.ValidatorIndex(1)]
 	msgID := testingutils.CommitteeMsgID(ks)
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "happy flow",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		// TODO add 500
@@ -35,7 +32,7 @@ func HappyFlow() tests.SpecTest {
 			slot := testingutils.TestingDutySlotV(version)
 			height := qbft.Height(slot)
 
-			multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+			tests = append(tests, []*committee.CommitteeSpecTest{
 				{
 					Name:      fmt.Sprintf("%v attestation (%s)", numValidators, version.String()),
 					Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
@@ -116,6 +113,8 @@ func HappyFlow() tests.SpecTest {
 			}...)
 		}
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest("happy flow", tests)
 
 	return multiSpecTest
 }

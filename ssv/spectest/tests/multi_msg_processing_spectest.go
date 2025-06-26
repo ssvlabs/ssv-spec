@@ -11,6 +11,7 @@ import (
 
 type MultiMsgProcessingSpecTest struct {
 	Name  string
+	Type  string
 	Tests []*MsgProcessingSpecTest
 }
 
@@ -47,4 +48,12 @@ func (tests *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
 		ret[test.Name] = test.Runner
 	}
 	return ret, nil
+}
+
+func NewMultiMsgProcessingSpecTest(name string, tests []*MsgProcessingSpecTest) *MultiMsgProcessingSpecTest {
+	return &MultiMsgProcessingSpecTest{
+		Name:  name,
+		Type:  "SSV multi message processing",
+		Tests: tests,
+	}
 }

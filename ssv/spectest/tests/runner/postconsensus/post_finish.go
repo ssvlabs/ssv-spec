@@ -15,9 +15,9 @@ func PostFinish() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 	err := "failed processing post consensus message: invalid post-consensus message: no running duty"
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus post finish",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus post finish",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: finishRunner(
@@ -70,7 +70,7 @@ func PostFinish() tests.SpecTest {
 				ExpectedError:           err,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

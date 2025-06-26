@@ -12,10 +12,7 @@ import (
 // StartDuty starts a cluster runner
 func StartDuty() tests.SpecTest {
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "start duty",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		// TODO add 500
@@ -24,7 +21,7 @@ func StartDuty() tests.SpecTest {
 			validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 			ksMap := testingutils.KeySetMapForValidators(numValidators)
 
-			multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+			tests = append(tests, []*committee.CommitteeSpecTest{
 
 				{
 					Name:      fmt.Sprintf("%v attestation (%s)", numValidators, version.String()),
@@ -53,6 +50,8 @@ func StartDuty() tests.SpecTest {
 			}...)
 		}
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest("start duty", tests)
 
 	return multiSpecTest
 }

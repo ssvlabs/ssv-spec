@@ -18,10 +18,10 @@ func MixedCommittees() tests.SpecTest {
 	ksMap := testingutils.KeySetMapForValidators(numValidators)
 	shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name:  "mixed committees",
-		Tests: []*tests.MsgProcessingSpecTest{},
-	}
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"mixed committees",
+		[]*tests.MsgProcessingSpecTest{},
+	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 

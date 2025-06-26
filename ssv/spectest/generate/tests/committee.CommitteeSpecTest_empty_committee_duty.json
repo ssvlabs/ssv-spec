@@ -1,5 +1,6 @@
 {
   "Name": "empty committee duty",
+  "omitempty": "Committee",
   "Committee": {
     "Runners": {},
     "CommitteeMember": {

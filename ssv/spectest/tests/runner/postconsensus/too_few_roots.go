@@ -16,9 +16,9 @@ func TooFewRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	err := "invalid PartialSignatureMessages: no PartialSignatureMessages messages"
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus too few roots",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus too few roots",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -71,7 +71,7 @@ func TooFewRoots() tests.SpecTest {
 				ExpectedError:           err,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

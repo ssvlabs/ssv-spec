@@ -26,9 +26,9 @@ func FarFutureDutySlot() tests.SpecTest {
 		return ret
 	}
 
-	return &valcheck.MultiSpecTest{
-		Name: "far future duty slot",
-		Tests: []*valcheck.SpecTest{
+	return valcheck.NewMultiSpecTest(
+		"far future duty slot",
+		[]*valcheck.SpecTest{
 			{
 				Name:       "committee",
 				Network:    types.BeaconTestNetwork,
@@ -65,5 +65,5 @@ func FarFutureDutySlot() tests.SpecTest {
 				ExpectedError: "duty invalid: duty epoch is into far future",
 			},
 		},
-	}
+	)
 }

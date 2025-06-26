@@ -1,5 +1,6 @@
 {
   "Name": "start with no shares for duty",
+  "omitempty": "Committee",
   "Committee": {
     "Runners": {},
     "CommitteeMember": {

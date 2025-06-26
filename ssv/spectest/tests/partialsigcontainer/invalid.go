@@ -24,13 +24,13 @@ func Invalid() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &PartialSigContainerTest{
-		Name:            "invalid",
-		Quorum:          ks.Threshold,
-		ValidatorPubKey: ks.ValidatorPK.Serialize(),
-		SignatureMsgs:   msgs,
-		ExpectedError:   "could not reconstruct a valid signature",
-		ExpectedResult:  expectedSig.Serialize(),
-		ExpectedQuorum:  true,
-	}
+	return NewPartialSigContainerTest(
+		"invalid",
+		ks.Threshold,
+		ks.ValidatorPK.Serialize(),
+		msgs,
+		"could not reconstruct a valid signature",
+		expectedSig.Serialize(),
+		true,
+	)
 }

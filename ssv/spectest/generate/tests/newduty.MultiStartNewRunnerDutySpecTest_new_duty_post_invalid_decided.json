@@ -1,5 +1,6 @@
 {
   "Name": "new duty post invalid decided",
+  "Type": "Multi start new runner duty",
   "Tests": [
     {
       "Name": "sync committee aggregator",

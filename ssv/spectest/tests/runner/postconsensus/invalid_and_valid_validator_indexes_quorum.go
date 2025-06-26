@@ -16,10 +16,10 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 
 	validatorsIndex := []phase0.ValidatorIndex{testingutils.TestingWrongValidatorIndex, testingutils.TestingValidatorIndex}
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name:  "post consensus invalid and valid validator index quorum",
-		Tests: []*tests.MsgProcessingSpecTest{},
-	}
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus invalid and valid validator index quorum",
+		[]*tests.MsgProcessingSpecTest{},
+	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{

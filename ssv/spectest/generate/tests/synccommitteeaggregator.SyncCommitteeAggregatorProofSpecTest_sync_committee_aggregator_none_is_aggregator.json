@@ -1,5 +1,6 @@
 {
   "Name": "sync committee aggregator none is aggregator",
+  "Type": "Sync committee aggregator proof",
   "Messages": [
     {
       "Signatures": [

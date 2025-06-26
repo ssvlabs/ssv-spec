@@ -22,9 +22,9 @@ func NoSignatures() tests.SpecTest {
 	expectedError := "invalid SignedSSVMessage: no signatures"
 
 	ks := testingutils.Testing4SharesSet()
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "no signatures",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"no signatures",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -122,7 +122,7 @@ func NoSignatures() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

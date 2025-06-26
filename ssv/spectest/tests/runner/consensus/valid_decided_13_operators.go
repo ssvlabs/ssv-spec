@@ -14,9 +14,9 @@ import (
 // ValidDecided13Operators tests a valid decided value (13 operators)
 func ValidDecided13Operators() tests.SpecTest {
 	ks := testingutils.Testing13SharesSet()
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus valid decided 13 operators",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus valid decided 13 operators",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:                    "sync committee contribution",
 				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
@@ -51,7 +51,7 @@ func ValidDecided13Operators() tests.SpecTest {
 				},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

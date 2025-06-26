@@ -35,9 +35,9 @@ func FutureDecided() tests.SpecTest {
 	errStr := "failed processing consensus message: decided wrong instance"
 	errStrCommittee := "no runner found for message's slot"
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus future decided",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus future decided",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -61,7 +61,7 @@ func FutureDecided() tests.SpecTest {
 				ExpectedError: errStr,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

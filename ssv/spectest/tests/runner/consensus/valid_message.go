@@ -15,9 +15,9 @@ import (
 func ValidMessage() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus valid message",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus valid message",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -112,7 +112,7 @@ func ValidMessage() tests.SpecTest {
 				ExpectedError: "no consensus phase for voluntary exit",
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

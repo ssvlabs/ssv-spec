@@ -13,9 +13,9 @@ import (
 // Quorum13Operators  tests a quorum of valid SignedPartialSignatureMessage (13 operators)
 func Quorum13Operators() tests.SpecTest {
 	ks := testingutils.Testing13SharesSet()
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus quorum 13 operators",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus quorum 13 operators",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -123,7 +123,7 @@ func Quorum13Operators() tests.SpecTest {
 				},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

@@ -13,9 +13,9 @@ import (
 // ValidMessage13Operators tests a valid SignedPartialSignatureMessage with multi PartialSignatureMessages (13 operators)
 func ValidMessage13Operators() tests.SpecTest {
 	ks := testingutils.Testing13SharesSet()
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus valid msg 13 operators",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus valid msg 13 operators",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -74,7 +74,7 @@ func ValidMessage13Operators() tests.SpecTest {
 				},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

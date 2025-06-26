@@ -1,5 +1,6 @@
 {
   "Name": "post consensus quorum 13 operators",
+  "Type": "SSV multi message processing",
   "Tests": [
     {
       "Name": "sync committee contribution",

@@ -1,5 +1,6 @@
 {
   "Name": "post consensus post finish",
+  "Type": "SSV multi message processing",
   "Tests": [
     {
       "Name": "sync committee contribution",

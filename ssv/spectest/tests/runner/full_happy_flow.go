@@ -14,9 +14,9 @@ import (
 func FullHappyFlow() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "full happy flow",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"full happy flow",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -79,7 +79,7 @@ func FullHappyFlow() tests.SpecTest {
 				},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

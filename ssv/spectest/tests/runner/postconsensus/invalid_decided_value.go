@@ -35,9 +35,9 @@ func InvalidDecidedValue() tests.SpecTest {
 	}
 
 	expectedErr := "failed processing post consensus message: invalid post-consensus message: no decided value"
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus decided invalid value",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus decided invalid value",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -117,7 +117,7 @@ func InvalidDecidedValue() tests.SpecTest {
 				ExpectedError: expectedErr,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

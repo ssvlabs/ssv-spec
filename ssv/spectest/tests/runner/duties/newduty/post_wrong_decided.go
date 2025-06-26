@@ -55,9 +55,9 @@ func PostWrongDecided() tests.SpecTest {
 	expectedError := fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
 		testingutils.TestingDutySlot, 50)
 
-	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty post wrong decided",
-		Tests: []*StartNewRunnerDutySpecTest{
+	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
+		"new duty post wrong decided",
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
 				Runner:                  decideWrong(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty, 50),
@@ -82,7 +82,7 @@ func PostWrongDecided() tests.SpecTest {
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb), testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50),
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 

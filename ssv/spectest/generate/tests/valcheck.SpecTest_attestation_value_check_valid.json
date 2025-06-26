@@ -5,7 +5,6 @@
   "DutySlot": "12",
   "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
   "SlashableSlots": null,
-  "omitempty": null,
   "ExpectedError": "",
   "AnyError": false
 }

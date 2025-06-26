@@ -1,5 +1,6 @@
 {
   "Name": "consensus future decided no running instance",
+  "Type": "SSV multi message processing",
   "Tests": [
     {
       "Name": "sync committee contribution",

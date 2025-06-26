@@ -5,7 +5,6 @@
   "DutySlot": "12",
   "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECgJaYAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
   "SlashableSlots": null,
-  "omitempty": null,
   "ExpectedError": "attestation data target epoch is into far future",
   "AnyError": false
 }

@@ -28,9 +28,9 @@ func InvalidMessageSlot() tests.SpecTest {
 	expectedErr := "failed processing post consensus message: invalid post-consensus message: invalid partial sig slot"
 	expectedErrCommittee := "no runner found for message's slot"
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus invalid msg slot",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus invalid msg slot",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -121,7 +121,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				ExpectedError: "no post consensus phase for voluntary exit",
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

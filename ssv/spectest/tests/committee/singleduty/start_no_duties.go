@@ -13,13 +13,16 @@ func StartNoDuty() tests.SpecTest {
 
 	ksMapFor1Validator := testingutils.KeySetMapForValidators(1)
 
-	return &committee.CommitteeSpecTest{
-		Name:      "empty committee duty",
-		Committee: testingutils.BaseCommittee(ksMapFor1Validator),
-		Input: []interface{}{
+	return committee.NewCommitteeSpecTest(
+		"empty committee duty",
+		testingutils.BaseCommittee(ksMapFor1Validator),
+		[]interface{}{
 			testingutils.TestingCommitteeDuty(nil, nil, spec.DataVersionElectra),
 		},
-		ExpectedError:  "no beacon duties",
-		OutputMessages: []*types.PartialSignatureMessages{},
-	}
+		"",
+		nil,
+		[]*types.PartialSignatureMessages{},
+		nil,
+		"no beacon duties",
+	)
 }

@@ -21,6 +21,7 @@ import (
 
 type StartNewRunnerDutySpecTest struct {
 	Name                    string
+	Type                    string `json:"omitempty"`
 	Runner                  ssv.Runner
 	Duty                    types.Duty
 	Threshold               uint64
@@ -124,6 +125,7 @@ func (test *StartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
 
 type MultiStartNewRunnerDutySpecTest struct {
 	Name  string
+	Type  string
 	Tests []*StartNewRunnerDutySpecTest
 }
 
@@ -267,4 +269,26 @@ func (t *StartNewRunnerDutySpecTest) UnmarshalJSON(data []byte) error {
 	}
 
 	return nil
+}
+
+func NewStartNewRunnerDutySpecTest(name string, runner ssv.Runner, duty types.Duty, threshold uint64, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, expectedError string) *StartNewRunnerDutySpecTest {
+	return &StartNewRunnerDutySpecTest{
+		Name:                    name,
+		Type:                    "Start new runner duty",
+		Runner:                  runner,
+		Duty:                    duty,
+		Threshold:               threshold,
+		PostDutyRunnerStateRoot: postDutyRunnerStateRoot,
+		PostDutyRunnerState:     postDutyRunnerState,
+		OutputMessages:          outputMessages,
+		ExpectedError:           expectedError,
+	}
+}
+
+func NewMultiStartNewRunnerDutySpecTest(name string, tests []*StartNewRunnerDutySpecTest) *MultiStartNewRunnerDutySpecTest {
+	return &MultiStartNewRunnerDutySpecTest{
+		Name:  name,
+		Type:  "Multi start new runner duty",
+		Tests: tests,
+	}
 }

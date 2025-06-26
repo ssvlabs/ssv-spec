@@ -1,5 +1,6 @@
 {
   "Name": "different length of signers and signatures",
+  "Type": "SSV multi message processing",
   "Tests": [
     {
       "Name": "sync committee contribution",

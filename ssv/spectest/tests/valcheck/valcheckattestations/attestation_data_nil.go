@@ -15,12 +15,15 @@ func BeaconVoteDataNil() tests.SpecTest {
 	}
 	input, _ := consensusData.Encode()
 
-	return &valcheck.SpecTest{
-		Name:          "consensus data value check nil",
-		Network:       types.PraterNetwork,
-		RunnerRole:    types.RoleCommittee,
-		DutySlot:      testingutils.TestingDutySlot,
-		Input:         input,
-		ExpectedError: "attestation data source >= target",
-	}
+	return valcheck.NewSpecTest(
+		"consensus data value check nil",
+		types.PraterNetwork,
+		types.RoleCommittee,
+		testingutils.TestingDutySlot,
+		input,
+		nil,
+		nil,
+		"attestation data source >= target",
+		false,
+	)
 }

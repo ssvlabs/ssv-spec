@@ -1,5 +1,6 @@
 {
   "Name": "post consensus invalid operator signature",
+  "Type": "SSV multi message processing",
   "Tests": [
     {
       "Name": "sync committee contribution",

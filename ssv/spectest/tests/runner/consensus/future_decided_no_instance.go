@@ -44,9 +44,9 @@ func FutureDecidedNoInstance() tests.SpecTest {
 
 	expectedErr := "no runner found for message's slot"
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus future decided no running instance",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus future decided no running instance",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:           "sync committee contribution",
 				Runner:         testingutils.SyncCommitteeContributionRunner(ks),
@@ -56,7 +56,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

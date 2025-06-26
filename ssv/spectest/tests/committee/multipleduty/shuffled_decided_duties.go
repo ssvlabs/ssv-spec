@@ -12,10 +12,7 @@ import (
 // ShuffledDecidedDuties decides duties with shuffled input messages (that preserves order between duty messages)
 func ShuffledDecidedDuties() tests.SpecTest {
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "shuffled decided duties",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		// TODO add 500
@@ -25,7 +22,7 @@ func ShuffledDecidedDuties() tests.SpecTest {
 				ksMap := testingutils.KeySetMapForValidators(numValidators)
 				shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
-				multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+				tests = append(tests, []*committee.CommitteeSpecTest{
 					{
 						Name:           fmt.Sprintf("%v duties %v attestation (%s)", numSequencedDuties, numValidators, version.String()),
 						Committee:      testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
@@ -48,6 +45,8 @@ func ShuffledDecidedDuties() tests.SpecTest {
 			}
 		}
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest("shuffled decided duties", tests)
 
 	return multiSpecTest
 }

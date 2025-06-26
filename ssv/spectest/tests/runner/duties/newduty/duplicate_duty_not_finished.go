@@ -47,9 +47,9 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 		testingutils.TestingDutySlot,
 		testingutils.TestingDutySlot)
 
-	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
-		Name: "duplicate duty not finished",
-		Tests: []*StartNewRunnerDutySpecTest{
+	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
+		"duplicate duty not finished",
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
 				Runner:                  notFinishRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
@@ -95,7 +95,7 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				ExpectedError:           expectedTaskError,
 			},
 		},
-	}
+	)
 	for _, version := range testingutils.SupportedAggregatorVersions {
 
 		refSlot := testingutils.TestingDutySlotV(version)

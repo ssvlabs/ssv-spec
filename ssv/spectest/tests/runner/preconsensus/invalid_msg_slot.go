@@ -19,9 +19,9 @@ func InvalidMessageSlot() tests.SpecTest {
 		return msg
 	}
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus invalid msg slot",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus invalid msg slot",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -88,7 +88,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				ExpectedError: "failed processing voluntary exit message: invalid pre-consensus message: invalid partial sig slot",
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

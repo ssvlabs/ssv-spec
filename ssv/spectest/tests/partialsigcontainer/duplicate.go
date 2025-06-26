@@ -18,12 +18,13 @@ func Duplicate() tests.SpecTest {
 	msg3 := testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, spec.DataVersionPhase0)
 	msgs := []*types.PartialSignatureMessage{msg1.Messages[0], msg2.Messages[0], msg3.Messages[0]}
 
-	return &PartialSigContainerTest{
-		Name:            "duplicate",
-		Quorum:          ks.Threshold,
-		ValidatorPubKey: ks.ValidatorPK.Serialize(),
-		SignatureMsgs:   msgs,
-		ExpectedError:   "could not reconstruct a valid signature",
-		ExpectedQuorum:  false,
-	}
+	return NewPartialSigContainerTest(
+		"duplicate",
+		ks.Threshold,
+		ks.ValidatorPK.Serialize(),
+		msgs,
+		"could not reconstruct a valid signature",
+		nil,
+		false,
+	)
 }

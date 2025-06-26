@@ -42,14 +42,15 @@ func MajoritySlashable() tests.SpecTest {
 		slashableMap[sharesPKString[i]] = []phase0.Slot{testingutils.TestingDutySlot}
 	}
 
-	return &valcheck.SpecTest{
-		Name:              "attestation value check with slashable majority",
-		Network:           types.BeaconTestNetwork,
-		RunnerRole:        types.RoleCommittee,
-		DutySlot:          testingutils.TestingDutySlot,
-		Input:             input,
-		ExpectedError:     "slashable attestation",
-		SlashableSlots:    slashableMap,
-		ShareValidatorsPK: sharesPKBytes,
-	}
+	return valcheck.NewSpecTest(
+		"attestation value check with slashable majority",
+		types.BeaconTestNetwork,
+		types.RoleCommittee,
+		testingutils.TestingDutySlot,
+		input,
+		slashableMap,
+		sharesPKBytes,
+		"slashable attestation",
+		false,
+	)
 }

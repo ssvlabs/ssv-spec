@@ -1,5 +1,6 @@
 {
   "Name": "post consensus partial invalid root quorum then valid quorum",
+  "Type": "SSV multi message processing",
   "Tests": [
     {
       "Name": "attester (phase0)",

@@ -21,9 +21,9 @@ func PostFinish() tests.SpecTest {
 		return runner
 	}
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus post finish",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus post finish",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee aggregator selection proof",
 				Runner: finishRunner(
@@ -73,7 +73,7 @@ func PostFinish() tests.SpecTest {
 				ExpectedError:           "failed processing voluntary exit message: invalid pre-consensus message: no running duty",
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

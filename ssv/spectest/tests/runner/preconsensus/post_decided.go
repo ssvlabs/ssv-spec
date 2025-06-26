@@ -37,9 +37,9 @@ func PostDecided() tests.SpecTest {
 		return r
 	}
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus post decided",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus post decided",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee aggregator selection proof",
 				Runner: decideRunner(
@@ -62,7 +62,7 @@ func PostDecided() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

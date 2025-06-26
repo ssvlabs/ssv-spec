@@ -45,13 +45,10 @@ func WrongMessageID() tests.SpecTest {
 
 	validatorsIndexList := testingutils.ValidatorIndexList(1)
 	ksMap := testingutils.KeySetMapForValidators(1)
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "wrong message ID",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+		tests = append(tests, []*committee.CommitteeSpecTest{
 			{
 				Name:      fmt.Sprintf("sync committees (%s)", version.String()),
 				Committee: testingutils.BaseCommittee(ksMap),
@@ -74,6 +71,8 @@ func WrongMessageID() tests.SpecTest {
 			},
 		}...)
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest("wrong message ID", tests)
 
 	return multiSpecTest
 }

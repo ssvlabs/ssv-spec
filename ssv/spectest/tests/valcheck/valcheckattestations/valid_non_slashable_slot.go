@@ -30,17 +30,19 @@ func ValidNonSlashableSlot() tests.SpecTest {
 	sharePKBytes := keySet.Shares[1].Serialize()
 	shareString := hex.EncodeToString(sharePKBytes)
 
-	return &valcheck.SpecTest{
-		Name:       "attestation valid with non slashable slot",
-		Network:    types.BeaconTestNetwork,
-		RunnerRole: types.RoleCommittee,
-		DutySlot:   testingutils.TestingDutySlot + 1,
-		Input:      input,
-		SlashableSlots: map[string][]phase0.Slot{
+	return valcheck.NewSpecTest(
+		"attestation valid with non slashable slot",
+		types.BeaconTestNetwork,
+		types.RoleCommittee,
+		testingutils.TestingDutySlot+1,
+		input,
+		map[string][]phase0.Slot{
 			shareString: {
 				testingutils.TestingDutySlot,
 			},
 		},
-		ShareValidatorsPK: []types.ShareValidatorPK{sharePKBytes},
-	}
+		[]types.ShareValidatorPK{sharePKBytes},
+		"",
+		false,
+	)
 }

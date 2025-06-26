@@ -14,10 +14,10 @@ import (
 func NormalProposerAcceptsBlindedBlock() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name:  "normal proposer accepts blinded block proposal",
-		Tests: []*tests.MsgProcessingSpecTest{},
-	}
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"normal proposer accepts blinded block proposal",
+		[]*tests.MsgProcessingSpecTest{},
+	)
 
 	// proposerReceivingBlindedBlockV creates a test specification for versioned normal proposer receiving blinded block as proposal.
 	proposerReceivingBlindedBlockV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {

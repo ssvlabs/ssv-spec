@@ -13,6 +13,7 @@ import (
 
 type SpecTest struct {
 	Name              string
+	Type              string `json:"omitempty"`
 	Network           types.BeaconNetwork
 	RunnerRole        types.RunnerRole
 	DutySlot          phase0.Slot // DutySlot is used only for the RoleCommittee since the BeaconVoteValueCheckF requires the duty's slot
@@ -79,6 +80,7 @@ func (tests *SpecTest) GetPostState() (interface{}, error) {
 
 type MultiSpecTest struct {
 	Name  string
+	Type  string
 	Tests []*SpecTest
 }
 
@@ -96,4 +98,27 @@ func (test *MultiSpecTest) Run(t *testing.T) {
 
 func (tests *MultiSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
+}
+
+func NewSpecTest(name string, network types.BeaconNetwork, role types.RunnerRole, dutySlot phase0.Slot, input []byte, slashableSlots map[string][]phase0.Slot, shareValidatorsPK []types.ShareValidatorPK, expectedError string, anyError bool) *SpecTest {
+	return &SpecTest{
+		Name:              name,
+		Type:              "Value check",
+		Network:           network,
+		RunnerRole:        role,
+		DutySlot:          dutySlot,
+		Input:             input,
+		SlashableSlots:    slashableSlots,
+		ShareValidatorsPK: shareValidatorsPK,
+		ExpectedError:     expectedError,
+		AnyError:          anyError,
+	}
+}
+
+func NewMultiSpecTest(name string, tests []*SpecTest) *MultiSpecTest {
+	return &MultiSpecTest{
+		Name:  name,
+		Type:  "Multi value check",
+		Tests: tests,
+	}
 }

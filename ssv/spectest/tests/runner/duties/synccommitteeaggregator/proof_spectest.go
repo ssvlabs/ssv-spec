@@ -17,6 +17,7 @@ import (
 
 type SyncCommitteeAggregatorProofSpecTest struct {
 	Name                    string
+	Type                    string
 	Messages                []*types.SignedSSVMessage
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     string
@@ -79,4 +80,16 @@ func (test *SyncCommitteeAggregatorProofSpecTest) overrideStateComparison(t *tes
 	require.NoError(t, err2)
 
 	test.PostDutyRunnerStateRoot = hex.EncodeToString(r[:])
+}
+
+func NewSyncCommitteeAggregatorProofSpecTest(name string, messages []*types.SignedSSVMessage, postDutyRunnerStateRoot string, postDutyRunnerState string, proofRootsMap map[string]bool, expectedError string) *SyncCommitteeAggregatorProofSpecTest {
+	return &SyncCommitteeAggregatorProofSpecTest{
+		Name:                    name,
+		Type:                    "Sync committee aggregator proof",
+		Messages:                messages,
+		PostDutyRunnerStateRoot: postDutyRunnerStateRoot,
+		PostDutyRunnerState:     postDutyRunnerState,
+		ProofRootsMap:           proofRootsMap,
+		ExpectedError:           expectedError,
+	}
 }

@@ -26,9 +26,9 @@ func WrongValidatorPK() tests.SpecTest {
 	}
 
 	expectedErr := "duty invalid: wrong validator pk"
-	return &valcheck.MultiSpecTest{
-		Name: "wrong validator PK",
-		Tests: []*valcheck.SpecTest{
+	return valcheck.NewMultiSpecTest(
+		"wrong validator PK",
+		[]*valcheck.SpecTest{
 			{
 				Name:       "committee",
 				Network:    types.BeaconTestNetwork,
@@ -65,6 +65,5 @@ func WrongValidatorPK() tests.SpecTest {
 				ExpectedError: expectedErr,
 			},
 		},
-	}
-
+	)
 }

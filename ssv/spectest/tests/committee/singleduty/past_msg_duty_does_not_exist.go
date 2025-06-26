@@ -40,13 +40,10 @@ func PastMessageDutyDoesNotExist() tests.SpecTest {
 
 	expectedError := "no runner found for message's slot"
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "past msg duty does not exist",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+		tests = append(tests, []*committee.CommitteeSpecTest{
 			{
 				Name:      fmt.Sprintf("%v attestation (%s)", numValidators, version.String()),
 				Committee: testingutils.BaseCommittee(ksMap),
@@ -79,6 +76,8 @@ func PastMessageDutyDoesNotExist() tests.SpecTest {
 			},
 		}...)
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest("past msg duty does not exist", tests)
 
 	return multiSpecTest
 }

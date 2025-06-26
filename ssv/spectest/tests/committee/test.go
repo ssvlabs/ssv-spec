@@ -21,6 +21,7 @@ import (
 
 type CommitteeSpecTest struct {
 	Name                   string
+	Type                   string `json:"omitempty"`
 	Committee              *ssv.Committee
 	Input                  []interface{} // Can be a types.Duty or a *types.SignedSSVMessage
 	PostDutyCommitteeRoot  string
@@ -127,6 +128,7 @@ func (test *CommitteeSpecTest) GetPostState() (interface{}, error) {
 
 type MultiCommitteeSpecTest struct {
 	Name  string
+	Type  string
 	Tests []*CommitteeSpecTest
 }
 
@@ -163,4 +165,26 @@ func (tests *MultiCommitteeSpecTest) GetPostState() (interface{}, error) {
 		ret[test.Name] = test.Committee
 	}
 	return ret, nil
+}
+
+func NewCommitteeSpecTest(name string, committee *ssv.Committee, input []interface{}, postDutyCommitteeRoot string, postDutyCommittee types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, expectedError string) *CommitteeSpecTest {
+	return &CommitteeSpecTest{
+		Name:                   name,
+		Type:                   "Committee",
+		Committee:              committee,
+		Input:                  input,
+		PostDutyCommitteeRoot:  postDutyCommitteeRoot,
+		PostDutyCommittee:      postDutyCommittee,
+		OutputMessages:         outputMessages,
+		BeaconBroadcastedRoots: beaconBroadcastedRoots,
+		ExpectedError:          expectedError,
+	}
+}
+
+func NewMultiCommitteeSpecTest(name string, tests []*CommitteeSpecTest) *MultiCommitteeSpecTest {
+	return &MultiCommitteeSpecTest{
+		Name:  name,
+		Type:  "Multi committee",
+		Tests: tests,
+	}
 }

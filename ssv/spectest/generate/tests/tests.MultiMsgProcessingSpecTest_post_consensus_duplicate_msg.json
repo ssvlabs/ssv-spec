@@ -1,5 +1,6 @@
 {
   "Name": "post consensus duplicate msg",
+  "Type": "SSV multi message processing",
   "Tests": [
     {
       "Name": "sync committee contribution",
