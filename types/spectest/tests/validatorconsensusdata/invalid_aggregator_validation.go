@@ -14,6 +14,7 @@ func Phase0InvalidAggregatorValidation() *ValidatorConsensusDataTest {
 
 	return NewValidatorConsensusDataTest(
 		"invalid phase0 aggregator data",
+		"Test validation error for invalid consensus data with Phase0 AggregateAndProof using incorrect data",
 		*cd,
 		"could not unmarshal ssz: incorrect size",
 	)
@@ -28,6 +29,7 @@ func ElectraInvalidAggregatorValidation() *ValidatorConsensusDataTest {
 
 	return NewValidatorConsensusDataTest(
 		"invalid electra aggregator data",
+		"Test validation error for invalid consensus data with Electra AggregateAndProof using incorrect data",
 		*cd,
 		"could not unmarshal ssz: incorrect size",
 	)

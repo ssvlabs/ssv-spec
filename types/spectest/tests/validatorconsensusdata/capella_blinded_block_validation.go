@@ -9,6 +9,7 @@ import (
 func CapellaBlindedBlockValidation() *ValidatorConsensusDataTest {
 	return NewValidatorConsensusDataTest(
 		"valid capella blinded block",
+		"Test validation of valid consensus data with Capella blinded block",
 		*testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionCapella),
 		"",
 	)

@@ -9,6 +9,7 @@ import (
 func ElectraBlindedBlockValidation() *ValidatorConsensusDataTest {
 	return NewValidatorConsensusDataTest(
 		"valid electra blinded block",
+		"Test validation of valid consensus data with Electra blinded block",
 		*testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionElectra),
 		"",
 	)

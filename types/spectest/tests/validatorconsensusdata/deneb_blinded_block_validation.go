@@ -9,6 +9,7 @@ import (
 func DenebBlindedBlockValidation() *ValidatorConsensusDataTest {
 	return NewValidatorConsensusDataTest(
 		"valid deneb blinded block",
+		"Test validation of valid consensus data with Deneb blinded block",
 		*testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb),
 		"",
 	)

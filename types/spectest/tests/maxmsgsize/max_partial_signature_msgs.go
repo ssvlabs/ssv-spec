@@ -53,6 +53,7 @@ func maxPartialSignatureMessagesForPreConsensus() *types.PartialSignatureMessage
 func MaxPartialSignatureMessage() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"max PartialSignatureMessage",
+		"Test the maximum size of a single partial signature message",
 		maxPartialSignatureMessage(),
 		maxSizePartialSignatureMessage,
 		true,
@@ -62,6 +63,7 @@ func MaxPartialSignatureMessage() *StructureSizeTest {
 func MaxPartialSignatureMessages() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"max PartialSignatureMessages",
+		"Test the maximum size of partial signature messages collection",
 		maxPartialSignatureMessages(),
 		maxSizePartialSignatureMessages,
 		true,
@@ -71,6 +73,7 @@ func MaxPartialSignatureMessages() *StructureSizeTest {
 func MaxPartialSignatureMessagesForPreConsensus() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"max PartialSignatureMessages for pre-consensus",
+		"Test the maximum size of partial signature messages for pre-consensus phase",
 		maxPartialSignatureMessagesForPreConsensus(),
 		maxSizePartialSignatureMessagesForPreConsensus,
 		false,

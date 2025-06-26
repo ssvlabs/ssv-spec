@@ -1,6 +1,7 @@
 {
 		"Name": "map aggregator role",
 		"Type": "Duty",
+		"Documentation": "Test mapping of BNRoleAggregator",
 		"BeaconRole": 1,
 		"RunnerRole": 1
 }

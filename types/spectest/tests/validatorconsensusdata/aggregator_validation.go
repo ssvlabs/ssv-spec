@@ -9,6 +9,7 @@ import (
 func Phase0AggregatorValidation() *ValidatorConsensusDataTest {
 	return NewValidatorConsensusDataTest(
 		"phase0 aggregator valid",
+		"Test validation of valid consensus data with Phase0 AggregateAndProof",
 		*testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0),
 		"",
 	)
@@ -18,6 +19,7 @@ func Phase0AggregatorValidation() *ValidatorConsensusDataTest {
 func ElectraAggregatorValidation() *ValidatorConsensusDataTest {
 	return NewValidatorConsensusDataTest(
 		"electra aggregator valid",
+		"Test validation of valid consensus data with Electra AggregateAndProof",
 		*testingutils.TestAggregatorConsensusData(spec.DataVersionElectra),
 		"",
 	)

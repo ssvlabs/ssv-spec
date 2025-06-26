@@ -1,6 +1,7 @@
 {
   "Name": "belongs",
   "Type": "SSV message",
+  "Documentation": "Test that message IDs with matching validator public key belong to the validator",
   "MessageIDs": [
     [
       0,

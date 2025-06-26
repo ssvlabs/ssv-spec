@@ -1,6 +1,7 @@
 {
 		"Name": "zero signer",
 		"Type": "Signed SSV message",
+		"Documentation": "Test validation error for signed SSV message with zero signer ID",
 		"Messages": [
 				{
 						"Signatures": [

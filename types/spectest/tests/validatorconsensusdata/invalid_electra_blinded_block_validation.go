@@ -18,6 +18,7 @@ func InvalidElectraBlindedBlockValidation() *ValidatorConsensusDataTest {
 	}
 	return NewValidatorConsensusDataTest(
 		"invalid electra blinded block",
+		"Test validation error for invalid consensus data with empty Electra blinded block data",
 		*cd,
 		"could not unmarshal ssz: incorrect size",
 	)

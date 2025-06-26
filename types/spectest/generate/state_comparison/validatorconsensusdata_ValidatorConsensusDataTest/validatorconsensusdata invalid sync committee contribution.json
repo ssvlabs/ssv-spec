@@ -1,6 +1,7 @@
 {
 		"Name": "invalid sync committee contribution",
 		"Type": "Validator consensus data",
+		"Documentation": "Test validation error for invalid consensus data with sync committee contribution using incorrect data",
 		"ConsensusData": {
 				"Duty": {
 						"Type": 4,

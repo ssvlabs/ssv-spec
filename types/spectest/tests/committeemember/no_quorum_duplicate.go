@@ -17,6 +17,7 @@ func NoQuorumDuplicate() *CommitteeMemberTest {
 
 	return NewCommitteeMemberTest(
 		"no quorum duplicate",
+		"Test that committee member has no quorum when signers include duplicates should be rejected",
 		*committeeMember,
 		*msg,
 		false,

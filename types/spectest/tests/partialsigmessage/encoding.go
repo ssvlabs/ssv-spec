@@ -21,6 +21,7 @@ func Encoding() *EncodingTest {
 
 	return NewEncodingTest(
 		"PartialSignatureMessages encoding",
+		"Test encoding and decoding of partial signature messages with hash tree root verification",
 		byts,
 		root,
 	)

@@ -8,11 +8,12 @@ import (
 )
 
 type EncryptionSpecTest struct {
-	Name      string
-	Type      string
-	SKPem     []byte
-	PKPem     []byte
-	PlainText []byte
+	Name          string
+	Type          string
+	Documentation string
+	SKPem         []byte
+	PKPem         []byte
+	PlainText     []byte
 }
 
 func (test *EncryptionSpecTest) TestName() string {
@@ -42,12 +43,13 @@ func (test *EncryptionSpecTest) Run(t *testing.T) {
 	require.EqualValues(t, test.PlainText, plain)
 }
 
-func NewEncryptionSpecTest(name string, skPem []byte, pkPem []byte, plainText []byte) *EncryptionSpecTest {
+func NewEncryptionSpecTest(name, documentation string, skPem []byte, pkPem []byte, plainText []byte) *EncryptionSpecTest {
 	return &EncryptionSpecTest{
-		Name:      name,
-		Type:      "Encryption",
-		SKPem:     skPem,
-		PKPem:     pkPem,
-		PlainText: plainText,
+		Name:          name,
+		Type:          "Encryption",
+		Documentation: documentation,
+		SKPem:         skPem,
+		PKPem:         pkPem,
+		PlainText:     plainText,
 	}
 }

@@ -12,6 +12,7 @@ func Phase0AggregatorNoJustifications() *ValidatorConsensusDataTest {
 
 	return NewValidatorConsensusDataTest(
 		"phase0 aggregator without justification",
+		"Test phase0 aggregator consensus data with no pre-consensus justifications",
 		*testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0),
 		"",
 	)
@@ -24,6 +25,7 @@ func ElectraAggregatorNoJustifications() *ValidatorConsensusDataTest {
 
 	return NewValidatorConsensusDataTest(
 		"electra aggregator without justification",
+		"Test Electra aggregator consensus data with no pre-consensus justifications",
 		*testingutils.TestAggregatorConsensusData(spec.DataVersionElectra),
 		"",
 	)

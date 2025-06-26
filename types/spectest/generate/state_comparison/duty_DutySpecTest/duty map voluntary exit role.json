@@ -1,6 +1,7 @@
 {
 		"Name": "map voluntary exit role",
 		"Type": "Duty",
+		"Documentation": "Test mapping of BNRoleVoluntaryExit",
 		"BeaconRole": 6,
 		"RunnerRole": 5
 }

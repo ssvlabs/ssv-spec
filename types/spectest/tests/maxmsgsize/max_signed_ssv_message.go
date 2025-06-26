@@ -46,6 +46,7 @@ func maxSignedSSVMessageWithFullDataFromObject(obj types.Encoder) *types.SignedS
 func MaxSignedSSVMessageFromQBFTMessageWithNoJustification() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"max SignedSSVMessage from qbftMessage with no justification",
+		"Test the maximum size of a SignedSSVMessage containing a QBFT message with no justifications",
 		maxSignedSSVMessageFromObject(maxQbftMessageNoJustification()),
 		maxSizeSignedSSVMessageFromQBFTWithNoJustification,
 		false,
@@ -55,6 +56,7 @@ func MaxSignedSSVMessageFromQBFTMessageWithNoJustification() *StructureSizeTest 
 func MaxSignedSSVMessageFromQBFTMessageWith1Justification() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"max SignedSSVMessage from qbftMessage with 1 justification",
+		"Test the maximum size of a SignedSSVMessage containing a QBFT message with 1 justification",
 		maxSignedSSVMessageFromObject(maxQbftMessageWith1Justification()),
 		maxSizeSignedSSVMessageFromQBFTWith1Justification,
 		false,
@@ -64,6 +66,7 @@ func MaxSignedSSVMessageFromQBFTMessageWith1Justification() *StructureSizeTest {
 func MaxSignedSSVMessageFromQBFTMessageWith2Justification() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"max SignedSSVMessage from qbftMessage with 2 justifications",
+		"Test the maximum size of a SignedSSVMessage containing a QBFT message with 2 justifications and full data",
 		maxSignedSSVMessageWithFullDataFromObject(maxQbftMessageWith2Justification()),
 		maxSizeSignedSSVMessageFromQBFTWith2Justification,
 		true,
@@ -73,6 +76,7 @@ func MaxSignedSSVMessageFromQBFTMessageWith2Justification() *StructureSizeTest {
 func MaxSignedSSVMessageFromPartialSignatureMessages() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"max SignedSSVMessage from PartialSignatureMessages",
+		"Test the maximum size of a SignedSSVMessage containing partial signature messages",
 		maxSignedSSVMessageFromObject(maxPartialSignatureMessages()),
 		maxSizeSignedSSVMessageFromPartialSignatureMessages,
 		false,

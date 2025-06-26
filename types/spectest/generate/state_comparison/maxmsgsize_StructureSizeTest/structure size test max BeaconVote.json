@@ -1,6 +1,7 @@
 {
 		"Name": "max BeaconVote",
 		"Type": "Structure size",
+		"Documentation": "Test the maximum size of a beacon vote with source and target checkpoints",
 		"Object": {
 				"BlockRoot": "0x0100000000000000000000000000000000000000000000000000000000000000",
 				"Source": {

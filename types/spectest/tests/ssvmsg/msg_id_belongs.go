@@ -9,6 +9,7 @@ import (
 func MsgIDBelongs() *SSVMessageTest {
 	return NewSSVMessageTest(
 		"belongs",
+		"Test that message IDs with matching validator public key belong to the validator",
 		[]types.MessageID{
 			types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.RoleCommittee),
 			types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.RoleUnknown),

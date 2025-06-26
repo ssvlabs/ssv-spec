@@ -1,6 +1,7 @@
 {
 		"Name": "does not belong",
 		"Type": "SSV message",
+		"Documentation": "Test that message IDs with non-matching validator public key do not belong to the validator",
 		"MessageIDs": [
 				[
 						0,

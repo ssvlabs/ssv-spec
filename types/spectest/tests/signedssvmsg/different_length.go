@@ -11,6 +11,7 @@ func SignersAndSignaturesWithDifferentLength() *SignedSSVMessageTest {
 	ks := testingutils.Testing4SharesSet()
 	return NewSignedSSVMessageTest(
 		"signers and signatures with different length",
+		"Test validation error for signed SSV message with different number of signers and signatures",
 		[]*types.SignedSSVMessage{
 			{
 				OperatorIDs: []types.OperatorID{1, 2, 3, 4},

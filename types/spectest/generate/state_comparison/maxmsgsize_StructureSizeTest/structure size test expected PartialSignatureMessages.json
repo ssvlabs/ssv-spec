@@ -1,6 +1,7 @@
 {
 		"Name": "expected PartialSignatureMessages",
 		"Type": "Structure size",
+		"Documentation": "Test the expected size of partial signature messages collection with 1 message",
 		"Object": {
 				"Type": 1,
 				"Slot": "1",

@@ -1,6 +1,7 @@
 {
   "Name": "proposer no justification",
   "Type": "Validator consensus data",
+  "Documentation": "Test proposer consensus data with no pre-consensus justifications",
   "ConsensusData": {
     "Duty": {
       "Type": 2,

@@ -1,6 +1,7 @@
 {
 		"Name": "expected round change qbftMessage",
 		"Type": "Structure size",
+		"Documentation": "Test the expected size of a round change QBFT message with 3 round change justifications",
 		"Object": {
 				"MsgType": 3,
 				"Height": 1,

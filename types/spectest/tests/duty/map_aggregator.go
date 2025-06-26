@@ -6,6 +6,7 @@ import "github.com/ssvlabs/ssv-spec/types"
 func MapAggregator() *DutySpecTest {
 	return NewDutySpecTest(
 		"map aggregator role",
+		"Test mapping of BNRoleAggregator",
 		types.BNRoleAggregator,
 		types.RoleAggregator,
 	)

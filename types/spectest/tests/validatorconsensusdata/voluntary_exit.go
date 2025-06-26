@@ -22,6 +22,7 @@ func VoluntaryExit() *ValidatorConsensusDataTest {
 
 	return NewValidatorConsensusDataTest(
 		"voluntary exit",
+		"Test validation error for voluntary exit consensus data which has no consensus data",
 		cd,
 		"voluntary exit has no consensus data",
 	)

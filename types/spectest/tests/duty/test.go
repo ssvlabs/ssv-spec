@@ -8,10 +8,11 @@ import (
 )
 
 type DutySpecTest struct {
-	Name       string
-	Type       string
-	BeaconRole types.BeaconRole
-	RunnerRole types.RunnerRole
+	Name          string
+	Type          string
+	Documentation string
+	BeaconRole    types.BeaconRole
+	RunnerRole    types.RunnerRole
 }
 
 func (test *DutySpecTest) TestName() string {
@@ -23,11 +24,12 @@ func (test *DutySpecTest) Run(t *testing.T) {
 	assert.Equal(t, test.RunnerRole, result)
 }
 
-func NewDutySpecTest(name string, beaconRole types.BeaconRole, runnerRole types.RunnerRole) *DutySpecTest {
+func NewDutySpecTest(name, documentation string, beaconRole types.BeaconRole, runnerRole types.RunnerRole) *DutySpecTest {
 	return &DutySpecTest{
-		Name:       name,
-		Type:       "Duty",
-		BeaconRole: beaconRole,
-		RunnerRole: runnerRole,
+		Name:          name,
+		Type:          "Duty",
+		Documentation: documentation,
+		BeaconRole:    beaconRole,
+		RunnerRole:    runnerRole,
 	}
 }

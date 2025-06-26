@@ -1,6 +1,7 @@
 {
   "Name": "invalid message",
   "Type": "Messages (types)",
+  "Documentation": "Test validation error when partial signature messages contain invalid message with inconsistent signers",
   "Messages": [
     {
       "Type": 0,

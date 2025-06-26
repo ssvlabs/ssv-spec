@@ -1,6 +1,7 @@
 {
 		"Name": "max PartialSignatureMessages for pre-consensus",
 		"Type": "Structure size",
+		"Documentation": "Test the maximum size of partial signature messages for pre-consensus phase",
 		"Object": {
 				"Type": 1,
 				"Slot": "1",

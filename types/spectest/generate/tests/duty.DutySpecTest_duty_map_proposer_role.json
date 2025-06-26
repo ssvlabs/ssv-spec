@@ -1,6 +1,7 @@
 {
   "Name": "map proposer role",
   "Type": "Duty",
+  "Documentation": "Test mapping of BNRoleProposer",
   "BeaconRole": 2,
   "RunnerRole": 2
 }

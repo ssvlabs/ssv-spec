@@ -20,6 +20,7 @@ func InvalidDuty() *ValidatorConsensusDataTest {
 
 	return NewValidatorConsensusDataTest(
 		"invalid duty",
+		"Test validation error for consensus data with unknown duty role",
 		*cd,
 		"unknown duty role",
 	)

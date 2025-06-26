@@ -1,6 +1,7 @@
 {
 		"Name": "max qbftMessage with 1 justification",
 		"Type": "Structure size",
+		"Documentation": "Test the maximum size of a QBFT message with 1 justification",
 		"Object": {
 				"MsgType": 1,
 				"Height": 1,

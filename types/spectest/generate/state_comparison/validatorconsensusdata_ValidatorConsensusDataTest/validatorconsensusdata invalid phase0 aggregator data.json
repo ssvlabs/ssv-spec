@@ -1,6 +1,7 @@
 {
 		"Name": "invalid phase0 aggregator data",
 		"Type": "Validator consensus data",
+		"Documentation": "Test validation error for invalid consensus data with Phase0 AggregateAndProof using incorrect data",
 		"ConsensusData": {
 				"Duty": {
 						"Type": 1,

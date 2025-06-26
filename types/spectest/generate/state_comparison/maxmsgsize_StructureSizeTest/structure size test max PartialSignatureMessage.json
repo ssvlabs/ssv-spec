@@ -1,6 +1,7 @@
 {
 		"Name": "max PartialSignatureMessage",
 		"Type": "Structure size",
+		"Documentation": "Test the maximum size of a single partial signature message",
 		"Object": {
 				"PartialSignature": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 				"SigningRoot": [

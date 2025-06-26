@@ -1,6 +1,7 @@
 {
   "Name": "map sync committee contribution role",
   "Type": "Duty",
+  "Documentation": "Test mapping of BNRoleSyncCommitteeContribution",
   "BeaconRole": 4,
   "RunnerRole": 3
 }

@@ -16,6 +16,7 @@ func HasQuorum3f1() *CommitteeMemberTest {
 
 	return NewCommitteeMemberTest(
 		"has quorum 3f1",
+		"Test that committee member has quorum with 3f+1 unique signers (full committee) should be accepted",
 		*committeeMember,
 		*msg,
 		true,

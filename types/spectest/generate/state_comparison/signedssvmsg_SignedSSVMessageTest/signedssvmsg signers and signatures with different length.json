@@ -1,6 +1,7 @@
 {
 		"Name": "signers and signatures with different length",
 		"Type": "Signed SSV message",
+		"Documentation": "Test validation error for signed SSV message with different number of signers and signatures",
 		"Messages": [
 				{
 						"Signatures": [

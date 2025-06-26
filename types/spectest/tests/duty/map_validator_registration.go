@@ -6,6 +6,7 @@ import "github.com/ssvlabs/ssv-spec/types"
 func MapValidatorRegistration() *DutySpecTest {
 	return NewDutySpecTest(
 		"map validator registration role",
+		"Test mapping of BNRoleValidatorRegistration",
 		types.BNRoleValidatorRegistration,
 		types.RoleValidatorRegistration,
 	)

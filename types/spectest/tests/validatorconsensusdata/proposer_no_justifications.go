@@ -14,6 +14,7 @@ func ProposerNoJustifications() *ValidatorConsensusDataTest {
 
 	return NewValidatorConsensusDataTest(
 		"proposer no justification",
+		"Test proposer consensus data with no pre-consensus justifications",
 		*cd,
 		"",
 	)

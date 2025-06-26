@@ -14,6 +14,7 @@ func SigValid() *MsgSpecTest {
 
 	return NewMsgSpecTest(
 		"sig valid",
+		"Test validation of signed post consensus message with 96-byte signature length",
 		[]*types.PartialSignatureMessages{msg},
 		nil,
 		nil,

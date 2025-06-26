@@ -13,6 +13,7 @@ import (
 type ShareTest struct {
 	Name                  string
 	Type                  string
+	Documentation         string
 	Share                 types.Share
 	Message               types.SignedSSVMessage
 	ExpectedHasQuorum     bool
@@ -48,10 +49,11 @@ func (test *ShareTest) Run(t *testing.T) {
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
 
-func NewShareTest(name string, share types.Share, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedError string) *ShareTest {
+func NewShareTest(name, documentation string, share types.Share, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedError string) *ShareTest {
 	return &ShareTest{
 		Name:                  name,
 		Type:                  "Share",
+		Documentation:         documentation,
 		Share:                 share,
 		Message:               message,
 		ExpectedHasQuorum:     expectedHasQuorum,

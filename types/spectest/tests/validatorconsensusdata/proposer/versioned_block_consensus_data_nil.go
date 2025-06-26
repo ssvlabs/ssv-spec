@@ -22,6 +22,7 @@ func VersionedBlockConsensusDataNil() *ProposerSpecTest {
 
 	return NewProposerSpecTest(
 		"consensus data versioned block corrupted consensus data",
+		"Test validation error for consensus data with nil block data",
 		false,
 		cdSSZ,
 		nil,

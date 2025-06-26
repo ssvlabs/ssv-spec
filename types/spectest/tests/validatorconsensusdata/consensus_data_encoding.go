@@ -7,7 +7,7 @@ import (
 )
 
 // ConsensusDataEncoding tests encoding and decoding ValidatorConsensusData for all duties
-func ConsensusDataEncoding(name string, cd *types.ValidatorConsensusData) *EncodingTest {
+func ConsensusDataEncoding(name, documentation string, cd *types.ValidatorConsensusData) *EncodingTest {
 
 	byts, err := cd.Encode()
 	if err != nil {
@@ -20,23 +20,44 @@ func ConsensusDataEncoding(name string, cd *types.ValidatorConsensusData) *Encod
 
 	return NewEncodingTest(
 		name,
+		documentation,
 		byts,
 		root,
 	)
 }
 
 func ProposerConsensusDataEncoding() *EncodingTest {
-	return ConsensusDataEncoding("proposer encoding", testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionCapella))
+	return ConsensusDataEncoding(
+		"proposer encoding",
+		"Test encoding and decoding of proposer consensus data with Capella blinded block",
+		testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionCapella),
+	)
 }
 func BlindedProposerConsensusDataEncoding() *EncodingTest {
-	return ConsensusDataEncoding("blinded proposer encoding", testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionCapella))
+	return ConsensusDataEncoding(
+		"blinded proposer encoding",
+		"Test encoding and decoding of blinded proposer consensus data with Capella blinded block",
+		testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionCapella),
+	)
 }
 func Phase0AggregatorConsensusDataEncoding() *EncodingTest {
-	return ConsensusDataEncoding("phase0 aggregation encoding", testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0))
+	return ConsensusDataEncoding(
+		"phase0 aggregation encoding",
+		"Test encoding and decoding of phase0 aggregator consensus data",
+		testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0),
+	)
 }
 func ElectraAggregatorConsensusDataEncoding() *EncodingTest {
-	return ConsensusDataEncoding("electra aggregation encoding", testingutils.TestAggregatorConsensusData(spec.DataVersionElectra))
+	return ConsensusDataEncoding(
+		"electra aggregation encoding",
+		"Test encoding and decoding of Electra aggregator consensus data",
+		testingutils.TestAggregatorConsensusData(spec.DataVersionElectra),
+	)
 }
 func SyncCommitteeContributionConsensusDataEncoding() *EncodingTest {
-	return ConsensusDataEncoding("sync committee contribution encoding", testingutils.TestSyncCommitteeContributionConsensusData)
+	return ConsensusDataEncoding(
+		"sync committee contribution encoding",
+		"Test encoding and decoding of sync committee contribution consensus data",
+		testingutils.TestSyncCommitteeContributionConsensusData,
+	)
 }

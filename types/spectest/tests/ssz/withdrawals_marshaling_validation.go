@@ -18,6 +18,7 @@ func SSZWithdrawalsMarshaling() *SSZSpecTest {
 
 	return NewSSZSpecTest(
 		"ssz withdrawals marshalling",
+		"Test SSZ marshaling and hash tree root calculation of Capella withdrawals",
 		testingutils.TestProposerConsensusDataBytsV(spec.DataVersionCapella),
 		root,
 		"",

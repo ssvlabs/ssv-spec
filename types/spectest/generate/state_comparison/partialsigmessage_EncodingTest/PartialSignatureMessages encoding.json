@@ -1,6 +1,7 @@
 {
 		"Name": "PartialSignatureMessages encoding",
 		"Type": "Partial signature messages encoding",
+		"Documentation": "Test encoding and decoding of partial signature messages with hash tree root verification",
 		"Data": "AgAAAAAAAAAMAAAAAAAAABQAAACkebAj2fKOuczdNbuWD7XCZVMN/xeK5+Spt38Bf3WcpaISXnJr3gzZKjMwCVSUyMAHgqJ/qJB+jBqt49rNuOBhRobGfh9igwRgXXhh4O2YA8auIWtKrlWo/7Se7Rk8vqdGJhHSxZK99SFPEk/npSaatz1E78nmzhq+MvgZauUm3gEAAAAAAAAAAQAAAAAAAAA=",
 		"ExpectedRoot": [
 				135,

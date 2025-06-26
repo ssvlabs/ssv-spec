@@ -1,6 +1,7 @@
 {
 		"Name": "empty signature",
 		"Type": "Signed SSV message",
+		"Documentation": "Test validation error for signed SSV message with empty signature",
 		"Messages": [
 				{
 						"Signatures": [

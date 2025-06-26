@@ -9,6 +9,7 @@ import (
 func ElectraBlockValidation() *ValidatorConsensusDataTest {
 	return NewValidatorConsensusDataTest(
 		"valid electra block",
+		"Test validation of valid consensus data with Electra block",
 		*testingutils.TestProposerConsensusDataV(spec.DataVersionElectra),
 		"",
 	)

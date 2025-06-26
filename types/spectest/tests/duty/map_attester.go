@@ -6,6 +6,7 @@ import "github.com/ssvlabs/ssv-spec/types"
 func MapAttester() *DutySpecTest {
 	return NewDutySpecTest(
 		"map attester role",
+		"Test mapping of BNRoleAttester",
 		types.BNRoleAttester,
 		types.RoleCommittee,
 	)

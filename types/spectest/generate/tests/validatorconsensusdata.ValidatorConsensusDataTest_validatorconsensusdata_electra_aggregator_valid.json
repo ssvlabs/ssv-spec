@@ -1,6 +1,7 @@
 {
   "Name": "electra aggregator valid",
   "Type": "Validator consensus data",
+  "Documentation": "Test validation of valid consensus data with Electra AggregateAndProof",
   "ConsensusData": {
     "Duty": {
       "Type": 1,

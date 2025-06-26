@@ -1,6 +1,7 @@
 {
   "Name": "voluntary exit",
   "Type": "Validator consensus data",
+  "Documentation": "Test validation error for voluntary exit consensus data which has no consensus data",
   "ConsensusData": {
     "Duty": {
       "Type": 6,

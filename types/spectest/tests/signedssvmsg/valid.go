@@ -19,6 +19,7 @@ func Valid() *SignedSSVMessageTest {
 
 	return NewSignedSSVMessageTest(
 		"valid",
+		"Test validation of a valid signed SSV message with proper RSA signature",
 		[]*types.SignedSSVMessage{msg},
 		"",
 		[][]byte{pkBytes},

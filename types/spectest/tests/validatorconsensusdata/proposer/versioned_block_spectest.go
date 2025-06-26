@@ -15,6 +15,7 @@ import (
 type ProposerSpecTest struct {
 	Name            string
 	Type            string
+	Documentation   string
 	Blinded         bool
 	DataCd          []byte
 	DataBlk         []byte
@@ -125,10 +126,11 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
 
-func NewProposerSpecTest(name string, blinded bool, dataCd []byte, dataBlk []byte, expectedBlkRoot [32]byte, expectedCdRoot [32]byte, expectedError string) *ProposerSpecTest {
+func NewProposerSpecTest(name string, documentation string, blinded bool, dataCd []byte, dataBlk []byte, expectedBlkRoot [32]byte, expectedCdRoot [32]byte, expectedError string) *ProposerSpecTest {
 	return &ProposerSpecTest{
 		Name:            name,
 		Type:            "Proposer",
+		Documentation:   documentation,
 		Blinded:         blinded,
 		DataCd:          dataCd,
 		DataBlk:         dataBlk,

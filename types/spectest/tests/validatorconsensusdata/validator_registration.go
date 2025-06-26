@@ -22,6 +22,7 @@ func ValidatorRegistration() *ValidatorConsensusDataTest {
 
 	return NewValidatorConsensusDataTest(
 		"validator registration",
+		"Test validation error for validator registration consensus data which has no consensus data",
 		cd,
 		"validator registration has no consensus data",
 	)

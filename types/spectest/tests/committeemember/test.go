@@ -13,6 +13,7 @@ import (
 type CommitteeMemberTest struct {
 	Name                  string
 	Type                  string
+	Documentation         string
 	CommitteeMember       types.CommitteeMember
 	Message               types.SignedSSVMessage
 	ExpectedHasQuorum     bool
@@ -55,10 +56,11 @@ func (test *CommitteeMemberTest) Run(t *testing.T) {
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
 
-func NewCommitteeMemberTest(name string, committeeMember types.CommitteeMember, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedError string) *CommitteeMemberTest {
+func NewCommitteeMemberTest(name, documentation string, committeeMember types.CommitteeMember, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedError string) *CommitteeMemberTest {
 	return &CommitteeMemberTest{
 		Name:                  name,
 		Type:                  "Committee member",
+		Documentation:         documentation,
 		CommitteeMember:       committeeMember,
 		Message:               message,
 		ExpectedHasQuorum:     expectedHasQuorum,

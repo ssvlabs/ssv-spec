@@ -15,6 +15,7 @@ func ValidContributionProofMetaData() *MsgSpecTest {
 
 	return NewMsgSpecTest(
 		"valid meta data when type ContributionProofs",
+		"Test validation of partial signature message with contribution proof metadata type",
 		[]*types.PartialSignatureMessages{msg},
 		nil,
 		nil,

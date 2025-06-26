@@ -38,6 +38,7 @@ func expectedPartialSignatureMessages(numSignatures int) *types.PartialSignature
 func ExpectedPartialSignatureMessage() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"expected PartialSignatureMessage",
+		"Test the expected size of a single partial signature message",
 		expectedPartialSignatureMessage(),
 		expectedSizePartialSignatureMessage,
 		false,
@@ -47,6 +48,7 @@ func ExpectedPartialSignatureMessage() *StructureSizeTest {
 func ExpectedPartialSignatureMessages() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"expected PartialSignatureMessages",
+		"Test the expected size of partial signature messages collection with 1 message",
 		expectedPartialSignatureMessages(1),
 		expectedSizePartialSignatureMessages,
 		false,

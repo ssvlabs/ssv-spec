@@ -14,6 +14,7 @@ func PartialRootValid() *MsgSpecTest {
 
 	return NewMsgSpecTest(
 		"partial root valid",
+		"Test validation of partial signature message with 32-byte signing root",
 		[]*types.PartialSignatureMessages{msg},
 		nil,
 		nil,

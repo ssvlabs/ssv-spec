@@ -1,6 +1,7 @@
 {
 		"Name": "valid electra block",
 		"Type": "Validator consensus data",
+		"Documentation": "Test validation of valid consensus data with Electra block",
 		"ConsensusData": {
 				"Duty": {
 						"Type": 2,

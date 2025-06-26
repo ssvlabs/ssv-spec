@@ -25,6 +25,7 @@ func VersionedBlockUnknownVersion() *ProposerSpecTest {
 
 	return NewProposerSpecTest(
 		"consensus data versioned block unknown version",
+		"Test validation error for consensus data with unknown block version",
 		false,
 		cdSSZ,
 		nil,

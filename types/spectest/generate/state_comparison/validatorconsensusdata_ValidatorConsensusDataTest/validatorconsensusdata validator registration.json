@@ -1,6 +1,7 @@
 {
 		"Name": "validator registration",
 		"Type": "Validator consensus data",
+		"Documentation": "Test validation error for validator registration consensus data which has no consensus data",
 		"ConsensusData": {
 				"Duty": {
 						"Type": 5,

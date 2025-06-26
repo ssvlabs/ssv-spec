@@ -15,6 +15,7 @@ func NoMsgs() *MsgSpecTest {
 
 	return NewMsgSpecTest(
 		"no messages",
+		"Test validation error when partial signature messages contain no messages",
 		[]*types.PartialSignatureMessages{msg},
 		nil,
 		nil,

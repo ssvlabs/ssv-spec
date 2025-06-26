@@ -1,6 +1,7 @@
 {
 		"Name": "max SSVMessage from qbftMessage",
 		"Type": "Structure size",
+		"Documentation": "Test the maximum size of an SSVMessage containing a QBFT message with 2 justifications",
 		"Object": {
 				"MsgType": 1,
 				"MsgID": [

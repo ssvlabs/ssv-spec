@@ -1,6 +1,7 @@
 {
   "Name": "sig valid",
   "Type": "Messages (types)",
+  "Documentation": "Test validation of signed post consensus message with 96-byte signature length",
   "Messages": [
     {
       "Type": 0,

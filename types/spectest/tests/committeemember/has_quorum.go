@@ -16,6 +16,7 @@ func HasQuorum() *CommitteeMemberTest {
 
 	return NewCommitteeMemberTest(
 		"has quorum",
+		"Test that committee member has quorum with 2f+1 unique signers",
 		*committeeMember,
 		*msg,
 		true,

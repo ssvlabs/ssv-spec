@@ -1,6 +1,7 @@
 {
   "Name": "expected commit qbftMessage",
   "Type": "Structure size",
+  "Documentation": "Test the expected size of a commit QBFT message with no justifications",
   "Object": {
     "MsgType": 2,
     "Height": 1,

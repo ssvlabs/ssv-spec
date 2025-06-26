@@ -12,6 +12,7 @@ func NonUniqueSigner() *SignedSSVMessageTest {
 
 	return NewSignedSSVMessageTest(
 		"non unique signers",
+		"Test validation error for signed SSV message with non-unique signers",
 		[]*types.SignedSSVMessage{
 			{
 				OperatorIDs: []types.OperatorID{1, 2, 2},

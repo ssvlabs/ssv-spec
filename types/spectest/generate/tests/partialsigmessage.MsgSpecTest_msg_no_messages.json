@@ -1,6 +1,7 @@
 {
   "Name": "no messages",
   "Type": "Messages (types)",
+  "Documentation": "Test validation error when partial signature messages contain no messages",
   "Messages": [
     {
       "Type": 0,

@@ -1,6 +1,7 @@
 {
   "Name": "phase0 aggregator valid",
   "Type": "Validator consensus data",
+  "Documentation": "Test validation of valid consensus data with Phase0 AggregateAndProof",
   "ConsensusData": {
     "Duty": {
       "Type": 1,

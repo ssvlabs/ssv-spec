@@ -19,6 +19,7 @@ func SyncCommitteeContributionNoJustifications() *ValidatorConsensusDataTest {
 
 	return NewValidatorConsensusDataTest(
 		"sync committee contribution with no pre-consensus justification",
+		"Test sync committee contribution consensus data with no sync committee contribution pre-consensus justifications",
 		cd,
 		"",
 	)

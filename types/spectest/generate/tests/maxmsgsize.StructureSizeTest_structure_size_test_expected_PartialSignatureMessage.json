@@ -1,6 +1,7 @@
 {
   "Name": "expected PartialSignatureMessage",
   "Type": "Structure size",
+  "Documentation": "Test the expected size of a single partial signature message",
   "Object": {
     "PartialSignature": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
     "SigningRoot": [

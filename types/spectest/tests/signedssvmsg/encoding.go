@@ -18,6 +18,7 @@ func Encoding() *EncodingTest {
 
 	return NewEncodingTest(
 		"encoding",
+		"Test encoding of a signed SSV message to bytes",
 		byts,
 	)
 }

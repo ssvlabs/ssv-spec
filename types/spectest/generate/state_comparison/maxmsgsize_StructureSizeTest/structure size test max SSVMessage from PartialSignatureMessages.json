@@ -1,6 +1,7 @@
 {
 		"Name": "max SSVMessage from PartialSignatureMessages",
 		"Type": "Structure size",
+		"Documentation": "Test the maximum size of an SSVMessage containing partial signature messages",
 		"Object": {
 				"MsgType": 1,
 				"MsgID": [

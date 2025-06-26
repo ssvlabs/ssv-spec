@@ -1,6 +1,7 @@
 {
   "Name": "map validator registration role",
   "Type": "Duty",
+  "Documentation": "Test mapping of BNRoleValidatorRegistration",
   "BeaconRole": 5,
   "RunnerRole": 4
 }

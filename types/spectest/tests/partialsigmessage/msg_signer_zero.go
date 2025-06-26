@@ -18,6 +18,7 @@ func MessageSigner0() *MsgSpecTest {
 
 	return NewMsgSpecTest(
 		"message signer 0",
+		"Test validation error when partial signature message has signer ID 0 which is not allowed",
 		[]*types.PartialSignatureMessages{msgPre, msgPost},
 		nil,
 		nil,

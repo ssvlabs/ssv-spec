@@ -14,6 +14,7 @@ import (
 type SignedSSVMessageTest struct {
 	Name          string
 	Type          string
+	Documentation string
 	Messages      []*types.SignedSSVMessage
 	ExpectedError string
 	RSAPublicKey  [][]byte
@@ -60,10 +61,11 @@ func (test *SignedSSVMessageTest) Run(t *testing.T) {
 	}
 }
 
-func NewSignedSSVMessageTest(name string, messages []*types.SignedSSVMessage, expectedError string, rsaPublicKey [][]byte) *SignedSSVMessageTest {
+func NewSignedSSVMessageTest(name, documentation string, messages []*types.SignedSSVMessage, expectedError string, rsaPublicKey [][]byte) *SignedSSVMessageTest {
 	return &SignedSSVMessageTest{
 		Name:          name,
 		Type:          "Signed SSV message",
+		Documentation: documentation,
 		Messages:      messages,
 		ExpectedError: expectedError,
 		RSAPublicKey:  rsaPublicKey,

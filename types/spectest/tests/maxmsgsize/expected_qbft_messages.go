@@ -109,6 +109,7 @@ func expectedProposal(quorum int) *qbft.Message {
 func ExpectedPrepareQBFTMessage() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"expected prepare qbftMessage",
+		"Test the expected size of a prepare QBFT message with no justifications",
 		expectedPrepare(),
 		expectedSizePrepareQBFTMessage,
 		false,
@@ -118,6 +119,7 @@ func ExpectedPrepareQBFTMessage() *StructureSizeTest {
 func ExpectedCommitQBFTMessage() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"expected commit qbftMessage",
+		"Test the expected size of a commit QBFT message with no justifications",
 		expectedCommit(),
 		expectedSizeCommitQBFTMessage,
 		false,
@@ -127,6 +129,7 @@ func ExpectedCommitQBFTMessage() *StructureSizeTest {
 func ExpectedRoundChangeQBFTMessage() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"expected round change qbftMessage",
+		"Test the expected size of a round change QBFT message with 3 round change justifications",
 		expectedRoundChange(3),
 		expectedSizeRoundChangeQBFTMessage,
 		false,
@@ -136,6 +139,7 @@ func ExpectedRoundChangeQBFTMessage() *StructureSizeTest {
 func ExpectedProposalQBFTMessage() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"expected proposal qbftMessage",
+		"Test the expected size of a proposal QBFT message with 3 round change and 3 prepare justifications",
 		expectedProposal(3),
 		expectedSizeProposalQBFTMessage,
 		false,

@@ -10,6 +10,7 @@ func NilSSVMessage() *SignedSSVMessageTest {
 
 	return NewSignedSSVMessageTest(
 		"nil ssvmessage",
+		"Test validation error for signed SSV message with nil SSVMessage",
 		[]*types.SignedSSVMessage{
 			{
 				OperatorIDs: []types.OperatorID{1},

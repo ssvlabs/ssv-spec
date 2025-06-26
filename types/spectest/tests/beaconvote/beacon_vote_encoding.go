@@ -20,6 +20,7 @@ func BeaconVoteEncoding() *EncodingTest {
 
 	return NewEncodingTest(
 		"beacon vote encoding",
+		"Test encoding and decoding of beacon vote with hash tree root verification",
 		byts,
 		root,
 	)

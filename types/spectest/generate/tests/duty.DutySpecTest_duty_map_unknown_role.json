@@ -1,6 +1,7 @@
 {
   "Name": "map unknown role",
   "Type": "Duty",
+  "Documentation": "Test mapping of an unknown role",
   "BeaconRole": 2147483647,
   "RunnerRole": -1
 }

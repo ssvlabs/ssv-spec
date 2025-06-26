@@ -17,6 +17,7 @@ func InconsistentSignedMessage() *MsgSpecTest {
 
 	return NewMsgSpecTest(
 		"inconsistent signed message",
+		"Test validation error when signed partial signature message contains messages from different signers",
 		[]*types.PartialSignatureMessages{msg},
 		nil,
 		nil,

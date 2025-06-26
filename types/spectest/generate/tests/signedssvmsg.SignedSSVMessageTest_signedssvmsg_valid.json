@@ -1,6 +1,7 @@
 {
   "Name": "valid",
   "Type": "Signed SSV message",
+  "Documentation": "Test validation of a valid signed SSV message with proper RSA signature",
   "Messages": [
     {
       "Signatures": [

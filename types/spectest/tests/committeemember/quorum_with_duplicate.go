@@ -17,6 +17,7 @@ func QuorumWithDuplicate() *CommitteeMemberTest {
 
 	return NewCommitteeMemberTest(
 		"quorum with duplicate",
+		"Test that committee member has quorum with 2f+1 unique signers even when duplicates are present should be accepted",
 		*committeeMember,
 		*msg,
 		true,

@@ -6,6 +6,7 @@ import "github.com/ssvlabs/ssv-spec/types"
 func MapSyncCommitteeContribution() *DutySpecTest {
 	return NewDutySpecTest(
 		"map sync committee contribution role",
+		"Test mapping of BNRoleSyncCommitteeContribution",
 		types.BNRoleSyncCommitteeContribution,
 		types.RoleSyncCommitteeContribution,
 	)

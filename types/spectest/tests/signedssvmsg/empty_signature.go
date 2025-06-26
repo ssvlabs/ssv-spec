@@ -12,6 +12,7 @@ func EmptySignature() *SignedSSVMessageTest {
 
 	return NewSignedSSVMessageTest(
 		"empty signature",
+		"Test validation error for signed SSV message with empty signature",
 		[]*types.SignedSSVMessage{
 			{
 				OperatorIDs: []types.OperatorID{1},

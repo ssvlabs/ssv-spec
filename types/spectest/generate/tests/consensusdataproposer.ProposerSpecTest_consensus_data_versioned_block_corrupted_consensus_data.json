@@ -1,6 +1,7 @@
 {
   "Name": "consensus data versioned block corrupted consensus data",
   "Type": "Proposer",
+  "Documentation": "Test validation error for consensus data with nil block data",
   "Blinded": false,
   "DataCd": "EAAAAAUAAAAAAAAAfAAAAAIAAAAAAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvAACBxAAAAAAABAAAAAAAAAAMAAAAAAAAAgAAAAAAAAAAkAAAAAAAAAAsAAAAAAAAAbAAAAA==",
   "DataBlk": null,

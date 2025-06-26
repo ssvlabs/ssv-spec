@@ -12,6 +12,7 @@ func NoSigners() *SignedSSVMessageTest {
 
 	return NewSignedSSVMessageTest(
 		"no signers",
+		"Test validation error for signed SSV message with no signers",
 		[]*types.SignedSSVMessage{
 			{
 				OperatorIDs: []types.OperatorID{},

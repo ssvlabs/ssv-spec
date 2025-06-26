@@ -17,6 +17,7 @@ func InvalidDenebBlindedBlockValidation() *ValidatorConsensusDataTest {
 	}
 	return NewValidatorConsensusDataTest(
 		"invalid deneb blinded block",
+		"Test validation error for invalid consensus data with empty Deneb blinded block data",
 		*cd,
 		"could not unmarshal ssz: incorrect size",
 	)

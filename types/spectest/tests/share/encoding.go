@@ -18,6 +18,7 @@ func Encoding() *EncodingTest {
 
 	return NewEncodingTest(
 		"share encoding",
+		"Test encoding and decoding of share with hash tree root verification",
 		byts,
 		root,
 	)
