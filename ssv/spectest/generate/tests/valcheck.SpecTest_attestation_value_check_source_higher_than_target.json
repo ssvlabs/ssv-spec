@@ -1,5 +1,6 @@
 {
   "Name": "attestation value check source higher than target",
+  "Documentation": "Tests attestation value check with source epoch higher than target epoch",
   "Network": "now_test_network",
   "RunnerRole": 0,
   "DutySlot": "12",

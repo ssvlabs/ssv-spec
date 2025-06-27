@@ -1,5 +1,6 @@
 {
   "Name": "consensus data value check nil",
+  "Documentation": "Tests attestation value check with nil attestation data",
   "Network": "prater",
   "RunnerRole": 0,
   "DutySlot": "12",

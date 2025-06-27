@@ -1,5 +1,7 @@
 {
   "Name": "start with no shares for duty",
+  "omitempty": "Committee",
+  "Documentation": "Tests committee behavior when starting a duty for validators that the committee doesn't have shares for",
   "Committee": {
     "Runners": {},
     "CommitteeMember": {

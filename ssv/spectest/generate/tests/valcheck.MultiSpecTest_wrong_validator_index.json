@@ -5,6 +5,7 @@
   "Tests": [
     {
       "Name": "committee",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 0,
       "DutySlot": "0",
@@ -15,6 +16,7 @@
     },
     {
       "Name": "sync committee aggregator",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 3,
       "DutySlot": "0",
@@ -25,6 +27,7 @@
     },
     {
       "Name": "aggregator phase0",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 1,
       "DutySlot": "0",
@@ -35,6 +38,7 @@
     },
     {
       "Name": "aggregator electra",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 1,
       "DutySlot": "0",
@@ -45,6 +49,7 @@
     },
     {
       "Name": "proposer",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 2,
       "DutySlot": "0",

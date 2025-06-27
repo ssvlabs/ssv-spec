@@ -24,7 +24,7 @@ import (
 type MsgProcessingSpecTest struct {
 	Name          string
 	Type          string `json:"omitempty"`
-	Documentation string `json:"omitempty"`
+	Documentation string
 	Runner        ssv.Runner
 	Duty          types.Duty
 	Messages      []*types.SignedSSVMessage `json:"-"`

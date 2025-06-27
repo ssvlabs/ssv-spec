@@ -5,6 +5,7 @@
   "Tests": [
     {
       "Name": "blinded blocks accepted",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 2,
       "DutySlot": "0",

@@ -1,5 +1,6 @@
 {
   "Name": "attestation valid with non slashable slot",
+  "Documentation": "Tests valid attestation data value check for non-slashable slot",
   "Network": "now_test_network",
   "RunnerRole": 0,
   "DutySlot": "13",

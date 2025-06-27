@@ -22,7 +22,7 @@ import (
 type StartNewRunnerDutySpecTest struct {
 	Name                    string
 	Type                    string `json:"omitempty"`
-	Documentation           string `json:"omitempty"`
+	Documentation           string
 	Runner                  ssv.Runner
 	Duty                    types.Duty
 	Threshold               uint64

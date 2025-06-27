@@ -5,6 +5,8 @@
   "Tests": [
     {
       "Name": "attestation (phase0)",
+      "omitempty": "",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -1620,6 +1622,8 @@
     },
     {
       "Name": "sync committee (phase0)",
+      "omitempty": "",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -3275,6 +3279,8 @@
     },
     {
       "Name": "attestations sync committees (phase0)",
+      "omitempty": "",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -5240,6 +5246,8 @@
     },
     {
       "Name": "attestation (electra)",
+      "omitempty": "",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -6855,6 +6863,8 @@
     },
     {
       "Name": "sync committee (electra)",
+      "omitempty": "",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -8510,6 +8520,8 @@
     },
     {
       "Name": "attestations sync committees (electra)",
+      "omitempty": "",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {

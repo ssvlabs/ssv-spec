@@ -1,5 +1,6 @@
 {
   "Name": "attestation value check valid",
+  "Documentation": "Tests valid attestation data value check",
   "Network": "prater",
   "RunnerRole": 0,
   "DutySlot": "12",

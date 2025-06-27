@@ -1,5 +1,6 @@
 {
   "Name": "attestation value check far future target",
+  "Documentation": "Tests attestation value check with target epoch too far in the future",
   "Network": "now_test_network",
   "RunnerRole": 0,
   "DutySlot": "12",

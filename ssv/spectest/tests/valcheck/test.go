@@ -13,8 +13,8 @@ import (
 
 type SpecTest struct {
 	Name              string
-	Type              string `json:"omitempty"`
-	Documentation     string `json:"omitempty"`
+	Type              string
+	Documentation     string
 	Network           types.BeaconNetwork
 	RunnerRole        types.RunnerRole
 	DutySlot          phase0.Slot // DutySlot is used only for the RoleCommittee since the BeaconVoteValueCheckF requires the duty's slot

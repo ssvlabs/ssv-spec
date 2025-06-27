@@ -1,5 +1,6 @@
 {
   "Name": "attestation value check slashable",
+  "Documentation": "Tests slashable attestation data value check",
   "Network": "now_test_network",
   "RunnerRole": 0,
   "DutySlot": "12",

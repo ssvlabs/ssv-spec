@@ -1,5 +1,6 @@
 {
   "Name": "attestation value check with slashable majority",
+  "Documentation": "Tests attestation value check with majority slashable attestation",
   "Network": "now_test_network",
   "RunnerRole": 0,
   "DutySlot": "12",
