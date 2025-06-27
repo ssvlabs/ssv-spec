@@ -21,6 +21,7 @@ func ConsensusNotStarted() tests.SpecTest {
 
 	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
 		"new duty consensus not started",
+		"Tests new duty start when consensus has not started",
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",

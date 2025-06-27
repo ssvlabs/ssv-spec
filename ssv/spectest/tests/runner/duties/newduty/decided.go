@@ -35,6 +35,7 @@ func PostDecided() tests.SpecTest {
 
 	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
 		"new duty post decided",
+		"Tests new duty start after a previous duty has been decided",
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",

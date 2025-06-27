@@ -1,6 +1,7 @@
 {
   "Name": "pre consensus nil ssvmessage",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests pre-consensus message processing with nil SSV message, expecting error",
   "Tests": [
     {
       "Name": "sync committee aggregator selection proof",

@@ -71,7 +71,11 @@ func ProposalWithConsensusData() tests.SpecTest {
 		}...)
 	}
 
-	multiSpecTest := committee.NewMultiCommitteeSpecTest("proposal with consensus data", tests)
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"proposal with consensus data",
+		"Tests committee behavior when processing proposal messages with ValidatorConsensusData instead of BeaconVote objects",
+		tests,
+	)
 
 	return multiSpecTest
 }

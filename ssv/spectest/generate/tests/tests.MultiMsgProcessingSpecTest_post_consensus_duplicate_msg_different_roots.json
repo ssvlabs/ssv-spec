@@ -1,6 +1,7 @@
 {
   "Name": "post consensus duplicate msg different roots",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests post-consensus message processing with duplicate SignedPartialSignatureMessages from the same signer but with different signing roots, expecting error",
   "Tests": [
     {
       "Name": "sync committee contribution",

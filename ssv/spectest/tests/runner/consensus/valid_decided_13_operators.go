@@ -16,6 +16,7 @@ func ValidDecided13Operators() tests.SpecTest {
 	ks := testingutils.Testing13SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus valid decided 13 operators",
+		"Tests valid consensus decided message processing with 13 operators",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:                    "sync committee contribution",

@@ -77,7 +77,11 @@ func PastMessageDutyDoesNotExist() tests.SpecTest {
 		}...)
 	}
 
-	multiSpecTest := committee.NewMultiCommitteeSpecTest("past msg duty does not exist", tests)
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"past msg duty does not exist",
+		"Tests committee behavior when processing past proposal messages for a duty that doesn't exist",
+		tests,
+	)
 
 	return multiSpecTest
 }

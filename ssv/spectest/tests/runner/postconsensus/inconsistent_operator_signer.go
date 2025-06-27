@@ -17,6 +17,7 @@ func InconsistentOperatorSigner() tests.SpecTest {
 	expectedError := "invalid PartialSignatureMessages: signer from signed message is inconsistent with partial signature signers"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus inconsistent operator signer",
+		"Tests post-consensus message processing with inconsistent operator signer, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

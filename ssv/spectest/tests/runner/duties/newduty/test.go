@@ -22,6 +22,7 @@ import (
 type StartNewRunnerDutySpecTest struct {
 	Name                    string
 	Type                    string `json:"omitempty"`
+	Documentation           string `json:"omitempty"`
 	Runner                  ssv.Runner
 	Duty                    types.Duty
 	Threshold               uint64
@@ -124,9 +125,10 @@ func (test *StartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
 }
 
 type MultiStartNewRunnerDutySpecTest struct {
-	Name  string
-	Type  string
-	Tests []*StartNewRunnerDutySpecTest
+	Name          string
+	Type          string
+	Documentation string
+	Tests         []*StartNewRunnerDutySpecTest
 }
 
 func (tests *MultiStartNewRunnerDutySpecTest) TestName() string {
@@ -271,10 +273,11 @@ func (t *StartNewRunnerDutySpecTest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func NewStartNewRunnerDutySpecTest(name string, runner ssv.Runner, duty types.Duty, threshold uint64, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, expectedError string) *StartNewRunnerDutySpecTest {
+func NewStartNewRunnerDutySpecTest(name, documentation string, runner ssv.Runner, duty types.Duty, threshold uint64, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, expectedError string) *StartNewRunnerDutySpecTest {
 	return &StartNewRunnerDutySpecTest{
 		Name:                    name,
 		Type:                    "Start new runner duty",
+		Documentation:           documentation,
 		Runner:                  runner,
 		Duty:                    duty,
 		Threshold:               threshold,
@@ -285,10 +288,11 @@ func NewStartNewRunnerDutySpecTest(name string, runner ssv.Runner, duty types.Du
 	}
 }
 
-func NewMultiStartNewRunnerDutySpecTest(name string, tests []*StartNewRunnerDutySpecTest) *MultiStartNewRunnerDutySpecTest {
+func NewMultiStartNewRunnerDutySpecTest(name, documentation string, tests []*StartNewRunnerDutySpecTest) *MultiStartNewRunnerDutySpecTest {
 	return &MultiStartNewRunnerDutySpecTest{
-		Name:  name,
-		Type:  "Multi start new runner duty",
-		Tests: tests,
+		Name:          name,
+		Type:          "Multi start new runner duty",
+		Documentation: documentation,
+		Tests:         tests,
 	}
 }

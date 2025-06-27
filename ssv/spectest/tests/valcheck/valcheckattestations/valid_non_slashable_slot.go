@@ -32,6 +32,7 @@ func ValidNonSlashableSlot() tests.SpecTest {
 
 	return valcheck.NewSpecTest(
 		"attestation valid with non slashable slot",
+		"Tests valid attestation data value check for non-slashable slot",
 		types.BeaconTestNetwork,
 		types.RoleCommittee,
 		testingutils.TestingDutySlot+1,

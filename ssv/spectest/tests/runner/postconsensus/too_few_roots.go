@@ -18,6 +18,7 @@ func TooFewRoots() tests.SpecTest {
 	err := "invalid PartialSignatureMessages: no PartialSignatureMessages messages"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus too few roots",
+		"Tests post-consensus message processing with too few roots, expecting error handling for missing roots.",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

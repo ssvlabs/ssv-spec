@@ -18,6 +18,7 @@ func PreDecided() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus before decided",
+		"Tests post-consensus message processing before duty is decided, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",

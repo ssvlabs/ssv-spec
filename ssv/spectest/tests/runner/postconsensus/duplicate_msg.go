@@ -17,6 +17,7 @@ func DuplicateMsg() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus duplicate msg",
+		"Tests post-consensus message processing with duplicate SignedPartialSignatureMessages from the same signer, expecting correct handling of duplicates",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

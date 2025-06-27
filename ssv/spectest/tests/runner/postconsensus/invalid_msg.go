@@ -19,6 +19,7 @@ func InvalidMessage() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid msg",
+		"Tests post-consensus message processing with invalid message, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

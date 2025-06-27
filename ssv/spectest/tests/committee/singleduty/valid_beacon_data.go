@@ -32,7 +32,11 @@ func ValidBeaconVote() tests.SpecTest {
 		})
 	}
 
-	multiSpecTest := committee.NewMultiCommitteeSpecTest("valid beacon vote", tests)
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"valid beacon vote",
+		"Tests committee behavior when processing proposal messages with valid beacon vote data",
+		tests,
+	)
 
 	return multiSpecTest
 }

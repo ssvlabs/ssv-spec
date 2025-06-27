@@ -16,6 +16,7 @@ func ProposeBlindedBlockDecidedRegular() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return tests.NewMsgProcessingSpecTest(
 		"propose blinded decide regular",
+		"Tests proposing a blinded block but the decided block is a regular block",
 		testingutils.ProposerBlindedBlockRunner(ks),
 		testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 		[]*types.SignedSSVMessage{

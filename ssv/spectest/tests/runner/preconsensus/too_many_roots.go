@@ -15,6 +15,7 @@ func TooManyRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus too many roots",
+		"Tests pre-consensus message processing with too many expected roots, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

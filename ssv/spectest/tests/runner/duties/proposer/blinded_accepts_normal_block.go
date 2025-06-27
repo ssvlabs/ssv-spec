@@ -16,6 +16,7 @@ func BlindedRunnerAcceptsNormalBlock() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"blinded proposer accepts normal block proposal",
+		"Tests full happy flow for a blinded proposer runner that accepts a normal block proposal",
 		[]*tests.MsgProcessingSpecTest{},
 	)
 

@@ -1,6 +1,7 @@
 {
   "Name": "pre consensus invalid msg signature",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests pre-consensus message processing with invalid message signature. No error is generated since the SignedPartialSignatureMessage.Signature is no longer checked",
   "Tests": [
     {
       "Name": "sync committee aggregator selection proof",

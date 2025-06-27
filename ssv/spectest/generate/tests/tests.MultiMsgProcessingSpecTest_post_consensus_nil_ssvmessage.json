@@ -1,6 +1,7 @@
 {
   "Name": "post consensus nil ssvmessage",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests post-consensus message processing with nil SignedSSVMessage, expecting error",
   "Tests": [
     {
       "Name": "sync committee contribution",

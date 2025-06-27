@@ -23,6 +23,7 @@ func NilSSVMessage() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus nil ssvmessage",
+		"Tests pre-consensus message processing with nil SSV message, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:                    "sync committee aggregator selection proof",

@@ -28,6 +28,7 @@ func WrongValidatorIndex() tests.SpecTest {
 	expectedErr := "duty invalid: wrong validator index"
 	return valcheck.NewMultiSpecTest(
 		"wrong validator index",
+		"Tests duty value check with wrong validator index across different roles",
 		[]*valcheck.SpecTest{
 			{
 				Name:       "committee",

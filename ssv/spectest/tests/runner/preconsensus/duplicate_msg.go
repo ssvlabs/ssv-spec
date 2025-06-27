@@ -16,6 +16,7 @@ func DuplicateMsg() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus duplicate msg",
+		"Tests pre-consensus message processing with duplicate messages",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

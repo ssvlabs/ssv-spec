@@ -24,6 +24,7 @@ func EmptySignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"empty signature",
+		"Tests consensus message processing with empty signature, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",

@@ -15,6 +15,7 @@ func ValidMessage() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus valid msg",
+		"Tests valid pre-consensus message processing across different runner types",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

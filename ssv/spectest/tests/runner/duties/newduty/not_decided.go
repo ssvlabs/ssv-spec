@@ -31,6 +31,7 @@ func NotDecided() tests.SpecTest {
 
 	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
 		"new duty not decided",
+		"Tests new duty start when a previous duty has not been decided",
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",

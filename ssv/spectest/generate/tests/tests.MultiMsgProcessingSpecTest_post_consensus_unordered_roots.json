@@ -1,6 +1,7 @@
 {
   "Name": "post consensus unordered roots",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests post-consensus message processing with unordered expected roots, expecting correct handling regardless of order.",
   "Tests": [
     {
       "Name": "sync committee contribution",

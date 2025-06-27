@@ -18,6 +18,7 @@ func WrongDutyType() tests.SpecTest {
 
 	return valcheck.NewMultiSpecTest(
 		"wrong duty type",
+		"Tests duty value check with wrong duty type",
 		[]*valcheck.SpecTest{
 			{
 				Name:       "committee",

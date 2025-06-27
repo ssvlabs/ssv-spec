@@ -1,6 +1,7 @@
 {
   "Name": "pre consensus invalid beacon signature in quorum",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests pre-consensus message processing with invalid beacon signature in quorum",
   "Tests": [
     {
       "Name": "sync committee aggregator selection proof",

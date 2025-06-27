@@ -18,6 +18,7 @@ func ValidDecided() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus valid decided",
+		"Tests valid consensus decided message processing across different runner types",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:                    "sync committee contribution",

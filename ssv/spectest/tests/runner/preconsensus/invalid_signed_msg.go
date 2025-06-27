@@ -18,6 +18,7 @@ func InvalidSignedMessage() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus invalid signed msg",
+		"Tests pre-consensus message processing with invalid signed message, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

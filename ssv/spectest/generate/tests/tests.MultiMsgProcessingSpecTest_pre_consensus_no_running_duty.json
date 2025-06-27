@@ -1,6 +1,7 @@
 {
   "Name": "pre consensus no running duty",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests pre-consensus message processing when no duty is running, expecting error",
   "Tests": [
     {
       "Name": "sync committee contribution",

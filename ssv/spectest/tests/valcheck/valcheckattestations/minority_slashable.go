@@ -45,6 +45,7 @@ func MinoritySlashable() tests.SpecTest {
 
 	return valcheck.NewSpecTest(
 		"attestation value check with slashable minority",
+		"Tests attestation value check with minority slashable attestation (source and target different from previous)",
 		types.BeaconTestNetwork,
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,

@@ -118,7 +118,11 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 		}...)
 	}
 
-	multiSpecTest := committee.NewMultiCommitteeSpecTest("past msg duty not finished", tests)
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"past msg duty not finished",
+		"Tests committee behavior when processing past proposal messages for a duty that has not finished (consensus already finished)",
+		tests,
+	)
 
 	return multiSpecTest
 }

@@ -53,7 +53,11 @@ func FailedThanSuccessfulDuties() tests.SpecTest {
 		}
 	}
 
-	multiSpecTest := committee.NewMultiCommitteeSpecTest("failed than successful duties", tests)
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"failed than successful duties",
+		"Tests sequences where some duties fail (no post-consensus) followed by successful duties with complete happy flow",
+		tests,
+	)
 
 	return multiSpecTest
 }

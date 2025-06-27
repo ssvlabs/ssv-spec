@@ -1,6 +1,7 @@
 {
   "Name": "post consensus partial invalid sig quorum then valid quorum",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests post-consensus message processing where a partial invalid signature quorum is followed by a valid quorum, expecting error and recovery handling.",
   "Tests": [
     {
       "Name": "attester (phase0)",

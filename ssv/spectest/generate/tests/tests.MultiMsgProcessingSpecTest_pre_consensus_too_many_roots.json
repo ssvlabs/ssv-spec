@@ -1,6 +1,7 @@
 {
   "Name": "pre consensus too many roots",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests pre-consensus message processing with too many expected roots, expecting error",
   "Tests": [
     {
       "Name": "sync committee aggregator selection proof",

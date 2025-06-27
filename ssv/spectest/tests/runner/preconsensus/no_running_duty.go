@@ -16,6 +16,7 @@ func NoRunningDuty() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus no running duty",
+		"Tests pre-consensus message processing when no duty is running, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",

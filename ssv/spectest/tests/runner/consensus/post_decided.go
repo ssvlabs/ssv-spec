@@ -20,6 +20,7 @@ func PostDecided() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus valid post decided",
+		"Tests consensus message processing after duty is already decided",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",

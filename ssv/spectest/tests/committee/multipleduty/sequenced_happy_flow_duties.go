@@ -49,7 +49,11 @@ func SequencedHappyFlowDuties() tests.SpecTest {
 		}
 	}
 
-	multiSpecTest := committee.NewMultiCommitteeSpecTest("sequenced happy flow duties", tests)
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"sequenced happy flow duties",
+		"Tests complete happy flow execution for sequences of duties including consensus and post-consensus phases",
+		tests,
+	)
 
 	return multiSpecTest
 }

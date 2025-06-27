@@ -15,6 +15,7 @@ func UnorderedExpectedRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus unordered expected roots",
+		"Tests pre-consensus message processing with unordered expected roots, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

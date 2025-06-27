@@ -16,6 +16,7 @@ func FullHappyFlow() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"full happy flow",
+		"Tests a full runner happy flow",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator",

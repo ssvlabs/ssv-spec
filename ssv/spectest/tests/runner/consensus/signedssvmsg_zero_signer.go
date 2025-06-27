@@ -24,6 +24,7 @@ func ZeroSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"zero signers",
+		"Tests consensus message processing with signer ID 0, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",

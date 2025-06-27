@@ -20,6 +20,7 @@ func MixedCommittees() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"mixed committees",
+		"Tests post-consensus message processing with mixed committee types, expecting correct handling of multiple committee scenarios",
 		[]*tests.MsgProcessingSpecTest{},
 	)
 

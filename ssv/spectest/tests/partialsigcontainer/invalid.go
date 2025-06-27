@@ -26,6 +26,7 @@ func Invalid() tests.SpecTest {
 
 	return NewPartialSigContainerTest(
 		"invalid",
+		"Tests partial signature container with invalid signatures",
 		ks.Threshold,
 		ks.ValidatorPK.Serialize(),
 		msgs,

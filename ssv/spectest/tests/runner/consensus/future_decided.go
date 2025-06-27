@@ -37,6 +37,7 @@ func FutureDecided() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus future decided",
+		"Tests consensus decided message processing with future messages",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",

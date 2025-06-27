@@ -45,7 +45,11 @@ func SequencedDecidedDuties() tests.SpecTest {
 		}
 	}
 
-	multiSpecTest := committee.NewMultiCommitteeSpecTest("sequenced decided duties", tests)
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"sequenced decided duties",
+		"Tests decision phase for sequences of duties without completing post-consensus",
+		tests,
+	)
 
 	return multiSpecTest
 }

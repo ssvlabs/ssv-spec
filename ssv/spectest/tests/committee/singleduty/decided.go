@@ -97,7 +97,11 @@ func Decided() tests.SpecTest {
 		}
 	}
 
-	multiSpecTest := committee.NewMultiCommitteeSpecTest("decided", tests)
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"decided",
+		"Tests committee runner decision phase for attestations and sync committees without completing post-consensus",
+		tests,
+	)
 
 	return multiSpecTest
 }

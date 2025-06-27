@@ -1,6 +1,7 @@
 {
   "Name": "post consensus inconsistent operator signer",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests post-consensus message processing with inconsistent operator signer, expecting error",
   "Tests": [
     {
       "Name": "sync committee contribution",

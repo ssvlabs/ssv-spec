@@ -1,6 +1,7 @@
 {
   "Name": "post consensus valid msg 13 operators",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests valid post-consensus message processing with 13 operators",
   "Tests": [
     {
       "Name": "sync committee contribution",

@@ -12,6 +12,7 @@ func FirstHeight() tests.SpecTest {
 
 	return NewMultiStartNewRunnerDutySpecTest(
 		"new duty first height",
+		"Tests new duty start at first height",
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:      "sync committee aggregator",

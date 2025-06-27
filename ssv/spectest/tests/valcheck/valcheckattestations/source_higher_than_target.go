@@ -26,6 +26,7 @@ func SourceHigherThanTarget() tests.SpecTest {
 
 	return valcheck.NewSpecTest(
 		"attestation value check source higher than target",
+		"Tests attestation value check with source epoch higher than target epoch",
 		types.BeaconTestNetwork,
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,

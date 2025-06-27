@@ -1,6 +1,7 @@
 {
   "Name": "wrong duty type",
   "Type": "Multi value check",
+  "Documentation": "Tests duty value check with wrong duty type",
   "Tests": [
     {
       "Name": "committee",

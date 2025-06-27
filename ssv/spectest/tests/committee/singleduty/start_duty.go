@@ -51,7 +51,11 @@ func StartDuty() tests.SpecTest {
 		}
 	}
 
-	multiSpecTest := committee.NewMultiCommitteeSpecTest("start duty", tests)
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"start duty",
+		"Tests basic duty starting for attestations and sync committees without consensus messages",
+		tests,
+	)
 
 	return multiSpecTest
 }

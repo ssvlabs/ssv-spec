@@ -1,6 +1,7 @@
 {
   "Name": "post consensus post finish",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests post-consensus message processing after duty is finished",
   "Tests": [
     {
       "Name": "sync committee contribution",

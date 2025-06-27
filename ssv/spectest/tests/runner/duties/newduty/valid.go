@@ -16,6 +16,7 @@ func Valid() tests.SpecTest {
 
 	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
 		"new duty valid",
+		"Tests valid new duty start scenarios across different runner types",
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",

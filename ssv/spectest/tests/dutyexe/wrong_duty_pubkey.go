@@ -48,6 +48,7 @@ func WrongDutyPubKey() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"wrong duty pubkey",
+		"Tests decided value with duty validator pubkey != the duty runner's pubkey",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:     "sync committee contribution",

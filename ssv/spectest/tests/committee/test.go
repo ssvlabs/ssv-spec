@@ -22,6 +22,7 @@ import (
 type CommitteeSpecTest struct {
 	Name                   string
 	Type                   string `json:"omitempty"`
+	Documentation          string `json:"omitempty"`
 	Committee              *ssv.Committee
 	Input                  []interface{} // Can be a types.Duty or a *types.SignedSSVMessage
 	PostDutyCommitteeRoot  string
@@ -127,9 +128,10 @@ func (test *CommitteeSpecTest) GetPostState() (interface{}, error) {
 }
 
 type MultiCommitteeSpecTest struct {
-	Name  string
-	Type  string
-	Tests []*CommitteeSpecTest
+	Name          string
+	Type          string
+	Documentation string
+	Tests         []*CommitteeSpecTest
 }
 
 func (tests *MultiCommitteeSpecTest) TestName() string {
@@ -167,10 +169,11 @@ func (tests *MultiCommitteeSpecTest) GetPostState() (interface{}, error) {
 	return ret, nil
 }
 
-func NewCommitteeSpecTest(name string, committee *ssv.Committee, input []interface{}, postDutyCommitteeRoot string, postDutyCommittee types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, expectedError string) *CommitteeSpecTest {
+func NewCommitteeSpecTest(name, documentation string, committee *ssv.Committee, input []interface{}, postDutyCommitteeRoot string, postDutyCommittee types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, expectedError string) *CommitteeSpecTest {
 	return &CommitteeSpecTest{
 		Name:                   name,
 		Type:                   "Committee",
+		Documentation:          documentation,
 		Committee:              committee,
 		Input:                  input,
 		PostDutyCommitteeRoot:  postDutyCommitteeRoot,
@@ -181,10 +184,11 @@ func NewCommitteeSpecTest(name string, committee *ssv.Committee, input []interfa
 	}
 }
 
-func NewMultiCommitteeSpecTest(name string, tests []*CommitteeSpecTest) *MultiCommitteeSpecTest {
+func NewMultiCommitteeSpecTest(name, documentation string, tests []*CommitteeSpecTest) *MultiCommitteeSpecTest {
 	return &MultiCommitteeSpecTest{
-		Name:  name,
-		Type:  "Multi committee",
-		Tests: tests,
+		Name:          name,
+		Type:          "Multi committee",
+		Documentation: documentation,
+		Tests:         tests,
 	}
 }

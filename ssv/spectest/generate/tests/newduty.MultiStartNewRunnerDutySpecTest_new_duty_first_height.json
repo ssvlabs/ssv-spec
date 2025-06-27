@@ -1,6 +1,7 @@
 {
   "Name": "new duty first height",
   "Type": "Multi start new runner duty",
+  "Documentation": "Tests new duty start at first height",
   "Tests": [
     {
       "Name": "sync committee aggregator",

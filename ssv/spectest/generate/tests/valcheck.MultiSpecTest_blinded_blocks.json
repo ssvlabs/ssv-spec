@@ -1,6 +1,7 @@
 {
   "Name": "blinded blocks",
   "Type": "Multi value check",
+  "Documentation": "Tests proposer value check with blinded block data",
   "Tests": [
     {
       "Name": "blinded blocks accepted",

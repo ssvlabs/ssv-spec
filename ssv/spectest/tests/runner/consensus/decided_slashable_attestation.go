@@ -14,6 +14,7 @@ func DecidedSlashableAttestation() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"decide on slashable attestation",
+		"Test that attempting to sign a slashable attestation results in an error",
 		testingutils.CommitteeRunner(ks),
 		testingutils.TestingAttesterDuty(spec.DataVersionPhase0),
 		testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),

@@ -19,6 +19,7 @@ func PostFinish() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus valid post finish",
+		"Tests consensus message processing after duty is finished",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",

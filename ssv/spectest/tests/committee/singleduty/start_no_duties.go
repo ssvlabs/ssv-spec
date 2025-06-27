@@ -15,6 +15,7 @@ func StartNoDuty() tests.SpecTest {
 
 	return committee.NewCommitteeSpecTest(
 		"empty committee duty",
+		"Tests committee behavior when starting with an empty duty (no attestation or sync committee duties)",
 		testingutils.BaseCommittee(ksMapFor1Validator),
 		[]interface{}{
 			testingutils.TestingCommitteeDuty(nil, nil, spec.DataVersionElectra),

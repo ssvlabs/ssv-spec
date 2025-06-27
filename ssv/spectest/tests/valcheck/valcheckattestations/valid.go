@@ -11,6 +11,7 @@ import (
 func Valid() tests.SpecTest {
 	return valcheck.NewSpecTest(
 		"attestation value check valid",
+		"Tests valid attestation data value check",
 		types.PraterNetwork,
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,

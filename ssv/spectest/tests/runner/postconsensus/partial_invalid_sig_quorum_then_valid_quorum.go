@@ -21,6 +21,7 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus partial invalid sig quorum then valid quorum",
+		"Tests post-consensus message processing where a partial invalid signature quorum is followed by a valid quorum, expecting error and recovery handling.",
 		[]*tests.MsgProcessingSpecTest{},
 	)
 

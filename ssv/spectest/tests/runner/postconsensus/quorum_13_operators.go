@@ -16,6 +16,7 @@ func Quorum13Operators() tests.SpecTest {
 	ks := testingutils.Testing13SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus quorum 13 operators",
+		"Tests post-consensus quorum message processing with 13 operators",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

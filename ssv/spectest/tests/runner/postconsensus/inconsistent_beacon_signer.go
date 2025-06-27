@@ -18,6 +18,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus inconsistent beacon signer",
+		"Tests post-consensus message processing with inconsistent beacon signer, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

@@ -1,6 +1,7 @@
 {
   "Name": "post consensus invalid validator index quorum",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests post-consensus message processing with invalid validator indexes in quorum, expecting error",
   "Tests": [
     {
       "Name": "sync committee contribution",

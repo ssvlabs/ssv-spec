@@ -17,6 +17,7 @@ func UnorderedExpectedRoots() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus unordered roots",
+		"Tests post-consensus message processing with unordered expected roots, expecting correct handling regardless of order.",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

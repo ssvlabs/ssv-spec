@@ -50,7 +50,11 @@ func ShuffledHappyFlowDutiesWithDifferentValidators() tests.SpecTest {
 		}
 	}
 
-	multiSpecTest := committee.NewMultiCommitteeSpecTest("shuffled happy flow duties with different validators", tests)
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"shuffled happy flow duties with different validators",
+		"Tests complete happy flow execution for sequences of duties with shuffled input messages while preserving order between duty messages for different validators",
+		tests,
+	)
 
 	return multiSpecTest
 }

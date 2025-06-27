@@ -16,6 +16,7 @@ func InvalidThenQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid then quorum",
+		"Tests post-consensus quorum formation with an invalid message followed by a valid quorum, expecting error then successful termination",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

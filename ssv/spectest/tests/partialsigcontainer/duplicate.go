@@ -20,6 +20,7 @@ func Duplicate() tests.SpecTest {
 
 	return NewPartialSigContainerTest(
 		"duplicate",
+		"Tests partial signature container with duplicate signatures (below quorum)",
 		ks.Threshold,
 		ks.ValidatorPK.Serialize(),
 		msgs,

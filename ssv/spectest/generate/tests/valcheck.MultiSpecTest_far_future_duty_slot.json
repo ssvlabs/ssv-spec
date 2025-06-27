@@ -1,6 +1,7 @@
 {
   "Name": "far future duty slot",
   "Type": "Multi value check",
+  "Documentation": "Tests duty value check with duty slot too far in the future",
   "Tests": [
     {
       "Name": "committee",

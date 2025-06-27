@@ -17,6 +17,7 @@ func InvalidBeaconSignatureInQuorum() tests.SpecTest {
 	expectedError := "got post-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid beacon signature in quorum",
+		"Tests post-consensus message processing with invalid beacon signature in quorum, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

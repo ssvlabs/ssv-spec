@@ -23,6 +23,7 @@ func PostFinish() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus post finish",
+		"Tests pre-consensus message processing after duty is finished",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee aggregator selection proof",

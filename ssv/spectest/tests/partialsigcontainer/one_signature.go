@@ -24,6 +24,7 @@ func OneSignature() tests.SpecTest {
 
 	return NewPartialSigContainerTest(
 		"one signature",
+		"Tests partial signature container with only one signature (below quorum)",
 		ks.Threshold,
 		ks.ValidatorPK.Serialize(),
 		msgs,

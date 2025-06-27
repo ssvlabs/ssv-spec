@@ -16,6 +16,7 @@ func InvalidOperatorSignature() tests.SpecTest {
 	expectedError := "SignedSSVMessage has an invalid signature: crypto/rsa: verification error"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus invalid operator signature",
+		"Tests pre-consensus message processing with invalid operator signature, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

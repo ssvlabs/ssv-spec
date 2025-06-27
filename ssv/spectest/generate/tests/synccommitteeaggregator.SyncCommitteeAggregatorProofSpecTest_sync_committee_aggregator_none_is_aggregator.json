@@ -1,6 +1,7 @@
 {
   "Name": "sync committee aggregator none is aggregator",
   "Type": "Sync committee aggregator proof",
+  "Documentation": "Tests sync committee aggregator proof validation when none of the selection proofs are aggregators",
   "Messages": [
     {
       "Signatures": [

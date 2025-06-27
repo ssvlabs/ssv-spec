@@ -17,6 +17,7 @@ func BeaconVoteDataNil() tests.SpecTest {
 
 	return valcheck.NewSpecTest(
 		"consensus data value check nil",
+		"Tests attestation value check with nil attestation data",
 		types.PraterNetwork,
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,

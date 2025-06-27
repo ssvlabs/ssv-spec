@@ -43,6 +43,7 @@ func PostFutureDecided() tests.SpecTest {
 
 	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
 		"new duty post future decided",
+		"Tests new duty start after a future decided value, expecting error",
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",

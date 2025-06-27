@@ -33,7 +33,11 @@ func WrongBeaconVote() tests.SpecTest {
 		})
 	}
 
-	multiSpecTest := committee.NewMultiCommitteeSpecTest("wrong beacon vote", tests)
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"wrong beacon vote",
+		"Tests committee behavior when processing proposal messages with invalid beacon vote data (source >= target)",
+		tests,
+	)
 
 	return multiSpecTest
 }

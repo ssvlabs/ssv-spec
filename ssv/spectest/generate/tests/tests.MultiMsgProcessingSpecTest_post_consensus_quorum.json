@@ -1,6 +1,7 @@
 {
   "Name": "post consensus quorum",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests post-consensus quorum message processing across different runner types",
   "Tests": [
     {
       "Name": "sync committee contribution",

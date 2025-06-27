@@ -1,6 +1,7 @@
 {
   "Name": "post consensus invalid and valid validator index quorum",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests post-consensus message processing with a mix of invalid and valid validator indexes in quorum, expecting correct error and recovery handling",
   "Tests": [
     {
       "Name": "attester (phase0)",

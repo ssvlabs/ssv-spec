@@ -18,6 +18,7 @@ func UnknownSigner() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus unknown msg signer",
+		"Tests pre-consensus message processing with unknown signer",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

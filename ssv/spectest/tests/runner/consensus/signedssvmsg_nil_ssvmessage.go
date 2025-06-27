@@ -24,6 +24,7 @@ func NilSSVMessage() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"nil SSVMessage",
+		"Tests consensus message processing with nil SSV message, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",

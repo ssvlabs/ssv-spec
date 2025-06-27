@@ -1,6 +1,7 @@
 {
   "Name": "consensus valid message",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests valid consensus message processing across different runner types",
   "Tests": [
     {
       "Name": "sync committee contribution",

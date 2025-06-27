@@ -16,6 +16,7 @@ func StartWithNoSharesForDuty() tests.SpecTest {
 
 	return committee.NewCommitteeSpecTest(
 		"start with no shares for duty",
+		"Tests committee behavior when starting a duty for validators that the committee doesn't have shares for",
 		testingutils.BaseCommittee(ksMapFor1Validator),
 		[]interface{}{
 			// Duty for validator of index 2

@@ -17,6 +17,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 	expectedError := "failed processing post consensus message: invalid post-consensus message: wrong signing root"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid expected roots",
+		"Tests post-consensus message processing with invalid expected root, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

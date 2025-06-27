@@ -1,6 +1,7 @@
 {
   "Name": "normal proposer accepts blinded block proposal",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests full happy flow for a normal proposer runner that accepts a blinded block proposal",
   "Tests": [
     {
       "Name": "normal proposer accepts blinded block proposal (capella)",

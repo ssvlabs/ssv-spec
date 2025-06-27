@@ -32,6 +32,7 @@ func Slashable() tests.SpecTest {
 
 	return valcheck.NewSpecTest(
 		"attestation value check slashable",
+		"Tests slashable attestation data value check",
 		types.BeaconTestNetwork,
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,

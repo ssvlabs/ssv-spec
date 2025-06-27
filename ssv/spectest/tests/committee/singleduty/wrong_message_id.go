@@ -72,7 +72,11 @@ func WrongMessageID() tests.SpecTest {
 		}...)
 	}
 
-	multiSpecTest := committee.NewMultiCommitteeSpecTest("wrong message ID", tests)
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"wrong message ID",
+		"Tests committee behavior when processing messages with incorrect message IDs that don't match the committee ID",
+		tests,
+	)
 
 	return multiSpecTest
 }

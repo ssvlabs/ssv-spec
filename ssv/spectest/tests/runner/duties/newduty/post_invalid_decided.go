@@ -57,6 +57,7 @@ func PostInvalidDecided() tests.SpecTest {
 
 	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
 		"new duty post invalid decided",
+		"Tests new duty start after an invalid decided value, expecting error",
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name: "sync committee aggregator",

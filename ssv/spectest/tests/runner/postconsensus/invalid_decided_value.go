@@ -37,6 +37,7 @@ func InvalidDecidedValue() tests.SpecTest {
 	expectedErr := "failed processing post consensus message: invalid post-consensus message: no decided value"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus decided invalid value",
+		"Tests post-consensus message processing with invalid decided value, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",

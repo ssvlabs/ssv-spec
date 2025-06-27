@@ -46,6 +46,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus future decided no running instance",
+		"Tests consensus decided message processing with future messages when no instance exists",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:           "sync committee contribution",

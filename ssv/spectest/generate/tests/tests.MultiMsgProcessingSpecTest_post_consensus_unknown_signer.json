@@ -1,6 +1,7 @@
 {
   "Name": "post consensus unknown signer",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests post-consensus message processing with unknown signer, expecting error",
   "Tests": [
     {
       "Name": "sync committee contribution",

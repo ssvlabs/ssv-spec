@@ -40,6 +40,7 @@ func InvalidDecidedValue() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus decided invalid value",
+		"Tests consensus message processing with invalid decided values",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",

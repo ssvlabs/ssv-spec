@@ -1,6 +1,7 @@
 {
   "Name": "new duty not decided",
   "Type": "Multi start new runner duty",
+  "Documentation": "Tests new duty start when a previous duty has not been decided",
   "Tests": [
     {
       "Name": "sync committee aggregator",

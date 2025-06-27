@@ -1,6 +1,7 @@
 {
   "Name": "wrong duty role",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests behavior when processing decided value duty with wrong duty role (!= duty runner role)",
   "Tests": [
     {
       "Name": "sync committee contribution",

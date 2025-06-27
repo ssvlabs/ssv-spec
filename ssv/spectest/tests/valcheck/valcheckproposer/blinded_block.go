@@ -12,6 +12,7 @@ import (
 func BlindedBlock() tests.SpecTest {
 	return valcheck.NewMultiSpecTest(
 		"blinded blocks",
+		"Tests proposer value check with blinded block data",
 		[]*valcheck.SpecTest{
 			{
 				Name:       "blinded blocks accepted",

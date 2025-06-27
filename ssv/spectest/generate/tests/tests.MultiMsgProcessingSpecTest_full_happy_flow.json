@@ -1,6 +1,7 @@
 {
   "Name": "full happy flow",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests a full runner happy flow",
   "Tests": [
     {
       "Name": "sync committee aggregator",

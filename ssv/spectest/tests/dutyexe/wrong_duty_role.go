@@ -48,6 +48,7 @@ func WrongDutyRole() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"wrong duty role",
+		"Tests behavior when processing decided value duty with wrong duty role (!= duty runner role)",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:     "sync committee contribution",

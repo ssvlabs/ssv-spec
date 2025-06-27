@@ -15,6 +15,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	test := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus msg different roots",
+		"Tests pre-consensus message processing with duplicate messages having different roots, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

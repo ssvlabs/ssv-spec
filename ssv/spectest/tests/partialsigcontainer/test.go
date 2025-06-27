@@ -12,6 +12,7 @@ import (
 type PartialSigContainerTest struct {
 	Name            string
 	Type            string
+	Documentation   string
 	Quorum          uint64
 	ValidatorPubKey []byte
 	SignatureMsgs   []*types.PartialSignatureMessage
@@ -55,10 +56,11 @@ func (test *PartialSigContainerTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
 
-func NewPartialSigContainerTest(name string, quorum uint64, validatorPubKey []byte, signatureMsgs []*types.PartialSignatureMessage, expectedError string, expectedResult []byte, expectedQuorum bool) *PartialSigContainerTest {
+func NewPartialSigContainerTest(name, documentation string, quorum uint64, validatorPubKey []byte, signatureMsgs []*types.PartialSignatureMessage, expectedError string, expectedResult []byte, expectedQuorum bool) *PartialSigContainerTest {
 	return &PartialSigContainerTest{
 		Name:            name,
 		Type:            "PartialSigContainer",
+		Documentation:   documentation,
 		Quorum:          quorum,
 		ValidatorPubKey: validatorPubKey,
 		SignatureMsgs:   signatureMsgs,

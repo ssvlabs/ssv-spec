@@ -24,6 +24,7 @@ func InvalidSignedMessageDifferentLength() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid signed message different length",
+		"Tests post-consensus message processing with invalid signed message (different signature lengths)",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

@@ -15,6 +15,7 @@ func ValidMessage10Operators() tests.SpecTest {
 	ks := testingutils.Testing10SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus valid msg 10 operators",
+		"Tests valid pre-consensus message processing with 10 operators",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

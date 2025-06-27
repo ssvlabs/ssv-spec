@@ -17,6 +17,7 @@ func InvalidValidatorIndexQuorum() tests.SpecTest {
 	expectedError := "failed processing post consensus message: invalid post-consensus message: unknown validator index"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid validator index quorum",
+		"Tests post-consensus message processing with invalid validator indexes in quorum, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

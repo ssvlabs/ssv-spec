@@ -41,6 +41,7 @@ func FutureMessage() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus future message",
+		"Tests consensus message processing with future messages",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",

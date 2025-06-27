@@ -1,6 +1,7 @@
 {
   "Name": "new duty valid",
   "Type": "Multi start new runner duty",
+  "Documentation": "Tests valid new duty start scenarios across different runner types",
   "Tests": [
     {
       "Name": "sync committee aggregator",

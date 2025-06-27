@@ -26,6 +26,7 @@ func Quorum() tests.SpecTest {
 
 	return NewPartialSigContainerTest(
 		"quorum",
+		"Tests partial signature container quorum and signature reconstruction",
 		ks.Threshold,
 		ks.ValidatorPK.Serialize(),
 		msgs,

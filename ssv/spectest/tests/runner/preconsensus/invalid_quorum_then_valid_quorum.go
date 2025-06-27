@@ -16,6 +16,7 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus invalid quorum then valid quorum",
+		"Tests pre-consensus message processing with invalid quorum followed by valid quorum",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

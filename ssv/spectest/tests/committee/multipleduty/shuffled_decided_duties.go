@@ -46,7 +46,11 @@ func ShuffledDecidedDuties() tests.SpecTest {
 		}
 	}
 
-	multiSpecTest := committee.NewMultiCommitteeSpecTest("shuffled decided duties", tests)
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"shuffled decided duties",
+		"Tests decision phase for sequences of duties with shuffled input messages while preserving order between duty messages",
+		tests,
+	)
 
 	return multiSpecTest
 }

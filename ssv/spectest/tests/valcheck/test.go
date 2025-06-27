@@ -14,6 +14,7 @@ import (
 type SpecTest struct {
 	Name              string
 	Type              string `json:"omitempty"`
+	Documentation     string `json:"omitempty"`
 	Network           types.BeaconNetwork
 	RunnerRole        types.RunnerRole
 	DutySlot          phase0.Slot // DutySlot is used only for the RoleCommittee since the BeaconVoteValueCheckF requires the duty's slot
@@ -79,9 +80,10 @@ func (tests *SpecTest) GetPostState() (interface{}, error) {
 }
 
 type MultiSpecTest struct {
-	Name  string
-	Type  string
-	Tests []*SpecTest
+	Name          string
+	Type          string
+	Documentation string
+	Tests         []*SpecTest
 }
 
 func (test *MultiSpecTest) TestName() string {
@@ -100,10 +102,11 @@ func (tests *MultiSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
 
-func NewSpecTest(name string, network types.BeaconNetwork, role types.RunnerRole, dutySlot phase0.Slot, input []byte, slashableSlots map[string][]phase0.Slot, shareValidatorsPK []types.ShareValidatorPK, expectedError string, anyError bool) *SpecTest {
+func NewSpecTest(name, documentation string, network types.BeaconNetwork, role types.RunnerRole, dutySlot phase0.Slot, input []byte, slashableSlots map[string][]phase0.Slot, shareValidatorsPK []types.ShareValidatorPK, expectedError string, anyError bool) *SpecTest {
 	return &SpecTest{
 		Name:              name,
 		Type:              "Value check",
+		Documentation:     documentation,
 		Network:           network,
 		RunnerRole:        role,
 		DutySlot:          dutySlot,
@@ -115,10 +118,11 @@ func NewSpecTest(name string, network types.BeaconNetwork, role types.RunnerRole
 	}
 }
 
-func NewMultiSpecTest(name string, tests []*SpecTest) *MultiSpecTest {
+func NewMultiSpecTest(name, documentation string, tests []*SpecTest) *MultiSpecTest {
 	return &MultiSpecTest{
-		Name:  name,
-		Type:  "Multi value check",
-		Tests: tests,
+		Name:          name,
+		Type:          "Multi value check",
+		Documentation: documentation,
+		Tests:         tests,
 	}
 }

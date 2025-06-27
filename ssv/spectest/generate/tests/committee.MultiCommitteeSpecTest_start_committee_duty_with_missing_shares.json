@@ -1,10 +1,10 @@
 {
   "Name": "start committee duty with missing shares",
   "Type": "Multi committee",
+  "Documentation": "Tests complete duty execution for a committee that only has shares for a fraction of the duty's validators",
   "Tests": [
     {
       "Name": "attestation (phase0)",
-      "omitempty": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -1620,7 +1620,6 @@
     },
     {
       "Name": "sync committee (phase0)",
-      "omitempty": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -3276,7 +3275,6 @@
     },
     {
       "Name": "attestations sync committees (phase0)",
-      "omitempty": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -5242,7 +5240,6 @@
     },
     {
       "Name": "attestation (electra)",
-      "omitempty": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -6858,7 +6855,6 @@
     },
     {
       "Name": "sync committee (electra)",
-      "omitempty": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -8514,7 +8510,6 @@
     },
     {
       "Name": "attestations sync committees (electra)",
-      "omitempty": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {

@@ -1,6 +1,7 @@
 {
   "Name": "pre consensus valid msg 10 operators",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests valid pre-consensus message processing with 10 operators",
   "Tests": [
     {
       "Name": "sync committee aggregator selection proof",

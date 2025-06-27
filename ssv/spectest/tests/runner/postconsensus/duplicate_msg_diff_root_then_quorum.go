@@ -19,6 +19,7 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus duplicate msg different root then quorum",
+		"Tests post-consensus message processing where duplicate messages from the same signer have different roots, followed by a quorum, expecting correct error and recovery handling.",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

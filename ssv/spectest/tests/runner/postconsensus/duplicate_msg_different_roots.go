@@ -18,6 +18,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus duplicate msg different roots",
+		"Tests post-consensus message processing with duplicate SignedPartialSignatureMessages from the same signer but with different signing roots, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

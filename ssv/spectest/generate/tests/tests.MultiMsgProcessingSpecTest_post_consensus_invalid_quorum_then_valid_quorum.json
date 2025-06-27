@@ -1,6 +1,7 @@
 {
   "Name": "post consensus invalid quorum then valid quorum",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests post-consensus quorum formation with an invalid quorum followed by a valid quorum, expecting error then successful termination",
   "Tests": [
     {
       "Name": "sync committee contribution",

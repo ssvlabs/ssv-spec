@@ -1,6 +1,7 @@
 {
   "Name": "no signers",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests consensus message processing with no signers, expecting error",
   "Tests": [
     {
       "Name": "sync committee contribution",

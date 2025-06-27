@@ -1,6 +1,7 @@
 {
   "Name": "pre consensus unknown msg signer",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests pre-consensus message processing with unknown signer",
   "Tests": [
     {
       "Name": "sync committee aggregator selection proof",

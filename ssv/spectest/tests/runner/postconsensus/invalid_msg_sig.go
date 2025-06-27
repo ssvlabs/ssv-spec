@@ -16,6 +16,7 @@ func InvalidMessageSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid msg signature",
+		"Tests post-consensus message processing with invalid message signature. No error is generated since the SignedPartialSignatureMessage.Signature is no longer checked",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

@@ -1,6 +1,7 @@
 {
   "Name": "wrong duty pubkey",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests decided value with duty validator pubkey != the duty runner's pubkey",
   "Tests": [
     {
       "Name": "sync committee contribution",

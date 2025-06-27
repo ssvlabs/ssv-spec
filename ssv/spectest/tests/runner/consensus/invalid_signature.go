@@ -18,6 +18,7 @@ func InvalidSignature() tests.SpecTest {
 	expectedError := "SignedSSVMessage has an invalid signature: crypto/rsa: verification error"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus invalid signature",
+		"Tests consensus message processing with invalid signatures",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",

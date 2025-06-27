@@ -1,6 +1,7 @@
 {
   "Name": "consensus future decided",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests consensus decided message processing with future messages",
   "Tests": [
     {
       "Name": "sync committee contribution",

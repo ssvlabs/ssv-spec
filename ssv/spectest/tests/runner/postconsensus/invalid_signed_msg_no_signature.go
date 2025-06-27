@@ -24,6 +24,7 @@ func InvalidSignedMessageNoSignature() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid signed message no signatures",
+		"Tests post-consensus message processing with invalid signed message (no signatures)",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

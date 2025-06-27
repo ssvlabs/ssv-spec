@@ -52,6 +52,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 
 	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
 		"duplicate duty finished",
+		"Tests new duty start with duplicate duty that has finished",
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",

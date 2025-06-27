@@ -17,6 +17,7 @@ func ValidMessage10Operators() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus valid msg 10 operators",
+		"Tests valid post-consensus message processing with 10 operators",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

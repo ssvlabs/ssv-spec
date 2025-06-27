@@ -16,6 +16,7 @@ func PostQuorum() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus post quorum",
+		"Tests pre-consensus message processing after quorum is reached",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

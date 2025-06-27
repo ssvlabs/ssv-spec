@@ -25,6 +25,7 @@ func NonUniqueSigners() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"non unique signer",
+		"Tests consensus message processing with non-unique signers, expecting error",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",

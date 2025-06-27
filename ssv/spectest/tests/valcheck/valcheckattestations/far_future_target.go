@@ -26,6 +26,7 @@ func FarFutureTarget() tests.SpecTest {
 
 	return valcheck.NewSpecTest(
 		"attestation value check far future target",
+		"Tests attestation value check with target epoch too far in the future",
 		types.BeaconTestNetwork,
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,

@@ -39,6 +39,7 @@ func PostDecided() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus post decided",
+		"Tests pre-consensus message processing after duty is decided",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee aggregator selection proof",

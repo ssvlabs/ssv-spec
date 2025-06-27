@@ -1,6 +1,7 @@
 {
   "Name": "consensus valid post decided",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests consensus message processing after duty is already decided",
   "Tests": [
     {
       "Name": "sync committee contribution",

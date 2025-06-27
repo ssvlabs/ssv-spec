@@ -17,6 +17,7 @@ func TooManyRoots() tests.SpecTest {
 	err := "failed processing post consensus message: invalid post-consensus message: wrong expected roots count"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus too many roots",
+		"Tests post-consensus message processing with too many roots, expecting error handling for excess roots.",
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

@@ -1,6 +1,7 @@
 {
   "Name": "wrong validator index",
   "Type": "Multi value check",
+  "Documentation": "Tests duty value check with wrong validator index across different roles",
   "Tests": [
     {
       "Name": "committee",

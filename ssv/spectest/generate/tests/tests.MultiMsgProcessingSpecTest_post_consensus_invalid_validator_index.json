@@ -1,6 +1,7 @@
 {
   "Name": "post consensus invalid validator index",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests post-consensus message processing with invalid validator indexes, expecting error",
   "Tests": [
     {
       "Name": "sync committee contribution",

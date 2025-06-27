@@ -1,6 +1,7 @@
 {
   "Name": "different length of signers and signatures",
   "Type": "SSV multi message processing",
+  "Documentation": "Tests consensus message processing with different length of signers and signatures, expecting error",
   "Tests": [
     {
       "Name": "sync committee contribution",

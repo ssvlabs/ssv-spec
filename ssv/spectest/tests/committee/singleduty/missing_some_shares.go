@@ -124,7 +124,11 @@ func MissingSomeShares() tests.SpecTest {
 		}...)
 	}
 
-	multiSpecTest := committee.NewMultiCommitteeSpecTest("start committee duty with missing shares", tests)
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"start committee duty with missing shares",
+		"Tests complete duty execution for a committee that only has shares for a fraction of the duty's validators",
+		tests,
+	)
 
 	return multiSpecTest
 }
