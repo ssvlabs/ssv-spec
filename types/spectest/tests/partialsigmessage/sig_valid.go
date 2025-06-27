@@ -12,10 +12,12 @@ func SigValid() *MsgSpecTest {
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)
 
-	return &MsgSpecTest{
-		Name: "sig valid",
-		Messages: []*types.PartialSignatureMessages{
-			msg,
-		},
-	}
+	return NewMsgSpecTest(
+		"sig valid",
+		"Test validation of signed post consensus message with 96-byte signature length",
+		[]*types.PartialSignatureMessages{msg},
+		nil,
+		nil,
+		"",
+	)
 }

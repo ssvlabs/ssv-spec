@@ -20,10 +20,15 @@ func PostDecided() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[4], 4),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:           "post decided",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"post decided",
+		"Test processing of a commit message after instance decided",
+		pre,
+		"",
+		nil,
+		msgs,
+		nil,
+		"",
+		nil,
+	)
 }

@@ -1,5 +1,7 @@
 {
   "Name": "attestation value check with slashable minority",
+  "Type": "Value check: validations for input of different runner roles",
+  "Documentation": "Tests attestation value check with minority slashable attestation (source and target different from previous)",
   "Network": "now_test_network",
   "RunnerRole": 0,
   "DutySlot": "12",

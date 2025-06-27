@@ -18,10 +18,11 @@ func PartialInvalidRootQuorumThenValidQuorum() tests.SpecTest {
 	ksMap := testingutils.KeySetMapForValidators(numValidators)
 	shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name:  "post consensus partial invalid root quorum then valid quorum",
-		Tests: []*tests.MsgProcessingSpecTest{},
-	}
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus partial invalid root quorum then valid quorum",
+		"Tests post-consensus message processing where a partial invalid root quorum is followed by a valid quorum, expecting error and recovery handling.",
+		[]*tests.MsgProcessingSpecTest{},
+	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{

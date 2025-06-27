@@ -1,5 +1,7 @@
 {
   "Name": "late commit past instance",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test processing commit message for a previously decided instance, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

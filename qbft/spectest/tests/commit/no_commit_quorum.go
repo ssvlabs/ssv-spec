@@ -24,17 +24,23 @@ func NoCommitQuorum() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 		testingutils.TestingCommitMessage(ks.OperatorKeys[2], 2),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "no commit quorum",
-		Pre:           pre,
-		PostRoot:      sc.Root(),
-		PostState:     sc.ExpectedState,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
-		},
+
+	outputMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"no commit quorum",
+		"Test processing of commit messages without creating a quorum",
+		pre,
+		sc.Root(),
+		sc.ExpectedState,
+		msgs,
+		outputMsgs,
+		"",
+		nil,
+	)
 }
 
 func NoCommitQuorumStateComparison() *comparable.StateComparison {

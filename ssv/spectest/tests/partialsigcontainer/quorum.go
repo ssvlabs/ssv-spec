@@ -24,12 +24,14 @@ func Quorum() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &PartialSigContainerTest{
-		Name:            "quorum",
-		Quorum:          ks.Threshold,
-		ValidatorPubKey: ks.ValidatorPK.Serialize(),
-		SignatureMsgs:   msgs,
-		ExpectedResult:  expectedSig.Serialize(),
-		ExpectedQuorum:  true,
-	}
+	return NewPartialSigContainerTest(
+		"quorum",
+		"Tests partial signature container quorum and signature reconstruction",
+		ks.Threshold,
+		ks.ValidatorPK.Serialize(),
+		msgs,
+		"",
+		expectedSig.Serialize(),
+		true,
+	)
 }

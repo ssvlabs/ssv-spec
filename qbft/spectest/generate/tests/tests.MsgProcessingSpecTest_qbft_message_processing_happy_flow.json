@@ -1,5 +1,7 @@
 {
   "Name": "happy flow",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test a complete QBFT happy flow from proposal to decision with 4 operators",
   "Pre": {
     "State": {
       "CommitteeMember": {

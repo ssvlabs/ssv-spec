@@ -16,9 +16,10 @@ func WrongDutyType() tests.SpecTest {
 		return input
 	}
 
-	return &valcheck.MultiSpecTest{
-		Name: "wrong duty type",
-		Tests: []*valcheck.SpecTest{
+	return valcheck.NewMultiSpecTest(
+		"wrong duty type",
+		"Tests duty value check with wrong duty type",
+		[]*valcheck.SpecTest{
 			{
 				Name:       "committee",
 				Network:    types.BeaconTestNetwork,
@@ -48,5 +49,5 @@ func WrongDutyType() tests.SpecTest {
 				ExpectedError: "duty invalid: wrong beacon role type",
 			},
 		},
-	}
+	)
 }

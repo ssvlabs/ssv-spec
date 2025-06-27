@@ -36,9 +36,10 @@ func Finished() tests.SpecTest {
 		return r
 	}
 
-	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty finished",
-		Tests: []*StartNewRunnerDutySpecTest{
+	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
+		"new duty finished",
+		"Tests new duty start after a previous duty has finished",
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name: "sync committee aggregator",
 				Runner: finishRunner(testingutils.SyncCommitteeContributionRunner(ks),
@@ -78,7 +79,7 @@ func Finished() tests.SpecTest {
 				},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{

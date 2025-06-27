@@ -1,5 +1,7 @@
 {
   "Name": "future valid msg",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test future message that is valid but not yet ready to be processed, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

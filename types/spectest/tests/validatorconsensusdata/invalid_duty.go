@@ -18,9 +18,10 @@ func InvalidDuty() *ValidatorConsensusDataTest {
 		DataSSZ: testingutils.TestingAttestationDataBytes(spec.DataVersionCapella),
 	}
 
-	return &ValidatorConsensusDataTest{
-		Name:          "invalid duty",
-		ConsensusData: *cd,
-		ExpectedError: "unknown duty role",
-	}
+	return NewValidatorConsensusDataTest(
+		"invalid duty",
+		"Test validation error for consensus data with unknown duty role",
+		*cd,
+		"unknown duty role",
+	)
 }

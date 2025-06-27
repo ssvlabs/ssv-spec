@@ -14,9 +14,10 @@ func InvalidIdentifier() tests.SpecTest {
 	invalidPK := make([]byte, 32)
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, invalidPK, types.RoleCommittee)
 
-	return &tests.ControllerSpecTest{
-		Name: "invalid identifier",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"invalid identifier",
+		"Test processing a message with the wrong identifier, expecting validation error.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -33,6 +34,8 @@ func InvalidIdentifier() tests.SpecTest {
 				},
 			},
 		},
-		ExpectedError: "invalid msg: message doesn't belong to Identifier",
-	}
+		nil,
+		"invalid msg: message doesn't belong to Identifier",
+		nil,
+	)
 }

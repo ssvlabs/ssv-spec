@@ -18,9 +18,15 @@ func DuplicateMsg() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "duplicate commit message",
-		Pre:           pre,
-		InputMessages: msgs,
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"duplicate commit message",
+		"Test processing of duplicate commit messages from the same signer",
+		pre,
+		"",
+		nil,
+		msgs,
+		nil,
+		"",
+		nil,
+	)
 }

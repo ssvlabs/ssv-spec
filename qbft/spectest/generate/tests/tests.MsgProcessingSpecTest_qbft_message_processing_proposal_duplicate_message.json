@@ -1,5 +1,7 @@
 {
   "Name": "proposal duplicate message",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test processing of duplicate proposal messages from the same signer",
   "Pre": {
     "State": {
       "CommitteeMember": {

@@ -16,9 +16,11 @@ func SSZWithdrawalsMarshaling() *SSZSpecTest {
 		panic(err.Error())
 	}
 
-	return &SSZSpecTest{
-		Name:         "ssz withdrawals marshalling",
-		Data:         testingutils.TestProposerConsensusDataBytsV(spec.DataVersionCapella),
-		ExpectedRoot: root,
-	}
+	return NewSSZSpecTest(
+		"ssz withdrawals marshalling",
+		"Test SSZ marshaling and hash tree root calculation of Capella withdrawals",
+		testingutils.TestProposerConsensusDataBytsV(spec.DataVersionCapella),
+		root,
+		"",
+	)
 }

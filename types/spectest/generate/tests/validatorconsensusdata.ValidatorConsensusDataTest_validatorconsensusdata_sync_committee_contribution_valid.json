@@ -1,5 +1,7 @@
 {
   "Name": "sync committee contribution valid",
+  "Type": "Validator consensus data: validation of validator consensus data",
+  "Documentation": "Test validation of valid consensus data with sync committee contribution",
   "ConsensusData": {
     "Duty": {
       "Type": 4,

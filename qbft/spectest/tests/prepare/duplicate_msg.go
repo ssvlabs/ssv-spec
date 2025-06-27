@@ -13,14 +13,20 @@ func DuplicateMsg() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)))
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "duplicate prepare message",
-		Pre:           pre,
-		InputMessages: msgs,
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"duplicate prepare message",
+		"Test processing of duplicate prepare messages from the same signer",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"",
+		nil,
+	)
 }

@@ -22,13 +22,14 @@ func OneSignature() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &PartialSigContainerTest{
-		Name:            "one signature",
-		Quorum:          ks.Threshold,
-		ValidatorPubKey: ks.ValidatorPK.Serialize(),
-		SignatureMsgs:   msgs,
-		ExpectedError:   "could not reconstruct a valid signature",
-		ExpectedResult:  expectedSig.Serialize(),
-		ExpectedQuorum:  false,
-	}
+	return NewPartialSigContainerTest(
+		"one signature",
+		"Tests partial signature container with only one signature (below quorum)",
+		ks.Threshold,
+		ks.ValidatorPK.Serialize(),
+		msgs,
+		"could not reconstruct a valid signature",
+		expectedSig.Serialize(),
+		false,
+	)
 }

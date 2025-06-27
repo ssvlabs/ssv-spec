@@ -7,8 +7,10 @@ import (
 
 // DenebBlockValidation tests a valid consensus data with deneb block
 func DenebBlockValidation() *ValidatorConsensusDataTest {
-	return &ValidatorConsensusDataTest{
-		Name:          "valid deneb block",
-		ConsensusData: *testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb),
-	}
+	return NewValidatorConsensusDataTest(
+		"valid deneb block",
+		"Test validation of valid consensus data with Deneb block",
+		*testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb),
+		"",
+	)
 }

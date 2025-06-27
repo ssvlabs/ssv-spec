@@ -21,13 +21,12 @@ func GetRoot() tests.SpecTest {
 
 	r, _ := msg.GetRoot()
 
-	return &tests.MsgSpecTest{
-		Name: "get root",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		ExpectedRoots: [][32]byte{
-			r,
-		},
-	}
+	return tests.NewMsgSpecTest(
+		"get root",
+		"Test GetRoot method on signed QBFT message with justifications.",
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		[][32]byte{r},
+		"",
+	)
 }

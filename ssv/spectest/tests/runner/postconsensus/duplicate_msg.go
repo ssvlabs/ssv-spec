@@ -15,9 +15,10 @@ func DuplicateMsg() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus duplicate msg",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus duplicate msg",
+		"Tests post-consensus message processing with duplicate SignedPartialSignatureMessages from the same signer, expecting correct handling of duplicates",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -37,7 +38,7 @@ func DuplicateMsg() tests.SpecTest {
 				DontStartDuty:           true,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

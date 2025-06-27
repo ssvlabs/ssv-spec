@@ -30,18 +30,20 @@ func Slashable() tests.SpecTest {
 	sharePKBytes := keySet.Shares[1].Serialize()
 	shareString := hex.EncodeToString(sharePKBytes)
 
-	return &valcheck.SpecTest{
-		Name:          "attestation value check slashable",
-		Network:       types.BeaconTestNetwork,
-		RunnerRole:    types.RoleCommittee,
-		DutySlot:      testingutils.TestingDutySlot,
-		Input:         input,
-		ExpectedError: "slashable attestation",
-		SlashableSlots: map[string][]phase0.Slot{
+	return valcheck.NewSpecTest(
+		"attestation value check slashable",
+		"Tests slashable attestation data value check",
+		types.BeaconTestNetwork,
+		types.RoleCommittee,
+		testingutils.TestingDutySlot,
+		input,
+		map[string][]phase0.Slot{
 			shareString: {
 				testingutils.TestingDutySlot,
 			},
 		},
-		ShareValidatorsPK: []types.ShareValidatorPK{sharePKBytes},
-	}
+		[]types.ShareValidatorPK{sharePKBytes},
+		"slashable attestation",
+		false,
+	)
 }

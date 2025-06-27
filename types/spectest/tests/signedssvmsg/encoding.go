@@ -16,8 +16,9 @@ func Encoding() *EncodingTest {
 		panic(err.Error())
 	}
 
-	return &EncodingTest{
-		Name: "encoding",
-		Data: byts,
-	}
+	return NewEncodingTest(
+		"encoding",
+		"Test encoding of a signed SSV message to bytes",
+		byts,
+	)
 }

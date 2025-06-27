@@ -1,5 +1,7 @@
 {
   "Name": "wrong proposer",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test proposal by a node that is not the designated proposer for the current round, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

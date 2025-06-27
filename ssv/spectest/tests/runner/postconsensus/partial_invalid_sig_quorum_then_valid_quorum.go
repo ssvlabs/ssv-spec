@@ -19,10 +19,11 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 	shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 	expectedError := "got post-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature"
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name:  "post consensus partial invalid sig quorum then valid quorum",
-		Tests: []*tests.MsgProcessingSpecTest{},
-	}
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus partial invalid sig quorum then valid quorum",
+		"Tests post-consensus message processing where a partial invalid signature quorum is followed by a valid quorum, expecting error and recovery handling.",
+		[]*tests.MsgProcessingSpecTest{},
+	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{

@@ -23,9 +23,9 @@ func OneShare() tests.SpecTest {
 		types.RoleVoluntaryExit:             "",
 	}
 
-	return &RunnerConstructionSpecTest{
-		Name:      "one share",
-		Shares:    shares,
-		RoleError: expectedErrors,
-	}
+	return NewRunnerConstructionSpecTest(
+		"one share",
+		shares,
+		expectedErrors,
+	)
 }

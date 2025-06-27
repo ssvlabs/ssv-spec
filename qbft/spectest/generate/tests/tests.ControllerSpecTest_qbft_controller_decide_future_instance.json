@@ -1,5 +1,7 @@
 {
   "Name": "decide future instance",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test decided message received for future (not yet started) instance, expecting the instance to be decided.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

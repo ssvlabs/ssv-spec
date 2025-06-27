@@ -15,9 +15,10 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "got post-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature"
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus invalid quorum then valid quorum",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus invalid quorum then valid quorum",
+		"Tests post-consensus quorum formation with an invalid quorum followed by a valid quorum, expecting error then successful termination",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -45,7 +46,7 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

@@ -7,8 +7,10 @@ import (
 
 // ElectraBlindedBlockValidation tests a valid consensus data with electra blinded block
 func ElectraBlindedBlockValidation() *ValidatorConsensusDataTest {
-	return &ValidatorConsensusDataTest{
-		Name:          "valid electra blinded block",
-		ConsensusData: *testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionElectra),
-	}
+	return NewValidatorConsensusDataTest(
+		"valid electra blinded block",
+		"Test validation of valid consensus data with Electra blinded block",
+		*testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionElectra),
+		"",
+	)
 }

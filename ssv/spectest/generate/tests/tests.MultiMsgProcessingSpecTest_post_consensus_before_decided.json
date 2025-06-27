@@ -1,5 +1,7 @@
 {
   "Name": "post consensus before decided",
+  "Type": "SSV multi message processing: multiple message processing tests",
+  "Documentation": "Tests post-consensus message processing before duty is decided, expecting error",
   "Tests": [
     {
       "Name": "sync committee contribution",

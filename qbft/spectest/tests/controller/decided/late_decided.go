@@ -29,9 +29,10 @@ func LateDecided() tests.SpecTest {
 			[]types.OperatorID{1, 2, 4},
 		),
 	)
-	return &tests.ControllerSpecTest{
-		Name: "decide late decided",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"decide late decided",
+		"Test processing a decided message for a just decided instance, expecting the instance to remain decided.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue:    testingutils.TestingQBFTFullData,
 				InputMessages: msgs,
@@ -47,7 +48,10 @@ func LateDecided() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 }
 
 func lateDecidedStateComparison() *comparable.StateComparison {

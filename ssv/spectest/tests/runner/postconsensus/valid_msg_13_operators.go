@@ -15,9 +15,10 @@ func ValidMessage13Operators() tests.SpecTest {
 
 	ks := testingutils.Testing13SharesSet()
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus valid msg 13 operators",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus valid msg 13 operators",
+		"Tests valid post-consensus message processing with 13 operators",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -67,7 +68,7 @@ func ValidMessage13Operators() tests.SpecTest {
 				DontStartDuty:           true,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

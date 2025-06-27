@@ -4,9 +4,10 @@ import "github.com/ssvlabs/ssv-spec/types"
 
 // MapVoluntaryExit tests mapping of BNRoleVoluntaryExit.
 func MapVoluntaryExit() *DutySpecTest {
-	return &DutySpecTest{
-		Name:       "map voluntary exit role",
-		BeaconRole: types.BNRoleVoluntaryExit,
-		RunnerRole: types.RoleVoluntaryExit,
-	}
+	return NewDutySpecTest(
+		"map voluntary exit role",
+		"Test mapping of BNRoleVoluntaryExit",
+		types.BNRoleVoluntaryExit,
+		types.RoleVoluntaryExit,
+	)
 }

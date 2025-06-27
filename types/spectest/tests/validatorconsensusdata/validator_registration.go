@@ -20,9 +20,10 @@ func ValidatorRegistration() *ValidatorConsensusDataTest {
 		DataSSZ: dataByts,
 	}
 
-	return &ValidatorConsensusDataTest{
-		Name:          "validator registration",
-		ConsensusData: cd,
-		ExpectedError: "validator registration has no consensus data",
-	}
+	return NewValidatorConsensusDataTest(
+		"validator registration",
+		"Test validation error for validator registration consensus data which has no consensus data",
+		cd,
+		"validator registration has no consensus data",
+	)
 }

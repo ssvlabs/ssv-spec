@@ -1,5 +1,7 @@
 {
   "Name": "post consensus inconsistent beacon signer",
+  "Type": "SSV multi message processing: multiple message processing tests",
+  "Documentation": "Tests post-consensus message processing with inconsistent beacon signer, expecting error",
   "Tests": [
     {
       "Name": "sync committee contribution",

@@ -1,8 +1,12 @@
 {
   "Name": "past msg duty finished",
+  "Type": "Multi committee: multiple committee tests",
+  "Documentation": "Tests committee behavior when processing past messages for a duty that has finished",
   "Tests": [
     {
       "Name": "30 attestation (phase0)",
+      "omitempty": "",
+      "Documentation": "",
       "Committee": {
         "Runners": {
           "10": {
@@ -9230,6 +9234,8 @@
     },
     {
       "Name": "30 sync committee (phase0)",
+      "omitempty": "",
+      "Documentation": "",
       "Committee": {
         "Runners": {
           "10": {
@@ -18697,6 +18703,8 @@
     },
     {
       "Name": "30 attestation 30 sync committee (phase0)",
+      "omitempty": "",
+      "Documentation": "",
       "Committee": {
         "Runners": {
           "10": {
@@ -28974,6 +28982,8 @@
     },
     {
       "Name": "30 attestation (electra)",
+      "omitempty": "",
+      "Documentation": "",
       "Committee": {
         "Runners": {
           "7424010": {
@@ -38201,6 +38211,8 @@
     },
     {
       "Name": "30 sync committee (electra)",
+      "omitempty": "",
+      "Documentation": "",
       "Committee": {
         "Runners": {
           "7424010": {
@@ -47668,6 +47680,8 @@
     },
     {
       "Name": "30 attestation 30 sync committee (electra)",
+      "omitempty": "",
+      "Documentation": "",
       "Committee": {
         "Runners": {
           "7424010": {

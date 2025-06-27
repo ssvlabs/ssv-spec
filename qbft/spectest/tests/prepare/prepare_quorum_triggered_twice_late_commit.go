@@ -13,7 +13,7 @@ func PrepareQuorumTriggeredTwiceLateCommit() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	sc := prepareQuorumTriggeredTwiceStateComparison()
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1),
 
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
@@ -23,15 +23,21 @@ func PrepareQuorumTriggeredTwiceLateCommit() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[4], 4),
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "prepared quorum committed twice late commit",
-		Pre:           pre,
-		PostRoot:      sc.Root(),
-		PostState:     sc.ExpectedState,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
-		},
+
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"prepared quorum committed twice late commit",
+		"Test triggering prepare quorum twice by sending more than 2f+1 prepare messages, with commit message processed after the second prepare quorum, expecting commit message broadcast.",
+		pre,
+		sc.Root(),
+		sc.ExpectedState,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
 }
