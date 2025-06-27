@@ -67,7 +67,7 @@ func (test *MsgSpecTest) GetPostState() (interface{}, error) {
 func NewMsgSpecTest(name string, documentation string, messages []*types.SignedSSVMessage, encodedMessages [][]byte, expectedRoots [][32]byte, expectedError string) *MsgSpecTest {
 	return &MsgSpecTest{
 		Name:            name,
-		Type:            "Messages (qbft)",
+		Type:            "QBFT message validation: testing message encoding, decoding, and structural integrity",
 		Documentation:   documentation,
 		Messages:        messages,
 		EncodedMessages: encodedMessages,

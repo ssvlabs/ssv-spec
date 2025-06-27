@@ -1,6 +1,6 @@
 {
   "Name": "decide wrong sig",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test a single decided message received with a wrong signature, expecting validation error.",
   "RunInstanceData": [
     {

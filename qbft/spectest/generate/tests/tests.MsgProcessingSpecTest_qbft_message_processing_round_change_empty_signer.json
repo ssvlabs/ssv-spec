@@ -1,6 +1,6 @@
 {
   "Name": "round change empty signer",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test round change message with no signers, expecting validation error.",
   "Pre": {
     "State": {

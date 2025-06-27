@@ -43,7 +43,7 @@ func (test *RoundRobinSpecTest) GetPostState() (interface{}, error) {
 func NewRoundRobinSpecTest(name string, documentation string, share *types.CommitteeMember, heights []qbft.Height, rounds []qbft.Round, proposers []types.OperatorID) *RoundRobinSpecTest {
 	return &RoundRobinSpecTest{
 		Name:          name,
-		Type:          "Round Robin",
+		Type:          "Round robin proposer: validation of fair proposer selection algorithm",
 		Documentation: documentation,
 		Share:         share,
 		Heights:       heights,

@@ -45,7 +45,7 @@ func (test *DepositDataSpecTest) Run(t *testing.T) {
 func NewDepositDataSpecTest(name, documentation, validatorPK, withdrawalCredentials string, forkVersion [4]byte, expectedSigningRoot string) *DepositDataSpecTest {
 	return &DepositDataSpecTest{
 		Name:                  name,
-		Type:                  "Deposit data",
+		Type:                  "Beacon deposit data: validation of validator registration and signing root generation",
 		Documentation:         documentation,
 		ValidatorPK:           validatorPK,
 		WithdrawalCredentials: withdrawalCredentials,

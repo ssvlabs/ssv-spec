@@ -27,7 +27,7 @@ func (test *DutySpecTest) Run(t *testing.T) {
 func NewDutySpecTest(name, documentation string, beaconRole types.BeaconRole, runnerRole types.RunnerRole) *DutySpecTest {
 	return &DutySpecTest{
 		Name:          name,
-		Type:          "Duty",
+		Type:          "Duty: validation of beacon role to runner role conversion",
 		Documentation: documentation,
 		BeaconRole:    beaconRole,
 		RunnerRole:    runnerRole,

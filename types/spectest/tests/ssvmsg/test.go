@@ -39,7 +39,7 @@ func (test *SSVMessageTest) Run(t *testing.T) {
 func NewSSVMessageTest(name, documentation string, messageIDs []types.MessageID, belongsToValidator bool) *SSVMessageTest {
 	return &SSVMessageTest{
 		Name:               name,
-		Type:               "SSV message",
+		Type:               "SSV message validation: testing message ID ownership and routing logic",
 		Documentation:      documentation,
 		MessageIDs:         messageIDs,
 		BelongsToValidator: belongsToValidator,

@@ -1,6 +1,6 @@
 {
   "Name": "phase0 aggregator without justification",
-  "Type": "Validator consensus data",
+  "Type": "Validator consensus data: validation of validator consensus data",
   "Documentation": "Test phase0 aggregator consensus data with no pre-consensus justifications",
   "ConsensusData": {
     "Duty": {

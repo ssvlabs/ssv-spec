@@ -1,6 +1,6 @@
 {
   "Name": "decide late decided bigger quorum",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test processing a decided message for a just decided instance with a bigger quorum, expecting the instance to remain decided.",
   "RunInstanceData": [
     {

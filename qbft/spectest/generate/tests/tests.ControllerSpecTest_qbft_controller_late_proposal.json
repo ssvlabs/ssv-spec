@@ -1,6 +1,6 @@
 {
   "Name": "late proposal",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test processing late proposal message for an instance which just decided, expecting error.",
   "RunInstanceData": [
     {

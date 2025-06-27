@@ -72,7 +72,7 @@ func (tests *MsgSpecTest) GetPostState() (interface{}, error) {
 func NewMsgSpecTest(name, documentation string, messages []*types.PartialSignatureMessages, encodedMessages [][]byte, expectedRoots [][32]byte, expectedError string) *MsgSpecTest {
 	return &MsgSpecTest{
 		Name:            name,
-		Type:            "Messages (types)",
+		Type:            "Partial signature messages: validation of partial signature messages",
 		Documentation:   documentation,
 		Messages:        messages,
 		EncodedMessages: encodedMessages,

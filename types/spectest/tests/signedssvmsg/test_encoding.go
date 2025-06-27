@@ -32,7 +32,7 @@ func (test *EncodingTest) Run(t *testing.T) {
 func NewEncodingTest(name string, documentation string, data []byte) *EncodingTest {
 	return &EncodingTest{
 		Name:          name,
-		Type:          "Signed SSV message encoding",
+		Type:          "Signed SSV message encoding: validation of signed SSV message encoding",
 		Documentation: documentation,
 		Data:          data,
 	}

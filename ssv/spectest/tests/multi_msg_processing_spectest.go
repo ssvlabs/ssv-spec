@@ -54,7 +54,7 @@ func (tests *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
 func NewMultiMsgProcessingSpecTest(name, documentation string, tests []*MsgProcessingSpecTest) *MultiMsgProcessingSpecTest {
 	return &MultiMsgProcessingSpecTest{
 		Name:          name,
-		Type:          "SSV multi message processing",
+		Type:          "SSV multi message processing: multiple message processing tests",
 		Documentation: documentation,
 		Tests:         tests,
 	}

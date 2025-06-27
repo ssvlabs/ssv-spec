@@ -268,7 +268,7 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 func NewControllerSpecTest(name string, documentation string, runInstanceData []*RunInstanceData, outputMessages []*types.SignedSSVMessage, expectedError string, startHeight *qbft.Height) *ControllerSpecTest {
 	return &ControllerSpecTest{
 		Name:            name,
-		Type:            "Controller",
+		Type:            "QBFT controller: validation of consensus state management and instance lifecycle",
 		Documentation:   documentation,
 		RunInstanceData: runInstanceData,
 		OutputMessages:  outputMessages,

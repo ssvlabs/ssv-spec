@@ -1,6 +1,6 @@
 {
   "Name": "pre consensus invalid signed msg",
-  "Type": "SSV multi message processing",
+  "Type": "SSV multi message processing: multiple message processing tests",
   "Documentation": "Tests pre-consensus message processing with invalid signed message, expecting error",
   "Tests": [
     {

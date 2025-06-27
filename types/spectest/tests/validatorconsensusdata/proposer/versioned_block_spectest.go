@@ -129,7 +129,7 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 func NewProposerSpecTest(name string, documentation string, blinded bool, dataCd []byte, dataBlk []byte, expectedBlkRoot [32]byte, expectedCdRoot [32]byte, expectedError string) *ProposerSpecTest {
 	return &ProposerSpecTest{
 		Name:            name,
-		Type:            "Proposer",
+		Type:            "Proposer: validation of proposer consensus data",
 		Documentation:   documentation,
 		Blinded:         blinded,
 		DataCd:          dataCd,

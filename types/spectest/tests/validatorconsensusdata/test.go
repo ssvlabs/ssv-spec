@@ -38,7 +38,7 @@ func (test *ValidatorConsensusDataTest) Run(t *testing.T) {
 func NewValidatorConsensusDataTest(name, documentation string, consensusData types.ValidatorConsensusData, expectedError string) *ValidatorConsensusDataTest {
 	return &ValidatorConsensusDataTest{
 		Name:          name,
-		Type:          "Validator consensus data",
+		Type:          "Validator consensus data: validation of validator consensus data",
 		Documentation: documentation,
 		ConsensusData: consensusData,
 		ExpectedError: expectedError,

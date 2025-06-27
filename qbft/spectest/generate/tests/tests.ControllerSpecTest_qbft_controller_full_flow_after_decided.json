@@ -1,6 +1,6 @@
 {
   "Name": "full flow after decided",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test a decided message for round 1 followed by a full proposal, prepare, commit flow for round 2, expecting error.",
   "RunInstanceData": [
     {

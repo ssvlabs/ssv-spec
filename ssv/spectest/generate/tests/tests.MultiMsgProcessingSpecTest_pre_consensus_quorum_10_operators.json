@@ -1,6 +1,6 @@
 {
   "Name": "pre consensus quorum 10 operators",
-  "Type": "SSV multi message processing",
+  "Type": "SSV multi message processing: multiple message processing tests",
   "Documentation": "Tests pre-consensus quorum message processing with 10 operators",
   "Tests": [
     {

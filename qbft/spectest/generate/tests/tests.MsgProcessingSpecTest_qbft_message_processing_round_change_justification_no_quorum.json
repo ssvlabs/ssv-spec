@@ -1,6 +1,6 @@
 {
   "Name": "round change justification no quorum",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test round change justification with no quorum, expecting error.",
   "Pre": {
     "State": {

@@ -1,6 +1,6 @@
 {
   "Name": "post decided",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test processing of a commit message after instance decided",
   "Pre": {
     "State": {

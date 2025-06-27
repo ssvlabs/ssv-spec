@@ -1,6 +1,6 @@
 {
   "Name": "decide duplicate signer",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test a decided message with duplicate signers, expecting validation error.",
   "RunInstanceData": [
     {

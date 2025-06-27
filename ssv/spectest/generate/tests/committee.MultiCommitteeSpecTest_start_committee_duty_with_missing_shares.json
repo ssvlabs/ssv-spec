@@ -1,6 +1,6 @@
 {
   "Name": "start committee duty with missing shares",
-  "Type": "Multi committee",
+  "Type": "Multi committee: multiple committee tests",
   "Documentation": "Tests complete duty execution for a committee that only has shares for a fraction of the duty's validators",
   "Tests": [
     {

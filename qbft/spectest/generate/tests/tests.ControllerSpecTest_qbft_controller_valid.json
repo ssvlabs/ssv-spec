@@ -1,6 +1,6 @@
 {
   "Name": "valid",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test a valid decided message with unique 2f+1 signers, expecting successful decision.",
   "RunInstanceData": [
     {

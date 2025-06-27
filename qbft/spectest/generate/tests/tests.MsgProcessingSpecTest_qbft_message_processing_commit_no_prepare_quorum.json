@@ -1,6 +1,6 @@
 {
   "Name": "commit no prepare quorum",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test processing of commit messages without a prepare quorum",
   "Pre": {
     "State": {

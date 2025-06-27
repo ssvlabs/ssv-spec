@@ -52,7 +52,7 @@ func (test *ShareTest) Run(t *testing.T) {
 func NewShareTest(name, documentation string, share types.Share, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedError string) *ShareTest {
 	return &ShareTest{
 		Name:                  name,
-		Type:                  "Share",
+		Type:                  "Share: testing message signing and quorum verification",
 		Documentation:         documentation,
 		Share:                 share,
 		Message:               message,

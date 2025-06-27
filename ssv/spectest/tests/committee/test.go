@@ -169,10 +169,19 @@ func (tests *MultiCommitteeSpecTest) GetPostState() (interface{}, error) {
 	return ret, nil
 }
 
+func NewMultiCommitteeSpecTest(name, documentation string, tests []*CommitteeSpecTest) *MultiCommitteeSpecTest {
+	return &MultiCommitteeSpecTest{
+		Name:          name,
+		Type:          "Multi committee: multiple committee tests",
+		Documentation: documentation,
+		Tests:         tests,
+	}
+}
+
 func NewCommitteeSpecTest(name, documentation string, committee *ssv.Committee, input []interface{}, postDutyCommitteeRoot string, postDutyCommittee types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, expectedError string) *CommitteeSpecTest {
 	return &CommitteeSpecTest{
 		Name:                   name,
-		Type:                   "Committee",
+		Type:                   "Committee: validation of committee member selection and quorum requirements",
 		Documentation:          documentation,
 		Committee:              committee,
 		Input:                  input,
@@ -181,14 +190,5 @@ func NewCommitteeSpecTest(name, documentation string, committee *ssv.Committee, 
 		OutputMessages:         outputMessages,
 		BeaconBroadcastedRoots: beaconBroadcastedRoots,
 		ExpectedError:          expectedError,
-	}
-}
-
-func NewMultiCommitteeSpecTest(name, documentation string, tests []*CommitteeSpecTest) *MultiCommitteeSpecTest {
-	return &MultiCommitteeSpecTest{
-		Name:          name,
-		Type:          "Multi committee",
-		Documentation: documentation,
-		Tests:         tests,
 	}
 }

@@ -1,6 +1,6 @@
 {
   "Name": "f+1 speed up",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test catching up to higher rounds via f+1 speedup, where other peers are all at the same round.",
   "Pre": {
     "State": {

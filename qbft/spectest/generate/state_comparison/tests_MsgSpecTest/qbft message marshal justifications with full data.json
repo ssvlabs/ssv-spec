@@ -1,6 +1,6 @@
 {
 		"Name": "marshal justifications with full data",
-		"Type": "Messages (qbft)",
+		"Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
 		"Documentation": "Test marshalling justifications with full data, which should be omitted during marshalling.",
 		"Messages": [
 				{

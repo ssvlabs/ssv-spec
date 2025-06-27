@@ -1,6 +1,6 @@
 {
   "Name": "round change justification not proposer",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test justified round change where the node is not the proposer, expecting no proposal broadcast.",
   "Pre": {
     "State": {

@@ -1,6 +1,6 @@
 {
   "Name": "late prepare past round",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test processing late prepare message for an instance which just decided for a round less than decided round, expecting error.",
   "RunInstanceData": [
     {

@@ -1,6 +1,6 @@
 {
 		"Name": "sig valid",
-		"Type": "Messages (types)",
+		"Type": "Partial signature messages: validation of partial signature messages",
 		"Documentation": "Test validation of signed post consensus message with 96-byte signature length",
 		"Messages": [
 				{

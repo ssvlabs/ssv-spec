@@ -292,7 +292,7 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 func NewMsgProcessingSpecTest(name, documentation string, runner ssv.Runner, duty types.Duty, messages []*types.SignedSSVMessage, decidedSlashable bool, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, dontStartDuty bool, expectedError string) *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:                    name,
-		Type:                    "SSV message processing",
+		Type:                    "SSV message processing: validation of message handling and state transitions",
 		Documentation:           documentation,
 		Runner:                  runner,
 		Duty:                    duty,

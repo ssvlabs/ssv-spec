@@ -1,6 +1,6 @@
 {
   "Name": "round change quorum msg not prepared",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test liveness scenario where the round change message that completes quorum is not previously prepared, which can cause a liveness issue with proposal justification.",
   "Pre": {
     "State": {

@@ -1,6 +1,6 @@
 {
   "Name": "no signatures",
-  "Type": "SSV multi message processing",
+  "Type": "SSV multi message processing: multiple message processing tests",
   "Documentation": "Tests consensus message processing with no signatures, expecting error",
   "Tests": [
     {

@@ -1,6 +1,6 @@
 {
 		"Name": "get root",
-		"Type": "Messages (qbft)",
+		"Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
 		"Documentation": "Test GetRoot method on signed QBFT message with justifications.",
 		"Messages": [
 				{

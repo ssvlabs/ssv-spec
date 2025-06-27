@@ -1,6 +1,6 @@
 {
   "Name": "broadcast decided",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test broadcasting decided message, expecting successful broadcast.",
   "RunInstanceData": [
     {

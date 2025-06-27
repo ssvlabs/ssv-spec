@@ -1,6 +1,6 @@
 {
   "Name": "round change duplicate msg quorum (prev prepared rc first)",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test duplicate round change message where the previously prepared message is received first, followed by enough messages to reach quorum and trigger proposal broadcast.",
   "Pre": {
     "State": {

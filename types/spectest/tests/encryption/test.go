@@ -46,7 +46,7 @@ func (test *EncryptionSpecTest) Run(t *testing.T) {
 func NewEncryptionSpecTest(name, documentation string, skPem []byte, pkPem []byte, plainText []byte) *EncryptionSpecTest {
 	return &EncryptionSpecTest{
 		Name:          name,
-		Type:          "Encryption",
+		Type:          "Encryption: validation of public/private key operations and message encryption/decryption",
 		Documentation: documentation,
 		SKPem:         skPem,
 		PKPem:         pkPem,

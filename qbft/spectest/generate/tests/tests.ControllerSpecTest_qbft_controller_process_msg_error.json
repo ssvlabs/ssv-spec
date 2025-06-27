@@ -1,6 +1,6 @@
 {
   "Name": "process msg error",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test processing a message that returns an error, expecting validation error.",
   "RunInstanceData": [
     {

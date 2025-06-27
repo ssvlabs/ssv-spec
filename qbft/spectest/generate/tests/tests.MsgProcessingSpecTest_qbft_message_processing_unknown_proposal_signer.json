@@ -1,6 +1,6 @@
 {
   "Name": "unknown proposal signer",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test proposal message from a signer not in the committee, expecting validation error.",
   "Pre": {
     "State": {

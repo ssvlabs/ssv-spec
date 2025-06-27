@@ -42,7 +42,7 @@ func (test *EncodingTest) Run(t *testing.T) {
 func NewEncodingTest(name, documentation string, data []byte, expectedRoot [32]byte) *EncodingTest {
 	return &EncodingTest{
 		Name:          name,
-		Type:          "Partial signature messages encoding",
+		Type:          "Partial signature messages encoding: validation of partial signature messages encoding",
 		Documentation: documentation,
 		Data:          data,
 		ExpectedRoot:  expectedRoot,

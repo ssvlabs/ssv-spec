@@ -1,6 +1,6 @@
 {
   "Name": "decide invalid msg",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test decided message where msg.validate() fails, expecting validation error.",
   "RunInstanceData": [
     {

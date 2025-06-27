@@ -1,6 +1,6 @@
 {
   "Name": "nil ssvmessage",
-  "Type": "Signed SSV message",
+  "Type": "Signed SSV message: validation of signed SSV message",
   "Documentation": "Test validation error for signed SSV message with nil SSVMessage",
   "Messages": [
     {

@@ -1,6 +1,6 @@
 {
   "Name": "duplicate prepare msg justification quorum",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test proposal for round \u003e 1 that was prepared previously with quorum of prepare messages but contains duplicate messages, expecting prepare message broadcast.",
   "Pre": {
     "State": {

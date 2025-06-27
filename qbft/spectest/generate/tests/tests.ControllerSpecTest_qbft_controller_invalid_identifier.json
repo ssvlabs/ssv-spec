@@ -1,6 +1,6 @@
 {
   "Name": "invalid identifier",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test processing a message with the wrong identifier, expecting validation error.",
   "RunInstanceData": [
     {

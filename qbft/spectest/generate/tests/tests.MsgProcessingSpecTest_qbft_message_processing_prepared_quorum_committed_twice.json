@@ -1,6 +1,6 @@
 {
   "Name": "prepared quorum committed twice",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test triggering prepare quorum twice by sending more than 2f+1 prepare messages, expecting commit message broadcast.",
   "Pre": {
     "State": {

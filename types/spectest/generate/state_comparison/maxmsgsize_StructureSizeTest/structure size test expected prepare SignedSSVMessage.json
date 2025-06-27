@@ -1,6 +1,6 @@
 {
 		"Name": "expected prepare SignedSSVMessage",
-		"Type": "Structure size",
+		"Type": "Structure size: validation of structure size",
 		"Documentation": "Test the expected size of a SignedSSVMessage containing a prepare QBFT message",
 		"Object": {
 				"Signatures": [

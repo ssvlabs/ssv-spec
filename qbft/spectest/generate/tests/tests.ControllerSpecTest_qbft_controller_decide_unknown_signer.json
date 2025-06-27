@@ -1,6 +1,6 @@
 {
   "Name": "decide unknown signer",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test a decided message with an unknown signer, expecting validation error.",
   "RunInstanceData": [
     {

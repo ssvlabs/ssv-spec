@@ -1,6 +1,6 @@
 {
   "Name": "SSZ marshalling of signed messaged",
-  "Type": "Messages (qbft)",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
   "Documentation": "Test valid SSZ marshaling of a signed QBFT message with justifications.",
   "Messages": [
     {

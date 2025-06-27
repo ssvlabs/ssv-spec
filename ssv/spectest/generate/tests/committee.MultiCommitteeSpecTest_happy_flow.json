@@ -1,6 +1,6 @@
 {
   "Name": "happy flow",
-  "Type": "Multi committee",
+  "Type": "Multi committee: multiple committee tests",
   "Documentation": "Tests complete duty execution flow including consensus and post-consensus phases for attestations and sync committees",
   "Tests": [
     {

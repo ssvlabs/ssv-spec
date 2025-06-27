@@ -1,6 +1,6 @@
 {
   "Name": "pre consensus too many roots",
-  "Type": "SSV multi message processing",
+  "Type": "SSV multi message processing: multiple message processing tests",
   "Documentation": "Tests pre-consensus message processing with too many expected roots, expecting error",
   "Tests": [
     {

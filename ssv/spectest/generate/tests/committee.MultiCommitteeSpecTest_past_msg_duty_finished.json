@@ -1,6 +1,6 @@
 {
   "Name": "past msg duty finished",
-  "Type": "Multi committee",
+  "Type": "Multi committee: multiple committee tests",
   "Documentation": "Tests committee behavior when processing past messages for a duty that has finished",
   "Tests": [
     {

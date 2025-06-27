@@ -1,6 +1,6 @@
 {
 		"Name": "round change prepared",
-		"Type": "Messages (qbft)",
+		"Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
 		"Documentation": "Test round change message with prepared value and justifications.",
 		"Messages": [
 				{

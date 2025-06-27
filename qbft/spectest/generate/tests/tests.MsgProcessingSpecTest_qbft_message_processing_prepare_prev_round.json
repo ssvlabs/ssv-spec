@@ -1,6 +1,6 @@
 {
   "Name": "prepare prev round",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test prepare message for a round less than the current state round, expecting validation error due to outdated round.",
   "Pre": {
     "State": {

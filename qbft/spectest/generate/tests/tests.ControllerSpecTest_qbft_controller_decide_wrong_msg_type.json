@@ -1,6 +1,6 @@
 {
   "Name": "decide wrong msg type",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test a non-commit message with 2f+1 signers, expecting validation error.",
   "RunInstanceData": [
     {

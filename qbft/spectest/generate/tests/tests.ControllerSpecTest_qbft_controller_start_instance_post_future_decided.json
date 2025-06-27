@@ -1,6 +1,6 @@
 {
   "Name": "start instance post future decided",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test starting a new QBFT instance after a future decided message, then attempting to start with a past height.",
   "RunInstanceData": [
     {

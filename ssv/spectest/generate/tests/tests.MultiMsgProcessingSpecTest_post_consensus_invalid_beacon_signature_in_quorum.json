@@ -1,6 +1,6 @@
 {
   "Name": "post consensus invalid beacon signature in quorum",
-  "Type": "SSV multi message processing",
+  "Type": "SSV multi message processing: multiple message processing tests",
   "Documentation": "Tests post-consensus message processing with invalid beacon signature in quorum, expecting error",
   "Tests": [
     {

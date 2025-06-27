@@ -1,6 +1,6 @@
 {
   "Name": "multi decide instances",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test deciding multiple instances with different heights, expecting each instance to be decided successfully.",
   "RunInstanceData": [
     {

@@ -1,6 +1,6 @@
 {
   "Name": "start duty",
-  "Type": "Multi committee",
+  "Type": "Multi committee: multiple committee tests",
   "Documentation": "Tests basic duty starting for attestations and sync committees without consensus messages",
   "Tests": [
     {

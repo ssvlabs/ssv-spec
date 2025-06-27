@@ -1,6 +1,6 @@
 {
   "Name": "force stop round change message",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test round change message processing after instance is force stopped, expecting error.",
   "Pre": {
     "forceStop": true,

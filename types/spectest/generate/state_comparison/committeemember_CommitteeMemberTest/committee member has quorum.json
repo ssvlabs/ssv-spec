@@ -1,7 +1,7 @@
 {
 		"Name": "has quorum",
-		"Type": "Committee member",
-		"Documentation": "Test that committee member has quorum with 2f+1 unique signers",
+		"Type": "Committee member: validation of committee member quorum requirements",
+		"Documentation": "Test that committee member has quorum with 2f+1 unique signers should be accepted",
 		"CommitteeMember": {
 				"OperatorID": 1,
 				"CommitteeID": [

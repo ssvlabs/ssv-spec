@@ -1,6 +1,6 @@
 {
   "Name": "valid meta data when type ContributionProofs",
-  "Type": "Messages (types)",
+  "Type": "Partial signature messages: validation of partial signature messages",
   "Documentation": "Test validation of partial signature message with contribution proof metadata type",
   "Messages": [
     {

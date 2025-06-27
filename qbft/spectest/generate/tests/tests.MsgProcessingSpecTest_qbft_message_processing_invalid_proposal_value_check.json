@@ -1,6 +1,6 @@
 {
   "Name": "invalid proposal value check",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test proposal that fails the value check validation, expecting validation error.",
   "Pre": {
     "State": {

@@ -1,6 +1,6 @@
 {
   "Name": "consensus invalid signature",
-  "Type": "SSV multi message processing",
+  "Type": "SSV multi message processing: multiple message processing tests",
   "Documentation": "Tests consensus message processing with invalid signatures",
   "Tests": [
     {

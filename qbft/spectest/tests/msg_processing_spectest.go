@@ -118,7 +118,7 @@ func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
 func NewMsgProcessingSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, inputMessages []*types.SignedSSVMessage, outputMessages []*types.SignedSSVMessage, expectedError string, expectedTimerState *testingutils.TimerState) *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:               name,
-		Type:               "Message processing",
+		Type:               "Message processing: validation of consensus message handling and state transitions",
 		Documentation:      documentation,
 		Pre:                pre,
 		PostRoot:           postRoot,

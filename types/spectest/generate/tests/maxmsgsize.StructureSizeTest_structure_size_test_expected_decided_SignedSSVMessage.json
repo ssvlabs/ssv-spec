@@ -1,6 +1,6 @@
 {
   "Name": "expected decided SignedSSVMessage",
-  "Type": "Structure size",
+  "Type": "Structure size: validation of structure size",
   "Documentation": "Test the expected size of a SignedSSVMessage containing a decided QBFT message with 3 signers",
   "Object": {
     "Signatures": [

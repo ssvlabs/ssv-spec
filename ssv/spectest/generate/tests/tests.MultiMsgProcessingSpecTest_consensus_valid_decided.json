@@ -1,6 +1,6 @@
 {
   "Name": "consensus valid decided",
-  "Type": "SSV multi message processing",
+  "Type": "SSV multi message processing: multiple message processing tests",
   "Documentation": "Tests valid consensus decided message processing across different runner types",
   "Tests": [
     {

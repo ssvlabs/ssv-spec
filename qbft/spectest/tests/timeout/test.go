@@ -75,7 +75,7 @@ func (test *SpecTest) GetPostState() (interface{}, error) {
 func NewSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, outputMessages []*types.SignedSSVMessage, expectedTimerState *testingutils.TimerState, expectedError string) *SpecTest {
 	return &SpecTest{
 		Name:               name,
-		Type:               "Timeout",
+		Type:               "Timeout: validation of round timeout handling and state transitions",
 		Documentation:      documentation,
 		Pre:                pre,
 		PostRoot:           postRoot,

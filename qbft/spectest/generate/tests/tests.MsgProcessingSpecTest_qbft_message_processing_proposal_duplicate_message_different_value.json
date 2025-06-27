@@ -1,6 +1,6 @@
 {
   "Name": "proposal duplicate message different value",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test duplicate proposal message processing where the second message has a different root value, expecting validation error.",
   "Pre": {
     "State": {

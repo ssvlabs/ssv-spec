@@ -1,6 +1,6 @@
 {
   "Name": "sorted decided",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test the creation of the decided message that should have sorted signers",
   "RunInstanceData": [
     {

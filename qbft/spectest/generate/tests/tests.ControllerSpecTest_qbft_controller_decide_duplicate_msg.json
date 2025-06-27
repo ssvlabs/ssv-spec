@@ -1,6 +1,6 @@
 {
   "Name": "decide duplicate msg",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test processing duplicate decided messages, expecting only one instance to be decided.",
   "RunInstanceData": [
     {

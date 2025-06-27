@@ -1,6 +1,6 @@
 {
   "Name": "shuffled decided duties",
-  "Type": "Multi committee",
+  "Type": "Multi committee: multiple committee tests",
   "Documentation": "Tests decision phase for sequences of duties with shuffled input messages while preserving order between duty messages",
   "Tests": [
     {

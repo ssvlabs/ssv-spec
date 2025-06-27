@@ -1,6 +1,6 @@
 {
   "Name": "past msg duty does not exist",
-  "Type": "Multi committee",
+  "Type": "Multi committee: multiple committee tests",
   "Documentation": "Tests committee behavior when processing past proposal messages for a duty that doesn't exist",
   "Tests": [
     {

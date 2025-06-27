@@ -1,6 +1,6 @@
 {
   "Name": "proposal multi signer",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test proposal message with multiple signers, expecting validation error since only one signer is allowed.",
   "Pre": {
     "State": {

@@ -64,7 +64,7 @@ func (test *SignedSSVMessageTest) Run(t *testing.T) {
 func NewSignedSSVMessageTest(name, documentation string, messages []*types.SignedSSVMessage, expectedError string, rsaPublicKey [][]byte) *SignedSSVMessageTest {
 	return &SignedSSVMessageTest{
 		Name:          name,
-		Type:          "Signed SSV message",
+		Type:          "Signed SSV message: validation of signed SSV message",
 		Documentation: documentation,
 		Messages:      messages,
 		ExpectedError: expectedError,

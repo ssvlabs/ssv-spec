@@ -1,6 +1,6 @@
 {
 		"Name": "prepare data encoding",
-		"Type": "Messages (qbft)",
+		"Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
 		"Documentation": "Test encoding of prepare data for QBFT message validation.",
 		"Messages": [
 				{

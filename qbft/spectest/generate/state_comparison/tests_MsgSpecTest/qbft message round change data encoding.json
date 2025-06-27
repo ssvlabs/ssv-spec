@@ -1,6 +1,6 @@
 {
 		"Name": "round change data encoding",
-		"Type": "Messages (qbft)",
+		"Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
 		"Documentation": "Test encoding of round change data with justifications.",
 		"Messages": [
 				{

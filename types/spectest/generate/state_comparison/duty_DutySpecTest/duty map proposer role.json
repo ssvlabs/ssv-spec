@@ -1,6 +1,6 @@
 {
 		"Name": "map proposer role",
-		"Type": "Duty",
+		"Type": "Duty: validation of beacon role to runner role conversion",
 		"Documentation": "Test mapping of BNRoleProposer",
 		"BeaconRole": 2,
 		"RunnerRole": 2

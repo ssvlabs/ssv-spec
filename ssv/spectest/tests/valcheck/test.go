@@ -105,7 +105,7 @@ func (tests *MultiSpecTest) GetPostState() (interface{}, error) {
 func NewSpecTest(name, documentation string, network types.BeaconNetwork, role types.RunnerRole, dutySlot phase0.Slot, input []byte, slashableSlots map[string][]phase0.Slot, shareValidatorsPK []types.ShareValidatorPK, expectedError string, anyError bool) *SpecTest {
 	return &SpecTest{
 		Name:              name,
-		Type:              "Value check",
+		Type:              "Value check: validations for input of different runner roles",
 		Documentation:     documentation,
 		Network:           network,
 		RunnerRole:        role,
@@ -121,7 +121,7 @@ func NewSpecTest(name, documentation string, network types.BeaconNetwork, role t
 func NewMultiSpecTest(name, documentation string, tests []*SpecTest) *MultiSpecTest {
 	return &MultiSpecTest{
 		Name:          name,
-		Type:          "Multi value check",
+		Type:          "Multi value check: multiple value check tests",
 		Documentation: documentation,
 		Tests:         tests,
 	}

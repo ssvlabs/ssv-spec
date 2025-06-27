@@ -1,6 +1,6 @@
 {
   "Name": "round change past round quorum",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test quorum of round change messages for a past round, expecting error due to outdated round.",
   "Pre": {
     "State": {

@@ -1,6 +1,6 @@
 {
   "Name": "late round change",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test processing late round change message for an instance which just decided, expecting error.",
   "RunInstanceData": [
     {

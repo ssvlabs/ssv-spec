@@ -1,6 +1,6 @@
 {
   "Name": "proposal with consensus data",
-  "Type": "Multi committee",
+  "Type": "Multi committee: multiple committee tests",
   "Documentation": "Tests committee behavior when processing proposal messages with ValidatorConsensusData instead of BeaconVote objects",
   "Tests": [
     {

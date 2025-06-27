@@ -1,6 +1,6 @@
 {
   "Name": "duplicate rc msg justification",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test proposal for round \u003e 1 that was not prepared previously with round change messages but contains duplicates, expecting validation error due to no quorum.",
   "Pre": {
     "State": {

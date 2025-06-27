@@ -59,7 +59,7 @@ func (test *PartialSigContainerTest) GetPostState() (interface{}, error) {
 func NewPartialSigContainerTest(name, documentation string, quorum uint64, validatorPubKey []byte, signatureMsgs []*types.PartialSignatureMessage, expectedError string, expectedResult []byte, expectedQuorum bool) *PartialSigContainerTest {
 	return &PartialSigContainerTest{
 		Name:            name,
-		Type:            "PartialSigContainer",
+		Type:            "Partial signature container: validation of signature aggregation and quorum verification",
 		Documentation:   documentation,
 		Quorum:          quorum,
 		ValidatorPubKey: validatorPubKey,

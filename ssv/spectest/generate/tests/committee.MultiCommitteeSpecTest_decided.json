@@ -1,6 +1,6 @@
 {
   "Name": "decided",
-  "Type": "Multi committee",
+  "Type": "Multi committee: multiple committee tests",
   "Documentation": "Tests committee runner decision phase for attestations and sync committees without completing post-consensus",
   "Tests": [
     {

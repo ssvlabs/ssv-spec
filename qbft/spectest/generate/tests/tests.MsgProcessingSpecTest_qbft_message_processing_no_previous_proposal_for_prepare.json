@@ -1,6 +1,6 @@
 {
   "Name": "no previous proposal for prepare",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test prepare message without receiving a previous proposal, expecting validation error.",
   "Pre": {
     "State": {

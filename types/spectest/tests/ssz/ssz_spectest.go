@@ -45,7 +45,7 @@ func (test *SSZSpecTest) Run(t *testing.T) {
 func NewSSZSpecTest(name, documentation string, data []byte, expectedRoot [32]byte, expectedError string) *SSZSpecTest {
 	return &SSZSpecTest{
 		Name:          name,
-		Type:          "SSZ spec test",
+		Type:          "SSZ: validation of SSZ encoding and decoding",
 		Documentation: documentation,
 		Data:          data,
 		ExpectedRoot:  expectedRoot,

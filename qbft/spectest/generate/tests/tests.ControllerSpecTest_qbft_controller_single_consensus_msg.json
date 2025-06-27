@@ -1,6 +1,6 @@
 {
   "Name": "single consensus msg",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test processing a single consensus message.",
   "RunInstanceData": [
     {

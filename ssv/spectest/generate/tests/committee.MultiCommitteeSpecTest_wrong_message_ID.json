@@ -1,6 +1,6 @@
 {
   "Name": "wrong message ID",
-  "Type": "Multi committee",
+  "Type": "Multi committee: multiple committee tests",
   "Documentation": "Tests committee behavior when processing messages with incorrect message IDs that don't match the committee ID",
   "Tests": [
     {

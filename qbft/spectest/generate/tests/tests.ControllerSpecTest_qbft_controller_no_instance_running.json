@@ -1,6 +1,6 @@
 {
   "Name": "no instance running",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test processing message for height with no running instance, expecting error.",
   "RunInstanceData": [
     {

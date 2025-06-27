@@ -1,6 +1,6 @@
 {
   "Name": "late prepare past instance",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test processing prepare message for a previously decided instance, expecting error.",
   "RunInstanceData": [
     {

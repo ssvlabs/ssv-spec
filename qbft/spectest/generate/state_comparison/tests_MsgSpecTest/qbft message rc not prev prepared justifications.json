@@ -1,6 +1,6 @@
 {
 		"Name": "rc not prev prepared justifications",
-		"Type": "Messages (qbft)",
+		"Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
 		"Documentation": "Test valid justified round change message without previously prepared justifications.",
 		"Messages": [
 				{

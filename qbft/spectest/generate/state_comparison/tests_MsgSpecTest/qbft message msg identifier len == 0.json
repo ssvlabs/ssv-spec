@@ -1,6 +1,6 @@
 {
 		"Name": "msg identifier len == 0",
-		"Type": "Messages (qbft)",
+		"Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
 		"Documentation": "Test message with empty identifier, expecting validation error.",
 		"Messages": [
 				{

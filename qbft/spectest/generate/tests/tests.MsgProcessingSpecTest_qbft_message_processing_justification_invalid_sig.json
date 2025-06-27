@@ -1,6 +1,6 @@
 {
   "Name": "justification invalid sig",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test round change justification with an invalid signature, expecting signature verification error.",
   "Pre": {
     "State": {

@@ -1,6 +1,6 @@
 {
   "Name": "start instance for current height with no running instance",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test starting a new QBFT instance for the current height when no instance is running.",
   "RunInstanceData": [
     {

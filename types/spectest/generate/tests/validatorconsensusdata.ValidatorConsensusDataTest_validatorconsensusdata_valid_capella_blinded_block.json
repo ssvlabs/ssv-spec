@@ -1,6 +1,6 @@
 {
   "Name": "valid capella blinded block",
-  "Type": "Validator consensus data",
+  "Type": "Validator consensus data: validation of validator consensus data",
   "Documentation": "Test validation of valid consensus data with Capella blinded block",
   "ConsensusData": {
     "Duty": {

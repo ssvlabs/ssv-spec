@@ -93,7 +93,7 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 func NewStructureSizeTest(name, documentation string, object types.Encoder, expectedEncodedLength int, isMaxSize bool) *StructureSizeTest {
 	return &StructureSizeTest{
 		Name:                  name,
-		Type:                  "Structure size",
+		Type:                  "Structure size: validation of structure size",
 		Documentation:         documentation,
 		Object:                object,
 		ExpectedEncodedLength: expectedEncodedLength,

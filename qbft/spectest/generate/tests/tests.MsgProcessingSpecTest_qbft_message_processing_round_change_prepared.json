@@ -1,6 +1,6 @@
 {
   "Name": "round change prepared",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test round change messages for prepared state, leading to proposal broadcast.",
   "Pre": {
     "State": {

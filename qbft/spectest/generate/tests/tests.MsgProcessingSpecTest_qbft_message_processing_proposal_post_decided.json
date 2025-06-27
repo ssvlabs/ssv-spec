@@ -1,6 +1,6 @@
 {
   "Name": "proposal post decided",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test processing proposal message after the instance has already decided, expecting validation error.",
   "Pre": {
     "State": {

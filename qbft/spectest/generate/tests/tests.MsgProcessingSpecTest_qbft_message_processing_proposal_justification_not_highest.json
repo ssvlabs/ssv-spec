@@ -1,6 +1,6 @@
 {
   "Name": "proposal justification not highest",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test proposal for round \u003e 1 with round change justification containing prepare messages at different heights, but the prepare justification is not the highest, expecting validation error.",
   "Pre": {
     "State": {

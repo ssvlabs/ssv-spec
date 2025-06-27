@@ -1,6 +1,6 @@
 {
   "Name": "pre consensus msg different roots",
-  "Type": "SSV multi message processing",
+  "Type": "SSV multi message processing: multiple message processing tests",
   "Documentation": "Tests pre-consensus message processing with duplicate messages having different roots, expecting error",
   "Tests": [
     {

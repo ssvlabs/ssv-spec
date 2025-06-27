@@ -165,7 +165,7 @@ func (test *CreateMsgSpecTest) GetPostState() (interface{}, error) {
 func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, stateValue []byte, round qbft.Round, roundChangeJustifications []*types.SignedSSVMessage, prepareJustifications []*types.SignedSSVMessage, createType string, expectedRoot string, expectedState types.Root, expectedError string) *CreateMsgSpecTest {
 	return &CreateMsgSpecTest{
 		Name:                      name,
-		Type:                      "Create message",
+		Type:                      "Message creation: validation of consensus message construction and encoding",
 		Documentation:             documentation,
 		Value:                     value,
 		StateValue:                stateValue,

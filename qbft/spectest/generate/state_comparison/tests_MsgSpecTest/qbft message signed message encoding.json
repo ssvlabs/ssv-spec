@@ -1,6 +1,6 @@
 {
 		"Name": "signed message encoding",
-		"Type": "Messages (qbft)",
+		"Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
 		"Documentation": "Test encoding of signed QBFT message with justifications.",
 		"Messages": [
 				{

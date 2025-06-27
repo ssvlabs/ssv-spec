@@ -1,6 +1,6 @@
 {
 		"Name": "msg identifier nil",
-		"Type": "Messages (qbft)",
+		"Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
 		"Documentation": "Test message with nil identifier, expecting validation error.",
 		"Messages": [
 				{

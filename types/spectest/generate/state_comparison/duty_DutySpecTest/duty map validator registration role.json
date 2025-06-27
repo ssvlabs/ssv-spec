@@ -1,6 +1,6 @@
 {
 		"Name": "map validator registration role",
-		"Type": "Duty",
+		"Type": "Duty: validation of beacon role to runner role conversion",
 		"Documentation": "Test mapping of BNRoleValidatorRegistration",
 		"BeaconRole": 5,
 		"RunnerRole": 4

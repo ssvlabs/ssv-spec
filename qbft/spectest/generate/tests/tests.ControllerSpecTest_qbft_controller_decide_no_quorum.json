@@ -1,6 +1,6 @@
 {
   "Name": "decide no quorum",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test decided message with less than unique 2f+1 signers, expecting validation error.",
   "RunInstanceData": [
     {

@@ -1,6 +1,6 @@
 {
   "Name": "create round change",
-  "Type": "Create message",
+  "Type": "Message creation: validation of consensus message construction and encoding",
   "Documentation": "Test creating a round change message when not previously prepared.",
   "Value": [
     1,

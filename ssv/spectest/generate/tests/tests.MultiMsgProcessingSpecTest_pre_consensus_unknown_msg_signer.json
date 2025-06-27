@@ -1,6 +1,6 @@
 {
   "Name": "pre consensus unknown msg signer",
-  "Type": "SSV multi message processing",
+  "Type": "SSV multi message processing: multiple message processing tests",
   "Documentation": "Tests pre-consensus message processing with unknown signer",
   "Tests": [
     {

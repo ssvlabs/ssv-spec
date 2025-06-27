@@ -1,6 +1,6 @@
 {
   "Name": "valid beacon vote",
-  "Type": "Multi committee",
+  "Type": "Multi committee: multiple committee tests",
   "Documentation": "Tests committee behavior when processing proposal messages with valid beacon vote data",
   "Tests": [
     {

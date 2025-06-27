@@ -1,6 +1,6 @@
 {
   "Name": "round cutoff commit message",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test processing of a commit message when round \u003e= cutoff, expecting error",
   "Pre": {
     "State": {

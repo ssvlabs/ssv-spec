@@ -1,6 +1,6 @@
 {
   "Name": "prepare wrong height",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test prepare message received with incorrect height, expecting validation error.",
   "Pre": {
     "State": {

@@ -1,6 +1,6 @@
 {
   "Name": "start instance valid",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test starting a new QBFT instance with valid input value and timer state.",
   "RunInstanceData": [
     {

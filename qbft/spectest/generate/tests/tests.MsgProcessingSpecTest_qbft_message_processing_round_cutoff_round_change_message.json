@@ -1,6 +1,6 @@
 {
   "Name": "round cutoff round change message",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test processing a round change message when the round is greater than or equal to the cutoff, expecting the instance to stop processing messages.",
   "Pre": {
     "State": {

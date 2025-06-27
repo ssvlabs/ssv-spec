@@ -1,6 +1,6 @@
 {
   "Name": "marshal RC and Prepare justifications",
-  "Type": "Messages (qbft)",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
   "Documentation": "Test marshalling round change and prepare justifications for QBFT proposal message.",
   "Messages": [
     {

@@ -1,6 +1,6 @@
 {
   "Name": "decide current instance",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test a decided message received for current running instance, expecting the instance to be decided.",
   "RunInstanceData": [
     {

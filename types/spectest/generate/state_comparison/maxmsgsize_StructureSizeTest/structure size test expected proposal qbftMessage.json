@@ -1,6 +1,6 @@
 {
 		"Name": "expected proposal qbftMessage",
-		"Type": "Structure size",
+		"Type": "Structure size: validation of structure size",
 		"Documentation": "Test the expected size of a proposal QBFT message with 3 round change and 3 prepare justifications",
 		"Object": {
 				"MsgType": 3,

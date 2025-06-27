@@ -1,6 +1,6 @@
 {
   "Name": "full happy flow",
-  "Type": "SSV multi message processing",
+  "Type": "SSV multi message processing: multiple message processing tests",
   "Documentation": "Tests a full runner happy flow",
   "Tests": [
     {

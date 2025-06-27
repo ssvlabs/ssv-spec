@@ -1,6 +1,6 @@
 {
   "Name": "round 2",
-  "Type": "Timeout",
+  "Type": "Timeout: validation of round timeout handling and state transitions",
   "Documentation": "Test UponRoundTimeout for round 2, checks state transition and broadcasted round change message.",
   "Pre": {
     "State": {

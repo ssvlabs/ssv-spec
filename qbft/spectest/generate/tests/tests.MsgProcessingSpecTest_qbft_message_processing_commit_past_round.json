@@ -1,6 +1,6 @@
 {
   "Name": "commit past round",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test processing of a commit message with a past round, expecting error",
   "Pre": {
     "State": {

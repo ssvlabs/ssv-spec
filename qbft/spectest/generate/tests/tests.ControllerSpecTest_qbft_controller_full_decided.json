@@ -1,6 +1,6 @@
 {
   "Name": "full decided",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test processing messages and first time deciding, expecting successful decision.",
   "RunInstanceData": [
     {

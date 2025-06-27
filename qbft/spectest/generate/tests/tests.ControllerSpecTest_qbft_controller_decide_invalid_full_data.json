@@ -1,6 +1,6 @@
 {
   "Name": "decide invalid full data",
-  "Type": "Controller",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
   "Documentation": "Test signed decided message with an invalid full data field, expecting validation error.",
   "RunInstanceData": [
     {

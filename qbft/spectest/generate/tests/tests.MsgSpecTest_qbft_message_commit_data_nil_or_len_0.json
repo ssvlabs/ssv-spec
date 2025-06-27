@@ -1,6 +1,6 @@
 {
   "Name": "commit data nil or len 0",
-  "Type": "Messages (qbft)",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
   "Documentation": "Test encoding of commit data for QBFT message validation.",
   "Messages": [
     {

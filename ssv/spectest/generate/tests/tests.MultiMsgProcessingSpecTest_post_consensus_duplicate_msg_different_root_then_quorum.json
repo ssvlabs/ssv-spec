@@ -1,6 +1,6 @@
 {
   "Name": "post consensus duplicate msg different root then quorum",
-  "Type": "SSV multi message processing",
+  "Type": "SSV multi message processing: multiple message processing tests",
   "Documentation": "Tests post-consensus message processing where duplicate messages from the same signer have different roots, followed by a quorum, expecting correct error and recovery handling.",
   "Tests": [
     {

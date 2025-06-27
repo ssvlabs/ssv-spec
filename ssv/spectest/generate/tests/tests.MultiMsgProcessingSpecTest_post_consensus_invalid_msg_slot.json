@@ -1,6 +1,6 @@
 {
   "Name": "post consensus invalid msg slot",
-  "Type": "SSV multi message processing",
+  "Type": "SSV multi message processing: multiple message processing tests",
   "Documentation": "Tests post-consensus message processing with invalid message slot, expecting error",
   "Tests": [
     {

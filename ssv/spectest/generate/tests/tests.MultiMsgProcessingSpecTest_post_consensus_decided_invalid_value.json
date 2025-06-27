@@ -1,6 +1,6 @@
 {
   "Name": "post consensus decided invalid value",
-  "Type": "SSV multi message processing",
+  "Type": "SSV multi message processing: multiple message processing tests",
   "Documentation": "Tests post-consensus message processing with invalid decided value, expecting error",
   "Tests": [
     {

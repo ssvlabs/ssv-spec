@@ -1,6 +1,6 @@
 {
 		"Name": "invalid duty",
-		"Type": "Validator consensus data",
+		"Type": "Validator consensus data: validation of validator consensus data",
 		"Documentation": "Test validation error for consensus data with unknown duty role",
 		"ConsensusData": {
 				"Duty": {

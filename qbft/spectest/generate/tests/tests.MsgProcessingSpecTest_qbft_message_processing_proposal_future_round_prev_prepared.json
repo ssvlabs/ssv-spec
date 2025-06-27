@@ -1,6 +1,6 @@
 {
   "Name": "proposal future round prev prepared",
-  "Type": "Message processing",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
   "Documentation": "Test proposal for a future round when a proposal is already accepted for the current round, expecting prepare message broadcast and round advancement.",
   "Pre": {
     "State": {

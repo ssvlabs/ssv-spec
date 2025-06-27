@@ -59,7 +59,7 @@ func (test *CommitteeMemberTest) Run(t *testing.T) {
 func NewCommitteeMemberTest(name, documentation string, committeeMember types.CommitteeMember, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedError string) *CommitteeMemberTest {
 	return &CommitteeMemberTest{
 		Name:                  name,
-		Type:                  "Committee member",
+		Type:                  "Committee member: validation of committee member quorum requirements",
 		Documentation:         documentation,
 		CommitteeMember:       committeeMember,
 		Message:               message,
