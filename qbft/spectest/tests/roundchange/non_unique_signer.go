@@ -27,6 +27,7 @@ func NonUniqueSigner() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change non unique signer",
+		"Test round change message with non-unique signer IDs, expecting validation error.",
 		pre,
 		"",
 		nil,

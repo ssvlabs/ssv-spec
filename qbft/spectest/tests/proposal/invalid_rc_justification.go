@@ -27,6 +27,7 @@ func InvalidRoundChangeJustification() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal rc msg invalid",
+		"Test proposal for round > 1 that was not prepared previously but contains invalid round change justification with mismatched signer ID, expecting validation error.",
 		pre,
 		"",
 		nil,

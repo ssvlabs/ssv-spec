@@ -43,6 +43,7 @@ func DuplicateMsgQuorumPreparedRCFirst() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change duplicate msg quorum (prev prepared rc first)",
+		"Test duplicate round change message where the previously prepared message is received first, followed by enough messages to reach quorum and trigger proposal broadcast.",
 		pre,
 		sc.Root(),
 		sc.ExpectedState,

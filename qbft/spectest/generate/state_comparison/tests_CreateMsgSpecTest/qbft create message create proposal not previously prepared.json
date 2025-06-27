@@ -1,6 +1,7 @@
 {
 		"Name": "create proposal not previously prepared",
 		"Type": "Create message",
+		"Documentation": "Test creating a proposal message for non-first round when not previously prepared, with round change justifications.",
 		"Value": [
 				1,
 				2,

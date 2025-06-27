@@ -18,6 +18,7 @@ func UnknownSigner() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change unknown signer",
+		"Test round change message with a signer not in the committee, expecting validation error.",
 		pre,
 		"",
 		nil,

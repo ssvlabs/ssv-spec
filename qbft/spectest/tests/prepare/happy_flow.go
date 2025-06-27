@@ -25,6 +25,7 @@ func HappyFlow() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"prepare happy flow",
+		"Test a complete prepare happy flow with proposal and prepare quorum",
 		pre,
 		"",
 		nil,

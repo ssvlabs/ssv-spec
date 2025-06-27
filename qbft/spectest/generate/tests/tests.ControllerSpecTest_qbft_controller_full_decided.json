@@ -1,6 +1,7 @@
 {
   "Name": "full decided",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test processing messages and first time deciding, expecting successful decision.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",

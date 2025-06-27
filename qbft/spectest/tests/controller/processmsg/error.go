@@ -10,9 +10,10 @@ import (
 func MsgError() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return &tests.ControllerSpecTest{
-		Name: "process msg error",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"process msg error",
+		"Test processing a message that returns an error, expecting validation error.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -20,6 +21,8 @@ func MsgError() tests.SpecTest {
 				},
 			},
 		},
-		ExpectedError: "could not process msg: invalid signed message: proposal not justified: change round has no quorum",
-	}
+		nil,
+		"could not process msg: invalid signed message: proposal not justified: change round has no quorum",
+		nil,
+	)
 }

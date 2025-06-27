@@ -1,6 +1,7 @@
 {
   "Name": "late prepare past instance",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test processing prepare message for a previously decided instance, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

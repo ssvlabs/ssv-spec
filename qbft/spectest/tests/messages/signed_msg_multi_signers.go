@@ -18,6 +18,7 @@ func SignedMsgMultiSigners() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"multi signers",
+		"Test signed message with multiple signers for QBFT message validation.",
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,

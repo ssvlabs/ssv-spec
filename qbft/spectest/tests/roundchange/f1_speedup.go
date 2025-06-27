@@ -24,6 +24,7 @@ func F1Speedup() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"f+1 speed up",
+		"Test catching up to higher rounds via f+1 speedup, where other peers are all at the same round.",
 		pre,
 		"",
 		nil,

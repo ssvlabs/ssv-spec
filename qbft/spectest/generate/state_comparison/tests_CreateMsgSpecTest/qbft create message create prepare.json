@@ -1,6 +1,7 @@
 {
 		"Name": "create prepare",
 		"Type": "Create message",
+		"Documentation": "Test creating a prepare message for QBFT consensus.",
 		"Value": [
 				1,
 				2,

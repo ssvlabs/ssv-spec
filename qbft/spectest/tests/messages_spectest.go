@@ -12,6 +12,7 @@ import (
 type MsgSpecTest struct {
 	Name            string
 	Type            string
+	Documentation   string
 	Messages        []*types.SignedSSVMessage
 	EncodedMessages [][]byte
 	ExpectedRoots   [][32]byte
@@ -63,10 +64,11 @@ func (test *MsgSpecTest) GetPostState() (interface{}, error) {
 	return test, nil
 }
 
-func NewMsgSpecTest(name string, messages []*types.SignedSSVMessage, encodedMessages [][]byte, expectedRoots [][32]byte, expectedError string) *MsgSpecTest {
+func NewMsgSpecTest(name string, documentation string, messages []*types.SignedSSVMessage, encodedMessages [][]byte, expectedRoots [][32]byte, expectedError string) *MsgSpecTest {
 	return &MsgSpecTest{
 		Name:            name,
 		Type:            "Messages (qbft)",
+		Documentation:   documentation,
 		Messages:        messages,
 		EncodedMessages: encodedMessages,
 		ExpectedRoots:   expectedRoots,

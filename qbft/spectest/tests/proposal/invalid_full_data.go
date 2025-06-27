@@ -17,6 +17,7 @@ func InvalidFullData() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"invalid full data",
+		"Test proposal message with invalid full data field where hash of full data does not equal the root, expecting validation error.",
 		pre,
 		"",
 		nil,

@@ -23,14 +23,21 @@ func MultiSignerNoOverlap() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 		testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{2, 3}),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "multi signer, no overlap",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
-		},
-		ExpectedError: "invalid signed message: msg allows 1 signer",
+
+	outputMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"multi signer, no overlap",
+		"Test processing of a multi signer commit message with no overlap, expecting error",
+		pre,
+		"",
+		nil,
+		msgs,
+		outputMsgs,
+		"invalid signed message: msg allows 1 signer",
+		nil,
+	)
 }

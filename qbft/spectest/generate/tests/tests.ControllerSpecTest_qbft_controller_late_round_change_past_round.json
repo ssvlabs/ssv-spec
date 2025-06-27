@@ -1,6 +1,7 @@
 {
   "Name": "late round change past round",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test processing late round change message for an instance which just decided for a round less than decided round, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

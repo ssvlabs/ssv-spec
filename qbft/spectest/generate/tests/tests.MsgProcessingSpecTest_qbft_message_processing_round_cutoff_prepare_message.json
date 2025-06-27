@@ -1,6 +1,7 @@
 {
   "Name": "round cutoff prepare message",
   "Type": "Message processing",
+  "Documentation": "Test processing prepare message when the round is greater than or equal to the cutoff, expecting the instance to stop processing messages.",
   "Pre": {
     "State": {
       "CommitteeMember": {

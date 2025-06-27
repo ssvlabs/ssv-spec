@@ -25,6 +25,7 @@ func DuplicateRCMsg() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"duplicate rc msg justification",
+		"Test proposal for round > 1 that was not prepared previously with round change messages but contains duplicates, expecting validation error due to no quorum.",
 		pre,
 		"",
 		nil,

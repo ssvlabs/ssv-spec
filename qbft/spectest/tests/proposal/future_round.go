@@ -40,6 +40,7 @@ func FutureRound() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal future round prev prepared",
+		"Test proposal for a future round when a proposal is already accepted for the current round, expecting prepare message broadcast and round advancement.",
 		pre,
 		"",
 		nil,

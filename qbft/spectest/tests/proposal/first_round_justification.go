@@ -21,6 +21,7 @@ func FirstRoundJustification() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal first round justification",
+		"Test proposal justification for the first round, verifying that the proposer is correct and expecting prepare message broadcast.",
 		pre,
 		"",
 		nil,

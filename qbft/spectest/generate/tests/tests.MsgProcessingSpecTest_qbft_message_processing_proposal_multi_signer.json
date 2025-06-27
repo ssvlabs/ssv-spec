@@ -1,6 +1,7 @@
 {
   "Name": "proposal multi signer",
   "Type": "Message processing",
+  "Documentation": "Test proposal message with multiple signers, expecting validation error since only one signer is allowed.",
   "Pre": {
     "State": {
       "CommitteeMember": {

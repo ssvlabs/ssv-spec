@@ -1,6 +1,7 @@
 {
   "Name": "decide current instance",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test a decided message received for current running instance, expecting the instance to be decided.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

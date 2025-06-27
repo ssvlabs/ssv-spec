@@ -25,6 +25,7 @@ func QuorumNotPrepared() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change not prepared",
+		"Test round change quorum for non-prepared state, leading to proposal broadcast.",
 		pre,
 		"",
 		nil,

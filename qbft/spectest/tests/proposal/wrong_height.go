@@ -16,6 +16,7 @@ func WrongHeight() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"wrong proposal height",
+		"Test proposal message received with incorrect height, expecting validation error.",
 		pre,
 		"",
 		nil,

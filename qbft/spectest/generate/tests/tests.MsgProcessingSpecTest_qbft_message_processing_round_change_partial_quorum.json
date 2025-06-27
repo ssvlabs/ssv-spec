@@ -1,6 +1,7 @@
 {
   "Name": "round change partial quorum",
   "Type": "Message processing",
+  "Documentation": "Test round change with partial quorum, checks timer state and output message.",
   "Pre": {
     "State": {
       "CommitteeMember": {

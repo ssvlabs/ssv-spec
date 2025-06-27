@@ -1,6 +1,7 @@
 {
   "Name": "decide invalid full data",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test signed decided message with an invalid full data field, expecting validation error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

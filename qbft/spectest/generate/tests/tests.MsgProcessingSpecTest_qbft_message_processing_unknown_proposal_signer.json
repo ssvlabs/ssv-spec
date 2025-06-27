@@ -1,6 +1,7 @@
 {
   "Name": "unknown proposal signer",
   "Type": "Message processing",
+  "Documentation": "Test proposal message from a signer not in the committee, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

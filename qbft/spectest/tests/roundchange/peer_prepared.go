@@ -33,6 +33,7 @@ func PeerPrepared() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change peer prepared",
+		"Test round change quorum where only one peer is prepared, expecting proposal broadcast with correct justifications.",
 		pre,
 		"",
 		nil,

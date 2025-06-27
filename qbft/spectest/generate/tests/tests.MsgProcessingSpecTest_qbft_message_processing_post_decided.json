@@ -1,6 +1,7 @@
 {
   "Name": "post decided",
-  "Type": "",
+  "Type": "Message processing",
+  "Documentation": "Test processing of a commit message after instance decided",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -491,7 +492,7 @@
       "FullData": null
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "",
   "ExpectedTimerState": null
 }

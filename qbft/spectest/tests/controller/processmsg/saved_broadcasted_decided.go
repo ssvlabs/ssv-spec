@@ -14,9 +14,10 @@ import (
 func BroadcastedDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := broadcastedDecidedStateComparison()
-	return &tests.ControllerSpecTest{
-		Name: "broadcast decided",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"broadcast decided",
+		"Test broadcasting decided message, expecting successful broadcast.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(
@@ -35,7 +36,10 @@ func BroadcastedDecided() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 }
 
 func broadcastedDecidedStateComparison() *comparable.StateComparison {

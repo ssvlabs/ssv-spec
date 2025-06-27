@@ -19,6 +19,7 @@ func PostCutoff() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round cutoff round change message",
+		"Test processing a round change message when the round is greater than or equal to the cutoff, expecting the instance to stop processing messages.",
 		pre,
 		"",
 		nil,

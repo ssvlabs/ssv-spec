@@ -1,6 +1,7 @@
 {
   "Name": "decide current instance future round",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test that a decided msg received for current running instance for a future round should be accepted",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

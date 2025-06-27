@@ -17,6 +17,7 @@ func CreateProposalNotPreviouslyPrepared() tests.SpecTest {
 
 	return tests.NewCreateMsgSpecTest(
 		"create proposal not previously prepared",
+		"Test creating a proposal message for non-first round when not previously prepared, with round change justifications.",
 		[32]byte{1, 2, 3, 4},
 		nil,
 		10,

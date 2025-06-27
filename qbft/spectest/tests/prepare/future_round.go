@@ -19,6 +19,7 @@ func FutureRound() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"prepare future round",
+		"Test prepare message for a round greater than the current state round, expecting validation error.",
 		pre,
 		"",
 		nil,

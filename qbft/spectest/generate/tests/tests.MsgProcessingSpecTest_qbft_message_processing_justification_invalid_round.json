@@ -1,6 +1,7 @@
 {
   "Name": "justification invalid round",
   "Type": "Message processing",
+  "Documentation": "Test round change justification with prepared round greater than message round, expecting error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

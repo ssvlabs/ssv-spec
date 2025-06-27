@@ -1,6 +1,7 @@
 {
 		"Name": "round change data encoding",
 		"Type": "Messages (qbft)",
+		"Documentation": "Test encoding of round change data with justifications.",
 		"Messages": [
 				{
 						"Signatures": [

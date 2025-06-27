@@ -1,6 +1,7 @@
 {
   "Name": "decide past instance",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test decided messages received for past instances, expecting multiple instances to be decided.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

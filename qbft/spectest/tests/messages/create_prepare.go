@@ -8,6 +8,7 @@ import (
 func CreatePrepare() tests.SpecTest {
 	return tests.NewCreateMsgSpecTest(
 		"create prepare",
+		"Test creating a prepare message for QBFT consensus.",
 		[32]byte{1, 2, 3, 4},
 		nil,
 		10,

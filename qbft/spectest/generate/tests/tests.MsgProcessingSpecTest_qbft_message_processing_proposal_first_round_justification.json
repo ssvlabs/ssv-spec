@@ -1,6 +1,7 @@
 {
   "Name": "proposal first round justification",
   "Type": "Message processing",
+  "Documentation": "Test proposal justification for the first round, verifying that the proposer is correct and expecting prepare message broadcast.",
   "Pre": {
     "State": {
       "CommitteeMember": {

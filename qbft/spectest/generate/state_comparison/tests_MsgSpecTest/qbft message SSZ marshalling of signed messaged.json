@@ -1,6 +1,7 @@
 {
 		"Name": "SSZ marshalling of signed messaged",
 		"Type": "Messages (qbft)",
+		"Documentation": "Test valid SSZ marshaling of a signed QBFT message with justifications.",
 		"Messages": [
 				{
 						"Signatures": [

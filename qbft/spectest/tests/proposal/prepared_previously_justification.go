@@ -51,6 +51,7 @@ func PreparedPreviouslyJustification() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"previously prepared proposal",
+		"Test proposal for round > 1 that was prepared previously with valid quorum of round change messages justification, expecting full consensus flow.",
 		pre,
 		"",
 		nil,

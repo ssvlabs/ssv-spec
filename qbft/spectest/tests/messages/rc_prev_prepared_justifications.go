@@ -22,6 +22,7 @@ func RoundChangePrePreparedJustifications() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"rc prev prepared justifications",
+		"Test valid justified round change message with previously prepared justifications.",
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,

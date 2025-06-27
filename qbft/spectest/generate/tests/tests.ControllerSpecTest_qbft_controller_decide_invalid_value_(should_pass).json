@@ -1,6 +1,7 @@
 {
   "Name": "decide invalid value (should pass)",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test a decided message with invalid decided data that should pass validation since it's already decided.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

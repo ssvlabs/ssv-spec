@@ -33,6 +33,7 @@ func PastRoundProposalPrevPrepared() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal past round (not prev prepared)",
+		"Test proposal for a past round that was previously prepared, expecting validation error due to outdated round.",
 		pre,
 		"",
 		nil,

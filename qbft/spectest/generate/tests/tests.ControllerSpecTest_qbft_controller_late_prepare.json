@@ -1,6 +1,7 @@
 {
   "Name": "late prepare",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test processing late prepare message for an instance which just decided, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

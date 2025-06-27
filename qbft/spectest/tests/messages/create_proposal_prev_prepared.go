@@ -23,6 +23,7 @@ func CreateProposalPreviouslyPrepared() tests.SpecTest {
 
 	return tests.NewCreateMsgSpecTest(
 		"create proposal previously prepared",
+		"Test creating a proposal message when previously prepared with round change and prepare justifications.",
 		[32]byte{1, 2, 3, 4},
 		nil,
 		10,

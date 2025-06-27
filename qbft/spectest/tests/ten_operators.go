@@ -37,6 +37,7 @@ func TenOperators() SpecTest {
 
 	return NewMsgProcessingSpecTest(
 		"happy flow ten operators",
+		"Test a complete QBFT happy flow from proposal to decision with 10 operators",
 		pre,
 		"",
 		nil,

@@ -1,6 +1,7 @@
 {
   "Name": "force stop commit message",
-  "Type": "",
+  "Type": "Message processing",
+  "Documentation": "Test processing of a commit message when instance force stopped",
   "Pre": {
     "forceStop": true,
     "State": {

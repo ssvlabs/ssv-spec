@@ -17,10 +17,15 @@ func PostCutoff() tests.SpecTest {
 		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 15),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "round cutoff commit message",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "instance stopped processing messages",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"round cutoff commit message",
+		"Test processing of a commit message when round >= cutoff, expecting error",
+		pre,
+		"",
+		nil,
+		msgs,
+		nil,
+		"instance stopped processing messages",
+		nil,
+	)
 }

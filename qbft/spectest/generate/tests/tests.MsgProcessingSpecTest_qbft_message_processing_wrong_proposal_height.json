@@ -1,6 +1,7 @@
 {
   "Name": "wrong proposal height",
   "Type": "Message processing",
+  "Documentation": "Test proposal message received with incorrect height, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

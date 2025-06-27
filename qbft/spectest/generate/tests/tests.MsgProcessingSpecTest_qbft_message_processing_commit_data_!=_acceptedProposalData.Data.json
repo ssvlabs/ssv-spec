@@ -1,6 +1,7 @@
 {
   "Name": "commit data != acceptedProposalData.Data",
-  "Type": "",
+  "Type": "Message processing",
+  "Documentation": "Test processing of a commit message with data != acceptedProposalData.Data, expecting error",
   "Pre": {
     "State": {
       "CommitteeMember": {

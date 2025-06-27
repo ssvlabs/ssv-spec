@@ -20,6 +20,7 @@ func ForceStop() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"force stop round change message",
+		"Test round change message processing after instance is force stopped, expecting error.",
 		pre,
 		"",
 		nil,

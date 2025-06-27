@@ -19,6 +19,7 @@ func Round15() tests.SpecTest {
 
 	return NewSpecTest(
 		"round 15",
+		"Test UponRoundTimeout for round 15, checks that instance stops processing timeouts after a high round.",
 		pre,
 		sc.Root(),
 		sc.ExpectedState,

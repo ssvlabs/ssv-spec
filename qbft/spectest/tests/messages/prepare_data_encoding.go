@@ -16,6 +16,7 @@ func PrepareDataEncoding() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"prepare data encoding",
+		"Test encoding of prepare data for QBFT message validation.",
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{b},
 		[][32]byte{r},

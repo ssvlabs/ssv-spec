@@ -1,6 +1,7 @@
 {
   "Name": "start instance first height",
   "Type": "Controller",
+  "Documentation": "Test starting the very first QBFT instance and timer state.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

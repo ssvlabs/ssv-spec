@@ -1,6 +1,7 @@
 {
   "Name": "force stop round change message",
   "Type": "Message processing",
+  "Documentation": "Test round change message processing after instance is force stopped, expecting error.",
   "Pre": {
     "forceStop": true,
     "State": {

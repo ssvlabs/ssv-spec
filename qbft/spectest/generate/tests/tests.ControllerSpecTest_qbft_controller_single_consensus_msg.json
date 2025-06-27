@@ -1,6 +1,7 @@
 {
   "Name": "single consensus msg",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test processing a single consensus message.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

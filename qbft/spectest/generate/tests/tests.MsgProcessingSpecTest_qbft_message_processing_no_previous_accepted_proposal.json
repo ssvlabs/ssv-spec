@@ -1,6 +1,7 @@
 {
   "Name": "no previous accepted proposal",
-  "Type": "",
+  "Type": "Message processing",
+  "Documentation": "Test processing of a commit message without a previous accepted proposal",
   "Pre": {
     "State": {
       "CommitteeMember": {

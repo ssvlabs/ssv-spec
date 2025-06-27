@@ -1,6 +1,7 @@
 {
   "Name": "start instance equal height running instance",
   "Type": "Controller",
+  "Documentation": "Test starting a new QBFT instance for a height where an instance is already running, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

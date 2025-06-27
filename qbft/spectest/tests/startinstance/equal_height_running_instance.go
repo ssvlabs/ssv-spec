@@ -11,6 +11,7 @@ func EqualHeightRunningInstance() tests.SpecTest {
 
 	return tests.NewControllerSpecTest(
 		"start instance equal height running instance",
+		"Test starting a new QBFT instance for a height where an instance is already running, expecting error.",
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},

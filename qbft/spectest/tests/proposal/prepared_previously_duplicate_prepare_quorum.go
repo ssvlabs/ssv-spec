@@ -41,6 +41,7 @@ func PreparedPreviouslyDuplicatePrepareQuorum() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"duplicate prepare msg justification quorum",
+		"Test proposal for round > 1 that was prepared previously with quorum of prepare messages but contains duplicate messages, expecting prepare message broadcast.",
 		pre,
 		"",
 		nil,

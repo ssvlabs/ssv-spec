@@ -20,6 +20,7 @@ func MsgTypeUnknown() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"msg type unknown",
+		"Test message with unknown/invalid message type, expecting validation error.",
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,

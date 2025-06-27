@@ -15,9 +15,10 @@ func CurrentInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := currentInstanceStateComparison()
 
-	return &tests.ControllerSpecTest{
-		Name: "decide current instance",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"decide current instance",
+		"Test a decided message received for current running instance, expecting the instance to be decided.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -42,7 +43,10 @@ func CurrentInstance() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 }
 
 func currentInstanceStateComparison() *comparable.StateComparison {

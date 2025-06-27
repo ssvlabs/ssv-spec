@@ -24,6 +24,7 @@ func JustificationInvalidSig() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"justification invalid sig",
+		"Test round change justification with an invalid signature, expecting signature verification error.",
 		pre,
 		"",
 		nil,

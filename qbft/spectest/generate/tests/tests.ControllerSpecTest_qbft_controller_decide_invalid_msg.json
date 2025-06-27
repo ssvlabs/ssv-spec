@@ -1,6 +1,7 @@
 {
   "Name": "decide invalid msg",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test decided message where msg.validate() fails, expecting validation error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

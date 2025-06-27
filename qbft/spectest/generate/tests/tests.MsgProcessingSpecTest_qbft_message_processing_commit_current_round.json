@@ -1,6 +1,7 @@
 {
   "Name": "commit current round",
-  "Type": "",
+  "Type": "Message processing",
+  "Documentation": "Test processing of a commit message in the current round",
   "Pre": {
     "State": {
       "CommitteeMember": {

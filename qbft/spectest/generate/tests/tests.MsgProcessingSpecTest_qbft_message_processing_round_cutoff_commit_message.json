@@ -1,6 +1,7 @@
 {
   "Name": "round cutoff commit message",
-  "Type": "",
+  "Type": "Message processing",
+  "Documentation": "Test processing of a commit message when round \u003e= cutoff, expecting error",
   "Pre": {
     "State": {
       "CommitteeMember": {

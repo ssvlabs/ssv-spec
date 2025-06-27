@@ -20,6 +20,7 @@ func DuplicateMsg() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"duplicate prepare message",
+		"Test processing of duplicate prepare messages from the same signer",
 		pre,
 		"",
 		nil,

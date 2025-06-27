@@ -1,6 +1,7 @@
 {
   "Name": "second proposal for round",
   "Type": "Message processing",
+  "Documentation": "Test second proposal from the same signer for the current round when a proposal is already accepted, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

@@ -1,6 +1,7 @@
 {
   "Name": "decide has quorum",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test decided message with unique 2f+1 signers, expecting successful decision.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

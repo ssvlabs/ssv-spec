@@ -11,9 +11,10 @@ import (
 // UnknownSigner tests a decided msg with an unknown signer
 func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
-		Name: "decide unknown signer",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"decide unknown signer",
+		"Test a decided message with an unknown signer, expecting validation error.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -21,6 +22,8 @@ func UnknownSigner() tests.SpecTest {
 				},
 			},
 		},
-		ExpectedError: "invalid decided msg: invalid decided msg: signer not in committee",
-	}
+		nil,
+		"invalid decided msg: invalid decided msg: signer not in committee",
+		nil,
+	)
 }

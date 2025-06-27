@@ -27,6 +27,7 @@ func PastRound() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change past round",
+		"Test round change msg with past round, expecting error.",
 		pre,
 		"",
 		nil,

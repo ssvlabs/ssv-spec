@@ -1,6 +1,7 @@
 {
 		"Name": "round change prepared",
 		"Type": "Messages (qbft)",
+		"Documentation": "Test round change message with prepared value and justifications.",
 		"Messages": [
 				{
 						"Signatures": [

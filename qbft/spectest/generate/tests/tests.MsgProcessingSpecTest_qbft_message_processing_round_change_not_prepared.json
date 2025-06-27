@@ -1,6 +1,7 @@
 {
   "Name": "round change not prepared",
   "Type": "Message processing",
+  "Documentation": "Test round change quorum for non-prepared state, leading to proposal broadcast.",
   "Pre": {
     "State": {
       "CommitteeMember": {

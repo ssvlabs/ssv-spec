@@ -6,6 +6,7 @@ import "github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 func CreateCommit() tests.SpecTest {
 	return tests.NewCreateMsgSpecTest(
 		"create commit",
+		"Test creating a commit message for QBFT consensus.",
 		[32]byte{1, 2, 3, 4},
 		nil,
 		10,

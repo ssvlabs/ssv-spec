@@ -1,6 +1,7 @@
 {
   "Name": "broadcast decided",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test broadcasting decided message, expecting successful broadcast.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

@@ -21,7 +21,7 @@ func EncryptBLSSK() *EncryptionSpecTest {
 
 	return NewEncryptionSpecTest(
 		"bls secret key encryption",
-		"Test encryption and decryption of BLS secret key using RSA key pair",
+		"Test encryption of BLS secret key using RSA key pair",
 		skPem,
 		pkPem,
 		blsSK.Serialize(),

@@ -1,6 +1,7 @@
 {
   "Name": "late commit past instance",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test processing commit message for a previously decided instance, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

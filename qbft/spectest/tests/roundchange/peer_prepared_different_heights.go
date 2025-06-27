@@ -40,6 +40,7 @@ func PeerPreparedDifferentHeights() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change peer prepared different heights",
+		"Test round change quorum where peers are prepared on different heights, expecting proposal broadcast with justifications from the correct height.",
 		pre,
 		"",
 		nil,

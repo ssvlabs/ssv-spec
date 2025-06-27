@@ -1,6 +1,7 @@
 {
   "Name": "round change unknown signer",
   "Type": "Message processing",
+  "Documentation": "Test round change message with a signer not in the committee, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

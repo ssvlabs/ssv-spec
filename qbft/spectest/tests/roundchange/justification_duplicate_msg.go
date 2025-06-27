@@ -24,6 +24,7 @@ func JustificationDuplicateMsg() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"justification duplicate msg",
+		"Test round change justification with duplicate messages, should not result in a justification quorum.",
 		pre,
 		"",
 		nil,

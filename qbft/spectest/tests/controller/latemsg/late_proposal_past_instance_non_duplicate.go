@@ -38,9 +38,10 @@ func LateProposalPastInstanceNonDuplicate() tests.SpecTest {
 
 	sc := lateProposalPastInstanceStateComparison(1, lateMsg)
 
-	return &tests.ControllerSpecTest{
-		Name: "late non duplicate proposal past instance",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"late non duplicate proposal past instance",
+		"Test processing non-duplicated proposal message for a previously decided instance, expecting error.",
+		[]*tests.RunInstanceData{
 			instanceData,
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -51,6 +52,8 @@ func LateProposalPastInstanceNonDuplicate() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-		ExpectedError: "not processing consensus message since instance is already decided",
-	}
+		nil,
+		"not processing consensus message since instance is already decided",
+		nil,
+	)
 }

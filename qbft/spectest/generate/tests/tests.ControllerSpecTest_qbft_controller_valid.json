@@ -1,6 +1,7 @@
 {
   "Name": "valid",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test a valid decided message with unique 2f+1 signers, expecting successful decision.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

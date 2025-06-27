@@ -8,6 +8,7 @@ import (
 func NilValue() tests.SpecTest {
 	return tests.NewControllerSpecTest(
 		"start instance nil value",
+		"Test starting a new QBFT instance with a nil value, expecting value validation error.",
 		[]*tests.RunInstanceData{
 			{
 				InputValue: nil,

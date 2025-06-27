@@ -1,6 +1,7 @@
 {
   "Name": "proposal past round (not prev prepared)",
   "Type": "Message processing",
+  "Documentation": "Test proposal for a past round that was previously prepared, expecting validation error due to outdated round.",
   "Pre": {
     "State": {
       "CommitteeMember": {

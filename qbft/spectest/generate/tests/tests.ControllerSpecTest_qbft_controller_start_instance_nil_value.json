@@ -1,6 +1,7 @@
 {
   "Name": "start instance nil value",
   "Type": "Controller",
+  "Documentation": "Test starting a new QBFT instance with a nil value, expecting value validation error.",
   "RunInstanceData": [
     {
       "InputValue": null,

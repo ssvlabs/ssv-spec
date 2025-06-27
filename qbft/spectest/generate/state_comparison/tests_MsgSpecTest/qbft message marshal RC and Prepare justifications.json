@@ -1,6 +1,7 @@
 {
 		"Name": "marshal RC and Prepare justifications",
 		"Type": "Messages (qbft)",
+		"Documentation": "Test marshalling round change and prepare justifications for QBFT proposal message.",
 		"Messages": [
 				{
 						"Signatures": [

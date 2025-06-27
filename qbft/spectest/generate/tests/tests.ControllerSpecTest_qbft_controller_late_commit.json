@@ -1,6 +1,7 @@
 {
   "Name": "late commit",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test processing late commit message for an instance which just decided, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

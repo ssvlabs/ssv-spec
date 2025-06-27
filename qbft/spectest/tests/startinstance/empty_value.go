@@ -8,6 +8,7 @@ import (
 func EmptyValue() tests.SpecTest {
 	return tests.NewControllerSpecTest(
 		"start instance empty value",
+		"Test starting a new QBFT instance with an empty value, expecting value validation error.",
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{},

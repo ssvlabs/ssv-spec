@@ -36,6 +36,7 @@ func ValidJustification() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"valid justification",
+		"Test round change with valid quorum justification, leading to proposal broadcast.",
 		pre,
 		"",
 		nil,

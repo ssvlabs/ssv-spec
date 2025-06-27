@@ -1,6 +1,7 @@
 {
   "Name": "proposal duplicate message different value",
   "Type": "Message processing",
+  "Documentation": "Test duplicate proposal message processing where the second message has a different root value, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

@@ -1,6 +1,7 @@
 {
   "Name": "decide late decided",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test processing a decided message for a just decided instance, expecting the instance to remain decided.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",

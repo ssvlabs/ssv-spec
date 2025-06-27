@@ -16,6 +16,7 @@ func WrongProposer() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"wrong proposer",
+		"Test proposal by a node that is not the designated proposer for the current round, expecting validation error.",
 		pre,
 		"",
 		nil,

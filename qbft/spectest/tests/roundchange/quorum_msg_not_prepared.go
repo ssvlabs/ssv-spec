@@ -35,6 +35,7 @@ func QuorumMsgNotPrepared() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change quorum msg not prepared",
+		"Test liveness scenario where the round change message that completes quorum is not previously prepared, which can cause a liveness issue with proposal justification.",
 		pre,
 		sc.Root(),
 		sc.ExpectedState,

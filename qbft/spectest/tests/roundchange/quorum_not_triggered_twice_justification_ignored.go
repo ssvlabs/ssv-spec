@@ -40,6 +40,7 @@ func QuorumNotTriggeredTwiceJustificationIgnored() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"quorum not triggered twice justification ignored",
+		"Test that after a round change quorum triggers a proposal, further round change messages with justifications are ignored and do not trigger another proposal.",
 		pre,
 		"",
 		nil,

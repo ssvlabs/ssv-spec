@@ -1,6 +1,7 @@
 {
   "Name": "commit future round",
-  "Type": "",
+  "Type": "Message processing",
+  "Documentation": "Test processing of a commit message with a future round, expecting error",
   "Pre": {
     "State": {
       "CommitteeMember": {

@@ -28,6 +28,7 @@ func NotPreparedPreviouslyJustification() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal justification (not prepared)",
+		"Test proposal for round > 1 that was not prepared previously, with valid round change justification, expecting prepare message broadcast.",
 		pre,
 		"",
 		nil,

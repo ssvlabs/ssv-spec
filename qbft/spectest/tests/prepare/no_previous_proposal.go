@@ -17,6 +17,7 @@ func NoPreviousProposal() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"no previous proposal for prepare",
+		"Test prepare message without receiving a previous proposal, expecting validation error.",
 		pre,
 		"",
 		nil,

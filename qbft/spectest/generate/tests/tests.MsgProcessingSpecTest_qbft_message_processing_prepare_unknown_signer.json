@@ -1,6 +1,7 @@
 {
   "Name": "prepare unknown signer",
   "Type": "Message processing",
+  "Documentation": "Test prepare message from a signer not in the committee, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

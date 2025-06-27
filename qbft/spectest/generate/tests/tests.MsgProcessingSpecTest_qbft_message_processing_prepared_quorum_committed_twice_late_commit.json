@@ -1,6 +1,7 @@
 {
   "Name": "prepared quorum committed twice late commit",
   "Type": "Message processing",
+  "Documentation": "Test triggering prepare quorum twice by sending more than 2f+1 prepare messages, with commit message processed after the second prepare quorum, expecting commit message broadcast.",
   "Pre": {
     "State": {
       "CommitteeMember": {

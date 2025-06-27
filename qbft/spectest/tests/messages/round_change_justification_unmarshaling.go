@@ -35,6 +35,7 @@ func RoundChangeJustificationsUnmarshalling() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"round change justification unmarshalling",
+		"Test unmarshalling round change justifications from QBFT proposal message.",
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{encodedMsg},
 		[][32]byte{msgRoot},

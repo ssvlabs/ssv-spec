@@ -1,6 +1,7 @@
 {
   "Name": "round change prepared",
   "Type": "Message processing",
+  "Documentation": "Test round change messages for prepared state, leading to proposal broadcast.",
   "Pre": {
     "State": {
       "CommitteeMember": {

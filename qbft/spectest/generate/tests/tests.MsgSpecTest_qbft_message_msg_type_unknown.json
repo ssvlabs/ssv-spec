@@ -1,6 +1,7 @@
 {
   "Name": "msg type unknown",
   "Type": "Messages (qbft)",
+  "Documentation": "Test message with unknown/invalid message type, expecting validation error.",
   "Messages": [
     {
       "Signatures": [

@@ -51,6 +51,7 @@ func DifferentJustifications() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"different proposal round change justification",
+		"Test proposal for round > 1 that was prepared previously with round change justification containing prepare messages at different heights, testing the highest prepared calculation.",
 		pre,
 		"",
 		nil,

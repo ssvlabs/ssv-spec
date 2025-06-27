@@ -1,6 +1,7 @@
 {
   "Name": "proposal justification (not prepared)",
   "Type": "Message processing",
+  "Documentation": "Test proposal for round \u003e 1 that was not prepared previously, with valid round change justification, expecting prepare message broadcast.",
   "Pre": {
     "State": {
       "CommitteeMember": {

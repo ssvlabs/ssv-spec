@@ -1,6 +1,7 @@
 {
   "Name": "start instance post future decided",
   "Type": "Controller",
+  "Documentation": "Test starting a new QBFT instance after a future decided message, then attempting to start with a past height.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

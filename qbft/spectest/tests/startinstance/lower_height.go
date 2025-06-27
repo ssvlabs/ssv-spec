@@ -12,6 +12,7 @@ func LowerHeight() tests.SpecTest {
 
 	return tests.NewControllerSpecTest(
 		"start instance lower height",
+		"Test starting a new QBFT instance with a height lower than the previous instance, expecting error.",
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},

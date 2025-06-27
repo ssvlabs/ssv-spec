@@ -1,6 +1,7 @@
 {
   "Name": "no rc quorum",
   "Type": "Message processing",
+  "Documentation": "Test proposal for round \u003e 1 that was not prepared previously and lacks quorum of round change messages in justification, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

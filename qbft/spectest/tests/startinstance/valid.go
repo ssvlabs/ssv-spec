@@ -10,6 +10,7 @@ import (
 func Valid() tests.SpecTest {
 	return tests.NewControllerSpecTest(
 		"start instance valid",
+		"Test starting a new QBFT instance with valid input value and timer state.",
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},

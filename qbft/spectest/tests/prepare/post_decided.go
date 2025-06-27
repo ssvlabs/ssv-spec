@@ -31,6 +31,7 @@ func PostDecided() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"prepare post decided",
+		"Test processing prepare message after the instance has already decided, expecting no additional output.",
 		pre,
 		"",
 		nil,

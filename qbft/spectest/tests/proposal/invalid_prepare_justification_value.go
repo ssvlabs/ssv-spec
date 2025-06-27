@@ -38,6 +38,7 @@ func InvalidPrepareJustificationValue() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"invalid prepare justification value",
+		"Test proposal for round > 1 that was prepared previously but contains prepare justification with value different from the highest prepared value, expecting validation error.",
 		pre,
 		sc.Root(),
 		sc.ExpectedState,

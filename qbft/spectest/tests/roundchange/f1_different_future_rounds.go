@@ -33,6 +33,7 @@ func F1DifferentFutureRounds() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change f+1 prepared",
+		"Test f+1 speedup scenario with one round change message previously prepared, expecting round to advance and proposal to be broadcast.",
 		pre,
 		sc.Root(),
 		sc.ExpectedState,

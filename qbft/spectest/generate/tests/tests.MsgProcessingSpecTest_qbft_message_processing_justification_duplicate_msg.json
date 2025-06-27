@@ -1,6 +1,7 @@
 {
   "Name": "justification duplicate msg",
   "Type": "Message processing",
+  "Documentation": "Test round change justification with duplicate messages, should not result in a justification quorum.",
   "Pre": {
     "State": {
       "CommitteeMember": {

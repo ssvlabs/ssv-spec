@@ -1,6 +1,7 @@
 {
   "Name": "decide no quorum",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test decided message with less than unique 2f+1 signers, expecting validation error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

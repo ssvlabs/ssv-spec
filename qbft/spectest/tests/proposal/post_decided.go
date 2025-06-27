@@ -32,6 +32,7 @@ func PostDecided() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal post decided",
+		"Test processing proposal message after the instance has already decided, expecting validation error.",
 		pre,
 		"",
 		nil,

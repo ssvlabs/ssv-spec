@@ -1,6 +1,7 @@
 {
   "Name": "decide late decided smaller quorum",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test processing a decided message for a just decided instance with a smaller quorum, expecting the instance to remain decided.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

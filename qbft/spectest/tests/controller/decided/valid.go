@@ -11,9 +11,10 @@ import (
 // Valid tests a valid decided msg with unique 2f+1 signers
 func Valid() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
-		Name: "valid",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"valid",
+		"Test a valid decided message with unique 2f+1 signers, expecting successful decision.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -25,5 +26,8 @@ func Valid() tests.SpecTest {
 				},
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 }

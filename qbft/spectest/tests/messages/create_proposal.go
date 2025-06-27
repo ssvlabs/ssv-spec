@@ -8,6 +8,7 @@ import (
 func CreateProposal() tests.SpecTest {
 	return tests.NewCreateMsgSpecTest(
 		"create proposal",
+		"Test creating a proposal message when not previously prepared.",
 		[32]byte{1, 2, 3, 4},
 		nil,
 		10,

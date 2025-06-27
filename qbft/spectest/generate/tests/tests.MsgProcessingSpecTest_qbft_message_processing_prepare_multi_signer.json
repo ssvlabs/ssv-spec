@@ -1,6 +1,7 @@
 {
   "Name": "prepare multi signer",
   "Type": "Message processing",
+  "Documentation": "Test prepare message with multiple signers, expecting validation error since only one signer is allowed.",
   "Pre": {
     "State": {
       "CommitteeMember": {

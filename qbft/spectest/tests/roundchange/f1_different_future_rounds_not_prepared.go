@@ -26,6 +26,7 @@ func F1DifferentFutureRoundsNotPrepared() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change f+1 not prepared",
+		"Test f+1 speedup scenario where no previous round was prepared, expecting round to advance to the lowest future round received.",
 		pre,
 		sc.Root(),
 		sc.ExpectedState,

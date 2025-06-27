@@ -1,6 +1,7 @@
 {
   "Name": "commit happy flow",
-  "Type": "",
+  "Type": "Message processing",
+  "Documentation": "Test a complete commit happy flow with proposal, prepare quorum, and commit quorum",
   "Pre": {
     "State": {
       "CommitteeMember": {

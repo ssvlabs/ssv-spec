@@ -1,6 +1,7 @@
 {
   "Name": "late proposal past instance",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test processing proposal message for a previously decided instance, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

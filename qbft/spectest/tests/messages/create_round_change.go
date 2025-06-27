@@ -6,6 +6,7 @@ import "github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 func CreateRoundChange() tests.SpecTest {
 	return tests.NewCreateMsgSpecTest(
 		"create round change",
+		"Test creating a round change message when not previously prepared.",
 		[32]byte{1, 2, 3, 4},
 		nil,
 		0,

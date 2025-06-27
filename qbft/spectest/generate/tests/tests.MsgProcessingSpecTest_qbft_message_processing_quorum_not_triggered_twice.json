@@ -1,6 +1,7 @@
 {
   "Name": "quorum not triggered twice",
   "Type": "Message processing",
+  "Documentation": "Test that after a round change quorum triggers a proposal, further round change messages do not trigger another proposal.",
   "Pre": {
     "State": {
       "CommitteeMember": {

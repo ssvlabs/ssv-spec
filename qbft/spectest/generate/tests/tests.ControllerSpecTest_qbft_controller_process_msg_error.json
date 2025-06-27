@@ -1,6 +1,7 @@
 {
   "Name": "process msg error",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test processing a message that returns an error, expecting validation error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

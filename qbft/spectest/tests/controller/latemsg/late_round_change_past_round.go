@@ -40,10 +40,10 @@ func LateRoundChangePastRound() tests.SpecTest {
 		testingutils.TestingRoundChangeMessage(ks.OperatorKeys[4], types.OperatorID(4)),
 	}...)
 
-	return &tests.ControllerSpecTest{
-		Name:          "late round change past round",
-		ExpectedError: "not processing consensus message since instance is already decided",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"late round change past round",
+		"Test processing late round change message for an instance which just decided for a round less than decided round, expecting error.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue:    []byte{1, 2, 3, 4},
 				InputMessages: msgs,
@@ -58,5 +58,8 @@ func LateRoundChangePastRound() tests.SpecTest {
 				},
 			},
 		},
-	}
+		nil,
+		"not processing consensus message since instance is already decided",
+		nil,
+	)
 }

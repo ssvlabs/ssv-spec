@@ -26,6 +26,7 @@ func DuplicateMsg() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change duplicate msg",
+		"Test duplicate round change messages: first is processed, second is ignored.",
 		pre,
 		"",
 		nil,

@@ -1,6 +1,7 @@
 {
   "Name": "round change multi signers",
   "Type": "Message processing",
+  "Documentation": "Test round change message with multiple signers, expecting validation error since only one signer is allowed.",
   "Pre": {
     "State": {
       "CommitteeMember": {

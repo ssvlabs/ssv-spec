@@ -36,6 +36,7 @@ func AfterProposal() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change after proposal accepted",
+		"Test round change messages after previous quorum and proposal acceptance, followed by another round change.",
 		pre,
 		"",
 		nil,

@@ -14,6 +14,7 @@ func SignedMsgNoSigners() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"no signers",
+		"Test signed message with no signers, expecting validation error.",
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,

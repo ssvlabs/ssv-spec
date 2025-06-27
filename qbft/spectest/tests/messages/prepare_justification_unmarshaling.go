@@ -42,6 +42,7 @@ func PrepareJustificationsUnmarshalling() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"prepare justification unmarshalling",
+		"Test unmarshalling prepare justifications from QBFT proposal message.",
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{encodedMsg},
 		[][32]byte{msgRoot},

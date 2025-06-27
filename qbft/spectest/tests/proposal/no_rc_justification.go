@@ -26,6 +26,7 @@ func NoRCJustification() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"no rc quorum",
+		"Test proposal for round > 1 that was not prepared previously and lacks quorum of round change messages in justification, expecting validation error.",
 		pre,
 		"",
 		nil,

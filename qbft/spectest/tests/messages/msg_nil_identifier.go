@@ -21,6 +21,7 @@ func MsgNilIdentifier() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"msg identifier nil",
+		"Test message with nil identifier, expecting validation error.",
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,

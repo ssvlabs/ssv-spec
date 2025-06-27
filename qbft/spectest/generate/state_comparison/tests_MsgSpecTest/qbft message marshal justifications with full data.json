@@ -1,6 +1,7 @@
 {
 		"Name": "marshal justifications with full data",
 		"Type": "Messages (qbft)",
+		"Documentation": "Test marshalling justifications with full data, which should be omitted during marshalling.",
 		"Messages": [
 				{
 						"Signatures": [

@@ -11,6 +11,7 @@ func EqualHeightNoRunningInstance() tests.SpecTest {
 
 	return tests.NewControllerSpecTest(
 		"start instance for current height with no running instance",
+		"Test starting a new QBFT instance for the current height when no instance is running.",
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},

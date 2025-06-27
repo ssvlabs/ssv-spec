@@ -1,6 +1,7 @@
 {
   "Name": "different proposal round change justification",
   "Type": "Message processing",
+  "Documentation": "Test proposal for round \u003e 1 that was prepared previously with round change justification containing prepare messages at different heights, testing the highest prepared calculation.",
   "Pre": {
     "State": {
       "CommitteeMember": {

@@ -1,6 +1,7 @@
 {
   "Name": "start instance invalid value",
   "Type": "Controller",
+  "Documentation": "Test starting a new QBFT instance with an invalid value, expecting value validation error.",
   "RunInstanceData": [
     {
       "InputValue": "AQEBAQ==",

@@ -1,6 +1,7 @@
 {
   "Name": "unknown commit signer",
-  "Type": "",
+  "Type": "Message processing",
+  "Documentation": "Test processing of a commit message with an unknown signer, expecting error",
   "Pre": {
     "State": {
       "CommitteeMember": {

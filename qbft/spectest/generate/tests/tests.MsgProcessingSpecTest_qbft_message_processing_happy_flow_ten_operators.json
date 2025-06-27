@@ -1,6 +1,7 @@
 {
   "Name": "happy flow ten operators",
   "Type": "Message processing",
+  "Documentation": "Test a complete QBFT happy flow from proposal to decision with 10 operators",
   "Pre": {
     "State": {
       "CommitteeMember": {

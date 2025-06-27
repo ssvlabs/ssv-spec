@@ -1,6 +1,7 @@
 {
   "Name": "create commit",
   "Type": "Create message",
+  "Documentation": "Test creating a commit message for QBFT consensus.",
   "Value": [
     1,
     2,

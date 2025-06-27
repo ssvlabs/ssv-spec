@@ -19,6 +19,7 @@ func InvalidValueCheck() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"invalid proposal value check",
+		"Test proposal that fails the value check validation, expecting validation error.",
 		pre,
 		"",
 		nil,

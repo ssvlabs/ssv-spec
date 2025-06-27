@@ -14,9 +14,10 @@ import (
 func FullDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := fullDecidedStateComparison()
-	return &tests.ControllerSpecTest{
-		Name: "full decided",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"full decided",
+		"Test processing messages and first time deciding, expecting successful decision.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(
@@ -35,7 +36,10 @@ func FullDecided() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 }
 
 func fullDecidedStateComparison() *qbftcomparable.StateComparison {

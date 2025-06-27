@@ -40,6 +40,7 @@ func DuplicateMsgQuorum() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change duplicate msg quorum",
+		"Test duplicate round change message for a signer, followed by enough messages to reach quorum and trigger proposal broadcast.",
 		pre,
 		"",
 		nil,

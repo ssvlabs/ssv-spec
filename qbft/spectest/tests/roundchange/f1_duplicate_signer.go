@@ -25,6 +25,7 @@ func F1DuplicateSigner() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change f+1 duplicate",
+		"Test round change with f+1 duplicate signers, should not accept.",
 		pre,
 		"",
 		nil,

@@ -36,6 +36,7 @@ func PreparedPreviouslyNoPrepareJustificationQuorum() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"no prepare quorum (prepared)",
+		"Test proposal for round > 1 that was prepared previously but lacks quorum of prepare messages in justification, expecting validation error.",
 		pre,
 		sc.Root(),
 		sc.ExpectedState,

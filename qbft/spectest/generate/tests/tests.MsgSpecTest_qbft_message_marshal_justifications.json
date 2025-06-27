@@ -1,6 +1,7 @@
 {
   "Name": "marshal justifications",
   "Type": "Messages (qbft)",
+  "Documentation": "Test marshalling justifications without full data for QBFT proposal message.",
   "Messages": [
     {
       "Signatures": [

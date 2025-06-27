@@ -1,6 +1,7 @@
 {
   "Name": "round change zero signer",
   "Type": "Message processing",
+  "Documentation": "Test round change message with signer ID 0, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

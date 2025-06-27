@@ -32,6 +32,7 @@ func HappyFlow() SpecTest {
 
 	return NewMsgProcessingSpecTest(
 		"happy flow",
+		"Test a complete QBFT happy flow from proposal to decision with 4 operators",
 		pre,
 		sc.Root(),
 		sc.ExpectedState,

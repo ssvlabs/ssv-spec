@@ -11,9 +11,10 @@ import (
 // FutureInstance tests decided msg received for future (not yet started) instance
 func FutureInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
-		Name: "decide future instance",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"decide future instance",
+		"Test decided message received for future (not yet started) instance, expecting the instance to be decided.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -25,5 +26,8 @@ func FutureInstance() tests.SpecTest {
 				},
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 }

@@ -1,6 +1,7 @@
 {
   "Name": "decide future instance",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test decided message received for future (not yet started) instance, expecting the instance to be decided.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

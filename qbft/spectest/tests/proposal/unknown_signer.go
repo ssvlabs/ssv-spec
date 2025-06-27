@@ -16,6 +16,7 @@ func UnknownSigner() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"unknown proposal signer",
+		"Test proposal message from a signer not in the committee, expecting validation error.",
 		pre,
 		"",
 		nil,

@@ -23,6 +23,7 @@ func ValidHashDataRoot() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"valid hash data root",
+		"Test a valid hash data root for QBFT message validation.",
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,

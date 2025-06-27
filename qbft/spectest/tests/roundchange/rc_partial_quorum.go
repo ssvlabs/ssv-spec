@@ -28,6 +28,7 @@ func RoundChangePartialQuorum() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change partial quorum",
+		"Test round change with partial quorum, checks timer state and output message.",
 		pre,
 		sc.Root(),
 		sc.ExpectedState,

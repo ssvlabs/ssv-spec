@@ -37,6 +37,7 @@ func QuorumNotTriggeredTwice() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"quorum not triggered twice",
+		"Test that after a round change quorum triggers a proposal, further round change messages do not trigger another proposal.",
 		pre,
 		"",
 		nil,

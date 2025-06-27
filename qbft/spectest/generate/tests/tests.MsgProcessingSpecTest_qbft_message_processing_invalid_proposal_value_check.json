@@ -1,6 +1,7 @@
 {
   "Name": "invalid proposal value check",
   "Type": "Message processing",
+  "Documentation": "Test proposal that fails the value check validation, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

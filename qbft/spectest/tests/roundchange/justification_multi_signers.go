@@ -29,6 +29,7 @@ func JustificationMultiSigners() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"justification multi signer",
+		"Test round change justification with a prepare message signed by multiple signers, expecting error.",
 		pre,
 		"",
 		nil,

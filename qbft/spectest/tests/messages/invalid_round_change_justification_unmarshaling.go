@@ -25,6 +25,7 @@ func InvalidRoundChangeJustificationsUnmarshalling() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"invalid round change justification unmarshalling",
+		"Test unmarshalling invalid round change justifications, expecting validation error during message validation.",
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,

@@ -25,6 +25,7 @@ func NotProposer() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change justification not proposer",
+		"Test justified round change where the node is not the proposer, expecting no proposal broadcast.",
 		pre,
 		"",
 		nil,

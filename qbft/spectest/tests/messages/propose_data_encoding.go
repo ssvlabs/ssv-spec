@@ -24,6 +24,7 @@ func ProposeDataEncoding() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"propose data encoding",
+		"Test encoding of proposal data with justifications.",
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{b},
 		[][32]byte{r},

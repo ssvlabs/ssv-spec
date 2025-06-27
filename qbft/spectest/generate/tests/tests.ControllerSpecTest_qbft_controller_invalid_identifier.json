@@ -1,6 +1,7 @@
 {
   "Name": "invalid identifier",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test processing a message with the wrong identifier, expecting validation error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

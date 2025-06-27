@@ -1,6 +1,7 @@
 {
   "Name": "decide wrong msg type",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test a non-commit message with 2f+1 signers, expecting validation error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

@@ -24,6 +24,7 @@ func RoundChangeDataEncoding() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"round change data encoding",
+		"Test encoding of round change data with justifications.",
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{b},
 		[][32]byte{r},

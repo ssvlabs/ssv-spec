@@ -18,10 +18,15 @@ func ForceStop() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "force stop commit message",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "instance stopped processing messages",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"force stop commit message",
+		"Test processing of a commit message when instance force stopped",
+		pre,
+		"",
+		nil,
+		msgs,
+		nil,
+		"instance stopped processing messages",
+		nil,
+	)
 }

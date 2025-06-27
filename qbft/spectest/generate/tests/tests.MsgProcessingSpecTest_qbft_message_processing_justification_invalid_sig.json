@@ -1,6 +1,7 @@
 {
   "Name": "justification invalid sig",
   "Type": "Message processing",
+  "Documentation": "Test round change justification with an invalid signature, expecting signature verification error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

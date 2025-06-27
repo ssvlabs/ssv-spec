@@ -1,6 +1,7 @@
 {
   "Name": "full flow after decided",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test a decided message for round 1 followed by a full proposal, prepare, commit flow for round 2, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

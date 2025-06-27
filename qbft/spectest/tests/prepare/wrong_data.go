@@ -20,6 +20,7 @@ func WrongData() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"prepare wrong data",
+		"Test prepare message with data different from the accepted proposal data, expecting validation error.",
 		pre,
 		"",
 		nil,

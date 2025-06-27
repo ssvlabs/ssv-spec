@@ -1,6 +1,7 @@
 {
 		"Name": "prepare justification unmarshalling",
 		"Type": "Messages (qbft)",
+		"Documentation": "Test unmarshalling prepare justifications from QBFT proposal message.",
 		"Messages": [
 				{
 						"Signatures": [

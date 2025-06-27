@@ -1,6 +1,7 @@
 {
   "Name": "round change non unique signer",
   "Type": "Message processing",
+  "Documentation": "Test round change message with non-unique signer IDs, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

@@ -1,6 +1,7 @@
 {
 		"Name": "msg identifier len == 0",
 		"Type": "Messages (qbft)",
+		"Documentation": "Test message with empty identifier, expecting validation error.",
 		"Messages": [
 				{
 						"Signatures": [

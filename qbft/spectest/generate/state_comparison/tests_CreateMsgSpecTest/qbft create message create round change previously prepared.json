@@ -1,6 +1,7 @@
 {
 		"Name": "create round change previously prepared",
 		"Type": "Create message",
+		"Documentation": "Test creating a round change message when previously prepared with justifications.",
 		"Value": [
 				1,
 				2,

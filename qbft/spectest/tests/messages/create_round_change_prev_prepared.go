@@ -16,6 +16,7 @@ func CreateRoundChangePreviouslyPrepared() tests.SpecTest {
 	}
 	return tests.NewCreateMsgSpecTest(
 		"create round change previously prepared",
+		"Test creating a round change message when previously prepared with justifications.",
 		[32]byte{1, 2, 3, 4},
 		nil,
 		0,

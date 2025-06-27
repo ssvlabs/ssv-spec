@@ -22,13 +22,21 @@ func HappyFlow() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[2], 2),
 		testingutils.TestingCommitMessage(ks.OperatorKeys[3], 3),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "commit happy flow",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
-		},
+
+	outputMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"commit happy flow",
+		"Test a complete commit happy flow with proposal, prepare quorum, and commit quorum",
+		pre,
+		"",
+		nil,
+		msgs,
+		outputMsgs,
+		"",
+		nil,
+	)
 }

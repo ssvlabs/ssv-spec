@@ -21,6 +21,7 @@ func MsgNonZeroIdentifier() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"msg identifier len == 0",
+		"Test message with empty identifier, expecting validation error.",
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,

@@ -13,6 +13,7 @@ func PostFutureDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return tests.NewControllerSpecTest(
 		"start instance post future decided",
+		"Test starting a new QBFT instance after a future decided message, then attempting to start with a past height.",
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},

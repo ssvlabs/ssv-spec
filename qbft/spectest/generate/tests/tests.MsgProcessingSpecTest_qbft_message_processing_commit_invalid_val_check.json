@@ -1,6 +1,7 @@
 {
   "Name": "commit invalid val check",
-  "Type": "",
+  "Type": "Message processing",
+  "Documentation": "Test processing of a commit message with an invalid value check, not expecting error as a commit depends on a proposal received which validates value",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -91,7 +92,7 @@
   },
   "PostRoot": "",
   "InputMessages": [],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "",
   "ExpectedTimerState": null
 }

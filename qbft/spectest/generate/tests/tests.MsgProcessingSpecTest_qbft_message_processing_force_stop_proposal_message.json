@@ -1,6 +1,7 @@
 {
   "Name": "force stop proposal message",
   "Type": "Message processing",
+  "Documentation": "Test processing proposal message after instance is force stopped, expecting error.",
   "Pre": {
     "forceStop": true,
     "State": {

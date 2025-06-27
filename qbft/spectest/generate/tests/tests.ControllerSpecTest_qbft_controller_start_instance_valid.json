@@ -1,6 +1,7 @@
 {
   "Name": "start instance valid",
   "Type": "Controller",
+  "Documentation": "Test starting a new QBFT instance with valid input value and timer state.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

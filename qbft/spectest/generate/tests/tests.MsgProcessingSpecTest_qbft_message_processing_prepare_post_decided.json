@@ -1,6 +1,7 @@
 {
   "Name": "prepare post decided",
   "Type": "Message processing",
+  "Documentation": "Test processing prepare message after the instance has already decided, expecting no additional output.",
   "Pre": {
     "State": {
       "CommitteeMember": {

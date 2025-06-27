@@ -42,6 +42,7 @@ func SSZMarshaling() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"SSZ marshalling of signed messaged",
+		"Test valid SSZ marshaling of a signed QBFT message with justifications.",
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{encodedMsg},
 		[][32]byte{msgRoot},

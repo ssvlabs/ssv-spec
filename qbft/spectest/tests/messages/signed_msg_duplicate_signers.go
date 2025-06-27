@@ -20,6 +20,7 @@ func SignedMsgDuplicateSigners() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"duplicate signers",
+		"Test signed message with duplicate signers, expecting validation error.",
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,

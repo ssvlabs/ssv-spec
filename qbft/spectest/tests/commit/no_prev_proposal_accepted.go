@@ -15,10 +15,16 @@ func NoPrevAcceptedProposal() tests.SpecTest {
 	msgs := []*types.SignedSSVMessage{
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "no previous accepted proposal",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "invalid signed message: did not receive proposal for this round",
-	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"no previous accepted proposal",
+		"Test processing of a commit message without a previous accepted proposal",
+		pre,
+		"",
+		nil,
+		msgs,
+		nil,
+		"invalid signed message: did not receive proposal for this round",
+		nil,
+	)
 }

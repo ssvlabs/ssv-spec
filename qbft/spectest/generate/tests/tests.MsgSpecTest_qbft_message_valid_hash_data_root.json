@@ -1,6 +1,7 @@
 {
   "Name": "valid hash data root",
   "Type": "Messages (qbft)",
+  "Documentation": "Test a valid hash data root for QBFT message validation.",
   "Messages": [
     {
       "Signatures": [

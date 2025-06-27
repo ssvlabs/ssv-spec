@@ -22,12 +22,20 @@ func NoPrepareQuorum() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[2], 2),
 		testingutils.TestingCommitMessage(ks.OperatorKeys[3], 3),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "commit no prepare quorum",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-		},
+
+	outputMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"commit no prepare quorum",
+		"Test processing of commit messages without a prepare quorum",
+		pre,
+		"",
+		nil,
+		msgs,
+		outputMsgs,
+		"",
+		nil,
+	)
 }

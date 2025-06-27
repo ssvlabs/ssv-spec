@@ -32,6 +32,7 @@ func PrepareQuorumTriggeredTwice() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"prepared quorum committed twice",
+		"Test triggering prepare quorum twice by sending more than 2f+1 prepare messages, expecting commit message broadcast.",
 		pre,
 		sc.Root(),
 		sc.ExpectedState,

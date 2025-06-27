@@ -33,6 +33,7 @@ func QuorumOrder2() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change quorum order 2",
+		"Test round change quorum messages in a different order (liveness property, order 2).",
 		pre,
 		"",
 		nil,

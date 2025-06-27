@@ -1,6 +1,7 @@
 {
   "Name": "round change f+1 duplicate",
   "Type": "Message processing",
+  "Documentation": "Test round change with f+1 duplicate signers, should not accept.",
   "Pre": {
     "State": {
       "CommitteeMember": {

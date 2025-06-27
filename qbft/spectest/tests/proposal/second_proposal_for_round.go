@@ -22,6 +22,7 @@ func SecondProposalForRound() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"second proposal for round",
+		"Test second proposal from the same signer for the current round when a proposal is already accepted, expecting validation error.",
 		pre,
 		"",
 		nil,

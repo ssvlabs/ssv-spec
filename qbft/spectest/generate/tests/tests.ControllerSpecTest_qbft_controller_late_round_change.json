@@ -1,6 +1,7 @@
 {
   "Name": "late round change",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test processing late round change message for an instance which just decided, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

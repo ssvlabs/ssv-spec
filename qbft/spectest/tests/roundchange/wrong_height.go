@@ -18,6 +18,7 @@ func WrongHeight() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change invalid height",
+		"Test round change message with invalid height, expecting validation error.",
 		pre,
 		"",
 		nil,

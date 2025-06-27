@@ -1,6 +1,7 @@
 {
   "Name": "f+1 speed up",
   "Type": "Message processing",
+  "Documentation": "Test catching up to higher rounds via f+1 speedup, where other peers are all at the same round.",
   "Pre": {
     "State": {
       "CommitteeMember": {

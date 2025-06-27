@@ -23,6 +23,7 @@ func DuplicateMsgDifferentRoot() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal duplicate message different value",
+		"Test duplicate proposal message processing where the second message has a different root value, expecting validation error.",
 		pre,
 		sc.Root(),
 		sc.ExpectedState,

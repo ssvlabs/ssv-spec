@@ -21,6 +21,7 @@ func MultiSigner() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal multi signer",
+		"Test proposal message with multiple signers, expecting validation error since only one signer is allowed.",
 		pre,
 		"",
 		nil,

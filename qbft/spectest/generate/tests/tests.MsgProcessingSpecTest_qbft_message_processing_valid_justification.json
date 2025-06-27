@@ -1,6 +1,7 @@
 {
   "Name": "valid justification",
   "Type": "Message processing",
+  "Documentation": "Test round change with valid quorum justification, leading to proposal broadcast.",
   "Pre": {
     "State": {
       "CommitteeMember": {

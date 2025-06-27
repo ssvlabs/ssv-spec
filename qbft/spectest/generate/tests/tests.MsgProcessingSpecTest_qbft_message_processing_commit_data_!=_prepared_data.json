@@ -1,6 +1,7 @@
 {
   "Name": "commit data != prepared data",
-  "Type": "",
+  "Type": "Message processing",
+  "Documentation": "Test processing of a commit message with data != prepared data, expecting error",
   "Pre": {
     "State": {
       "CommitteeMember": {

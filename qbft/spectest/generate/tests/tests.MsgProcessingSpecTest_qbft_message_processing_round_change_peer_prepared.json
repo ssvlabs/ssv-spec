@@ -1,6 +1,7 @@
 {
   "Name": "round change peer prepared",
   "Type": "Message processing",
+  "Documentation": "Test round change quorum where only one peer is prepared, expecting proposal broadcast with correct justifications.",
   "Pre": {
     "State": {
       "CommitteeMember": {

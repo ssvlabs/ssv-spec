@@ -1,6 +1,7 @@
 {
   "Name": "multi decide instances",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test deciding multiple instances with different heights, expecting each instance to be decided successfully.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

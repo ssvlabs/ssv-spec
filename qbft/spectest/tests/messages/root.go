@@ -23,6 +23,7 @@ func GetRoot() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"get root",
+		"Test GetRoot method on signed QBFT message with justifications.",
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		[][32]byte{r},

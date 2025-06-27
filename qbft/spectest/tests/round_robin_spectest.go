@@ -9,12 +9,13 @@ import (
 )
 
 type RoundRobinSpecTest struct {
-	Name      string
-	Type      string
-	Share     *types.CommitteeMember
-	Heights   []qbft.Height
-	Rounds    []qbft.Round
-	Proposers []types.OperatorID
+	Name          string
+	Type          string
+	Documentation string
+	Share         *types.CommitteeMember
+	Heights       []qbft.Height
+	Rounds        []qbft.Round
+	Proposers     []types.OperatorID
 }
 
 func (test *RoundRobinSpecTest) Run(t *testing.T) {
@@ -39,13 +40,14 @@ func (test *RoundRobinSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
 
-func NewRoundRobinSpecTest(name string, share *types.CommitteeMember, heights []qbft.Height, rounds []qbft.Round, proposers []types.OperatorID) *RoundRobinSpecTest {
+func NewRoundRobinSpecTest(name string, documentation string, share *types.CommitteeMember, heights []qbft.Height, rounds []qbft.Round, proposers []types.OperatorID) *RoundRobinSpecTest {
 	return &RoundRobinSpecTest{
-		Name:      name,
-		Type:      "Round Robin",
-		Share:     share,
-		Heights:   heights,
-		Rounds:    rounds,
-		Proposers: proposers,
+		Name:          name,
+		Type:          "Round Robin",
+		Documentation: documentation,
+		Share:         share,
+		Heights:       heights,
+		Rounds:        rounds,
+		Proposers:     proposers,
 	}
 }

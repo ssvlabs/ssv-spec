@@ -1,6 +1,7 @@
 {
   "Name": "no instance running",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test processing message for height with no running instance, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

@@ -34,6 +34,7 @@ func JustificationPastRound() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change past round quorum",
+		"Test quorum of round change messages for a past round, expecting error due to outdated round.",
 		pre,
 		"",
 		nil,

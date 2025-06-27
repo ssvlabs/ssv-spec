@@ -24,6 +24,7 @@ func SignedMessageEncoding() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"signed message encoding",
+		"Test encoding of signed QBFT message with justifications.",
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{b},
 		nil,

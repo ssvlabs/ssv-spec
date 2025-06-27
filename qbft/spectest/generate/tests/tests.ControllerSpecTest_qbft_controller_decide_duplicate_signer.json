@@ -1,6 +1,7 @@
 {
   "Name": "decide duplicate signer",
-  "Type": "",
+  "Type": "Controller",
+  "Documentation": "Test a decided message with duplicate signers, expecting validation error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

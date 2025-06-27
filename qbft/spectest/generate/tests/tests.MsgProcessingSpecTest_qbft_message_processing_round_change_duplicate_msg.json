@@ -1,6 +1,7 @@
 {
   "Name": "round change duplicate msg",
   "Type": "Message processing",
+  "Documentation": "Test duplicate round change messages: first is processed, second is ignored.",
   "Pre": {
     "State": {
       "CommitteeMember": {

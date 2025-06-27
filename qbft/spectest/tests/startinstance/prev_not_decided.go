@@ -12,6 +12,7 @@ import (
 func PreviousNotDecided() tests.SpecTest {
 	return tests.NewControllerSpecTest(
 		"start instance prev not decided",
+		"Test starting a new QBFT instance when the previous instance has not decided.",
 		[]*tests.RunInstanceData{
 			{
 				InputValue:          []byte{1, 2, 3, 4},

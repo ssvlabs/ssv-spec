@@ -1,6 +1,7 @@
 {
 		"Name": "rc prev prepared justifications",
 		"Type": "Messages (qbft)",
+		"Documentation": "Test valid justified round change message with previously prepared justifications.",
 		"Messages": [
 				{
 						"Signatures": [

@@ -24,6 +24,7 @@ func JustificationInvalidRound() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"justification invalid round",
+		"Test round change justification with prepared round greater than message round, expecting error.",
 		pre,
 		"",
 		nil,

@@ -1,6 +1,7 @@
 {
   "Name": "prepare happy flow",
   "Type": "Message processing",
+  "Documentation": "Test a complete prepare happy flow with proposal and prepare quorum",
   "Pre": {
     "State": {
       "CommitteeMember": {

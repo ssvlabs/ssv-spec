@@ -20,14 +20,21 @@ func WrongData2() tests.SpecTest {
 
 		testingutils.TestingCommitMessageWrongRoot(ks.OperatorKeys[1], 1),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "commit data != prepared data",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
-		},
-		ExpectedError: "invalid signed message: proposed data mismatch",
+
+	outputMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"commit data != prepared data",
+		"Test processing of a commit message with data != prepared data, expecting error",
+		pre,
+		"",
+		nil,
+		msgs,
+		outputMsgs,
+		"invalid signed message: proposed data mismatch",
+		nil,
+	)
 }

@@ -18,6 +18,7 @@ func ZeroSigner() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change zero signer",
+		"Test round change message with signer ID 0, expecting validation error.",
 		pre,
 		"",
 		nil,

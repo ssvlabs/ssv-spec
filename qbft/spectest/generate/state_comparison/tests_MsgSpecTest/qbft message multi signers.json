@@ -1,6 +1,7 @@
 {
 		"Name": "multi signers",
 		"Type": "Messages (qbft)",
+		"Documentation": "Test signed message with multiple signers for QBFT message validation.",
 		"Messages": [
 				{
 						"Signatures": [

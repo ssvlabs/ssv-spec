@@ -21,6 +21,7 @@ const ChangeProposerFuncInstanceHeight = 10
 type MsgProcessingSpecTest struct {
 	Name               string
 	Type               string
+	Documentation      string
 	Pre                *qbft.Instance
 	PostRoot           string
 	PostState          types.Root `json:"-"` // Field is ignored by encoding/json
@@ -114,10 +115,11 @@ func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
 	return test.Pre.State, nil
 }
 
-func NewMsgProcessingSpecTest(name string, pre *qbft.Instance, postRoot string, postState types.Root, inputMessages []*types.SignedSSVMessage, outputMessages []*types.SignedSSVMessage, expectedError string, expectedTimerState *testingutils.TimerState) *MsgProcessingSpecTest {
+func NewMsgProcessingSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, inputMessages []*types.SignedSSVMessage, outputMessages []*types.SignedSSVMessage, expectedError string, expectedTimerState *testingutils.TimerState) *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:               name,
 		Type:               "Message processing",
+		Documentation:      documentation,
 		Pre:                pre,
 		PostRoot:           postRoot,
 		PostState:          postState,

@@ -1,6 +1,7 @@
 {
 		"Name": "no signers",
 		"Type": "Messages (qbft)",
+		"Documentation": "Test signed message with no signers, expecting validation error.",
 		"Messages": [
 				{
 						"Signatures": [

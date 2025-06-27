@@ -20,6 +20,7 @@ func ForceStop() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"force stop prepare message",
+		"Test processing prepare message after instance is force stopped, expecting error.",
 		pre,
 		"",
 		nil,

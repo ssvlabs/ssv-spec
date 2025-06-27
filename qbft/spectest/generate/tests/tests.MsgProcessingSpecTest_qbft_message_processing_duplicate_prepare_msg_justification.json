@@ -1,6 +1,7 @@
 {
   "Name": "duplicate prepare msg justification",
   "Type": "Message processing",
+  "Documentation": "Test proposal for round \u003e 1 that was prepared previously with prepare messages but contains duplicates, expecting validation error due to no quorum.",
   "Pre": {
     "State": {
       "CommitteeMember": {

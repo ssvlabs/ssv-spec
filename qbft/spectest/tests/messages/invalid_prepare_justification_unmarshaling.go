@@ -25,6 +25,7 @@ func InvalidPrepareJustificationsUnmarshalling() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"invalid prepare justification unmarshalling",
+		"Test unmarshalling invalid prepare justifications, expecting validation error during message validation.",
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,

@@ -29,6 +29,7 @@ func OldRound() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"prepare prev round",
+		"Test prepare message for a round less than the current state round, expecting validation error due to outdated round.",
 		pre,
 		"",
 		nil,

@@ -31,6 +31,7 @@ func Round2() tests.SpecTest {
 
 	return NewSpecTest(
 		"round 2",
+		"Test UponRoundTimeout for round 2, checks state transition and broadcasted round change message.",
 		pre,
 		sc.Root(),
 		sc.ExpectedState,

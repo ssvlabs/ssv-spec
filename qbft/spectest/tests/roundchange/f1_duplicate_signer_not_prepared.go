@@ -18,6 +18,7 @@ func F1DuplicateSignerNotPrepared() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change f+1 not duplicate prepared",
+		"Test that f+1 speedup is not accepted for duplicate signer when not previously prepared, expecting no round advancement.",
 		pre,
 		"",
 		nil,

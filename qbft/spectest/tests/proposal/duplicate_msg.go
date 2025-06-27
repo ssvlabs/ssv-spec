@@ -21,6 +21,7 @@ func DuplicateMsg() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal duplicate message",
+		"Test processing of duplicate proposal messages from the same signer",
 		pre,
 		"",
 		nil,

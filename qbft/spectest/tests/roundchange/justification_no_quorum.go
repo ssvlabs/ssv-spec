@@ -23,6 +23,7 @@ func JustificationNoQuorum() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change justification no quorum",
+		"Test round change justification with no quorum, expecting error.",
 		pre,
 		"",
 		nil,

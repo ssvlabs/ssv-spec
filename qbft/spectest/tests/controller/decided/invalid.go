@@ -19,9 +19,10 @@ func Invalid() tests.SpecTest {
 		qbft.FirstHeight,
 	)
 	msg.OperatorIDs = []types.OperatorID{}
-	return &tests.ControllerSpecTest{
-		Name: "decide invalid msg",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"decide invalid msg",
+		"Test decided message where msg.validate() fails, expecting validation error.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -29,6 +30,8 @@ func Invalid() tests.SpecTest {
 				},
 			},
 		},
-		ExpectedError: "could not process msg: invalid signed message: invalid SignedSSVMessage: no signers",
-	}
+		nil,
+		"could not process msg: invalid signed message: invalid SignedSSVMessage: no signers",
+		nil,
+	)
 }

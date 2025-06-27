@@ -1,6 +1,7 @@
 {
   "Name": "prepare wrong height",
   "Type": "Message processing",
+  "Documentation": "Test prepare message received with incorrect height, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

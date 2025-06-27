@@ -16,6 +16,7 @@ func CommitDataEncoding() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"commit data nil or len 0",
+		"Test encoding of commit data for QBFT message validation.",
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{b},
 		[][32]byte{r},

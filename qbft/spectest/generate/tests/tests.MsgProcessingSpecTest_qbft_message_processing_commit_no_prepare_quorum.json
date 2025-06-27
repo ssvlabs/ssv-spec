@@ -1,6 +1,7 @@
 {
   "Name": "commit no prepare quorum",
-  "Type": "",
+  "Type": "Message processing",
+  "Documentation": "Test processing of commit messages without a prepare quorum",
   "Pre": {
     "State": {
       "CommitteeMember": {

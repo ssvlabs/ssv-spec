@@ -1,6 +1,7 @@
 {
   "Name": "round change invalid height",
   "Type": "Message processing",
+  "Documentation": "Test round change message with invalid height, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

@@ -1,6 +1,7 @@
 {
   "Name": "propose data encoding",
   "Type": "Messages (qbft)",
+  "Documentation": "Test encoding of proposal data with justifications.",
   "Messages": [
     {
       "Signatures": [

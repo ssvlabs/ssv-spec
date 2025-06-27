@@ -1,6 +1,7 @@
 {
   "Name": "start instance for current height with no running instance",
   "Type": "Controller",
+  "Documentation": "Test starting a new QBFT instance for the current height when no instance is running.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

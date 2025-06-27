@@ -27,6 +27,7 @@ func PostPrepared() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal post prepare",
+		"Test processing proposal message after the instance has already prepared, expecting validation error.",
 		pre,
 		"",
 		nil,

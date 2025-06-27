@@ -21,6 +21,7 @@ func EmptySigners() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change empty signer",
+		"Test round change message with no signers, expecting validation error.",
 		pre,
 		"",
 		nil,

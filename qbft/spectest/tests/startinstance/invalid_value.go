@@ -9,6 +9,7 @@ import (
 func InvalidValue() tests.SpecTest {
 	return tests.NewControllerSpecTest(
 		"start instance invalid value",
+		"Test starting a new QBFT instance with an invalid value, expecting value validation error.",
 		[]*tests.RunInstanceData{
 			{
 				InputValue: testingutils.TestingInvalidValueCheck,

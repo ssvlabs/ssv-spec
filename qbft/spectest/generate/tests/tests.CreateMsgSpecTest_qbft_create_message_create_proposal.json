@@ -1,6 +1,7 @@
 {
   "Name": "create proposal",
   "Type": "Create message",
+  "Documentation": "Test creating a proposal message when not previously prepared.",
   "Value": [
     1,
     2,

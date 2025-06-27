@@ -41,6 +41,7 @@ func JustificationsNotHighest() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal justification not highest",
+		"Test proposal for round > 1 with round change justification containing prepare messages at different heights, but the prepare justification is not the highest, expecting validation error.",
 		pre,
 		"",
 		nil,

@@ -1,6 +1,7 @@
 {
 		"Name": "get root",
 		"Type": "Messages (qbft)",
+		"Documentation": "Test GetRoot method on signed QBFT message with justifications.",
 		"Messages": [
 				{
 						"Signatures": [

@@ -1,6 +1,7 @@
 {
   "Name": "start instance prev decided",
   "Type": "Controller",
+  "Documentation": "Test starting a new QBFT instance when the previous instance has already decided.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

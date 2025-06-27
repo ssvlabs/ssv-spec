@@ -1,6 +1,7 @@
 {
   "Name": "signed message encoding",
   "Type": "Messages (qbft)",
+  "Documentation": "Test encoding of signed QBFT message with justifications.",
   "Messages": [
     {
       "Signatures": [

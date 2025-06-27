@@ -31,6 +31,7 @@ func SevenOperators() tests.SpecTest {
 
 	return tests.NewRoundRobinSpecTest(
 		"7 member committee",
+		"Test round-robin proposer selection for a 7-member committee across multiple heights and rounds.",
 		testingutils.TestingCommitteeMember(testingutils.Testing7SharesSet()),
 		heights,
 		rounds,

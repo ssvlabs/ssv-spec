@@ -42,6 +42,7 @@ func MarshalJustifications() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"marshal RC and Prepare justifications",
+		"Test marshalling round change and prepare justifications for QBFT proposal message.",
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{encodedMsg},
 		[][32]byte{msgRoot},

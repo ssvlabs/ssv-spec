@@ -20,14 +20,21 @@ func UnknownSigner() tests.SpecTest {
 
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 5),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "unknown commit signer",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "invalid signed message: signer not in committee",
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
-		},
+
+	outputMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"unknown commit signer",
+		"Test processing of a commit message with an unknown signer, expecting error",
+		pre,
+		"",
+		nil,
+		msgs,
+		outputMsgs,
+		"invalid signed message: signer not in committee",
+		nil,
+	)
 }

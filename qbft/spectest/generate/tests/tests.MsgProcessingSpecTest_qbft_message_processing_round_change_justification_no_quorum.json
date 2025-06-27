@@ -1,6 +1,7 @@
 {
   "Name": "round change justification no quorum",
   "Type": "Message processing",
+  "Documentation": "Test round change justification with no quorum, expecting error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

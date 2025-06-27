@@ -1,6 +1,7 @@
 {
   "Name": "justification multi signer",
   "Type": "Message processing",
+  "Documentation": "Test round change justification with a prepare message signed by multiple signers, expecting error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

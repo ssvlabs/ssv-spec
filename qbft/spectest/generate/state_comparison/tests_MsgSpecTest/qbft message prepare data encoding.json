@@ -1,6 +1,7 @@
 {
 		"Name": "prepare data encoding",
 		"Type": "Messages (qbft)",
+		"Documentation": "Test encoding of prepare data for QBFT message validation.",
 		"Messages": [
 				{
 						"Signatures": [

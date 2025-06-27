@@ -1,6 +1,7 @@
 {
   "Name": "round change past round",
   "Type": "Message processing",
+  "Documentation": "Test round change msg with past round, expecting error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

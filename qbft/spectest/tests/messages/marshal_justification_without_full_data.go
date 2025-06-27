@@ -35,6 +35,7 @@ func MarshalJustificationsWithoutFullData() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"marshal justifications",
+		"Test marshalling justifications without full data for QBFT proposal message.",
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{b},
 		[][32]byte{r},

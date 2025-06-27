@@ -1,6 +1,7 @@
 {
   "Name": "prepare wrong data",
   "Type": "Message processing",
+  "Documentation": "Test prepare message with data different from the accepted proposal data, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {
