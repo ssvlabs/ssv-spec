@@ -22,11 +22,14 @@ func JustificationInvalidSig() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "justification invalid sig",
 		Pre:            pre,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: round change justification invalid: msg signature invalid: crypto/rsa: verification error",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

@@ -9,7 +9,7 @@ import (
 // CreateProposalPreviouslyPrepared tests creating a proposal msg,previously prepared
 func CreateProposalPreviouslyPrepared() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.CreateMsgSpecTest{
+	test := &tests.CreateMsgSpecTest{
 		CreateType: tests.CreateProposal,
 		Name:       "create proposal previously prepared",
 		Value:      [32]byte{1, 2, 3, 4},
@@ -26,4 +26,9 @@ func CreateProposalPreviouslyPrepared() tests.SpecTest {
 		},
 		ExpectedRoot: "f3d483dc8eaa4019fd9e3d586279f2d1ae993b3ac4ad0020e8c0033b5f516167",
 	}
+
+	// Add private key information since this test has signatures
+	test.SetPrivateKeys(ks)
+
+	return test
 }

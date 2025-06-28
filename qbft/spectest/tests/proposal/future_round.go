@@ -33,7 +33,7 @@ func FutureRound() tests.SpecTest {
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "proposal future round prev prepared",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -45,4 +45,7 @@ func FutureRound() tests.SpecTest {
 			Round:    qbft.Round(10),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

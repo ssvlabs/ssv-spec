@@ -11,7 +11,7 @@ import (
 // PostFutureDecided tests starting a new instance after deciding with future decided msg
 func PostFutureDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "start instance post future decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -36,4 +36,7 @@ func PostFutureDecided() tests.SpecTest {
 		},
 		ExpectedError: "attempting to start an instance with a past height",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

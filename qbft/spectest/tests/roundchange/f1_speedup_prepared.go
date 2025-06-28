@@ -23,7 +23,7 @@ func F1SpeedupPrevPrepared() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "f+1 speed up prev prepared",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -32,4 +32,7 @@ func F1SpeedupPrevPrepared() tests.SpecTest {
 				[32]byte{}, 0, [][]byte{}),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

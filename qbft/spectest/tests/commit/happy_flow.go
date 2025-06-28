@@ -22,7 +22,7 @@ func HappyFlow() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[2], 2),
 		testingutils.TestingCommitMessage(ks.OperatorKeys[3], 3),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "commit happy flow",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -31,4 +31,8 @@ func HappyFlow() tests.SpecTest {
 			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 		},
 	}
+
+	// Add private key information since this test has signatures
+	test.SetPrivateKeys(ks)
+	return test
 }

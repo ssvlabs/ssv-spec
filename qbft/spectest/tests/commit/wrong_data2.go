@@ -20,7 +20,7 @@ func WrongData2() tests.SpecTest {
 
 		testingutils.TestingCommitMessageWrongRoot(ks.OperatorKeys[1], 1),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "commit data != prepared data",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -30,4 +30,8 @@ func WrongData2() tests.SpecTest {
 		},
 		ExpectedError: "invalid signed message: proposed data mismatch",
 	}
+
+	// Add private key information since this test has signatures
+	test.SetPrivateKeys(ks)
+	return test
 }

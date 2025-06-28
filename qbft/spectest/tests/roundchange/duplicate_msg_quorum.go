@@ -33,7 +33,7 @@ func DuplicateMsgQuorum() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "round change duplicate msg quorum",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -42,4 +42,7 @@ func DuplicateMsgQuorum() tests.SpecTest {
 				ks.OperatorKeys[1], types.OperatorID(1), 2, testingutils.MarshalJustifications(rcMsgs)),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

@@ -38,11 +38,14 @@ func JustificationsNotHeighest() tests.SpecTest {
 			ks.OperatorKeys[1], types.OperatorID(1), 3, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs1)),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "proposal justification not highest",
 		Pre:            pre,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: signed prepare not valid",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

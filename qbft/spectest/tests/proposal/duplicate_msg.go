@@ -14,7 +14,7 @@ func DuplicateMsg() tests.SpecTest {
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "proposal duplicate message",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -23,4 +23,7 @@ func DuplicateMsg() tests.SpecTest {
 		},
 		ExpectedError: "invalid signed message: proposal is not valid with current state",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

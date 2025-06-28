@@ -21,11 +21,14 @@ func SignedMessageSigner0() tests.SpecTest {
 		[]types.OperatorID{1, 2, 0},
 	)
 
-	return &tests.MsgSpecTest{
+	test := &tests.MsgSpecTest{
 		Name: "signer 0",
 		Messages: []*types.SignedSSVMessage{
 			msg,
 		},
 		ExpectedError: "signer ID 0 not allowed",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

@@ -29,7 +29,7 @@ func LateDecidedBiggerQuorum() tests.SpecTest {
 			[]types.OperatorID{1, 2, 3, 4},
 		),
 	)
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "decide late decided bigger quorum",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -48,6 +48,9 @@ func LateDecidedBiggerQuorum() tests.SpecTest {
 			},
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 func lateDecidedBiggerQuorumStateComparison() *comparable.StateComparison {

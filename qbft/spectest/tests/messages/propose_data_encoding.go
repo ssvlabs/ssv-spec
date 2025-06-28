@@ -22,7 +22,7 @@ func ProposeDataEncoding() tests.SpecTest {
 	r, _ := msg.GetRoot()
 	b, _ := msg.Encode()
 
-	return &tests.MsgSpecTest{
+	test := &tests.MsgSpecTest{
 		Name: "propose data encoding",
 		Messages: []*types.SignedSSVMessage{
 			msg,
@@ -34,4 +34,7 @@ func ProposeDataEncoding() tests.SpecTest {
 			r,
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

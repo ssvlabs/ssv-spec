@@ -16,10 +16,13 @@ func F1DuplicateSignerNotPrepared() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 5),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "round change f+1 not duplicate prepared",
 		Pre:            pre,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

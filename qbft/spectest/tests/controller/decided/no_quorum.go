@@ -13,7 +13,7 @@ import (
 func NoQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "decide no quorum",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -30,4 +30,7 @@ func NoQuorum() tests.SpecTest {
 		// TODO: before merge ask engineering how often they see such message in production
 		ExpectedError: "could not process msg: invalid signed message: did not receive proposal for this round",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

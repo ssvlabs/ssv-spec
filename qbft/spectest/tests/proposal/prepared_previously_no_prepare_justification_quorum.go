@@ -33,7 +33,7 @@ func PreparedPreviouslyNoPrepareJustificationQuorum() tests.SpecTest {
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "no prepare quorum (prepared)",
 		Pre:            pre,
 		PostRoot:       sc.Root(),
@@ -42,6 +42,8 @@ func PreparedPreviouslyNoPrepareJustificationQuorum() tests.SpecTest {
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: no justifications quorum",
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 func preparedPreviouslyNoPrepareJustificationQuorumStateComparison() *comparable.StateComparison {

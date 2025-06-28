@@ -32,11 +32,13 @@ func PreparedPreviouslyDuplicatePrepareMsg() tests.SpecTest {
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "duplicate prepare msg justification",
 		Pre:            pre,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: no justifications quorum",
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

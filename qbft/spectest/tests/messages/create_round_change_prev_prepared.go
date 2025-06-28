@@ -9,7 +9,7 @@ import (
 // CreateRoundChangePreviouslyPrepared tests creating a round change msg,previously prepared
 func CreateRoundChangePreviouslyPrepared() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.CreateMsgSpecTest{
+	test := &tests.CreateMsgSpecTest{
 		CreateType: tests.CreateRoundChange,
 		Name:       "create round change previously prepared",
 		Value:      [32]byte{1, 2, 3, 4},
@@ -20,4 +20,8 @@ func CreateRoundChangePreviouslyPrepared() tests.SpecTest {
 		},
 		ExpectedRoot: "a6ffc48674f1522fb90aa7bde2aa76cac54480cf366cdd4afcd7f8b4d548809a",
 	}
+
+	test.SetPrivateKeys(ks)
+
+	return test
 }

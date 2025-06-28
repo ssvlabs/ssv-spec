@@ -31,7 +31,7 @@ func RoundChangePrepared() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &tests.MsgSpecTest{
+	test := &tests.MsgSpecTest{
 		Name: "round change prepared",
 		Messages: []*types.SignedSSVMessage{
 			msg,
@@ -43,4 +43,7 @@ func RoundChangePrepared() tests.SpecTest {
 			msgRoot,
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

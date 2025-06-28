@@ -24,10 +24,13 @@ func DuplicateMsg() tests.SpecTest {
 			testingutils.TestingQBFTRootData, qbft.FirstRound, testingutils.MarshalJustifications(prepareMsgs), testingutils.TestingQBFTFullData),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "round change duplicate msg",
 		Pre:            pre,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

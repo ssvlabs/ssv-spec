@@ -17,10 +17,13 @@ func WrongData() tests.SpecTest {
 		// TODO: different value instead of wrong root
 		testingutils.TestingPrepareMessageWrongRoot(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "prepare wrong data",
 		Pre:           pre,
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: proposed data mismatch",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

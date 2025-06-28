@@ -20,10 +20,13 @@ func PostDecided() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[4], 4),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "post decided",
 		Pre:            pre,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

@@ -25,7 +25,7 @@ func QuorumOrder2() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "round change quorum order 2",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -35,4 +35,6 @@ func QuorumOrder2() tests.SpecTest {
 				testingutils.MarshalJustifications(msgs), testingutils.MarshalJustifications(prepareMsgs)),
 		},
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

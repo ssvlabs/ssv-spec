@@ -22,11 +22,14 @@ func DuplicateRCMsg() tests.SpecTest {
 		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData, testingutils.MarshalJustifications(rcMsgs), nil),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "duplicate rc msg justification",
 		Pre:            pre,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round has no quorum",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

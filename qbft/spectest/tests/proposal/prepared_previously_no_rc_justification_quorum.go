@@ -28,11 +28,13 @@ func PreparedPreviouslyNoRCJustificationQuorum() tests.SpecTest {
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "no rc quorum (prepared)",
 		Pre:            pre,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round has no quorum",
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

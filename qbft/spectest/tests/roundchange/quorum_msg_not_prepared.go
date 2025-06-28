@@ -27,7 +27,7 @@ func QuorumMsgNotPrepared() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "round change quorum msg not prepared",
 		Pre:           pre,
 		PostRoot:      sc.Root(),
@@ -39,6 +39,8 @@ func QuorumMsgNotPrepared() tests.SpecTest {
 				testingutils.MarshalJustifications(msgs), testingutils.MarshalJustifications(prepareMsgs)),
 		},
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 func quorumMsgNotPreparedStateComparison() *comparable.StateComparison {

@@ -33,7 +33,7 @@ func InvalidPrepareJustificationRound() tests.SpecTest {
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "invalid prepare justification round",
 		Pre:            pre,
 		PostRoot:       sc.Root(),
@@ -42,6 +42,9 @@ func InvalidPrepareJustificationRound() tests.SpecTest {
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: wrong msg round",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 func invalidPrepareJustificationRoundStateComparison() *comparable.StateComparison {

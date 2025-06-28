@@ -19,7 +19,7 @@ func InvalidFullData() tests.SpecTest {
 	)
 	msg.FullData = []byte("invalid")
 
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "decide invalid full data",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -31,4 +31,7 @@ func InvalidFullData() tests.SpecTest {
 		},
 		ExpectedError: "invalid decided msg: H(data) != root",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

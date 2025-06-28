@@ -19,7 +19,7 @@ func Invalid() tests.SpecTest {
 		qbft.FirstHeight,
 	)
 	msg.OperatorIDs = []types.OperatorID{}
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "decide invalid msg",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -31,4 +31,7 @@ func Invalid() tests.SpecTest {
 		},
 		ExpectedError: "could not process msg: invalid signed message: invalid SignedSSVMessage: no signers",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

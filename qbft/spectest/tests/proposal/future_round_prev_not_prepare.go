@@ -25,7 +25,7 @@ func FutureRoundPrevNotPrepared() tests.SpecTest {
 			testingutils.MarshalJustifications(rcMsgs), nil,
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "proposal future round prev not prepared",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -37,4 +37,7 @@ func FutureRoundPrevNotPrepared() tests.SpecTest {
 			Round:    qbft.Round(10),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

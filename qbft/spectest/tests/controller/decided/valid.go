@@ -11,7 +11,7 @@ import (
 // Valid tests a valid decided msg with unique 2f+1 signers
 func Valid() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "valid",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -26,4 +26,8 @@ func Valid() tests.SpecTest {
 			},
 		},
 	}
+
+	// Add private key information since this test has signatures
+	test.SetPrivateKeys(ks)
+	return test
 }

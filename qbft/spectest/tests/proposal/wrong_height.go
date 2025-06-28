@@ -13,10 +13,12 @@ func WrongHeight() tests.SpecTest {
 	msgs := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessageWithHeight(ks.OperatorKeys[1], types.OperatorID(1), 2),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "wrong proposal height",
 		Pre:           pre,
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: wrong msg height",
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

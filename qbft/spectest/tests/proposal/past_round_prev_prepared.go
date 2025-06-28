@@ -30,11 +30,13 @@ func PastRoundProposalPrevPrepared() tests.SpecTest {
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs)),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "proposal past round (not prev prepared)",
 		Pre:            pre,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: past round",
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

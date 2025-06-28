@@ -13,10 +13,12 @@ func WrongProposer() tests.SpecTest {
 	msgs := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessage(ks.OperatorKeys[2], types.OperatorID(2)),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "wrong proposer",
 		Pre:           pre,
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: proposal leader invalid",
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

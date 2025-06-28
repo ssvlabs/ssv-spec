@@ -17,11 +17,14 @@ func InvalidValueCheck() tests.SpecTest {
 			qbft.FirstHeight),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "invalid proposal value check",
 		Pre:            pre,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: proposal fullData invalid: invalid value",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

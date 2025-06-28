@@ -17,7 +17,7 @@ func DuplicateSigners() tests.SpecTest {
 	commit := testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2]}, []types.OperatorID{1, 2})
 	commit.OperatorIDs = []types.OperatorID{1, 1}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name: "duplicate signers",
 		Pre:  pre,
 		InputMessages: []*types.SignedSSVMessage{
@@ -26,4 +26,8 @@ func DuplicateSigners() tests.SpecTest {
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: invalid SignedSSVMessage: non unique signer",
 	}
+
+	// Add private key information since this test has signatures
+	test.SetPrivateKeys(ks)
+	return test
 }

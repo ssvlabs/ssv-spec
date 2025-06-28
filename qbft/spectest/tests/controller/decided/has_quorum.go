@@ -11,7 +11,7 @@ import (
 // HasQuorum tests decided msg with unique 2f+1 signers
 func HasQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "decide has quorum",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -26,4 +26,7 @@ func HasQuorum() tests.SpecTest {
 			},
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

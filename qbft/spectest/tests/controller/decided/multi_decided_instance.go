@@ -27,7 +27,7 @@ func MultiDecidedInstances() tests.SpecTest {
 		}
 	}
 
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "multi decide instances",
 		RunInstanceData: []*tests.RunInstanceData{
 			instanceData(qbft.FirstHeight, "f552f5aedb2e0d7933e77c4297c69e761000e88f78ae02e0afd4d053847b8d5c"),
@@ -43,4 +43,7 @@ func MultiDecidedInstances() tests.SpecTest {
 			instanceData(10, "d1383c9a269c18df528f41f2563322a0b3bf490b4625f7fdc9277aca53dacc03"),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

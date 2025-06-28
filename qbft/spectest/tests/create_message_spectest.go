@@ -33,6 +33,7 @@ type CreateMsgSpecTest struct {
 	ExpectedRoot                                     string
 	ExpectedState                                    types.Root `json:"-"` // Field is ignored by encoding/json"
 	ExpectedError                                    string
+	PrivateKeys                                      *PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *CreateMsgSpecTest) Run(t *testing.T) {
@@ -158,4 +159,27 @@ func (test *CreateMsgSpecTest) TestName() string {
 
 func (test *CreateMsgSpecTest) GetPostState() (interface{}, error) {
 	return test, nil
+}
+
+// SetPrivateKeys populates the PrivateKeys field with keys from the given TestKeySet
+func (test *CreateMsgSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
+	privateKeyInfo := &PrivateKeyInfo{
+		ValidatorSK:  hex.EncodeToString(ks.ValidatorSK.Serialize()),
+		Shares:       make(map[types.OperatorID]string),
+		OperatorKeys: make(map[types.OperatorID]string),
+	}
+
+	// Add share keys
+	for operatorID, shareSK := range ks.Shares {
+		privateKeyInfo.Shares[operatorID] = hex.EncodeToString(shareSK.Serialize())
+	}
+
+	// Add operator keys (RSA private keys used for signing)
+	for operatorID, operatorKey := range ks.OperatorKeys {
+		// For RSA keys, we'll include the modulus and exponent
+		privateKeyInfo.OperatorKeys[operatorID] = fmt.Sprintf("N:%s,E:%d",
+			operatorKey.N.String(), operatorKey.E)
+	}
+
+	test.PrivateKeys = privateKeyInfo
 }

@@ -17,7 +17,7 @@ func NotProposer() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRoundAndHeight(ks.OperatorKeys[2], types.OperatorID(2), 2, tests.ChangeProposerFuncInstanceHeight),
 		testingutils.TestingRoundChangeMessageWithRoundAndHeight(ks.OperatorKeys[3], types.OperatorID(3), 2, tests.ChangeProposerFuncInstanceHeight),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "round change justification not proposer",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -26,4 +26,6 @@ func NotProposer() tests.SpecTest {
 				[32]byte{}, 0, [][]byte{}),
 		},
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

@@ -27,7 +27,7 @@ func QuorumPrepared() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "round change prepared",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -37,4 +37,6 @@ func QuorumPrepared() tests.SpecTest {
 				testingutils.MarshalJustifications(msgs), testingutils.MarshalJustifications(prepareMsgs)),
 		},
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

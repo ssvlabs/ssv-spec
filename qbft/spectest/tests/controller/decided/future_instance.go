@@ -11,7 +11,7 @@ import (
 // FutureInstance tests decided msg received for future (not yet started) instance
 func FutureInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "decide future instance",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -26,4 +26,7 @@ func FutureInstance() tests.SpecTest {
 			},
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

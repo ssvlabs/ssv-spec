@@ -20,7 +20,7 @@ func WrongHeight() tests.SpecTest {
 
 		testingutils.TestingCommitMessageWrongHeight(ks.OperatorKeys[1], 1),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "wrong commit height",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -30,4 +30,7 @@ func WrongHeight() tests.SpecTest {
 			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

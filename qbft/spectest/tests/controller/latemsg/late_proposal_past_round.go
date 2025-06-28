@@ -40,7 +40,7 @@ func LateProposalPastRound() tests.SpecTest {
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}...)
 
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "late proposal past round",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -59,4 +59,7 @@ func LateProposalPastRound() tests.SpecTest {
 		},
 		ExpectedError: "not processing consensus message since instance is already decided",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

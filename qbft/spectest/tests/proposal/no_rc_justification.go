@@ -23,11 +23,13 @@ func NoRCJustification() tests.SpecTest {
 			testingutils.MarshalJustifications(rcMsgs), nil,
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "no rc quorum",
 		Pre:            pre,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round has no quorum",
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

@@ -31,7 +31,7 @@ func PreparedPreviouslyDuplicateRCQuorum() tests.SpecTest {
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "duplicate rc msg justification (prepared) quorum",
 		Pre:           pre,
 		InputMessages: append(msgs, testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2)),
@@ -39,4 +39,6 @@ func PreparedPreviouslyDuplicateRCQuorum() tests.SpecTest {
 			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 		},
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

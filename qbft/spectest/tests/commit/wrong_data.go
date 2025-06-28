@@ -17,10 +17,13 @@ func WrongData1() tests.SpecTest {
 		testingutils.TestingCommitMessageWrongRoot(ks.OperatorKeys[1], 1),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "commit data != acceptedProposalData.Data",
 		Pre:           pre,
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: proposed data mismatch",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

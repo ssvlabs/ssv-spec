@@ -16,10 +16,13 @@ func UnknownSigner() tests.SpecTest {
 	msgs := []*types.SignedSSVMessage{
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(5)),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "prepare unknown signer",
 		Pre:           pre,
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: signer not in committee",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

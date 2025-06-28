@@ -21,7 +21,7 @@ func GetRoot() tests.SpecTest {
 
 	r, _ := msg.GetRoot()
 
-	return &tests.MsgSpecTest{
+	test := &tests.MsgSpecTest{
 		Name: "get root",
 		Messages: []*types.SignedSSVMessage{
 			msg,
@@ -30,4 +30,7 @@ func GetRoot() tests.SpecTest {
 			r,
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }
