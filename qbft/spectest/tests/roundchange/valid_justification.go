@@ -28,7 +28,7 @@ func ValidJustification() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "valid justification",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -38,4 +38,6 @@ func ValidJustification() tests.SpecTest {
 				testingutils.MarshalJustifications(msgs), testingutils.MarshalJustifications(prepareMsgs)),
 		},
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

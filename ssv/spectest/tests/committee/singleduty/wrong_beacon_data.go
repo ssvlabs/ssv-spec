@@ -36,5 +36,7 @@ func WrongBeaconVote() tests.SpecTest {
 		})
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

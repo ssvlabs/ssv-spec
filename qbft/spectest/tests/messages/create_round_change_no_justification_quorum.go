@@ -14,7 +14,7 @@ import (
 func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := CreateRoundChangeNoJustificationQuorumSC()
-	return &tests.CreateMsgSpecTest{
+	test := &tests.CreateMsgSpecTest{
 		CreateType:    tests.CreateRoundChange,
 		Name:          "create round change no justification quorum",
 		Round:         qbft.FirstRound,
@@ -26,6 +26,10 @@ func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 		},
 		ExpectedRoot: sc.Root(),
 	}
+
+	test.SetPrivateKeys(ks)
+
+	return test
 }
 
 func CreateRoundChangeNoJustificationQuorumSC() *comparable.StateComparison {

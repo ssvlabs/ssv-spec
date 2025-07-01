@@ -3,9 +3,14 @@ package tests
 import (
 	"testing"
 
+	"encoding/hex"
+	"fmt"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // MsgSpecTest tests encoding and decoding of a msg
@@ -15,6 +20,7 @@ type MsgSpecTest struct {
 	EncodedMessages [][]byte
 	ExpectedRoots   [][32]byte
 	ExpectedError   string
+	PrivateKeys     *PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *MsgSpecTest) Run(t *testing.T) {
@@ -60,4 +66,27 @@ func (test *MsgSpecTest) TestName() string {
 
 func (test *MsgSpecTest) GetPostState() (interface{}, error) {
 	return test, nil
+}
+
+// SetPrivateKeys populates the PrivateKeys field with keys from the given TestKeySet
+func (test *MsgSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
+	privateKeyInfo := &PrivateKeyInfo{
+		ValidatorSK:  hex.EncodeToString(ks.ValidatorSK.Serialize()),
+		Shares:       make(map[types.OperatorID]string),
+		OperatorKeys: make(map[types.OperatorID]string),
+	}
+
+	// Add share keys
+	for operatorID, shareSK := range ks.Shares {
+		privateKeyInfo.Shares[operatorID] = hex.EncodeToString(shareSK.Serialize())
+	}
+
+	// Add operator keys (RSA private keys used for signing)
+	for operatorID, operatorKey := range ks.OperatorKeys {
+		// For RSA keys, we'll include the modulus and exponent
+		privateKeyInfo.OperatorKeys[operatorID] = fmt.Sprintf("N:%s,E:%d",
+			operatorKey.N.String(), operatorKey.E)
+	}
+
+	test.PrivateKeys = privateKeyInfo
 }

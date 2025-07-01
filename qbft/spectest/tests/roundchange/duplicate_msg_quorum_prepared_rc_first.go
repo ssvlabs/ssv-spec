@@ -35,7 +35,7 @@ func DuplicateMsgQuorumPreparedRCFirst() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "round change duplicate msg quorum (prev prepared rc first)",
 		Pre:           pre,
 		PostRoot:      sc.Root(),
@@ -47,6 +47,9 @@ func DuplicateMsgQuorumPreparedRCFirst() tests.SpecTest {
 				testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs)),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 func duplicateMsgQuorumPreparedRCFirstStateComparison() *comparable.StateComparison {

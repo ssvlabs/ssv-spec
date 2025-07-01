@@ -36,7 +36,8 @@ func HappyFlow() tests.SpecTest {
 		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
 		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	)
-	return &tests.MsgProcessingSpecTest{
+
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "round change happy flow",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -54,4 +55,8 @@ func HappyFlow() tests.SpecTest {
 			Round:    qbft.Round(2),
 		},
 	}
+
+	// Add private key information since this test has signatures
+	test.SetPrivateKeys(ks)
+	return test
 }

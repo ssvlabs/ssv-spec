@@ -23,7 +23,7 @@ func PostDecided() tests.SpecTest {
 
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[4], 4),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "prepare post decided",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -32,4 +32,7 @@ func PostDecided() tests.SpecTest {
 			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

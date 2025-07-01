@@ -15,7 +15,7 @@ func DuplicateSigners() tests.SpecTest {
 	msg := testingutils.TestingCommitMultiSignerMessageWithHeight([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 2, 3}, 10)
 	msg.OperatorIDs = []types.OperatorID{1, 2, 2}
 
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "decide duplicate signer",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -27,4 +27,7 @@ func DuplicateSigners() tests.SpecTest {
 		},
 		ExpectedError: "invalid decided msg: invalid decided msg: signed commit invalid: invalid SignedSSVMessage: non unique signer",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

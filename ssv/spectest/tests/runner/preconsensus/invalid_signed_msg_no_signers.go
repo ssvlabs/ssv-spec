@@ -107,5 +107,7 @@ func InvalidSignedMessageNoSigners() tests.SpecTest {
 		})
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

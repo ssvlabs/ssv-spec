@@ -142,5 +142,7 @@ func PostWrongDecided() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

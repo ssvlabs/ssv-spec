@@ -1,17 +1,21 @@
 package tests
 
 import (
+	"encoding/hex"
+	"fmt"
 	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 type MultiMsgProcessingSpecTest struct {
-	Name  string
-	Tests []*MsgProcessingSpecTest
+	Name        string
+	Tests       []*MsgProcessingSpecTest
+	PrivateKeys *PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (tests *MultiMsgProcessingSpecTest) TestName() string {
@@ -47,4 +51,25 @@ func (tests *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
 		ret[test.Name] = test.Runner
 	}
 	return ret, nil
+}
+
+func (tests *MultiMsgProcessingSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
+	privateKeyInfo := &PrivateKeyInfo{
+		ValidatorSK:  hex.EncodeToString(ks.ValidatorSK.Serialize()),
+		Shares:       make(map[types.OperatorID]string),
+		OperatorKeys: make(map[types.OperatorID]string),
+	}
+
+	// Add share keys
+	for operatorID, shareSK := range ks.Shares {
+		privateKeyInfo.Shares[operatorID] = hex.EncodeToString(shareSK.Serialize())
+	}
+
+	// Add operator keys (RSA private keys used for signing)
+	for operatorID, operatorKey := range ks.OperatorKeys {
+		privateKeyInfo.OperatorKeys[operatorID] = fmt.Sprintf("N:%s,E:%d",
+			operatorKey.N.String(), operatorKey.E)
+	}
+
+	tests.PrivateKeys = privateKeyInfo
 }

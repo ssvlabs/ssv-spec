@@ -10,7 +10,7 @@ import (
 func MsgError() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "process msg error",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -22,4 +22,7 @@ func MsgError() tests.SpecTest {
 		},
 		ExpectedError: "could not process msg: invalid signed message: proposal not justified: change round has no quorum",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

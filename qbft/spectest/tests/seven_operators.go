@@ -25,7 +25,8 @@ func SevenOperators() SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[4], types.OperatorID(4)),
 		testingutils.TestingCommitMessage(ks.OperatorKeys[5], types.OperatorID(5)),
 	}
-	return &MsgProcessingSpecTest{
+
+	test := &MsgProcessingSpecTest{
 		Name:          "happy flow seven operators",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -34,4 +35,7 @@ func SevenOperators() SpecTest {
 			testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

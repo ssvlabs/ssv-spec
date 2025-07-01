@@ -14,7 +14,7 @@ func CommitDataEncoding() tests.SpecTest {
 	r, _ := msg.GetRoot()
 	b, _ := msg.Encode()
 
-	return &tests.MsgSpecTest{
+	test := &tests.MsgSpecTest{
 		Name: "commit data nil or len 0",
 		Messages: []*types.SignedSSVMessage{
 			msg,
@@ -26,4 +26,7 @@ func CommitDataEncoding() tests.SpecTest {
 			r,
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

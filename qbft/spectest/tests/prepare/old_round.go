@@ -26,10 +26,13 @@ func OldRound() tests.SpecTest {
 	msgs := []*types.SignedSSVMessage{
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], 1, 9),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "prepare prev round",
 		Pre:           pre,
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: past round",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

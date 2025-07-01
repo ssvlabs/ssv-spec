@@ -27,11 +27,13 @@ func JustificationMultiSigners() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "justification multi signer",
 		Pre:            pre,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: round change justification invalid: msg allows 1 signer",
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

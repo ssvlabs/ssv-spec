@@ -24,7 +24,7 @@ func Quorum() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &PartialSigContainerTest{
+	test := &PartialSigContainerTest{
 		Name:            "quorum",
 		Quorum:          ks.Threshold,
 		ValidatorPubKey: ks.ValidatorPK.Serialize(),
@@ -32,4 +32,8 @@ func Quorum() tests.SpecTest {
 		ExpectedResult:  expectedSig.Serialize(),
 		ExpectedQuorum:  true,
 	}
+
+	test.SetPrivateKeys(ks)
+
+	return test
 }

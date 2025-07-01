@@ -16,10 +16,13 @@ func FutureRound() tests.SpecTest {
 		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[1], 1, 2),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "commit future round",
 		Pre:           pre,
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: wrong msg round",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

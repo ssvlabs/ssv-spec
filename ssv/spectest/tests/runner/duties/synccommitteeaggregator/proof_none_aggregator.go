@@ -11,7 +11,7 @@ import (
 // NoneAggregatorQuorum tests a quorum of selection proofs but none of which are aggregator
 func NoneAggregatorQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &SyncCommitteeAggregatorProofSpecTest{
+	test := &SyncCommitteeAggregatorProofSpecTest{
 		Name: "sync committee aggregator none is aggregator",
 		Messages: []*types.SignedSSVMessage{
 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
@@ -25,4 +25,8 @@ func NoneAggregatorQuorum() tests.SpecTest {
 		},
 		PostDutyRunnerStateRoot: "05c705130d1fdb9401cc21dccfd35d21eeb4a5d541ff96af2b9c908d3f646100",
 	}
+
+	test.SetPrivateKeys(ks)
+
+	return test
 }

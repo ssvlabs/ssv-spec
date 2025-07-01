@@ -2,6 +2,7 @@ package decided
 
 import (
 	"crypto/rsa"
+
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -10,7 +11,7 @@ import (
 // CurrentInstanceFutureRound tests a decided msg received for current running instance for a future round
 func CurrentInstanceFutureRound() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "decide current instance future round",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -31,4 +32,7 @@ func CurrentInstanceFutureRound() tests.SpecTest {
 			},
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

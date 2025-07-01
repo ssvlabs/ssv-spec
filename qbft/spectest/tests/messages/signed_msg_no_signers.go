@@ -12,11 +12,14 @@ func SignedMsgNoSigners() tests.SpecTest {
 	msg := testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1))
 	msg.OperatorIDs = nil
 
-	return &tests.MsgSpecTest{
+	test := &tests.MsgSpecTest{
 		Name: "no signers",
 		Messages: []*types.SignedSSVMessage{
 			msg,
 		},
 		ExpectedError: "no signers",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

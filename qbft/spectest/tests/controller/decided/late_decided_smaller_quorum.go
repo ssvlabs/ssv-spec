@@ -11,7 +11,7 @@ import (
 // LateDecidedSmallerQuorum tests processing a decided msg for a just decided instance (with a smaller quorum)
 func LateDecidedSmallerQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "decide late decided smaller quorum",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -27,4 +27,7 @@ func LateDecidedSmallerQuorum() tests.SpecTest {
 			},
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

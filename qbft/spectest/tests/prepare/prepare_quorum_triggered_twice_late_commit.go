@@ -23,7 +23,7 @@ func PrepareQuorumTriggeredTwiceLateCommit() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[4], 4),
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "prepared quorum committed twice late commit",
 		Pre:           pre,
 		PostRoot:      sc.Root(),
@@ -34,4 +34,7 @@ func PrepareQuorumTriggeredTwiceLateCommit() tests.SpecTest {
 			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

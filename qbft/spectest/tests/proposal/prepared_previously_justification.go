@@ -37,7 +37,8 @@ func PreparedPreviouslyJustification() tests.SpecTest {
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
 	)
-	return &tests.MsgProcessingSpecTest{
+
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "previously prepared proposal",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -52,4 +53,8 @@ func PreparedPreviouslyJustification() tests.SpecTest {
 			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 		},
 	}
+
+	// Add private key information since this test has signatures
+	test.SetPrivateKeys(ks)
+	return test
 }

@@ -16,11 +16,13 @@ func ZeroSigner() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(0), 2),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "round change zero signer",
 		Pre:            pre,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: invalid SignedSSVMessage: signer ID 0 not allowed",
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

@@ -49,7 +49,7 @@ func LatePreparePastInstance() tests.SpecTest {
 	)
 	sc := latePreparePastInstanceStateComparison(2, lateMsg)
 
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "late prepare past instance",
 		RunInstanceData: []*tests.RunInstanceData{
 			instanceData(qbft.FirstHeight),
@@ -65,6 +65,9 @@ func LatePreparePastInstance() tests.SpecTest {
 		},
 		ExpectedError: "not processing consensus message since instance is already decided",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 // latePreparePastInstanceStateComparison returns a comparable.StateComparison for controller running up to the given height.

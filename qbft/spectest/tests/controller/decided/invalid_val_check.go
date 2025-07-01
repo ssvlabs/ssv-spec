@@ -16,7 +16,7 @@ func InvalidValCheckData() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := invalidValCheckDataStateComparison()
 
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "decide invalid value (should pass)",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -41,6 +41,9 @@ func InvalidValCheckData() tests.SpecTest {
 			},
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 func invalidValCheckDataStateComparison() *comparable.StateComparison {

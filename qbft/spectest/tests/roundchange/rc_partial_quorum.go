@@ -24,7 +24,7 @@ func RoundChangePartialQuorum() tests.SpecTest {
 		[32]byte{}, 0, [][]byte{})
 	outMsg.FullData = []byte{}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "round change partial quorum",
 		Pre:            pre,
 		PostRoot:       sc.Root(),
@@ -36,6 +36,8 @@ func RoundChangePartialQuorum() tests.SpecTest {
 			Round:    qbft.Round(2),
 		},
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 func roundChangePartialQuorumStateComparison() *comparable.StateComparison {

@@ -216,5 +216,7 @@ func InvalidDecidedValue() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

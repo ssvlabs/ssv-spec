@@ -17,10 +17,12 @@ func PostCutoff() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 16),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "round cutoff round change message",
 		Pre:           pre,
 		InputMessages: msgs,
 		ExpectedError: "instance stopped processing messages",
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

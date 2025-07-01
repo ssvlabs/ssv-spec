@@ -33,7 +33,7 @@ func RoundChangeJustificationsUnmarshalling() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &tests.MsgSpecTest{
+	test := &tests.MsgSpecTest{
 		Name: "round change justification unmarshalling",
 		Messages: []*types.SignedSSVMessage{
 			msg,
@@ -45,4 +45,7 @@ func RoundChangeJustificationsUnmarshalling() tests.SpecTest {
 			msgRoot,
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

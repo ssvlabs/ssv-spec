@@ -19,7 +19,7 @@ func F1DifferentFutureRoundsNotPrepared() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 10),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "round change f+1 not prepared",
 		Pre:           pre,
 		PostRoot:      sc.Root(),
@@ -30,6 +30,9 @@ func F1DifferentFutureRoundsNotPrepared() tests.SpecTest {
 				[32]byte{}, 0, [][]byte{}),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 func f1DifferentFutureRoundsNotPreparedStateComparison() *comparable.StateComparison {

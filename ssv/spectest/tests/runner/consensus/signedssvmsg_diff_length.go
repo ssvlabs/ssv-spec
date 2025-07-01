@@ -187,6 +187,8 @@ func SignersAndSignaturesWithDifferentLength() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 
 }

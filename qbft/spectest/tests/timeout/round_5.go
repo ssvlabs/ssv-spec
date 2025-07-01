@@ -17,7 +17,7 @@ func Round5() tests.SpecTest {
 	pre.State.Round = 5
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 5))
 
-	return &SpecTest{
+	test := &SpecTest{
 		Name:      "round 5",
 		Pre:       pre,
 		PostRoot:  sc.Root(),
@@ -38,6 +38,10 @@ func Round5() tests.SpecTest {
 			Round:    6,
 		},
 	}
+
+	// Add private key information since this test has signatures
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 func round5StateComparison() *comparable.StateComparison {

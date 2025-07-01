@@ -156,5 +156,7 @@ func PastMessageDutyFinished() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }
