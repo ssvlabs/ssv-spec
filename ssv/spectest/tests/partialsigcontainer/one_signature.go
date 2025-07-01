@@ -22,7 +22,7 @@ func OneSignature() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &PartialSigContainerTest{
+	test := &PartialSigContainerTest{
 		Name:            "one signature",
 		Quorum:          ks.Threshold,
 		ValidatorPubKey: ks.ValidatorPK.Serialize(),
@@ -31,4 +31,8 @@ func OneSignature() tests.SpecTest {
 		ExpectedResult:  expectedSig.Serialize(),
 		ExpectedQuorum:  false,
 	}
+
+	test.SetPrivateKeys(ks)
+
+	return test
 }

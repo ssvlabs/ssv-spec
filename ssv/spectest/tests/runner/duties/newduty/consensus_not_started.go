@@ -110,5 +110,7 @@ func ConsensusNotStarted() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

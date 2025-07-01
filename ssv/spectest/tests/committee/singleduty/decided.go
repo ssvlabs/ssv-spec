@@ -100,5 +100,7 @@ func Decided() tests.SpecTest {
 		}
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

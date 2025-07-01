@@ -25,29 +25,6 @@ type SpecTest struct {
 	PrivateKeys        *tests.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
-// SetPrivateKeys populates the PrivateKeys field with keys from the given TestKeySet
-func (test *SpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
-	privateKeyInfo := &tests.PrivateKeyInfo{
-		ValidatorSK:  hex.EncodeToString(ks.ValidatorSK.Serialize()),
-		Shares:       make(map[types.OperatorID]string),
-		OperatorKeys: make(map[types.OperatorID]string),
-	}
-
-	// Add share keys
-	for operatorID, shareSK := range ks.Shares {
-		privateKeyInfo.Shares[operatorID] = hex.EncodeToString(shareSK.Serialize())
-	}
-
-	// Add operator keys (RSA private keys used for signing)
-	for operatorID, operatorKey := range ks.OperatorKeys {
-		// For RSA keys, we'll include the modulus and exponent
-		privateKeyInfo.OperatorKeys[operatorID] = fmt.Sprintf("N:%s,E:%d",
-			operatorKey.N.String(), operatorKey.E)
-	}
-
-	test.PrivateKeys = privateKeyInfo
-}
-
 func (test *SpecTest) TestName() string {
 	return "qbft timeout " + test.Name
 }
@@ -93,4 +70,27 @@ func (test *SpecTest) Run(t *testing.T) {
 
 func (test *SpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
+}
+
+// SetPrivateKeys populates the PrivateKeys field with keys from the given TestKeySet
+func (test *SpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
+	privateKeyInfo := &tests.PrivateKeyInfo{
+		ValidatorSK:  hex.EncodeToString(ks.ValidatorSK.Serialize()),
+		Shares:       make(map[types.OperatorID]string),
+		OperatorKeys: make(map[types.OperatorID]string),
+	}
+
+	// Add share keys
+	for operatorID, shareSK := range ks.Shares {
+		privateKeyInfo.Shares[operatorID] = hex.EncodeToString(shareSK.Serialize())
+	}
+
+	// Add operator keys (RSA private keys used for signing)
+	for operatorID, operatorKey := range ks.OperatorKeys {
+		// For RSA keys, we'll include the modulus and exponent
+		privateKeyInfo.OperatorKeys[operatorID] = fmt.Sprintf("N:%s,E:%d",
+			operatorKey.N.String(), operatorKey.E)
+	}
+
+	test.PrivateKeys = privateKeyInfo
 }

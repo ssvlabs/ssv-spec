@@ -14,7 +14,7 @@ import (
 // ProposeBlindedBlockDecidedRegular tests proposing a blinded block but the decided block is a regular block. Full flow
 func ProposeBlindedBlockDecidedRegular() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:   "propose blinded decide regular",
 		Runner: testingutils.ProposerBlindedBlockRunner(ks),
 		Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
@@ -44,4 +44,8 @@ func ProposeBlindedBlockDecidedRegular() tests.SpecTest {
 			testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionDeneb)),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+
+	return test
 }

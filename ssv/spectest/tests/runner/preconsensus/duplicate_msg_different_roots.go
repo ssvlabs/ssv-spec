@@ -105,5 +105,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 		})
 	}
 
+	test.SetPrivateKeys(ks)
+
 	return test
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"reflect"
 	"testing"
@@ -35,6 +36,7 @@ type MsgProcessingSpecTest struct {
 	BeaconBroadcastedRoots []string
 	DontStartDuty          bool // if set to true will not start a duty for the runner
 	ExpectedError          string
+	PrivateKeys            *PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {
@@ -285,4 +287,26 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	}
 
 	return nil
+}
+
+func (t *MsgProcessingSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
+	privateKeyInfo := &PrivateKeyInfo{
+		ValidatorSK:  hex.EncodeToString(ks.ValidatorSK.Serialize()),
+		Shares:       make(map[types.OperatorID]string),
+		OperatorKeys: make(map[types.OperatorID]string),
+	}
+
+	// Add share keys
+	for operatorID, shareSK := range ks.Shares {
+		privateKeyInfo.Shares[operatorID] = hex.EncodeToString(shareSK.Serialize())
+	}
+
+	// Add operator keys (RSA private keys used for signing)
+	for operatorID, operatorKey := range ks.OperatorKeys {
+		// For RSA keys, we'll include the modulus and exponent
+		privateKeyInfo.OperatorKeys[operatorID] = fmt.Sprintf("N:%s,E:%d",
+			operatorKey.N.String(), operatorKey.E)
+	}
+
+	t.PrivateKeys = privateKeyInfo
 }

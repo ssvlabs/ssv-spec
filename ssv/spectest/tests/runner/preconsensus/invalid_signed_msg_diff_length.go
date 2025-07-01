@@ -107,5 +107,7 @@ func InvalidSignedMessageDifferentLength() tests.SpecTest {
 		})
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

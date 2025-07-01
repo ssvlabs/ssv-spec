@@ -11,7 +11,7 @@ import (
 // SomeAggregatorQuorum tests a quorum of selection proofs of which some are aggregator
 func SomeAggregatorQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &SyncCommitteeAggregatorProofSpecTest{
+	test := &SyncCommitteeAggregatorProofSpecTest{
 		Name: "sync committee aggregator some are aggregators",
 		Messages: []*types.SignedSSVMessage{
 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
@@ -25,4 +25,8 @@ func SomeAggregatorQuorum() tests.SpecTest {
 		},
 		PostDutyRunnerStateRoot: "b11cb2d6684fd612da4b885cd52080cd2d5a2c79f5a42297623205603f1f6599",
 	}
+
+	test.SetPrivateKeys(ks)
+
+	return test
 }

@@ -10,7 +10,7 @@ import (
 func FirstHeight() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return &MultiStartNewRunnerDutySpecTest{
+	test := &MultiStartNewRunnerDutySpecTest{
 		Name: "new duty first height",
 		Tests: []*StartNewRunnerDutySpecTest{
 			{
@@ -66,4 +66,8 @@ func FirstHeight() tests.SpecTest {
 			},
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+
+	return test
 }

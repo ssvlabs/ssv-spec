@@ -146,5 +146,7 @@ func InconsistentOperatorSigner() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

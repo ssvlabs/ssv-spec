@@ -24,7 +24,7 @@ func Invalid() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &PartialSigContainerTest{
+	test := &PartialSigContainerTest{
 		Name:            "invalid",
 		Quorum:          ks.Threshold,
 		ValidatorPubKey: ks.ValidatorPK.Serialize(),
@@ -33,4 +33,8 @@ func Invalid() tests.SpecTest {
 		ExpectedResult:  expectedSig.Serialize(),
 		ExpectedQuorum:  true,
 	}
+
+	test.SetPrivateKeys(ks)
+
+	return test
 }

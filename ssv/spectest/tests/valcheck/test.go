@@ -1,6 +1,8 @@
 package valcheck
 
 import (
+	"encoding/hex"
+	"fmt"
 	"testing"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -21,6 +23,13 @@ type SpecTest struct {
 	ShareValidatorsPK []types.ShareValidatorPK `json:"omitempty"` // Optional. Specify validators shares for beacon vote value check
 	ExpectedError     string
 	AnyError          bool
+	PrivateKeys       *PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+}
+
+type PrivateKeyInfo struct {
+	ValidatorSK  string
+	Shares       map[types.OperatorID]string
+	OperatorKeys map[types.OperatorID]string
 }
 
 func (test *SpecTest) TestName() string {
@@ -78,8 +87,9 @@ func (tests *SpecTest) GetPostState() (interface{}, error) {
 }
 
 type MultiSpecTest struct {
-	Name  string
-	Tests []*SpecTest
+	Name        string
+	Tests       []*SpecTest
+	PrivateKeys *PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *MultiSpecTest) TestName() string {
@@ -96,4 +106,46 @@ func (test *MultiSpecTest) Run(t *testing.T) {
 
 func (tests *MultiSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
+}
+
+func (test *SpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
+	privateKeyInfo := &PrivateKeyInfo{
+		ValidatorSK:  hex.EncodeToString(ks.ValidatorSK.Serialize()),
+		Shares:       make(map[types.OperatorID]string),
+		OperatorKeys: make(map[types.OperatorID]string),
+	}
+
+	// Add share keys
+	for operatorID, shareSK := range ks.Shares {
+		privateKeyInfo.Shares[operatorID] = hex.EncodeToString(shareSK.Serialize())
+	}
+
+	// Add operator keys (RSA private keys used for signing)
+	for operatorID, operatorKey := range ks.OperatorKeys {
+		privateKeyInfo.OperatorKeys[operatorID] = fmt.Sprintf("N:%s,E:%d",
+			operatorKey.N.String(), operatorKey.E)
+	}
+
+	test.PrivateKeys = privateKeyInfo
+}
+
+func (tests *MultiSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
+	privateKeyInfo := &PrivateKeyInfo{
+		ValidatorSK:  hex.EncodeToString(ks.ValidatorSK.Serialize()),
+		Shares:       make(map[types.OperatorID]string),
+		OperatorKeys: make(map[types.OperatorID]string),
+	}
+
+	// Add share keys
+	for operatorID, shareSK := range ks.Shares {
+		privateKeyInfo.Shares[operatorID] = hex.EncodeToString(shareSK.Serialize())
+	}
+
+	// Add operator keys (RSA private keys used for signing)
+	for operatorID, operatorKey := range ks.OperatorKeys {
+		privateKeyInfo.OperatorKeys[operatorID] = fmt.Sprintf("N:%s,E:%d",
+			operatorKey.N.String(), operatorKey.E)
+	}
+
+	tests.PrivateKeys = privateKeyInfo
 }

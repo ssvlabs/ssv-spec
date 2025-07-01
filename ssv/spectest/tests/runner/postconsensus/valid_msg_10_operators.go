@@ -140,5 +140,7 @@ func ValidMessage10Operators() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

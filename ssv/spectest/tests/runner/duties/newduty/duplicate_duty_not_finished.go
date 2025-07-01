@@ -153,5 +153,7 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }
