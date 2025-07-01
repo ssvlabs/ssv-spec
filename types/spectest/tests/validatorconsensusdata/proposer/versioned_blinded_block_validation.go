@@ -3,6 +3,7 @@ package consensusdataproposer
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -23,7 +24,7 @@ func VersionedBlindedBlockValidation() *ProposerSpecTest {
 		Blinded:         true,
 		DataCd:          testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
 		DataBlk:         testingutils.TestingBlindedBeaconBlockBytesV(spec.DataVersionDeneb),
-		ExpectedCdRoot:  expectedCdRoot,
-		ExpectedBlkRoot: expectedBlkRoot,
+		ExpectedCdRoot:  types.ExpectedCdRoot(expectedCdRoot),
+		ExpectedBlkRoot: types.ExpectedBlkRoot(expectedBlkRoot),
 	}
 }

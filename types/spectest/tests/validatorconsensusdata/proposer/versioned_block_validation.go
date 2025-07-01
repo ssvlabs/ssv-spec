@@ -3,6 +3,7 @@ package consensusdataproposer
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -22,7 +23,7 @@ func VersionedBlockValidation() *ProposerSpecTest {
 		Name:            "consensus data versioned block validation",
 		DataCd:          testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
 		DataBlk:         testingutils.TestingBeaconBlockBytesV(spec.DataVersionDeneb),
-		ExpectedCdRoot:  expectedCdRoot,
-		ExpectedBlkRoot: expectedBlkRoot,
+		ExpectedCdRoot:  types.ExpectedCdRoot(expectedCdRoot),
+		ExpectedBlkRoot: types.ExpectedBlkRoot(expectedBlkRoot),
 	}
 }

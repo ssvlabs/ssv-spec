@@ -1,17 +1,18 @@
 package validatorconsensusdata
 
 import (
+	reflect2 "reflect"
+	"testing"
+
 	"github.com/ssvlabs/ssv-spec/types"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
-	reflect2 "reflect"
-	"testing"
 )
 
 type EncodingTest struct {
 	Name         string
 	Data         []byte
-	ExpectedRoot [32]byte
+	ExpectedRoot types.ExpectedRoot
 }
 
 func (test *EncodingTest) TestName() string {

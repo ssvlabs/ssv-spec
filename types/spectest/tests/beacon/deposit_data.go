@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -15,7 +16,7 @@ type DepositDataSpecTest struct {
 	Name                  string
 	ValidatorPK           string
 	WithdrawalCredentials string
-	ForkVersion           [4]byte
+	ForkVersion           types.ForkVersion
 	ExpectedSigningRoot   string
 }
 
@@ -32,7 +33,7 @@ func (test *DepositDataSpecTest) Run(t *testing.T) {
 	r, _, err := testingutils.GenerateETHDepositData(
 		validatorPK,
 		withdrawalCredentials,
-		test.ForkVersion,
+		phase0.Version(test.ForkVersion[:]),
 		types.DomainDeposit,
 	)
 	require.NoError(t, err)

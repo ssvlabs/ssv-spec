@@ -7,14 +7,14 @@
       "Messages": [
         {
           "PartialSignature": "b27f7832f6c5093656a07691466b586fa0481cb93f86455b780546f70b8c157b7e7ee6290e6a2dc0eee9c70e3f2e07af093acf69bc735ae264a91fb63b7e7a1fdbf1adf619ab9784d5bb866cc1eaf134d2ef6e078e32977c197ea25a689875e1",
-          "SigningRoot": "51c8dccedd34f6d37b3794a58fe6d9d966767797418dc2fd26dad30d1f550bfc",
           "Signer": 1,
+          "SigningRoot": "51c8dccedd34f6d37b3794a58fe6d9d966767797418dc2fd26dad30d1f550bfc",
           "ValidatorIndex": "1"
         },
         {
           "PartialSignature": "80c5f32287bf40906b1fe9edb80a09fa4bebe2a863e155265a985fb282f2390d95623c2f20ea83b4b957b2d14a6ca5d20aa366c5879c7d7f31b6cde35b171f1c82ce1206afcfaac0f2489386caa50921d6c77c836e3b81ac84a2f645366b46b8",
-          "SigningRoot": "4ae32f48079745930bc24da670a6fe72052e13e3832728c6aa2580adc0307b83",
           "Signer": 2,
+          "SigningRoot": "4ae32f48079745930bc24da670a6fe72052e13e3832728c6aa2580adc0307b83",
           "ValidatorIndex": "1"
         }
       ]

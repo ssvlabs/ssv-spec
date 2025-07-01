@@ -11,6 +11,77 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 )
 
+// ************** ExpectedRoot **************
+type ExpectedRoot [32]byte
+
+func (r *ExpectedRoot) MarshalJSON() ([]byte, error) {
+	return json.Marshal(hex.EncodeToString(r[:]))
+}
+
+func (r *ExpectedRoot) UnmarshalJSON(data []byte) error {
+	var byteArr []byte
+	if err := json.Unmarshal(data, &byteArr); err != nil {
+		return fmt.Errorf("failed to decode ExpectedRoot: %w", err)
+	}
+	copy(r[:], byteArr)
+	return nil
+}
+
+// ************** ExpectedCdRoot **************
+type ExpectedCdRoot [32]byte
+
+func (r *ExpectedCdRoot) MarshalJSON() ([]byte, error) {
+	return json.Marshal(hex.EncodeToString(r[:]))
+}
+
+func (r *ExpectedCdRoot) UnmarshalJSON(data []byte) error {
+	var byteArr []byte
+	if err := json.Unmarshal(data, &byteArr); err != nil {
+		return fmt.Errorf("failed to decode ExpectedRoot: %w", err)
+	}
+	copy(r[:], byteArr)
+	return nil
+}
+
+// ************** ExpectedBlkRoot **************
+type ExpectedBlkRoot [32]byte
+
+func (r *ExpectedBlkRoot) MarshalJSON() ([]byte, error) {
+	return json.Marshal(hex.EncodeToString(r[:]))
+}
+
+func (r *ExpectedBlkRoot) UnmarshalJSON(data []byte) error {
+	var byteArr []byte
+	if err := json.Unmarshal(data, &byteArr); err != nil {
+		return fmt.Errorf("failed to decode ExpectedRoot: %w", err)
+	}
+	copy(r[:], byteArr)
+	return nil
+}
+
+// ************** ForkVersion **************
+
+type ForkVersion [4]byte
+
+func (f *ForkVersion) MarshalJSON() ([]byte, error) {
+	return json.Marshal(hex.EncodeToString(f[:]))
+}
+
+func (f *ForkVersion) UnmarshalJSON(data []byte) error {
+	var byteArr []byte
+	if err := json.Unmarshal(data, &byteArr); err != nil {
+		return fmt.Errorf("failed to decode ExpectedRoot: %w", err)
+	}
+	copy(f[:], byteArr)
+	return nil
+}
+
+// ************** CommitteeID **************
+
+func (c *CommitteeID) MarshalJSON() ([]byte, error) {
+	return json.Marshal(hex.EncodeToString(c[:]))
+}
+
 func (c *CommitteeID) UnmarshalJSON(data []byte) error {
 	// Try base64-encoded string first
 	var encoded string
@@ -40,6 +111,12 @@ func (c *CommitteeID) UnmarshalJSON(data []byte) error {
 	return fmt.Errorf("CommitteeID must be base64 string or array of 32 bytes")
 }
 
+// ************** MessageID **************
+
+func (c *MessageID) MarshalJSON() ([]byte, error) {
+	return json.Marshal(hex.EncodeToString(c[:]))
+}
+
 func (c *MessageID) UnmarshalJSON(data []byte) error {
 	var str string
 	if err := json.Unmarshal(data, &str); err == nil {
@@ -59,6 +136,12 @@ func (c *MessageID) UnmarshalJSON(data []byte) error {
 
 	// Fallback error
 	return fmt.Errorf("MessageID must be a string or array of 56 bytes")
+}
+
+// ************** DomainType **************
+
+func (d *DomainType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(hex.EncodeToString(d[:]))
 }
 
 func (d *DomainType) UnmarshalJSON(data []byte) error {
@@ -82,6 +165,8 @@ func (d *DomainType) UnmarshalJSON(data []byte) error {
 	return fmt.Errorf("DomainType must be a string or array of 4 bytes")
 }
 
+// ************** ValidatorPK **************
+
 func (v *ValidatorPK) UnmarshalJSON(data []byte) error {
 	var str string
 	if err := json.Unmarshal(data, &str); err == nil {
@@ -102,7 +187,17 @@ func (v *ValidatorPK) UnmarshalJSON(data []byte) error {
 	return fmt.Errorf("ValidatorPK must be a string or array of 48 bytes")
 }
 
-// UnmarshalJSON implements custom JSON unmarshaling for PartialSignatureMessage
+// ************** PartialSignatureMessage **************
+
+func (p *PartialSignatureMessage) MarshalJSON() ([]byte, error) {
+	return json.Marshal(map[string]interface{}{
+		"PartialSignature": hex.EncodeToString(p.PartialSignature),
+		"SigningRoot":      hex.EncodeToString(p.SigningRoot[:]),
+		"Signer":           p.Signer,
+		"ValidatorIndex":   strconv.FormatUint(uint64(p.ValidatorIndex), 10),
+	})
+}
+
 func (p *PartialSignatureMessage) UnmarshalJSON(data []byte) error {
 	// Define a temporary struct to unmarshal into
 	type tempPartialSignatureMessage struct {
