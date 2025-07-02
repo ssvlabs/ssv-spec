@@ -2,11 +2,11 @@
   "Name": "future valid msg",
   "RunInstanceData": [
     {
-      "InputValue": "01020304",
+      "InputValue": "AQIDBA==",
       "InputMessages": [
         {
           "Signatures": [
-            "37c77d7b103eb34464d901d00f9055c3d1d300ff5333487184d7ee25e537c68b57bacfe6ddccb23b5360c687cf316b3816e8925cb5c6838aa1e8e61c20c2771892917f9e704343a4fff0e2c54ffafdbe2dbacf4fac21e97059bbe901b5653277b601af03744ea91005950eb0e58fe24724a3038bce3b2a731df19167cc1863215eeff2cb05a310a2042c48fce8571a54b75d5e375779e02ce5511290fed49c99efcd2002ef0daa1751a44390fe874c78176bbe7c3c9ba098e1d957021bc5b690740146886afa7a1691b8be8d53da1ccc4ecfef3670847f659cb05c041d4a2efc68f9206f32b78a1e2b278317d27463df19ec900e3fbecdfb93e341e7a9a547ee"
+            "N8d9exA+s0Rk2QHQD5BVw9HTAP9TM0hxhNfuJeU3xotXus/m3cyyO1NgxofPMWs4FuiSXLXGg4qh6OYcIMJ3GJKRf55wQ0Ok//DixU/6/b4tus9PrCHpcFm76QG1ZTJ3tgGvA3ROqRAFlQ6w5Y/iRySjA4vOOypzHfGRZ8wYYyFe7/LLBaMQogQsSPzoVxpUt11eN1d54CzlURKQ/tScme/NIALvDaoXUaRDkP6HTHgXa758PJugmOHZVwIbxbaQdAFGiGr6ehaRuL6NU9oczE7P7zZwhH9lnLBcBB1KLvxo+SBvMreKHisngxfSdGPfGeyQDj++zfuT40HnqaVH7g=="
           ],
           "OperatorIDs": [
             3

@@ -2,7 +2,7 @@
   "Name": "start instance valid",
   "RunInstanceData": [
     {
-      "InputValue": "01020304",
+      "InputValue": "AQIDBA==",
       "InputMessages": null,
       "ControllerPostRoot": "",
       "ExpectedTimerState": {

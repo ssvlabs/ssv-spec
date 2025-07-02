@@ -90,6 +90,15 @@ func (c *CommitteeID) UnmarshalJSON(data []byte) error {
 	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
 	bytes, err := hex.DecodeString(hexStr)
 	if err != nil {
+		// If not a string, try array of integers
+		var arr []byte
+		if err := json.Unmarshal(data, &arr); err == nil {
+			if len(arr) != 32 {
+				return fmt.Errorf("invalid CommitteeID length from array: expected 32, got %d", len(arr))
+			}
+			copy(c[:], arr)
+			return nil
+		}
 		return fmt.Errorf("failed to decode CommitteeID: %w", err)
 	}
 	copy(c[:], bytes)
@@ -132,6 +141,15 @@ func (d *DomainType) UnmarshalJSON(data []byte) error {
 	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
 	bytes, err := hex.DecodeString(hexStr)
 	if err != nil {
+		// If not a string, try array of integers
+		var arr []byte
+		if err := json.Unmarshal(data, &arr); err == nil {
+			if len(arr) != 4 {
+				return fmt.Errorf("invalid DomainType length from array: expected 4, got %d", len(arr))
+			}
+			copy(d[:], arr)
+			return nil
+		}
 		return fmt.Errorf("failed to decode DomainType: %w", err)
 	}
 	copy(d[:], bytes)

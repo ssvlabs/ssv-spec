@@ -2,7 +2,7 @@
   "Name": "start instance for current height with no running instance",
   "RunInstanceData": [
     {
-      "InputValue": "01020304",
+      "InputValue": "AQIDBA==",
       "InputMessages": null,
       "ControllerPostRoot": "",
       "ExpectedTimerState": null,

@@ -2,7 +2,7 @@
   "Name": "start instance first height",
   "RunInstanceData": [
     {
-      "InputValue": "01020304",
+      "InputValue": "AQIDBA==",
       "InputMessages": null,
       "ControllerPostRoot": "",
       "ExpectedTimerState": {

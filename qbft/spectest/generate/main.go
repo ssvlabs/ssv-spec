@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -10,7 +11,6 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
-	hexencoding "github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/qbft/spectest"
@@ -44,7 +44,7 @@ func main() {
 		panic(err.Error())
 	}
 	for name, test := range all {
-		byts, err := hexencoding.ToHexJSON(test)
+		byts, err := json.MarshalIndent(test, "", "  ")
 		if err != nil {
 			panic(err.Error())
 		}
@@ -55,7 +55,7 @@ func main() {
 	}
 
 	// write large tests.json file
-	byts, err := hexencoding.ToHexJSON(all)
+	byts, err := json.MarshalIndent(all, "", "  ")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -100,7 +100,7 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 	}
 	log.Printf("writing state comparison json: %s\n", name)
 
-	byts, err := hexencoding.ToHexJSON(post)
+	byts, err := json.MarshalIndent(post, "", "  ")
 	if err != nil {
 		panic(err.Error())
 	}

@@ -10,7 +10,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
-	hexencoding "github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
@@ -26,7 +25,7 @@ const (
 type CreateMsgSpecTest struct {
 	Name string
 	// ISSUE 217: rename to root
-	Value [32]byte
+	Value qbft.Value
 	// ISSUE 217: rename to value
 	StateValue                                       []byte
 	Round                                            qbft.Round
@@ -64,7 +63,7 @@ func (test *CreateMsgSpecTest) UnmarshalJSON(data []byte) error {
 	// Create a temporary struct without ExpectedRoot for hex processing
 	type CreateMsgSpecTestWithoutExpectedRoot struct {
 		Name                                             string
-		Value                                            [32]byte
+		Value                                            qbft.Value
 		StateValue                                       []byte
 		Round                                            qbft.Round
 		RoundChangeJustifications, PrepareJustifications []*types.SignedSSVMessage
@@ -75,8 +74,7 @@ func (test *CreateMsgSpecTest) UnmarshalJSON(data []byte) error {
 
 	temp := &CreateMsgSpecTestWithoutExpectedRoot{}
 
-	// Use UnmarshalJSONWithHex for all other fields
-	if err := hexencoding.UnmarshalJSONWithHex(remainingData, temp); err != nil {
+	if err := json.Unmarshal(remainingData, temp); err != nil {
 		return err
 	}
 

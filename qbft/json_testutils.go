@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -143,6 +144,19 @@ func (c *MsgContainer) GetRoot() ([32]byte, error) {
 }
 
 // Message
+func (m *Message) MarshalJSON() ([]byte, error) {
+	return json.Marshal(map[string]interface{}{
+		"MsgType":                  m.MsgType,
+		"Height":                   m.Height,
+		"Round":                    m.Round,
+		"Identifier":               m.Identifier,
+		"Root":                     hex.EncodeToString(m.Root[:]),
+		"DataRound":                m.DataRound,
+		"RoundChangeJustification": m.RoundChangeJustification,
+		"PrepareJustification":     m.PrepareJustification,
+	})
+}
+
 func (m *Message) UnmarshalJSON(data []byte) error {
 	type Alias Message
 	aux := &struct {
@@ -207,5 +221,23 @@ func (m *Message) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	return nil
+}
+
+// Value type for hex encoding json
+
+type Value [32]byte
+
+func (r *Value) MarshalJSON() ([]byte, error) {
+	return json.Marshal(hex.EncodeToString(r[:]))
+}
+
+func (r *Value) UnmarshalJSON(data []byte) error {
+	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	bytes, err := hex.DecodeString(hexStr)
+	if err != nil {
+		return fmt.Errorf("failed to decode Value: %w", err)
+	}
+	copy(r[:], bytes)
 	return nil
 }
