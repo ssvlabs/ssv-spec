@@ -5,13 +5,13 @@
         "Signatures": {
           "1": {
             "921b07b8aa67eab7c38b8214bd22c43ac3d8b7137c09535f843242558db21786": {
-              "1": "a8a098b3c43587927386473a2239758cda41586c45dc1734d0e4f52a49998ddf003f6c80e82bdaf9b226ce6e545263420d774ee79e60da9f34b39c5135f7a70f77cbf56c708c09a0cedd3fb56f9d5f890ec0cae47d9c59afe6bae4c86ec64bf0",
-              "2": "886333cb9582d1ff99fb829220851256bf19af4050bbd57579727495dbe6e718f5dc46f921c1ae68bdf5b2793930eff51232ed1f8407535ca359223eaa60d8ff616115266d53afdb90fa230e4f2c1d7e447d2a1a933a5b016a443e7c2a319534",
-              "3": "9738a922870e12fd12a08120b24b8ae06ea2cf0ee3123a53705dcb598a65ff9400cdd438ae97df4e74da711028f7546f0e2ff6d183100b614e4ccbf27f818d864cc2cb8fd2ea1fcd577d4eabab19d5285e9b9d988859a3f2948ec18d2fed4321",
-              "4": "8325960e8bbd8c42baa76a9839c3b79d7ef68150b0403f4014c0ca84f97602e4a8615bc067e3e908c56b33c0d5f39b4f058636eaa10286bae0970f23ffaef6cd5d2feef49ee266f54852d121744a7fc503e6d5c4784c94e1d24e6c0039b661c0",
-              "5": "889d72efe906209ecb227b35cfcc0f78f2f18b701b18f79f3459d66360f9d6256548a7c7a2c8f0a5da2cec685bd7f0960c125bd05957d3763319f955b728f3e8d18ad26a1aab198153f99a0702474feea3b0fde5891a54545cabf19ea762d1a1",
-              "6": "98ed4080c9e29fed10959004086cac6873a34e6bb1d60df1d7068d72edb6d47fab9bbcc9090e9585ef64e2b328dec2d1087dacacf77ab94c0bfa47e79169ee8c092d2543277f073b7e59bc20d7d953494de92120cb1d3969e16d07286bf22a6b",
-              "7": "91911504aba63e59b90b6d3693e3659aafce5952a68b19c00d698c15ef4e9746b0970b8d6a8fbc5859e03d6152f3ae3b13792dd4c3b38c489f1131b2fffabd2a84aadf39b63950934bc3becb2cb08933116dfee3eac3a1f411ae85d62af24ec9"
+              "1": "qKCYs8Q1h5Jzhkc6Ijl1jNpBWGxF3Bc00OT1KkmZjd8AP2yA6Cva+bImzm5UUmNCDXdO555g2p80s5xRNfenD3fL9WxwjAmgzt0/tW+dX4kOwMrkfZxZr+a65Mhuxkvw",
+              "2": "iGMzy5WC0f+Z+4KSIIUSVr8Zr0BQu9V1eXJ0ldvm5xj13Eb5IcGuaL31snk5MO/1EjLtH4QHU1yjWSI+qmDY/2FhFSZtU6/bkPojDk8sHX5EfSoakzpbAWpEPnwqMZU0",
+              "3": "lzipIocOEv0SoIEgskuK4G6izw7jEjpTcF3LWYpl/5QAzdQ4rpffTnTacRAo91RvDi/20YMQC2FOTMvyf4GNhkzCy4/S6h/NV31Oq6sZ1Shem52YiFmj8pSOwY0v7UMh",
+              "4": "gyWWDou9jEK6p2qYOcO3nX72gVCwQD9AFMDKhPl2AuSoYVvAZ+PpCMVrM8DV85tPBYY26qEChrrglw8j/672zV0v7vSe4mb1SFLRIXRKf8UD5tXEeEyU4dJObAA5tmHA",
+              "5": "iJ1y7+kGIJ7LIns1z8wPePLxi3AbGPefNFnWY2D51iVlSKfHosjwpdos7Ghb1/CWDBJb0FlX03YzGflVtyjz6NGK0moaqxmBU/maBwJHT+6jsP3liRpUVFyr8Z6nYtGh",
+              "6": "mO1AgMnin+0QlZAECGysaHOjTmux1g3x1waNcu221H+rm7zJCQ6Vhe9k4rMo3sLRCH2srPd6uUwL+kfnkWnujAktJUMnfwc7flm8INfZU0lN6SEgyx05aeFtByhr8ipr",
+              "7": "kZEVBKumPlm5C202k+Nlmq/OWVKmixnADWmMFe9Ol0awlwuNao+8WFngPWFS8647E3kt1MOzjEifETGy//q9KoSq3zm2OVCTS8O+yyywiTMRbf7j6sOh9BGuhdYq8k7J"
             }
           }
         },
@@ -23,7 +23,8 @@
       },
       "RunningInstance": null,
       "DecidedValue": null,
-      "StartingDuty": {
+      "Finished": true,
+      "ValidatorDuty": {
         "Type": 6,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
         "Slot": "12",
@@ -33,64 +34,67 @@
         "CommitteesAtSlot": 0,
         "ValidatorCommitteeIndex": 0,
         "ValidatorSyncCommitteeIndices": null
-      },
-      "Finished": true
+      }
     },
     "Share": {
       "1": {
-        "ValidatorIndex": "1",
-        "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-        "SharePubKey": "b9ac3c33fe194124ec5123580610fa97a0b3abb49c39a234840421508c08c42b09832d0f9b41635deba5f133034661f1",
         "Committee": [
           {
-            "SharePubKey": "b9ac3c33fe194124ec5123580610fa97a0b3abb49c39a234840421508c08c42b09832d0f9b41635deba5f133034661f1",
+            "SharePubKey": "uaw8M/4ZQSTsUSNYBhD6l6Czq7ScOaI0hAQhUIwIxCsJgy0Pm0FjXeul8TMDRmHx",
             "Signer": 1
           },
           {
-            "SharePubKey": "933d694c69246f98aa2b3d6de76e2a476add1ee8f91fa03949b115bc7a0f677bb9646220047fe4ad2943554542425203",
+            "SharePubKey": "kz1pTGkkb5iqKz1t524qR2rdHuj5H6A5SbEVvHoPZ3u5ZGIgBH/krSlDVUVCQlID",
             "Signer": 2
           },
           {
-            "SharePubKey": "a1af083aeba8dc6118a4679c79f619bef364d5561b23c7f12cf0d27e0408319bbefebc72caeb56cbcfb6d6e9778a5286",
+            "SharePubKey": "oa8IOuuo3GEYpGecefYZvvNk1VYbI8fxLPDSfgQIMZu+/rxyyutWy8+21ul3ilKG",
             "Signer": 3
           },
           {
-            "SharePubKey": "adb6cf13587eb63c13301bd706ad2e41e898ef38e05bc17748753f19b89387a3527e4b145a4c38f9e3f35de405fd0747",
+            "SharePubKey": "rbbPE1h+tjwTMBvXBq0uQeiY7zjgW8F3SHU/GbiTh6NSfksUWkw4+ePzXeQF/QdH",
             "Signer": 4
           },
           {
-            "SharePubKey": "a2f7acabaec0efd186424eed90ce568c20edbaeb9ff7ec53f5f180e70937a69a5d746072092bded26778103e6b189368",
+            "SharePubKey": "ovesq67A79GGQk7tkM5WjCDtuuuf9+xT9fGA5wk3pppddGByCSve0md4ED5rGJNo",
             "Signer": 5
           },
           {
-            "SharePubKey": "9341ba1e07ec416365bca8aca373ffb3cd214d5acf9e48f24cfadcd3edae07e3daa6525f7e716f49d9a3901356e0cc9e",
+            "SharePubKey": "k0G6HgfsQWNlvKiso3P/s80hTVrPnkjyTPrc0+2uB+PaplJffnFvSdmjkBNW4Mye",
             "Signer": 6
           },
           {
-            "SharePubKey": "8ca26258643d18c4fa11a3c732df8459929f69c641d6c5cf51781662e80e25ade1326d426d31a84575e76114bccb3fd1",
+            "SharePubKey": "jKJiWGQ9GMT6EaPHMt+EWZKfacZB1sXPUXgWYugOJa3hMm1CbTGoRXXnYRS8yz/R",
             "Signer": 7
           },
           {
-            "SharePubKey": "ab4ad4d4080d6c8c7043481fa9be43a446ddae238d11fb450d61a139eb1607f2a30269bb4a28eb42431fc9b8bfa8d02d",
+            "SharePubKey": "q0rU1AgNbIxwQ0gfqb5DpEbdriONEftFDWGhOesWB/KjAmm7SijrQkMfybi/qNAt",
             "Signer": 8
           },
           {
-            "SharePubKey": "a1b06d3a55b305d4dece20ad558e45b5eb830023a65f30515df64e36bc9149a0e0bdf425734d6cf907b08faee0611b47",
+            "SharePubKey": "obBtOlWzBdTeziCtVY5FteuDACOmXzBRXfZONryRSaDgvfQlc01s+Qewj67gYRtH",
             "Signer": 9
           },
           {
-            "SharePubKey": "b49ecdb4385e30126c8e279779a9e1ea40bef4e34dbf5d7abcdd2fdb1caa51f12aa9f493dcabbf571deb841bed022745",
+            "SharePubKey": "tJ7NtDheMBJsjieXeanh6kC+9ONNv116vN0v2xyqUfEqqfST3Ku/Vx3rhBvtAidF",
             "Signer": 10
           }
         ],
-        "DomainType": "00000301",
+        "DomainType": [
+          0,
+          0,
+          3,
+          1
+        ],
         "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
-        "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+        "Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "SharePubKey": "uaw8M/4ZQSTsUSNYBhD6l6Czq7ScOaI0hAQhUIwIxCsJgy0Pm0FjXeul8TMDRmHx",
+        "ValidatorIndex": "1",
+        "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0"
       }
     },
     "QBFTController": null,
     "BeaconNetwork": "now_test_network",
-    "RunnerRoleType": 5,
-    "OperatorSigner": null
+    "RunnerRoleType": 5
   }
 }

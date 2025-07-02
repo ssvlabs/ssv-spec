@@ -156,18 +156,6 @@ func (d *DomainType) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// ************** ValidatorPK **************
-
-func (v *ValidatorPK) UnmarshalJSON(data []byte) error {
-	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
-	bytes, err := hex.DecodeString(hexStr)
-	if err != nil {
-		return fmt.Errorf("failed to decode ValidatorPK: %w", err)
-	}
-	copy(v[:], bytes)
-	return nil
-}
-
 // ************** PartialSignatureMessage **************
 
 func (p *PartialSignatureMessage) MarshalJSON() ([]byte, error) {
@@ -256,6 +244,57 @@ func (p *PartialSignatureMessage) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("failed to parse ValidatorIndex: %w", err)
 	}
 	p.ValidatorIndex = phase0.ValidatorIndex(validatorIndex)
+
+	return nil
+}
+
+// ************** Share **************
+
+func (s *Share) MarshalJSON() ([]byte, error) {
+	return json.Marshal(map[string]interface{}{
+		"ValidatorIndex":      s.ValidatorIndex,
+		"ValidatorPubKey":     hex.EncodeToString(s.ValidatorPubKey[:]),
+		"SharePubKey":         s.SharePubKey,
+		"Committee":           s.Committee,
+		"DomainType":          s.DomainType,
+		"FeeRecipientAddress": hex.EncodeToString(s.FeeRecipientAddress[:]),
+		"Graffiti":            s.Graffiti,
+	})
+}
+
+func (s *Share) UnmarshalJSON(data []byte) error {
+	type tempShare struct {
+		ValidatorIndex      phase0.ValidatorIndex
+		ValidatorPubKey     string           `json:"ValidatorPubKey"`
+		SharePubKey         ShareValidatorPK `ssz-size:"48"`
+		Committee           []*ShareMember   `ssz-max:"13"`
+		DomainType          DomainType       `ssz-size:"4"`
+		FeeRecipientAddress string           `json:"FeeRecipientAddress"`
+		Graffiti            []byte           `json:"Graffiti"`
+	}
+
+	var temp tempShare
+	if err := json.Unmarshal(data, &temp); err != nil {
+		return fmt.Errorf("failed to unmarshal Share: %w", err)
+	}
+
+	feeRecipientAddress, err := hex.DecodeString(temp.FeeRecipientAddress)
+	if err != nil {
+		return fmt.Errorf("failed to decode FeeRecipientAddress: %w", err)
+	}
+
+	validatorPubKey, err := hex.DecodeString(temp.ValidatorPubKey)
+	if err != nil {
+		return fmt.Errorf("failed to decode ValidatorPubKey: %w", err)
+	}
+
+	s.ValidatorIndex = temp.ValidatorIndex
+	copy(s.ValidatorPubKey[:], validatorPubKey)
+	s.SharePubKey = temp.SharePubKey
+	s.Committee = temp.Committee
+	s.DomainType = temp.DomainType
+	copy(s.FeeRecipientAddress[:], feeRecipientAddress)
+	s.Graffiti = temp.Graffiti
 
 	return nil
 }

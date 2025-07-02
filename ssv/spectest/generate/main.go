@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -11,7 +12,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
-	hexencoding "github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest"
@@ -44,7 +44,7 @@ func main() {
 		panic(err.Error())
 	}
 	for name, test := range all {
-		byts, err := hexencoding.ToHexJSON(test)
+		byts, err := json.MarshalIndent(test, "", "  ")
 		if err != nil {
 			panic(err.Error())
 		}
@@ -55,7 +55,7 @@ func main() {
 	}
 
 	// write large tests.json file
-	byts, err := hexencoding.ToHexJSON(all)
+	byts, err := json.MarshalIndent(all, "", "  ")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -112,7 +112,7 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 		log.Printf("skipping state comparison json, not supported: %s\n", path)
 		return
 	}
-	byts, err := hexencoding.ToHexJSON(post)
+	byts, err := json.MarshalIndent(post, "", "  ")
 	if err != nil {
 		panic(err.Error())
 	}

@@ -5,15 +5,15 @@
         "Signatures": {
           "1": {
             "921b07b8aa67eab7c38b8214bd22c43ac3d8b7137c09535f843242558db21786": {
-              "1": "a56974dd76f1b4b07454f69f1e1de13ed879e688f3c4ac43d30e5983f0de6196c47e1d7324f164c4d044eac17c3907cf19f85338ca7a8dcd636f5448c9955f79a3674483686cd4d58932f25dafb0cdca6d9c724343b84067deebf962ff230a7b",
-              "2": "b303d3a959b9500ba2933224348ade4639b8fef53a02dbc160e32204d9f98fd0b9d718ca81a272e13ca32ffc23f158e5076aae5148168d51b888114ab3afd5ee3bd389f60ffb08ef615cb5f6583728775cc8bd04fbf524a44f5b7e88e90913e6",
-              "3": "8eac9186a8dbcc591ce617a5e9d2f2fba0321e7c90a41a61bfa4e227d15763311ba48c66d2828162022f9b202fbf374912115f0a7942dc2c87acd5b7992be5a0d79b0dd696235e286b1306e447854bd89da89d8573b9d6397aad59c5d479d3da",
-              "4": "806db3b1b72967acdaf01d021e304aec48db6c984d9779a4105bc922d035c8a345e2df411c65ad340d2e9768b97cc1000694fc03bbc50c590a71faf763851d98092ecd8569466bc8a8bd81113ce9c55c2e74505638bc1e06603447f2674ab2bc",
-              "5": "9027232c2c714b7ade478d43685d4785feca9f58c6ac100b0783e7909b648acb28557de137a8fafaa29805d6a6ceccf6072b999f2352950e44a04ec44a630ac0890618e47653823744a96d11781682f0471487d70581e743bab56ef17c4790cc",
-              "6": "a92a05c8fb26eb1390d3db8cb1faa5398fdd7342c73b4882211620c6309944b5ec9143f0b6b685539ba1751f567e1e7a09f3884dcb7bc6d4ac590032a7535421d661e760cb984fecfc738f03eaf91e26cf1ec11fa9f70054221295c930fd4b35",
-              "7": "a8c933c8c28a3a05ea49493a80c9b78060d0d24d9905b1b29e4f8d8462882af7306124984b23bcd8d647dec96357f79e10a9044a13e7b97608a0193349b8e9be591e01eda61c2a5e4e6e51543e922d5565a5b50e0bddd67ec304b0f638953570",
-              "8": "a153c8f60d14b7bcdfb5aed903c68a7bc576a24cb745452414264aa982e6a11b37f49ab1f18e2dd136ebad0ace701715068e57f422452b45665dbe0d009d5721e0287e1ffca7842db5a21b3e44290a0c933cde81bd5db22d84dad223196774f7",
-              "9": "a5cd313ab18e78a5ba3a277ab8aa3923d7667ed0899432f2a05dc304c689ea9402b29889d8123e18eec04af9a38f475a06094d1b7f215f61ee02472578ac753fbdfd6d5ae4f1e6615709e72ee5a7e83659c8d7e86dbd656898297affc9546806"
+              "1": "pWl03XbxtLB0VPafHh3hPth55ojzxKxD0w5Zg/DeYZbEfh1zJPFkxNBE6sF8OQfPGfhTOMp6jc1jb1RIyZVfeaNnRINobNTViTLyXa+wzcptnHJDQ7hAZ97r+WL/Iwp7",
+              "2": "swPTqVm5UAuikzIkNIreRjm4/vU6AtvBYOMiBNn5j9C51xjKgaJy4TyjL/wj8VjlB2quUUgWjVG4iBFKs6/V7jvTifYP+wjvYVy19lg3KHdcyL0E+/UkpE9bfojpCRPm",
+              "3": "jqyRhqjbzFkc5hel6dLy+6AyHnyQpBphv6TiJ9FXYzEbpIxm0oKBYgIvmyAvvzdJEhFfCnlC3CyHrNW3mSvloNebDdaWI14oaxMG5EeFS9idqJ2Fc7nWOXqtWcXUedPa",
+              "4": "gG2zsbcpZ6za8B0CHjBK7EjbbJhNl3mkEFvJItA1yKNF4t9BHGWtNA0ul2i5fMEABpT8A7vFDFkKcfr3Y4UdmAkuzYVpRmvIqL2BETzpxVwudFBWOLweBmA0R/JnSrK8",
+              "5": "kCcjLCxxS3reR41DaF1Hhf7Kn1jGrBALB4PnkJtkissoVX3hN6j6+qKYBdamzsz2ByuZnyNSlQ5EoE7ESmMKwIkGGOR2U4I3RKltEXgWgvBHFIfXBYHnQ7q1bvF8R5DM",
+              "6": "qSoFyPsm6xOQ09uMsfqlOY/dc0LHO0iCIRYgxjCZRLXskUPwtraFU5uhdR9Wfh56CfOITct7xtSsWQAyp1NUIdZh52DLmE/s/HOPA+r5HibPHsEfqfcAVCISlckw/Us1",
+              "7": "qMkzyMKKOgXqSUk6gMm3gGDQ0k2ZBbGynk+NhGKIKvcwYSSYSyO82NZH3sljV/eeEKkEShPnuXYIoBkzSbjpvlkeAe2mHCpeTm5RVD6SLVVlpbUOC93WfsMEsPY4lTVw",
+              "8": "oVPI9g0Ut7zfta7ZA8aKe8V2oky3RUUkFCZKqYLmoRs39Jqx8Y4t0TbrrQrOcBcVBo5X9CJFK0VmXb4NAJ1XIeAofh/8p4QttaIbPkQpCgyTPN6BvV2yLYTa0iMZZ3T3",
+              "9": "pc0xOrGOeKW6Oid6uKo5I9dmftCJlDLyoF3DBMaJ6pQCspiJ2BI+GO7ASvmjj0daBglNG38hX2HuAkcleKx1P739bVrk8eZhVwnnLuWn6DZZyNfobb1laJgpev/JVGgG"
             }
           }
         },
@@ -25,7 +25,8 @@
       },
       "RunningInstance": null,
       "DecidedValue": null,
-      "StartingDuty": {
+      "Finished": true,
+      "ValidatorDuty": {
         "Type": 6,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
         "Slot": "12",
@@ -35,76 +36,79 @@
         "CommitteesAtSlot": 0,
         "ValidatorCommitteeIndex": 0,
         "ValidatorSyncCommitteeIndices": null
-      },
-      "Finished": true
+      }
     },
     "Share": {
       "1": {
-        "ValidatorIndex": "1",
-        "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-        "SharePubKey": "848e7362a1f1fde7ae50dbb8ee2829818f34c870364deda5271340cb84d965620654d54435f5789ac52ffa545429aced",
         "Committee": [
           {
-            "SharePubKey": "848e7362a1f1fde7ae50dbb8ee2829818f34c870364deda5271340cb84d965620654d54435f5789ac52ffa545429aced",
+            "SharePubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
             "Signer": 1
           },
           {
-            "SharePubKey": "80b3a18c00bd827ee9dc09eee63575aa1647b23a44da46822a5b9f6c6a962e41a4d9df19b9df3b5e9ad068f77acb1f59",
+            "SharePubKey": "gLOhjAC9gn7p3Anu5jV1qhZHsjpE2kaCKlufbGqWLkGk2d8Zud87XprQaPd6yx9Z",
             "Signer": 2
           },
           {
-            "SharePubKey": "85d193252e451e7ca6cc13ed39ad89f0d159824b9348d2fa6d195c9cc43edd8738da6d1809f50c99eee955166a6e94d9",
+            "SharePubKey": "hdGTJS5FHnymzBPtOa2J8NFZgkuTSNL6bRlcnMQ+3Yc42m0YCfUMme7pVRZqbpTZ",
             "Signer": 3
           },
           {
-            "SharePubKey": "b1e8262efaf73c625e34c526477fca8125f1e6084d002cf053c11d3ab70958cac70b5f20d9a2cb144fa0f1ec07c8d9f3",
+            "SharePubKey": "segmLvr3PGJeNMUmR3/KgSXx5ghNACzwU8EdOrcJWMrHC18g2aLLFE+g8ewHyNnz",
             "Signer": 4
           },
           {
-            "SharePubKey": "90d3cfc8c2bc3ce7e5a185e581cb2669d041da6789e89c8bd23b82218172d0984c0f3adcacbcff86b966d38e157e735b",
+            "SharePubKey": "kNPPyMK8POfloYXlgcsmadBB2meJ6JyL0juCIYFy0JhMDzrcrLz/hrlm044VfnNb",
             "Signer": 5
           },
           {
-            "SharePubKey": "8a73cce14e3b38511c5407b063354550a3eb59405bb59032511490eb5cc2d57c4a31753777de733dfc98e6f032a886b7",
+            "SharePubKey": "inPM4U47OFEcVAewYzVFUKPrWUBbtZAyURSQ61zC1XxKMXU3d95zPfyY5vAyqIa3",
             "Signer": 6
           },
           {
-            "SharePubKey": "8e9fbd9eb67cb18a83cf403128a0710fa1d791073ac000b82e0f26abbf8b349afb0bdbff7dca21024e3af1320bd28de3",
+            "SharePubKey": "jp+9nrZ8sYqDz0AxKKBxD6HXkQc6wAC4Lg8mq7+LNJr7C9v/fcohAk468TIL0o3j",
             "Signer": 7
           },
           {
-            "SharePubKey": "91dbb7a44c786d1e248946bbfbe66af4c81b0ba88bcd58d2c0e8fa02e8bc1580adc4a9dd21a2a527a919a3dfd8d83768",
+            "SharePubKey": "kdu3pEx4bR4kiUa7++Zq9MgbC6iLzVjSwOj6Aui8FYCtxKndIaKlJ6kZo9/Y2Ddo",
             "Signer": 8
           },
           {
-            "SharePubKey": "9878e5c2ee21ef00fb75d0800991dbccdcde355e6013aab49b6e8d334735d3e64a9df7b59cfbeb01a58d6add7f2f458f",
+            "SharePubKey": "mHjlwu4h7wD7ddCACZHbzNzeNV5gE6q0m26NM0c10+ZKnfe1nPvrAaWNat1/L0WP",
             "Signer": 9
           },
           {
-            "SharePubKey": "905d7daa974e9a271b958fab3c4cc3f09e8e3444b6ae476277b7a77e38582397e6a95b4e3ceac10df512cae3df39fa23",
+            "SharePubKey": "kF19qpdOmicblY+rPEzD8J6ONES2rkdid7enfjhYI5fmqVtOPOrBDfUSyuPfOfoj",
             "Signer": 10
           },
           {
-            "SharePubKey": "b678ffea6dd45576820562fb490ed6aa3add86ffd5b43d83c42d181ee8e66a59dd49a1b09bcb2fed564ad0bf316a8c2a",
+            "SharePubKey": "tnj/6m3UVXaCBWL7SQ7Wqjrdhv/VtD2DxC0YHujmalndSaGwm8sv7VZK0L8xaowq",
             "Signer": 11
           },
           {
-            "SharePubKey": "96c41e131f85c516f6c82abd8604dc81a3545614b104983d1fbcd6e2a003bfbe9c3c63c1050283fd9fefdf830f8252f7",
+            "SharePubKey": "lsQeEx+FxRb2yCq9hgTcgaNUVhSxBJg9H7zW4qADv76cPGPBBQKD/Z/v34MPglL3",
             "Signer": 12
           },
           {
-            "SharePubKey": "a742aed10037b226b44685d30c58de9a7dc263247b85899e87141cd3df75332355c23dca87ccba1b99aaf07f078888a6",
+            "SharePubKey": "p0Ku0QA3sia0RoXTDFjemn3CYyR7hYmehxQc0991MyNVwj3Kh8y6G5mq8H8HiIim",
             "Signer": 13
           }
         ],
-        "DomainType": "00000301",
+        "DomainType": [
+          0,
+          0,
+          3,
+          1
+        ],
         "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
-        "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+        "Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "SharePubKey": "hI5zYqHx/eeuUNu47igpgY80yHA2Te2lJxNAy4TZZWIGVNVENfV4msUv+lRUKazt",
+        "ValidatorIndex": "1",
+        "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0"
       }
     },
     "QBFTController": null,
     "BeaconNetwork": "now_test_network",
-    "RunnerRoleType": 5,
-    "OperatorSigner": null
+    "RunnerRoleType": 5
   }
 }

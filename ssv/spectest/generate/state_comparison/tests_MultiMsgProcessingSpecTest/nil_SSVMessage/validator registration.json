@@ -5,9 +5,9 @@
         "Signatures": {
           "1": {
             "614710073b626a56b407f238887212626104b4c38e5627d787a284b310952f46": {
-              "1": "916858fcef431dfcc572670c3b6c37a3b9d9b0575a96bacf4fdfdb70223ee610dfceec480d4d095c4d50fa0c134e6bfa0354241f90da834133a4ccc347adf1f7c78f5498b5714ddd59832f15dbb275a66b5d4cd2a4cf5b215804037f7b7c0e1d",
-              "2": "8e263f092f58c6b6f2535f1ea03753b6608e22a12950715ac0380e6ae4a5040147fd942d7bc581241e1e98d7d974bae617004fca719c6a833feae33a20864914436bf4c814e6331ee512b4fed66076313966be9d2c4bc44799edfb3944ab8e38",
-              "3": "a0911660e79ee25e39239edc75fa442644349f2c9404f05a0221c9418e2a7ddbf991e11e02e450b4f6c21f886db84ad215eb6895ebaacd5a41048b9ad5956e56c9b4d96613a2cfbe0c77e8ee4425986dc95583a27eca21c1676be99d5b2e3f05"
+              "1": "kWhY/O9DHfzFcmcMO2w3o7nZsFdalrrPT9/bcCI+5hDfzuxIDU0JXE1Q+gwTTmv6A1QkH5Dag0EzpMzDR63x98ePVJi1cU3dWYMvFduydaZrXUzSpM9bIVgEA397fA4d",
+              "2": "jiY/CS9YxrbyU18eoDdTtmCOIqEpUHFawDgOauSlBAFH/ZQte8WBJB4emNfZdLrmFwBPynGcaoM/6uM6IIZJFENr9MgU5jMe5RK0/tZgdjE5Zr6dLEvER5nt+zlEq444",
+              "3": "oJEWYOee4l45I57cdfpEJkQ0nyyUBPBaAiHJQY4qfdv5keEeAuRQtPbCH4htuErSFetoleuqzVpBBIua1ZVuVsm02WYTos++DHfo7kQlmG3JVYOifsohwWdr6Z1bLj8F"
             }
           }
         },
@@ -19,7 +19,8 @@
       },
       "RunningInstance": null,
       "DecidedValue": null,
-      "StartingDuty": {
+      "Finished": true,
+      "ValidatorDuty": {
         "Type": 5,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
         "Slot": "12",
@@ -29,40 +30,43 @@
         "CommitteesAtSlot": 0,
         "ValidatorCommitteeIndex": 0,
         "ValidatorSyncCommitteeIndices": null
-      },
-      "Finished": true
+      }
     },
     "Share": {
       "1": {
-        "ValidatorIndex": "1",
-        "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-        "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
         "Committee": [
           {
-            "SharePubKey": "97d94a811d644936052a9d2d4acd64718974cf678dbefd267324c8e9f8e7034a4a6b7d8779e27a019538c3c425c3e5e7",
+            "SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
             "Signer": 1
           },
           {
-            "SharePubKey": "a6bcebe3097d74171b40c712a031ceb0371db3d3c402cf2ce691b9120f3bab75d4d56dfa0f37591544999bf18c5353ed",
+            "SharePubKey": "przr4wl9dBcbQMcSoDHOsDcds9PEAs8s5pG5Eg87q3XU1W36DzdZFUSZm/GMU1Pt",
             "Signer": 2
           },
           {
-            "SharePubKey": "8090e0b7666a45ecc5d4ef7418ac99f09e6cb244029fea6a0a7fccbe9ee08bc539de0dfa66be6babc8493dd99dd1a98d",
+            "SharePubKey": "gJDgt2ZqRezF1O90GKyZ8J5sskQCn+pqCn/Mvp7gi8U53g36Zr5rq8hJPdmd0amN",
             "Signer": 3
           },
           {
-            "SharePubKey": "a7c0a276b70a5ee3395c7d6d2655ed60528aa252d4d21eca5fcc5223e50cc42bd168b280ab7ab5317354dddfcf3df9e4",
+            "SharePubKey": "p8CidrcKXuM5XH1tJlXtYFKKolLU0h7KX8xSI+UMxCvRaLKAq3q1MXNU3d/PPfnk",
             "Signer": 4
           }
         ],
-        "DomainType": "00000301",
+        "DomainType": [
+          0,
+          0,
+          3,
+          1
+        ],
         "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
-        "Graffiti": "0100000000000000000000000000000000000000000000000000000000000000"
+        "Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "SharePubKey": "l9lKgR1kSTYFKp0tSs1kcYl0z2eNvv0mcyTI6fjnA0pKa32HeeJ6AZU4w8Qlw+Xn",
+        "ValidatorIndex": "1",
+        "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0"
       }
     },
     "QBFTController": null,
     "BeaconNetwork": "now_test_network",
-    "RunnerRoleType": 4,
-    "OperatorSigner": null
+    "RunnerRoleType": 4
   }
 }

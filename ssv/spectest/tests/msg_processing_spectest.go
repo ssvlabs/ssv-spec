@@ -15,7 +15,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
-	hexencoding "github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
@@ -261,7 +260,7 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	aux := &MsgProcessingSpecTestAlias{}
 
 	// Unmarshal the JSON data into the auxiliary struct
-	if err := hexencoding.SSVUnmarshalJSONWithHex(data, &aux); err != nil {
+	if err := json.Unmarshal(data, &aux); err != nil {
 		return err
 	}
 

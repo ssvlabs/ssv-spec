@@ -8,7 +8,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
-	hexencoding "github.com/ssvlabs/ssv-spec/types/spectest/utils"
 )
 
 // This file adds, as testing utils, the Encode, Decode and GetRoot methods
@@ -83,7 +82,7 @@ func (pcs *State) UnmarshalJSON(data []byte) error {
 	aux := &StateAlias{}
 
 	// Unmarshal the JSON data into the auxiliary struct
-	if err := hexencoding.SSVUnmarshalJSONWithHex(data, &aux); err != nil {
+	if err := json.Unmarshal(data, &aux); err != nil {
 		return err
 	}
 
@@ -151,7 +150,7 @@ func (c *Committee) UnmarshalJSON(data []byte) error {
 
 	// Unmarshal the JSON data into the auxiliary struct
 	aux := &CommitteeAlias{}
-	if err := hexencoding.SSVUnmarshalJSONWithHex(data, &aux); err != nil {
+	if err := json.Unmarshal(data, &aux); err != nil {
 		return err
 	}
 

@@ -15,7 +15,6 @@ import (
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/google/go-cmp/cmp"
 	"github.com/ssvlabs/ssv-spec/types"
-	hexencoding "github.com/ssvlabs/ssv-spec/types/spectest/utils"
 	"github.com/stretchr/testify/require"
 )
 
@@ -56,7 +55,7 @@ func UnmarshalStateComparison[T types.Root](basedir string, testName string, tes
 		return nilT, err
 	}
 
-	err = hexencoding.UnmarshalJSONWithHex(byteValue, targetState)
+	err = json.Unmarshal(byteValue, targetState)
 	if err != nil {
 		return nilT, err
 	}
@@ -75,7 +74,7 @@ func SSVUnmarshalStateComparison[T types.Root](basedir string, testName string, 
 		return nilT, err
 	}
 
-	err = hexencoding.SSVUnmarshalJSONWithHex(byteValue, targetState)
+	err = json.Unmarshal(byteValue, targetState)
 	if err != nil {
 		return nilT, err
 	}
