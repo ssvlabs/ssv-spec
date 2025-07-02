@@ -19,11 +19,12 @@ func (r *ExpectedRoot) MarshalJSON() ([]byte, error) {
 }
 
 func (r *ExpectedRoot) UnmarshalJSON(data []byte) error {
-	var byteArr []byte
-	if err := json.Unmarshal(data, &byteArr); err != nil {
+	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	bytes, err := hex.DecodeString(hexStr)
+	if err != nil {
 		return fmt.Errorf("failed to decode ExpectedRoot: %w", err)
 	}
-	copy(r[:], byteArr)
+	copy(r[:], bytes)
 	return nil
 }
 
@@ -35,11 +36,12 @@ func (r *ExpectedCdRoot) MarshalJSON() ([]byte, error) {
 }
 
 func (r *ExpectedCdRoot) UnmarshalJSON(data []byte) error {
-	var byteArr []byte
-	if err := json.Unmarshal(data, &byteArr); err != nil {
-		return fmt.Errorf("failed to decode ExpectedRoot: %w", err)
+	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	bytes, err := hex.DecodeString(hexStr)
+	if err != nil {
+		return fmt.Errorf("failed to decode ExpectedCdRoot: %w", err)
 	}
-	copy(r[:], byteArr)
+	copy(r[:], bytes)
 	return nil
 }
 
@@ -51,11 +53,12 @@ func (r *ExpectedBlkRoot) MarshalJSON() ([]byte, error) {
 }
 
 func (r *ExpectedBlkRoot) UnmarshalJSON(data []byte) error {
-	var byteArr []byte
-	if err := json.Unmarshal(data, &byteArr); err != nil {
-		return fmt.Errorf("failed to decode ExpectedRoot: %w", err)
+	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	bytes, err := hex.DecodeString(hexStr)
+	if err != nil {
+		return fmt.Errorf("failed to decode ExpectedBlkRoot: %w", err)
 	}
-	copy(r[:], byteArr)
+	copy(r[:], bytes)
 	return nil
 }
 
@@ -68,11 +71,12 @@ func (f *ForkVersion) MarshalJSON() ([]byte, error) {
 }
 
 func (f *ForkVersion) UnmarshalJSON(data []byte) error {
-	var byteArr []byte
-	if err := json.Unmarshal(data, &byteArr); err != nil {
-		return fmt.Errorf("failed to decode ExpectedRoot: %w", err)
+	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	bytes, err := hex.DecodeString(hexStr)
+	if err != nil {
+		return fmt.Errorf("failed to decode ForkVersion: %w", err)
 	}
-	copy(f[:], byteArr)
+	copy(f[:], bytes)
 	return nil
 }
 
@@ -83,32 +87,13 @@ func (c *CommitteeID) MarshalJSON() ([]byte, error) {
 }
 
 func (c *CommitteeID) UnmarshalJSON(data []byte) error {
-	// Try base64-encoded string first
-	var encoded string
-	if err := json.Unmarshal(data, &encoded); err == nil {
-		decoded, err := base64.StdEncoding.DecodeString(encoded)
-		if err != nil {
-			return fmt.Errorf("failed to decode CommitteeID base64: %w", err)
-		}
-		if len(decoded) != 32 {
-			return fmt.Errorf("invalid CommitteeID length from base64: expected 32, got %d", len(decoded))
-		}
-		copy(c[:], decoded)
-		return nil
+	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	bytes, err := hex.DecodeString(hexStr)
+	if err != nil {
+		return fmt.Errorf("failed to decode CommitteeID: %w", err)
 	}
-
-	// If not a string, try array of integers
-	var arr []byte
-	if err := json.Unmarshal(data, &arr); err == nil {
-		if len(arr) != 32 {
-			return fmt.Errorf("invalid CommitteeID length from array: expected 32, got %d", len(arr))
-		}
-		copy(c[:], arr)
-		return nil
-	}
-
-	// Fallback error
-	return fmt.Errorf("CommitteeID must be base64 string or array of 32 bytes")
+	copy(c[:], bytes)
+	return nil
 }
 
 // ************** MessageID **************
@@ -118,24 +103,23 @@ func (c *MessageID) MarshalJSON() ([]byte, error) {
 }
 
 func (c *MessageID) UnmarshalJSON(data []byte) error {
-	var str string
-	if err := json.Unmarshal(data, &str); err == nil {
-		copy(c[:], str)
-		return nil
-	}
-
-	// If not a string, try array of integers
-	var arr []byte
-	if err := json.Unmarshal(data, &arr); err == nil {
-		if len(arr) != 56 {
-			return fmt.Errorf("invalid MessageID length from array: expected 56, got %d", len(arr))
+	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	bytes, err := hex.DecodeString(hexStr)
+	if err != nil {
+		// If not a string, try array of integers
+		var arr []byte
+		if err := json.Unmarshal(data, &arr); err == nil {
+			if len(arr) != 56 {
+				return fmt.Errorf("invalid MessageID length from array: expected 56, got %d", len(arr))
+			}
+			copy(c[:], arr)
+			return nil
 		}
-		copy(c[:], arr)
-		return nil
-	}
 
-	// Fallback error
-	return fmt.Errorf("MessageID must be a string or array of 56 bytes")
+		return fmt.Errorf("MessageID must be a string or array of 56 bytes")
+	}
+	copy(c[:], bytes)
+	return nil
 }
 
 // ************** DomainType **************
@@ -145,46 +129,25 @@ func (d *DomainType) MarshalJSON() ([]byte, error) {
 }
 
 func (d *DomainType) UnmarshalJSON(data []byte) error {
-	var str string
-	if err := json.Unmarshal(data, &str); err == nil {
-		copy(d[:], str)
-		return nil
+	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	bytes, err := hex.DecodeString(hexStr)
+	if err != nil {
+		return fmt.Errorf("failed to decode DomainType: %w", err)
 	}
-
-	// If not a string, try array of integers
-	var arr []byte
-	if err := json.Unmarshal(data, &arr); err == nil {
-		if len(arr) != 4 {
-			return fmt.Errorf("invalid DomainType length from array: expected 4, got %d", len(arr))
-		}
-		copy(d[:], arr)
-		return nil
-	}
-
-	// Fallback error
-	return fmt.Errorf("DomainType must be a string or array of 4 bytes")
+	copy(d[:], bytes)
+	return nil
 }
 
 // ************** ValidatorPK **************
 
 func (v *ValidatorPK) UnmarshalJSON(data []byte) error {
-	var str string
-	if err := json.Unmarshal(data, &str); err == nil {
-		copy(v[:], str)
-		return nil
+	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	bytes, err := hex.DecodeString(hexStr)
+	if err != nil {
+		return fmt.Errorf("failed to decode ValidatorPK: %w", err)
 	}
-
-	var arr []byte
-	if err := json.Unmarshal(data, &arr); err == nil {
-		if len(arr) != 48 {
-			return fmt.Errorf("invalid ValidatorPK length from array: expected 48, got %d", len(arr))
-		}
-		copy(v[:], arr)
-		return nil
-	}
-
-	// Fallback error
-	return fmt.Errorf("ValidatorPK must be a string or array of 48 bytes")
+	copy(v[:], bytes)
+	return nil
 }
 
 // ************** PartialSignatureMessage **************
