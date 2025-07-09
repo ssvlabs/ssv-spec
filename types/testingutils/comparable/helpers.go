@@ -8,9 +8,6 @@ import (
 	"strings"
 	"testing"
 
-	"encoding/base64"
-	"encoding/hex"
-
 	spec2 "github.com/attestantio/go-eth2-client/spec"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/google/go-cmp/cmp"
@@ -45,25 +42,6 @@ func FixIssue178(input *types.ValidatorConsensusData, version spec2.DataVersion)
 
 // UnmarshalStateComparison reads a json derived from 'testName' and unmarshals it into 'targetState'
 func UnmarshalStateComparison[T types.Root](basedir string, testName string, testType string, targetState T) (T, error) {
-	var nilT T
-	basedir = filepath.Join(basedir, "generate")
-	scDir := GetSCDir(basedir, testType)
-	path := filepath.Join(scDir, fmt.Sprintf("%s.json", testName))
-
-	byteValue, err := os.ReadFile(filepath.Clean(path))
-	if err != nil {
-		return nilT, err
-	}
-
-	err = json.Unmarshal(byteValue, targetState)
-	if err != nil {
-		return nilT, err
-	}
-
-	return targetState, nil
-}
-
-func SSVUnmarshalStateComparison[T types.Root](basedir string, testName string, testType string, targetState T) (T, error) {
 	var nilT T
 	basedir = filepath.Join(basedir, "generate")
 	scDir := GetSCDir(basedir, testType)
@@ -135,93 +113,8 @@ func CompareWithJson(t *testing.T, test any, testName string, testType string) {
 	expectedTestMap, err := GetExpectedStateFromScFile(testName, testType)
 	require.NoError(t, err)
 
-	// Convert hex strings to byte arrays for SigningRoot
-	convertSigningRootToBytes(testMap)
-	convertSigningRootToBytes(expectedTestMap)
-
 	diff := cmp.Diff(testMap, expectedTestMap)
 	if diff != "" {
 		t.Errorf("%s inputs changed. %v", testName, diff)
-	}
-}
-
-// convertSigningRootToBytes recursively converts hex strings to byte arrays for SigningRoot fields
-func convertSigningRootToBytes(m map[string]interface{}) {
-	for k, v := range m {
-		switch vv := v.(type) {
-		case map[string]interface{}:
-			convertSigningRootToBytes(vv)
-		case []interface{}:
-			// Check if this is a Signatures array
-			switch k {
-			case "Signatures":
-				// Convert each signature to base64 string
-				for i, item := range vv {
-					if str, ok := item.(string); ok {
-						// Remove 0x prefix if present
-						hexStr := strings.TrimPrefix(str, "0x")
-						bytes, err := hex.DecodeString(hexStr)
-						if err == nil {
-							// Convert to base64
-							vv[i] = base64.StdEncoding.EncodeToString(bytes)
-						}
-					}
-				}
-			case "MessageIDs":
-				// Convert each MessageID to float64 array
-				for i, item := range vv {
-					if str, ok := item.(string); ok {
-						// Remove 0x prefix if present
-						hexStr := strings.TrimPrefix(str, "0x")
-						bytes, err := hex.DecodeString(hexStr)
-						if err == nil {
-							// Convert bytes to array of interface{}
-							anyArray := make([]interface{}, len(bytes))
-							for j, b := range bytes {
-								anyArray[j] = float64(b)
-							}
-							vv[i] = anyArray
-						}
-					}
-				}
-			default:
-				// For other arrays, recursively process each item
-				for _, item := range vv {
-					if m, ok := item.(map[string]interface{}); ok {
-						convertSigningRootToBytes(m)
-					}
-				}
-			}
-		case string:
-			switch k {
-			case "SigningRoot", "ExpectedBlkRoot", "ExpectedCdRoot", "ExpectedRoot", "MsgID", "CommitteeID", "DomainType", "ForkVersion", "Value":
-				// Remove 0x prefix if present
-				hexStr := vv
-				hexStr = strings.TrimPrefix(hexStr, "0x")
-				bytes, err := hex.DecodeString(hexStr)
-				if err == nil {
-					// Convert bytes to array of float64
-					floatArray := make([]float64, len(bytes))
-					for i, b := range bytes {
-						floatArray[i] = float64(b)
-					}
-					// Convert []float64 to []any to match the expected type
-					anyArray := make([]interface{}, len(floatArray))
-					for i, f := range floatArray {
-						anyArray[i] = f
-					}
-					m[k] = anyArray
-				}
-			case "SSVOperatorPubKey", "PartialSignature", "FullData", "StateValue":
-				// Remove 0x prefix if present
-				hexStr := vv
-				hexStr = strings.TrimPrefix(hexStr, "0x")
-				bytes, err := hex.DecodeString(hexStr)
-				if err == nil {
-					// Convert to base64
-					m[k] = base64.StdEncoding.EncodeToString(bytes)
-				}
-			}
-		}
 	}
 }

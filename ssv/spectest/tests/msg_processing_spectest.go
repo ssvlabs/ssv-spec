@@ -190,7 +190,7 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 	}
 	basedir, err := os.Getwd()
 	require.NoError(t, err)
-	runner, err = typescomparable.SSVUnmarshalStateComparison(basedir, name, testType, runner)
+	runner, err = typescomparable.UnmarshalStateComparison(basedir, name, testType, runner)
 	require.NoError(t, err)
 
 	// override

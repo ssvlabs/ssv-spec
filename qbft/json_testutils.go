@@ -4,7 +4,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -196,11 +195,18 @@ func (r *Value) MarshalJSON() ([]byte, error) {
 }
 
 func (r *Value) UnmarshalJSON(data []byte) error {
-	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	hexStr := hexStringFromJSON(data)
 	bytes, err := hex.DecodeString(hexStr)
 	if err != nil {
-		return fmt.Errorf("failed to decode Value: %w", err)
+		return errors.Wrap(err, "failed to decode Value")
 	}
 	copy(r[:], bytes)
 	return nil
+}
+
+// helpers
+
+// hexStringFromJSON trims surrounding quotes from a JSON string value.
+func hexStringFromJSON(data []byte) string {
+	return strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
 }

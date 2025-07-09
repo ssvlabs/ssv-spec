@@ -182,7 +182,7 @@ func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, nam
 	}
 	basedir, err := os.Getwd()
 	require.NoError(t, err)
-	runner, err = comparable.SSVUnmarshalStateComparison(basedir, name, testType, runner)
+	runner, err = comparable.UnmarshalStateComparison(basedir, name, testType, runner)
 	require.NoError(t, err)
 
 	// override

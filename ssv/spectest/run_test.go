@@ -104,21 +104,21 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &valcheck.SpecTest{}
-				require.NoError(t, json.Unmarshal(byts, typedTest))
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
 
 				typedTest.Run(t)
 			case reflect.TypeOf(&valcheck.MultiSpecTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &valcheck.MultiSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, typedTest))
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
 
 				typedTest.Run(t)
 			case reflect.TypeOf(&synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &synccommitteeaggregator.SyncCommitteeAggregatorProofSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, typedTest))
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
 
 				typedTest.Run(t)
 			case reflect.TypeOf(&newduty.MultiStartNewRunnerDutySpecTest{}).String():
@@ -138,7 +138,7 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &partialsigcontainer.PartialSigContainerTest{}
-				require.NoError(t, json.Unmarshal(byts, typedTest))
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
 
 				typedTest.Run(t)
 			case reflect.TypeOf(&committee.CommitteeSpecTest{}).String():
@@ -161,7 +161,7 @@ func parseAndTest(t *testing.T, name string, test interface{}) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &runnerconstruction.RunnerConstructionSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, typedTest))
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
 
 				typedTest.Run(t)
 			default:
@@ -198,26 +198,6 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 			panic("cant unmarshal beacon duty")
 		}
 		testDuty = duty
-	} else if _, ok := m["Duty"]; ok {
-		byts, err := json.Marshal(m["Duty"])
-		if err != nil {
-			panic("cant marshal duty")
-		}
-		if _, ok := m["Duty"].(map[string]interface{})["ValidatorDuties"]; ok {
-			committeeDuty := &types.CommitteeDuty{}
-			err = json.Unmarshal(byts, committeeDuty)
-			if err != nil {
-				panic("cant unmarshal committee duty")
-			}
-			testDuty = committeeDuty
-		} else {
-			validatorDuty := &types.ValidatorDuty{}
-			err = json.Unmarshal(byts, validatorDuty)
-			if err != nil {
-				panic("cant unmarshal validator duty")
-			}
-			testDuty = validatorDuty
-		}
 	} else {
 		panic("no beacon or committee duty")
 	}
@@ -284,26 +264,6 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 			panic("cant unmarshal beacon duty")
 		}
 		testDuty = duty
-	} else if _, ok := m["Duty"]; ok {
-		byts, err := json.Marshal(m["Duty"])
-		if err != nil {
-			panic("cant marshal duty")
-		}
-		if _, ok := m["Duty"].(map[string]interface{})["ValidatorDuties"]; ok {
-			committeeDuty := &types.CommitteeDuty{}
-			err = json.Unmarshal(byts, committeeDuty)
-			if err != nil {
-				panic("cant unmarshal committee duty")
-			}
-			testDuty = committeeDuty
-		} else {
-			validatorDuty := &types.ValidatorDuty{}
-			err = json.Unmarshal(byts, validatorDuty)
-			if err != nil {
-				panic("cant unmarshal validator duty")
-			}
-			testDuty = validatorDuty
-		}
 	} else {
 		panic("no beacon or committee duty")
 	}
@@ -373,33 +333,34 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 			panic(err)
 		}
 
-		if input.(map[string]interface{})["ValidatorDuties"] != nil {
-			// Try to decode as CommitteeDuty first
-			committeeDuty := &types.CommitteeDuty{}
-			err = json.Unmarshal(byts, committeeDuty)
-			if err == nil {
-				inputs = append(inputs, committeeDuty)
-				continue
-			}
-		} else if input.(map[string]interface{})["ValidatorIndex"] != nil {
-			// Try to decode as ValidatorDuty
-			duty := &types.ValidatorDuty{}
-			err = json.Unmarshal(byts, duty)
-			if err == nil {
-				inputs = append(inputs, duty)
-				continue
-			}
-		} else {
-			// Try to decode as SignedSSVMessage
-			msg := &types.SignedSSVMessage{}
-			err = json.Unmarshal(byts, msg)
-			if err == nil {
-				inputs = append(inputs, msg)
-				continue
-			}
+		var getDecoder = func() *json.Decoder {
+			decoder := json.NewDecoder(strings.NewReader(string(byts)))
+			decoder.DisallowUnknownFields()
+			return decoder
 		}
 
-		panic(fmt.Sprintf("Unsupported input: %T, error: %v\n", input, err))
+		committeeDuty := &types.CommitteeDuty{}
+		err = getDecoder().Decode(&committeeDuty)
+		if err == nil {
+			inputs = append(inputs, committeeDuty)
+			continue
+		}
+
+		duty := &types.ValidatorDuty{}
+		err = getDecoder().Decode(&duty)
+		if err == nil {
+			inputs = append(inputs, duty)
+			continue
+		}
+
+		msg := &types.SignedSSVMessage{}
+		err = getDecoder().Decode(&msg)
+		if err == nil {
+			inputs = append(inputs, msg)
+			continue
+		}
+
+		panic(fmt.Sprintf("Unsupported input: %T\n", input))
 	}
 
 	outputMsgs := make([]*types.PartialSignatureMessages, 0)
@@ -465,7 +426,8 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 
 	base := &ssv.BaseRunner{}
 	byts, _ := json.Marshal(baseRunnerMap)
-	require.NoError(t, json.Unmarshal(byts, base))
+	require.NoError(t, json.Unmarshal(byts, &base))
+
 	ret := baseRunnerForRole(base.RunnerRoleType, base, ks)
 
 	if ret.GetBaseRunner().QBFTController != nil {

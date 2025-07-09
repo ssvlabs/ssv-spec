@@ -19,7 +19,7 @@ func (r *ExpectedRoot) MarshalJSON() ([]byte, error) {
 }
 
 func (r *ExpectedRoot) UnmarshalJSON(data []byte) error {
-	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	hexStr := hexStringFromJSON(data)
 	bytes, err := hex.DecodeString(hexStr)
 	if err != nil {
 		return fmt.Errorf("failed to decode ExpectedRoot: %w", err)
@@ -36,7 +36,7 @@ func (r *ExpectedCdRoot) MarshalJSON() ([]byte, error) {
 }
 
 func (r *ExpectedCdRoot) UnmarshalJSON(data []byte) error {
-	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	hexStr := hexStringFromJSON(data)
 	bytes, err := hex.DecodeString(hexStr)
 	if err != nil {
 		return fmt.Errorf("failed to decode ExpectedCdRoot: %w", err)
@@ -53,7 +53,7 @@ func (r *ExpectedBlkRoot) MarshalJSON() ([]byte, error) {
 }
 
 func (r *ExpectedBlkRoot) UnmarshalJSON(data []byte) error {
-	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	hexStr := hexStringFromJSON(data)
 	bytes, err := hex.DecodeString(hexStr)
 	if err != nil {
 		return fmt.Errorf("failed to decode ExpectedBlkRoot: %w", err)
@@ -71,7 +71,7 @@ func (f *ForkVersion) MarshalJSON() ([]byte, error) {
 }
 
 func (f *ForkVersion) UnmarshalJSON(data []byte) error {
-	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	hexStr := hexStringFromJSON(data)
 	bytes, err := hex.DecodeString(hexStr)
 	if err != nil {
 		return fmt.Errorf("failed to decode ForkVersion: %w", err)
@@ -87,19 +87,13 @@ func (c *CommitteeID) MarshalJSON() ([]byte, error) {
 }
 
 func (c *CommitteeID) UnmarshalJSON(data []byte) error {
-	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	hexStr := hexStringFromJSON(data)
 	bytes, err := hex.DecodeString(hexStr)
 	if err != nil {
-		// If not a string, try array of integers
-		var arr []byte
-		if err := json.Unmarshal(data, &arr); err == nil {
-			if len(arr) != 32 {
-				return fmt.Errorf("invalid CommitteeID length from array: expected 32, got %d", len(arr))
-			}
-			copy(c[:], arr)
-			return nil
+		bytes, err = tryUnmarshalByteArray(data, 32)
+		if err != nil {
+			return fmt.Errorf("failed to decode CommitteeID: %w", err)
 		}
-		return fmt.Errorf("failed to decode CommitteeID: %w", err)
 	}
 	copy(c[:], bytes)
 	return nil
@@ -112,20 +106,13 @@ func (c *MessageID) MarshalJSON() ([]byte, error) {
 }
 
 func (c *MessageID) UnmarshalJSON(data []byte) error {
-	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	hexStr := hexStringFromJSON(data)
 	bytes, err := hex.DecodeString(hexStr)
 	if err != nil {
-		// If not a string, try array of integers
-		var arr []byte
-		if err := json.Unmarshal(data, &arr); err == nil {
-			if len(arr) != 56 {
-				return fmt.Errorf("invalid MessageID length from array: expected 56, got %d", len(arr))
-			}
-			copy(c[:], arr)
-			return nil
+		bytes, err = tryUnmarshalByteArray(data, 56)
+		if err != nil {
+			return fmt.Errorf("failed to decode MessageID: %w", err)
 		}
-
-		return fmt.Errorf("MessageID must be a string or array of 56 bytes")
 	}
 	copy(c[:], bytes)
 	return nil
@@ -138,19 +125,13 @@ func (d *DomainType) MarshalJSON() ([]byte, error) {
 }
 
 func (d *DomainType) UnmarshalJSON(data []byte) error {
-	hexStr := strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+	hexStr := hexStringFromJSON(data)
 	bytes, err := hex.DecodeString(hexStr)
 	if err != nil {
-		// If not a string, try array of integers
-		var arr []byte
-		if err := json.Unmarshal(data, &arr); err == nil {
-			if len(arr) != 4 {
-				return fmt.Errorf("invalid DomainType length from array: expected 4, got %d", len(arr))
-			}
-			copy(d[:], arr)
-			return nil
+		bytes, err = tryUnmarshalByteArray(data, 4)
+		if err != nil {
+			return fmt.Errorf("failed to decode DomainType: %w", err)
 		}
-		return fmt.Errorf("failed to decode DomainType: %w", err)
 	}
 	copy(d[:], bytes)
 	return nil
@@ -297,4 +278,21 @@ func (s *Share) UnmarshalJSON(data []byte) error {
 	s.Graffiti = temp.Graffiti
 
 	return nil
+}
+
+// hexStringFromJSON trims surrounding quotes from a JSON string value.
+func hexStringFromJSON(data []byte) string {
+	return strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+}
+
+// tryUnmarshalByteArray tries to unmarshal a JSON array of bytes of a given length.
+func tryUnmarshalByteArray(data []byte, expectedLen int) ([]byte, error) {
+	var arr []byte
+	if err := json.Unmarshal(data, &arr); err == nil {
+		if len(arr) != expectedLen {
+			return nil, fmt.Errorf("invalid array length: expected %d, got %d", expectedLen, len(arr))
+		}
+		return arr, nil
+	}
+	return nil, fmt.Errorf("not a valid byte array")
 }
