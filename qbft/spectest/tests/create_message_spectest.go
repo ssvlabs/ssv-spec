@@ -59,12 +59,16 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	}
 	require.NoError(t, err)
 
-	r, err2 := msg.GetRoot()
+	if test.Round == qbft.NoRound {
+		require.Fail(t, "qbft round is invalid")
+	}
+
+	r, err := msg.GetRoot()
 	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, err2, test.ExpectedError)
+		require.EqualError(t, err, test.ExpectedError)
 		return
 	}
-	require.NoError(t, err2)
+	require.NoError(t, err)
 
 	if test.ExpectedRoot != hex.EncodeToString(r[:]) {
 		fmt.Printf("expected: %v\n", test.ExpectedRoot)
@@ -151,7 +155,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 		}
 	}
 
-	return qbft.CreateRoundChange(state, signer, 1, test.Value[:])
+	return qbft.CreateRoundChange(state, signer, qbft.FirstRound, test.Value[:])
 }
 
 func (test *CreateMsgSpecTest) TestName() string {
