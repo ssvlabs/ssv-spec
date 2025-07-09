@@ -30,6 +30,7 @@ func PreparedPreviouslyDuplicateRCQuorum() tests.SpecTest {
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 	}
 
 	outputMessages := []*types.SignedSSVMessage{
