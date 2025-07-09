@@ -3,7 +3,7 @@ package types
 import (
 	"bytes"
 
-	"github.com/attestantio/go-eth2-client/spec/phase0"
+	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 )
 
@@ -24,9 +24,9 @@ var (
 
 type BeaconSigner interface {
 	// SignBeaconObject returns signature and root.
-	SignBeaconObject(obj ssz.HashRoot, domain phase0.Domain, pk []byte, domainType DomainType) (Signature, [32]byte, error)
+	SignBeaconObject(obj ssz.HashRoot, domain spec.Domain, pk []byte, domainType spec.DomainType) (Signature, [32]byte, error)
 	// IsAttestationSlashable returns error if attestation is slashable
-	IsAttestationSlashable(pk ShareValidatorPK, data *phase0.AttestationData) error
+	IsAttestationSlashable(pk ShareValidatorPK, data *spec.AttestationData) error
 	// IsBeaconBlockSlashable returns error if the given block is slashable
-	IsBeaconBlockSlashable(pk []byte, slot phase0.Slot) error
+	IsBeaconBlockSlashable(pk []byte, slot spec.Slot) error
 }
