@@ -11,7 +11,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// FarFutureDutySlot tests duty.Slot far in the future
+// FarFutureDutySlot tests duty.Slot higher than expected
 func FarFutureDutySlot() tests.SpecTest {
 	consensusDataBytsF := func(cd *types.ValidatorConsensusData) []byte {
 		cdCopy := &types.ValidatorConsensusData{}

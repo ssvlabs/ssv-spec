@@ -182,7 +182,7 @@ func (p *PartialSignatureMessage) UnmarshalJSON(data []byte) error {
 	}
 
 	if temp.PartialSignature == "" {
-		p.PartialSignature = nil // or make this []byte{}, depending on your requirement
+		p.PartialSignature = nil
 	} else {
 		partialSigHex := temp.PartialSignature
 		partialSigHex = strings.TrimPrefix(partialSigHex, "0x")
