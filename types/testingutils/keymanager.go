@@ -133,7 +133,7 @@ func (km *TestingKeyManager) IsBeaconBlockSlashable(pk []byte, slot phase0.Slot)
 	return nil
 }
 
-func (km *TestingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain phase0.Domain, pk []byte, domainType types.DomainType) (types.Signature, [32]byte, error) {
+func (km *TestingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain phase0.Domain, pk []byte, domainType phase0.DomainType) (types.Signature, [32]byte, error) {
 	mu.Lock()
 	defer mu.Unlock()
 

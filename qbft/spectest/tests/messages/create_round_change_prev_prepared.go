@@ -1,6 +1,7 @@
 package messages
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -12,12 +13,13 @@ func CreateRoundChangePreviouslyPrepared() tests.SpecTest {
 	return &tests.CreateMsgSpecTest{
 		CreateType: tests.CreateRoundChange,
 		Name:       "create round change previously prepared",
+		Round:      qbft.FirstRound,
 		Value:      [32]byte{1, 2, 3, 4},
 		PrepareJustifications: []*types.SignedSSVMessage{
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
 			testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 		},
-		ExpectedRoot: "05da5d07657444faa8e0de69b82cbcec63e8e52251887ab6cfff29da72f4adeb",
+		ExpectedRoot: "a6ffc48674f1522fb90aa7bde2aa76cac54480cf366cdd4afcd7f8b4d548809a",
 	}
 }

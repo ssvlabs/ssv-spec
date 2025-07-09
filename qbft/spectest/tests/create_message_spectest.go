@@ -57,12 +57,16 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	}
 	require.NoError(t, err)
 
-	r, err2 := msg.GetRoot()
+	if test.Round == qbft.NoRound {
+		require.Fail(t, "qbft round is invalid")
+	}
+
+	r, err := msg.GetRoot()
 	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, err2, test.ExpectedError)
+		require.EqualError(t, err, test.ExpectedError)
 		return
 	}
-	require.NoError(t, err2)
+	require.NoError(t, err)
 
 	if test.ExpectedRoot != hex.EncodeToString(r[:]) {
 		fmt.Printf("expected: %v\n", test.ExpectedRoot)
@@ -72,6 +76,17 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	}
 	require.EqualValues(t, test.ExpectedRoot, hex.EncodeToString(r[:]))
 
+	// Validate message
+	err = msg.Validate()
+	require.NoError(t, err)
+
+	qbftMsg := &qbft.Message{}
+	err = qbftMsg.Decode(msg.SSVMessage.Data)
+	require.NoError(t, err)
+
+	err = qbftMsg.Validate()
+	require.NoError(t, err)
+
 	typescomparable.CompareWithJson(t, test, test.TestName(), reflect.TypeOf(test).String())
 }
 
@@ -79,7 +94,8 @@ func (test *CreateMsgSpecTest) createCommit() (*types.SignedSSVMessage, error) {
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
-		ID:              []byte{1, 2, 3, 4},
+		ID:              testingutils.TestingIdentifier,
+		Round:           test.Round,
 	}
 	signer := testingutils.TestingOperatorSigner(ks)
 
@@ -90,7 +106,8 @@ func (test *CreateMsgSpecTest) createPrepare() (*types.SignedSSVMessage, error) 
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
-		ID:              []byte{1, 2, 3, 4},
+		ID:              testingutils.TestingIdentifier,
+		Round:           test.Round,
 	}
 	signer := testingutils.TestingOperatorSigner(ks)
 
@@ -101,7 +118,8 @@ func (test *CreateMsgSpecTest) createProposal() (*types.SignedSSVMessage, error)
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
-		ID:              []byte{1, 2, 3, 4},
+		ID:              testingutils.TestingIdentifier,
+		Round:           test.Round,
 	}
 	signer := testingutils.TestingOperatorSigner(ks)
 
@@ -113,8 +131,9 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 	ks := testingutils.Testing4SharesSet()
 	state := &qbft.State{
 		CommitteeMember:  testingutils.TestingCommitteeMember(ks),
-		ID:               []byte{1, 2, 3, 4},
+		ID:               testingutils.TestingIdentifier,
 		PrepareContainer: qbft.NewMsgContainer(),
+		Round:            test.Round,
 	}
 	signer := testingutils.TestingOperatorSigner(ks)
 
@@ -134,7 +153,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 		}
 	}
 
-	return qbft.CreateRoundChange(state, signer, 1, test.Value[:])
+	return qbft.CreateRoundChange(state, signer, qbft.FirstRound, test.Value[:])
 }
 
 func (test *CreateMsgSpecTest) TestName() string {

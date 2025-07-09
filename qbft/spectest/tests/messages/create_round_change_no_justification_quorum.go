@@ -8,7 +8,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
-// CreateRoundChangeNoJustificationQuorum tests creating a round change msg that was previouly prepared
+// CreateRoundChangeNoJustificationQuorum tests creating a round change msg that was previously prepared
 // but failed to extract a justification quorum (shouldn't happen).
 // The result should be an unjustified round change.
 func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
@@ -17,6 +17,7 @@ func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 	return &tests.CreateMsgSpecTest{
 		CreateType:    tests.CreateRoundChange,
 		Name:          "create round change no justification quorum",
+		Round:         qbft.FirstRound,
 		StateValue:    testingutils.TestingQBFTFullData,
 		ExpectedState: sc.ExpectedState,
 		PrepareJustifications: []*types.SignedSSVMessage{
@@ -31,8 +32,8 @@ func CreateRoundChangeNoJustificationQuorumSC() *comparable.StateComparison {
 	expectedMsg := qbft.Message{
 		MsgType:                  qbft.RoundChangeMsgType,
 		Height:                   0,
-		Round:                    1,
-		Identifier:               []byte{1, 2, 3, 4},
+		Round:                    qbft.FirstRound,
+		Identifier:               testingutils.TestingIdentifier,
 		Root:                     testingutils.TestingQBFTRootData,
 		DataRound:                1,
 		RoundChangeJustification: [][]byte{},

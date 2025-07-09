@@ -90,7 +90,7 @@ func (msg *Message) GetRoot() ([32]byte, error) {
 // Validate returns error if msg validation doesn't pass.
 // Msg validation checks the msg, it's variables for validity.
 func (msg *Message) Validate() error {
-	if len(msg.Identifier) == 0 {
+	if len(msg.Identifier) != 56 {
 		return errors.New("message identifier is invalid")
 	}
 	if _, err := msg.GetRoundChangeJustifications(); err != nil {
@@ -101,6 +101,9 @@ func (msg *Message) Validate() error {
 	}
 	if msg.MsgType > RoundChangeMsgType {
 		return errors.New("message type is invalid")
+	}
+	if msg.Round == NoRound {
+		return errors.New("message round is invalid")
 	}
 	return nil
 }

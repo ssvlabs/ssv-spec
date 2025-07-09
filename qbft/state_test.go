@@ -15,7 +15,7 @@ func TestState_Decoding(t *testing.T) {
 		MsgType:    qbft.CommitMsgType,
 		Height:     1,
 		Round:      2,
-		Identifier: []byte{1, 2, 3, 4},
+		Identifier: testingutils.TestingIdentifier,
 		Root:       testingutils.TestingSyncCommitteeBlockRoot,
 	}
 	proposalMsgBytes, err := proposalMsg.Encode()
@@ -42,7 +42,7 @@ func TestState_Decoding(t *testing.T) {
 				},
 			},
 		},
-		ID:                              []byte{1, 2, 3, 4},
+		ID:                              testingutils.TestingIdentifier,
 		Round:                           1,
 		Height:                          2,
 		LastPreparedRound:               3,
@@ -64,7 +64,7 @@ func TestState_Decoding(t *testing.T) {
 
 	require.EqualValues(t, 3, decodedState.LastPreparedRound)
 	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.LastPreparedValue)
-	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ID)
+	require.EqualValues(t, testingutils.TestingIdentifier, decodedState.ID)
 	require.EqualValues(t, 2, decodedState.Height)
 	require.EqualValues(t, 1, decodedState.Round)
 
@@ -73,6 +73,6 @@ func TestState_Decoding(t *testing.T) {
 	require.EqualValues(t, qbft.CommitMsgType, decodedState.ProposalAcceptedForCurrentRound.QBFTMessage.MsgType)
 	require.EqualValues(t, 1, decodedState.ProposalAcceptedForCurrentRound.QBFTMessage.Height)
 	require.EqualValues(t, 2, decodedState.ProposalAcceptedForCurrentRound.QBFTMessage.Round)
-	require.EqualValues(t, []byte{1, 2, 3, 4}, decodedState.ProposalAcceptedForCurrentRound.QBFTMessage.Identifier)
+	require.EqualValues(t, testingutils.TestingIdentifier, decodedState.ProposalAcceptedForCurrentRound.QBFTMessage.Identifier)
 	require.EqualValues(t, testingutils.TestingSyncCommitteeBlockRoot, decodedState.ProposalAcceptedForCurrentRound.QBFTMessage.Root)
 }
