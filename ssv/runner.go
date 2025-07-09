@@ -1,7 +1,7 @@
 package ssv
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -34,32 +34,32 @@ type Runner interface {
 	ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error
 
 	// expectedPreConsensusRootsAndDomain an INTERNAL function, returns the expected pre-consensus roots to sign
-	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, spec.DomainType, error)
+	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error)
 	// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-	expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, spec.DomainType, error)
+	expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error)
 	// executeDuty an INTERNAL function, executes a duty.
 	executeDuty(duty types.Duty) error
 }
 
 type BaseRunner struct {
 	State          *State
-	Share          map[spec.ValidatorIndex]*types.Share
+	Share          map[phase0.ValidatorIndex]*types.Share
 	QBFTController *qbft.Controller
 	BeaconNetwork  types.BeaconNetwork
 	RunnerRoleType types.RunnerRole
 	*types.OperatorSigner
 
 	// highestDecidedSlot holds the highest decided duty slot and gets updated after each decided is reached
-	highestDecidedSlot spec.Slot
+	highestDecidedSlot phase0.Slot
 }
 
 func NewBaseRunner(
 	state *State,
-	share map[spec.ValidatorIndex]*types.Share,
+	share map[phase0.ValidatorIndex]*types.Share,
 	controller *qbft.Controller,
 	beaconNetwork types.BeaconNetwork,
 	runnerRoleType types.RunnerRole,
-	highestDecidedSlot spec.Slot,
+	highestDecidedSlot phase0.Slot,
 ) *BaseRunner {
 	return &BaseRunner{
 		State:              state,
@@ -72,7 +72,7 @@ func NewBaseRunner(
 }
 
 // SetHighestDecidedSlot set highestDecidedSlot for base runner
-func (b *BaseRunner) SetHighestDecidedSlot(slot spec.Slot) {
+func (b *BaseRunner) SetHighestDecidedSlot(slot phase0.Slot) {
 	b.highestDecidedSlot = slot
 }
 
@@ -231,7 +231,7 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, signedMessage *types.S
 }
 
 // decide input param can be a BeaconVote or ValidatorConsensusData
-func (b *BaseRunner) decide(runner Runner, slot spec.Slot, input types.Encoder) error {
+func (b *BaseRunner) decide(runner Runner, slot phase0.Slot, input types.Encoder) error {
 	byts, err := input.Encode()
 	if err != nil {
 		return errors.Wrap(err, "could not encode input data for consensus")

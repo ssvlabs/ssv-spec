@@ -4,10 +4,10 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 )
 
-var TestingValidatorPubKeyForValidatorIndex = func(ValidatorIndex spec.ValidatorIndex) spec.BLSPubKey {
+var TestingValidatorPubKeyForValidatorIndex = func(ValidatorIndex phase0.ValidatorIndex) phase0.BLSPubKey {
 	ks, exists := TestingKeySetMap[ValidatorIndex]
 	if !exists {
 		panic(fmt.Sprintf("Validator index %v does not exist in TestingKeySetMap", ValidatorIndex))
@@ -15,13 +15,13 @@ var TestingValidatorPubKeyForValidatorIndex = func(ValidatorIndex spec.Validator
 	pk := ks.ValidatorPK
 	pkHexString := pk.SerializeToHexStr()
 	pkString, _ := hex.DecodeString(pkHexString)
-	blsPK := spec.BLSPubKey{}
+	blsPK := phase0.BLSPubKey{}
 	copy(blsPK[:], pkString)
 	return blsPK
 }
 
-var TestingValidatorPubKeyList = func() []spec.BLSPubKey {
-	ret := make([]spec.BLSPubKey, len(TestingKeySetMap))
+var TestingValidatorPubKeyList = func() []phase0.BLSPubKey {
+	ret := make([]phase0.BLSPubKey, len(TestingKeySetMap))
 	listIndex := 0
 	for valIdx := range TestingKeySetMap {
 		pk := TestingValidatorPubKeyForValidatorIndex(valIdx)
