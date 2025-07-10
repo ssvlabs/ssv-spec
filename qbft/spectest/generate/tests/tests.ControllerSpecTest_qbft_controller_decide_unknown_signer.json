@@ -88,11 +88,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "invalid decided msg: invalid decided msg: signer not in committee",
-  "omitempty": null
+  "ExpectedError": "invalid decided msg: invalid decided msg: signer not in committee"
 }

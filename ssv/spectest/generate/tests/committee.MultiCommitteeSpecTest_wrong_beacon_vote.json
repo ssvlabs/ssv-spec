@@ -5,7 +5,6 @@
   "Tests": [
     {
       "Name": "30 attestations 30 sync committees (phase0)",
-      "omitempty": "",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -3970,7 +3969,6 @@
     },
     {
       "Name": "30 attestations 30 sync committees (electra)",
-      "omitempty": "",
       "Documentation": "",
       "Committee": {
         "Runners": {},

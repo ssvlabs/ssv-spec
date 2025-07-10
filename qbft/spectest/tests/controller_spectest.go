@@ -31,7 +31,7 @@ type RunInstanceData struct {
 	ControllerPostState  types.Root `json:"-"` // Field is ignored by encoding/json
 	ExpectedTimerState   *testingutils.TimerState
 	ExpectedDecidedState DecidedState
-	Height               *qbft.Height `json:"omitempty"`
+	Height               *qbft.Height `json:"Height,omitempty"`
 }
 
 type ControllerSpecTest struct {
@@ -41,7 +41,7 @@ type ControllerSpecTest struct {
 	RunInstanceData []*RunInstanceData
 	OutputMessages  []*types.SignedSSVMessage
 	ExpectedError   string
-	StartHeight     *qbft.Height `json:"omitempty"`
+	StartHeight     *qbft.Height `json:"StartHeight,omitempty"`
 }
 
 func (test *ControllerSpecTest) TestName() string {

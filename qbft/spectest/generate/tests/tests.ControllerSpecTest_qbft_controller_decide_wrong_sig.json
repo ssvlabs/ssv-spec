@@ -88,11 +88,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "invalid decided msg: invalid decided msg: msg signature invalid: crypto/rsa: verification error",
-  "omitempty": null
+  "ExpectedError": "invalid decided msg: invalid decided msg: msg signature invalid: crypto/rsa: verification error"
 }

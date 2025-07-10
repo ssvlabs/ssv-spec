@@ -5,7 +5,6 @@
   "Tests": [
     {
       "Name": "1 attestation (phase0)",
-      "omitempty": "",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -744,7 +743,6 @@
     },
     {
       "Name": "1 sync committee (phase0)",
-      "omitempty": "",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -1487,7 +1485,6 @@
     },
     {
       "Name": "1 attestations 1 sync committees (phase0)",
-      "omitempty": "",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -2280,7 +2277,6 @@
     },
     {
       "Name": "30 attestation (phase0)",
-      "omitempty": "",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -7398,7 +7394,6 @@
     },
     {
       "Name": "30 sync committee (phase0)",
-      "omitempty": "",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -12636,7 +12631,6 @@
     },
     {
       "Name": "30 attestations 30 sync committees (phase0)",
-      "omitempty": "",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -19374,7 +19368,6 @@
     },
     {
       "Name": "1 attestation (electra)",
-      "omitempty": "",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -20113,7 +20106,6 @@
     },
     {
       "Name": "1 sync committee (electra)",
-      "omitempty": "",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -20856,7 +20848,6 @@
     },
     {
       "Name": "1 attestations 1 sync committees (electra)",
-      "omitempty": "",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -21649,7 +21640,6 @@
     },
     {
       "Name": "30 attestation (electra)",
-      "omitempty": "",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -26767,7 +26757,6 @@
     },
     {
       "Name": "30 sync committee (electra)",
-      "omitempty": "",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -32005,7 +31994,6 @@
     },
     {
       "Name": "30 attestations 30 sync committees (electra)",
-      "omitempty": "",
       "Documentation": "",
       "Committee": {
         "Runners": {},

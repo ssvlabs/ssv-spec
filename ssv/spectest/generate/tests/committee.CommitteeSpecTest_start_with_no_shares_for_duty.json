@@ -1,6 +1,6 @@
 {
   "Name": "start with no shares for duty",
-  "omitempty": "Committee: validation of committee member selection and quorum requirements",
+  "Type": "Committee: validation of committee member selection and quorum requirements",
   "Documentation": "Tests committee behavior when starting a duty for validators that the committee doesn't have shares for",
   "Committee": {
     "Runners": {},

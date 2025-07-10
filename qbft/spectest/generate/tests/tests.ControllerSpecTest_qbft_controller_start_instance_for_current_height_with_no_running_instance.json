@@ -13,10 +13,10 @@
         "DecidedCnt": 0,
         "BroadcastedDecided": null
       },
-      "omitempty": 2
+      "Height": 2
     }
   ],
   "OutputMessages": null,
   "ExpectedError": "",
-  "omitempty": 2
+  "StartHeight": 2
 }

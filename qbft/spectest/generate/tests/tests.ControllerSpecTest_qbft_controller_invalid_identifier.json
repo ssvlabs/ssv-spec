@@ -84,11 +84,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "invalid msg: message doesn't belong to Identifier",
-  "omitempty": null
+  "ExpectedError": "invalid msg: message doesn't belong to Identifier"
 }

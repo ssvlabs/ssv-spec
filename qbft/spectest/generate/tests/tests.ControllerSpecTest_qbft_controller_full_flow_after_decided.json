@@ -585,11 +585,9 @@
         "DecidedVal": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
         "DecidedCnt": 1,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "not processing consensus message since instance is already decided",
-  "omitempty": null
+  "ExpectedError": "not processing consensus message since instance is already decided"
 }

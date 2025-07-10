@@ -23,7 +23,7 @@ import (
 
 type MsgProcessingSpecTest struct {
 	Name          string
-	Type          string `json:"omitempty"`
+	Type          string `json:"Type,omitempty"`
 	Documentation string
 	Runner        ssv.Runner
 	Duty          types.Duty

@@ -584,8 +584,7 @@
           },
           "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
         }
-      },
-      "omitempty": null
+      }
     },
     {
       "InputValue": "AQIDBA==",
@@ -1168,8 +1167,7 @@
           },
           "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
         }
-      },
-      "omitempty": null
+      }
     },
     {
       "InputValue": "AQIDBA==",
@@ -1252,11 +1250,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "not processing consensus message since instance is already decided",
-  "omitempty": null
+  "ExpectedError": "not processing consensus message since instance is already decided"
 }

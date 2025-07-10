@@ -21,7 +21,7 @@ import (
 
 type CommitteeSpecTest struct {
 	Name                   string
-	Type                   string `json:"omitempty"`
+	Type                   string `json:"Type,omitempty"`
 	Documentation          string
 	Committee              *ssv.Committee
 	Input                  []interface{} // Can be a types.Duty or a *types.SignedSSVMessage

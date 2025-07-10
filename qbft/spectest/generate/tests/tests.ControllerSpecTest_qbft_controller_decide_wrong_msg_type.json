@@ -88,11 +88,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "could not process msg: invalid signed message: msg allows 1 signer",
-  "omitempty": null
+  "ExpectedError": "could not process msg: invalid signed message: msg allows 1 signer"
 }

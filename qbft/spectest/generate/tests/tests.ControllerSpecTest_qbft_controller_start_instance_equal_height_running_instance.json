@@ -13,7 +13,7 @@
         "DecidedCnt": 0,
         "BroadcastedDecided": null
       },
-      "omitempty": 0
+      "Height": 0
     },
     {
       "InputValue": "AQIDBA==",
@@ -25,10 +25,9 @@
         "DecidedCnt": 0,
         "BroadcastedDecided": null
       },
-      "omitempty": 0
+      "Height": 0
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "instance already running",
-  "omitempty": null
+  "ExpectedError": "instance already running"
 }

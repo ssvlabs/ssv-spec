@@ -88,11 +88,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "invalid decided msg: invalid decided msg: signed commit invalid: invalid SignedSSVMessage: non unique signer",
-  "omitempty": null
+  "ExpectedError": "invalid decided msg: invalid decided msg: signed commit invalid: invalid SignedSSVMessage: non unique signer"
 }
