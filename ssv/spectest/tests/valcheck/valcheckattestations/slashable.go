@@ -31,12 +31,14 @@ func Slashable() tests.SpecTest {
 	shareString := hex.EncodeToString(sharePKBytes)
 
 	return &valcheck.SpecTest{
-		Name:          "attestation value check slashable",
-		Network:       types.BeaconTestNetwork,
-		RunnerRole:    types.RoleCommittee,
-		DutySlot:      testingutils.TestingDutySlot,
-		Input:         input,
-		ExpectedError: "slashable attestation",
+		Name:                "attestation value check slashable",
+		Network:             types.BeaconTestNetwork,
+		RunnerRole:          types.RoleCommittee,
+		DutySlot:            testingutils.TestingDutySlot,
+		Input:               input,
+		ExpectedSourceEpoch: 0,
+		ExpectedTargetEpoch: 1,
+		ExpectedError:       "slashable attestation",
 		SlashableSlots: map[string][]phase0.Slot{
 			shareString: {
 				testingutils.TestingDutySlot,

@@ -4,6 +4,8 @@
   "RunnerRole": 0,
   "DutySlot": "12",
   "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAgAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+  "ExpectedSourceEpoch": "0",
+  "ExpectedTargetEpoch": "1",
   "SlashableSlots": null,
   "omitempty": null,
   "ExpectedError": "attestation data source/target epoch does not match expected",

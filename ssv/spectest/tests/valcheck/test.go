@@ -12,15 +12,17 @@ import (
 )
 
 type SpecTest struct {
-	Name              string
-	Network           types.BeaconNetwork
-	RunnerRole        types.RunnerRole
-	DutySlot          phase0.Slot // DutySlot is used only for the RoleCommittee since the BeaconVoteValueCheckF requires the duty's slot
-	Input             []byte
-	SlashableSlots    map[string][]phase0.Slot // map share pk to a list of slashable slots
-	ShareValidatorsPK []types.ShareValidatorPK `json:"omitempty"` // Optional. Specify validators shares for beacon vote value check
-	ExpectedError     string
-	AnyError          bool
+	Name                string
+	Network             types.BeaconNetwork
+	RunnerRole          types.RunnerRole
+	DutySlot            phase0.Slot // DutySlot is used only for the RoleCommittee since the BeaconVoteValueCheckF requires the duty's slot
+	Input               []byte
+	ExpectedSourceEpoch phase0.Epoch             // Specify expected source epoch for beacon vote value check
+	ExpectedTargetEpoch phase0.Epoch             // Specify expected target epoch for beacon vote value check
+	SlashableSlots      map[string][]phase0.Slot // map share pk to a list of slashable slots
+	ShareValidatorsPK   []types.ShareValidatorPK `json:"omitempty"` // Optional. Specify validators shares for beacon vote value check
+	ExpectedError       string
+	AnyError            bool
 }
 
 func (test *SpecTest) TestName() string {
@@ -60,7 +62,7 @@ func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueChe
 	}
 	switch test.RunnerRole {
 	case types.RoleCommittee:
-		return ssv.BeaconVoteValueCheckF(signer, test.DutySlot, shareValidatorsPK, testingutils.TestBeaconVote.Source.Epoch, testingutils.TestBeaconVote.Target.Epoch)
+		return ssv.BeaconVoteValueCheckF(signer, test.DutySlot, shareValidatorsPK, test.ExpectedSourceEpoch, test.ExpectedTargetEpoch)
 	case types.RoleProposer:
 		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex, nil)
 	case types.RoleAggregator:

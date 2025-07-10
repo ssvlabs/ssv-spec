@@ -25,11 +25,13 @@ func UnmatchedTargetEpoch() tests.SpecTest {
 	input, _ := data.Encode()
 
 	return &valcheck.SpecTest{
-		Name:          "attestation value check unmatched target epoch",
-		Network:       types.BeaconTestNetwork,
-		RunnerRole:    types.RoleCommittee,
-		DutySlot:      testingutils.TestingDutySlot,
-		Input:         input,
-		ExpectedError: "attestation data source/target epoch does not match expected",
+		Name:                "attestation value check unmatched target epoch",
+		Network:             types.BeaconTestNetwork,
+		RunnerRole:          types.RoleCommittee,
+		DutySlot:            testingutils.TestingDutySlot,
+		Input:               input,
+		ExpectedSourceEpoch: 1,
+		ExpectedTargetEpoch: 2,
+		ExpectedError:       "attestation data source/target epoch does not match expected",
 	}
 }

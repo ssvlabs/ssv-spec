@@ -20,10 +20,12 @@ func WrongDutyType() tests.SpecTest {
 		Name: "wrong duty type",
 		Tests: []*valcheck.SpecTest{
 			{
-				Name:       "committee",
-				Network:    types.BeaconTestNetwork,
-				RunnerRole: types.RoleCommittee,
-				Input:      testingutils.TestBeaconVoteByts,
+				Name:                "committee",
+				Network:             types.BeaconTestNetwork,
+				RunnerRole:          types.RoleCommittee,
+				Input:               testingutils.TestBeaconVoteByts,
+				ExpectedSourceEpoch: 0,
+				ExpectedTargetEpoch: 1,
 				// No error since input doesn't contain duty type
 			},
 			{
