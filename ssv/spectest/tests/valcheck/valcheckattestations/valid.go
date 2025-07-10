@@ -10,10 +10,12 @@ import (
 // Valid tests valid data
 func Valid() tests.SpecTest {
 	return &valcheck.SpecTest{
-		Name:       "attestation value check valid",
-		Network:    types.PraterNetwork,
-		RunnerRole: types.RoleCommittee,
-		DutySlot:   testingutils.TestingDutySlot,
-		Input:      testingutils.TestBeaconVoteByts,
+		Name:                "attestation value check valid",
+		Network:             types.PraterNetwork,
+		RunnerRole:          types.RoleCommittee,
+		DutySlot:            testingutils.TestingDutySlot,
+		Input:               testingutils.TestBeaconVoteByts,
+		ExpectedSourceEpoch: 0,
+		ExpectedTargetEpoch: 1,
 	}
 }

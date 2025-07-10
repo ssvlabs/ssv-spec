@@ -41,6 +41,8 @@ func ValidNonSlashableSlot() tests.SpecTest {
 				testingutils.TestingDutySlot,
 			},
 		},
-		ShareValidatorsPK: []types.ShareValidatorPK{sharePKBytes},
+		ShareValidatorsPK:   []types.ShareValidatorPK{sharePKBytes},
+		ExpectedSourceEpoch: 0,
+		ExpectedTargetEpoch: 1,
 	}
 }

@@ -4,6 +4,8 @@
   "RunnerRole": 0,
   "DutySlot": "12",
   "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+  "ExpectedSourceEpoch": "0",
+  "ExpectedTargetEpoch": "1",
   "SlashableSlots": {
     "48e4c0a38e90f9352d1d09489446443ebd17b1904f4f0002fe894c2c3f62457a": [
       "12"
