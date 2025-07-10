@@ -8,8 +8,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// FarFutureTarget tests AttestationData.Target.Epoch higher than expected
-func FarFutureTarget() tests.SpecTest {
+// UnmatchedEpochs tests AttestationData.Target.Epoch unmatched with expected
+func UnmatchedEpochs() tests.SpecTest {
 	data := types.BeaconVote{
 		BlockRoot: spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 		Source: &spec.Checkpoint{
@@ -17,7 +17,7 @@ func FarFutureTarget() tests.SpecTest {
 			Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 		},
 		Target: &spec.Checkpoint{
-			Epoch: 10000000,
+			Epoch: 2,
 			Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 		},
 	}
@@ -30,6 +30,6 @@ func FarFutureTarget() tests.SpecTest {
 		RunnerRole:    types.RoleCommittee,
 		DutySlot:      testingutils.TestingDutySlot,
 		Input:         input,
-		ExpectedError: "attestation data target epoch is into far future",
+		ExpectedError: "attestation data source/target epoch does not match expected",
 	}
 }
