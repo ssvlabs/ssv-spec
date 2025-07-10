@@ -7,7 +7,6 @@
   "DutySlot": "12",
   "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECgJaYAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
   "SlashableSlots": null,
-  "ShareValidatorsPK": null,
   "ExpectedError": "attestation data target epoch is into far future",
   "AnyError": false
 }
