@@ -474,24 +474,6 @@ func (cr CommitteeRunner) executeDuty(duty types.Duty) error {
 		return errors.Wrap(err, "failed to get attestation data")
 	}
 
-	// Update the validation function with the expected attestation data
-	sharePubKeys := make([]types.ShareValidatorPK, 0)
-	for _, share := range cr.BaseRunner.Share {
-		sharePubKeys = append(sharePubKeys, share.SharePubKey)
-	}
-
-	// Create a new validation function with the expected attestation data
-	cr.valCheck = BeaconVoteValueCheckF(
-		cr.signer,
-		slot,
-		sharePubKeys,
-		&types.BeaconVote{
-			BlockRoot: attData.BeaconBlockRoot,
-			Source:    attData.Source,
-			Target:    attData.Target,
-		},
-	)
-
 	vote := &types.BeaconVote{
 		BlockRoot: attData.BeaconBlockRoot,
 		Source:    attData.Source,
