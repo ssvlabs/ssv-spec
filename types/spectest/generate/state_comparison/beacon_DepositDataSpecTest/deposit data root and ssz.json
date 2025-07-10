@@ -10,5 +10,11 @@
 				0,
 				0
 		],
-		"ExpectedSigningRoot": "69d2af2fd5870077e45f574087a38f476ac3b0f680a511767fb1b0f17f8c4cbd"
+		"ExpectedSigningRoot": "69d2af2fd5870077e45f574087a38f476ac3b0f680a511767fb1b0f17f8c4cbd",
+		"Domain": [
+				3,
+				0,
+				0,
+				0
+		]
 }

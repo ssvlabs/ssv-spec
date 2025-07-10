@@ -4,6 +4,7 @@ import (
 	reflect2 "reflect"
 	"testing"
 
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/types"
@@ -17,6 +18,9 @@ type SSVMessageTest struct {
 	Documentation      string
 	MessageIDs         []types.MessageID
 	BelongsToValidator bool
+
+	// consts for SSVMessageTest
+	ValidatorIndex phase0.ValidatorIndex
 }
 
 func (test *SSVMessageTest) TestName() string {
@@ -43,5 +47,8 @@ func NewSSVMessageTest(name, documentation string, messageIDs []types.MessageID,
 		Documentation:      documentation,
 		MessageIDs:         messageIDs,
 		BelongsToValidator: belongsToValidator,
+
+		// consts for SSVMessageTest
+		ValidatorIndex: testingutils.TestingValidatorIndex,
 	}
 }

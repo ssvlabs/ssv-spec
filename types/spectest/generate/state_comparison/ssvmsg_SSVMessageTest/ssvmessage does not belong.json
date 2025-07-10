@@ -236,5 +236,6 @@
 						43
 				]
 		],
-		"BelongsToValidator": false
+		"BelongsToValidator": false,
+		"ValidatorIndex": "1"
 }
