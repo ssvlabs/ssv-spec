@@ -158,7 +158,7 @@ func (m *Message) MarshalJSON() ([]byte, error) {
 func (m *Message) UnmarshalJSON(data []byte) error {
 	type Alias Message
 	aux := &struct {
-		Root interface{} `json:"Root"`
+		Root string `json:"Root"`
 		*Alias
 	}{
 		Alias: (*Alias)(m),
@@ -168,13 +168,8 @@ func (m *Message) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	if aux.Root != nil {
-		root, ok := aux.Root.(string)
-		if !ok {
-			return errors.New("Root must be a string")
-		}
-
-		if bytes, err := hex.DecodeString(root); err == nil {
+	if aux.Root != "" {
+		if bytes, err := hex.DecodeString(aux.Root); err == nil {
 			if len(bytes) != 32 {
 				return errors.New("Root must be exactly 32 bytes")
 			}
