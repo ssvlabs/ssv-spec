@@ -1,5 +1,5 @@
 {
-  "Name": "attestation value check far future target",
+  "Name": "attestation value check unmatched source epoch",
   "Network": "now_test_network",
   "RunnerRole": 0,
   "DutySlot": "12",

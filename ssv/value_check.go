@@ -41,7 +41,8 @@ func BeaconVoteValueCheckF(
 	signer types.BeaconSigner,
 	slot phase0.Slot,
 	sharePublicKeys []types.ShareValidatorPK,
-	expectedAttestationData *types.BeaconVote,
+	expectedSourceEpoch phase0.Epoch,
+	expectedTargetEpoch phase0.Epoch,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		bv := types.BeaconVote{}
@@ -53,7 +54,7 @@ func BeaconVoteValueCheckF(
 			return errors.New("attestation data source >= target")
 		}
 
-		if bv.Source.Epoch != expectedAttestationData.Source.Epoch || bv.Target.Epoch != expectedAttestationData.Target.Epoch {
+		if bv.Source.Epoch != expectedSourceEpoch || bv.Target.Epoch != expectedTargetEpoch {
 			return errors.New("attestation data source/target epoch does not match expected")
 		}
 

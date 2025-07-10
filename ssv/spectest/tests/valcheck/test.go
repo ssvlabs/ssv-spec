@@ -60,7 +60,7 @@ func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueChe
 	}
 	switch test.RunnerRole {
 	case types.RoleCommittee:
-		return ssv.BeaconVoteValueCheckF(signer, test.DutySlot, shareValidatorsPK, &testingutils.TestBeaconVote)
+		return ssv.BeaconVoteValueCheckF(signer, test.DutySlot, shareValidatorsPK, testingutils.TestBeaconVote.Source.Epoch, testingutils.TestBeaconVote.Target.Epoch)
 	case types.RoleProposer:
 		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex, nil)
 	case types.RoleAggregator:

@@ -9,7 +9,7 @@ import (
 )
 
 // UnmatchedEpochs tests AttestationData.Target.Epoch unmatched with expected
-func UnmatchedEpochs() tests.SpecTest {
+func UnmatchedTargetEpoch() tests.SpecTest {
 	data := types.BeaconVote{
 		BlockRoot: spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 		Source: &spec.Checkpoint{
@@ -25,7 +25,7 @@ func UnmatchedEpochs() tests.SpecTest {
 	input, _ := data.Encode()
 
 	return &valcheck.SpecTest{
-		Name:          "attestation value check far future target",
+		Name:          "attestation value check unmatched target epoch",
 		Network:       types.BeaconTestNetwork,
 		RunnerRole:    types.RoleCommittee,
 		DutySlot:      testingutils.TestingDutySlot,
