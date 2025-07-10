@@ -23,7 +23,7 @@ var TestBeaconVote = types.BeaconVote{
 }
 var TestBeaconVoteByts, _ = TestBeaconVote.Encode()
 
-var TestSlashableBeaconVote = types.BeaconVote{
+var TestWrongBeaconVote = types.BeaconVote{
 	BlockRoot: phase0.Root{1, 2, 3, 4},
 	Source: &phase0.Checkpoint{
 		Epoch: 2,
@@ -34,4 +34,4 @@ var TestSlashableBeaconVote = types.BeaconVote{
 		Root:  phase0.Root{1, 2, 3, 5},
 	},
 }
-var TestSlashableBeaconVoteByts, _ = TestSlashableBeaconVote.Encode()
+var TestWrongBeaconVoteByts, _ = TestWrongBeaconVote.Encode()
