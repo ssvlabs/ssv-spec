@@ -65,6 +65,9 @@ func (test *MsgSpecTest) TestName() string {
 }
 
 func (test *MsgSpecTest) GetPostState() (interface{}, error) {
+	// remove private keys
+	test.PrivateKeys = nil
+
 	return test, nil
 }
 

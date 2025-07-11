@@ -70,10 +70,7 @@ func main() {
 			panic(errors.Wrapf(err, "failed to get post state for test: %s", test.TestName()).Error())
 		}
 
-		// Remove private keys from the post state for state comparison
-		postWithoutKeys := removePrivateKeysFromTest(post)
-
-		writeJsonStateComparison(test.TestName(), reflect.TypeOf(test).String(), postWithoutKeys)
+		writeJsonStateComparison(test.TestName(), reflect.TypeOf(test).String(), post)
 	}
 }
 
@@ -132,44 +129,4 @@ func writeJson(name string, data []byte) {
 	if err := os.WriteFile(file, data, 0664); err != nil {
 		panic(err.Error())
 	}
-}
-
-// removePrivateKeysFromTest creates a copy of a test object without the PrivateKeys field
-// for state comparison JSON generation
-func removePrivateKeysFromTest(test interface{}) interface{} {
-	// Use reflection to create a copy without PrivateKeys
-	v := reflect.ValueOf(test)
-	if v.Kind() == reflect.Ptr {
-		// Handle nil pointers
-		if v.IsNil() {
-			return nil
-		}
-		v = v.Elem()
-	}
-
-	// Handle basic types - return as is
-	if v.Kind() != reflect.Struct {
-		return test
-	}
-
-	// Create a new instance of the same type
-	newTest := reflect.New(v.Type()).Elem()
-
-	// Copy all fields except PrivateKeys
-	for i := 0; i < v.NumField(); i++ {
-		field := v.Field(i)
-		fieldName := v.Type().Field(i).Name
-
-		// Skip the PrivateKeys field
-		if fieldName == "PrivateKeys" {
-			continue
-		}
-
-		// Copy the field if it's settable
-		if newTest.Field(i).CanSet() {
-			newTest.Field(i).Set(field)
-		}
-	}
-
-	return newTest.Interface()
 }
