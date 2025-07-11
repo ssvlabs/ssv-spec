@@ -2,6 +2,7 @@ package timeout
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"testing"
 
@@ -70,6 +71,10 @@ func (test *SpecTest) Run(t *testing.T) {
 
 func (test *SpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
+}
+
+func (test *SpecTest) MarshalSC() ([]byte, error) {
+	return json.Marshal(test)
 }
 
 func NewSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, outputMessages []*types.SignedSSVMessage, expectedTimerState *testingutils.TimerState, expectedError string) *SpecTest {

@@ -42,6 +42,9 @@ type ControllerSpecTest struct {
 	OutputMessages  []*types.SignedSSVMessage
 	ExpectedError   string
 	StartHeight     *qbft.Height `json:"omitempty"`
+
+	// consts for ControllerSpecTest
+	Controller *qbft.Controller `json:"Controller,omitempty"`
 }
 
 func (test *ControllerSpecTest) TestName() string {
@@ -265,8 +268,13 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 	return ret, nil
 }
 
+func (test *ControllerSpecTest) MarshalSC() ([]byte, error) {
+	test.Controller = nil
+	return json.Marshal(test)
+}
+
 func NewControllerSpecTest(name string, documentation string, runInstanceData []*RunInstanceData, outputMessages []*types.SignedSSVMessage, expectedError string, startHeight *qbft.Height) *ControllerSpecTest {
-	return &ControllerSpecTest{
+	test := &ControllerSpecTest{
 		Name:            name,
 		Type:            "QBFT controller: validation of consensus state management and instance lifecycle",
 		Documentation:   documentation,
@@ -275,4 +283,6 @@ func NewControllerSpecTest(name string, documentation string, runInstanceData []
 		ExpectedError:   expectedError,
 		StartHeight:     startHeight,
 	}
+	test.Controller = test.generateController()
+	return test
 }
