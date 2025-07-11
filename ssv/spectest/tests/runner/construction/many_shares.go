@@ -22,6 +22,7 @@ func ManyShares() tests.SpecTest {
 
 	return NewRunnerConstructionSpecTest(
 		"many shares",
+		"Test that only committee runner can be constructed with multiple shares",
 		shares,
 		expectedErrors,
 	)

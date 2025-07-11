@@ -10,10 +10,11 @@ import (
 )
 
 type RunnerConstructionSpecTest struct {
-	Name      string
-	Type      string
-	Shares    map[phase0.ValidatorIndex]*types.Share
-	RoleError map[types.RunnerRole]string
+	Name          string
+	Type          string
+	Documentation string
+	Shares        map[phase0.ValidatorIndex]*types.Share
+	RoleError     map[types.RunnerRole]string
 }
 
 func (test *RunnerConstructionSpecTest) TestName() string {
@@ -44,11 +45,12 @@ func (test *RunnerConstructionSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
 
-func NewRunnerConstructionSpecTest(name string, shares map[phase0.ValidatorIndex]*types.Share, roleError map[types.RunnerRole]string) *RunnerConstructionSpecTest {
+func NewRunnerConstructionSpecTest(name, documentation string, shares map[phase0.ValidatorIndex]*types.Share, roleError map[types.RunnerRole]string) *RunnerConstructionSpecTest {
 	return &RunnerConstructionSpecTest{
-		Name:      name,
-		Type:      "Runner construction",
-		Shares:    shares,
-		RoleError: roleError,
+		Name:          name,
+		Type:          "Runner construction",
+		Documentation: documentation,
+		Shares:        shares,
+		RoleError:     roleError,
 	}
 }

@@ -1,6 +1,7 @@
 {
   "Name": "one share",
   "Type": "Runner construction",
+  "Documentation": "Test that all runners can be constructed with one share",
   "Shares": {
     "1": {
       "ValidatorIndex": "1",

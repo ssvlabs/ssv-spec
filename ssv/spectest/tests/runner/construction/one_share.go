@@ -25,6 +25,7 @@ func OneShare() tests.SpecTest {
 
 	return NewRunnerConstructionSpecTest(
 		"one share",
+		"Test that all runners can be constructed with one share",
 		shares,
 		expectedErrors,
 	)

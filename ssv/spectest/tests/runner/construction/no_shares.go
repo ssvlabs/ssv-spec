@@ -21,6 +21,7 @@ func NoShares() tests.SpecTest {
 
 	return NewRunnerConstructionSpecTest(
 		"no shares",
+		"Test that all runners cannot be constructed without shares",
 		shares,
 		expectedErrors,
 	)

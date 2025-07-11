@@ -20,6 +20,7 @@ func Encoding() *EncodingTest {
 
 	return NewEncodingTest(
 		"SSVMessage encoding",
+		"Test SSVMessage encoding",
 		byts,
 		root,
 	)
