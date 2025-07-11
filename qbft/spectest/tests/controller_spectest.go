@@ -268,11 +268,6 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 	return ret, nil
 }
 
-func (test *ControllerSpecTest) MarshalSC() ([]byte, error) {
-	test.Controller = nil
-	return json.Marshal(test)
-}
-
 func NewControllerSpecTest(name string, documentation string, runInstanceData []*RunInstanceData, outputMessages []*types.SignedSSVMessage, expectedError string, startHeight *qbft.Height) *ControllerSpecTest {
 	test := &ControllerSpecTest{
 		Name:            name,
