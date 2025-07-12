@@ -98,6 +98,6 @@ func NewSyncCommitteeAggregatorProofSpecTest(name, documentation string, message
 		ExpectedError:           expectedError,
 
 		// consts for proof spectest
-		OperatorID: 1,
+		OperatorID: testingutils.TestingOperatorID,
 	}
 }
