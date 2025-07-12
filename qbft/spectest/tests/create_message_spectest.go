@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"crypto/rsa"
 	"encoding/hex"
 	"fmt"
 	"reflect"
@@ -21,6 +22,11 @@ const (
 	CreateRoundChange = "CreateRoundChange"
 )
 
+type TestSigner struct {
+	OperatorID types.OperatorID
+	OperatorSK *rsa.PrivateKey
+}
+
 type CreateMsgSpecTest struct {
 	Name          string
 	Type          string
@@ -39,7 +45,7 @@ type CreateMsgSpecTest struct {
 	// consts for CreateMsgSpecTest
 	CommitteeMember *types.CommitteeMember `json:"CommitteeMember,omitempty"`
 	Identifier      []byte                 `json:"Identifier,omitempty"`
-	Signer          *types.OperatorSigner  `json:"Signer,omitempty"`
+	OperatorID      types.OperatorID       `json:"OperatorID,omitempty"`
 }
 
 func (test *CreateMsgSpecTest) Run(t *testing.T) {
@@ -93,6 +99,11 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 
 	err = qbftMsg.Validate()
 	require.NoError(t, err)
+
+	// remove consts for state comparison
+	test.CommitteeMember = nil
+	test.Identifier = nil
+	test.OperatorID = 0
 
 	typescomparable.CompareWithJson(t, test, test.TestName(), reflect.TypeOf(test).String())
 }
@@ -170,7 +181,7 @@ func (test *CreateMsgSpecTest) TestName() string {
 func (test *CreateMsgSpecTest) GetPostState() (interface{}, error) {
 	test.CommitteeMember = nil
 	test.Identifier = nil
-	test.Signer = nil
+	test.OperatorID = 0
 	return test, nil
 }
 
@@ -193,6 +204,6 @@ func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, sta
 		// consts for CreateMsgSpecTest
 		CommitteeMember: testingutils.TestingCommitteeMember(ks),
 		Identifier:      testingutils.TestingIdentifier,
-		Signer:          testingutils.TestingOperatorSigner(ks),
+		OperatorID:      testingutils.TestingOperatorSigner(ks).OperatorID,
 	}
 }

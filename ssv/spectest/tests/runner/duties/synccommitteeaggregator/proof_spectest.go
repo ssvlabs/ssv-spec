@@ -24,6 +24,9 @@ type SyncCommitteeAggregatorProofSpecTest struct {
 	PostDutyRunnerState     string
 	ProofRootsMap           map[string]bool // if true then root returned from beacon node will be an aggregator
 	ExpectedError           string
+
+	// consts for proof spectest
+	OperatorID types.OperatorID
 }
 
 func (test *SyncCommitteeAggregatorProofSpecTest) TestName() string {
@@ -93,5 +96,8 @@ func NewSyncCommitteeAggregatorProofSpecTest(name, documentation string, message
 		PostDutyRunnerState:     postDutyRunnerState,
 		ProofRootsMap:           proofRootsMap,
 		ExpectedError:           expectedError,
+
+		// consts for proof spectest
+		OperatorID: 1,
 	}
 }
