@@ -33,16 +33,12 @@ func MarshalJustificationsWithFullData() tests.SpecTest {
 		panic(err)
 	}
 
-	return &tests.MsgSpecTest{
-		Name: "marshal justifications with full data",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		EncodedMessages: [][]byte{
-			b,
-		},
-		ExpectedRoots: [][32]byte{
-			r,
-		},
-	}
+	return tests.NewMsgSpecTest(
+		"marshal justifications with full data",
+		"Test marshalling justifications with full data, which should be omitted during marshalling.",
+		[]*types.SignedSSVMessage{msg},
+		[][]byte{b},
+		[][32]byte{r},
+		"",
+	)
 }

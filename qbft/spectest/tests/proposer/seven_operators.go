@@ -29,11 +29,12 @@ func SevenOperators() tests.SpecTest {
 
 	//fmt.Printf("h:%v\nr:%v\np:%v\n", heights, rounds, proposers)
 
-	return &tests.RoundRobinSpecTest{
-		Name:      "7 member committee",
-		Share:     testingutils.TestingCommitteeMember(testingutils.Testing7SharesSet()),
-		Heights:   heights,
-		Rounds:    rounds,
-		Proposers: proposers,
-	}
+	return tests.NewRoundRobinSpecTest(
+		"7 member committee",
+		"Test round-robin proposer selection for a 7-member committee across multiple heights and rounds.",
+		testingutils.TestingCommitteeMember(testingutils.Testing7SharesSet()),
+		heights,
+		rounds,
+		proposers,
+	)
 }

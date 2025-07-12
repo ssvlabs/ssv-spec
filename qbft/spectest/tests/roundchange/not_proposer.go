@@ -12,18 +12,26 @@ func NotProposer() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Height = tests.ChangeProposerFuncInstanceHeight // will change proposer default for tests
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithRoundAndHeight(ks.OperatorKeys[1], types.OperatorID(1), 2, tests.ChangeProposerFuncInstanceHeight),
 		testingutils.TestingRoundChangeMessageWithRoundAndHeight(ks.OperatorKeys[2], types.OperatorID(2), 2, tests.ChangeProposerFuncInstanceHeight),
 		testingutils.TestingRoundChangeMessageWithRoundAndHeight(ks.OperatorKeys[3], types.OperatorID(3), 2, tests.ChangeProposerFuncInstanceHeight),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "round change justification not proposer",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingRoundChangeMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, tests.ChangeProposerFuncInstanceHeight,
-				[32]byte{}, 0, [][]byte{}),
-		},
+
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, tests.ChangeProposerFuncInstanceHeight,
+			[32]byte{}, 0, [][]byte{}),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"round change justification not proposer",
+		"Test justified round change where the node is not the proposer, expecting no proposal broadcast.",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
 }

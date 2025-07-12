@@ -17,11 +17,16 @@ import (
 
 type SyncCommitteeAggregatorProofSpecTest struct {
 	Name                    string
+	Type                    string
+	Documentation           string
 	Messages                []*types.SignedSSVMessage
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     string
 	ProofRootsMap           map[string]bool // if true then root returned from beacon node will be an aggregator
 	ExpectedError           string
+
+	// consts for proof spectest
+	OperatorID types.OperatorID
 }
 
 func (test *SyncCommitteeAggregatorProofSpecTest) TestName() string {
@@ -79,4 +84,20 @@ func (test *SyncCommitteeAggregatorProofSpecTest) overrideStateComparison(t *tes
 	require.NoError(t, err2)
 
 	test.PostDutyRunnerStateRoot = hex.EncodeToString(r[:])
+}
+
+func NewSyncCommitteeAggregatorProofSpecTest(name, documentation string, messages []*types.SignedSSVMessage, postDutyRunnerStateRoot string, postDutyRunnerState string, proofRootsMap map[string]bool, expectedError string) *SyncCommitteeAggregatorProofSpecTest {
+	return &SyncCommitteeAggregatorProofSpecTest{
+		Name:                    name,
+		Type:                    "Sync committee aggregator proof",
+		Documentation:           documentation,
+		Messages:                messages,
+		PostDutyRunnerStateRoot: postDutyRunnerStateRoot,
+		PostDutyRunnerState:     postDutyRunnerState,
+		ProofRootsMap:           proofRootsMap,
+		ExpectedError:           expectedError,
+
+		// consts for proof spectest
+		OperatorID: testingutils.TestingOperatorID,
+	}
 }

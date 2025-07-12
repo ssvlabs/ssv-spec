@@ -16,10 +16,15 @@ func F1DuplicateSignerNotPrepared() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 5),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:           "round change f+1 not duplicate prepared",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"round change f+1 not duplicate prepared",
+		"Test that f+1 speedup is not accepted for duplicate signer when not previously prepared, expecting no round advancement.",
+		pre,
+		"",
+		nil,
+		msgs,
+		nil,
+		"",
+		nil,
+	)
 }

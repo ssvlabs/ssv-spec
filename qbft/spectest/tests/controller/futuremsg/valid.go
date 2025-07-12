@@ -19,17 +19,20 @@ func ValidMsg() tests.SpecTest {
 	// create base controller
 	contr := createBaseController()
 
-	return &tests.ControllerSpecTest{
-		Name: "future valid msg",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"future valid msg",
+		"Test future message that is valid but not yet ready to be processed, expecting error.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue:          []byte{1, 2, 3, 4},
 				InputMessages:       []*types.SignedSSVMessage{msg},
 				ControllerPostState: contr,
 			},
 		},
-		ExpectedError: "future msg from height, could not process",
-	}
+		nil,
+		"future msg from height, could not process",
+		nil,
+	)
 }
 
 func createBaseController() *qbft.Controller {

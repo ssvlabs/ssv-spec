@@ -20,14 +20,21 @@ func WrongHeight() tests.SpecTest {
 
 		testingutils.TestingCommitMessageWrongHeight(ks.OperatorKeys[1], 1),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "wrong commit height",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "invalid signed message: wrong msg height",
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
-		},
+
+	outputMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"wrong commit height",
+		"Test processing of a commit message with the wrong height, expecting error",
+		pre,
+		"",
+		nil,
+		msgs,
+		outputMsgs,
+		"invalid signed message: wrong msg height",
+		nil,
+	)
 }

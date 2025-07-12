@@ -1,5 +1,7 @@
 {
   "Name": "proposal post prepare",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test processing proposal message after the instance has already prepared, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

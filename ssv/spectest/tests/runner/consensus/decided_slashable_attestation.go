@@ -12,13 +12,18 @@ func DecidedSlashableAttestation() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	return &tests.MsgProcessingSpecTest{
-		Name:             "decide on slashable attestation",
-		Runner:           testingutils.CommitteeRunner(ks),
-		Duty:             testingutils.TestingAttesterDuty(spec.DataVersionPhase0),
-		Messages:         testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
-		DecidedSlashable: true,
-		OutputMessages:   []*types.PartialSignatureMessages{},
-		ExpectedError:    "failed processing consensus message: decided ValidatorConsensusData invalid: decided value is invalid: slashable attestation",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"decide on slashable attestation",
+		"Test that attempting to sign a slashable attestation results in an error",
+		testingutils.CommitteeRunner(ks),
+		testingutils.TestingAttesterDuty(spec.DataVersionPhase0),
+		testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+		true,
+		"",
+		nil,
+		[]*types.PartialSignatureMessages{},
+		[]string{},
+		false,
+		"failed processing consensus message: decided ValidatorConsensusData invalid: decided value is invalid: slashable attestation",
+	)
 }

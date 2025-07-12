@@ -16,9 +16,10 @@ func InvalidValCheckData() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := invalidValCheckDataStateComparison()
 
-	return &tests.ControllerSpecTest{
-		Name: "decide invalid value (should pass)",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"decide invalid value (should pass)",
+		"Test a decided message with invalid decided data that should pass validation since it's already decided.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -40,7 +41,10 @@ func InvalidValCheckData() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 }
 
 func invalidValCheckDataStateComparison() *comparable.StateComparison {

@@ -1,5 +1,7 @@
 {
   "Name": "pre consensus post finish",
+  "Type": "SSV multi message processing: multiple message processing tests",
+  "Documentation": "Tests pre-consensus message processing after duty is finished",
   "Tests": [
     {
       "Name": "sync committee aggregator selection proof",

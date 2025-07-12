@@ -22,9 +22,10 @@ func SignersAndSignaturesWithDifferentLength() tests.SpecTest {
 	expectedError := "invalid SignedSSVMessage: number of signatures is different than number of signers"
 
 	ks := testingutils.Testing4SharesSet()
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "different length of signers and signatures",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"different length of signers and signatures",
+		"Tests consensus message processing with different length of signers and signatures, expecting error",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -122,7 +123,7 @@ func SignersAndSignaturesWithDifferentLength() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

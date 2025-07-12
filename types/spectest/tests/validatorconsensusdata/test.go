@@ -12,6 +12,8 @@ import (
 
 type ValidatorConsensusDataTest struct {
 	Name          string
+	Type          string
+	Documentation string
 	ConsensusData types.ValidatorConsensusData
 	ExpectedError string
 }
@@ -31,4 +33,14 @@ func (test *ValidatorConsensusDataTest) Run(t *testing.T) {
 	}
 
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
+}
+
+func NewValidatorConsensusDataTest(name, documentation string, consensusData types.ValidatorConsensusData, expectedError string) *ValidatorConsensusDataTest {
+	return &ValidatorConsensusDataTest{
+		Name:          name,
+		Type:          "Validator consensus data: validation of validator consensus data",
+		Documentation: documentation,
+		ConsensusData: consensusData,
+		ExpectedError: expectedError,
+	}
 }

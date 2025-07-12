@@ -14,16 +14,12 @@ func CommitDataEncoding() tests.SpecTest {
 	r, _ := msg.GetRoot()
 	b, _ := msg.Encode()
 
-	return &tests.MsgSpecTest{
-		Name: "commit data nil or len 0",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		EncodedMessages: [][]byte{
-			b,
-		},
-		ExpectedRoots: [][32]byte{
-			r,
-		},
-	}
+	return tests.NewMsgSpecTest(
+		"commit data nil or len 0",
+		"Test encoding of commit data for QBFT message validation.",
+		[]*types.SignedSSVMessage{msg},
+		[][]byte{b},
+		[][32]byte{r},
+		"",
+	)
 }

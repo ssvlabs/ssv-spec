@@ -16,9 +16,10 @@ func PostQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedErr := "failed processing post consensus message: invalid post-consensus message: no running duty"
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus post quorum",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus post quorum",
+		"Tests post-consensus message processing after quorum is reached, expecting error",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -45,7 +46,7 @@ func PostQuorum() tests.SpecTest {
 				ExpectedError: expectedErr,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

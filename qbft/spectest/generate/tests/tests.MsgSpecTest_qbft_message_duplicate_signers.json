@@ -1,5 +1,7 @@
 {
   "Name": "duplicate signers",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
+  "Documentation": "Test signed message with duplicate signers, expecting validation error.",
   "Messages": [
     {
       "Signatures": [

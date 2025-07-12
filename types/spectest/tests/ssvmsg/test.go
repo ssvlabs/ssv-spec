@@ -4,6 +4,7 @@ import (
 	reflect2 "reflect"
 	"testing"
 
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/types"
@@ -13,8 +14,13 @@ import (
 
 type SSVMessageTest struct {
 	Name               string
+	Type               string
+	Documentation      string
 	MessageIDs         []types.MessageID
 	BelongsToValidator bool
+
+	// consts for SSVMessageTest
+	ValidatorIndex phase0.ValidatorIndex
 }
 
 func (test *SSVMessageTest) TestName() string {
@@ -32,4 +38,17 @@ func (test *SSVMessageTest) Run(t *testing.T) {
 	}
 
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
+}
+
+func NewSSVMessageTest(name, documentation string, messageIDs []types.MessageID, belongsToValidator bool) *SSVMessageTest {
+	return &SSVMessageTest{
+		Name:               name,
+		Type:               "SSV message validation: testing message ID ownership and routing logic",
+		Documentation:      documentation,
+		MessageIDs:         messageIDs,
+		BelongsToValidator: belongsToValidator,
+
+		// consts for SSVMessageTest
+		ValidatorIndex: testingutils.TestingValidatorIndex,
+	}
 }

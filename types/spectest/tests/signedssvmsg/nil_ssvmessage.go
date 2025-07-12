@@ -8,15 +8,17 @@ import (
 // NilSSVMessage tests an invalid SignedSSVMessageTest with nil SSVMessage
 func NilSSVMessage() *SignedSSVMessageTest {
 
-	return &SignedSSVMessageTest{
-		Name: "nil ssvmessage",
-		Messages: []*types.SignedSSVMessage{
+	return NewSignedSSVMessageTest(
+		"nil ssvmessage",
+		"Test validation error for signed SSV message with nil SSVMessage",
+		[]*types.SignedSSVMessage{
 			{
 				OperatorIDs: []types.OperatorID{1},
 				Signatures:  [][]byte{testingutils.TestingSignedSSVMessageSignature},
 				SSVMessage:  nil,
 			},
 		},
-		ExpectedError: "nil SSVMessage",
-	}
+		"nil SSVMessage",
+		nil,
+	)
 }

@@ -16,9 +16,10 @@ func ValidDecided7Operators() tests.SpecTest {
 
 	ks := testingutils.Testing7SharesSet()
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus valid decided 7 operators",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus valid decided 7 operators",
+		"Tests valid consensus decided message processing with 7 operators",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:                    "sync committee contribution",
 				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
@@ -32,7 +33,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

@@ -18,9 +18,10 @@ func PostDecided() tests.SpecTest {
 
 	expectedErr := "failed processing consensus message: not processing consensus message since consensus has already finished"
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus valid post decided",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus valid post decided",
+		"Tests consensus message processing after duty is already decided",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -38,7 +39,7 @@ func PostDecided() tests.SpecTest {
 				ExpectedError: expectedErr,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

@@ -16,9 +16,10 @@ func Encoding() *EncodingTest {
 		panic(err.Error())
 	}
 
-	return &EncodingTest{
-		Name:         "share encoding",
-		Data:         byts,
-		ExpectedRoot: root,
-	}
+	return NewEncodingTest(
+		"share encoding",
+		"Test encoding and decoding of share with hash tree root verification",
+		byts,
+		root,
+	)
 }

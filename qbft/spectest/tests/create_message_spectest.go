@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"crypto/rsa"
 	"encoding/hex"
 	"fmt"
 	"reflect"
@@ -21,8 +22,15 @@ const (
 	CreateRoundChange = "CreateRoundChange"
 )
 
+type TestSigner struct {
+	OperatorID types.OperatorID
+	OperatorSK *rsa.PrivateKey
+}
+
 type CreateMsgSpecTest struct {
-	Name string
+	Name          string
+	Type          string
+	Documentation string
 	// ISSUE 217: rename to root
 	Value [32]byte
 	// ISSUE 217: rename to value
@@ -33,6 +41,11 @@ type CreateMsgSpecTest struct {
 	ExpectedRoot                                     string
 	ExpectedState                                    types.Root `json:"-"` // Field is ignored by encoding/json"
 	ExpectedError                                    string
+
+	// consts for CreateMsgSpecTest
+	CommitteeMember *types.CommitteeMember `json:"CommitteeMember,omitempty"`
+	Identifier      []byte                 `json:"Identifier,omitempty"`
+	OperatorID      types.OperatorID       `json:"OperatorID,omitempty"`
 }
 
 func (test *CreateMsgSpecTest) Run(t *testing.T) {
@@ -86,6 +99,11 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 
 	err = qbftMsg.Validate()
 	require.NoError(t, err)
+
+	// remove consts for state comparison
+	test.CommitteeMember = nil
+	test.Identifier = nil
+	test.OperatorID = 0
 
 	typescomparable.CompareWithJson(t, test, test.TestName(), reflect.TypeOf(test).String())
 }
@@ -161,5 +179,31 @@ func (test *CreateMsgSpecTest) TestName() string {
 }
 
 func (test *CreateMsgSpecTest) GetPostState() (interface{}, error) {
+	test.CommitteeMember = nil
+	test.Identifier = nil
+	test.OperatorID = 0
 	return test, nil
+}
+
+func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, stateValue []byte, round qbft.Round, roundChangeJustifications []*types.SignedSSVMessage, prepareJustifications []*types.SignedSSVMessage, createType string, expectedRoot string, expectedState types.Root, expectedError string) *CreateMsgSpecTest {
+	ks := testingutils.Testing4SharesSet()
+	return &CreateMsgSpecTest{
+		Name:                      name,
+		Type:                      "Message creation: validation of consensus message construction and encoding",
+		Documentation:             documentation,
+		Value:                     value,
+		StateValue:                stateValue,
+		Round:                     round,
+		RoundChangeJustifications: roundChangeJustifications,
+		PrepareJustifications:     prepareJustifications,
+		CreateType:                createType,
+		ExpectedRoot:              expectedRoot,
+		ExpectedState:             expectedState,
+		ExpectedError:             expectedError,
+
+		// consts for CreateMsgSpecTest
+		CommitteeMember: testingutils.TestingCommitteeMember(ks),
+		Identifier:      testingutils.TestingIdentifier,
+		OperatorID:      testingutils.TestingOperatorSigner(ks).OperatorID,
+	}
 }

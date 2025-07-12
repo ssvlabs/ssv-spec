@@ -31,16 +31,12 @@ func RoundChangePrepared() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &tests.MsgSpecTest{
-		Name: "round change prepared",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		EncodedMessages: [][]byte{
-			encodedMsg,
-		},
-		ExpectedRoots: [][32]byte{
-			msgRoot,
-		},
-	}
+	return tests.NewMsgSpecTest(
+		"round change prepared",
+		"Test round change message with prepared value and justifications.",
+		[]*types.SignedSSVMessage{msg},
+		[][]byte{encodedMsg},
+		[][32]byte{msgRoot},
+		"",
+	)
 }

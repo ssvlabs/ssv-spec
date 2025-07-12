@@ -1,5 +1,7 @@
 {
   "Name": "no commit quorum",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test processing of commit messages without creating a quorum",
   "Pre": {
     "State": {
       "CommitteeMember": {

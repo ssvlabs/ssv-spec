@@ -17,10 +17,11 @@ func SimpleEncrypt() *EncryptionSpecTest {
 		panic(err)
 	}
 
-	return &EncryptionSpecTest{
-		Name:      "simple encryption",
-		SKPem:     skPem,
-		PKPem:     pkPem,
-		PlainText: []byte("hello world"),
-	}
+	return NewEncryptionSpecTest(
+		"simple encryption",
+		"Test simple RSA encryption of plain text message",
+		skPem,
+		pkPem,
+		[]byte("hello world"),
+	)
 }

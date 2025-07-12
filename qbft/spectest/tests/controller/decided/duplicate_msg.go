@@ -11,9 +11,10 @@ import (
 // DuplicateMsg tests a duplicate decided msg processing
 func DuplicateMsg() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
-		Name: "decide duplicate msg",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"decide duplicate msg",
+		"Test processing duplicate decided messages, expecting only one instance to be decided.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -26,5 +27,8 @@ func DuplicateMsg() tests.SpecTest {
 				},
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 }

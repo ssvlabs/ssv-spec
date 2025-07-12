@@ -1,8 +1,12 @@
 {
   "Name": "wrong validator index",
+  "Type": "Multi value check: multiple value check tests",
+  "Documentation": "Tests duty value check with wrong validator index across different roles",
   "Tests": [
     {
       "Name": "committee",
+      "Type": "",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 0,
       "DutySlot": "0",
@@ -14,6 +18,8 @@
     },
     {
       "Name": "sync committee aggregator",
+      "Type": "",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 3,
       "DutySlot": "0",
@@ -25,6 +31,8 @@
     },
     {
       "Name": "aggregator phase0",
+      "Type": "",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 1,
       "DutySlot": "0",
@@ -36,6 +44,8 @@
     },
     {
       "Name": "aggregator electra",
+      "Type": "",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 1,
       "DutySlot": "0",
@@ -47,6 +57,8 @@
     },
     {
       "Name": "proposer",
+      "Type": "",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 2,
       "DutySlot": "0",

@@ -10,10 +10,12 @@ func Phase0AggregatorNoJustifications() *ValidatorConsensusDataTest {
 
 	// To-do: add error when pre-consensus justification check is added.
 
-	return &ValidatorConsensusDataTest{
-		Name:          "phase0 aggregator without justification",
-		ConsensusData: *testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0),
-	}
+	return NewValidatorConsensusDataTest(
+		"phase0 aggregator without justification",
+		"Test phase0 aggregator consensus data with no pre-consensus justifications",
+		*testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0),
+		"",
+	)
 }
 
 // ElectraAggregatorNoJustifications tests an invalid consensus data with no aggregator pre-consensus justifications
@@ -21,8 +23,10 @@ func ElectraAggregatorNoJustifications() *ValidatorConsensusDataTest {
 
 	// To-do: add error when pre-consensus justification check is added.
 
-	return &ValidatorConsensusDataTest{
-		Name:          "electra aggregator without justification",
-		ConsensusData: *testingutils.TestAggregatorConsensusData(spec.DataVersionElectra),
-	}
+	return NewValidatorConsensusDataTest(
+		"electra aggregator without justification",
+		"Test Electra aggregator consensus data with no pre-consensus justifications",
+		*testingutils.TestAggregatorConsensusData(spec.DataVersionElectra),
+		"",
+	)
 }

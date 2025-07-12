@@ -41,10 +41,11 @@ func maxConsensusData() *types.ValidatorConsensusData {
 }
 
 func MaxConsensusData() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "max ValidatorConsensusData",
-		Object:                maxConsensusData(),
-		ExpectedEncodedLength: maxSizeFullConsensusData,
-		IsMaxSize:             true,
-	}
+	return NewStructureSizeTest(
+		"max ValidatorConsensusData",
+		"Test the maximum size of validator consensus data with maximum SSZ data",
+		maxConsensusData(),
+		maxSizeFullConsensusData,
+		true,
+	)
 }

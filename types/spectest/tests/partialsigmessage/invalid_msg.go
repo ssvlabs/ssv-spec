@@ -13,9 +13,12 @@ func InvalidMsg() *MsgSpecTest {
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)
 	msg.Messages = append(msg.Messages, &types.PartialSignatureMessage{})
 
-	return &MsgSpecTest{
-		Name:          "invalid message",
-		Messages:      []*types.PartialSignatureMessages{msg},
-		ExpectedError: "inconsistent signers",
-	}
+	return NewMsgSpecTest(
+		"invalid message",
+		"Test validation error when partial signature messages contain invalid message with inconsistent signers",
+		[]*types.PartialSignatureMessages{msg},
+		nil,
+		nil,
+		"inconsistent signers",
+	)
 }

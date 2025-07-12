@@ -1,5 +1,7 @@
 {
   "Name": "round change happy flow",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test a complete round change happy flow with round change quorum, proposal, prepare, and commit",
   "Pre": {
     "State": {
       "CommitteeMember": {

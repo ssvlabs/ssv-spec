@@ -40,16 +40,12 @@ func SSZMarshaling() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &tests.MsgSpecTest{
-		Name: "SSZ marshalling of signed messaged",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		EncodedMessages: [][]byte{
-			encodedMsg,
-		},
-		ExpectedRoots: [][32]byte{
-			msgRoot,
-		},
-	}
+	return tests.NewMsgSpecTest(
+		"SSZ marshalling of signed messaged",
+		"Test valid SSZ marshaling of a signed QBFT message with justifications.",
+		[]*types.SignedSSVMessage{msg},
+		[][]byte{encodedMsg},
+		[][32]byte{msgRoot},
+		"",
+	)
 }

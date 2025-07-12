@@ -36,10 +36,15 @@ type RunInstanceData struct {
 
 type ControllerSpecTest struct {
 	Name            string
+	Type            string
+	Documentation   string
 	RunInstanceData []*RunInstanceData
 	OutputMessages  []*types.SignedSSVMessage
 	ExpectedError   string
 	StartHeight     *qbft.Height `json:"omitempty"`
+
+	// consts for ControllerSpecTest
+	Controller *qbft.Controller `json:"Controller,omitempty"`
 }
 
 func (test *ControllerSpecTest) TestName() string {
@@ -261,4 +266,18 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 		ret[i] = copied
 	}
 	return ret, nil
+}
+
+func NewControllerSpecTest(name string, documentation string, runInstanceData []*RunInstanceData, outputMessages []*types.SignedSSVMessage, expectedError string, startHeight *qbft.Height) *ControllerSpecTest {
+	test := &ControllerSpecTest{
+		Name:            name,
+		Type:            "QBFT controller: validation of consensus state management and instance lifecycle",
+		Documentation:   documentation,
+		RunInstanceData: runInstanceData,
+		OutputMessages:  outputMessages,
+		ExpectedError:   expectedError,
+		StartHeight:     startHeight,
+	}
+	test.Controller = test.generateController()
+	return test
 }

@@ -27,21 +27,24 @@ func PreparedPreviouslyNoPrepareJustificationQuorum() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:           "no prepare quorum (prepared)",
-		Pre:            pre,
-		PostRoot:       sc.Root(),
-		PostState:      sc.ExpectedState,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: no justifications quorum",
-	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"no prepare quorum (prepared)",
+		"Test proposal for round > 1 that was prepared previously but lacks quorum of prepare messages in justification, expecting validation error.",
+		pre,
+		sc.Root(),
+		sc.ExpectedState,
+		inputMessages,
+		nil,
+		"invalid signed message: proposal not justified: change round msg not valid: no justifications quorum",
+		nil,
+	)
 }
 
 func preparedPreviouslyNoPrepareJustificationQuorumStateComparison() *comparable.StateComparison {

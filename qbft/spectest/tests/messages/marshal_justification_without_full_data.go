@@ -33,16 +33,12 @@ func MarshalJustificationsWithoutFullData() tests.SpecTest {
 		panic(err)
 	}
 
-	return &tests.MsgSpecTest{
-		Name: "marshal justifications",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		EncodedMessages: [][]byte{
-			b,
-		},
-		ExpectedRoots: [][32]byte{
-			r,
-		},
-	}
+	return tests.NewMsgSpecTest(
+		"marshal justifications",
+		"Test marshalling justifications without full data for QBFT proposal message.",
+		[]*types.SignedSSVMessage{msg},
+		[][]byte{b},
+		[][32]byte{r},
+		"",
+	)
 }

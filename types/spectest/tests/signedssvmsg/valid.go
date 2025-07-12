@@ -17,11 +17,11 @@ func Valid() *SignedSSVMessageTest {
 
 	msg := testingutils.TestingSignedSSVMessage(ks.Shares[1], 1, ks.OperatorKeys[1])
 
-	return &SignedSSVMessageTest{
-		Name: "valid",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		RSAPublicKey: [][]byte{pkBytes},
-	}
+	return NewSignedSSVMessageTest(
+		"valid",
+		"Test validation of a valid signed SSV message with proper RSA signature",
+		[]*types.SignedSSVMessage{msg},
+		"",
+		[][]byte{pkBytes},
+	)
 }

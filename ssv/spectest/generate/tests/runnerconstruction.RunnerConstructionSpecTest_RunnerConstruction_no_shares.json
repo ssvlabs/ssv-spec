@@ -1,5 +1,6 @@
 {
   "Name": "no shares",
+  "Type": "Runner construction",
   "Shares": {},
   "RoleError": {
     "0": "no shares",

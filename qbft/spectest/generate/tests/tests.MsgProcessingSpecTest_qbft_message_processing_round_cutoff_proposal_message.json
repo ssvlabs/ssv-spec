@@ -1,5 +1,7 @@
 {
   "Name": "round cutoff proposal message",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test processing proposal message when the round is greater than or equal to the cutoff, expecting the instance to stop processing messages.",
   "Pre": {
     "State": {
       "CommitteeMember": {

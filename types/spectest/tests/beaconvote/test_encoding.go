@@ -10,9 +10,11 @@ import (
 )
 
 type EncodingTest struct {
-	Name         string
-	Data         []byte
-	ExpectedRoot [32]byte
+	Name          string
+	Type          string
+	Documentation string
+	Data          []byte
+	ExpectedRoot  [32]byte
 }
 
 func (test *EncodingTest) TestName() string {
@@ -35,4 +37,14 @@ func (test *EncodingTest) Run(t *testing.T) {
 	require.EqualValues(t, test.ExpectedRoot, r)
 
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
+}
+
+func NewEncodingTest(name, documentation string, data []byte, expectedRoot [32]byte) *EncodingTest {
+	return &EncodingTest{
+		Name:          name,
+		Type:          "Beacon vote encoding: validation of beacon vote encoding",
+		Documentation: documentation,
+		Data:          data,
+		ExpectedRoot:  expectedRoot,
+	}
 }

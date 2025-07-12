@@ -41,9 +41,10 @@ func PostFutureDecided() tests.SpecTest {
 
 	expectedError := "can't start duty: duty for slot 12 already passed. Current height is 62"
 
-	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty post future decided",
-		Tests: []*StartNewRunnerDutySpecTest{
+	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
+		"new duty post future decided",
+		"Tests new duty start after a future decided value, expecting error",
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
 				Runner:                  futureDecide(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
@@ -69,7 +70,7 @@ func PostFutureDecided() tests.SpecTest {
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50),
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 

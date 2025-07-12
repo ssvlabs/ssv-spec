@@ -107,37 +107,41 @@ func expectedProposal(quorum int) *qbft.Message {
 }
 
 func ExpectedPrepareQBFTMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected prepare qbftMessage",
-		Object:                expectedPrepare(),
-		ExpectedEncodedLength: expectedSizePrepareQBFTMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected prepare qbftMessage",
+		"Test the expected size of a prepare QBFT message with no justifications",
+		expectedPrepare(),
+		expectedSizePrepareQBFTMessage,
+		false,
+	)
 }
 
 func ExpectedCommitQBFTMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected commit qbftMessage",
-		Object:                expectedCommit(),
-		ExpectedEncodedLength: expectedSizeCommitQBFTMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected commit qbftMessage",
+		"Test the expected size of a commit QBFT message with no justifications",
+		expectedCommit(),
+		expectedSizeCommitQBFTMessage,
+		false,
+	)
 }
 
 func ExpectedRoundChangeQBFTMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected round change qbftMessage",
-		Object:                expectedRoundChange(3),
-		ExpectedEncodedLength: expectedSizeRoundChangeQBFTMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected round change qbftMessage",
+		"Test the expected size of a round change QBFT message with 3 round change justifications",
+		expectedRoundChange(3),
+		expectedSizeRoundChangeQBFTMessage,
+		false,
+	)
 }
 
 func ExpectedProposalQBFTMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected proposal qbftMessage",
-		Object:                expectedProposal(3),
-		ExpectedEncodedLength: expectedSizeProposalQBFTMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected proposal qbftMessage",
+		"Test the expected size of a proposal QBFT message with 3 round change and 3 prepare justifications",
+		expectedProposal(3),
+		expectedSizeProposalQBFTMessage,
+		false,
+	)
 }

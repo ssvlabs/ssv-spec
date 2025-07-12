@@ -2,6 +2,7 @@ package timeout
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"testing"
 
@@ -15,6 +16,8 @@ import (
 
 type SpecTest struct {
 	Name               string
+	Type               string
+	Documentation      string
 	Pre                *qbft.Instance
 	PostRoot           string
 	PostState          types.Root `json:"-"` // Field is ignored by encoding/json
@@ -68,4 +71,22 @@ func (test *SpecTest) Run(t *testing.T) {
 
 func (test *SpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
+}
+
+func (test *SpecTest) MarshalSC() ([]byte, error) {
+	return json.Marshal(test)
+}
+
+func NewSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, outputMessages []*types.SignedSSVMessage, expectedTimerState *testingutils.TimerState, expectedError string) *SpecTest {
+	return &SpecTest{
+		Name:               name,
+		Type:               "Timeout: validation of round timeout handling and state transitions",
+		Documentation:      documentation,
+		Pre:                pre,
+		PostRoot:           postRoot,
+		PostState:          postState,
+		OutputMessages:     outputMessages,
+		ExpectedTimerState: expectedTimerState,
+		ExpectedError:      expectedError,
+	}
 }

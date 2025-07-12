@@ -33,16 +33,12 @@ func RoundChangeJustificationsUnmarshalling() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &tests.MsgSpecTest{
-		Name: "round change justification unmarshalling",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		EncodedMessages: [][]byte{
-			encodedMsg,
-		},
-		ExpectedRoots: [][32]byte{
-			msgRoot,
-		},
-	}
+	return tests.NewMsgSpecTest(
+		"round change justification unmarshalling",
+		"Test unmarshalling round change justifications from QBFT proposal message.",
+		[]*types.SignedSSVMessage{msg},
+		[][]byte{encodedMsg},
+		[][32]byte{msgRoot},
+		"",
+	)
 }

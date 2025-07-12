@@ -14,9 +14,10 @@ import (
 func InconsistentOperatorSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "invalid PartialSignatureMessages: signer from signed message is inconsistent with partial signature signers"
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus inconsistent operator signer",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus inconsistent operator signer",
+		"Tests pre-consensus message processing with inconsistent operator signer, expecting error",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -57,7 +58,7 @@ func InconsistentOperatorSigner() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

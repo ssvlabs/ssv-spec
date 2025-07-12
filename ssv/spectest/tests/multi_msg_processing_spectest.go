@@ -10,8 +10,10 @@ import (
 )
 
 type MultiMsgProcessingSpecTest struct {
-	Name  string
-	Tests []*MsgProcessingSpecTest
+	Name          string
+	Type          string
+	Documentation string
+	Tests         []*MsgProcessingSpecTest
 }
 
 func (tests *MultiMsgProcessingSpecTest) TestName() string {
@@ -47,4 +49,13 @@ func (tests *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
 		ret[test.Name] = test.Runner
 	}
 	return ret, nil
+}
+
+func NewMultiMsgProcessingSpecTest(name, documentation string, tests []*MsgProcessingSpecTest) *MultiMsgProcessingSpecTest {
+	return &MultiMsgProcessingSpecTest{
+		Name:          name,
+		Type:          "SSV multi message processing: multiple message processing tests",
+		Documentation: documentation,
+		Tests:         tests,
+	}
 }

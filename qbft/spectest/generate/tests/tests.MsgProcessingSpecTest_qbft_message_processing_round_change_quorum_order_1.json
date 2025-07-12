@@ -1,5 +1,7 @@
 {
   "Name": "round change quorum order 1",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test round change quorum messages in different order (liveness property).",
   "Pre": {
     "State": {
       "CommitteeMember": {
