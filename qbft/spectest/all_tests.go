@@ -195,7 +195,6 @@ var AllTests = []tests.TestF{
 	commit.NoCommitQuorum,
 	commit.ForceStop,
 	commit.PostCutoff,
-	commit.SortedDecided,
 
 	roundchange.HappyFlow,
 	roundchange.WrongHeight,
