@@ -11,8 +11,6 @@ func MsgIDBelongs() *SSVMessageTest {
 		Name: "belongs",
 		MessageIDs: []types.MessageID{
 			types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.RoleAggregator),
-			types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.RoleAggregator),
-			types.NewMsgID(types.DomainType{0x99, 0x99, 0x99, 0x99}, testingutils.TestingValidatorPubKey[:], types.RoleAggregator),
 			types.NewMsgID(types.DomainType{0x99, 0x99, 0x99, 0x99}, testingutils.TestingValidatorPubKey[:], types.RoleAggregator),
 		},
 		BelongsToValidator: true,
