@@ -33,7 +33,7 @@ func MarshalJustificationsWithFullData() tests.SpecTest {
 		panic(err)
 	}
 
-	return &tests.MsgSpecTest{
+	test := &tests.MsgSpecTest{
 		Name: "marshal justifications with full data",
 		Messages: []*types.SignedSSVMessage{
 			msg,
@@ -45,4 +45,7 @@ func MarshalJustificationsWithFullData() tests.SpecTest {
 			r,
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

@@ -11,7 +11,7 @@ import (
 // SortedDecided tests the creation of the decided message that should have sorted signers
 func SortedDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "sorted decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -35,4 +35,7 @@ func SortedDecided() tests.SpecTest {
 			},
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

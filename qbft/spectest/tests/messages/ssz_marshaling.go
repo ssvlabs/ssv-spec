@@ -40,7 +40,7 @@ func SSZMarshaling() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &tests.MsgSpecTest{
+	test := &tests.MsgSpecTest{
 		Name: "SSZ marshalling of signed messaged",
 		Messages: []*types.SignedSSVMessage{
 			msg,
@@ -52,4 +52,7 @@ func SSZMarshaling() tests.SpecTest {
 			msgRoot,
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

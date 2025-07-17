@@ -29,7 +29,7 @@ func LateDecided() tests.SpecTest {
 			[]types.OperatorID{1, 2, 4},
 		),
 	)
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "decide late decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -48,6 +48,9 @@ func LateDecided() tests.SpecTest {
 			},
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 func lateDecidedStateComparison() *comparable.StateComparison {

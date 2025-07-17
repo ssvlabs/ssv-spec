@@ -16,10 +16,13 @@ func FutureRound() tests.SpecTest {
 	msgs := []*types.SignedSSVMessage{
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 3),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "prepare future round",
 		Pre:           pre,
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: wrong msg round",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

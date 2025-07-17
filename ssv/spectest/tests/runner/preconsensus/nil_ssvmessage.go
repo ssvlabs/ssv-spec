@@ -73,5 +73,7 @@ func NilSSVMessage() tests.SpecTest {
 		})
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

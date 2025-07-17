@@ -24,7 +24,7 @@ func PostDecided() tests.SpecTest {
 
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "proposal post decided",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -34,4 +34,6 @@ func PostDecided() tests.SpecTest {
 		},
 		ExpectedError: "invalid signed message: proposal is not valid with current state",
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

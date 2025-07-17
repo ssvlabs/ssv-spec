@@ -14,7 +14,7 @@ import (
 func FullDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := fullDecidedStateComparison()
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "full decided",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -36,6 +36,9 @@ func FullDecided() tests.SpecTest {
 			},
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 func fullDecidedStateComparison() *qbftcomparable.StateComparison {

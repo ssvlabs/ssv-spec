@@ -22,10 +22,13 @@ func MultiSigner() tests.SpecTest {
 		),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "prepare multi signer",
 		Pre:           pre,
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: msg allows 1 signer",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

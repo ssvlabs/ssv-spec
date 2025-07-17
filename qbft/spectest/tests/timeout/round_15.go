@@ -17,7 +17,7 @@ func Round15() tests.SpecTest {
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[1],
 		types.OperatorID(1), 15))
 
-	return &SpecTest{
+	test := &SpecTest{
 		Name:      "round 15",
 		Pre:       pre,
 		PostRoot:  sc.Root(),
@@ -29,6 +29,9 @@ func Round15() tests.SpecTest {
 		},
 		ExpectedError: "instance stopped processing timeouts",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 func round15StateComparison() *comparable.StateComparison {

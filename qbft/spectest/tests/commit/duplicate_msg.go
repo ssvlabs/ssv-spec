@@ -18,9 +18,12 @@ func DuplicateMsg() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "duplicate commit message",
 		Pre:           pre,
 		InputMessages: msgs,
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

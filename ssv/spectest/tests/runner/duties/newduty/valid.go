@@ -80,6 +80,9 @@ func Valid() tests.SpecTest {
 			},
 		})
 	}
+
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 
 }

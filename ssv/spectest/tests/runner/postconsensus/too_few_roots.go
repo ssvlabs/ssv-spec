@@ -147,5 +147,7 @@ func TooFewRoots() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

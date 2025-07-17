@@ -29,7 +29,7 @@ func QuorumNotTriggeredTwice() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "quorum not triggered twice",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -39,4 +39,6 @@ func QuorumNotTriggeredTwice() tests.SpecTest {
 				testingutils.MarshalJustifications(prepareMsgs)),
 		},
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

@@ -33,7 +33,7 @@ func UnmarshalJustifications() tests.SpecTest {
 		panic(err)
 	}
 
-	return &tests.MsgSpecTest{
+	test := &tests.MsgSpecTest{
 		Name: "unmarshal justifications",
 		Messages: []*types.SignedSSVMessage{
 			msg,
@@ -45,4 +45,7 @@ func UnmarshalJustifications() tests.SpecTest {
 			r,
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

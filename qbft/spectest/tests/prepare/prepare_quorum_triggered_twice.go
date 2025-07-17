@@ -24,7 +24,7 @@ func PrepareQuorumTriggeredTwice() tests.SpecTest {
 
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[4], 4),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "prepared quorum committed twice",
 		Pre:           pre,
 		PostRoot:      sc.Root(),
@@ -35,6 +35,9 @@ func PrepareQuorumTriggeredTwice() tests.SpecTest {
 			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 func prepareQuorumTriggeredTwiceStateComparison() *comparable.StateComparison {

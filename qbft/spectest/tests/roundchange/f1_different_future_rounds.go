@@ -26,7 +26,7 @@ func F1DifferentFutureRounds() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "round change f+1 prepared",
 		Pre:           pre,
 		PostRoot:      sc.Root(),
@@ -41,6 +41,9 @@ func F1DifferentFutureRounds() tests.SpecTest {
 			Round:    qbft.Round(5),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 func f1DifferentFutureRoundsStateComparison() *comparable.StateComparison {

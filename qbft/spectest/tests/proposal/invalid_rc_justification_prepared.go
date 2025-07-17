@@ -39,11 +39,14 @@ func InvalidRoundChangeJustificationPrepared() tests.SpecTest {
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:           "proposal rc msg invalid (prepared)",
 		Pre:            pre,
 		InputMessages:  msgs,
 		OutputMessages: []*types.SignedSSVMessage{},
 		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: msg signature invalid: crypto/rsa: verification error",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

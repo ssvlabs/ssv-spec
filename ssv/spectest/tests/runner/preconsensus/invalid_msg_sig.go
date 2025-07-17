@@ -69,5 +69,7 @@ func InvalidMessageSignature() tests.SpecTest {
 		})
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

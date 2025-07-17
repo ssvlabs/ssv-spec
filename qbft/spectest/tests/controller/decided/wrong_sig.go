@@ -11,7 +11,7 @@ import (
 // WrongSignature tests a single decided received with a wrong signature
 func WrongSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "decide wrong sig",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -23,4 +23,7 @@ func WrongSignature() tests.SpecTest {
 		},
 		ExpectedError: "invalid decided msg: invalid decided msg: msg signature invalid: crypto/rsa: verification error",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

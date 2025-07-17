@@ -18,10 +18,13 @@ func ForceStop() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "force stop prepare message",
 		Pre:           pre,
 		InputMessages: msgs,
 		ExpectedError: "instance stopped processing messages",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

@@ -22,7 +22,7 @@ func SignedMessageEncoding() tests.SpecTest {
 
 	b, _ := msg.Encode()
 
-	return &tests.MsgSpecTest{
+	test := &tests.MsgSpecTest{
 		Name: "signed message encoding",
 		Messages: []*types.SignedSSVMessage{
 			msg,
@@ -31,4 +31,7 @@ func SignedMessageEncoding() tests.SpecTest {
 			b,
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

@@ -21,7 +21,7 @@ func LateProposal() tests.SpecTest {
 	)
 	msgs = append(msgs, testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1))
 
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "late proposal",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -41,6 +41,9 @@ func LateProposal() tests.SpecTest {
 		},
 		ExpectedError: "not processing consensus message since instance is already decided",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 // LateProposalStateComparison returns the expected state comparison for LateProposal test.

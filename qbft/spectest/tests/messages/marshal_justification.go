@@ -40,7 +40,7 @@ func MarshalJustifications() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &tests.MsgSpecTest{
+	test := &tests.MsgSpecTest{
 		Name: "marshal RC and Prepare justifications",
 		Messages: []*types.SignedSSVMessage{
 			msg,
@@ -52,4 +52,7 @@ func MarshalJustifications() tests.SpecTest {
 			msgRoot,
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

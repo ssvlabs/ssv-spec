@@ -21,7 +21,7 @@ func NotPreparedPreviouslyJustification() tests.SpecTest {
 		testingutils.TestingProposalMessageWithRoundAndRC(ks.OperatorKeys[1], types.OperatorID(1), 5,
 			testingutils.MarshalJustifications(rcMsgs)),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "proposal justification (not prepared)",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -29,4 +29,6 @@ func NotPreparedPreviouslyJustification() tests.SpecTest {
 			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 5),
 		},
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

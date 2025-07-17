@@ -14,7 +14,7 @@ func FirstRoundJustification() tests.SpecTest {
 	msgs := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "proposal first round justification",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -26,4 +26,7 @@ func FirstRoundJustification() tests.SpecTest {
 			Round:    qbft.NoRound,
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

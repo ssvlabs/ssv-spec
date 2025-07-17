@@ -15,7 +15,7 @@ func CurrentInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := currentInstanceStateComparison()
 
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "decide current instance",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -43,6 +43,10 @@ func CurrentInstance() tests.SpecTest {
 			},
 		},
 	}
+
+	// Add private key information since this test has signatures
+	test.SetPrivateKeys(ks)
+	return test
 }
 
 func currentInstanceStateComparison() *comparable.StateComparison {

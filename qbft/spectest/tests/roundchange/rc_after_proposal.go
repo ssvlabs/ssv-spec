@@ -28,7 +28,7 @@ func AfterProposal() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[4], types.OperatorID(4), 2),
 	}...)
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "round change after proposal accepted",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -38,4 +38,6 @@ func AfterProposal() tests.SpecTest {
 			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 		},
 	}
+	test.SetPrivateKeys(ks)
+	return test
 }

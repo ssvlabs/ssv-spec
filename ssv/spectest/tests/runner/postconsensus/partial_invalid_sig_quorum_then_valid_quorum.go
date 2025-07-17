@@ -91,5 +91,7 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

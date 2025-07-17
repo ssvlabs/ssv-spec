@@ -38,7 +38,7 @@ func CurrentInstancePastRound() tests.SpecTest {
 		testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 2, 3}),
 	}...)
 
-	return &tests.ControllerSpecTest{
+	test := &tests.ControllerSpecTest{
 		Name: "decide current instance past round",
 		RunInstanceData: []*tests.RunInstanceData{
 			{
@@ -51,4 +51,7 @@ func CurrentInstancePastRound() tests.SpecTest {
 			},
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

@@ -48,5 +48,8 @@ func BlindedRunnerAcceptsNormalBlock() tests.SpecTest {
 	for _, v := range testingutils.SupportedBlockVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerBlindedReceivingNormalBlockV(v)}...)
 	}
+
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

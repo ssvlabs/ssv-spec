@@ -17,7 +17,7 @@ func F1Speedup() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 10),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "f+1 speed up",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -30,4 +30,7 @@ func F1Speedup() tests.SpecTest {
 			Round:    qbft.Round(10),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

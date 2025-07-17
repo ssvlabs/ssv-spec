@@ -18,9 +18,12 @@ func DuplicateMsg() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "duplicate prepare message",
 		Pre:           pre,
 		InputMessages: msgs,
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

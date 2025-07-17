@@ -82,5 +82,7 @@ func InvalidBeaconSignatureInQuorum() tests.SpecTest {
 		})
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

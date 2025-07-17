@@ -23,7 +23,7 @@ func MultiSignerNoOverlap() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 		testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{2, 3}),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "multi signer, no overlap",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -33,4 +33,7 @@ func MultiSignerNoOverlap() tests.SpecTest {
 		},
 		ExpectedError: "invalid signed message: msg allows 1 signer",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

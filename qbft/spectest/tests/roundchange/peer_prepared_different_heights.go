@@ -32,7 +32,7 @@ func PeerPreparedDifferentHeights() tests.SpecTest {
 			testingutils.TestingQBFTRootData, 2, testingutils.MarshalJustifications(prepareMsgs2), testingutils.TestingQBFTFullData),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "round change peer prepared different heights",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -42,4 +42,7 @@ func PeerPreparedDifferentHeights() tests.SpecTest {
 				testingutils.MarshalJustifications(msgs), testingutils.MarshalJustifications(prepareMsgs2)),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

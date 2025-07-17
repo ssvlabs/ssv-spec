@@ -18,10 +18,13 @@ func PastRound() tests.SpecTest {
 		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[1], 1, 2),
 	}
 
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "commit past round",
 		Pre:           pre,
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: past round",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

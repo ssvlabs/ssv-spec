@@ -147,5 +147,7 @@ func PostFinish() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.SetPrivateKeys(ks)
+
 	return multiSpecTest
 }

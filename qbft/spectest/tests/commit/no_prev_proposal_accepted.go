@@ -15,10 +15,13 @@ func NoPrevAcceptedProposal() tests.SpecTest {
 	msgs := []*types.SignedSSVMessage{
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "no previous accepted proposal",
 		Pre:           pre,
 		InputMessages: msgs,
 		ExpectedError: "invalid signed message: did not receive proposal for this round",
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }

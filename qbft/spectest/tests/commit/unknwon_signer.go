@@ -20,7 +20,7 @@ func UnknownSigner() tests.SpecTest {
 
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 5),
 	}
-	return &tests.MsgProcessingSpecTest{
+	test := &tests.MsgProcessingSpecTest{
 		Name:          "unknown commit signer",
 		Pre:           pre,
 		InputMessages: msgs,
@@ -30,4 +30,7 @@ func UnknownSigner() tests.SpecTest {
 			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 		},
 	}
+
+	test.SetPrivateKeys(ks)
+	return test
 }
