@@ -1,77 +1,20 @@
 {
-		"Name": "no signers",
-		"Messages": [
-				{
-						"Signatures": [
-								"Mgz+3/i1OdDksD9uukJZZkOJVngs4/fsrrU1BTEwSauwbf8VpZP7zCVNpN7RW+0AhTCeHs/t6uCeEAg0fXU3Ngn7I1zIhFJmwsRV+i59zsEpMYDVVUK6PraH3WF6usIngeiaik0LlkYiJrg4kR1kZeJ7V3yqymCDFBwP4UkE5iehwJxwN7XydMiVjAbcdbAT2CSK0gVcxyJFvS4cTVWzYGpeg3HFSsr3Lq+zDRQNdUyo7hVewN8FC2wYkMt9I8UHlXhpf2ZAolIrl3wb8Lz93IGqsNLRbcAHUDDLw5zfXrQeQ5+5xPQ5fD4xqK+hSBD0QGqmhC82Vju7a0I0llm1FA=="
-						],
-						"OperatorIDs": null,
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AgAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": null
-				}
-		],
-		"EncodedMessages": null,
-		"ExpectedRoots": null,
-		"ExpectedError": "no signers"
+  "Name": "no signers",
+  "Messages": [
+    {
+      "Signatures": [
+        "Mgz+3/i1OdDksD9uukJZZkOJVngs4/fsrrU1BTEwSauwbf8VpZP7zCVNpN7RW+0AhTCeHs/t6uCeEAg0fXU3Ngn7I1zIhFJmwsRV+i59zsEpMYDVVUK6PraH3WF6usIngeiaik0LlkYiJrg4kR1kZeJ7V3yqymCDFBwP4UkE5iehwJxwN7XydMiVjAbcdbAT2CSK0gVcxyJFvS4cTVWzYGpeg3HFSsr3Lq+zDRQNdUyo7hVewN8FC2wYkMt9I8UHlXhpf2ZAolIrl3wb8Lz93IGqsNLRbcAHUDDLw5zfXrQeQ5+5xPQ5fD4xqK+hSBD0QGqmhC82Vju7a0I0llm1FA=="
+      ],
+      "OperatorIDs": null,
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AgAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    }
+  ],
+  "EncodedMessages": null,
+  "ExpectedRoots": null,
+  "ExpectedError": "no signers"
 }

@@ -1,53 +1,20 @@
 {
-		"Name": "valid meta data when type ContributionProofs",
-		"Messages": [
-				{
-						"Type": 3,
-						"Slot": "12",
-						"Messages": [
-								{
-										"PartialSignature": "iU3PPG+KB+22Rz9ypL5hfg0kr6EuyvsUfyT4yiA5GaQmSuT2Q8z+NSRY8HljYoz2GFhYqJef2QekHSie73s4Ygn6jPp2Rf5ISQ/JHpbUTORk/oOdEPZPGBUc/yCeNTrt",
-										"SigningRoot": [
-												74,
-												227,
-												47,
-												72,
-												7,
-												151,
-												69,
-												147,
-												11,
-												194,
-												77,
-												166,
-												112,
-												166,
-												254,
-												114,
-												5,
-												46,
-												19,
-												227,
-												131,
-												39,
-												40,
-												198,
-												170,
-												37,
-												128,
-												173,
-												192,
-												48,
-												123,
-												131
-										],
-										"Signer": 1,
-										"ValidatorIndex": "1"
-								}
-						]
-				}
-		],
-		"EncodedMessages": null,
-		"ExpectedRoots": null,
-		"ExpectedError": ""
+  "Name": "valid meta data when type ContributionProofs",
+  "Messages": [
+    {
+      "Type": 3,
+      "Slot": "12",
+      "Messages": [
+        {
+          "PartialSignature": "894dcf3c6f8a07edb6473f72a4be617e0d24afa12ecafb147f24f8ca203919a4264ae4f643ccfe352458f07963628cf6185858a8979fd907a41d289eef7b386209fa8cfa7645fe48490fc91e96d44ce464fe839d10f64f18151cff209e353aed",
+          "Signer": 1,
+          "SigningRoot": "4ae32f48079745930bc24da670a6fe72052e13e3832728c6aa2580adc0307b83",
+          "ValidatorIndex": "1"
+        }
+      ]
+    }
+  ],
+  "EncodedMessages": null,
+  "ExpectedRoots": null,
+  "ExpectedError": ""
 }

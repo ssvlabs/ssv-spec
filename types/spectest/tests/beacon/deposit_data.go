@@ -2,19 +2,21 @@ package beacon
 
 import (
 	"encoding/hex"
+	"reflect"
+	"testing"
+
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
-	"reflect"
-	"testing"
 )
 
 type DepositDataSpecTest struct {
 	Name                  string
 	ValidatorPK           string
 	WithdrawalCredentials string
-	ForkVersion           [4]byte
+	ForkVersion           types.ForkVersion
 	ExpectedSigningRoot   string
 }
 
@@ -23,13 +25,15 @@ func (test *DepositDataSpecTest) TestName() string {
 }
 
 func (test *DepositDataSpecTest) Run(t *testing.T) {
-	validatorPK, _ := hex.DecodeString(test.ValidatorPK)
-	withdrawalCredentials, _ := hex.DecodeString(test.WithdrawalCredentials)
+	validatorPK, err := hex.DecodeString(test.ValidatorPK)
+	require.NoError(t, err)
+	withdrawalCredentials, err := hex.DecodeString(test.WithdrawalCredentials)
+	require.NoError(t, err)
 
 	r, _, err := testingutils.GenerateETHDepositData(
 		validatorPK,
 		withdrawalCredentials,
-		test.ForkVersion,
+		phase0.Version(test.ForkVersion[:]),
 		types.DomainDeposit,
 	)
 	require.NoError(t, err)

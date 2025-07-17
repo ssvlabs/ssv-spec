@@ -1,9 +1,10 @@
 package consensusdataproposer
 
 import (
-	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	reflect2 "reflect"
 	"testing"
+
+	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/stretchr/testify/require"
@@ -16,8 +17,8 @@ type ProposerSpecTest struct {
 	Blinded         bool
 	DataCd          []byte
 	DataBlk         []byte
-	ExpectedBlkRoot [32]byte
-	ExpectedCdRoot  [32]byte
+	ExpectedBlkRoot types.ExpectedBlkRoot
+	ExpectedCdRoot  types.ExpectedCdRoot
 	ExpectedError   string
 }
 

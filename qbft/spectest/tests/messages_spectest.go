@@ -13,7 +13,7 @@ type MsgSpecTest struct {
 	Name            string
 	Messages        []*types.SignedSSVMessage
 	EncodedMessages [][]byte
-	ExpectedRoots   [][32]byte
+	ExpectedRoots   []types.ExpectedRoot
 	ExpectedError   string
 }
 
