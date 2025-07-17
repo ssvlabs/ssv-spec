@@ -38,9 +38,10 @@ func InvalidDecidedValue() tests.SpecTest {
 	expectedCommitteeErr := "failed processing consensus message: decided ValidatorConsensusData invalid: decided value" +
 		" is invalid: attestation data source >= target"
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus decided invalid value",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus decided invalid value",
+		"Tests consensus message processing with invalid decided values",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -126,7 +127,7 @@ func InvalidDecidedValue() tests.SpecTest {
 				ExpectedError: expectedErr,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

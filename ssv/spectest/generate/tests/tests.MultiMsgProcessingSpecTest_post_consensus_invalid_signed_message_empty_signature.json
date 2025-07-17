@@ -1,5 +1,7 @@
 {
   "Name": "post consensus invalid signed message empty signature",
+  "Type": "SSV multi message processing: multiple message processing tests",
+  "Documentation": "Tests post-consensus message processing with invalid signed message (empty signature)",
   "Tests": [
     {
       "Name": "sync committee contribution",

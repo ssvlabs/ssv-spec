@@ -20,9 +20,10 @@ func ManyShares() tests.SpecTest {
 		types.RoleVoluntaryExit:             "must have one share",
 	}
 
-	return &RunnerConstructionSpecTest{
-		Name:      "many shares",
-		Shares:    shares,
-		RoleError: expectedErrors,
-	}
+	return NewRunnerConstructionSpecTest(
+		"many shares",
+		"Test that only committee runner can be constructed with multiple shares",
+		shares,
+		expectedErrors,
+	)
 }

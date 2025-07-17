@@ -10,18 +10,25 @@ import (
 func SecondProposalForRound() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 		// TODO: originally using different value
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "second proposal for round",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-		},
-		ExpectedError: "invalid signed message: proposal is not valid with current state",
+
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"second proposal for round",
+		"Test second proposal from the same signer for the current round when a proposal is already accepted, expecting validation error.",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"invalid signed message: proposal is not valid with current state",
+		nil,
+	)
 }

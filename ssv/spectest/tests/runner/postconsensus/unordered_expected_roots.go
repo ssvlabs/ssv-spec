@@ -15,9 +15,10 @@ func UnorderedExpectedRoots() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus unordered roots",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus unordered roots",
+		"Tests post-consensus message processing with unordered expected roots, expecting correct handling regardless of order.",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -67,7 +68,7 @@ func UnorderedExpectedRoots() tests.SpecTest {
 				DontStartDuty:           true,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

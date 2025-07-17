@@ -54,55 +54,61 @@ func expectedSignedSSVMessageWithFullDataFromObject(obj types.Encoder, numSigner
 }
 
 func ExpectedPrepareSignedSSVMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected prepare SignedSSVMessage",
-		Object:                expectedSignedSSVMessageFromObject(expectedPrepare(), 1),
-		ExpectedEncodedLength: expectedSizePrepareSignedSSVMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected prepare SignedSSVMessage",
+		"Test the expected size of a SignedSSVMessage containing a prepare QBFT message",
+		expectedSignedSSVMessageFromObject(expectedPrepare(), 1),
+		expectedSizePrepareSignedSSVMessage,
+		false,
+	)
 }
 
 func ExpectedCommitSignedSSVMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected commit SignedSSVMessage",
-		Object:                expectedSignedSSVMessageFromObject(expectedCommit(), 1),
-		ExpectedEncodedLength: expectedSizeCommitSignedSSVMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected commit SignedSSVMessage",
+		"Test the expected size of a SignedSSVMessage containing a commit QBFT message",
+		expectedSignedSSVMessageFromObject(expectedCommit(), 1),
+		expectedSizeCommitSignedSSVMessage,
+		false,
+	)
 }
 
 func ExpectedDecidedSignedSSVMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected decided SignedSSVMessage",
-		Object:                expectedSignedSSVMessageFromObject(expectedCommit(), 3),
-		ExpectedEncodedLength: expectedSizeDecidedSignedSSVMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected decided SignedSSVMessage",
+		"Test the expected size of a SignedSSVMessage containing a decided QBFT message with 3 signers",
+		expectedSignedSSVMessageFromObject(expectedCommit(), 3),
+		expectedSizeDecidedSignedSSVMessage,
+		false,
+	)
 }
 
 func ExpectedRoundChangeSignedSSVMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected round change SignedSSVMessage",
-		Object:                expectedSignedSSVMessageFromObject(expectedRoundChange(3), 1),
-		ExpectedEncodedLength: expectedSizeRoundChangeSignedSSVMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected round change SignedSSVMessage",
+		"Test the expected size of a SignedSSVMessage containing a round change QBFT message with 3 justifications",
+		expectedSignedSSVMessageFromObject(expectedRoundChange(3), 1),
+		expectedSizeRoundChangeSignedSSVMessage,
+		false,
+	)
 }
 
 func ExpectedProposalSignedSSVMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected proposal SignedSSVMessage",
-		Object:                expectedSignedSSVMessageWithFullDataFromObject(expectedProposal(3), 1),
-		ExpectedEncodedLength: expectedSizeProposalSignedSSVMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected proposal SignedSSVMessage",
+		"Test the expected size of a SignedSSVMessage containing a proposal QBFT message with 3 justifications and full data",
+		expectedSignedSSVMessageWithFullDataFromObject(expectedProposal(3), 1),
+		expectedSizeProposalSignedSSVMessage,
+		false,
+	)
 }
 
 func ExpectedPartialSignatureSignedSSVMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected partial signature SignedSSVMessage",
-		Object:                expectedSignedSSVMessageWithFullDataFromObject(expectedPartialSignatureMessages(1), 1),
-		ExpectedEncodedLength: expectedSizePartialSignatureMessagesSignedSSVMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected partial signature SignedSSVMessage",
+		"Test the expected size of a SignedSSVMessage containing partial signature messages with full data",
+		expectedSignedSSVMessageWithFullDataFromObject(expectedPartialSignatureMessages(1), 1),
+		expectedSizePartialSignatureMessagesSignedSSVMessage,
+		false,
+	)
 }

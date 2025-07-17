@@ -22,10 +22,12 @@ import (
 )
 
 type MsgProcessingSpecTest struct {
-	Name     string
-	Runner   ssv.Runner
-	Duty     types.Duty
-	Messages []*types.SignedSSVMessage
+	Name          string
+	Type          string `json:"Type,omitempty"`
+	Documentation string
+	Runner        ssv.Runner
+	Duty          types.Duty
+	Messages      []*types.SignedSSVMessage `json:"-"`
 	// DecidedSlashable makes the decided value slashable. Simulates consensus instances running in parallel.
 	DecidedSlashable        bool
 	PostDutyRunnerStateRoot string
@@ -285,4 +287,22 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	}
 
 	return nil
+}
+
+func NewMsgProcessingSpecTest(name, documentation string, runner ssv.Runner, duty types.Duty, messages []*types.SignedSSVMessage, decidedSlashable bool, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, dontStartDuty bool, expectedError string) *MsgProcessingSpecTest {
+	return &MsgProcessingSpecTest{
+		Name:                    name,
+		Type:                    "SSV message processing: validation of message handling and state transitions",
+		Documentation:           documentation,
+		Runner:                  runner,
+		Duty:                    duty,
+		Messages:                messages,
+		DecidedSlashable:        decidedSlashable,
+		PostDutyRunnerStateRoot: postDutyRunnerStateRoot,
+		PostDutyRunnerState:     postDutyRunnerState,
+		OutputMessages:          outputMessages,
+		BeaconBroadcastedRoots:  beaconBroadcastedRoots,
+		DontStartDuty:           dontStartDuty,
+		ExpectedError:           expectedError,
+	}
 }

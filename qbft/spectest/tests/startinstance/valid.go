@@ -8,9 +8,10 @@ import (
 
 // Valid tests a valid start instance
 func Valid() tests.SpecTest {
-	return &tests.ControllerSpecTest{
-		Name: "start instance valid",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"start instance valid",
+		"Test starting a new QBFT instance with valid input value and timer state.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				ExpectedTimerState: &testingutils.TimerState{
@@ -19,5 +20,8 @@ func Valid() tests.SpecTest {
 				},
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 }

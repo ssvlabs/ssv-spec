@@ -1,5 +1,7 @@
 {
   "Name": "duplicate commit message",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test processing of duplicate commit messages from the same signer",
   "Pre": {
     "State": {
       "CommitteeMember": {

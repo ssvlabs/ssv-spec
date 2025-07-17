@@ -24,12 +24,16 @@ func SourceHigherThanTarget() tests.SpecTest {
 
 	input, _ := data.Encode()
 
-	return &valcheck.SpecTest{
-		Name:          "attestation value check source higher than target",
-		Network:       types.BeaconTestNetwork,
-		RunnerRole:    types.RoleCommittee,
-		DutySlot:      testingutils.TestingDutySlot,
-		Input:         input,
-		ExpectedError: "attestation data source >= target",
-	}
+	return valcheck.NewSpecTest(
+		"attestation value check source higher than target",
+		"Tests attestation value check with source epoch higher than target epoch",
+		types.BeaconTestNetwork,
+		types.RoleCommittee,
+		testingutils.TestingDutySlot,
+		input,
+		nil,
+		nil,
+		"attestation data source >= target",
+		false,
+	)
 }

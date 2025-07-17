@@ -1,5 +1,7 @@
 {
   "Name": "msg type unknown",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
+  "Documentation": "Test message with unknown/invalid message type, expecting validation error.",
   "Messages": [
     {
       "Signatures": [

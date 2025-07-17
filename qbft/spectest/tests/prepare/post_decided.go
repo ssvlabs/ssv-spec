@@ -10,7 +10,7 @@ import (
 func PostDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1),
 
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
@@ -23,13 +23,21 @@ func PostDecided() tests.SpecTest {
 
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[4], 4),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "prepare post decided",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
-		},
+
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"prepare post decided",
+		"Test processing prepare message after the instance has already decided, expecting no additional output.",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
 }

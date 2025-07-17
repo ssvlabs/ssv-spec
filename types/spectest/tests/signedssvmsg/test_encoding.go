@@ -8,8 +8,10 @@ import (
 )
 
 type EncodingTest struct {
-	Name string
-	Data []byte
+	Name          string
+	Type          string
+	Documentation string
+	Data          []byte
 }
 
 func (test *EncodingTest) TestName() string {
@@ -25,4 +27,13 @@ func (test *EncodingTest) Run(t *testing.T) {
 	byts, err := decoded.Encode()
 	require.NoError(t, err)
 	require.EqualValues(t, test.Data, byts)
+}
+
+func NewEncodingTest(name string, documentation string, data []byte) *EncodingTest {
+	return &EncodingTest{
+		Name:          name,
+		Type:          "Signed SSV message encoding: validation of signed SSV message encoding",
+		Documentation: documentation,
+		Data:          data,
+	}
 }

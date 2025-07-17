@@ -18,12 +18,14 @@ func VersionedBlindedBlockValidation() *ProposerSpecTest {
 		panic(err.Error())
 	}
 
-	return &ProposerSpecTest{
-		Name:            "consensus data versioned blinded block validation",
-		Blinded:         true,
-		DataCd:          testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
-		DataBlk:         testingutils.TestingBlindedBeaconBlockBytesV(spec.DataVersionDeneb),
-		ExpectedCdRoot:  expectedCdRoot,
-		ExpectedBlkRoot: expectedBlkRoot,
-	}
+	return NewProposerSpecTest(
+		"consensus data versioned blinded block validation",
+		"Test validation of valid consensus data with versioned Deneb blinded block",
+		true,
+		testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
+		testingutils.TestingBlindedBeaconBlockBytesV(spec.DataVersionDeneb),
+		expectedBlkRoot,
+		expectedCdRoot,
+		"",
+	)
 }

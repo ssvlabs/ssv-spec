@@ -14,14 +14,18 @@ func StartWithNoSharesForDuty() tests.SpecTest {
 	// KeyShare map with entry only for validator 1
 	ksMapFor1Validator := testingutils.KeySetMapForValidators(1)
 
-	return &committee.CommitteeSpecTest{
-		Name:      "start with no shares for duty",
-		Committee: testingutils.BaseCommittee(ksMapFor1Validator),
-		Input: []interface{}{
+	return committee.NewCommitteeSpecTest(
+		"start with no shares for duty",
+		"Tests committee behavior when starting a duty for validators that the committee doesn't have shares for",
+		testingutils.BaseCommittee(ksMapFor1Validator),
+		[]interface{}{
 			// Duty for validator of index 2
 			testingutils.TestingAttesterDutyForValidators(spec.DataVersionElectra, []int{2}),
 		},
-		ExpectedError:  "no shares for duty's validators",
-		OutputMessages: []*types.PartialSignatureMessages{},
-	}
+		"",
+		nil,
+		[]*types.PartialSignatureMessages{},
+		nil,
+		"no shares for duty's validators",
+	)
 }

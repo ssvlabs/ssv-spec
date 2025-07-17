@@ -14,14 +14,19 @@ func ForceStop() tests.SpecTest {
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)))
 	pre.ForceStop()
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "force stop round change message",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "instance stopped processing messages",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"force stop round change message",
+		"Test round change message processing after instance is force stopped, expecting error.",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"instance stopped processing messages",
+		nil,
+	)
 }

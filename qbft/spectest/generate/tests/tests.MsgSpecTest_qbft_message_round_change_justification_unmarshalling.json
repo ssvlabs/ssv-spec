@@ -1,5 +1,7 @@
 {
   "Name": "round change justification unmarshalling",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
+  "Documentation": "Test unmarshalling round change justifications from QBFT proposal message.",
   "Messages": [
     {
       "Signatures": [

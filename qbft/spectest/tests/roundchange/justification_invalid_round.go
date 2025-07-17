@@ -17,16 +17,20 @@ func JustificationInvalidRound() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 3),
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 3),
 	}
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.OperatorKeys[1], types.OperatorID(1), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:           "justification invalid round",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: round change justification invalid: wrong msg round",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"justification invalid round",
+		"Test round change justification with prepared round greater than message round, expecting error.",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: round change justification invalid: wrong msg round",
+		nil,
+	)
 }

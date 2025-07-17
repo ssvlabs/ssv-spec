@@ -1,8 +1,11 @@
 {
   "Name": "past msg duty not finished",
+  "Type": "Multi committee: multiple committee tests",
+  "Documentation": "Tests committee behavior when processing past proposal messages for a duty that has not finished (consensus already finished)",
   "Tests": [
     {
       "Name": "30 attestation (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {
           "10": {
@@ -9019,6 +9022,7 @@
     },
     {
       "Name": "30 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {
           "10": {
@@ -18275,6 +18279,7 @@
     },
     {
       "Name": "30 attestation 30 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {
           "10": {
@@ -28191,6 +28196,7 @@
     },
     {
       "Name": "30 attestation (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {
           "7424010": {
@@ -37207,6 +37213,7 @@
     },
     {
       "Name": "30 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {
           "7424010": {
@@ -46463,6 +46470,7 @@
     },
     {
       "Name": "30 attestation 30 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {
           "7424010": {

@@ -13,9 +13,10 @@ import (
 func NoQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return &tests.ControllerSpecTest{
-		Name: "decide no quorum",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"decide no quorum",
+		"Test decided message with less than unique 2f+1 signers, expecting validation error.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -27,7 +28,9 @@ func NoQuorum() tests.SpecTest {
 				},
 			},
 		},
+		nil,
 		// TODO: before merge ask engineering how often they see such message in production
-		ExpectedError: "could not process msg: invalid signed message: did not receive proposal for this round",
-	}
+		"could not process msg: invalid signed message: did not receive proposal for this round",
+		nil,
+	)
 }

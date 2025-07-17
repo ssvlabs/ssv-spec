@@ -1,5 +1,7 @@
 {
   "Name": "post consensus duplicate msg",
+  "Type": "SSV multi message processing: multiple message processing tests",
+  "Documentation": "Tests post-consensus message processing with duplicate SignedPartialSignatureMessages from the same signer, expecting correct handling of duplicates",
   "Tests": [
     {
       "Name": "sync committee contribution",

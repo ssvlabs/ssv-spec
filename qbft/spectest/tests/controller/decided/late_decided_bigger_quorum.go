@@ -29,9 +29,10 @@ func LateDecidedBiggerQuorum() tests.SpecTest {
 			[]types.OperatorID{1, 2, 3, 4},
 		),
 	)
-	return &tests.ControllerSpecTest{
-		Name: "decide late decided bigger quorum",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"decide late decided bigger quorum",
+		"Test processing a decided message for a just decided instance with a bigger quorum, expecting the instance to remain decided.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue:    []byte{1, 2, 3, 4},
 				InputMessages: msgs,
@@ -47,7 +48,10 @@ func LateDecidedBiggerQuorum() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 }
 
 func lateDecidedBiggerQuorumStateComparison() *comparable.StateComparison {

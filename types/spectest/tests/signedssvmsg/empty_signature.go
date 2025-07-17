@@ -10,15 +10,17 @@ func EmptySignature() *SignedSSVMessageTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	return &SignedSSVMessageTest{
-		Name: "empty signature",
-		Messages: []*types.SignedSSVMessage{
+	return NewSignedSSVMessageTest(
+		"empty signature",
+		"Test validation error for signed SSV message with empty signature",
+		[]*types.SignedSSVMessage{
 			{
 				OperatorIDs: []types.OperatorID{1},
 				Signatures:  [][]byte{{}},
 				SSVMessage:  testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
-		ExpectedError: "empty signature",
-	}
+		"empty signature",
+		nil,
+	)
 }

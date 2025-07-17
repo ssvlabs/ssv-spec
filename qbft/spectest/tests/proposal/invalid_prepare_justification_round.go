@@ -27,21 +27,23 @@ func InvalidPrepareJustificationRound() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.OperatorKeys[3], types.OperatorID(3), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:           "invalid prepare justification round",
-		Pre:            pre,
-		PostRoot:       sc.Root(),
-		PostState:      sc.ExpectedState,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: wrong msg round",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"invalid prepare justification round",
+		"Test proposal for round > 1 that was prepared previously but contains prepare justification with round different from the highest prepared round, expecting validation error.",
+		pre,
+		sc.Root(),
+		sc.ExpectedState,
+		inputMessages,
+		nil,
+		"invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: wrong msg round",
+		nil,
+	)
 }
 
 func invalidPrepareJustificationRoundStateComparison() *comparable.StateComparison {

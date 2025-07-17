@@ -33,16 +33,12 @@ func UnmarshalJustifications() tests.SpecTest {
 		panic(err)
 	}
 
-	return &tests.MsgSpecTest{
-		Name: "unmarshal justifications",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		EncodedMessages: [][]byte{
-			b,
-		},
-		ExpectedRoots: [][32]byte{
-			r,
-		},
-	}
+	return tests.NewMsgSpecTest(
+		"unmarshal justifications",
+		"Test unmarshalling justifications from QBFT proposal message.",
+		[]*types.SignedSSVMessage{msg},
+		[][]byte{b},
+		[][32]byte{r},
+		"",
+	)
 }

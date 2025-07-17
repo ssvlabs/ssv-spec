@@ -1,5 +1,7 @@
 {
   "Name": "start instance first height",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test starting the very first QBFT instance and timer state.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -13,11 +15,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "",
-  "omitempty": null
+  "ExpectedError": ""
 }

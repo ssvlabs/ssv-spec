@@ -24,10 +24,7 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 	decidedValue := testingutils.TestBeaconVoteByts
 	msgID := testingutils.CommitteeMsgID(ks)
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "past msg duty not finished",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 
@@ -87,7 +84,7 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 		syncCommitteeDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), nil, validatorsIndexList)
 		attestationAndSyncCommitteeDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), validatorsIndexList, validatorsIndexList)
 
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+		tests = append(tests, []*committee.CommitteeSpecTest{
 			{
 				Name:      fmt.Sprintf("%v attestation (%s)", numValidators, version.String()),
 				Committee: bumpHeight(testingutils.BaseCommittee(ksMap), attesterDuty),
@@ -120,6 +117,12 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 			},
 		}...)
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"past msg duty not finished",
+		"Tests committee behavior when processing past proposal messages for a duty that has not finished (consensus already finished)",
+		tests,
+	)
 
 	return multiSpecTest
 }

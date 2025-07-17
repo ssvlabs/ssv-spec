@@ -1,5 +1,7 @@
 {
   "Name": "non unique signers",
+  "Type": "Signed SSV message: validation of signed SSV message",
+  "Documentation": "Test validation error for signed SSV message with non-unique signers",
   "Messages": [
     {
       "Signatures": [

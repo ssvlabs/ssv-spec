@@ -16,9 +16,10 @@ func InvalidCapellaBlindedBlockValidation() *ValidatorConsensusDataTest {
 		Version: version,
 		DataSSZ: []byte{},
 	}
-	return &ValidatorConsensusDataTest{
-		Name:          "invalid capella blinded block",
-		ConsensusData: *cd,
-		ExpectedError: "could not unmarshal ssz: incorrect size",
-	}
+	return NewValidatorConsensusDataTest(
+		"invalid capella blinded block",
+		"Test validation error for invalid consensus data with empty Capella blinded block data",
+		*cd,
+		"could not unmarshal ssz: incorrect size",
+	)
 }

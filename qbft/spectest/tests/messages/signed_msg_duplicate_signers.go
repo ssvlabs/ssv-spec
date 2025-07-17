@@ -18,11 +18,12 @@ func SignedMsgDuplicateSigners() tests.SpecTest {
 	)
 	msg.OperatorIDs = []types.OperatorID{1, 1, 2}
 
-	return &tests.MsgSpecTest{
-		Name: "duplicate signers",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		ExpectedError: "non unique signer",
-	}
+	return tests.NewMsgSpecTest(
+		"duplicate signers",
+		"Test signed message with duplicate signers, expecting validation error.",
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		"non unique signer",
+	)
 }

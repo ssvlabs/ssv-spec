@@ -21,9 +21,10 @@ func NilSSVMessage() tests.SpecTest {
 		SSVMessage:  nil,
 	}
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus nil ssvmessage",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus nil ssvmessage",
+		"Tests pre-consensus message processing with nil SSV message, expecting error",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:                    "sync committee aggregator selection proof",
 				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
@@ -58,7 +59,7 @@ func NilSSVMessage() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

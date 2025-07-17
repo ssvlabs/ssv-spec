@@ -25,12 +25,14 @@ func DuplicateQuorum() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &PartialSigContainerTest{
-		Name:            "duplicate quorum",
-		Quorum:          ks.Threshold,
-		ValidatorPubKey: ks.ValidatorPK.Serialize(),
-		SignatureMsgs:   msgs,
-		ExpectedResult:  expectedSig.Serialize(),
-		ExpectedQuorum:  true,
-	}
+	return NewPartialSigContainerTest(
+		"duplicate quorum",
+		"Tests partial signature container with duplicate signatures but still achieving quorum",
+		ks.Threshold,
+		ks.ValidatorPK.Serialize(),
+		msgs,
+		"",
+		expectedSig.Serialize(),
+		true,
+	)
 }

@@ -19,9 +19,10 @@ func InvalidFullData() tests.SpecTest {
 	)
 	msg.FullData = []byte("invalid")
 
-	return &tests.ControllerSpecTest{
-		Name: "decide invalid full data",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"decide invalid full data",
+		"Test signed decided message with an invalid full data field, expecting validation error.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -29,6 +30,8 @@ func InvalidFullData() tests.SpecTest {
 				},
 			},
 		},
-		ExpectedError: "invalid decided msg: H(data) != root",
-	}
+		nil,
+		"invalid decided msg: H(data) != root",
+		nil,
+	)
 }

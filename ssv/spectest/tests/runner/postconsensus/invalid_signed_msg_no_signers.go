@@ -22,9 +22,10 @@ func InvalidSignedMessageNoSigners() tests.SpecTest {
 
 	expectedError := "invalid SignedSSVMessage: no signers"
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus invalid signed message no signers",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus invalid signed message no signers",
+		"Tests post-consensus message processing with invalid signed message (no signers)",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -77,7 +78,7 @@ func InvalidSignedMessageNoSigners() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

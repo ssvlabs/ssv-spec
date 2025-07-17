@@ -4,9 +4,10 @@ import "github.com/ssvlabs/ssv-spec/types"
 
 // MapAttester tests mapping of BNRoleAttester.
 func MapAttester() *DutySpecTest {
-	return &DutySpecTest{
-		Name:       "map attester role",
-		BeaconRole: types.BNRoleAttester,
-		RunnerRole: types.RoleCommittee,
-	}
+	return NewDutySpecTest(
+		"map attester role",
+		"Test mapping of BNRoleAttester",
+		types.BNRoleAttester,
+		types.RoleCommittee,
+	)
 }

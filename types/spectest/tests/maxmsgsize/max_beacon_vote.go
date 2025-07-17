@@ -27,10 +27,11 @@ func maxBeaconVote() *types.BeaconVote {
 }
 
 func MaxBeaconVote() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "max BeaconVote",
-		Object:                maxBeaconVote(),
-		ExpectedEncodedLength: maxSizeBeaconVote,
-		IsMaxSize:             true,
-	}
+	return NewStructureSizeTest(
+		"max BeaconVote",
+		"Test the maximum size of a beacon vote with source and target checkpoints",
+		maxBeaconVote(),
+		maxSizeBeaconVote,
+		true,
+	)
 }

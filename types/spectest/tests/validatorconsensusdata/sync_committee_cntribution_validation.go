@@ -4,9 +4,10 @@ import "github.com/ssvlabs/ssv-spec/types/testingutils"
 
 // SyncCommitteeContributionValidation tests a valid consensus data with sync committee contrib.
 func SyncCommitteeContributionValidation() *ValidatorConsensusDataTest {
-	return &ValidatorConsensusDataTest{
-		Name:          "sync committee contribution valid",
-		ConsensusData: *testingutils.TestSyncCommitteeContributionConsensusData,
-	}
-
+	return NewValidatorConsensusDataTest(
+		"sync committee contribution valid",
+		"Test validation of valid consensus data with sync committee contribution",
+		*testingutils.TestSyncCommitteeContributionConsensusData,
+		"",
+	)
 }

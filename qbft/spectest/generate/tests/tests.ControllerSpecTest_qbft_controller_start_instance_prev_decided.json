@@ -1,5 +1,7 @@
 {
   "Name": "start instance prev decided",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test starting a new QBFT instance when the previous instance has already decided.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -508,8 +510,7 @@
         "DecidedVal": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
         "DecidedCnt": 1,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     },
     {
       "InputValue": "AQIDBA==",
@@ -520,11 +521,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "",
-  "omitempty": null
+  "ExpectedError": ""
 }

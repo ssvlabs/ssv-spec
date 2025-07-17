@@ -10,9 +10,10 @@ import (
 func FirstHeight() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty first height",
-		Tests: []*StartNewRunnerDutySpecTest{
+	return NewMultiStartNewRunnerDutySpecTest(
+		"new duty first height",
+		"Tests new duty start at first height",
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:      "sync committee aggregator",
 				Runner:    testingutils.SyncCommitteeContributionRunner(ks),
@@ -65,5 +66,5 @@ func FirstHeight() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},
-	}
+	)
 }

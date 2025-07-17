@@ -1,5 +1,7 @@
 {
   "Name": "max PartialSignatureMessages",
+  "Type": "Structure size: validation of structure size",
+  "Documentation": "Test the maximum size of partial signature messages collection",
   "Object": {
     "Type": 1,
     "Slot": "1",

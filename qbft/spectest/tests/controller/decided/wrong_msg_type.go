@@ -12,9 +12,10 @@ import (
 // WrongMsgType tests a non commit msg with 2f+1 signers
 func WrongMsgType() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
-		Name: "decide wrong msg type",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"decide wrong msg type",
+		"Test a non-commit message with 2f+1 signers, expecting validation error.",
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -26,6 +27,8 @@ func WrongMsgType() tests.SpecTest {
 				},
 			},
 		},
-		ExpectedError: "could not process msg: invalid signed message: msg allows 1 signer",
-	}
+		nil,
+		"could not process msg: invalid signed message: msg allows 1 signer",
+		nil,
+	)
 }

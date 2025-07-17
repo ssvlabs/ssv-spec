@@ -12,10 +12,12 @@ func PartialRootValid() *MsgSpecTest {
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)
 
-	return &MsgSpecTest{
-		Name: "partial root valid",
-		Messages: []*types.PartialSignatureMessages{
-			msg,
-		},
-	}
+	return NewMsgSpecTest(
+		"partial root valid",
+		"Test validation of partial signature message with 32-byte signing root",
+		[]*types.PartialSignatureMessages{msg},
+		nil,
+		nil,
+		"",
+	)
 }

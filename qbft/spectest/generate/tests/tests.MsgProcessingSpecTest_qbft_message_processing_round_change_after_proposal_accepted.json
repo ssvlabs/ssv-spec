@@ -1,5 +1,7 @@
 {
   "Name": "round change after proposal accepted",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test round change messages after previous quorum and proposal acceptance, followed by another round change.",
   "Pre": {
     "State": {
       "CommitteeMember": {

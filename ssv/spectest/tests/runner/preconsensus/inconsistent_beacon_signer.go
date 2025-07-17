@@ -13,9 +13,10 @@ import (
 // InconsistentBeaconSigner tests a beacon signer != SignedPartialSignatureMessage.signer
 func InconsistentBeaconSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus inconsistent beacon signer",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus inconsistent beacon signer",
+		"Tests pre-consensus message processing with inconsistent beacon signer, expecting error",
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -56,7 +57,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				ExpectedError: "SignedSSVMessage has an invalid signature: unknown signer",
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

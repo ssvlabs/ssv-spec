@@ -22,16 +22,12 @@ func ProposeDataEncoding() tests.SpecTest {
 	r, _ := msg.GetRoot()
 	b, _ := msg.Encode()
 
-	return &tests.MsgSpecTest{
-		Name: "propose data encoding",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		EncodedMessages: [][]byte{
-			b,
-		},
-		ExpectedRoots: [][32]byte{
-			r,
-		},
-	}
+	return tests.NewMsgSpecTest(
+		"propose data encoding",
+		"Test encoding of proposal data with justifications.",
+		[]*types.SignedSSVMessage{msg},
+		[][]byte{b},
+		[][32]byte{r},
+		"",
+	)
 }

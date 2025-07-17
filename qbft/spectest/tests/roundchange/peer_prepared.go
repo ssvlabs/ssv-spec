@@ -18,21 +18,28 @@ func PeerPrepared() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 	}
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.OperatorKeys[2], types.OperatorID(2), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "round change peer prepared",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
-				testingutils.TestingQBFTRootData,
-				testingutils.MarshalJustifications(msgs), testingutils.MarshalJustifications(prepareMsgs)),
-		},
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
+			testingutils.TestingQBFTRootData,
+			testingutils.MarshalJustifications(inputMessages), testingutils.MarshalJustifications(prepareMsgs)),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"round change peer prepared",
+		"Test round change quorum where only one peer is prepared, expecting proposal broadcast with correct justifications.",
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
 }
