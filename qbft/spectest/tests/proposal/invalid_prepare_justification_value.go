@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -38,7 +39,7 @@ func InvalidPrepareJustificationValue() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"invalid prepare justification value",
-		"Test proposal for round > 1 that was prepared previously but contains prepare justification with value different from the highest prepared value, expecting validation error.",
+		testdoc.ProposalInvalidPrepareJustificationValueDoc,
 		pre,
 		sc.Root(),
 		sc.ExpectedState,

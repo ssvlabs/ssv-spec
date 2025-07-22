@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -33,7 +34,7 @@ func PeerPrepared() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change peer prepared",
-		"Test round change quorum where only one peer is prepared, expecting proposal broadcast with correct justifications.",
+		testdoc.RoundChangePeerPreparedDoc,
 		pre,
 		"",
 		nil,

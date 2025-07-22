@@ -1,6 +1,7 @@
 package startinstance
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 )
 
@@ -8,7 +9,7 @@ import (
 func NilValue() tests.SpecTest {
 	return tests.NewControllerSpecTest(
 		"start instance nil value",
-		"Test starting a new QBFT instance with a nil value, expecting value validation error.",
+		testdoc.StartInstanceNilValueDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: nil,

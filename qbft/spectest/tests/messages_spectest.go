@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
 )
@@ -67,7 +68,7 @@ func (test *MsgSpecTest) GetPostState() (interface{}, error) {
 func NewMsgSpecTest(name string, documentation string, messages []*types.SignedSSVMessage, encodedMessages [][]byte, expectedRoots [][32]byte, expectedError string) *MsgSpecTest {
 	return &MsgSpecTest{
 		Name:            name,
-		Type:            "QBFT message validation: testing message encoding, decoding, and structural integrity",
+		Type:            testdoc.MsgSpecTestType,
 		Documentation:   documentation,
 		Messages:        messages,
 		EncodedMessages: encodedMessages,

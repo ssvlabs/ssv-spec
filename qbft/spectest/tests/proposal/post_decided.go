@@ -1,6 +1,7 @@
 package proposal
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -32,7 +33,7 @@ func PostDecided() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal post decided",
-		"Test processing proposal message after the instance has already decided, expecting validation error.",
+		testdoc.ProposalPostDecidedDoc,
 		pre,
 		"",
 		nil,

@@ -3,6 +3,7 @@ package decided
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -40,7 +41,7 @@ func CurrentInstancePastRound() tests.SpecTest {
 
 	return tests.NewControllerSpecTest(
 		"decide current instance past round",
-		"Test a decided message received for current running instance for a past round, expecting the instance to be decided.",
+		testdoc.ControllerDecidedCurrentInstancePastRoundDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue:    []byte{1, 2, 3, 4},

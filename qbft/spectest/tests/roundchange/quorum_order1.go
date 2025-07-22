@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -35,7 +36,7 @@ func QuorumOrder1() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change quorum order 1",
-		"Test round change quorum messages in different order (liveness property).",
+		testdoc.RoundChangeQuorumOrder1Doc,
 		pre,
 		sc.Root(),
 		sc.ExpectedState,

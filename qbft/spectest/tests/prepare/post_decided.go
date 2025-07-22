@@ -1,6 +1,7 @@
 package prepare
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -31,7 +32,7 @@ func PostDecided() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"prepare post decided",
-		"Test processing prepare message after the instance has already decided, expecting no additional output.",
+		testdoc.PreparePostDecidedDoc,
 		pre,
 		"",
 		nil,

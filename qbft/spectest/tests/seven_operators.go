@@ -1,6 +1,7 @@
 package tests
 
 import (
+	testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -33,7 +34,7 @@ func SevenOperators() SpecTest {
 
 	return NewMsgProcessingSpecTest(
 		"happy flow seven operators",
-		"Test a complete QBFT happy flow from proposal to decision with 7 operators",
+		testdoc.MsgProcessingHappyFlowSevenOperatorsDoc,
 		pre,
 		"",
 		nil,

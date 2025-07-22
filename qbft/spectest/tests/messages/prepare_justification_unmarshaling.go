@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -42,7 +43,7 @@ func PrepareJustificationsUnmarshalling() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"prepare justification unmarshalling",
-		"Test unmarshalling prepare justifications from QBFT proposal message.",
+		testdoc.MessagesPrepareJustificationUnmarshalingDoc,
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{encodedMsg},
 		[][32]byte{msgRoot},

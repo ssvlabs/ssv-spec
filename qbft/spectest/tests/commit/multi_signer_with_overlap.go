@@ -3,6 +3,7 @@ package commit
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -32,7 +33,7 @@ func MultiSignerWithOverlap() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"multi signer, with overlap",
-		"Test processing of a multi signer commit message with overlap, expecting error",
+		testdoc.CommitTestMultiSignerWithOverlapDoc,
 		pre,
 		"",
 		nil,

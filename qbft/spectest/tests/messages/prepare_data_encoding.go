@@ -1,6 +1,7 @@
 package messages
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,7 +17,7 @@ func PrepareDataEncoding() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"prepare data encoding",
-		"Test encoding of prepare data for QBFT message validation.",
+		testdoc.MessagesPrepareDataEncodingDoc,
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{b},
 		[][32]byte{r},

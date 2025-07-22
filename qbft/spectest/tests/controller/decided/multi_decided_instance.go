@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -29,7 +30,7 @@ func MultiDecidedInstances() tests.SpecTest {
 
 	return tests.NewControllerSpecTest(
 		"multi decide instances",
-		"Test deciding multiple instances with different heights, expecting each instance to be decided successfully.",
+		testdoc.ControllerDecidedMultiDecidedInstanceDoc,
 		[]*tests.RunInstanceData{
 			instanceData(qbft.FirstHeight, "f552f5aedb2e0d7933e77c4297c69e761000e88f78ae02e0afd4d053847b8d5c"),
 			instanceData(1, "d0e04e5bce1d0e75def07c8b1917981b86fa25e0d488b5ed365be477ee6a6298"),

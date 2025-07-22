@@ -1,6 +1,7 @@
 package messages
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,7 +17,7 @@ func CommitDataEncoding() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"commit data nil or len 0",
-		"Test encoding of commit data for QBFT message validation.",
+		testdoc.MessagesCommitDataEncodingDoc,
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{b},
 		[][32]byte{r},

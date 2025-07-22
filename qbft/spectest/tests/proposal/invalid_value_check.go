@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,7 +20,7 @@ func InvalidValueCheck() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"invalid proposal value check",
-		"Test proposal that fails the value check validation, expecting validation error.",
+		testdoc.ProposalInvalidValueCheckDoc,
 		pre,
 		"",
 		nil,

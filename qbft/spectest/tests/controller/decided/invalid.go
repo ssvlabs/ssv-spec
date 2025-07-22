@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -21,7 +22,7 @@ func Invalid() tests.SpecTest {
 	msg.OperatorIDs = []types.OperatorID{}
 	return tests.NewControllerSpecTest(
 		"decide invalid msg",
-		"Test decided message where msg.validate() fails, expecting validation error.",
+		testdoc.ControllerDecidedInvalidDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},

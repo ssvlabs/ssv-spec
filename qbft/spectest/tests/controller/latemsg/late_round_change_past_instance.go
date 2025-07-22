@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -51,7 +52,7 @@ func LateRoundChangePastInstance() tests.SpecTest {
 
 	return tests.NewControllerSpecTest(
 		"late round change past instance",
-		"Test processing round change message for a previously decided instance, expecting error.",
+		testdoc.ControllerLateMsgLateRoundChangePastInstanceDoc,
 		[]*tests.RunInstanceData{
 			instanceData(qbft.FirstHeight),
 			instanceData(1),

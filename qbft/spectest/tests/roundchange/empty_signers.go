@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -21,7 +22,7 @@ func EmptySigners() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change empty signer",
-		"Test round change message with no signers, expecting validation error.",
+		testdoc.RoundChangeEmptySignersDoc,
 		pre,
 		"",
 		nil,

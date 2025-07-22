@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,7 +21,7 @@ func ForceStop() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"force stop commit message",
-		"Test processing of a commit message when instance force stopped",
+		testdoc.CommitTestForceStopDoc,
 		pre,
 		"",
 		nil,

@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -21,7 +22,7 @@ func FirstRoundJustification() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal first round justification",
-		"Test proposal justification for the first round, verifying that the proposer is correct and expecting prepare message broadcast.",
+		testdoc.ProposalFirstRoundJustificationDoc,
 		pre,
 		"",
 		nil,

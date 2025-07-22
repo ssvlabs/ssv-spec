@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,7 +21,7 @@ func ForceStop() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"force stop round change message",
-		"Test round change message processing after instance is force stopped, expecting error.",
+		testdoc.RoundChangeForceStopDoc,
 		pre,
 		"",
 		nil,

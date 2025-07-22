@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -28,7 +29,7 @@ func WrongData2() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"commit data != prepared data",
-		"Test processing of a commit message with data != prepared data, expecting error",
+		testdoc.CommitTestWrongData2Doc,
 		pre,
 		"",
 		nil,

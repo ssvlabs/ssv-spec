@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -22,7 +23,7 @@ func RoundChangePrePreparedJustifications() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"rc prev prepared justifications",
-		"Test valid justified round change message with previously prepared justifications.",
+		testdoc.MessagesRCPrevPreparedJustificationsDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,

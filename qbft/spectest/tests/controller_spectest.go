@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -268,7 +269,7 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 func NewControllerSpecTest(name string, documentation string, runInstanceData []*RunInstanceData, outputMessages []*types.SignedSSVMessage, expectedError string, startHeight *qbft.Height) *ControllerSpecTest {
 	return &ControllerSpecTest{
 		Name:            name,
-		Type:            "QBFT controller: validation of consensus state management and instance lifecycle",
+		Type:            testdoc.ControllerSpecTestType,
 		Documentation:   documentation,
 		RunInstanceData: runInstanceData,
 		OutputMessages:  outputMessages,

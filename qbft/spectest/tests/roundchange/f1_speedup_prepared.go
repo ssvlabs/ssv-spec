@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -29,7 +30,7 @@ func F1SpeedupPrevPrepared() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"f+1 speed up prev prepared",
-		"Test catching up to higher rounds via f+1 speedup, with one peer previously prepared and others at the same round.",
+		testdoc.RoundChangeF1SpeedupPrevPreparedDoc,
 		pre,
 		"",
 		nil,

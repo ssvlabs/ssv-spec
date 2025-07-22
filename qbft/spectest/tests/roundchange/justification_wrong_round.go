@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -24,7 +25,7 @@ func JustificationWrongRound() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change justification wrong round",
-		"Test round change justification with wrong round, expecting error.",
+		testdoc.RoundChangeJustificationWrongRoundDoc,
 		pre,
 		"",
 		nil,

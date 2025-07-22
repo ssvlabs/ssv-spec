@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -31,7 +32,7 @@ func LateDecided() tests.SpecTest {
 	)
 	return tests.NewControllerSpecTest(
 		"decide late decided",
-		"Test processing a decided message for a just decided instance, expecting the instance to remain decided.",
+		testdoc.ControllerDecidedLateDecidedDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue:    testingutils.TestingQBFTFullData,

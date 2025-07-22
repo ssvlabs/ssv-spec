@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,7 +15,7 @@ func WrongMsgType() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return tests.NewControllerSpecTest(
 		"decide wrong msg type",
-		"Test a non-commit message with 2f+1 signers, expecting validation error.",
+		testdoc.ControllerDecidedWrongMsgTypeDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},

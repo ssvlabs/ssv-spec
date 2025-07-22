@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -25,7 +26,7 @@ func NotProposer() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change justification not proposer",
-		"Test justified round change where the node is not the proposer, expecting no proposal broadcast.",
+		testdoc.RoundChangeNotProposerDoc,
 		pre,
 		"",
 		nil,

@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,7 +19,7 @@ func WrongHeight() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change invalid height",
-		"Test round change message with invalid height, expecting validation error.",
+		testdoc.RoundChangeWrongHeightDoc,
 		pre,
 		"",
 		nil,

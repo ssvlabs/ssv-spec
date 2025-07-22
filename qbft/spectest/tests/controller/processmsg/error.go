@@ -1,6 +1,7 @@
 package processmsg
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -12,7 +13,7 @@ func MsgError() tests.SpecTest {
 
 	return tests.NewControllerSpecTest(
 		"process msg error",
-		"Test processing a message that returns an error, expecting validation error.",
+		testdoc.ControllerProcessMsgErrorDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},

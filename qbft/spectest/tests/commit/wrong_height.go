@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -28,7 +29,7 @@ func WrongHeight() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"wrong commit height",
-		"Test processing of a commit message with the wrong height, expecting error",
+		testdoc.CommitTestWrongHeightDoc,
 		pre,
 		"",
 		nil,

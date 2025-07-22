@@ -3,6 +3,7 @@ package decided
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,7 +14,7 @@ func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return tests.NewControllerSpecTest(
 		"decide unknown signer",
-		"Test a decided message with an unknown signer, expecting validation error.",
+		testdoc.ControllerDecidedUnknownSignerDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},

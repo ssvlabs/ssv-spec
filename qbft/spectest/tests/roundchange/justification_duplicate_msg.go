@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -24,7 +25,7 @@ func JustificationDuplicateMsg() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"justification duplicate msg",
-		"Test round change justification with duplicate messages, should not result in a justification quorum.",
+		testdoc.RoundChangeJustificationDuplicateMsgDoc,
 		pre,
 		"",
 		nil,

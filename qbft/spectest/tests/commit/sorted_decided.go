@@ -3,6 +3,7 @@ package commit
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,7 +15,7 @@ func SortedDecided() tests.SpecTest {
 
 	return tests.NewControllerSpecTest(
 		"sorted decided",
-		"Test the creation of the decided message that should have sorted signers",
+		testdoc.CommitTestSortedDecidedDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},

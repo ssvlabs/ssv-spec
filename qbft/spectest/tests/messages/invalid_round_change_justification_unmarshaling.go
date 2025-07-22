@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -25,7 +26,7 @@ func InvalidRoundChangeJustificationsUnmarshalling() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"invalid round change justification unmarshalling",
-		"Test unmarshalling invalid round change justifications, expecting validation error during message validation.",
+		testdoc.MessagesInvalidRoundChangeJustificationUnmarshalingDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,

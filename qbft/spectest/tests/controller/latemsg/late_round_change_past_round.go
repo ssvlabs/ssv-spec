@@ -3,6 +3,7 @@ package latemsg
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -42,7 +43,7 @@ func LateRoundChangePastRound() tests.SpecTest {
 
 	return tests.NewControllerSpecTest(
 		"late round change past round",
-		"Test processing late round change message for an instance which just decided for a round less than decided round, expecting error.",
+		testdoc.ControllerLateMsgLateRoundChangePastRoundDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue:    []byte{1, 2, 3, 4},

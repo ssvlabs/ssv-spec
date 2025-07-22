@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,7 +17,7 @@ func BroadcastedDecided() tests.SpecTest {
 	sc := broadcastedDecidedStateComparison()
 	return tests.NewControllerSpecTest(
 		"broadcast decided",
-		"Test broadcasting decided message, expecting successful broadcast.",
+		testdoc.ControllerProcessMsgBroadcastedDecidedDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},

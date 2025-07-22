@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -40,7 +41,7 @@ func LateProposalPastInstanceNonDuplicate() tests.SpecTest {
 
 	return tests.NewControllerSpecTest(
 		"late non duplicate proposal past instance",
-		"Test processing non-duplicated proposal message for a previously decided instance, expecting error.",
+		testdoc.ControllerLateMsgLateProposalPastInstanceNonDuplicateDoc,
 		[]*tests.RunInstanceData{
 			instanceData,
 			{

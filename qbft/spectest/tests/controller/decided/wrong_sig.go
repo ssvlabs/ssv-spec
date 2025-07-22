@@ -3,6 +3,7 @@ package decided
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,7 +14,7 @@ func WrongSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return tests.NewControllerSpecTest(
 		"decide wrong sig",
-		"Test a single decided message received with a wrong signature, expecting validation error.",
+		testdoc.ControllerDecidedWrongSigDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},

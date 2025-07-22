@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -31,7 +32,7 @@ func LateDecidedBiggerQuorum() tests.SpecTest {
 	)
 	return tests.NewControllerSpecTest(
 		"decide late decided bigger quorum",
-		"Test processing a decided message for a just decided instance with a bigger quorum, expecting the instance to remain decided.",
+		testdoc.ControllerDecidedLateDecidedBiggerQuorumDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue:    []byte{1, 2, 3, 4},

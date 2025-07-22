@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -49,7 +50,7 @@ func HappyFlow() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change happy flow",
-		"Test a complete round change happy flow with round change quorum, proposal, prepare, and commit",
+		testdoc.RoundChangeHappyFlowDoc,
 		pre,
 		"",
 		nil,

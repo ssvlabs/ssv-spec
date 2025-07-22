@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,7 +21,7 @@ func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 	sc := CreateRoundChangeNoJustificationQuorumSC()
 	return tests.NewCreateMsgSpecTest(
 		"create round change no justification quorum",
-		"Test creating a round change message that was previously prepared but failed to extract a justification quorum, resulting in an unjustified round change.",
+		testdoc.MessagesCreateRoundChangeNoJustificationQuorumDoc,
 		[32]byte{1, 2, 3, 4},
 		testingutils.TestingQBFTFullData,
 		qbft.FirstRound,

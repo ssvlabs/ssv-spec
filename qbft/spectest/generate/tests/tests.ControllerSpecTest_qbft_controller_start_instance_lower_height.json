@@ -1,7 +1,7 @@
 {
   "Name": "start instance lower height",
   "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
-  "Documentation": "Test starting a new QBFT instance with a height lower than the previous instance, expecting error.",
+  "Documentation": "Test starting a new QBFT instance with a lower height than the previous instance, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

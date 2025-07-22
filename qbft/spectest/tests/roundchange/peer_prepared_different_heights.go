@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -40,7 +41,7 @@ func PeerPreparedDifferentHeights() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change peer prepared different heights",
-		"Test round change quorum where peers are prepared on different heights, expecting proposal broadcast with justifications from the correct height.",
+		testdoc.RoundChangePeerPreparedDifferentHeightsDoc,
 		pre,
 		"",
 		nil,

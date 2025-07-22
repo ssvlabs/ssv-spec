@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -42,7 +43,7 @@ func MarshalJustifications() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"marshal RC and Prepare justifications",
-		"Test marshalling round change and prepare justifications for QBFT proposal message.",
+		testdoc.MessagesMarshalJustificationDoc,
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{encodedMsg},
 		[][32]byte{msgRoot},

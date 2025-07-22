@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -23,7 +24,7 @@ func DuplicateMsgDifferentRoot() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal duplicate message different value",
-		"Test duplicate proposal message processing where the second message has a different root value, expecting validation error.",
+		testdoc.ProposalDuplicateMsgDifferentRootDoc,
 		pre,
 		sc.Root(),
 		sc.ExpectedState,

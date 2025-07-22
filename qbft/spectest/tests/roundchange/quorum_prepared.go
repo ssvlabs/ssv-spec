@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -35,7 +36,7 @@ func QuorumPrepared() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change prepared",
-		"Test round change messages for prepared state, leading to proposal broadcast.",
+		testdoc.RoundChangeQuorumPreparedDoc,
 		pre,
 		"",
 		nil,

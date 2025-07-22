@@ -3,6 +3,7 @@ package messages
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,7 +19,7 @@ func SignedMsgMultiSigners() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"multi signers",
-		"Test signed message with multiple signers for QBFT message validation.",
+		testdoc.MessagesSignedMsgMultiSignersDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,

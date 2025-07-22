@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -21,7 +22,7 @@ func MsgNilIdentifier() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"msg identifier nil",
-		"Test message with nil identifier, expecting validation error.",
+		testdoc.MessagesMsgNilIdentifierDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,

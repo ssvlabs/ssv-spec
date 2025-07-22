@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -36,7 +37,7 @@ func ValidJustification() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"valid justification",
-		"Test round change with valid quorum justification, leading to proposal broadcast.",
+		testdoc.RoundChangeValidJustificationDoc,
 		pre,
 		"",
 		nil,

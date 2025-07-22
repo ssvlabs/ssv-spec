@@ -2,6 +2,7 @@ package startinstance
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -12,7 +13,7 @@ import (
 func PreviousNotDecided() tests.SpecTest {
 	return tests.NewControllerSpecTest(
 		"start instance prev not decided",
-		"Test starting a new QBFT instance when the previous instance has not decided.",
+		testdoc.StartInstancePrevNotDecidedDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue:          []byte{1, 2, 3, 4},

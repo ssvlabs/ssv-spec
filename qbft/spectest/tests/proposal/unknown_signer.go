@@ -1,6 +1,7 @@
 package proposal
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,7 +17,7 @@ func UnknownSigner() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"unknown proposal signer",
-		"Test proposal message from a signer not in the committee, expecting validation error.",
+		testdoc.ProposalUnknownSignerDoc,
 		pre,
 		"",
 		nil,

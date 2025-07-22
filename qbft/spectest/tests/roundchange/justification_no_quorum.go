@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -23,7 +24,7 @@ func JustificationNoQuorum() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change justification no quorum",
-		"Test round change justification with no quorum, expecting error.",
+		testdoc.RoundChangeJustificationNoQuorumDoc,
 		pre,
 		"",
 		nil,

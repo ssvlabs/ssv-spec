@@ -1,6 +1,7 @@
 package messages
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,7 +18,7 @@ func CreateProposalNotPreviouslyPrepared() tests.SpecTest {
 
 	return tests.NewCreateMsgSpecTest(
 		"create proposal not previously prepared",
-		"Test creating a proposal message for non-first round when not previously prepared, with round change justifications.",
+		testdoc.MessagesCreateProposalNotPrevPreparedDoc,
 		[32]byte{1, 2, 3, 4},
 		nil,
 		10,

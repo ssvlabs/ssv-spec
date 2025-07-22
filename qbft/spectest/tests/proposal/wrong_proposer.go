@@ -1,6 +1,7 @@
 package proposal
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,7 +17,7 @@ func WrongProposer() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"wrong proposer",
-		"Test proposal by a node that is not the designated proposer for the current round, expecting validation error.",
+		testdoc.ProposalWrongProposerDoc,
 		pre,
 		"",
 		nil,

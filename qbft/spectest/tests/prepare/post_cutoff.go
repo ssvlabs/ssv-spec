@@ -1,6 +1,7 @@
 package prepare
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,7 +20,7 @@ func PostCutoff() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round cutoff prepare message",
-		"Test processing prepare message when the round is greater than or equal to the cutoff, expecting the instance to stop processing messages.",
+		testdoc.PreparePostCutoffDoc,
 		pre,
 		"",
 		nil,

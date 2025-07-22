@@ -2,6 +2,7 @@ package processmsg
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,7 +17,7 @@ func InvalidIdentifier() tests.SpecTest {
 
 	return tests.NewControllerSpecTest(
 		"invalid identifier",
-		"Test processing a message with the wrong identifier, expecting validation error.",
+		testdoc.ControllerProcessMsgInvalidIdentifierDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},

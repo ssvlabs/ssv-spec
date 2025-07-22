@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,7 +20,7 @@ func PostCutoff() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round cutoff commit message",
-		"Test processing of a commit message when round >= cutoff, expecting error",
+		testdoc.CommitTestPostCutoffDoc,
 		pre,
 		"",
 		nil,

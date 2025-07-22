@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -40,7 +41,7 @@ func FutureRound() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal future round prev prepared",
-		"Test proposal for a future round when a proposal is already accepted for the current round, expecting prepare message broadcast and round advancement.",
+		testdoc.ProposalFutureRoundDoc,
 		pre,
 		"",
 		nil,

@@ -2,6 +2,7 @@ package startinstance
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -10,7 +11,7 @@ import (
 func FirstHeight() tests.SpecTest {
 	return tests.NewControllerSpecTest(
 		"start instance first height",
-		"Test starting the very first QBFT instance and timer state.",
+		testdoc.StartInstanceFirstHeightDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},

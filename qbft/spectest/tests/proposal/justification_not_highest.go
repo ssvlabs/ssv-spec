@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -41,7 +42,7 @@ func JustificationsNotHighest() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"proposal justification not highest",
-		"Test proposal for round > 1 with round change justification containing prepare messages at different heights, but the prepare justification is not the highest, expecting validation error.",
+		testdoc.ProposalJustificationNotHighestDoc,
 		pre,
 		"",
 		nil,

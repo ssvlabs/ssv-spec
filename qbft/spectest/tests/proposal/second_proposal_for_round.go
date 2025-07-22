@@ -1,6 +1,7 @@
 package proposal
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -22,7 +23,7 @@ func SecondProposalForRound() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"second proposal for round",
-		"Test second proposal from the same signer for the current round when a proposal is already accepted, expecting validation error.",
+		testdoc.ProposalSecondProposalForRoundDoc,
 		pre,
 		"",
 		nil,

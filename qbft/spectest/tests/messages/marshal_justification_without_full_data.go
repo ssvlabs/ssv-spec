@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -35,7 +36,7 @@ func MarshalJustificationsWithoutFullData() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"marshal justifications",
-		"Test marshalling justifications without full data for QBFT proposal message.",
+		testdoc.MessagesMarshalJustificationWithoutFullDataDoc,
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{b},
 		[][32]byte{r},

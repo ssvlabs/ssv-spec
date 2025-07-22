@@ -1,6 +1,7 @@
 package messages
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,7 +15,7 @@ func SignedMsgNoSigners() tests.SpecTest {
 
 	return tests.NewMsgSpecTest(
 		"no signers",
-		"Test signed message with no signers, expecting validation error.",
+		testdoc.MessagesSignedMsgNoSignersDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,

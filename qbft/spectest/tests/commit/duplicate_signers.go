@@ -3,6 +3,7 @@ package commit
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,7 +20,7 @@ func DuplicateSigners() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"duplicate signers",
-		"Test processing of a commit message with duplicate signers",
+		testdoc.CommitTestDuplicateSignersDoc,
 		pre,
 		"",
 		nil,

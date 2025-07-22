@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -29,7 +30,7 @@ func NoPrepareQuorum() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"commit no prepare quorum",
-		"Test processing of commit messages without a prepare quorum",
+		testdoc.CommitTestNoPrepareQuorumDoc,
 		pre,
 		"",
 		nil,

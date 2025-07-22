@@ -1,7 +1,7 @@
 {
   "Name": "start instance equal height running instance",
   "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
-  "Documentation": "Test starting a new QBFT instance for a height where an instance is already running, expecting error.",
+  "Documentation": "Test starting a new QBFT instance for the current height when an instance is already running, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",

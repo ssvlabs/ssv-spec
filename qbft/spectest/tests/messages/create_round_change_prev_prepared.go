@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,7 +18,7 @@ func CreateRoundChangePreviouslyPrepared() tests.SpecTest {
 	}
 	return tests.NewCreateMsgSpecTest(
 		"create round change previously prepared",
-		"Test creating a round change message when previously prepared with justifications.",
+		testdoc.MessagesCreateRoundChangePrevPreparedDoc,
 		[32]byte{1, 2, 3, 4},
 		nil,
 		qbft.FirstRound,

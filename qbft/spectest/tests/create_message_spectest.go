@@ -8,6 +8,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -169,7 +170,7 @@ func (test *CreateMsgSpecTest) GetPostState() (interface{}, error) {
 func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, stateValue []byte, round qbft.Round, roundChangeJustifications []*types.SignedSSVMessage, prepareJustifications []*types.SignedSSVMessage, createType string, expectedRoot string, expectedState types.Root, expectedError string) *CreateMsgSpecTest {
 	return &CreateMsgSpecTest{
 		Name:                      name,
-		Type:                      "Message creation: validation of consensus message construction and encoding",
+		Type:                      testdoc.CreateMsgSpecTestType,
 		Documentation:             documentation,
 		Value:                     value,
 		StateValue:                stateValue,

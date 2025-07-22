@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -30,7 +31,7 @@ func HappyFlow() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"commit happy flow",
-		"Test a complete commit happy flow with proposal, prepare quorum, and commit quorum",
+		testdoc.CommitTestHappyFlowDoc,
 		pre,
 		"",
 		nil,

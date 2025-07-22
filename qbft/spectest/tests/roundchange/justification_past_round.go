@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -34,7 +35,7 @@ func JustificationPastRound() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"round change past round quorum",
-		"Test quorum of round change messages for a past round, expecting error due to outdated round.",
+		testdoc.RoundChangeJustificationPastRoundDoc,
 		pre,
 		"",
 		nil,
