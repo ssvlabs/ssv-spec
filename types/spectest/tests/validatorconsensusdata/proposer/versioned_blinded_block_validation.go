@@ -26,8 +26,8 @@ func VersionedBlindedBlockValidation() *ProposerSpecTest {
 		true,
 		testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
 		testingutils.TestingBlindedBeaconBlockBytesV(spec.DataVersionDeneb),
-		types.ExpectedCdRoot(expectedCdRoot),
 		types.ExpectedBlkRoot(expectedBlkRoot),
+		types.ExpectedCdRoot(expectedCdRoot),
 		"",
 	)
 }

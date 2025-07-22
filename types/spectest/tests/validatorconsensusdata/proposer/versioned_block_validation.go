@@ -26,8 +26,8 @@ func VersionedBlockValidation() *ProposerSpecTest {
 		false,
 		testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
 		testingutils.TestingBeaconBlockBytesV(spec.DataVersionDeneb),
-		types.ExpectedCdRoot(expectedCdRoot),
 		types.ExpectedBlkRoot(expectedBlkRoot),
+		types.ExpectedCdRoot(expectedCdRoot),
 		"",
 	)
 }
