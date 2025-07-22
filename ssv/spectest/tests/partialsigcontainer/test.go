@@ -1,8 +1,6 @@
 package partialsigcontainer
 
 import (
-	"encoding/hex"
-	"fmt"
 	"testing"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -20,13 +18,7 @@ type PartialSigContainerTest struct {
 	ExpectedError   string
 	ExpectedResult  []byte
 	ExpectedQuorum  bool
-	PrivateKeys     *PrivateKeyInfo `json:"PrivateKeys,omitempty"`
-}
-
-type PrivateKeyInfo struct {
-	ValidatorSK  string
-	Shares       map[types.OperatorID]string
-	OperatorKeys map[types.OperatorID]string
+	PrivateKeys     *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *PartialSigContainerTest) TestName() string {
@@ -65,22 +57,5 @@ func (test *PartialSigContainerTest) GetPostState() (interface{}, error) {
 }
 
 func (test *PartialSigContainerTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
-	privateKeyInfo := &PrivateKeyInfo{
-		ValidatorSK:  hex.EncodeToString(ks.ValidatorSK.Serialize()),
-		Shares:       make(map[types.OperatorID]string),
-		OperatorKeys: make(map[types.OperatorID]string),
-	}
-
-	// Add share keys
-	for operatorID, shareSK := range ks.Shares {
-		privateKeyInfo.Shares[operatorID] = hex.EncodeToString(shareSK.Serialize())
-	}
-
-	// Add operator keys (RSA private keys used for signing)
-	for operatorID, operatorKey := range ks.OperatorKeys {
-		privateKeyInfo.OperatorKeys[operatorID] = fmt.Sprintf("N:%s,E:%d",
-			operatorKey.N.String(), operatorKey.E)
-	}
-
-	test.PrivateKeys = privateKeyInfo
+	test.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
 }

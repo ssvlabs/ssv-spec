@@ -2,7 +2,6 @@ package synccommitteeaggregator
 
 import (
 	"encoding/hex"
-	"fmt"
 	"os"
 	"reflect"
 	"testing"
@@ -23,13 +22,7 @@ type SyncCommitteeAggregatorProofSpecTest struct {
 	PostDutyRunnerState     string
 	ProofRootsMap           map[string]bool // if true then root returned from beacon node will be an aggregator
 	ExpectedError           string
-	PrivateKeys             *PrivateKeyInfo
-}
-
-type PrivateKeyInfo struct {
-	ValidatorSK  string
-	Shares       map[types.OperatorID]string
-	OperatorKeys map[types.OperatorID]string
+	PrivateKeys             *testingutils.PrivateKeyInfo
 }
 
 func (test *SyncCommitteeAggregatorProofSpecTest) TestName() string {
@@ -90,22 +83,5 @@ func (test *SyncCommitteeAggregatorProofSpecTest) overrideStateComparison(t *tes
 }
 
 func (tests *SyncCommitteeAggregatorProofSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
-	privateKeyInfo := &PrivateKeyInfo{
-		ValidatorSK:  hex.EncodeToString(ks.ValidatorSK.Serialize()),
-		Shares:       make(map[types.OperatorID]string),
-		OperatorKeys: make(map[types.OperatorID]string),
-	}
-
-	// Add share keys
-	for operatorID, shareSK := range ks.Shares {
-		privateKeyInfo.Shares[operatorID] = hex.EncodeToString(shareSK.Serialize())
-	}
-
-	// Add operator keys (RSA private keys used for signing)
-	for operatorID, operatorKey := range ks.OperatorKeys {
-		privateKeyInfo.OperatorKeys[operatorID] = fmt.Sprintf("N:%s,E:%d",
-			operatorKey.N.String(), operatorKey.E)
-	}
-
-	tests.PrivateKeys = privateKeyInfo
+	tests.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
 }
