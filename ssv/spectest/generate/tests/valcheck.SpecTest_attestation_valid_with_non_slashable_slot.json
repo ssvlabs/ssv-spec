@@ -1,7 +1,7 @@
 {
   "Name": "attestation valid with non slashable slot",
   "Type": "Value check: validations for input of different runner roles",
-  "Documentation": "Tests valid attestation data value check for non-slashable slot",
+  "Documentation": "Tests attestation value check with valid non-slashable slot",
   "Network": "now_test_network",
   "RunnerRole": 0,
   "DutySlot": "13",

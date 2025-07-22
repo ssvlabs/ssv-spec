@@ -1,6 +1,6 @@
 {
   "Name": "sync committee aggregator all are aggregators",
-  "Type": "Sync committee aggregator proof",
+  "Type": "Sync committee aggregator proof: validation of sync committee aggregator proof",
   "Documentation": "Tests sync committee aggregator proof validation when all selection proofs are aggregators",
   "Messages": [
     {

@@ -1,7 +1,7 @@
 {
   "Name": "post consensus invalid signed message different length",
   "Type": "SSV multi message processing: multiple message processing tests",
-  "Documentation": "Tests post-consensus message processing with invalid signed message (different signature lengths)",
+  "Documentation": "Tests post-consensus message processing with invalid signed message (different number of signers and signatures)",
   "Tests": [
     {
       "Name": "sync committee contribution",

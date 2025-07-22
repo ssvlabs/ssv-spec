@@ -1,7 +1,7 @@
 {
   "Name": "pre consensus quorum 13 operators",
   "Type": "SSV multi message processing: multiple message processing tests",
-  "Documentation": "Tests pre-consensus quorum message processing with 13 operators",
+  "Documentation": "Tests pre-consensus message processing with 13 operators",
   "Tests": [
     {
       "Name": "sync committee aggregator selection proof",

@@ -1,6 +1,6 @@
 {
   "Name": "no shares",
-  "Type": "Runner construction",
+  "Type": "Runner construction: validation of runner construction",
   "Documentation": "Test that all runners cannot be constructed without shares",
   "Shares": {},
   "RoleError": {

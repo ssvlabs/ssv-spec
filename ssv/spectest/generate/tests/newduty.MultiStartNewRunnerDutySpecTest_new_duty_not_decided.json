@@ -1,6 +1,6 @@
 {
   "Name": "new duty not decided",
-  "Type": "Multi start new runner duty",
+  "Type": "Multi start new runner duty: multiple start new runner duty tests",
   "Documentation": "Tests new duty start when a previous duty has not been decided",
   "Tests": [
     {

@@ -1,7 +1,7 @@
 {
   "Name": "attestation value check slashable",
   "Type": "Value check: validations for input of different runner roles",
-  "Documentation": "Tests slashable attestation data value check",
+  "Documentation": "Tests attestation value check with slashable attestation",
   "Network": "now_test_network",
   "RunnerRole": 0,
   "DutySlot": "12",

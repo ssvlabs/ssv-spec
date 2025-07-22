@@ -1,6 +1,6 @@
 {
   "Name": "many shares",
-  "Type": "Runner construction",
+  "Type": "Runner construction: validation of runner construction",
   "Documentation": "Test that only committee runner can be constructed with multiple shares",
   "Shares": {
     "1": {
