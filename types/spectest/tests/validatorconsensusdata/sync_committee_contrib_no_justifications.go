@@ -3,6 +3,7 @@ package validatorconsensusdata
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -19,7 +20,7 @@ func SyncCommitteeContributionNoJustifications() *ValidatorConsensusDataTest {
 
 	return NewValidatorConsensusDataTest(
 		"sync committee contribution with no pre-consensus justification",
-		"Test sync committee contribution consensus data with no sync committee contribution pre-consensus justifications",
+		testdoc.ValidatorConsensusDataTestSyncCommitteeContributionNoJustificationsDoc,
 		cd,
 		"",
 	)

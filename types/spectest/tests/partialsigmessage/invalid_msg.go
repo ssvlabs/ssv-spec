@@ -3,6 +3,7 @@ package partialsigmessage
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -15,7 +16,7 @@ func InvalidMsg() *MsgSpecTest {
 
 	return NewMsgSpecTest(
 		"invalid message",
-		"Test validation error when partial signature messages contain invalid message with inconsistent signers",
+		testdoc.MsgSpecTestInvalidMsgDoc,
 		[]*types.PartialSignatureMessages{msg},
 		nil,
 		nil,

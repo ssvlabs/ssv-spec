@@ -2,6 +2,7 @@ package partialsigmessage
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -21,7 +22,7 @@ func Encoding() *EncodingTest {
 
 	return NewEncodingTest(
 		"PartialSignatureMessages encoding",
-		"Test encoding and decoding of partial signature messages with hash tree root verification",
+		testdoc.PartialSignatureMessageEncodingTestDoc,
 		byts,
 		root,
 	)

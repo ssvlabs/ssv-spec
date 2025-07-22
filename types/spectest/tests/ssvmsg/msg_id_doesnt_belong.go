@@ -2,6 +2,7 @@ package ssvmsg
 
 import (
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -9,7 +10,7 @@ import (
 func MsgIDDoesntBelongs() *SSVMessageTest {
 	return NewSSVMessageTest(
 		"does not belong",
-		"Test that message IDs with non-matching validator public key do not belong to the validator",
+		testdoc.SSVMessageTestDoesNotBelongDoc,
 		[]types.MessageID{
 			types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingWrongValidatorPubKey[:], types.RoleCommittee),
 			types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingWrongValidatorPubKey[:], types.RoleUnknown),

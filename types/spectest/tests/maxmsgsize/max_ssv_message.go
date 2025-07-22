@@ -2,6 +2,7 @@ package maxmsgsize
 
 import (
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 )
 
 const (
@@ -40,7 +41,7 @@ func maxSSVMessageFromPartialSignatureMessages() *types.SSVMessage {
 func MaxSSVMessageFromQBFTMessage() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"max SSVMessage from qbftMessage",
-		"Test the maximum size of an SSVMessage containing a QBFT message with 2 justifications",
+		testdoc.StructureSizeTestMaxSSVMessageFromQBFTMessageDoc,
 		maxSSVMessageFromQBFTMessage(),
 		maxSizeSSVMessageFromQBFTMessage,
 		true,
@@ -50,7 +51,7 @@ func MaxSSVMessageFromQBFTMessage() *StructureSizeTest {
 func MaxSSVMessageFromPartialSignatureMessage() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"max SSVMessage from PartialSignatureMessages",
-		"Test the maximum size of an SSVMessage containing partial signature messages",
+		testdoc.StructureSizeTestMaxSSVMessageFromPartialSignatureMessagesDoc,
 		maxSSVMessageFromPartialSignatureMessages(),
 		maxSizeSSVMessageFromPartialSignatureMessages,
 		false,

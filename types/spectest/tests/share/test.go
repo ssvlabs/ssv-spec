@@ -7,6 +7,7 @@ import (
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/stretchr/testify/require"
 )
 
@@ -52,7 +53,7 @@ func (test *ShareTest) Run(t *testing.T) {
 func NewShareTest(name, documentation string, share types.Share, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedError string) *ShareTest {
 	return &ShareTest{
 		Name:                  name,
-		Type:                  "Share: testing message signing and quorum verification",
+		Type:                  testdoc.ShareTestType,
 		Documentation:         documentation,
 		Share:                 share,
 		Message:               message,

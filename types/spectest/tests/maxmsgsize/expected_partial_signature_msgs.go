@@ -2,6 +2,7 @@ package maxmsgsize
 
 import (
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 )
 
 const (
@@ -38,7 +39,7 @@ func expectedPartialSignatureMessages(numSignatures int) *types.PartialSignature
 func ExpectedPartialSignatureMessage() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"expected PartialSignatureMessage",
-		"Test the expected size of a single partial signature message",
+		testdoc.StructureSizeTestExpectedPartialSignatureMessageDoc,
 		expectedPartialSignatureMessage(),
 		expectedSizePartialSignatureMessage,
 		false,
@@ -48,7 +49,7 @@ func ExpectedPartialSignatureMessage() *StructureSizeTest {
 func ExpectedPartialSignatureMessages() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"expected PartialSignatureMessages",
-		"Test the expected size of partial signature messages collection with 1 message",
+		testdoc.StructureSizeTestExpectedPartialSignatureMessagesDoc,
 		expectedPartialSignatureMessages(1),
 		expectedSizePartialSignatureMessages,
 		false,

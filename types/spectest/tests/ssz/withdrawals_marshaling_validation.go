@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -18,7 +19,7 @@ func SSZWithdrawalsMarshaling() *SSZSpecTest {
 
 	return NewSSZSpecTest(
 		"ssz withdrawals marshalling",
-		"Test SSZ marshaling and hash tree root calculation of Capella withdrawals",
+		testdoc.SSZSpecTestWithdrawalsMarshalingDoc,
 		testingutils.TestProposerConsensusDataBytsV(spec.DataVersionCapella),
 		root,
 		"",

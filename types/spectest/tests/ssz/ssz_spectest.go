@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 )
 
 type SSZSpecTest struct {
@@ -45,7 +46,7 @@ func (test *SSZSpecTest) Run(t *testing.T) {
 func NewSSZSpecTest(name, documentation string, data []byte, expectedRoot [32]byte, expectedError string) *SSZSpecTest {
 	return &SSZSpecTest{
 		Name:          name,
-		Type:          "SSZ: validation of SSZ encoding and decoding",
+		Type:          testdoc.SSZSpecTestType,
 		Documentation: documentation,
 		Data:          data,
 		ExpectedRoot:  expectedRoot,

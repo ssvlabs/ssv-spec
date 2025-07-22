@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,7 +28,7 @@ func (test *DutySpecTest) Run(t *testing.T) {
 func NewDutySpecTest(name, documentation string, beaconRole types.BeaconRole, runnerRole types.RunnerRole) *DutySpecTest {
 	return &DutySpecTest{
 		Name:          name,
-		Type:          "Duty: validation of beacon role to runner role conversion",
+		Type:          testdoc.DutySpecTestType,
 		Documentation: documentation,
 		BeaconRole:    beaconRole,
 		RunnerRole:    runnerRole,

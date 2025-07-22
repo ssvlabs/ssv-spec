@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
@@ -45,7 +46,7 @@ func (test *DepositDataSpecTest) Run(t *testing.T) {
 func NewDepositDataSpecTest(name, documentation, validatorPK, withdrawalCredentials string, forkVersion [4]byte, expectedSigningRoot string) *DepositDataSpecTest {
 	return &DepositDataSpecTest{
 		Name:                  name,
-		Type:                  "Beacon deposit data: validation of validator registration and signing root generation",
+		Type:                  testdoc.DepositDataSpecTestType,
 		Documentation:         documentation,
 		ValidatorPK:           validatorPK,
 		WithdrawalCredentials: withdrawalCredentials,
@@ -58,7 +59,7 @@ func NewDepositDataSpecTest(name, documentation, validatorPK, withdrawalCredenti
 func DepositData() *DepositDataSpecTest {
 	return NewDepositDataSpecTest(
 		"deposit data root and ssz",
-		"Generate a deposit data with the given validator public key, withdrawal credentials, and fork version, and verify the signing root",
+		testdoc.DepositDataTestDoc,
 		"b3d50de8d77299da8d830de1edfb34d3ce03c1941846e73870bb33f6de7b8a01383f6b32f55a1d038a4ddcb21a765194",
 		"005b55a6c968852666b132a80f53712e5097b0fca86301a16992e695a8e86f16",
 		types.MainNetwork.ForkVersion(),

@@ -2,6 +2,7 @@ package signedssvmsg
 
 import (
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -12,7 +13,7 @@ func EmptySignature() *SignedSSVMessageTest {
 
 	return NewSignedSSVMessageTest(
 		"empty signature",
-		"Test validation error for signed SSV message with empty signature",
+		testdoc.SignedSSVMessageTestEmptySignatureDoc,
 		[]*types.SignedSSVMessage{
 			{
 				OperatorIDs: []types.OperatorID{1},

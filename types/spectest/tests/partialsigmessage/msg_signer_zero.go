@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -18,7 +19,7 @@ func MessageSigner0() *MsgSpecTest {
 
 	return NewMsgSpecTest(
 		"message signer 0",
-		"Test validation error when partial signature message has signer ID 0 which is not allowed",
+		testdoc.MsgSpecTestMessageSigner0Doc,
 		[]*types.PartialSignatureMessages{msgPre, msgPost},
 		nil,
 		nil,

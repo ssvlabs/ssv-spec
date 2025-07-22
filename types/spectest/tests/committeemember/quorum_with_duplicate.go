@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -17,7 +18,7 @@ func QuorumWithDuplicate() *CommitteeMemberTest {
 
 	return NewCommitteeMemberTest(
 		"quorum with duplicate",
-		"Test that committee member has quorum with 2f+1 unique signers even when duplicates are present should be accepted",
+		testdoc.QuorumWithDuplicateTestDoc,
 		*committeeMember,
 		*msg,
 		true,

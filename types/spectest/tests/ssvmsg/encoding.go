@@ -1,6 +1,7 @@
 package ssvmsg
 
 import (
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -20,7 +21,7 @@ func Encoding() *EncodingTest {
 
 	return NewEncodingTest(
 		"SSVMessage encoding",
-		"Test SSVMessage encoding",
+		testdoc.SSVMessageEncodingTestDoc,
 		byts,
 		root,
 	)

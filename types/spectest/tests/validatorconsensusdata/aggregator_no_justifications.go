@@ -2,6 +2,7 @@ package validatorconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -12,7 +13,7 @@ func Phase0AggregatorNoJustifications() *ValidatorConsensusDataTest {
 
 	return NewValidatorConsensusDataTest(
 		"phase0 aggregator without justification",
-		"Test phase0 aggregator consensus data with no pre-consensus justifications",
+		testdoc.ValidatorConsensusDataTestPhase0AggregatorNoJustificationsDoc,
 		*testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0),
 		"",
 	)
@@ -25,7 +26,7 @@ func ElectraAggregatorNoJustifications() *ValidatorConsensusDataTest {
 
 	return NewValidatorConsensusDataTest(
 		"electra aggregator without justification",
-		"Test Electra aggregator consensus data with no pre-consensus justifications",
+		testdoc.ValidatorConsensusDataTestElectraAggregatorNoJustificationsDoc,
 		*testingutils.TestAggregatorConsensusData(spec.DataVersionElectra),
 		"",
 	)

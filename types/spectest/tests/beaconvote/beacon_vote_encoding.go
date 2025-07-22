@@ -1,6 +1,7 @@
 package beaconvote
 
 import (
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -20,7 +21,7 @@ func BeaconVoteEncoding() *EncodingTest {
 
 	return NewEncodingTest(
 		"beacon vote encoding",
-		"Test encoding and decoding of beacon vote with hash tree root verification",
+		testdoc.BeaconVoteEncodingTestDoc,
 		byts,
 		root,
 	)

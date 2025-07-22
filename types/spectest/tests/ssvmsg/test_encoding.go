@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
 )
@@ -42,7 +43,7 @@ func (test *EncodingTest) Run(t *testing.T) {
 func NewEncodingTest(name, documentation string, data []byte, expectedRoot [32]byte) *EncodingTest {
 	return &EncodingTest{
 		Name:          name,
-		Type:          "SSV message encoding",
+		Type:          testdoc.SSVMessageEncodingTestType,
 		Documentation: documentation,
 		Data:          data,
 		ExpectedRoot:  expectedRoot,

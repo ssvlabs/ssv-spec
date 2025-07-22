@@ -3,6 +3,7 @@ package validatorconsensusdata
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -22,7 +23,7 @@ func VoluntaryExit() *ValidatorConsensusDataTest {
 
 	return NewValidatorConsensusDataTest(
 		"voluntary exit",
-		"Test validation error for voluntary exit consensus data which has no consensus data",
+		testdoc.ValidatorConsensusDataTestVoluntaryExitDoc,
 		cd,
 		"voluntary exit has no consensus data",
 	)

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/stretchr/testify/require"
 )
 
@@ -32,7 +33,7 @@ func (test *EncodingTest) Run(t *testing.T) {
 func NewEncodingTest(name string, documentation string, data []byte) *EncodingTest {
 	return &EncodingTest{
 		Name:          name,
-		Type:          "Signed SSV message encoding: validation of signed SSV message encoding",
+		Type:          testdoc.SignedSSVMessageEncodingTestType,
 		Documentation: documentation,
 		Data:          data,
 	}

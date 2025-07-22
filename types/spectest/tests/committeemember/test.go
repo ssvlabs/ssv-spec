@@ -7,6 +7,7 @@ import (
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/stretchr/testify/require"
 )
 
@@ -59,7 +60,7 @@ func (test *CommitteeMemberTest) Run(t *testing.T) {
 func NewCommitteeMemberTest(name, documentation string, committeeMember types.CommitteeMember, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedError string) *CommitteeMemberTest {
 	return &CommitteeMemberTest{
 		Name:                  name,
-		Type:                  "Committee member: validation of committee member quorum requirements",
+		Type:                  testdoc.CommitteeMemberTestType,
 		Documentation:         documentation,
 		CommitteeMember:       committeeMember,
 		Message:               message,

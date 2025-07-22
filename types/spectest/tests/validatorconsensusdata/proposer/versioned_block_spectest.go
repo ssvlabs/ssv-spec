@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 )
 
 type ProposerSpecTest struct {
@@ -129,7 +130,7 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 func NewProposerSpecTest(name string, documentation string, blinded bool, dataCd []byte, dataBlk []byte, expectedBlkRoot [32]byte, expectedCdRoot [32]byte, expectedError string) *ProposerSpecTest {
 	return &ProposerSpecTest{
 		Name:            name,
-		Type:            "Proposer: validation of proposer consensus data",
+		Type:            testdoc.ProposerSpecTestType,
 		Documentation:   documentation,
 		Blinded:         blinded,
 		DataCd:          dataCd,

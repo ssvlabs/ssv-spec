@@ -3,6 +3,7 @@ package partialsigmessage
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -15,7 +16,7 @@ func ValidContributionProofMetaData() *MsgSpecTest {
 
 	return NewMsgSpecTest(
 		"valid meta data when type ContributionProofs",
-		"Test validation of partial signature message with contribution proof metadata type",
+		testdoc.MsgSpecTestValidContributionProofMetaDataDoc,
 		[]*types.PartialSignatureMessages{msg},
 		nil,
 		nil,

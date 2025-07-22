@@ -2,6 +2,7 @@ package signedssvmsg
 
 import (
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -12,7 +13,7 @@ func NonUniqueSigner() *SignedSSVMessageTest {
 
 	return NewSignedSSVMessageTest(
 		"non unique signers",
-		"Test validation error for signed SSV message with non-unique signers",
+		testdoc.SignedSSVMessageTestNonUniqueSignerDoc,
 		[]*types.SignedSSVMessage{
 			{
 				OperatorIDs: []types.OperatorID{1, 2, 2},

@@ -2,6 +2,7 @@ package signedssvmsg
 
 import (
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -12,7 +13,7 @@ func ZeroSigner() *SignedSSVMessageTest {
 
 	return NewSignedSSVMessageTest(
 		"zero signer",
-		"Test validation error for signed SSV message with zero signer ID",
+		testdoc.SignedSSVMessageTestZeroSignerDoc,
 		[]*types.SignedSSVMessage{
 			{
 				OperatorIDs: []types.OperatorID{0},

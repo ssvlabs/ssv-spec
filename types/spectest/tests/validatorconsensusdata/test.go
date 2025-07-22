@@ -7,6 +7,7 @@ import (
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/stretchr/testify/require"
 )
 
@@ -38,7 +39,7 @@ func (test *ValidatorConsensusDataTest) Run(t *testing.T) {
 func NewValidatorConsensusDataTest(name, documentation string, consensusData types.ValidatorConsensusData, expectedError string) *ValidatorConsensusDataTest {
 	return &ValidatorConsensusDataTest{
 		Name:          name,
-		Type:          "Validator consensus data: validation of validator consensus data",
+		Type:          testdoc.ValidatorConsensusDataTestType,
 		Documentation: documentation,
 		ConsensusData: consensusData,
 		ExpectedError: expectedError,

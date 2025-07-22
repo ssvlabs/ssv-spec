@@ -6,6 +6,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -25,7 +26,7 @@ func VersionedBlockUnknownVersion() *ProposerSpecTest {
 
 	return NewProposerSpecTest(
 		"consensus data versioned block unknown version",
-		"Test validation error for consensus data with unknown block version",
+		testdoc.ProposerSpecTestVersionedBlockUnknownVersionDoc,
 		false,
 		cdSSZ,
 		nil,

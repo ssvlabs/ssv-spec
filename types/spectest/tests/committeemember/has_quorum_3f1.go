@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -16,7 +17,7 @@ func HasQuorum3f1() *CommitteeMemberTest {
 
 	return NewCommitteeMemberTest(
 		"has quorum 3f1",
-		"Test that committee member has quorum with 3f+1 unique signers (full committee) should be accepted",
+		testdoc.HasQuorum3f1TestDoc,
 		*committeeMember,
 		*msg,
 		true,

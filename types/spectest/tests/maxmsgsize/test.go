@@ -7,6 +7,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/stretchr/testify/require"
 )
 
@@ -93,7 +94,7 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 func NewStructureSizeTest(name, documentation string, object types.Encoder, expectedEncodedLength int, isMaxSize bool) *StructureSizeTest {
 	return &StructureSizeTest{
 		Name:                  name,
-		Type:                  "Structure size: validation of structure size",
+		Type:                  testdoc.StructureSizeTestType,
 		Documentation:         documentation,
 		Object:                object,
 		ExpectedEncodedLength: expectedEncodedLength,

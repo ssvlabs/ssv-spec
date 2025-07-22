@@ -8,6 +8,7 @@ import (
 	"crypto/sha256"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/stretchr/testify/require"
 )
 
@@ -64,7 +65,7 @@ func (test *SignedSSVMessageTest) Run(t *testing.T) {
 func NewSignedSSVMessageTest(name, documentation string, messages []*types.SignedSSVMessage, expectedError string, rsaPublicKey [][]byte) *SignedSSVMessageTest {
 	return &SignedSSVMessageTest{
 		Name:          name,
-		Type:          "Signed SSV message: validation of signed SSV message",
+		Type:          testdoc.SignedSSVMessageTestType,
 		Documentation: documentation,
 		Messages:      messages,
 		ExpectedError: expectedError,

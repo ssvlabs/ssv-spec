@@ -1,7 +1,7 @@
 {
   "Name": "beacon vote encoding",
   "Type": "Beacon vote encoding: validation of beacon vote encoding",
-  "Documentation": "Test encoding and decoding of beacon vote with hash tree root verification",
+  "Documentation": "Test encoding and decoding of BeaconVote with hash tree root verification",
   "Data": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
   "ExpectedRoot": [
     15,

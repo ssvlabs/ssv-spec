@@ -1,6 +1,9 @@
 package maxmsgsize
 
-import "github.com/ssvlabs/ssv-spec/types"
+import (
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+)
 
 const (
 	expectedSizePrepareSignedSSVMessage                  = 484
@@ -56,7 +59,7 @@ func expectedSignedSSVMessageWithFullDataFromObject(obj types.Encoder, numSigner
 func ExpectedPrepareSignedSSVMessage() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"expected prepare SignedSSVMessage",
-		"Test the expected size of a SignedSSVMessage containing a prepare QBFT message",
+		testdoc.StructureSizeTestExpectedPrepareSignedSSVMessageDoc,
 		expectedSignedSSVMessageFromObject(expectedPrepare(), 1),
 		expectedSizePrepareSignedSSVMessage,
 		false,
@@ -66,7 +69,7 @@ func ExpectedPrepareSignedSSVMessage() *StructureSizeTest {
 func ExpectedCommitSignedSSVMessage() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"expected commit SignedSSVMessage",
-		"Test the expected size of a SignedSSVMessage containing a commit QBFT message",
+		testdoc.StructureSizeTestExpectedCommitSignedSSVMessageDoc,
 		expectedSignedSSVMessageFromObject(expectedCommit(), 1),
 		expectedSizeCommitSignedSSVMessage,
 		false,
@@ -76,7 +79,7 @@ func ExpectedCommitSignedSSVMessage() *StructureSizeTest {
 func ExpectedDecidedSignedSSVMessage() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"expected decided SignedSSVMessage",
-		"Test the expected size of a SignedSSVMessage containing a decided QBFT message with 3 signers",
+		testdoc.StructureSizeTestExpectedDecidedSignedSSVMessageDoc,
 		expectedSignedSSVMessageFromObject(expectedCommit(), 3),
 		expectedSizeDecidedSignedSSVMessage,
 		false,
@@ -86,7 +89,7 @@ func ExpectedDecidedSignedSSVMessage() *StructureSizeTest {
 func ExpectedRoundChangeSignedSSVMessage() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"expected round change SignedSSVMessage",
-		"Test the expected size of a SignedSSVMessage containing a round change QBFT message with 3 justifications",
+		testdoc.StructureSizeTestExpectedRoundChangeSignedSSVMessageDoc,
 		expectedSignedSSVMessageFromObject(expectedRoundChange(3), 1),
 		expectedSizeRoundChangeSignedSSVMessage,
 		false,
@@ -96,7 +99,7 @@ func ExpectedRoundChangeSignedSSVMessage() *StructureSizeTest {
 func ExpectedProposalSignedSSVMessage() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"expected proposal SignedSSVMessage",
-		"Test the expected size of a SignedSSVMessage containing a proposal QBFT message with 3 justifications and full data",
+		testdoc.StructureSizeTestExpectedProposalSignedSSVMessageDoc,
 		expectedSignedSSVMessageWithFullDataFromObject(expectedProposal(3), 1),
 		expectedSizeProposalSignedSSVMessage,
 		false,
@@ -106,7 +109,7 @@ func ExpectedProposalSignedSSVMessage() *StructureSizeTest {
 func ExpectedPartialSignatureSignedSSVMessage() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"expected partial signature SignedSSVMessage",
-		"Test the expected size of a SignedSSVMessage containing partial signature messages with full data",
+		testdoc.StructureSizeTestExpectedPartialSignatureSignedSSVMessageDoc,
 		expectedSignedSSVMessageWithFullDataFromObject(expectedPartialSignatureMessages(1), 1),
 		expectedSizePartialSignatureMessagesSignedSSVMessage,
 		false,

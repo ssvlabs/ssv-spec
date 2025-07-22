@@ -1,7 +1,7 @@
 {
   "Name": "partial sig valid",
   "Type": "Partial signature messages: validation of partial signature messages",
-  "Documentation": "Test validation of partial signature with 96-byte signature length",
+  "Documentation": "Test validation of partial signature message with 96-byte signature length",
   "Messages": [
     {
       "Type": 0,

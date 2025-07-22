@@ -3,6 +3,7 @@ package partialsigmessage
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -14,7 +15,7 @@ func PartialSigValid() *MsgSpecTest {
 
 	return NewMsgSpecTest(
 		"partial sig valid",
-		"Test validation of partial signature with 96-byte signature length",
+		testdoc.MsgSpecTestPartialSigValidDoc,
 		[]*types.PartialSignatureMessages{msg},
 		nil,
 		nil,
