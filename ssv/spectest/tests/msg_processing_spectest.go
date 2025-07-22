@@ -13,13 +13,12 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
-	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
-
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 type MsgProcessingSpecTest struct {

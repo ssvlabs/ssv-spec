@@ -16,7 +16,6 @@ import (
 func FarFutureDutySlot() tests.SpecTest {
 	consensusDataBytsF := func(cd *types.ValidatorConsensusData) []byte {
 		cdCopy := &types.ValidatorConsensusData{}
-
 		b, _ := json.Marshal(cd)
 		if err := json.Unmarshal(b, cdCopy); err != nil {
 			panic(err.Error())

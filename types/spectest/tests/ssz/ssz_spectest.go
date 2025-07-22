@@ -15,7 +15,7 @@ type SSZSpecTest struct {
 	Type          string
 	Documentation string
 	Data          []byte
-	ExpectedRoot  [32]byte
+	ExpectedRoot  types.ExpectedRoot
 	ExpectedError string
 }
 

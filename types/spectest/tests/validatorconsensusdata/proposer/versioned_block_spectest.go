@@ -20,8 +20,8 @@ type ProposerSpecTest struct {
 	Blinded         bool
 	DataCd          []byte
 	DataBlk         []byte
-	ExpectedBlkRoot [32]byte
-	ExpectedCdRoot  [32]byte
+	ExpectedBlkRoot types.ExpectedBlkRoot
+	ExpectedCdRoot  types.ExpectedCdRoot
 	ExpectedError   string
 }
 

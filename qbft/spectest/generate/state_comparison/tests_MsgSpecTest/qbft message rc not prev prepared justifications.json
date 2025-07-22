@@ -1,81 +1,24 @@
 {
-		"Name": "rc not prev prepared justifications",
-		"Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
-		"Documentation": "Test valid justified round change message without previously prepared justifications.",
-		"Messages": [
-				{
-						"Signatures": [
-								"f2YmOFTiiT/rnk1H/JbzWP5iX0cpHGIXZM3YgJKELDzPURPQatIo3vIA+emTNMqZxOAoJI/nkFgl2MLPKH+W9RzJ8hZtp1h7Yqi1jrQEtoEnoZbhmOT+UsYx+3ZJh1ClvtwTPKOGGkgBaUhMYEtqwWkYbggdMq7ZxqlUhcNXOjqbwydWeBmwxA2OPolY56MZULIGdkfZJtKdmB1yLy4qKCrI/yiuUMmmdSFBGZyBiidBOFg/ZucpW2BWshFDTjr1W1GOC8T/hd6aD9d8FSwYChF6cRER6zQqKaptOBOoB/L3s0TSPTquCcwvQ8r/HRnEzW4xeOmMmkjkpozXz+Qtcw=="
-						],
-						"OperatorIDs": [
-								1
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AwAAAAAAAAAAAAAAAAAAAAoAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": null
-				}
-		],
-		"EncodedMessages": null,
-		"ExpectedRoots": null,
-		"ExpectedError": ""
+  "Name": "rc not prev prepared justifications",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
+  "Documentation": "Test valid justified round change message without previously prepared justifications.",
+  "Messages": [
+    {
+      "Signatures": [
+        "f2YmOFTiiT/rnk1H/JbzWP5iX0cpHGIXZM3YgJKELDzPURPQatIo3vIA+emTNMqZxOAoJI/nkFgl2MLPKH+W9RzJ8hZtp1h7Yqi1jrQEtoEnoZbhmOT+UsYx+3ZJh1ClvtwTPKOGGkgBaUhMYEtqwWkYbggdMq7ZxqlUhcNXOjqbwydWeBmwxA2OPolY56MZULIGdkfZJtKdmB1yLy4qKCrI/yiuUMmmdSFBGZyBiidBOFg/ZucpW2BWshFDTjr1W1GOC8T/hd6aD9d8FSwYChF6cRER6zQqKaptOBOoB/L3s0TSPTquCcwvQ8r/HRnEzW4xeOmMmkjkpozXz+Qtcw=="
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AwAAAAAAAAAAAAAAAAAAAAoAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    }
+  ],
+  "EncodedMessages": null,
+  "ExpectedRoots": null,
+  "ExpectedError": ""
 }

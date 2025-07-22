@@ -1,78 +1,21 @@
 {
-		"Name": "expected commit SignedSSVMessage",
-		"Type": "Structure size: validation of structure size",
-		"Documentation": "Test the expected size of a SignedSSVMessage containing a commit QBFT message",
-		"Object": {
-				"Signatures": [
-						"AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
-				],
-				"OperatorIDs": [
-						1
-				],
-				"SSVMessage": {
-						"MsgType": 0,
-						"MsgID": [
-								1,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0,
-								0
-						],
-						"Data": "AgAAAAAAAAABAAAAAAAAAAEAAAAAAAAATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACEAAAAhAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-				},
-				"FullData": null
-		},
-		"ExpectedEncodedLength": 484,
-		"IsMaxSize": false
+  "Name": "expected commit SignedSSVMessage",
+  "Type": "Structure size: validation of structure size",
+  "Documentation": "Test the expected size of a SignedSSVMessage containing a commit QBFT message",
+  "Object": {
+    "Signatures": [
+      "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    ],
+    "OperatorIDs": [
+      1
+    ],
+    "SSVMessage": {
+      "MsgType": 0,
+      "MsgID": "0100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "Data": "AgAAAAAAAAABAAAAAAAAAAEAAAAAAAAATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACEAAAAhAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    },
+    "FullData": null
+  },
+  "ExpectedEncodedLength": 484,
+  "IsMaxSize": false
 }

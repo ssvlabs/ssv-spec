@@ -1,260 +1,56 @@
 {
-		"Name": "create proposal not previously prepared",
-		"Type": "Message creation: validation of consensus message construction and encoding",
-		"Documentation": "Test creating a proposal message for non-first round when not previously prepared, with round change justifications.",
-		"Value": [
-				1,
-				2,
-				3,
-				4,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0
-		],
-		"StateValue": null,
-		"Round": 10,
-		"RoundChangeJustifications": [
-				{
-						"Signatures": [
-								"asmOhpVV8d7UZ9CEJtqB1JwjbcvChCEYunE19alomNnBzlydj1XTInlh2ir6D6TKe37ruJ3NtzIoe9jL+sVSnrCr15Az4+7NQgPH6058G9WNO2BcGPtSsz3EsQtm9WcSTN9bfi5VDFkTOpa5/eHBwgDkVRSJqPKtptTuIcPGJNtQ3hu+4K5qsFS1eMbGjoiPeVsvFB+IKElME6LhxlAQ4CD+Xust5vqQnxYt0FqfcWHIlvuEuPrn7dH5T/ppFNPpTvKjSnB5ul/hY/HTayikVGEqGlv+/e1R8utOz6BjiEd+MCV/qShaIqKGZU+rn/gbZn/fhEdSMRbRx+NMAmdN5Q=="
-						],
-						"OperatorIDs": [
-								1
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
-				},
-				{
-						"Signatures": [
-								"LJZcT+emvdo7Et8Pe/mlLOjeOaKFO5k7oW3BvYrRx8vIW6+68yjJdKwFVkeUMu5LEyBFgITVbM/rD+ww7yav+TLwMNX66mhs56lmCeNUPe0Uo0ayxT2m9GVqJ+ifb+3NUwXpwRnmw/b56B30J4MKkSr6eRdCfRHyzTKCFleGbDsI0+dMfBvBEg1DXD/yhtvnA5RmqFztWQWERPEsjslHvJBj2M3alQgjQOCZrEriKvkpigGKMBKozcOThnBCkKF7PKb8eBfBaDx1p4xZyklIfKNtu0jGnfbapx5TO22PXuFAyjE/8UXiti54SbXz6V+JT00ijm0CCiFP11U0uEwTFA=="
-						],
-						"OperatorIDs": [
-								2
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
-				},
-				{
-						"Signatures": [
-								"tTCNrziCy+FrWQBUMtFx1+zEd6xIU1nTTVLD7q8J4m7GjQh/Nvl7h+bGfFvtsPGsppRhIKLlilA3XQ0eeGaLe/Mw0UqpGq3QpB4BPCmHZ/Wq+VcBPs8mFrYN20WsMQeu5t28YJfftnZsnEPcyrLBPZTNmB3S8yEAA8L9ZRfmS+wwxL6PO4HCkH6cV3JaVsT03LSMOG1JvlDwtCQzGukiqMi/5k56rUyFT7+Eg/y8+ECAcrCdh14yQN9Hy9QzE9eNa1qSsomaoHMssorBuzToTwqd41/UaHZUuTZsxHnBEVIITW5wB6Daj6PZbYK6Ftz8JgXLes0fDuiM8muEBsfbRw=="
-						],
-						"OperatorIDs": [
-								3
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
-				}
-		],
-		"PrepareJustifications": null,
-		"CreateType": "createProposal",
-		"ExpectedRoot": "6a2917ae827e875a646e88ebb1d483a0a99e4f321e7f063138e99a7e7b08794e",
-		"ExpectedError": ""
+  "Name": "create proposal not previously prepared",
+  "Type": "Message creation: validation of consensus message construction and encoding",
+  "Documentation": "Test creating a proposal message for non-first round when not previously prepared, with round change justifications.",
+  "Value": "0102030400000000000000000000000000000000000000000000000000000000",
+  "StateValue": null,
+  "Round": 10,
+  "RoundChangeJustifications": [
+    {
+      "Signatures": [
+        "asmOhpVV8d7UZ9CEJtqB1JwjbcvChCEYunE19alomNnBzlydj1XTInlh2ir6D6TKe37ruJ3NtzIoe9jL+sVSnrCr15Az4+7NQgPH6058G9WNO2BcGPtSsz3EsQtm9WcSTN9bfi5VDFkTOpa5/eHBwgDkVRSJqPKtptTuIcPGJNtQ3hu+4K5qsFS1eMbGjoiPeVsvFB+IKElME6LhxlAQ4CD+Xust5vqQnxYt0FqfcWHIlvuEuPrn7dH5T/ppFNPpTvKjSnB5ul/hY/HTayikVGEqGlv+/e1R8utOz6BjiEd+MCV/qShaIqKGZU+rn/gbZn/fhEdSMRbRx+NMAmdN5Q=="
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+    },
+    {
+      "Signatures": [
+        "LJZcT+emvdo7Et8Pe/mlLOjeOaKFO5k7oW3BvYrRx8vIW6+68yjJdKwFVkeUMu5LEyBFgITVbM/rD+ww7yav+TLwMNX66mhs56lmCeNUPe0Uo0ayxT2m9GVqJ+ifb+3NUwXpwRnmw/b56B30J4MKkSr6eRdCfRHyzTKCFleGbDsI0+dMfBvBEg1DXD/yhtvnA5RmqFztWQWERPEsjslHvJBj2M3alQgjQOCZrEriKvkpigGKMBKozcOThnBCkKF7PKb8eBfBaDx1p4xZyklIfKNtu0jGnfbapx5TO22PXuFAyjE/8UXiti54SbXz6V+JT00ijm0CCiFP11U0uEwTFA=="
+      ],
+      "OperatorIDs": [
+        2
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+    },
+    {
+      "Signatures": [
+        "tTCNrziCy+FrWQBUMtFx1+zEd6xIU1nTTVLD7q8J4m7GjQh/Nvl7h+bGfFvtsPGsppRhIKLlilA3XQ0eeGaLe/Mw0UqpGq3QpB4BPCmHZ/Wq+VcBPs8mFrYN20WsMQeu5t28YJfftnZsnEPcyrLBPZTNmB3S8yEAA8L9ZRfmS+wwxL6PO4HCkH6cV3JaVsT03LSMOG1JvlDwtCQzGukiqMi/5k56rUyFT7+Eg/y8+ECAcrCdh14yQN9Hy9QzE9eNa1qSsomaoHMssorBuzToTwqd41/UaHZUuTZsxHnBEVIITW5wB6Daj6PZbYK6Ftz8JgXLes0fDuiM8muEBsfbRw=="
+      ],
+      "OperatorIDs": [
+        3
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+    }
+  ],
+  "PrepareJustifications": null,
+  "CreateType": "createProposal",
+  "ExpectedRoot": "6a2917ae827e875a646e88ebb1d483a0a99e4f321e7f063138e99a7e7b08794e",
+  "ExpectedError": ""
 }

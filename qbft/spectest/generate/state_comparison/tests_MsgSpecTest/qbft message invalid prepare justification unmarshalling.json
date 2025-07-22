@@ -1,81 +1,24 @@
 {
-		"Name": "invalid prepare justification unmarshalling",
-		"Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
-		"Documentation": "Test unmarshalling invalid prepare justifications, expecting validation error during message validation.",
-		"Messages": [
-				{
-						"Signatures": [
-								"JispqikT0gP1vfBE+SLlWOK9I69hYbsIsBKVrl6zAVcn+9rxnxP5aOzquMSH/DVbKgoDt0UwYIeZES0amj5tuzXpU8V9RP5dbdJzlGb/1+xX20x9GIU52FcgbpBdKWazWmvtOIeJXoSzYVeqyhzHnAD+V+5v0rcTi4TZF7b8vNDdGkK3ulD88KMwRjgb+1aU86g5iR21Ja5cerd+mDiIqoG0qTh5MSm7e/Wtl4qPYSuGjB5hHvydb1e692NMJf2WGmba7Q4B3pe6qWqJGNg2VWRZQFA2jQsqXjoke6iCDk6Nkj66AiTZYA7MNBFtrN8+/mTwX5kPFUyt7ror9BXq9w=="
-						],
-						"OperatorIDs": [
-								1
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAKvfODt6/P6iC11yzHeWCOb6cPkT/N/2FJdMBlqvhRH5AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAE="
-						},
-						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
-				}
-		],
-		"EncodedMessages": null,
-		"ExpectedRoots": null,
-		"ExpectedError": "incorrect size"
+  "Name": "invalid prepare justification unmarshalling",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
+  "Documentation": "Test unmarshalling invalid prepare justifications, expecting validation error during message validation.",
+  "Messages": [
+    {
+      "Signatures": [
+        "JispqikT0gP1vfBE+SLlWOK9I69hYbsIsBKVrl6zAVcn+9rxnxP5aOzquMSH/DVbKgoDt0UwYIeZES0amj5tuzXpU8V9RP5dbdJzlGb/1+xX20x9GIU52FcgbpBdKWazWmvtOIeJXoSzYVeqyhzHnAD+V+5v0rcTi4TZF7b8vNDdGkK3ulD88KMwRjgb+1aU86g5iR21Ja5cerd+mDiIqoG0qTh5MSm7e/Wtl4qPYSuGjB5hHvydb1e692NMJf2WGmba7Q4B3pe6qWqJGNg2VWRZQFA2jQsqXjoke6iCDk6Nkj66AiTZYA7MNBFtrN8+/mTwX5kPFUyt7ror9BXq9w=="
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAKvfODt6/P6iC11yzHeWCOb6cPkT/N/2FJdMBlqvhRH5AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAE="
+      },
+      "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+    }
+  ],
+  "EncodedMessages": null,
+  "ExpectedRoots": null,
+  "ExpectedError": "incorrect size"
 }
