@@ -66,6 +66,8 @@ func (test *CreateMsgSpecTest) UnmarshalJSON(data []byte) error {
 	// Create a temporary struct without ExpectedRoot for hex processing
 	type CreateMsgSpecTestWithoutExpectedRoot struct {
 		Name                                             string
+		Type                                             string
+		Documentation                                    string
 		Value                                            qbft.Value
 		StateValue                                       []byte
 		Round                                            qbft.Round
@@ -83,6 +85,8 @@ func (test *CreateMsgSpecTest) UnmarshalJSON(data []byte) error {
 
 	// Copy all fields from temp to test
 	test.Name = temp.Name
+	test.Type = temp.Type
+	test.Documentation = temp.Documentation
 	test.Value = temp.Value
 	test.StateValue = temp.StateValue
 	test.Round = temp.Round
