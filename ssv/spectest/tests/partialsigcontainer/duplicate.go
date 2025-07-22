@@ -2,6 +2,7 @@ package partialsigcontainer
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,7 +21,7 @@ func Duplicate() tests.SpecTest {
 
 	return NewPartialSigContainerTest(
 		"duplicate",
-		"Tests partial signature container with duplicate signatures (below quorum)",
+		testdoc.PartialSigContainerDuplicateDoc,
 		ks.Threshold,
 		ks.ValidatorPK.Serialize(),
 		msgs,

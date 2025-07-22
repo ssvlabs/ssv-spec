@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
@@ -292,7 +293,7 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 func NewMsgProcessingSpecTest(name, documentation string, runner ssv.Runner, duty types.Duty, messages []*types.SignedSSVMessage, decidedSlashable bool, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, dontStartDuty bool, expectedError string) *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:                    name,
-		Type:                    "SSV message processing: validation of message handling and state transitions",
+		Type:                    testdoc.MsgProcessingSpecTestType,
 		Documentation:           documentation,
 		Runner:                  runner,
 		Duty:                    duty,

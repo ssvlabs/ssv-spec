@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,7 +17,7 @@ func InvalidBeaconSignatureInQuorum() tests.SpecTest {
 	expectedError := "got pre-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus invalid beacon signature in quorum",
-		"Tests pre-consensus message processing with invalid beacon signature in quorum",
+		testdoc.PreConsensusInvalidBeaconSignatureInQuorumDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

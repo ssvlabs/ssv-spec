@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -15,7 +16,7 @@ func ValidMessage() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus valid msg",
-		"Tests valid pre-consensus message processing across different runner types",
+		testdoc.PreConsensusValidMsgDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

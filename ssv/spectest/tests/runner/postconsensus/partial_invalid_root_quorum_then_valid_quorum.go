@@ -3,6 +3,7 @@ package postconsensus
 import (
 	"fmt"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,7 +21,7 @@ func PartialInvalidRootQuorumThenValidQuorum() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus partial invalid root quorum then valid quorum",
-		"Tests post-consensus message processing where a partial invalid root quorum is followed by a valid quorum, expecting error and recovery handling.",
+		testdoc.PostConsensusPartialInvalidRootQuorumThenValidQuorumDoc,
 		[]*tests.MsgProcessingSpecTest{},
 	)
 

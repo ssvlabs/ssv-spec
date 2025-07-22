@@ -6,6 +6,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -23,7 +24,7 @@ func PostFinish() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus post finish",
-		"Tests pre-consensus message processing after duty is finished",
+		testdoc.PreConsensusPostFinishDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee aggregator selection proof",

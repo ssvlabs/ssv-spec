@@ -6,6 +6,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,7 +19,7 @@ func ValidDecided() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus valid decided",
-		"Tests valid consensus decided message processing across different runner types",
+		testdoc.ConsensusValidDecidedDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:                    "sync committee contribution",

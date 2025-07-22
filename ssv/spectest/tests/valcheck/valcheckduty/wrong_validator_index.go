@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -28,7 +29,7 @@ func WrongValidatorIndex() tests.SpecTest {
 	expectedErr := "duty invalid: wrong validator index"
 	return valcheck.NewMultiSpecTest(
 		"wrong validator index",
-		"Tests duty value check with wrong validator index across different roles",
+		testdoc.ValCheckDutyWrongValidatorIndexDoc,
 		[]*valcheck.SpecTest{
 			{
 				Name:       "committee",

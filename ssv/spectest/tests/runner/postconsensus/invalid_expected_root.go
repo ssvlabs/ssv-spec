@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,7 +18,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 	expectedError := "failed processing post consensus message: invalid post-consensus message: wrong signing root"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid expected roots",
-		"Tests post-consensus message processing with invalid expected root, expecting error",
+		testdoc.PostConsensusInvalidExpectedRootDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",

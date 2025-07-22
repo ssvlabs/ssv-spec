@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -44,7 +45,7 @@ func MajoritySlashable() tests.SpecTest {
 
 	return valcheck.NewSpecTest(
 		"attestation value check with slashable majority",
-		"Tests attestation value check with majority slashable attestation",
+		testdoc.ValCheckAttestationMajoritySlashableDoc,
 		types.BeaconTestNetwork,
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,

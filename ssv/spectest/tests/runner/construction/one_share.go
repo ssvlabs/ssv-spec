@@ -2,6 +2,7 @@ package runnerconstruction
 
 import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -25,7 +26,7 @@ func OneShare() tests.SpecTest {
 
 	return NewRunnerConstructionSpecTest(
 		"one share",
-		"Test that all runners can be constructed with one share",
+		testdoc.RunnerConstructionOneShareDoc,
 		shares,
 		expectedErrors,
 	)

@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/stretchr/testify/require"
@@ -86,7 +87,7 @@ func (test *SyncCommitteeAggregatorProofSpecTest) overrideStateComparison(t *tes
 func NewSyncCommitteeAggregatorProofSpecTest(name, documentation string, messages []*types.SignedSSVMessage, postDutyRunnerStateRoot string, postDutyRunnerState string, proofRootsMap map[string]bool, expectedError string) *SyncCommitteeAggregatorProofSpecTest {
 	return &SyncCommitteeAggregatorProofSpecTest{
 		Name:                    name,
-		Type:                    "Sync committee aggregator proof",
+		Type:                    testdoc.SyncCommitteeAggregatorProofSpecTestType,
 		Documentation:           documentation,
 		Messages:                messages,
 		PostDutyRunnerStateRoot: postDutyRunnerStateRoot,

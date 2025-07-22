@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -15,7 +16,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	test := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus msg different roots",
-		"Tests pre-consensus message processing with duplicate messages having different roots, expecting error",
+		testdoc.PreConsensusDuplicateMsgDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",

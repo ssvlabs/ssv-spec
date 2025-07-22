@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -54,7 +55,7 @@ func (tests *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
 func NewMultiMsgProcessingSpecTest(name, documentation string, tests []*MsgProcessingSpecTest) *MultiMsgProcessingSpecTest {
 	return &MultiMsgProcessingSpecTest{
 		Name:          name,
-		Type:          "SSV multi message processing: multiple message processing tests",
+		Type:          testdoc.MultiMsgProcessingSpecTestType,
 		Documentation: documentation,
 		Tests:         tests,
 	}

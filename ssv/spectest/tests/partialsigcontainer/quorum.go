@@ -2,6 +2,7 @@ package partialsigcontainer
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -26,7 +27,7 @@ func Quorum() tests.SpecTest {
 
 	return NewPartialSigContainerTest(
 		"quorum",
-		"Tests partial signature container quorum and signature reconstruction",
+		testdoc.PartialSigContainerQuorumDoc,
 		ks.Threshold,
 		ks.ValidatorPK.Serialize(),
 		msgs,

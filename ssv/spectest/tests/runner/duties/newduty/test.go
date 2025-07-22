@@ -14,6 +14,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -276,7 +277,7 @@ func (t *StartNewRunnerDutySpecTest) UnmarshalJSON(data []byte) error {
 func NewStartNewRunnerDutySpecTest(name, documentation string, runner ssv.Runner, duty types.Duty, threshold uint64, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, expectedError string) *StartNewRunnerDutySpecTest {
 	return &StartNewRunnerDutySpecTest{
 		Name:                    name,
-		Type:                    "Start new runner duty",
+		Type:                    testdoc.RunnerDutiesSpecTestType,
 		Documentation:           documentation,
 		Runner:                  runner,
 		Duty:                    duty,
@@ -291,7 +292,7 @@ func NewStartNewRunnerDutySpecTest(name, documentation string, runner ssv.Runner
 func NewMultiStartNewRunnerDutySpecTest(name, documentation string, tests []*StartNewRunnerDutySpecTest) *MultiStartNewRunnerDutySpecTest {
 	return &MultiStartNewRunnerDutySpecTest{
 		Name:          name,
-		Type:          "Multi start new runner duty",
+		Type:          testdoc.MultiRunnerDutiesSpecTestType,
 		Documentation: documentation,
 		Tests:         tests,
 	}

@@ -2,6 +2,7 @@ package valcheckattestations
 
 import (
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -26,7 +27,7 @@ func SourceHigherThanTarget() tests.SpecTest {
 
 	return valcheck.NewSpecTest(
 		"attestation value check source higher than target",
-		"Tests attestation value check with source epoch higher than target epoch",
+		testdoc.ValCheckAttestationSourceHigherThanTargetDoc,
 		types.BeaconTestNetwork,
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,

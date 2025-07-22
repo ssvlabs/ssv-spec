@@ -1,6 +1,7 @@
 package newduty
 
 import (
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -12,7 +13,7 @@ func FirstHeight() tests.SpecTest {
 
 	return NewMultiStartNewRunnerDutySpecTest(
 		"new duty first height",
-		"Tests new duty start at first height",
+		testdoc.NewDutyFirstHeightDoc,
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:      "sync committee aggregator",

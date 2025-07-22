@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,7 +17,7 @@ func BlindedRunnerAcceptsNormalBlock() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"blinded proposer accepts normal block proposal",
-		"Tests full happy flow for a blinded proposer runner that accepts a normal block proposal",
+		testdoc.ProposerBlindedReceivingNormalBlockDoc,
 		[]*tests.MsgProcessingSpecTest{},
 	)
 

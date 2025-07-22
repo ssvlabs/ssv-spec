@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -53,7 +54,7 @@ func ShuffledHappyFlowDutiesWithTheSameValidators() tests.SpecTest {
 
 	multiSpecTest := committee.NewMultiCommitteeSpecTest(
 		"shuffled happy flow duties with same validators",
-		"Tests complete happy flow execution for sequences of duties with shuffled input messages while preserving order between duty messages for the same validators",
+		testdoc.CommitteeShuffledHappyFlowDutiesWithSameValidatorsDoc,
 		tests,
 	)
 

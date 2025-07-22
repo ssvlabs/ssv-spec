@@ -10,6 +10,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/stretchr/testify/require"
@@ -172,7 +173,7 @@ func (tests *MultiCommitteeSpecTest) GetPostState() (interface{}, error) {
 func NewMultiCommitteeSpecTest(name, documentation string, tests []*CommitteeSpecTest) *MultiCommitteeSpecTest {
 	return &MultiCommitteeSpecTest{
 		Name:          name,
-		Type:          "Multi committee: multiple committee tests",
+		Type:          testdoc.MultiCommitteeSpecTestType,
 		Documentation: documentation,
 		Tests:         tests,
 	}
@@ -181,7 +182,7 @@ func NewMultiCommitteeSpecTest(name, documentation string, tests []*CommitteeSpe
 func NewCommitteeSpecTest(name, documentation string, committee *ssv.Committee, input []interface{}, postDutyCommitteeRoot string, postDutyCommittee types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, expectedError string) *CommitteeSpecTest {
 	return &CommitteeSpecTest{
 		Name:                   name,
-		Type:                   "Committee: validation of committee member selection and quorum requirements",
+		Type:                   testdoc.CommitteeSpecTestType,
 		Documentation:          documentation,
 		Committee:              committee,
 		Input:                  input,

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
@@ -48,7 +49,7 @@ func (test *RunnerConstructionSpecTest) GetPostState() (interface{}, error) {
 func NewRunnerConstructionSpecTest(name, documentation string, shares map[phase0.ValidatorIndex]*types.Share, roleError map[types.RunnerRole]string) *RunnerConstructionSpecTest {
 	return &RunnerConstructionSpecTest{
 		Name:          name,
-		Type:          "Runner construction",
+		Type:          testdoc.RunnerConstructionSpecTestType,
 		Documentation: documentation,
 		Shares:        shares,
 		RoleError:     roleError,

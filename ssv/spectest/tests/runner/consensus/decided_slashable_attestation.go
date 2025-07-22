@@ -2,6 +2,7 @@ package consensus
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,7 +15,7 @@ func DecidedSlashableAttestation() tests.SpecTest {
 
 	return tests.NewMsgProcessingSpecTest(
 		"decide on slashable attestation",
-		"Test that attempting to sign a slashable attestation results in an error",
+		testdoc.ConsensusDecidedSlashableAttestationDoc,
 		testingutils.CommitteeRunner(ks),
 		testingutils.TestingAttesterDuty(spec.DataVersionPhase0),
 		testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),

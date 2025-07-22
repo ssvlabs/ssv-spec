@@ -7,6 +7,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -38,7 +39,7 @@ func Finished() tests.SpecTest {
 
 	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
 		"new duty finished",
-		"Tests new duty start after a previous duty has finished",
+		testdoc.NewDutyFinishedDoc,
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name: "sync committee aggregator",

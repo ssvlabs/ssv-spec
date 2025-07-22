@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 	"fmt"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -74,7 +75,7 @@ func WrongMessageID() tests.SpecTest {
 
 	multiSpecTest := committee.NewMultiCommitteeSpecTest(
 		"wrong message ID",
-		"Tests committee behavior when processing messages with incorrect message IDs that don't match the committee ID",
+		testdoc.CommitteeWrongMessageIDDoc,
 		tests,
 	)
 

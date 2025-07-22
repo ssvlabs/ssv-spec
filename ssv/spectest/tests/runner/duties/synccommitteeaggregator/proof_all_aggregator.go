@@ -3,6 +3,7 @@ package synccommitteeaggregator
 import (
 	"encoding/hex"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,7 +14,7 @@ func AllAggregatorQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	return NewSyncCommitteeAggregatorProofSpecTest(
 		"sync committee aggregator all are aggregators",
-		"Tests sync committee aggregator proof validation when all selection proofs are aggregators",
+		testdoc.SyncCommitteeAggregatorProofAllAggregatorDoc,
 		[]*types.SignedSSVMessage{
 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),

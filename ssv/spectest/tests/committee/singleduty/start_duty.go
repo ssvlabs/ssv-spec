@@ -3,6 +3,7 @@ package committeesingleduty
 import (
 	"fmt"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -53,7 +54,7 @@ func StartDuty() tests.SpecTest {
 
 	multiSpecTest := committee.NewMultiCommitteeSpecTest(
 		"start duty",
-		"Tests basic duty starting for attestations and sync committees without consensus messages",
+		testdoc.CommitteeStartDutyDoc,
 		tests,
 	)
 

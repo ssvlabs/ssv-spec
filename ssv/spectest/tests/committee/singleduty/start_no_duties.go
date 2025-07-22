@@ -2,6 +2,7 @@ package committeesingleduty
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -15,7 +16,7 @@ func StartNoDuty() tests.SpecTest {
 
 	return committee.NewCommitteeSpecTest(
 		"empty committee duty",
-		"Tests committee behavior when starting with an empty duty (no attestation or sync committee duties)",
+		testdoc.CommitteeStartNoDutyDoc,
 		testingutils.BaseCommittee(ksMapFor1Validator),
 		[]interface{}{
 			testingutils.TestingCommitteeDuty(nil, nil, spec.DataVersionElectra),
