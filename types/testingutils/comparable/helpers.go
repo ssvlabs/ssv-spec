@@ -115,7 +115,6 @@ func CompareWithJson(t *testing.T, test any, testName string, testType string) {
 
 	diff := cmp.Diff(testMap, expectedTestMap)
 	if diff != "" {
-		fmt.Println(testMap)
 		t.Errorf("%s inputs changed. %v", testName, diff)
 	}
 }
