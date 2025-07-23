@@ -1,8 +1,8 @@
 package testingutils
 
 import (
+	"crypto/rsa"
 	"encoding/hex"
-	"fmt"
 
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -41,7 +41,7 @@ func BuildPrivateKeyInfo(ks *TestKeySet) *PrivateKeyInfo {
 	}
 
 	for operatorID, operatorKey := range ks.OperatorKeys {
-		privateKeyInfo.OperatorKeys[operatorID] = fmt.Sprintf("N:%s,E:%d,D:%s", operatorKey.N.String(), operatorKey.E, operatorKey.D.String())
+		privateKeyInfo.OperatorKeys[operatorID] = exportRsaPrivateKey(operatorKey)
 	}
 
 	for operatorID, dkgOperator := range ks.DKGOperators {
@@ -52,9 +52,13 @@ func BuildPrivateKeyInfo(ks *TestKeySet) *PrivateKeyInfo {
 		}{
 			SK:            dkgOperator.SK.D.String(),
 			ETHAddress:    dkgOperator.ETHAddress.Hex(),
-			EncryptionKey: fmt.Sprintf("N:%s,E:%d,D:%s", dkgOperator.EncryptionKey.N.String(), dkgOperator.EncryptionKey.E, dkgOperator.EncryptionKey.D.String()),
+			EncryptionKey: exportRsaPrivateKey(dkgOperator.EncryptionKey),
 		}
 	}
 
 	return privateKeyInfo
+}
+
+func exportRsaPrivateKey(sk *rsa.PrivateKey) string {
+	return hex.EncodeToString(types.PrivateKeyToPem(sk))
 }
