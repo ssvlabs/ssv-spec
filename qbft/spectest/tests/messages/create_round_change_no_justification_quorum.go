@@ -17,6 +17,7 @@ func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 	test := &tests.CreateMsgSpecTest{
 		CreateType:    tests.CreateRoundChange,
 		Name:          "create round change no justification quorum",
+		Round:         qbft.FirstRound,
 		StateValue:    testingutils.TestingQBFTFullData,
 		ExpectedState: sc.ExpectedState,
 		PrepareJustifications: []*types.SignedSSVMessage{
@@ -35,7 +36,7 @@ func CreateRoundChangeNoJustificationQuorumSC() *comparable.StateComparison {
 	expectedMsg := qbft.Message{
 		MsgType:                  qbft.RoundChangeMsgType,
 		Height:                   0,
-		Round:                    1,
+		Round:                    qbft.FirstRound,
 		Identifier:               testingutils.TestingIdentifier,
 		Root:                     testingutils.TestingQBFTRootData,
 		DataRound:                1,

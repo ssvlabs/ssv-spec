@@ -41,8 +41,7 @@ func FixIssue178(input *types.ValidatorConsensusData, version spec2.DataVersion)
 }
 
 // UnmarshalStateComparison reads a json derived from 'testName' and unmarshals it into 'targetState'
-func UnmarshalStateComparison[T types.Root](basedir string, testName string, testType string, targetState T) (T,
-	error) {
+func UnmarshalStateComparison[T types.Root](basedir string, testName string, testType string, targetState T) (T, error) {
 	var nilT T
 	basedir = filepath.Join(basedir, "generate")
 	scDir := GetSCDir(basedir, testType)

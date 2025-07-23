@@ -3,29 +3,29 @@ package ssv
 import (
 	"fmt"
 
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-type CreateRunnerFn func(shareMap map[spec.ValidatorIndex]*types.Share) *CommitteeRunner
+type CreateRunnerFn func(shareMap map[phase0.ValidatorIndex]*types.Share) *CommitteeRunner
 
 type Committee struct {
-	Runners         map[spec.Slot]*CommitteeRunner
+	Runners         map[phase0.Slot]*CommitteeRunner
 	CommitteeMember types.CommitteeMember
 	CreateRunnerFn  CreateRunnerFn
-	Share           map[spec.ValidatorIndex]*types.Share
+	Share           map[phase0.ValidatorIndex]*types.Share
 }
 
 // NewCommittee creates a new cluster
 func NewCommittee(
 	committeeMember types.CommitteeMember,
-	share map[spec.ValidatorIndex]*types.Share,
+	share map[phase0.ValidatorIndex]*types.Share,
 	createRunnerFn CreateRunnerFn,
 ) *Committee {
 	c := &Committee{
-		Runners:         make(map[spec.Slot]*CommitteeRunner),
+		Runners:         make(map[phase0.Slot]*CommitteeRunner),
 		CommitteeMember: committeeMember,
 		CreateRunnerFn:  createRunnerFn,
 		Share:           share,
@@ -43,7 +43,7 @@ func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 	}
 
 	// Filter duty and create share map according validators that belong to c.Share
-	dutyShares := make(map[spec.ValidatorIndex]*types.Share)
+	dutyShares := make(map[phase0.ValidatorIndex]*types.Share)
 	filteredDuty := &types.CommitteeDuty{
 		Slot: duty.Slot,
 	}
@@ -93,7 +93,7 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 			return errors.Wrap(err, "invalid qbft Message")
 		}
 
-		runner, exists := c.Runners[spec.Slot(qbftMsg.Height)]
+		runner, exists := c.Runners[phase0.Slot(qbftMsg.Height)]
 		if !exists {
 			return errors.New("no runner found for message's slot")
 		}

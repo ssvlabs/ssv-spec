@@ -30,7 +30,7 @@ func RoundChangeDataEncoding() tests.SpecTest {
 		EncodedMessages: [][]byte{
 			b,
 		},
-		ExpectedRoots: [][32]byte{
+		ExpectedRoots: []types.ExpectedRoot{
 			r,
 		},
 	}

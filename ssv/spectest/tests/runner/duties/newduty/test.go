@@ -16,7 +16,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
-	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+	comparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 type StartNewRunnerDutySpecTest struct {

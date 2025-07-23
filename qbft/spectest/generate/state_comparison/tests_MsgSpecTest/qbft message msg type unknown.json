@@ -1,79 +1,22 @@
 {
-		"Name": "msg type unknown",
-		"Messages": [
-				{
-						"Signatures": [
-								"uQ7+iWVroJkDrny7/aBMHKLXOxvkxV/+HDP9WqEA7Ez5Sm+Mpjw5abR8UfVlwbFMymZGTILUcoXjSXJYnq/QqLZ9rfI119loG+dcyW3qxiEKR3hAZnFjRdKeh6A5lb1jvxZ9+Ajd2QQqK1xVvVkOjW8Cyk7bp6RP9RfsV3L6/s3u0rS86pebUrHw+0lLnXhewwE/TMMMRClXM0eSpXDyoQ4gMJepBcugEkYPuM7XSOjoKDSXBLR7XwRGh14rQCGzG+q2rmXuH9wMvR8ydwWrN96jtMpvNNTXqyD36iF3njD50lksX7ZVeLaE+FzTV2pvTHEkytymWQPmSozaam1kTA=="
-						],
-						"OperatorIDs": [
-								1
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "BAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": null
-				}
-		],
-		"EncodedMessages": null,
-		"ExpectedRoots": null,
-		"ExpectedError": "message type is invalid"
+  "Name": "msg type unknown",
+  "Messages": [
+    {
+      "Signatures": [
+        "uQ7+iWVroJkDrny7/aBMHKLXOxvkxV/+HDP9WqEA7Ez5Sm+Mpjw5abR8UfVlwbFMymZGTILUcoXjSXJYnq/QqLZ9rfI119loG+dcyW3qxiEKR3hAZnFjRdKeh6A5lb1jvxZ9+Ajd2QQqK1xVvVkOjW8Cyk7bp6RP9RfsV3L6/s3u0rS86pebUrHw+0lLnXhewwE/TMMMRClXM0eSpXDyoQ4gMJepBcugEkYPuM7XSOjoKDSXBLR7XwRGh14rQCGzG+q2rmXuH9wMvR8ydwWrN96jtMpvNNTXqyD36iF3njD50lksX7ZVeLaE+FzTV2pvTHEkytymWQPmSozaam1kTA=="
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "BAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    }
+  ],
+  "EncodedMessages": null,
+  "ExpectedRoots": null,
+  "ExpectedError": "message type is invalid"
 }

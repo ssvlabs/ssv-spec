@@ -48,7 +48,7 @@ func SSZMarshaling() tests.SpecTest {
 		EncodedMessages: [][]byte{
 			encodedMsg,
 		},
-		ExpectedRoots: [][32]byte{
+		ExpectedRoots: []types.ExpectedRoot{
 			msgRoot,
 		},
 	}

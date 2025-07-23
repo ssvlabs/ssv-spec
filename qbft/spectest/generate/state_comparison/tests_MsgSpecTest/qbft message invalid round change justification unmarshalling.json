@@ -1,79 +1,22 @@
 {
-		"Name": "invalid round change justification unmarshalling",
-		"Messages": [
-				{
-						"Signatures": [
-								"pJrgc4kCBYCIu1qTuGoDLvybwj0xQHk4Gx8LM0g5Lhu9PX1BI6vSAsiL3uQWef0SGdno3yttRI3tk7PH5zLh/xxmCqL5ewDWi4Cs/eGY4SD0/7jDnNmIEewOmH9B9SYV0JXLYBhstlinUOPBdhtelrpyreDK4WS567ZJq9biJEQ6DX3Yqv04hROadfu4y6Iw+Xo2pL8M59NpuyVR7cNzOr4d6V0pcK+8OqwdYrDqSG/7oMe2p5bXOLG9U1D1MsAGYFxYYdZfyRDxM4MrrW50EwH9glhUk0GRO0KgDif6cF6Q35JA07XhuVGAr93iLmp7hHtkx81RJdhWT8WYOT/bIQ=="
-						],
-						"OperatorIDs": [
-								1
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAKvfODt6/P6iC11yzHeWCOb6cPkT/N/2FJdMBlqvhRH5AAAAAAAAAACEAAAAiQAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAE="
-						},
-						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
-				}
-		],
-		"EncodedMessages": null,
-		"ExpectedRoots": null,
-		"ExpectedError": "incorrect size"
+  "Name": "invalid round change justification unmarshalling",
+  "Messages": [
+    {
+      "Signatures": [
+        "pJrgc4kCBYCIu1qTuGoDLvybwj0xQHk4Gx8LM0g5Lhu9PX1BI6vSAsiL3uQWef0SGdno3yttRI3tk7PH5zLh/xxmCqL5ewDWi4Cs/eGY4SD0/7jDnNmIEewOmH9B9SYV0JXLYBhstlinUOPBdhtelrpyreDK4WS567ZJq9biJEQ6DX3Yqv04hROadfu4y6Iw+Xo2pL8M59NpuyVR7cNzOr4d6V0pcK+8OqwdYrDqSG/7oMe2p5bXOLG9U1D1MsAGYFxYYdZfyRDxM4MrrW50EwH9glhUk0GRO0KgDif6cF6Q35JA07XhuVGAr93iLmp7hHtkx81RJdhWT8WYOT/bIQ=="
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAKvfODt6/P6iC11yzHeWCOb6cPkT/N/2FJdMBlqvhRH5AAAAAAAAAACEAAAAiQAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAE="
+      },
+      "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+    }
+  ],
+  "EncodedMessages": null,
+  "ExpectedRoots": null,
+  "ExpectedError": "incorrect size"
 }

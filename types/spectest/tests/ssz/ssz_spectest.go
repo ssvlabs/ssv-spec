@@ -12,7 +12,7 @@ import (
 type SSZSpecTest struct {
 	Name          string
 	Data          []byte
-	ExpectedRoot  [32]byte
+	ExpectedRoot  types.ExpectedRoot
 	ExpectedError string
 }
 

@@ -2,6 +2,7 @@ package tests
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"testing"
@@ -24,7 +25,7 @@ const (
 type CreateMsgSpecTest struct {
 	Name string
 	// ISSUE 217: rename to root
-	Value [32]byte
+	Value qbft.Value
 	// ISSUE 217: rename to value
 	StateValue                                       []byte
 	Round                                            qbft.Round
@@ -34,6 +35,65 @@ type CreateMsgSpecTest struct {
 	ExpectedState                                    types.Root `json:"-"` // Field is ignored by encoding/json"
 	ExpectedError                                    string
 	PrivateKeys                                      *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+}
+
+// UnmarshalJSON implements custom JSON unmarshaling for CreateMsgSpecTest
+// This is a workaround to handle the ExpectedRoot field which is a string as it conflicts with EncodingTest.ExpectedRoot which is a [32]byte
+func (test *CreateMsgSpecTest) UnmarshalJSON(data []byte) error {
+	// First, unmarshal into a raw map to extract ExpectedRoot
+	var raw map[string]interface{}
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+
+	// Extract ExpectedRoot as string before hex processing
+	var expectedRoot string
+	if er, ok := raw["ExpectedRoot"].(string); ok {
+		expectedRoot = er
+	}
+
+	// Remove ExpectedRoot from raw map so it doesn't get hex processed
+	delete(raw, "ExpectedRoot")
+
+	// Marshal the remaining data back to JSON
+	remainingData, err := json.Marshal(raw)
+	if err != nil {
+		return err
+	}
+
+	// Create a temporary struct without ExpectedRoot for hex processing
+	type CreateMsgSpecTestWithoutExpectedRoot struct {
+		Name                                             string
+		Value                                            qbft.Value
+		StateValue                                       []byte
+		Round                                            qbft.Round
+		RoundChangeJustifications, PrepareJustifications []*types.SignedSSVMessage
+		CreateType                                       string
+		ExpectedState                                    types.Root `json:"-"`
+		ExpectedError                                    string
+	}
+
+	temp := &CreateMsgSpecTestWithoutExpectedRoot{}
+
+	if err := json.Unmarshal(remainingData, temp); err != nil {
+		return err
+	}
+
+	// Copy all fields from temp to test
+	test.Name = temp.Name
+	test.Value = temp.Value
+	test.StateValue = temp.StateValue
+	test.Round = temp.Round
+	test.RoundChangeJustifications = temp.RoundChangeJustifications
+	test.PrepareJustifications = temp.PrepareJustifications
+	test.CreateType = temp.CreateType
+	test.ExpectedState = temp.ExpectedState
+	test.ExpectedError = temp.ExpectedError
+
+	// Set ExpectedRoot as string
+	test.ExpectedRoot = expectedRoot
+
+	return nil
 }
 
 func (test *CreateMsgSpecTest) Run(t *testing.T) {
@@ -58,12 +118,16 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	}
 	require.NoError(t, err)
 
-	r, err2 := msg.GetRoot()
+	if test.Round == qbft.NoRound {
+		require.Fail(t, "qbft round is invalid")
+	}
+
+	r, err := msg.GetRoot()
 	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, err2, test.ExpectedError)
+		require.EqualError(t, err, test.ExpectedError)
 		return
 	}
-	require.NoError(t, err2)
+	require.NoError(t, err)
 
 	if test.ExpectedRoot != hex.EncodeToString(r[:]) {
 		fmt.Printf("expected: %v\n", test.ExpectedRoot)
@@ -150,7 +214,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 		}
 	}
 
-	return qbft.CreateRoundChange(state, signer, 1, test.Value[:])
+	return qbft.CreateRoundChange(state, signer, qbft.FirstRound, test.Value[:])
 }
 
 func (test *CreateMsgSpecTest) TestName() string {

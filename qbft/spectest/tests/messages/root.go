@@ -26,7 +26,7 @@ func GetRoot() tests.SpecTest {
 		Messages: []*types.SignedSSVMessage{
 			msg,
 		},
-		ExpectedRoots: [][32]byte{
+		ExpectedRoots: []types.ExpectedRoot{
 			r,
 		},
 	}

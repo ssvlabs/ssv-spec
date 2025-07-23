@@ -12,7 +12,7 @@ import (
 type EncodingTest struct {
 	Name         string
 	Data         []byte
-	ExpectedRoot [32]byte
+	ExpectedRoot types.ExpectedRoot
 }
 
 func (test *EncodingTest) TestName() string {
