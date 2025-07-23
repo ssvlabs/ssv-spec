@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -12,10 +13,7 @@ import (
 // ShuffledDecidedDuties decides duties with shuffled input messages (that preserves order between duty messages)
 func ShuffledDecidedDuties() tests.SpecTest {
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "shuffled decided duties",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		// TODO add 500
@@ -25,7 +23,7 @@ func ShuffledDecidedDuties() tests.SpecTest {
 				ksMap := testingutils.KeySetMapForValidators(numValidators)
 				shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
-				multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+				tests = append(tests, []*committee.CommitteeSpecTest{
 					{
 						Name:           fmt.Sprintf("%v duties %v attestation (%s)", numSequencedDuties, numValidators, version.String()),
 						Committee:      testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
@@ -48,6 +46,12 @@ func ShuffledDecidedDuties() tests.SpecTest {
 			}
 		}
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"shuffled decided duties",
+		testdoc.CommitteeShuffledDecidedDutiesDoc,
+		tests,
+	)
 
 	return multiSpecTest
 }

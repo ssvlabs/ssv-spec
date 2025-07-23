@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,17 +19,22 @@ func InvalidRoundChangeJustification() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), nil,
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:           "proposal rc msg invalid",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: change round msg not valid: msg signature invalid: crypto/rsa: verification error",
-	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"proposal rc msg invalid",
+		testdoc.ProposalInvalidRCJustificationDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: proposal not justified: change round msg not valid: msg signature invalid: crypto/rsa: verification error",
+		nil,
+	)
 }

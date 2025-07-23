@@ -1,5 +1,7 @@
 {
   "Name": "decide no quorum",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test decided message with less than unique 2f+1 signers, expecting validation error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -27,11 +29,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "could not process msg: invalid signed message: did not receive proposal for this round",
-  "omitempty": null
+  "ExpectedError": "could not process msg: invalid signed message: did not receive proposal for this round"
 }

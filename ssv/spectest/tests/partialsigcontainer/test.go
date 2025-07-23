@@ -5,12 +5,15 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
 )
 
 type PartialSigContainerTest struct {
 	Name            string
+	Type            string
+	Documentation   string
 	Quorum          uint64
 	ValidatorPubKey []byte
 	SignatureMsgs   []*types.PartialSignatureMessage
@@ -52,4 +55,18 @@ func (test *PartialSigContainerTest) Run(t *testing.T) {
 
 func (test *PartialSigContainerTest) GetPostState() (interface{}, error) {
 	return nil, nil
+}
+
+func NewPartialSigContainerTest(name, documentation string, quorum uint64, validatorPubKey []byte, signatureMsgs []*types.PartialSignatureMessage, expectedError string, expectedResult []byte, expectedQuorum bool) *PartialSigContainerTest {
+	return &PartialSigContainerTest{
+		Name:            name,
+		Type:            testdoc.PartialSigContainerTestType,
+		Documentation:   documentation,
+		Quorum:          quorum,
+		ValidatorPubKey: validatorPubKey,
+		SignatureMsgs:   signatureMsgs,
+		ExpectedError:   expectedError,
+		ExpectedResult:  expectedResult,
+		ExpectedQuorum:  expectedQuorum,
+	}
 }

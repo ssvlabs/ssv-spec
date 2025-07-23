@@ -1,5 +1,7 @@
 {
   "Name": "create prepare",
+  "Type": "Message creation: validation of consensus message construction and encoding",
+  "Documentation": "Test creating a prepare message for QBFT consensus.",
   "Value": "0102030400000000000000000000000000000000000000000000000000000000",
   "StateValue": null,
   "Round": 10,

@@ -1,5 +1,7 @@
 {
   "Name": "expected prepare qbftMessage",
+  "Type": "Structure size: validation of structure size",
+  "Documentation": "Test the expected size of a prepare QBFT message with no justifications",
   "Object": {
     "DataRound": 0,
     "Height": 1,

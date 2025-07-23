@@ -1,5 +1,7 @@
 {
   "Name": "decide late decided",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test processing a decided message for a just decided instance, expecting the instance to remain decided.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
@@ -144,11 +146,9 @@
           },
           "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
         }
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "",
-  "omitempty": null
+  "ExpectedError": ""
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -24,17 +25,14 @@ func ProposalWithConsensusData() tests.SpecTest {
 
 	expectedError := "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding beacon vote: incorrect size"
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "proposal with consensus data",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 
 		slot := testingutils.TestingDutySlotV(version)
 		height := qbft.Height(slot)
 
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+		tests = append(tests, []*committee.CommitteeSpecTest{
 			{
 				Name:      fmt.Sprintf("%v attestation (%s)", numValidators, version.String()),
 				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
@@ -73,6 +71,12 @@ func ProposalWithConsensusData() tests.SpecTest {
 			},
 		}...)
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"proposal with consensus data",
+		testdoc.CommitteeProposalWithConsensusDataDoc,
+		tests,
+	)
 
 	return multiSpecTest
 }

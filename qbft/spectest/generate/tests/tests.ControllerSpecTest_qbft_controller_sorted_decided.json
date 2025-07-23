@@ -1,5 +1,7 @@
 {
   "Name": "sorted decided",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test the creation of the decided message that should have sorted signers",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -126,11 +128,9 @@
           },
           "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
         }
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "",
-  "omitempty": null
+  "ExpectedError": ""
 }

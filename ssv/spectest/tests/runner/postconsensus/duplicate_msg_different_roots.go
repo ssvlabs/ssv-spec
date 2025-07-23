@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,9 +17,10 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "failed processing post consensus message: invalid post-consensus message: wrong signing root"
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus duplicate msg different roots",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus duplicate msg different roots",
+		testdoc.PostConsensusDuplicateMsgDifferentRootsDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -39,7 +41,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

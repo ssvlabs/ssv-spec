@@ -1,5 +1,7 @@
 {
   "Name": "start instance lower height",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test starting a new QBFT instance with a lower height than the previous instance, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -11,7 +13,7 @@
         "DecidedCnt": 0,
         "BroadcastedDecided": null
       },
-      "omitempty": 1
+      "Height": 1
     },
     {
       "InputValue": "AQIDBA==",
@@ -23,10 +25,9 @@
         "DecidedCnt": 0,
         "BroadcastedDecided": null
       },
-      "omitempty": 0
+      "Height": 0
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "attempting to start an instance with a past height",
-  "omitempty": null
+  "ExpectedError": "attempting to start an instance with a past height"
 }

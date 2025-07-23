@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,9 +15,10 @@ import (
 func InvalidThenQuorum() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus invalid then quorum",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus invalid then quorum",
+		testdoc.PostConsensusInvalidThenQuorumDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -43,7 +45,7 @@ func InvalidThenQuorum() tests.SpecTest {
 				DontStartDuty: true,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

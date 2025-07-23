@@ -3,6 +3,7 @@ package latemsg
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -40,9 +41,10 @@ func LateProposalPastRound() tests.SpecTest {
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}...)
 
-	return &tests.ControllerSpecTest{
-		Name: "late proposal past round",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"late proposal past round",
+		testdoc.ControllerLateMsgLateProposalPastRoundDoc,
+		[]*tests.RunInstanceData{
 			{
 				InputValue:    []byte{1, 2, 3, 4},
 				InputMessages: msgs,
@@ -57,6 +59,8 @@ func LateProposalPastRound() tests.SpecTest {
 				},
 			},
 		},
-		ExpectedError: "not processing consensus message since instance is already decided",
-	}
+		nil,
+		"not processing consensus message since instance is already decided",
+		nil,
+	)
 }

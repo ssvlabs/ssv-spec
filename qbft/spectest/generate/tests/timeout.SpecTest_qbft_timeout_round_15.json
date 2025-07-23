@@ -1,5 +1,7 @@
 {
   "Name": "round 15",
+  "Type": "Timeout: validation of round timeout handling and state transitions",
+  "Documentation": "Test UponRoundTimeout for round 15, checks that instance stops processing timeouts after a high round.",
   "Pre": {
     "State": {
       "CommitteeMember": {

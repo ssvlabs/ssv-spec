@@ -1,5 +1,7 @@
 {
   "Name": "no instance running",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test processing message for height with no running instance, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -43,11 +45,9 @@
         "DecidedVal": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
         "DecidedCnt": 1,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "instance not found",
-  "omitempty": null
+  "ExpectedError": "instance not found"
 }

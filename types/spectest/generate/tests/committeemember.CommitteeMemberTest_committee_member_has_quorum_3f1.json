@@ -1,5 +1,7 @@
 {
   "Name": "has quorum 3f1",
+  "Type": "Committee member: validation of committee member quorum requirements",
+  "Documentation": "Test that committee member has quorum with 3f+1 unique signers (full committee) should be accepted",
   "CommitteeMember": {
     "OperatorID": 1,
     "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",

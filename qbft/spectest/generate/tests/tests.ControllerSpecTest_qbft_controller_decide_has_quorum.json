@@ -1,5 +1,7 @@
 {
   "Name": "decide has quorum",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test decided message with unique 2f+1 signers, expecting successful decision.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -29,11 +31,9 @@
         "DecidedVal": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
         "DecidedCnt": 1,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "",
-  "omitempty": null
+  "ExpectedError": ""
 }

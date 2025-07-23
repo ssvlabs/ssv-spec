@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -25,18 +26,27 @@ func PreparedPreviouslyDuplicateRCQuorum() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "duplicate rc msg justification (prepared) quorum",
-		Pre:           pre,
-		InputMessages: append(msgs, testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2)),
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
-		},
+
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"duplicate rc msg justification (prepared) quorum",
+		testdoc.ProposalPreparedPreviouslyDuplicateRCQuorumDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
 }

@@ -1,5 +1,7 @@
 {
   "Name": "mixed committees",
+  "Type": "SSV multi message processing: multiple message processing tests",
+  "Documentation": "Tests post-consensus message processing with mixed committees, expecting correct handling of multiple committee scenarios",
   "Tests": [
     {
       "Name": "attester (phase0)",

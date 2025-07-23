@@ -1,5 +1,7 @@
 {
   "Name": "message signer 0",
+  "Type": "Partial signature messages: validation of partial signature messages",
+  "Documentation": "Test validation error when partial signature message has signer ID 0 which is not allowed",
   "Messages": [
     {
       "Type": 1,

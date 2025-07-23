@@ -3,6 +3,7 @@ package validatorconsensusdata
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -16,9 +17,10 @@ func InvalidElectraBlockValidation() *ValidatorConsensusDataTest {
 		Version: version,
 		DataSSZ: []byte{},
 	}
-	return &ValidatorConsensusDataTest{
-		Name:          "invalid electra block",
-		ConsensusData: *cd,
-		ExpectedError: "could not unmarshal ssz: incorrect size",
-	}
+	return NewValidatorConsensusDataTest(
+		"invalid electra block",
+		testdoc.ValidatorConsensusDataTestInvalidElectraBlockDoc,
+		*cd,
+		"could not unmarshal ssz: incorrect size",
+	)
 }

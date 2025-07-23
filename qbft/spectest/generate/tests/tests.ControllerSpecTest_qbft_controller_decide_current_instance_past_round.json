@@ -1,5 +1,7 @@
 {
   "Name": "decide current instance past round",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test a decided message received for current running instance for a past round, expecting the instance to be decided.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -197,11 +199,9 @@
         "DecidedVal": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
         "DecidedCnt": 1,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "",
-  "omitempty": null
+  "ExpectedError": ""
 }

@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,14 +21,21 @@ func WrongHeight() tests.SpecTest {
 
 		testingutils.TestingCommitMessageWrongHeight(ks.OperatorKeys[1], 1),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "wrong commit height",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "invalid signed message: wrong msg height",
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
-		},
+
+	outputMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"wrong commit height",
+		testdoc.CommitTestWrongHeightDoc,
+		pre,
+		"",
+		nil,
+		msgs,
+		outputMsgs,
+		"invalid signed message: wrong msg height",
+		nil,
+	)
 }

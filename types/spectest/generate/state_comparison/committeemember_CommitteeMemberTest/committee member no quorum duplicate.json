@@ -1,5 +1,7 @@
 {
   "Name": "no quorum duplicate",
+  "Type": "Committee member: validation of committee member quorum requirements",
+  "Documentation": "Test that committee member has no quorum when signers include duplicates should be rejected",
   "CommitteeMember": {
     "OperatorID": 1,
     "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",

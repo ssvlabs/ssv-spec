@@ -3,6 +3,7 @@ package decided
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -11,9 +12,10 @@ import (
 // WrongSignature tests a single decided received with a wrong signature
 func WrongSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
-		Name: "decide wrong sig",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"decide wrong sig",
+		testdoc.ControllerDecidedWrongSigDoc,
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -21,6 +23,8 @@ func WrongSignature() tests.SpecTest {
 				},
 			},
 		},
-		ExpectedError: "invalid decided msg: invalid decided msg: msg signature invalid: crypto/rsa: verification error",
-	}
+		nil,
+		"invalid decided msg: invalid decided msg: msg signature invalid: crypto/rsa: verification error",
+		nil,
+	)
 }

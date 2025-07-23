@@ -1,8 +1,11 @@
 {
   "Name": "start duty",
+  "Type": "Multi committee: multiple committee tests",
+  "Documentation": "Tests basic duty starting for attestations and sync committees without consensus messages",
   "Tests": [
     {
       "Name": "1 attestation (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -89,6 +92,7 @@
     },
     {
       "Name": "1 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -179,6 +183,7 @@
     },
     {
       "Name": "1 attestation 1 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -280,6 +285,7 @@
     },
     {
       "Name": "30 attestation (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -1584,6 +1590,7 @@
     },
     {
       "Name": "30 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -3008,6 +3015,7 @@
     },
     {
       "Name": "30 attestation 30 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -4762,6 +4770,7 @@
     },
     {
       "Name": "1 attestation (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -4848,6 +4857,7 @@
     },
     {
       "Name": "1 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -4938,6 +4948,7 @@
     },
     {
       "Name": "1 attestation 1 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -5039,6 +5050,7 @@
     },
     {
       "Name": "30 attestation (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -6343,6 +6355,7 @@
     },
     {
       "Name": "30 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -7767,6 +7780,7 @@
     },
     {
       "Name": "30 attestation 30 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {

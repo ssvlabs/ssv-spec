@@ -2,6 +2,7 @@ package validatorconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -11,9 +12,10 @@ func InvalidSyncCommitteeContributionValidation() *ValidatorConsensusDataTest {
 	cd := testingutils.TestSyncCommitteeContributionConsensusData
 	cd.DataSSZ = testingutils.TestingAttestationDataBytes(spec.DataVersionPhase0)
 
-	return &ValidatorConsensusDataTest{
-		Name:          "invalid sync committee contribution",
-		ConsensusData: *cd,
-		ExpectedError: "could not unmarshal ssz: incorrect end of offset: 12 0",
-	}
+	return NewValidatorConsensusDataTest(
+		"invalid sync committee contribution",
+		testdoc.ValidatorConsensusDataTestInvalidSyncCommitteeContributionDoc,
+		*cd,
+		"could not unmarshal ssz: incorrect end of offset: 12 0",
+	)
 }

@@ -9,6 +9,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -23,7 +24,9 @@ const (
 )
 
 type CreateMsgSpecTest struct {
-	Name string
+	Name          string
+	Type          string
+	Documentation string
 	// ISSUE 217: rename to root
 	Value qbft.Value
 	// ISSUE 217: rename to value
@@ -63,6 +66,8 @@ func (test *CreateMsgSpecTest) UnmarshalJSON(data []byte) error {
 	// Create a temporary struct without ExpectedRoot for hex processing
 	type CreateMsgSpecTestWithoutExpectedRoot struct {
 		Name                                             string
+		Type                                             string
+		Documentation                                    string
 		Value                                            qbft.Value
 		StateValue                                       []byte
 		Round                                            qbft.Round
@@ -80,6 +85,8 @@ func (test *CreateMsgSpecTest) UnmarshalJSON(data []byte) error {
 
 	// Copy all fields from temp to test
 	test.Name = temp.Name
+	test.Type = temp.Type
+	test.Documentation = temp.Documentation
 	test.Value = temp.Value
 	test.StateValue = temp.StateValue
 	test.Round = temp.Round
@@ -222,4 +229,21 @@ func (test *CreateMsgSpecTest) TestName() string {
 
 func (test *CreateMsgSpecTest) GetPostState() (interface{}, error) {
 	return test, nil
+}
+
+func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, stateValue []byte, round qbft.Round, roundChangeJustifications []*types.SignedSSVMessage, prepareJustifications []*types.SignedSSVMessage, createType string, expectedRoot string, expectedState types.Root, expectedError string) *CreateMsgSpecTest {
+	return &CreateMsgSpecTest{
+		Name:                      name,
+		Type:                      testdoc.CreateMsgSpecTestType,
+		Documentation:             documentation,
+		Value:                     value,
+		StateValue:                stateValue,
+		Round:                     round,
+		RoundChangeJustifications: roundChangeJustifications,
+		PrepareJustifications:     prepareJustifications,
+		CreateType:                createType,
+		ExpectedRoot:              expectedRoot,
+		ExpectedState:             expectedState,
+		ExpectedError:             expectedError,
+	}
 }

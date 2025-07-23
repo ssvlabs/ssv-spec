@@ -1,5 +1,7 @@
 {
   "Name": "decide late decided smaller quorum",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test processing a decided message for a just decided instance with a smaller quorum, expecting the instance to remain decided.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -49,11 +51,9 @@
         "DecidedVal": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
         "DecidedCnt": 1,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "",
-  "omitempty": null
+  "ExpectedError": ""
 }

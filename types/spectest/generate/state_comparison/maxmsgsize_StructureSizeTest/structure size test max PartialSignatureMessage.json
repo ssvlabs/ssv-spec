@@ -1,5 +1,7 @@
 {
   "Name": "max PartialSignatureMessage",
+  "Type": "Structure size: validation of structure size",
+  "Documentation": "Test the maximum size of a single partial signature message",
   "Object": {
     "PartialSignature": "010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "Signer": 1,

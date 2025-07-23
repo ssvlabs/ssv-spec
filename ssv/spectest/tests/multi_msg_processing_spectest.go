@@ -6,12 +6,15 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
 type MultiMsgProcessingSpecTest struct {
-	Name  string
-	Tests []*MsgProcessingSpecTest
+	Name          string
+	Type          string
+	Documentation string
+	Tests         []*MsgProcessingSpecTest
 }
 
 func (tests *MultiMsgProcessingSpecTest) TestName() string {
@@ -47,4 +50,13 @@ func (tests *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
 		ret[test.Name] = test.Runner
 	}
 	return ret, nil
+}
+
+func NewMultiMsgProcessingSpecTest(name, documentation string, tests []*MsgProcessingSpecTest) *MultiMsgProcessingSpecTest {
+	return &MultiMsgProcessingSpecTest{
+		Name:          name,
+		Type:          testdoc.MultiMsgProcessingSpecTestType,
+		Documentation: documentation,
+		Tests:         tests,
+	}
 }

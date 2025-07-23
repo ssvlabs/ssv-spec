@@ -1,8 +1,11 @@
 {
   "Name": "shuffled happy flow duties with different validators",
+  "Type": "Multi committee: multiple committee tests",
+  "Documentation": "Tests complete happy flow execution for sequences of duties with shuffled input messages while preserving order between duty messages for different validators",
   "Tests": [
     {
       "Name": "1 duties 8 attestation (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -587,6 +590,7 @@
     },
     {
       "Name": "1 duties 8 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -1203,6 +1207,7 @@
     },
     {
       "Name": "1 duties 8 attestations 8 sync committees (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -1963,6 +1968,7 @@
     },
     {
       "Name": "1 duties 30 attestation (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -3625,6 +3631,7 @@
     },
     {
       "Name": "1 duties 30 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -5407,6 +5414,7 @@
     },
     {
       "Name": "1 duties 30 attestations 30 sync committees (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -7729,6 +7737,7 @@
     },
     {
       "Name": "2 duties 8 attestation (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -8464,6 +8473,7 @@
     },
     {
       "Name": "2 duties 8 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -9231,6 +9241,7 @@
     },
     {
       "Name": "2 duties 8 attestations 8 sync committees (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -10142,6 +10153,7 @@
     },
     {
       "Name": "2 duties 30 attestation (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -11955,6 +11967,7 @@
     },
     {
       "Name": "2 duties 30 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -13888,6 +13901,7 @@
     },
     {
       "Name": "2 duties 30 attestations 30 sync committees (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -16361,6 +16375,7 @@
     },
     {
       "Name": "4 duties 8 attestation (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -17398,6 +17413,7 @@
     },
     {
       "Name": "4 duties 8 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -18467,6 +18483,7 @@
     },
     {
       "Name": "4 duties 8 attestations 8 sync committees (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -19680,6 +19697,7 @@
     },
     {
       "Name": "4 duties 30 attestation (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -21759,6 +21777,7 @@
     },
     {
       "Name": "4 duties 30 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -23950,6 +23969,7 @@
     },
     {
       "Name": "4 duties 30 attestations 30 sync committees (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -26645,6 +26665,7 @@
     },
     {
       "Name": "1 duties 8 attestation (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -27229,6 +27250,7 @@
     },
     {
       "Name": "1 duties 8 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -27845,6 +27867,7 @@
     },
     {
       "Name": "1 duties 8 attestations 8 sync committees (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -28605,6 +28628,7 @@
     },
     {
       "Name": "1 duties 30 attestation (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -30267,6 +30291,7 @@
     },
     {
       "Name": "1 duties 30 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -32049,6 +32074,7 @@
     },
     {
       "Name": "1 duties 30 attestations 30 sync committees (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -34371,6 +34397,7 @@
     },
     {
       "Name": "2 duties 8 attestation (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -35106,6 +35133,7 @@
     },
     {
       "Name": "2 duties 8 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -35873,6 +35901,7 @@
     },
     {
       "Name": "2 duties 8 attestations 8 sync committees (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -36784,6 +36813,7 @@
     },
     {
       "Name": "2 duties 30 attestation (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -38597,6 +38627,7 @@
     },
     {
       "Name": "2 duties 30 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -40530,6 +40561,7 @@
     },
     {
       "Name": "2 duties 30 attestations 30 sync committees (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -43003,6 +43035,7 @@
     },
     {
       "Name": "4 duties 8 attestation (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -44040,6 +44073,7 @@
     },
     {
       "Name": "4 duties 8 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -45109,6 +45143,7 @@
     },
     {
       "Name": "4 duties 8 attestations 8 sync committees (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -46322,6 +46357,7 @@
     },
     {
       "Name": "4 duties 30 attestation (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -48401,6 +48437,7 @@
     },
     {
       "Name": "4 duties 30 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -50592,6 +50629,7 @@
     },
     {
       "Name": "4 duties 30 attestations 30 sync committees (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {

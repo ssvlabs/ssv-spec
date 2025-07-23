@@ -1,5 +1,7 @@
 {
   "Name": "pre consensus post quorum",
+  "Type": "SSV multi message processing: multiple message processing tests",
+  "Documentation": "Tests pre-consensus message processing after quorum is reached",
   "Tests": [
     {
       "Name": "sync committee aggregator selection proof",

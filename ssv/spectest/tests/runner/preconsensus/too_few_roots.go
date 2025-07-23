@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,9 +15,10 @@ import (
 func TooFewRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	expectedError := "invalid PartialSignatureMessages: no PartialSignatureMessages messages"
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus too few roots",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus too few roots",
+		testdoc.PreConsensusTooFewRootsDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -83,7 +85,7 @@ func TooFewRoots() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

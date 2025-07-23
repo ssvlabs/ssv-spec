@@ -1,5 +1,7 @@
 {
   "Name": "unknown commit signer",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test processing of a commit message with an unknown signer, expecting error",
   "Pre": {
     "State": {
       "CommitteeMember": {

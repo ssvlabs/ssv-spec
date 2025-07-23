@@ -1,5 +1,7 @@
 {
   "Name": "multi signer, with overlap",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test processing of a multi signer commit message with overlap, expecting error",
   "Pre": {
     "State": {
       "CommitteeMember": {

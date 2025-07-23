@@ -1,5 +1,7 @@
 {
   "Name": "belongs",
+  "Type": "SSV message validation: testing message ID ownership and routing logic",
+  "Documentation": "Test that message IDs with matching validator public key belong to the validator",
   "MessageIDs": [
     "00000301010000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
     "99999999010000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0"

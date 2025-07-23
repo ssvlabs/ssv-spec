@@ -1,5 +1,7 @@
 {
   "Name": "start instance for current height with no running instance",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test starting a new QBFT instance for the current height when no instance is running.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -11,10 +13,10 @@
         "DecidedCnt": 0,
         "BroadcastedDecided": null
       },
-      "omitempty": 2
+      "Height": 2
     }
   ],
   "OutputMessages": null,
   "ExpectedError": "",
-  "omitempty": 2
+  "StartHeight": 2
 }

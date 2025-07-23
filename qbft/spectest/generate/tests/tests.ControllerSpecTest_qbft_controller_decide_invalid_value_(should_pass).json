@@ -1,5 +1,7 @@
 {
   "Name": "decide invalid value (should pass)",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test a decided message with invalid decided data that should pass validation since it's already decided.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -29,11 +31,9 @@
         "DecidedVal": "AQEBAQ==",
         "DecidedCnt": 1,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "",
-  "omitempty": null
+  "ExpectedError": ""
 }

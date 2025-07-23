@@ -1,6 +1,7 @@
 package proposal
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,10 +14,17 @@ func InvalidFullData() tests.SpecTest {
 	msg := testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1))
 	msg.FullData = nil
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "invalid full data",
-		Pre:           pre,
-		InputMessages: []*types.SignedSSVMessage{msg},
-		ExpectedError: "invalid signed message: H(data) != root",
-	}
+	inputMessages := []*types.SignedSSVMessage{msg}
+
+	return tests.NewMsgProcessingSpecTest(
+		"invalid full data",
+		testdoc.ProposalInvalidFullDataDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: H(data) != root",
+		nil,
+	)
 }

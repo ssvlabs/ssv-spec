@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
 )
@@ -11,9 +12,11 @@ import (
 // MsgSpecTest tests encoding and decoding of a msg
 type MsgSpecTest struct {
 	Name            string
+	Type            string
+	Documentation   string
 	Messages        []*types.SignedSSVMessage
 	EncodedMessages [][]byte
-	ExpectedRoots   []types.ExpectedRoot
+	ExpectedRoots   [][32]byte
 	ExpectedError   string
 }
 
@@ -60,4 +63,16 @@ func (test *MsgSpecTest) TestName() string {
 
 func (test *MsgSpecTest) GetPostState() (interface{}, error) {
 	return test, nil
+}
+
+func NewMsgSpecTest(name string, documentation string, messages []*types.SignedSSVMessage, encodedMessages [][]byte, expectedRoots [][32]byte, expectedError string) *MsgSpecTest {
+	return &MsgSpecTest{
+		Name:            name,
+		Type:            testdoc.MsgSpecTestType,
+		Documentation:   documentation,
+		Messages:        messages,
+		EncodedMessages: encodedMessages,
+		ExpectedRoots:   expectedRoots,
+		ExpectedError:   expectedError,
+	}
 }

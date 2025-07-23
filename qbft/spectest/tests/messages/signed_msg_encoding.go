@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -22,13 +23,12 @@ func SignedMessageEncoding() tests.SpecTest {
 
 	b, _ := msg.Encode()
 
-	return &tests.MsgSpecTest{
-		Name: "signed message encoding",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		EncodedMessages: [][]byte{
-			b,
-		},
-	}
+	return tests.NewMsgSpecTest(
+		"signed message encoding",
+		testdoc.MessagesSignedMsgEncodingDoc,
+		[]*types.SignedSSVMessage{msg},
+		[][]byte{b},
+		nil,
+		"",
+	)
 }

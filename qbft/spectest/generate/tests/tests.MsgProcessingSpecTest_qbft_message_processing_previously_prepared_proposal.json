@@ -1,5 +1,7 @@
 {
   "Name": "previously prepared proposal",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test proposal for round \u003e 1 that was prepared previously with valid quorum of round change messages justification, expecting full consensus flow.",
   "Pre": {
     "State": {
       "CommitteeMember": {

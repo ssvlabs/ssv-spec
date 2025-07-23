@@ -3,6 +3,7 @@ package processmsg
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -11,9 +12,10 @@ import (
 // NoInstanceRunning tests a process msg for height in which there is no running instance
 func NoInstanceRunning() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
-		Name: "no instance running",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"no instance running",
+		testdoc.ControllerProcessMsgNoInstanceRunningDoc,
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -31,6 +33,8 @@ func NoInstanceRunning() tests.SpecTest {
 				},
 			},
 		},
-		ExpectedError: "instance not found",
-	}
+		nil,
+		"instance not found",
+		nil,
+	)
 }

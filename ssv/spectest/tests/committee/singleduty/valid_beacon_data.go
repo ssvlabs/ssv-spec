@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -16,13 +17,10 @@ func ValidBeaconVote() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	ksMapFor30Validators := testingutils.KeySetMapForValidators(30)
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "valid beacon vote",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, &committee.CommitteeSpecTest{
+		tests = append(tests, &committee.CommitteeSpecTest{
 			Name:      fmt.Sprintf("30 attestations 30 sync committees (%s)", version.String()),
 			Committee: testingutils.BaseCommittee(ksMapFor30Validators),
 			Input: []interface{}{
@@ -34,6 +32,12 @@ func ValidBeaconVote() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{},
 		})
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"valid beacon vote",
+		testdoc.CommitteeValidBeaconVoteDoc,
+		tests,
+	)
 
 	return multiSpecTest
 }

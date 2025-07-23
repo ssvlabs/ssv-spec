@@ -1,5 +1,7 @@
 {
   "Name": "create proposal previously prepared",
+  "Type": "Message creation: validation of consensus message construction and encoding",
+  "Documentation": "Test creating a proposal message when previously prepared with round change and prepare justifications.",
   "Value": "0102030400000000000000000000000000000000000000000000000000000000",
   "StateValue": null,
   "Round": 10,

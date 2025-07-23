@@ -1,6 +1,7 @@
 package prepare
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,14 +14,19 @@ func PostCutoff() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 15
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 15),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "round cutoff prepare message",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "instance stopped processing messages",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"round cutoff prepare message",
+		testdoc.PreparePostCutoffDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"instance stopped processing messages",
+		nil,
+	)
 }

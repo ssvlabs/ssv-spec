@@ -1,5 +1,7 @@
 {
   "Name": "round change duplicate msg",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test duplicate round change messages: first is processed, second is ignored.",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -81,7 +83,7 @@
       "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "",
   "ExpectedTimerState": null
 }

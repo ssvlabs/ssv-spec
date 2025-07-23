@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -22,17 +23,22 @@ func PreparedPreviouslyNoRCJustificationQuorum() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
 	}
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:           "no rc quorum (prepared)",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: change round has no quorum",
-	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"no rc quorum (prepared)",
+		testdoc.ProposalPreparedPreviouslyNoRCJustificationQuorumDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: proposal not justified: change round has no quorum",
+		nil,
+	)
 }

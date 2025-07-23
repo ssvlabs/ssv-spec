@@ -1,5 +1,7 @@
 {
   "Name": "no rc quorum (prepared)",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test proposal for round \u003e 1 that was prepared previously but lacks quorum of round change messages in justification, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -67,7 +69,7 @@
       "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "invalid signed message: proposal not justified: change round has no quorum",
   "ExpectedTimerState": null
 }

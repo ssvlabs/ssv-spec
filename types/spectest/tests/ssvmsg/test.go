@@ -7,12 +7,15 @@ import (
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 )
 
 type SSVMessageTest struct {
 	Name               string
+	Type               string
+	Documentation      string
 	MessageIDs         []types.MessageID
 	BelongsToValidator bool
 }
@@ -32,4 +35,14 @@ func (test *SSVMessageTest) Run(t *testing.T) {
 	}
 
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
+}
+
+func NewSSVMessageTest(name, documentation string, messageIDs []types.MessageID, belongsToValidator bool) *SSVMessageTest {
+	return &SSVMessageTest{
+		Name:               name,
+		Type:               testdoc.SSVMessageTestType,
+		Documentation:      documentation,
+		MessageIDs:         messageIDs,
+		BelongsToValidator: belongsToValidator,
+	}
 }

@@ -7,6 +7,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -37,9 +38,10 @@ func PostDecided() tests.SpecTest {
 		return r
 	}
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus post decided",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus post decided",
+		testdoc.PreConsensusPostDecidedDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee aggregator selection proof",
 				Runner: decideRunner(
@@ -62,7 +64,7 @@ func PostDecided() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

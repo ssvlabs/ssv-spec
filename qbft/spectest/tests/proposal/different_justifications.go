@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -38,19 +39,26 @@ func DifferentJustifications() tests.SpecTest {
 		),
 	}
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 3, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs2),
 		),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "different proposal round change justification",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 3),
-		},
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 3),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"different proposal round change justification",
+		testdoc.ProposalDifferentJustificationDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
 }

@@ -1,5 +1,7 @@
 {
   "Name": "decide duplicate msg",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test processing duplicate decided messages, expecting only one instance to be decided.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -47,11 +49,9 @@
         "DecidedVal": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
         "DecidedCnt": 1,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "",
-  "omitempty": null
+  "ExpectedError": ""
 }

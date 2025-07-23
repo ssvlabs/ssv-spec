@@ -7,6 +7,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -55,9 +56,10 @@ func PastMessage() tests.SpecTest {
 	// Another "past_msg" test (that is added in the committee package) runs with an existing past runner
 	expectedErrCommittee := "no runner found for message's slot"
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus past message",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus past message",
+		testdoc.ConsensusPastMessageDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: bumpHeight(testingutils.SyncCommitteeContributionRunner(ks)),
@@ -122,7 +124,7 @@ func PastMessage() tests.SpecTest {
 				ExpectedError: "no consensus phase for voluntary exit",
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

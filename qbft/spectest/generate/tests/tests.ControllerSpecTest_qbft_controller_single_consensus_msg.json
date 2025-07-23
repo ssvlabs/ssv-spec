@@ -1,5 +1,7 @@
 {
   "Name": "single consensus msg",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test processing a single consensus message.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -25,11 +27,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "",
-  "omitempty": null
+  "ExpectedError": ""
 }

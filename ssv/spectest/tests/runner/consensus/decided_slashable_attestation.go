@@ -2,6 +2,7 @@ package consensus
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -12,13 +13,18 @@ func DecidedSlashableAttestation() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	return &tests.MsgProcessingSpecTest{
-		Name:             "decide on slashable attestation",
-		Runner:           testingutils.CommitteeRunner(ks),
-		Duty:             testingutils.TestingAttesterDuty(spec.DataVersionPhase0),
-		Messages:         testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
-		DecidedSlashable: true,
-		OutputMessages:   []*types.PartialSignatureMessages{},
-		ExpectedError:    "failed processing consensus message: decided ValidatorConsensusData invalid: decided value is invalid: slashable attestation",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"decide on slashable attestation",
+		testdoc.ConsensusDecidedSlashableAttestationDoc,
+		testingutils.CommitteeRunner(ks),
+		testingutils.TestingAttesterDuty(spec.DataVersionPhase0),
+		testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+		true,
+		"",
+		nil,
+		[]*types.PartialSignatureMessages{},
+		[]string{},
+		false,
+		"failed processing consensus message: decided ValidatorConsensusData invalid: decided value is invalid: slashable attestation",
+	)
 }

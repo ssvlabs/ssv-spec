@@ -7,6 +7,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -29,9 +30,10 @@ func NotDecided() tests.SpecTest {
 		return r
 	}
 
-	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty not decided",
-		Tests: []*StartNewRunnerDutySpecTest{
+	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
+		"new duty not decided",
+		testdoc.NewDutyNotDecidedDoc,
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
 				Runner:                  startRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
@@ -44,7 +46,7 @@ func NotDecided() tests.SpecTest {
 				},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{

@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -21,9 +22,10 @@ func NilSSVMessage() tests.SpecTest {
 		SSVMessage:  nil,
 	}
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus nil ssvmessage",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus nil ssvmessage",
+		testdoc.PreConsensusNilMsgDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:                    "sync committee aggregator selection proof",
 				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
@@ -58,7 +60,7 @@ func NilSSVMessage() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

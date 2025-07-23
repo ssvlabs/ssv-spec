@@ -1,6 +1,7 @@
 package newduty
 
 import (
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -10,9 +11,10 @@ import (
 func FirstHeight() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty first height",
-		Tests: []*StartNewRunnerDutySpecTest{
+	return NewMultiStartNewRunnerDutySpecTest(
+		"new duty first height",
+		testdoc.NewDutyFirstHeightDoc,
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:      "sync committee aggregator",
 				Runner:    testingutils.SyncCommitteeContributionRunner(ks),
@@ -65,5 +67,5 @@ func FirstHeight() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},
-	}
+	)
 }

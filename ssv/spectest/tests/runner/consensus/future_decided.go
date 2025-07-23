@@ -7,6 +7,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/qbft"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -35,9 +36,10 @@ func FutureDecided() tests.SpecTest {
 	errStr := "failed processing consensus message: decided wrong instance"
 	errStrCommittee := "no runner found for message's slot"
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus future decided",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus future decided",
+		testdoc.ConsensusFutureDecidedDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -61,7 +63,7 @@ func FutureDecided() tests.SpecTest {
 				ExpectedError: errStr,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

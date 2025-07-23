@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,9 +15,10 @@ import (
 func FullHappyFlow() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "full happy flow",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"full happy flow",
+		testdoc.HappyFlowDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -79,7 +81,7 @@ func FullHappyFlow() tests.SpecTest {
 				},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

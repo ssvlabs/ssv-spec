@@ -1,5 +1,7 @@
 {
   "Name": "justification multi signer",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test round change justification with a prepare message signed by multiple signers, expecting error.",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -67,7 +69,7 @@
       "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "invalid signed message: round change justification invalid: msg allows 1 signer",
   "ExpectedTimerState": null
 }

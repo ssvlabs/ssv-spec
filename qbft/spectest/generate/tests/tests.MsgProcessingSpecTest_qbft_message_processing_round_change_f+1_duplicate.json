@@ -1,5 +1,7 @@
 {
   "Name": "round change f+1 duplicate",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test round change with f+1 duplicate signers, should not accept.",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -81,7 +83,7 @@
       "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "",
   "ExpectedTimerState": null
 }

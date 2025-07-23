@@ -6,6 +6,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -23,9 +24,14 @@ func VersionedBlindedBlockUnknownVersion() *ProposerSpecTest {
 		panic(err.Error())
 	}
 
-	return &ProposerSpecTest{
-		Name:          "consensus data versioned blinded block unknown version",
-		DataCd:        dataCd,
-		ExpectedError: fmt.Sprintf("unknown block version %s", unknownDataVersion.String()),
-	}
+	return NewProposerSpecTest(
+		"consensus data versioned blinded block unknown version",
+		testdoc.ProposerSpecTestVersionedBlindedBlockUnknownVersionDoc,
+		false,
+		dataCd,
+		nil,
+		[32]byte{},
+		[32]byte{},
+		fmt.Sprintf("unknown block version %s", unknownDataVersion.String()),
+	)
 }

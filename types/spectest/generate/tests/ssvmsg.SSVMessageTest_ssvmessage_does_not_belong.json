@@ -1,5 +1,7 @@
 {
   "Name": "does not belong",
+  "Type": "SSV message validation: testing message ID ownership and routing logic",
+  "Documentation": "Test that message IDs with non-matching validator public key do not belong to the validator",
   "MessageIDs": [
     "0000030101000000948fb44582ce25336fdb17122eac64fe5a1afc39174ce92d6013becac116766dc5a778c880dd47de7dfff6a0f86ba42b",
     "9999999901000000948fb44582ce25336fdb17122eac64fe5a1afc39174ce92d6013becac116766dc5a778c880dd47de7dfff6a0f86ba42b"

@@ -1,5 +1,7 @@
 {
   "Name": "pre consensus invalid signed msg empty signature",
+  "Type": "SSV multi message processing: multiple message processing tests",
+  "Documentation": "Tests pre-consensus message processing with invalid signed message (empty signature)",
   "Tests": [
     {
       "Name": "sync committee aggregator selection proof",

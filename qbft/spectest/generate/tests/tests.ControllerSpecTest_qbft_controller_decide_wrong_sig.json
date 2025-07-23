@@ -1,5 +1,7 @@
 {
   "Name": "decide wrong sig",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test a single decided message received with a wrong signature, expecting validation error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -29,11 +31,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "invalid decided msg: invalid decided msg: msg signature invalid: crypto/rsa: verification error",
-  "omitempty": null
+  "ExpectedError": "invalid decided msg: invalid decided msg: msg signature invalid: crypto/rsa: verification error"
 }

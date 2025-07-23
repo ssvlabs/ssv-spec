@@ -3,6 +3,7 @@ package postconsensus
 import (
 	"fmt"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,10 +19,11 @@ func MixedCommittees() tests.SpecTest {
 	ksMap := testingutils.KeySetMapForValidators(numValidators)
 	shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name:  "mixed committees",
-		Tests: []*tests.MsgProcessingSpecTest{},
-	}
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"mixed committees",
+		testdoc.PostConsensusMixedCommitteesDoc,
+		[]*tests.MsgProcessingSpecTest{},
+	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 

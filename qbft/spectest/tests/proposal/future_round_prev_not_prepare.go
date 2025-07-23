@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,22 +20,29 @@ func FutureRoundPrevNotPrepared() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 10),
 	}
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), nil,
 		),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "proposal future round prev not prepared",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 10),
-		},
-		ExpectedTimerState: &testingutils.TimerState{
+
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 10),
+	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"proposal future round prev not prepared",
+		testdoc.ProposalFutureRoundPrevNotPrepareDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"",
+		&testingutils.TimerState{
 			Timeouts: 1,
 			Round:    qbft.Round(10),
 		},
-	}
+	)
 }

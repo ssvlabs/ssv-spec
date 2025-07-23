@@ -1,6 +1,7 @@
 package runnerconstruction
 
 import (
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,9 +21,10 @@ func ManyShares() tests.SpecTest {
 		types.RoleVoluntaryExit:             "must have one share",
 	}
 
-	return &RunnerConstructionSpecTest{
-		Name:      "many shares",
-		Shares:    shares,
-		RoleError: expectedErrors,
-	}
+	return NewRunnerConstructionSpecTest(
+		"many shares",
+		testdoc.RunnerConstructionManySharesDoc,
+		shares,
+		expectedErrors,
+	)
 }

@@ -1,5 +1,7 @@
 {
   "Name": "round change invalid height",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test round change message with invalid height, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -67,7 +69,7 @@
       "FullData": null
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "invalid signed message: wrong msg height",
   "ExpectedTimerState": null
 }

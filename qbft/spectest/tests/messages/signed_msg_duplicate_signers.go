@@ -3,6 +3,7 @@ package messages
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,11 +19,12 @@ func SignedMsgDuplicateSigners() tests.SpecTest {
 	)
 	msg.OperatorIDs = []types.OperatorID{1, 1, 2}
 
-	return &tests.MsgSpecTest{
-		Name: "duplicate signers",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		ExpectedError: "non unique signer",
-	}
+	return tests.NewMsgSpecTest(
+		"duplicate signers",
+		testdoc.MessagesSignedMsgDuplicateSignersDoc,
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		"non unique signer",
+	)
 }

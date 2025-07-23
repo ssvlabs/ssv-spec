@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -49,9 +50,10 @@ func LateCommitPastInstance() tests.SpecTest {
 	)
 	sc := lateCommitPastInstanceStateComparison(2, lateMsg)
 
-	return &tests.ControllerSpecTest{
-		Name: "late commit past instance",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"late commit past instance",
+		testdoc.ControllerLateMsgLateCommitPastInstanceDoc,
+		[]*tests.RunInstanceData{
 			instanceData(qbft.FirstHeight),
 			instanceData(1),
 			{
@@ -63,8 +65,10 @@ func LateCommitPastInstance() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-		ExpectedError: "not processing consensus message since instance is already decided",
-	}
+		nil,
+		"not processing consensus message since instance is already decided",
+		nil,
+	)
 }
 
 // lateCommitPastInstanceStateComparison returns a comparable.StateComparison for controller running up until the given height.

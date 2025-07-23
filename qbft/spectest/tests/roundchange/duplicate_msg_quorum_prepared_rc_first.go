@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,7 +21,7 @@ func DuplicateMsgQuorumPreparedRCFirst() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 	}
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.OperatorKeys[1], types.OperatorID(1), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
@@ -35,18 +36,23 @@ func DuplicateMsgQuorumPreparedRCFirst() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "round change duplicate msg quorum (prev prepared rc first)",
-		Pre:           pre,
-		PostRoot:      sc.Root(),
-		PostState:     sc.ExpectedState,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
-				testingutils.TestingQBFTRootData,
-				testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs)),
-		},
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
+			testingutils.TestingQBFTRootData,
+			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs)),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"round change duplicate msg quorum (prev prepared rc first)",
+		testdoc.RoundChangeDuplicateMsgQuorumPreparedRCFirstDoc,
+		pre,
+		sc.Root(),
+		sc.ExpectedState,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
 }
 
 func duplicateMsgQuorumPreparedRCFirstStateComparison() *comparable.StateComparison {

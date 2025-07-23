@@ -1,5 +1,7 @@
 {
   "Name": "late commit past round",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test processing late commit message for an instance which just decided for a round less than decided round, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -224,11 +226,9 @@
           },
           "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
         }
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "not processing consensus message since instance is already decided",
-  "omitempty": null
+  "ExpectedError": "not processing consensus message since instance is already decided"
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -47,9 +48,10 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 		testingutils.TestingDutySlot,
 		testingutils.TestingDutySlot)
 
-	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
-		Name: "duplicate duty not finished",
-		Tests: []*StartNewRunnerDutySpecTest{
+	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
+		"duplicate duty not finished",
+		testdoc.NewDutyDuplicateDutyNotFinishedDoc,
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
 				Runner:                  notFinishRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
@@ -95,7 +97,7 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				ExpectedError:           expectedTaskError,
 			},
 		},
-	}
+	)
 	for _, version := range testingutils.SupportedAggregatorVersions {
 
 		refSlot := testingutils.TestingDutySlotV(version)

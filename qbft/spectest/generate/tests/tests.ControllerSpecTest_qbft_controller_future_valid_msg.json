@@ -1,5 +1,7 @@
 {
   "Name": "future valid msg",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test future message that is valid but not yet ready to be processed, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -25,11 +27,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "future msg from height, could not process",
-  "omitempty": null
+  "ExpectedError": "future msg from height, could not process"
 }

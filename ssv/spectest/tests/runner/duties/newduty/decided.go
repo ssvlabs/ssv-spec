@@ -7,6 +7,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -33,9 +34,10 @@ func PostDecided() tests.SpecTest {
 		return r
 	}
 
-	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty post decided",
-		Tests: []*StartNewRunnerDutySpecTest{
+	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
+		"new duty post decided",
+		testdoc.NewDutyPostDecidedDoc,
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
 				Runner:                  decidedRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
@@ -48,7 +50,7 @@ func PostDecided() tests.SpecTest {
 				},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{

@@ -1,5 +1,7 @@
 {
   "Name": "full flow after decided",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test a decided message for round 1 followed by a full proposal, prepare, commit flow for round 2, expecting error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -127,11 +129,9 @@
         "DecidedVal": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
         "DecidedCnt": 1,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "not processing consensus message since instance is already decided",
-  "omitempty": null
+  "ExpectedError": "not processing consensus message since instance is already decided"
 }

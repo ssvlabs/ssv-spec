@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,16 +17,20 @@ func JustificationNoQuorum() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
 	}
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithRoundAndRC(ks.OperatorKeys[1], types.OperatorID(1), 2,
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:           "round change justification no quorum",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: no justifications quorum",
-	}
+	return tests.NewMsgProcessingSpecTest(
+		"round change justification no quorum",
+		testdoc.RoundChangeJustificationNoQuorumDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: no justifications quorum",
+		nil,
+	)
 }

@@ -8,11 +8,14 @@ import (
 	"crypto/sha256"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/stretchr/testify/require"
 )
 
 type SignedSSVMessageTest struct {
 	Name          string
+	Type          string
+	Documentation string
 	Messages      []*types.SignedSSVMessage
 	ExpectedError string
 	RSAPublicKey  [][]byte
@@ -56,5 +59,16 @@ func (test *SignedSSVMessageTest) Run(t *testing.T) {
 		} else {
 			require.NoError(t, err)
 		}
+	}
+}
+
+func NewSignedSSVMessageTest(name, documentation string, messages []*types.SignedSSVMessage, expectedError string, rsaPublicKey [][]byte) *SignedSSVMessageTest {
+	return &SignedSSVMessageTest{
+		Name:          name,
+		Type:          testdoc.SignedSSVMessageTestType,
+		Documentation: documentation,
+		Messages:      messages,
+		ExpectedError: expectedError,
+		RSAPublicKey:  rsaPublicKey,
 	}
 }

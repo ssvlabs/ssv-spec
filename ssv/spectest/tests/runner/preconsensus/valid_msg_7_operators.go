@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,9 +14,10 @@ import (
 // ValidMessage7Operators tests a valid SignedPartialSignatureMessage with multi PartialSignatureMessages (7 operators)
 func ValidMessage7Operators() tests.SpecTest {
 	ks := testingutils.Testing7SharesSet()
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus valid msg 7 operators",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus valid msg 7 operators",
+		testdoc.PreConsensusValidMsg7OperatorsDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -62,7 +64,7 @@ func ValidMessage7Operators() tests.SpecTest {
 				},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

@@ -1,5 +1,7 @@
 {
   "Name": "decide unknown signer",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test a decided message with an unknown signer, expecting validation error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -29,11 +31,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "invalid decided msg: invalid decided msg: signer not in committee",
-  "omitempty": null
+  "ExpectedError": "invalid decided msg: invalid decided msg: signer not in committee"
 }

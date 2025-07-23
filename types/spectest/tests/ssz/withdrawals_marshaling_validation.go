@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -16,9 +17,11 @@ func SSZWithdrawalsMarshaling() *SSZSpecTest {
 		panic(err.Error())
 	}
 
-	return &SSZSpecTest{
-		Name:         "ssz withdrawals marshalling",
-		Data:         testingutils.TestProposerConsensusDataBytsV(spec.DataVersionCapella),
-		ExpectedRoot: root,
-	}
+	return NewSSZSpecTest(
+		"ssz withdrawals marshalling",
+		testdoc.SSZSpecTestWithdrawalsMarshalingDoc,
+		testingutils.TestProposerConsensusDataBytsV(spec.DataVersionCapella),
+		root,
+		"",
+	)
 }

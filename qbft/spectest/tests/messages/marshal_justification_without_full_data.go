@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -33,16 +34,12 @@ func MarshalJustificationsWithoutFullData() tests.SpecTest {
 		panic(err)
 	}
 
-	return &tests.MsgSpecTest{
-		Name: "marshal justifications",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		EncodedMessages: [][]byte{
-			b,
-		},
-		ExpectedRoots: []types.ExpectedRoot{
-			r,
-		},
-	}
+	return tests.NewMsgSpecTest(
+		"marshal justifications",
+		testdoc.MessagesMarshalJustificationWithoutFullDataDoc,
+		[]*types.SignedSSVMessage{msg},
+		[][]byte{b},
+		[][32]byte{r},
+		"",
+	)
 }

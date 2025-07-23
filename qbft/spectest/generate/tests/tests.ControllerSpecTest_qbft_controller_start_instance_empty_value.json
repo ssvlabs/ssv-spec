@@ -1,5 +1,7 @@
 {
   "Name": "start instance empty value",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test starting a new QBFT instance with an empty value, expecting value validation error.",
   "RunInstanceData": [
     {
       "InputValue": "",
@@ -10,11 +12,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "value invalid: invalid value",
-  "omitempty": null
+  "ExpectedError": "value invalid: invalid value"
 }

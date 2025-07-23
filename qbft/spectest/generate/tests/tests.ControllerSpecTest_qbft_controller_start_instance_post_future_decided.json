@@ -1,5 +1,7 @@
 {
   "Name": "start instance post future decided",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test starting a new QBFT instance after a future decided message, then attempting to start with a past height.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -29,8 +31,7 @@
         "DecidedVal": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
         "DecidedCnt": 1,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     },
     {
       "InputValue": "AQIDBA==",
@@ -41,11 +42,9 @@
         "DecidedVal": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "attempting to start an instance with a past height",
-  "omitempty": null
+  "ExpectedError": "attempting to start an instance with a past height"
 }

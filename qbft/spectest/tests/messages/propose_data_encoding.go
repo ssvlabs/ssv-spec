@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -22,16 +23,12 @@ func ProposeDataEncoding() tests.SpecTest {
 	r, _ := msg.GetRoot()
 	b, _ := msg.Encode()
 
-	return &tests.MsgSpecTest{
-		Name: "propose data encoding",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		EncodedMessages: [][]byte{
-			b,
-		},
-		ExpectedRoots: []types.ExpectedRoot{
-			r,
-		},
-	}
+	return tests.NewMsgSpecTest(
+		"propose data encoding",
+		testdoc.MessagesProposeDataEncodingDoc,
+		[]*types.SignedSSVMessage{msg},
+		[][]byte{b},
+		[][32]byte{r},
+		"",
+	)
 }

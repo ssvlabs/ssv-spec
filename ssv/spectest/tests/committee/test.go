@@ -10,6 +10,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/stretchr/testify/require"
@@ -21,6 +22,8 @@ import (
 
 type CommitteeSpecTest struct {
 	Name                   string
+	Type                   string `json:"Type,omitempty"`
+	Documentation          string
 	Committee              *ssv.Committee
 	Input                  []interface{} // Can be a types.Duty or a *types.SignedSSVMessage
 	PostDutyCommitteeRoot  string
@@ -126,8 +129,10 @@ func (test *CommitteeSpecTest) GetPostState() (interface{}, error) {
 }
 
 type MultiCommitteeSpecTest struct {
-	Name  string
-	Tests []*CommitteeSpecTest
+	Name          string
+	Type          string
+	Documentation string
+	Tests         []*CommitteeSpecTest
 }
 
 func (tests *MultiCommitteeSpecTest) TestName() string {
@@ -163,4 +168,28 @@ func (tests *MultiCommitteeSpecTest) GetPostState() (interface{}, error) {
 		ret[test.Name] = test.Committee
 	}
 	return ret, nil
+}
+
+func NewMultiCommitteeSpecTest(name, documentation string, tests []*CommitteeSpecTest) *MultiCommitteeSpecTest {
+	return &MultiCommitteeSpecTest{
+		Name:          name,
+		Type:          testdoc.MultiCommitteeSpecTestType,
+		Documentation: documentation,
+		Tests:         tests,
+	}
+}
+
+func NewCommitteeSpecTest(name, documentation string, committee *ssv.Committee, input []interface{}, postDutyCommitteeRoot string, postDutyCommittee types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, expectedError string) *CommitteeSpecTest {
+	return &CommitteeSpecTest{
+		Name:                   name,
+		Type:                   testdoc.CommitteeSpecTestType,
+		Documentation:          documentation,
+		Committee:              committee,
+		Input:                  input,
+		PostDutyCommitteeRoot:  postDutyCommitteeRoot,
+		PostDutyCommittee:      postDutyCommittee,
+		OutputMessages:         outputMessages,
+		BeaconBroadcastedRoots: beaconBroadcastedRoots,
+		ExpectedError:          expectedError,
+	}
 }

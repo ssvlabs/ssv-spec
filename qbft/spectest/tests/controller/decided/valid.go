@@ -3,6 +3,7 @@ package decided
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -11,9 +12,10 @@ import (
 // Valid tests a valid decided msg with unique 2f+1 signers
 func Valid() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
-		Name: "valid",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"valid",
+		testdoc.ControllerDecidedValidDoc,
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -25,5 +27,8 @@ func Valid() tests.SpecTest {
 				},
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 }

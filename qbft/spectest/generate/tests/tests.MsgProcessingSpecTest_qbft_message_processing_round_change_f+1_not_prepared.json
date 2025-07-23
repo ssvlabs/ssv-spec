@@ -1,5 +1,7 @@
 {
   "Name": "round change f+1 not prepared",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test f+1 speedup scenario where no previous round was prepared, expecting round to advance to the lowest future round received.",
   "Pre": {
     "State": {
       "CommitteeMember": {

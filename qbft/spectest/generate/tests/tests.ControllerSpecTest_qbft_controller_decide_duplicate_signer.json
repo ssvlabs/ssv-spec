@@ -1,5 +1,7 @@
 {
   "Name": "decide duplicate signer",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test a decided message with duplicate signers, expecting validation error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -29,11 +31,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "invalid decided msg: invalid decided msg: signed commit invalid: invalid SignedSSVMessage: non unique signer",
-  "omitempty": null
+  "ExpectedError": "invalid decided msg: invalid decided msg: signed commit invalid: invalid SignedSSVMessage: non unique signer"
 }

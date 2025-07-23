@@ -2,6 +2,7 @@ package prepare
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,7 +14,7 @@ func PrepareQuorumTriggeredTwice() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
 	sc := prepareQuorumTriggeredTwiceStateComparison()
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1),
 
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
@@ -24,17 +25,23 @@ func PrepareQuorumTriggeredTwice() tests.SpecTest {
 
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[4], 4),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "prepared quorum committed twice",
-		Pre:           pre,
-		PostRoot:      sc.Root(),
-		PostState:     sc.ExpectedState,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
-		},
+
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"prepared quorum committed twice",
+		testdoc.PrepareQuorumTriggeredTwiceDoc,
+		pre,
+		sc.Root(),
+		sc.ExpectedState,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
 }
 
 func prepareQuorumTriggeredTwiceStateComparison() *comparable.StateComparison {

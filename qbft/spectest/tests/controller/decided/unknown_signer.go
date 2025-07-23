@@ -3,6 +3,7 @@ package decided
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -11,9 +12,10 @@ import (
 // UnknownSigner tests a decided msg with an unknown signer
 func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
-		Name: "decide unknown signer",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"decide unknown signer",
+		testdoc.ControllerDecidedUnknownSignerDoc,
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -21,6 +23,8 @@ func UnknownSigner() tests.SpecTest {
 				},
 			},
 		},
-		ExpectedError: "invalid decided msg: invalid decided msg: signer not in committee",
-	}
+		nil,
+		"invalid decided msg: invalid decided msg: signer not in committee",
+		nil,
+	)
 }

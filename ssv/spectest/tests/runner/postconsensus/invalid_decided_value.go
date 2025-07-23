@@ -7,6 +7,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -35,9 +36,10 @@ func InvalidDecidedValue() tests.SpecTest {
 	}
 
 	expectedErr := "failed processing post consensus message: invalid post-consensus message: no decided value"
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus decided invalid value",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus decided invalid value",
+		testdoc.PostConsensusInvalidDecidedValueDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -117,7 +119,7 @@ func InvalidDecidedValue() tests.SpecTest {
 				ExpectedError: expectedErr,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -15,6 +16,8 @@ import (
 
 type SpecTest struct {
 	Name               string
+	Type               string
+	Documentation      string
 	Pre                *qbft.Instance
 	PostRoot           string
 	PostState          types.Root `json:"-"` // Field is ignored by encoding/json
@@ -68,4 +71,18 @@ func (test *SpecTest) Run(t *testing.T) {
 
 func (test *SpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
+}
+
+func NewSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, outputMessages []*types.SignedSSVMessage, expectedTimerState *testingutils.TimerState, expectedError string) *SpecTest {
+	return &SpecTest{
+		Name:               name,
+		Type:               testdoc.TimeoutSpecTestType,
+		Documentation:      documentation,
+		Pre:                pre,
+		PostRoot:           postRoot,
+		PostState:          postState,
+		OutputMessages:     outputMessages,
+		ExpectedTimerState: expectedTimerState,
+		ExpectedError:      expectedError,
+	}
 }

@@ -2,6 +2,7 @@ package commit
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -24,17 +25,23 @@ func NoCommitQuorum() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 		testingutils.TestingCommitMessage(ks.OperatorKeys[2], 2),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "no commit quorum",
-		Pre:           pre,
-		PostRoot:      sc.Root(),
-		PostState:     sc.ExpectedState,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
-		},
+
+	outputMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"no commit quorum",
+		testdoc.CommitTestNoCommitQuorumDoc,
+		pre,
+		sc.Root(),
+		sc.ExpectedState,
+		msgs,
+		outputMsgs,
+		"",
+		nil,
+	)
 }
 
 func NoCommitQuorumStateComparison() *comparable.StateComparison {

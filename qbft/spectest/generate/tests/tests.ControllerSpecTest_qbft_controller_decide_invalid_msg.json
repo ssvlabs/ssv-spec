@@ -1,5 +1,7 @@
 {
   "Name": "decide invalid msg",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test decided message where msg.validate() fails, expecting validation error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -25,11 +27,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "could not process msg: invalid signed message: invalid SignedSSVMessage: no signers",
-  "omitempty": null
+  "ExpectedError": "could not process msg: invalid signed message: invalid SignedSSVMessage: no signers"
 }

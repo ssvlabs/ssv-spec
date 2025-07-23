@@ -2,6 +2,7 @@ package prepare
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -23,13 +24,19 @@ func OldRound() tests.SpecTest {
 		ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 		testingutils.MarshalJustifications(rcMsgs), nil))
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], 1, 9),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "prepare prev round",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "invalid signed message: past round",
-	}
+
+	return tests.NewMsgProcessingSpecTest(
+		"prepare prev round",
+		testdoc.PrepareOldRoundDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: past round",
+		nil,
+	)
 }

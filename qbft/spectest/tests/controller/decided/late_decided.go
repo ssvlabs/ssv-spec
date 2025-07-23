@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -29,9 +30,10 @@ func LateDecided() tests.SpecTest {
 			[]types.OperatorID{1, 2, 4},
 		),
 	)
-	return &tests.ControllerSpecTest{
-		Name: "decide late decided",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"decide late decided",
+		testdoc.ControllerDecidedLateDecidedDoc,
+		[]*tests.RunInstanceData{
 			{
 				InputValue:    testingutils.TestingQBFTFullData,
 				InputMessages: msgs,
@@ -47,7 +49,10 @@ func LateDecided() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 }
 
 func lateDecidedStateComparison() *comparable.StateComparison {

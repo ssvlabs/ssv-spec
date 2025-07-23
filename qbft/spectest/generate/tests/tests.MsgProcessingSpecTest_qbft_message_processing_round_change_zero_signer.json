@@ -1,5 +1,7 @@
 {
   "Name": "round change zero signer",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test round change message with signer ID 0, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -67,7 +69,7 @@
       "FullData": null
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "invalid signed message: invalid SignedSSVMessage: signer ID 0 not allowed",
   "ExpectedTimerState": null
 }

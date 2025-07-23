@@ -1,5 +1,7 @@
 {
   "Name": "decide wrong msg type",
+  "Type": "QBFT controller: validation of consensus state management and instance lifecycle",
+  "Documentation": "Test a non-commit message with 2f+1 signers, expecting validation error.",
   "RunInstanceData": [
     {
       "InputValue": "AQIDBA==",
@@ -29,11 +31,9 @@
         "DecidedVal": null,
         "DecidedCnt": 0,
         "BroadcastedDecided": null
-      },
-      "omitempty": null
+      }
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "could not process msg: invalid signed message: msg allows 1 signer",
-  "omitempty": null
+  "ExpectedError": "could not process msg: invalid signed message: msg allows 1 signer"
 }

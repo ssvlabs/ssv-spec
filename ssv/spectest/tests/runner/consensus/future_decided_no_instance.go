@@ -7,6 +7,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -44,9 +45,10 @@ func FutureDecidedNoInstance() tests.SpecTest {
 
 	expectedErr := "no runner found for message's slot"
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus future decided no running instance",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus future decided no running instance",
+		testdoc.ConsensusFutureDecidedNoInstanceDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:           "sync committee contribution",
 				Runner:         testingutils.SyncCommitteeContributionRunner(ks),
@@ -56,7 +58,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
