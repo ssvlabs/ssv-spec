@@ -3,6 +3,7 @@ package partialsigmessage
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -15,11 +16,12 @@ func InconsistentSignedMessage() *MsgSpecTest {
 
 	msg.Messages = append(msg.Messages, msgWithDifferentSigner.Messages...)
 
-	return &MsgSpecTest{
-		Name: "inconsistent signed message",
-		Messages: []*types.PartialSignatureMessages{
-			msg,
-		},
-		ExpectedError: "inconsistent signers",
-	}
+	return NewMsgSpecTest(
+		"inconsistent signed message",
+		testdoc.MsgSpecTestInconsistentSignedMessageDoc,
+		[]*types.PartialSignatureMessages{msg},
+		nil,
+		nil,
+		"inconsistent signers",
+	)
 }

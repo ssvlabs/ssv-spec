@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -20,6 +21,8 @@ const ChangeProposerFuncInstanceHeight = 10
 
 type MsgProcessingSpecTest struct {
 	Name               string
+	Type               string
+	Documentation      string
 	Pre                *qbft.Instance
 	PostRoot           string
 	PostState          types.Root `json:"-"` // Field is ignored by encoding/json
@@ -117,4 +120,19 @@ func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
 // SetPrivateKeys populates the PrivateKeys field with keys from the given TestKeySet
 func (test *MsgProcessingSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
 	test.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
+}
+
+func NewMsgProcessingSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, inputMessages []*types.SignedSSVMessage, outputMessages []*types.SignedSSVMessage, expectedError string, expectedTimerState *testingutils.TimerState) *MsgProcessingSpecTest {
+	return &MsgProcessingSpecTest{
+		Name:               name,
+		Type:               testdoc.MsgProcessingSpecTestType,
+		Documentation:      documentation,
+		Pre:                pre,
+		PostRoot:           postRoot,
+		PostState:          postState,
+		InputMessages:      inputMessages,
+		OutputMessages:     outputMessages,
+		ExpectedError:      expectedError,
+		ExpectedTimerState: expectedTimerState,
+	}
 }

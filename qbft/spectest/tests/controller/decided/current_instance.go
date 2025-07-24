@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -15,9 +16,10 @@ func CurrentInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := currentInstanceStateComparison()
 
-	test := &tests.ControllerSpecTest{
-		Name: "decide current instance",
-		RunInstanceData: []*tests.RunInstanceData{
+	test := tests.NewControllerSpecTest(
+		"decide current instance",
+		testdoc.ControllerDecidedCurrentInstanceDoc,
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -42,10 +44,13 @@ func CurrentInstance() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 
-	// Add private key information since this test has signatures
 	test.SetPrivateKeys(ks)
+
 	return test
 }
 

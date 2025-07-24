@@ -1,8 +1,11 @@
 {
   "Name": "wrong message ID",
+  "Type": "Multi committee: multiple committee tests",
+  "Documentation": "Tests committee behavior when processing messages with incorrect message IDs that don't match the committee ID",
   "Tests": [
     {
       "Name": "sync committees (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -111,6 +114,7 @@
     },
     {
       "Name": "attestation (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -215,6 +219,7 @@
     },
     {
       "Name": "sync committees (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -323,6 +328,7 @@
     },
     {
       "Name": "attestation (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {

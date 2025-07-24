@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,14 +20,19 @@ func EmptySigners() tests.SpecTest {
 		msg,
 	}
 
-	test := &tests.MsgProcessingSpecTest{
-		Name:           "round change empty signer",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: invalid SignedSSVMessage: no signers",
-	}
+	test := tests.NewMsgProcessingSpecTest(
+		"round change empty signer",
+		testdoc.RoundChangeEmptySignersDoc,
+		pre,
+		"",
+		nil,
+		msgs,
+		nil,
+		"invalid signed message: invalid SignedSSVMessage: no signers",
+		nil,
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }

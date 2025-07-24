@@ -1,5 +1,7 @@
 {
   "Name": "consensus decided invalid value",
+  "Type": "SSV multi message processing: multiple message processing tests",
+  "Documentation": "Tests consensus message processing with invalid decided values",
   "Tests": [
     {
       "Name": "sync committee contribution",

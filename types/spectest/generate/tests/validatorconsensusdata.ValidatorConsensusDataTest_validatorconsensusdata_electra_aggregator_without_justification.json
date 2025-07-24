@@ -1,5 +1,7 @@
 {
   "Name": "electra aggregator without justification",
+  "Type": "Validator consensus data: validation of validator consensus data",
+  "Documentation": "Test Electra aggregator consensus data with no pre-consensus justifications",
   "ConsensusData": {
     "Duty": {
       "Type": 1,

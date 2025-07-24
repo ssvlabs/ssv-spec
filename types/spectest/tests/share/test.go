@@ -7,11 +7,14 @@ import (
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/stretchr/testify/require"
 )
 
 type ShareTest struct {
 	Name                  string
+	Type                  string
+	Documentation         string
 	Share                 types.Share
 	Message               types.SignedSSVMessage
 	ExpectedHasQuorum     bool
@@ -45,4 +48,17 @@ func (test *ShareTest) Run(t *testing.T) {
 	}
 
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
+}
+
+func NewShareTest(name, documentation string, share types.Share, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedError string) *ShareTest {
+	return &ShareTest{
+		Name:                  name,
+		Type:                  testdoc.ShareTestType,
+		Documentation:         documentation,
+		Share:                 share,
+		Message:               message,
+		ExpectedHasQuorum:     expectedHasQuorum,
+		ExpectedFullCommittee: expectedFullCommittee,
+		ExpectedError:         expectedError,
+	}
 }

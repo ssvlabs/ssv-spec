@@ -1,5 +1,7 @@
 {
   "Name": "wrong commit height",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test processing of a commit message with the wrong height, expecting error",
   "Pre": {
     "State": {
       "CommitteeMember": {

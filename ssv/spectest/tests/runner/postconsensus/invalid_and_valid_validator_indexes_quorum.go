@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,10 +17,11 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 
 	validatorsIndex := []phase0.ValidatorIndex{testingutils.TestingWrongValidatorIndex, testingutils.TestingValidatorIndex}
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name:  "post consensus invalid and valid validator index quorum",
-		Tests: []*tests.MsgProcessingSpecTest{},
-	}
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus invalid and valid validator index quorum",
+		testdoc.PostConsensusInvalidAndValidValidatorIndexesQuorumDoc,
+		[]*tests.MsgProcessingSpecTest{},
+	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{

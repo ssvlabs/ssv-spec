@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -22,19 +23,16 @@ func RoundChangeDataEncoding() tests.SpecTest {
 	r, _ := msg.GetRoot()
 	b, _ := msg.Encode()
 
-	test := &tests.MsgSpecTest{
-		Name: "round change data encoding",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		EncodedMessages: [][]byte{
-			b,
-		},
-		ExpectedRoots: []types.ExpectedRoot{
-			r,
-		},
-	}
+	test := tests.NewMsgSpecTest(
+		"round change data encoding",
+		testdoc.MessagesRCDataEncodingDoc,
+		[]*types.SignedSSVMessage{msg},
+		[][]byte{b},
+		[][32]byte{r},
+		"",
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }

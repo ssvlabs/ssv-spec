@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -15,12 +16,13 @@ func QuorumWithDuplicate() *CommitteeMemberTest {
 	msg := testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[4], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 4, 2, 3})
 	msg.OperatorIDs = []types.OperatorID{1, 1, 2, 3}
 
-	return &CommitteeMemberTest{
-		Name:                  "quorum with duplicate",
-		CommitteeMember:       *committeeMember,
-		Message:               *msg,
-		ExpectedHasQuorum:     true,
-		ExpectedFullCommittee: false,
-		ExpectedError:         "non unique signer",
-	}
+	return NewCommitteeMemberTest(
+		"quorum with duplicate",
+		testdoc.QuorumWithDuplicateTestDoc,
+		*committeeMember,
+		*msg,
+		true,
+		false,
+		"non unique signer",
+	)
 }

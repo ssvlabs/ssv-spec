@@ -2,6 +2,7 @@ package signedssvmsg
 
 import (
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -10,15 +11,17 @@ func NoSigners() *SignedSSVMessageTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	return &SignedSSVMessageTest{
-		Name: "no signers",
-		Messages: []*types.SignedSSVMessage{
+	return NewSignedSSVMessageTest(
+		"no signers",
+		testdoc.SignedSSVMessageTestNoSignersDoc,
+		[]*types.SignedSSVMessage{
 			{
 				OperatorIDs: []types.OperatorID{},
 				Signatures:  [][]byte{{1, 2, 3, 4}},
 				SSVMessage:  testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
-		ExpectedError: "no signers",
-	}
+		"no signers",
+		nil,
+	)
 }

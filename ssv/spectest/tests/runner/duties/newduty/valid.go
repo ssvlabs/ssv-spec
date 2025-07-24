@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,9 +15,10 @@ import (
 func Valid() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty valid",
-		Tests: []*StartNewRunnerDutySpecTest{
+	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
+		"new duty valid",
+		testdoc.NewDutyValidDoc,
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
 				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
@@ -38,7 +40,7 @@ func Valid() tests.SpecTest {
 				},
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{

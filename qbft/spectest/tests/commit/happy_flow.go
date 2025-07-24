@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -22,17 +23,25 @@ func HappyFlow() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[2], 2),
 		testingutils.TestingCommitMessage(ks.OperatorKeys[3], 3),
 	}
-	test := &tests.MsgProcessingSpecTest{
-		Name:          "commit happy flow",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
-		},
+
+	outputMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	// Add private key information since this test has signatures
+	test := tests.NewMsgProcessingSpecTest(
+		"commit happy flow",
+		testdoc.CommitTestHappyFlowDoc,
+		pre,
+		"",
+		nil,
+		msgs,
+		outputMsgs,
+		"",
+		nil,
+	)
+
 	test.SetPrivateKeys(ks)
+
 	return test
 }

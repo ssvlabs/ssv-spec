@@ -3,6 +3,7 @@ package postconsensus
 import (
 	"fmt"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,10 +19,11 @@ func PartialInvalidRootQuorumThenValidQuorum() tests.SpecTest {
 	ksMap := testingutils.KeySetMapForValidators(numValidators)
 	shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name:  "post consensus partial invalid root quorum then valid quorum",
-		Tests: []*tests.MsgProcessingSpecTest{},
-	}
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus partial invalid root quorum then valid quorum",
+		testdoc.PostConsensusPartialInvalidRootQuorumThenValidQuorumDoc,
+		[]*tests.MsgProcessingSpecTest{},
+	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{

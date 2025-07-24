@@ -8,11 +8,13 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,10 +22,12 @@ import (
 )
 
 type MsgProcessingSpecTest struct {
-	Name     string
-	Runner   ssv.Runner
-	Duty     types.Duty
-	Messages []*types.SignedSSVMessage
+	Name          string
+	Type          string `json:"Type,omitempty"`
+	Documentation string
+	Runner        ssv.Runner
+	Duty          types.Duty
+	Messages      []*types.SignedSSVMessage `json:"-"`
 	// DecidedSlashable makes the decided value slashable. Simulates consensus instances running in parallel.
 	DecidedSlashable        bool
 	PostDutyRunnerStateRoot string
@@ -288,4 +292,22 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 
 func (t *MsgProcessingSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
 	t.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
+}
+
+func NewMsgProcessingSpecTest(name, documentation string, runner ssv.Runner, duty types.Duty, messages []*types.SignedSSVMessage, decidedSlashable bool, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, dontStartDuty bool, expectedError string) *MsgProcessingSpecTest {
+	return &MsgProcessingSpecTest{
+		Name:                    name,
+		Type:                    testdoc.MsgProcessingSpecTestType,
+		Documentation:           documentation,
+		Runner:                  runner,
+		Duty:                    duty,
+		Messages:                messages,
+		DecidedSlashable:        decidedSlashable,
+		PostDutyRunnerStateRoot: postDutyRunnerStateRoot,
+		PostDutyRunnerState:     postDutyRunnerState,
+		OutputMessages:          outputMessages,
+		BeaconBroadcastedRoots:  beaconBroadcastedRoots,
+		DontStartDuty:           dontStartDuty,
+		ExpectedError:           expectedError,
+	}
 }

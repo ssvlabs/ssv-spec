@@ -2,6 +2,7 @@ package signedssvmsg
 
 import (
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -17,11 +18,11 @@ func Valid() *SignedSSVMessageTest {
 
 	msg := testingutils.TestingSignedSSVMessage(ks.Shares[1], 1, ks.OperatorKeys[1])
 
-	return &SignedSSVMessageTest{
-		Name: "valid",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		RSAPublicKey: [][]byte{pkBytes},
-	}
+	return NewSignedSSVMessageTest(
+		"valid",
+		testdoc.SignedSSVMessageTestValidDoc,
+		[]*types.SignedSSVMessage{msg},
+		"",
+		[][]byte{pkBytes},
+	)
 }

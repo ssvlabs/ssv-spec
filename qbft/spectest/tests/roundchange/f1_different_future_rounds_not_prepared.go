@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,24 +15,30 @@ func F1DifferentFutureRoundsNotPrepared() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := f1DifferentFutureRoundsNotPreparedStateComparison()
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 5),
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 10),
 	}
 
-	test := &tests.MsgProcessingSpecTest{
-		Name:          "round change f+1 not prepared",
-		Pre:           pre,
-		PostRoot:      sc.Root(),
-		PostState:     sc.ExpectedState,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingRoundChangeMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 5, qbft.FirstHeight,
-				[32]byte{}, 0, [][]byte{}),
-		},
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingRoundChangeMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 5, qbft.FirstHeight,
+			[32]byte{}, 0, [][]byte{}),
 	}
 
+	test := tests.NewMsgProcessingSpecTest(
+		"round change f+1 not prepared",
+		testdoc.RoundChangeF1DifferentFutureRoundsNotPreparedDoc,
+		pre,
+		sc.Root(),
+		sc.ExpectedState,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
+
 	test.SetPrivateKeys(ks)
+
 	return test
 }
 

@@ -1,5 +1,7 @@
 {
   "Name": "13 member committee",
+  "Type": "Round robin proposer: validation of fair proposer selection algorithm",
+  "Documentation": "Test round-robin proposer selection for a 13-member committee across multiple heights and rounds.",
   "Share": {
     "OperatorID": 1,
     "CommitteeID": "df6ea5b59f0e6c03f390ad5fea0bbc199ec3524c0a682913148fd071af1898ec",

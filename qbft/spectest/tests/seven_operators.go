@@ -1,6 +1,7 @@
 package tests
 
 import (
+	testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -10,7 +11,7 @@ func SevenOperators() SpecTest {
 	pre := testingutils.SevenOperatorsInstance()
 	ks := testingutils.Testing7SharesSet()
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
@@ -26,16 +27,24 @@ func SevenOperators() SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[5], types.OperatorID(5)),
 	}
 
-	test := &MsgProcessingSpecTest{
-		Name:          "happy flow seven operators",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-		},
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
+	test := NewMsgProcessingSpecTest(
+		"happy flow seven operators",
+		testdoc.MsgProcessingHappyFlowSevenOperatorsDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
+
 	test.SetPrivateKeys(ks)
+
 	return test
 }

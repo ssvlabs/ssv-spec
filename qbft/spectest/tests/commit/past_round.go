@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,13 +19,19 @@ func PastRound() tests.SpecTest {
 		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[1], 1, 2),
 	}
 
-	test := &tests.MsgProcessingSpecTest{
-		Name:          "commit past round",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "invalid signed message: past round",
-	}
+	test := tests.NewMsgProcessingSpecTest(
+		"commit past round",
+		testdoc.CommitTestPastRoundDoc,
+		pre,
+		"",
+		nil,
+		msgs,
+		nil,
+		"invalid signed message: past round",
+		nil,
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }

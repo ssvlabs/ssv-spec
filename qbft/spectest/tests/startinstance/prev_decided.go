@@ -2,6 +2,7 @@ package startinstance
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -12,9 +13,10 @@ import (
 func PreviousDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	test := &tests.ControllerSpecTest{
-		Name: "start instance prev decided",
-		RunInstanceData: []*tests.RunInstanceData{
+	test := tests.NewControllerSpecTest(
+		"start instance prev decided",
+		testdoc.StartInstancePrevDecidedDoc,
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(
@@ -34,10 +36,13 @@ func PreviousDecided() tests.SpecTest {
 				ControllerPostState: previousDecidedStateComparison(1, false).ExpectedState,
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 
-	// Add private key information since this test has signatures
 	test.SetPrivateKeys(ks)
+
 	return test
 }
 

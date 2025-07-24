@@ -1,5 +1,7 @@
 {
   "Name": "force stop prepare message",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test processing prepare message after instance is force stopped, expecting error.",
   "Pre": {
     "forceStop": true,
     "State": {

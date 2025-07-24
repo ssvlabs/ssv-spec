@@ -3,6 +3,7 @@ package decided
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,9 +20,10 @@ func InvalidFullData() tests.SpecTest {
 	)
 	msg.FullData = []byte("invalid")
 
-	test := &tests.ControllerSpecTest{
-		Name: "decide invalid full data",
-		RunInstanceData: []*tests.RunInstanceData{
+	test := tests.NewControllerSpecTest(
+		"decide invalid full data",
+		testdoc.ControllerDecidedInvalidFullDataDoc,
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -29,9 +31,12 @@ func InvalidFullData() tests.SpecTest {
 				},
 			},
 		},
-		ExpectedError: "invalid decided msg: H(data) != root",
-	}
+		nil,
+		"invalid decided msg: H(data) != root",
+		nil,
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }

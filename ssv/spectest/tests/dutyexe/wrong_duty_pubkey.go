@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -46,9 +47,10 @@ func WrongDutyPubKey() tests.SpecTest {
 
 	expectedError := "failed processing consensus message: invalid msg: message doesn't belong to Identifier"
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "wrong duty pubkey",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"wrong duty pubkey",
+		testdoc.DutyExeWrongDutyPubKeyDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:     "sync committee contribution",
 				Runner:   testingutils.SyncCommitteeContributionRunner(ks),
@@ -60,7 +62,7 @@ func WrongDutyPubKey() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

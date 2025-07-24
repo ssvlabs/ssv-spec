@@ -16,30 +16,34 @@ func Round1() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)))
 
-	test := &SpecTest{
-		Name:      "round 1",
-		Pre:       pre,
-		PostRoot:  sc.Root(),
-		PostState: sc.ExpectedState,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.SignQBFTMsg(ks.OperatorKeys[1], types.OperatorID(1), &qbft.Message{
-				MsgType:                  qbft.RoundChangeMsgType,
-				Height:                   qbft.FirstHeight,
-				Round:                    2,
-				Identifier:               testingutils.TestingIdentifier,
-				Root:                     [32]byte{},
-				RoundChangeJustification: [][]byte{},
-				PrepareJustification:     [][]byte{},
-			}),
-		},
-		ExpectedTimerState: &testingutils.TimerState{
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.SignQBFTMsg(ks.OperatorKeys[1], types.OperatorID(1), &qbft.Message{
+			MsgType:                  qbft.RoundChangeMsgType,
+			Height:                   qbft.FirstHeight,
+			Round:                    2,
+			Identifier:               testingutils.TestingIdentifier,
+			Root:                     [32]byte{},
+			RoundChangeJustification: [][]byte{},
+			PrepareJustification:     [][]byte{},
+		}),
+	}
+
+	test := NewSpecTest(
+		"round 1",
+		"Test UponRoundTimeout for round 1, checks state transition and broadcasted round change message.",
+		pre,
+		sc.Root(),
+		sc.ExpectedState,
+		outputMessages,
+		&testingutils.TimerState{
 			Timeouts: 1,
 			Round:    2,
 		},
-	}
+		"",
+	)
 
-	// Add private key information since this test has signatures
 	test.SetPrivateKeys(ks)
+
 	return test
 }
 

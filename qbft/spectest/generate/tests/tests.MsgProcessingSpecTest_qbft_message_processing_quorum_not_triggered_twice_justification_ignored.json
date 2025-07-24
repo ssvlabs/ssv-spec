@@ -1,5 +1,7 @@
 {
   "Name": "quorum not triggered twice justification ignored",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test that after a round change quorum triggers a proposal, further round change messages with justifications are ignored and do not trigger another proposal.",
   "Pre": {
     "State": {
       "CommitteeMember": {

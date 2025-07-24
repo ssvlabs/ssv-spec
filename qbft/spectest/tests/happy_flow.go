@@ -2,6 +2,7 @@ package tests
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	qbftcomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -13,7 +14,7 @@ func HappyFlow() SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := happyFlowStateComparison()
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
@@ -25,19 +26,25 @@ func HappyFlow() SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 	}
 
-	test := &MsgProcessingSpecTest{
-		Name:          "happy flow",
-		Pre:           pre,
-		PostRoot:      sc.Root(),
-		PostState:     sc.ExpectedState,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-		},
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
+	test := NewMsgProcessingSpecTest(
+		"happy flow",
+		testdoc.MsgProcessingHappyFlowDoc,
+		pre,
+		sc.Root(),
+		sc.ExpectedState,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
+
 	test.SetPrivateKeys(ks)
+
 	return test
 }
 

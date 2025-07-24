@@ -1,5 +1,7 @@
 {
   "Name": "empty committee duty",
+  "Type": "Committee: validation of committee member selection and quorum requirements",
+  "Documentation": "Tests committee behavior when starting with an empty duty (no attestation or sync committee duties)",
   "Committee": {
     "Runners": {},
     "CommitteeMember": {

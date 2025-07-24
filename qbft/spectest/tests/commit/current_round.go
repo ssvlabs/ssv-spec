@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,13 +17,19 @@ func CurrentRound() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	test := &tests.MsgProcessingSpecTest{
-		Name:          "commit current round",
-		Pre:           pre,
-		InputMessages: msgs,
-	}
+	test := tests.NewMsgProcessingSpecTest(
+		"commit current round",
+		testdoc.CommitTestCurrentRoundDoc,
+		pre,
+		"",
+		nil,
+		msgs,
+		nil,
+		"",
+		nil,
+	)
 
-	// Add private key information since this test has signatures
 	test.SetPrivateKeys(ks)
+
 	return test
 }

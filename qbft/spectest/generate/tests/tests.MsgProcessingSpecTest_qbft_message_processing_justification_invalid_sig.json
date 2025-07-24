@@ -1,5 +1,7 @@
 {
   "Name": "justification invalid sig",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test round change justification with an invalid signature, expecting signature verification error.",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -67,7 +69,7 @@
       "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "invalid signed message: round change justification invalid: msg signature invalid: crypto/rsa: verification error",
   "ExpectedTimerState": null,
   "PrivateKeys": {

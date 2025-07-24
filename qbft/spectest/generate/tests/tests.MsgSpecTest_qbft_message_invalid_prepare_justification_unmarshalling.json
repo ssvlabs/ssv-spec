@@ -1,5 +1,7 @@
 {
   "Name": "invalid prepare justification unmarshalling",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
+  "Documentation": "Test unmarshalling invalid prepare justifications, expecting validation error during message validation.",
   "Messages": [
     {
       "Signatures": [

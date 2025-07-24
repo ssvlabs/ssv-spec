@@ -1,5 +1,7 @@
 {
   "Name": "no previous accepted proposal",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test processing of a commit message without a previous accepted proposal",
   "Pre": {
     "State": {
       "CommitteeMember": {

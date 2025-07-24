@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,9 +14,10 @@ import (
 // DuplicateMsgDifferentRoots tests duplicate SignedPartialSignatureMessage (from same signer) but with different roots
 func DuplicateMsgDifferentRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	test := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus msg different roots",
-		Tests: []*tests.MsgProcessingSpecTest{
+	test := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus msg different roots",
+		testdoc.PreConsensusDuplicateMsgDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -87,7 +89,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 				ExpectedError: "failed processing voluntary exit message: invalid pre-consensus message: wrong signing root",
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		test.Tests = append(test.Tests, &tests.MsgProcessingSpecTest{

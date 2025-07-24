@@ -2,6 +2,7 @@ package proposer
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -29,11 +30,12 @@ func TenOperators() tests.SpecTest {
 
 	//fmt.Printf("h:%v\nr:%v\np:%v\n", heights, rounds, proposers)
 
-	return &tests.RoundRobinSpecTest{
-		Name:      "10 member committee",
-		Share:     testingutils.TestingCommitteeMember(testingutils.Testing10SharesSet()),
-		Heights:   heights,
-		Rounds:    rounds,
-		Proposers: proposers,
-	}
+	return tests.NewRoundRobinSpecTest(
+		"10 member committee",
+		testdoc.ProposerTenOperatorsDoc,
+		testingutils.TestingCommitteeMember(testingutils.Testing10SharesSet()),
+		heights,
+		rounds,
+		proposers,
+	)
 }

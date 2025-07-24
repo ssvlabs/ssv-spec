@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,9 +15,10 @@ import (
 func NoRunningDuty() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus no running duty",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus no running duty",
+		testdoc.PreConsensusNoRunningDutyDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -57,7 +59,7 @@ func NoRunningDuty() tests.SpecTest {
 				ExpectedError:           "failed processing voluntary exit message: invalid pre-consensus message: no running duty",
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

@@ -6,6 +6,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -71,9 +72,10 @@ func ValidMessage() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus valid msg",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus valid msg",
+		testdoc.PostConsensusValidMsgDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -161,7 +163,7 @@ func ValidMessage() tests.SpecTest {
 				ExpectedError: "no post consensus phase for voluntary exit",
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

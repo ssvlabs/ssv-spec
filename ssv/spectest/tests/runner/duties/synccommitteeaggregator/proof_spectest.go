@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/stretchr/testify/require"
@@ -17,6 +18,8 @@ import (
 
 type SyncCommitteeAggregatorProofSpecTest struct {
 	Name                    string
+	Type                    string
+	Documentation           string
 	Messages                []*types.SignedSSVMessage
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     string
@@ -84,4 +87,17 @@ func (test *SyncCommitteeAggregatorProofSpecTest) overrideStateComparison(t *tes
 
 func (tests *SyncCommitteeAggregatorProofSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
 	tests.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
+}
+
+func NewSyncCommitteeAggregatorProofSpecTest(name, documentation string, messages []*types.SignedSSVMessage, postDutyRunnerStateRoot string, postDutyRunnerState string, proofRootsMap map[string]bool, expectedError string) *SyncCommitteeAggregatorProofSpecTest {
+	return &SyncCommitteeAggregatorProofSpecTest{
+		Name:                    name,
+		Type:                    testdoc.SyncCommitteeAggregatorProofSpecTestType,
+		Documentation:           documentation,
+		Messages:                messages,
+		PostDutyRunnerStateRoot: postDutyRunnerStateRoot,
+		PostDutyRunnerState:     postDutyRunnerState,
+		ProofRootsMap:           proofRootsMap,
+		ExpectedError:           expectedError,
+	}
 }

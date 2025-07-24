@@ -4,14 +4,17 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/stretchr/testify/require"
 )
 
 type EncryptionSpecTest struct {
-	Name      string
-	SKPem     []byte
-	PKPem     []byte
-	PlainText []byte
+	Name          string
+	Type          string
+	Documentation string
+	SKPem         []byte
+	PKPem         []byte
+	PlainText     []byte
 }
 
 func (test *EncryptionSpecTest) TestName() string {
@@ -39,4 +42,15 @@ func (test *EncryptionSpecTest) Run(t *testing.T) {
 	plain, err := types.Decrypt(sk, cipher)
 	require.NoError(t, err)
 	require.EqualValues(t, test.PlainText, plain)
+}
+
+func NewEncryptionSpecTest(name, documentation string, skPem []byte, pkPem []byte, plainText []byte) *EncryptionSpecTest {
+	return &EncryptionSpecTest{
+		Name:          name,
+		Type:          testdoc.EncryptionSpecTestType,
+		Documentation: documentation,
+		SKPem:         skPem,
+		PKPem:         pkPem,
+		PlainText:     plainText,
+	}
 }

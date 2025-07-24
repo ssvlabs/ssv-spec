@@ -1,5 +1,7 @@
 {
   "Name": "get root",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
+  "Documentation": "Test GetRoot method on signed QBFT message with justifications.",
   "Messages": [
     {
       "Signatures": [
@@ -18,7 +20,40 @@
   ],
   "EncodedMessages": null,
   "ExpectedRoots": [
-    "31a169e144042034a4a26fe7cd74e397b23965fea84d72d9d80acb4bcc19175a"
+    [
+      49,
+      161,
+      105,
+      225,
+      68,
+      4,
+      32,
+      52,
+      164,
+      162,
+      111,
+      231,
+      205,
+      116,
+      227,
+      151,
+      178,
+      57,
+      101,
+      254,
+      168,
+      77,
+      114,
+      217,
+      216,
+      10,
+      203,
+      75,
+      204,
+      25,
+      23,
+      90
+    ]
   ],
   "ExpectedError": "",
   "PrivateKeys": {

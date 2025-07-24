@@ -1,8 +1,11 @@
 {
   "Name": "happy flow",
+  "Type": "Multi committee: multiple committee tests",
+  "Documentation": "Tests complete duty execution flow including consensus and post-consensus phases for attestations and sync committees",
   "Tests": [
     {
       "Name": "1 attestation (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -244,6 +247,7 @@
     },
     {
       "Name": "1 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -489,6 +493,7 @@
     },
     {
       "Name": "1 attestations 1 sync committees (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -752,6 +757,7 @@
     },
     {
       "Name": "30 attestation (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -2414,6 +2420,7 @@
     },
     {
       "Name": "30 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -4196,6 +4203,7 @@
     },
     {
       "Name": "30 attestations 30 sync committees (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -6518,6 +6526,7 @@
     },
     {
       "Name": "1 attestation (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -6759,6 +6768,7 @@
     },
     {
       "Name": "1 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -7004,6 +7014,7 @@
     },
     {
       "Name": "1 attestations 1 sync committees (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -7267,6 +7278,7 @@
     },
     {
       "Name": "30 attestation (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -8929,6 +8941,7 @@
     },
     {
       "Name": "30 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -10711,6 +10724,7 @@
     },
     {
       "Name": "30 attestations 30 sync committees (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {

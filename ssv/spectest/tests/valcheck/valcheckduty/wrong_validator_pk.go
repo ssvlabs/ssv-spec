@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -26,9 +27,10 @@ func WrongValidatorPK() tests.SpecTest {
 	}
 
 	expectedErr := "duty invalid: wrong validator pk"
-	return &valcheck.MultiSpecTest{
-		Name: "wrong validator PK",
-		Tests: []*valcheck.SpecTest{
+	return valcheck.NewMultiSpecTest(
+		"wrong validator PK",
+		testdoc.ValCheckDutyWrongValidatorPKDoc,
+		[]*valcheck.SpecTest{
 			{
 				Name:       "committee",
 				Network:    types.BeaconTestNetwork,
@@ -65,6 +67,5 @@ func WrongValidatorPK() tests.SpecTest {
 				ExpectedError: expectedErr,
 			},
 		},
-	}
-
+	)
 }

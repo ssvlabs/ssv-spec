@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -21,13 +22,16 @@ func InvalidHashDataRoot() tests.SpecTest {
 
 	msg.FullData = testingutils.TestingQBFTFullData
 
-	test := &tests.MsgSpecTest{
-		Name: "invalid hash data root",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-	}
+	test := tests.NewMsgSpecTest(
+		"invalid hash data root",
+		testdoc.MessagesInvalidHashDataRootDoc,
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		"",
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }

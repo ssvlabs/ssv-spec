@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,9 +17,10 @@ func InvalidValCheckData() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := invalidValCheckDataStateComparison()
 
-	test := &tests.ControllerSpecTest{
-		Name: "decide invalid value (should pass)",
-		RunInstanceData: []*tests.RunInstanceData{
+	test := tests.NewControllerSpecTest(
+		"decide invalid value (should pass)",
+		testdoc.ControllerDecidedInvalidValCheckDoc,
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: []*types.SignedSSVMessage{
@@ -40,9 +42,13 @@ func InvalidValCheckData() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }
 

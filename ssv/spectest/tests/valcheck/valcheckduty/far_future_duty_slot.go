@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -25,9 +26,11 @@ func FarFutureDutySlot() tests.SpecTest {
 		return ret
 	}
 
-	return &valcheck.MultiSpecTest{
-		Name: "far future duty slot",
-		Tests: []*valcheck.SpecTest{
+	expectedErr := "duty invalid: duty epoch is into far future"
+	return valcheck.NewMultiSpecTest(
+		"far future duty slot",
+		testdoc.ValCheckDutyFarFutureDutySlotDoc,
+		[]*valcheck.SpecTest{
 			{
 				Name:       "committee",
 				Network:    types.BeaconTestNetwork,
@@ -40,29 +43,29 @@ func FarFutureDutySlot() tests.SpecTest {
 				Network:       types.BeaconTestNetwork,
 				RunnerRole:    types.RoleSyncCommitteeContribution,
 				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
-				ExpectedError: "duty invalid: duty epoch is into far future",
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:          "aggregator phase0",
 				Network:       types.BeaconTestNetwork,
 				RunnerRole:    types.RoleAggregator,
 				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
-				ExpectedError: "duty invalid: duty epoch is into far future",
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:          "aggregator electra",
 				Network:       types.BeaconTestNetwork,
 				RunnerRole:    types.RoleAggregator,
 				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionElectra)),
-				ExpectedError: "duty invalid: duty epoch is into far future",
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:          "proposer",
 				Network:       types.BeaconTestNetwork,
 				RunnerRole:    types.RoleProposer,
 				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
-				ExpectedError: "duty invalid: duty epoch is into far future",
+				ExpectedError: expectedErr,
 			},
 		},
-	}
+	)
 }

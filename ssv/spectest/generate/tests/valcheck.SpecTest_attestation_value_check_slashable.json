@@ -1,5 +1,7 @@
 {
   "Name": "attestation value check slashable",
+  "Type": "Value check: validations for input of different runner roles",
+  "Documentation": "Tests attestation value check with slashable attestation",
   "Network": "now_test_network",
   "RunnerRole": 0,
   "DutySlot": "12",
@@ -9,7 +11,7 @@
       "12"
     ]
   },
-  "omitempty": [
+  "ShareValidatorsPK": [
     "X0cRp5bBEWtRGOw1J5+2TVUdmziBPSk5lU3S31Fg09k="
   ],
   "ExpectedError": "slashable attestation",

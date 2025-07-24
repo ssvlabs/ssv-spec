@@ -1,6 +1,7 @@
 package proposal
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -10,20 +11,29 @@ import (
 func SecondProposalForRound() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	ks := testingutils.Testing4SharesSet()
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 		// TODO: originally using different value
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
-	test := &tests.MsgProcessingSpecTest{
-		Name:          "second proposal for round",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-		},
-		ExpectedError: "invalid signed message: proposal is not valid with current state",
+
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
+
+	test := tests.NewMsgProcessingSpecTest(
+		"second proposal for round",
+		testdoc.ProposalSecondProposalForRoundDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"invalid signed message: proposal is not valid with current state",
+		nil,
+	)
+
 	test.SetPrivateKeys(ks)
+
 	return test
 }

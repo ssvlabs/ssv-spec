@@ -3,6 +3,7 @@ package roundchange
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -21,17 +22,23 @@ func NonUniqueSigner() tests.SpecTest {
 	)
 	msg.OperatorIDs = []types.OperatorID{types.OperatorID(1), types.OperatorID(1)}
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		msg,
 	}
 
-	test := &tests.MsgProcessingSpecTest{
-		Name:           "round change non unique signer",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: invalid SignedSSVMessage: non unique signer",
-	}
+	test := tests.NewMsgProcessingSpecTest(
+		"round change non unique signer",
+		testdoc.RoundChangeNonUniqueSignerDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: invalid SignedSSVMessage: non unique signer",
+		nil,
+	)
+
 	test.SetPrivateKeys(ks)
+
 	return test
 }

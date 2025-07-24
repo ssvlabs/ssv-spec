@@ -1,5 +1,7 @@
 {
   "Name": "new duty post invalid decided",
+  "Type": "Multi start new runner duty: multiple start new runner duty tests",
+  "Documentation": "Tests new duty start after an invalid decided value, expecting error",
   "Tests": [
     {
       "Name": "sync committee aggregator",

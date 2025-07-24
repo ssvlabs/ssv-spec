@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,9 +15,10 @@ import (
 func BroadcastedDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := broadcastedDecidedStateComparison()
-	test := &tests.ControllerSpecTest{
-		Name: "broadcast decided",
-		RunInstanceData: []*tests.RunInstanceData{
+	test := tests.NewControllerSpecTest(
+		"broadcast decided",
+		testdoc.ControllerProcessMsgBroadcastedDecidedDoc,
+		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
 				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(
@@ -35,9 +37,13 @@ func BroadcastedDecided() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-	}
+		nil,
+		"",
+		nil,
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }
 

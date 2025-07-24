@@ -1,5 +1,7 @@
 {
   "Name": "round change past round",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test round change msg with past round, expecting error.",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -95,7 +97,7 @@
       "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "invalid signed message: past round",
   "ExpectedTimerState": null,
   "PrivateKeys": {

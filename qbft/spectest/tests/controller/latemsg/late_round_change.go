@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -21,9 +22,10 @@ func LateRoundChange() tests.SpecTest {
 	)
 	msgs = append(msgs, testingutils.TestingRoundChangeMessage(ks.OperatorKeys[4], 4))
 
-	test := &tests.ControllerSpecTest{
-		Name: "late round change",
-		RunInstanceData: []*tests.RunInstanceData{
+	test := tests.NewControllerSpecTest(
+		"late round change",
+		testdoc.ControllerLateMsgLateRoundChangeDoc,
+		[]*tests.RunInstanceData{
 			{
 				InputValue:    []byte{1, 2, 3, 4},
 				InputMessages: msgs,
@@ -39,10 +41,13 @@ func LateRoundChange() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-		ExpectedError: "not processing consensus message since instance is already decided",
-	}
+		nil,
+		"not processing consensus message since instance is already decided",
+		nil,
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }
 

@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,10 +15,11 @@ import (
 func NormalProposerAcceptsBlindedBlock() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name:  "normal proposer accepts blinded block proposal",
-		Tests: []*tests.MsgProcessingSpecTest{},
-	}
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"normal proposer accepts blinded block proposal",
+		testdoc.ProposerNormalReceivingBlindedBlockDoc,
+		[]*tests.MsgProcessingSpecTest{},
+	)
 
 	// proposerReceivingBlindedBlockV creates a test specification for versioned normal proposer receiving blinded block as proposal.
 	proposerReceivingBlindedBlockV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {

@@ -3,6 +3,7 @@ package prepare
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -15,20 +16,26 @@ func MultiSigner() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)))
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingPrepareMultiSignerMessage(
 			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2]},
 			[]types.OperatorID{1, 2},
 		),
 	}
 
-	test := &tests.MsgProcessingSpecTest{
-		Name:          "prepare multi signer",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "invalid signed message: msg allows 1 signer",
-	}
+	test := tests.NewMsgProcessingSpecTest(
+		"prepare multi signer",
+		testdoc.PrepareMultiSignerDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: msg allows 1 signer",
+		nil,
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }

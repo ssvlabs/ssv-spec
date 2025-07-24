@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -23,13 +24,19 @@ func F1DuplicateSigner() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	test := &tests.MsgProcessingSpecTest{
-		Name:           "round change f+1 duplicate",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-	}
+	test := tests.NewMsgProcessingSpecTest(
+		"round change f+1 duplicate",
+		testdoc.RoundChangeF1DuplicateSignerDoc,
+		pre,
+		"",
+		nil,
+		msgs,
+		nil,
+		"",
+		nil,
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }

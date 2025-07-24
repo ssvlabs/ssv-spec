@@ -1,6 +1,7 @@
 package prepare
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -10,7 +11,7 @@ import (
 func PostDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	pre := testingutils.BaseInstance()
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1),
 
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
@@ -23,16 +24,25 @@ func PostDecided() tests.SpecTest {
 
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[4], 4),
 	}
-	test := &tests.MsgProcessingSpecTest{
-		Name:          "prepare post decided",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
-		},
+
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
+	test := tests.NewMsgProcessingSpecTest(
+		"prepare post decided",
+		testdoc.PreparePostDecidedDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		"",
+		nil,
+	)
+
 	test.SetPrivateKeys(ks)
+
 	return test
 }

@@ -1,5 +1,7 @@
 {
   "Name": "duplicate prepare message",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test processing of duplicate prepare messages from the same signer",
   "Pre": {
     "State": {
       "CommitteeMember": {

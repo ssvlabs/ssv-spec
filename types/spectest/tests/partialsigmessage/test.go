@@ -7,11 +7,14 @@ import (
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/stretchr/testify/require"
 )
 
 type MsgSpecTest struct {
 	Name            string
+	Type            string
+	Documentation   string
 	Messages        []*types.PartialSignatureMessages
 	EncodedMessages [][]byte
 	ExpectedRoots   [][32]byte
@@ -65,4 +68,16 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 
 func (tests *MsgSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
+}
+
+func NewMsgSpecTest(name, documentation string, messages []*types.PartialSignatureMessages, encodedMessages [][]byte, expectedRoots [][32]byte, expectedError string) *MsgSpecTest {
+	return &MsgSpecTest{
+		Name:            name,
+		Type:            testdoc.MsgSpecTestType,
+		Documentation:   documentation,
+		Messages:        messages,
+		EncodedMessages: encodedMessages,
+		ExpectedRoots:   expectedRoots,
+		ExpectedError:   expectedError,
+	}
 }

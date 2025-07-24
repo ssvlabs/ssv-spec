@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -33,19 +34,16 @@ func UnmarshalJustifications() tests.SpecTest {
 		panic(err)
 	}
 
-	test := &tests.MsgSpecTest{
-		Name: "unmarshal justifications",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		EncodedMessages: [][]byte{
-			b,
-		},
-		ExpectedRoots: []types.ExpectedRoot{
-			r,
-		},
-	}
+	test := tests.NewMsgSpecTest(
+		"unmarshal justifications",
+		testdoc.MessagesUnmarshalJustificationDoc,
+		[]*types.SignedSSVMessage{msg},
+		[][]byte{b},
+		[][32]byte{r},
+		"",
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }

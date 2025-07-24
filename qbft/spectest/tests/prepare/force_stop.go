@@ -1,6 +1,7 @@
 package prepare
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,17 +15,23 @@ func ForceStop() tests.SpecTest {
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessage(ks.OperatorKeys[1], types.OperatorID(1)))
 	pre.ForceStop()
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	test := &tests.MsgProcessingSpecTest{
-		Name:          "force stop prepare message",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "instance stopped processing messages",
-	}
+	test := tests.NewMsgProcessingSpecTest(
+		"force stop prepare message",
+		testdoc.PrepareForceStopDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"instance stopped processing messages",
+		nil,
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }

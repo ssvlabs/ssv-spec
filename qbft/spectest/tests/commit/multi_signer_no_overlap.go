@@ -3,6 +3,7 @@ package commit
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -23,17 +24,25 @@ func MultiSignerNoOverlap() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 		testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{2, 3}),
 	}
-	test := &tests.MsgProcessingSpecTest{
-		Name:          "multi signer, no overlap",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
-		},
-		ExpectedError: "invalid signed message: msg allows 1 signer",
+
+	outputMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
+	test := tests.NewMsgProcessingSpecTest(
+		"multi signer, no overlap",
+		testdoc.CommitTestMultiSignerNoOverlapDoc,
+		pre,
+		"",
+		nil,
+		msgs,
+		outputMsgs,
+		"invalid signed message: msg allows 1 signer",
+		nil,
+	)
+
 	test.SetPrivateKeys(ks)
+
 	return test
 }

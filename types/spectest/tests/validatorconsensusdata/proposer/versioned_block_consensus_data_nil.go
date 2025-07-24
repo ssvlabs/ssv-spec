@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -20,12 +21,14 @@ func VersionedBlockConsensusDataNil() *ProposerSpecTest {
 		panic(err.Error())
 	}
 
-	return &ProposerSpecTest{
-		Name:            "consensus data versioned block corrupted consensus data",
-		DataCd:          cdSSZ,
-		DataBlk:         nil,
-		ExpectedCdRoot:  [32]byte{},
-		ExpectedBlkRoot: [32]byte{},
-		ExpectedError:   "could not unmarshal ssz: incorrect size",
-	}
+	return NewProposerSpecTest(
+		"consensus data versioned block corrupted consensus data",
+		testdoc.ProposerSpecTestVersionedBlockConsensusDataNilDoc,
+		false,
+		cdSSZ,
+		nil,
+		[32]byte{},
+		[32]byte{},
+		"could not unmarshal ssz: incorrect size",
+	)
 }

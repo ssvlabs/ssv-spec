@@ -1,5 +1,7 @@
 {
   "Name": "pre consensus invalid expected roots",
+  "Type": "SSV multi message processing: multiple message processing tests",
+  "Documentation": "Tests pre-consensus message processing with invalid expected root, expecting error",
   "Tests": [
     {
       "Name": "sync committee aggregator selection proof",

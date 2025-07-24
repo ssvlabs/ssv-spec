@@ -3,6 +3,7 @@ package roundchange
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,7 +15,7 @@ func MultiSigner() tests.SpecTest {
 	pre.State.Round = 2
 	ks := testingutils.Testing4SharesSet()
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingMultiSignerRoundChangeMessageWithRound(
 			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2]},
 			[]types.OperatorID{types.OperatorID(1), types.OperatorID(2)},
@@ -22,15 +23,19 @@ func MultiSigner() tests.SpecTest {
 		),
 	}
 
-	test := &tests.MsgProcessingSpecTest{
-		Name:           "round change multi signers",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: msg allows 1 signer",
-	}
+	test := tests.NewMsgProcessingSpecTest(
+		"round change multi signers",
+		testdoc.RoundChangeMultiSignerDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: msg allows 1 signer",
+		nil,
+	)
 
-	// Add private key information since this test has signatures
 	test.SetPrivateKeys(ks)
+
 	return test
 }

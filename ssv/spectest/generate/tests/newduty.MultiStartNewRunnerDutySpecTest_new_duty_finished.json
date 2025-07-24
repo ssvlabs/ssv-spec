@@ -1,5 +1,7 @@
 {
   "Name": "new duty finished",
+  "Type": "Multi start new runner duty: multiple start new runner duty tests",
+  "Documentation": "Tests new duty start after a previous duty has finished",
   "Tests": [
     {
       "Name": "sync committee aggregator",

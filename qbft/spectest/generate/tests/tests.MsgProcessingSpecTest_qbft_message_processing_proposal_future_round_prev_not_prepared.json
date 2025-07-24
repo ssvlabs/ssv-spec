@@ -1,5 +1,7 @@
 {
   "Name": "proposal future round prev not prepared",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test proposal for a future round when currently not prepared, expecting prepare message broadcast and round advancement.",
   "Pre": {
     "State": {
       "CommitteeMember": {

@@ -1,5 +1,7 @@
 {
   "Name": "pre consensus invalid then quorum",
+  "Type": "SSV multi message processing: multiple message processing tests",
+  "Documentation": "Tests pre-consensus message processing with an invalid message then a valid quorum, expecting error then successful termination",
   "Tests": [
     {
       "Name": "sync committee aggregator selection proof",

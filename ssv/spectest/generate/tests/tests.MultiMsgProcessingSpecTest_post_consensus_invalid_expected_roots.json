@@ -1,5 +1,7 @@
 {
   "Name": "post consensus invalid expected roots",
+  "Type": "SSV multi message processing: multiple message processing tests",
+  "Documentation": "Tests post-consensus message processing with invalid expected root, expecting error",
   "Tests": [
     {
       "Name": "sync committee contribution",

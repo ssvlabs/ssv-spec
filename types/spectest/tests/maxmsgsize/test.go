@@ -7,11 +7,14 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/stretchr/testify/require"
 )
 
 type StructureSizeTest struct {
 	Name                  string
+	Type                  string
+	Documentation         string
 	Object                types.Encoder
 	ExpectedEncodedLength int
 	IsMaxSize             bool
@@ -93,4 +96,15 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 	}
 	t.Object = correctType
 	return nil
+}
+
+func NewStructureSizeTest(name, documentation string, object types.Encoder, expectedEncodedLength int, isMaxSize bool) *StructureSizeTest {
+	return &StructureSizeTest{
+		Name:                  name,
+		Type:                  testdoc.StructureSizeTestType,
+		Documentation:         documentation,
+		Object:                object,
+		ExpectedEncodedLength: expectedEncodedLength,
+		IsMaxSize:             isMaxSize,
+	}
 }

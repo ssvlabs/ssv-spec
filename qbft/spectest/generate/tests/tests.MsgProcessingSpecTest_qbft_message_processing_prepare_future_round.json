@@ -1,5 +1,7 @@
 {
   "Name": "prepare future round",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test prepare message for a round greater than the current state round, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

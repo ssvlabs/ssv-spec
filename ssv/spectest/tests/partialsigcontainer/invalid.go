@@ -2,6 +2,7 @@ package partialsigcontainer
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -24,15 +25,16 @@ func Invalid() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	test := &PartialSigContainerTest{
-		Name:            "invalid",
-		Quorum:          ks.Threshold,
-		ValidatorPubKey: ks.ValidatorPK.Serialize(),
-		SignatureMsgs:   msgs,
-		ExpectedError:   "could not reconstruct a valid signature",
-		ExpectedResult:  expectedSig.Serialize(),
-		ExpectedQuorum:  true,
-	}
+	test := NewPartialSigContainerTest(
+		"invalid",
+		testdoc.PartialSigContainerInvalidDoc,
+		ks.Threshold,
+		ks.ValidatorPK.Serialize(),
+		msgs,
+		"could not reconstruct a valid signature",
+		expectedSig.Serialize(),
+		true,
+	)
 
 	test.SetPrivateKeys(ks)
 

@@ -1,15 +1,18 @@
 package duty
 
 import (
-	"github.com/ssvlabs/ssv-spec/types"
 	"math"
+
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 )
 
 // MapUnknownRole tests mapping of an unknown role.
 func MapUnknownRole() *DutySpecTest {
-	return &DutySpecTest{
-		Name:       "map unknown role",
-		BeaconRole: math.MaxInt32,
-		RunnerRole: types.RoleUnknown,
-	}
+	return NewDutySpecTest(
+		"map unknown role",
+		testdoc.MapUnknownRoleTestDoc,
+		math.MaxInt32,
+		types.RoleUnknown,
+	)
 }

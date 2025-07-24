@@ -1,5 +1,7 @@
 {
   "Name": "post consensus post quorum",
+  "Type": "SSV multi message processing: multiple message processing tests",
+  "Documentation": "Tests post-consensus message processing after quorum is reached, expecting error",
   "Tests": [
     {
       "Name": "sync committee contribution",

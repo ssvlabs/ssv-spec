@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -23,14 +24,16 @@ func InvalidRoundChangeJustificationsUnmarshalling() tests.SpecTest {
 
 	msg.FullData = testingutils.TestingQBFTFullData
 
-	test := &tests.MsgSpecTest{
-		Name: "invalid round change justification unmarshalling",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		ExpectedError: "incorrect size",
-	}
+	test := tests.NewMsgSpecTest(
+		"invalid round change justification unmarshalling",
+		testdoc.MessagesInvalidRoundChangeJustificationUnmarshalingDoc,
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		"incorrect size",
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }

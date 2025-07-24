@@ -1,5 +1,7 @@
 {
   "Name": "no signers",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
+  "Documentation": "Test signed message with no signers, expecting validation error.",
   "Messages": [
     {
       "Signatures": [

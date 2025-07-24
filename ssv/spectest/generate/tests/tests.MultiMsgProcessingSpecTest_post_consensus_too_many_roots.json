@@ -1,5 +1,7 @@
 {
   "Name": "post consensus too many roots",
+  "Type": "SSV multi message processing: multiple message processing tests",
+  "Documentation": "Tests post-consensus message processing with too many roots, expecting error handling for excess roots.",
   "Tests": [
     {
       "Name": "sync committee contribution",

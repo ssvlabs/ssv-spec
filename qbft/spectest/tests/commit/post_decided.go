@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,13 +21,19 @@ func PostDecided() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[4], 4),
 	}
 
-	test := &tests.MsgProcessingSpecTest{
-		Name:           "post decided",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-	}
+	test := tests.NewMsgProcessingSpecTest(
+		"post decided",
+		testdoc.CommitTestPostDecidedDoc,
+		pre,
+		"",
+		nil,
+		msgs,
+		nil,
+		"",
+		nil,
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }

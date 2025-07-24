@@ -1,5 +1,7 @@
 {
   "Name": "round 5",
+  "Type": "Timeout: validation of round timeout handling and state transitions",
+  "Documentation": "Test UponRoundTimeout for round 5, checks state transition and broadcasted round change message.",
   "Pre": {
     "State": {
       "CommitteeMember": {

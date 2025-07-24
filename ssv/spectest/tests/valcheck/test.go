@@ -13,12 +13,14 @@ import (
 
 type SpecTest struct {
 	Name              string
+	Type              string
+	Documentation     string
 	Network           types.BeaconNetwork
 	RunnerRole        types.RunnerRole
 	DutySlot          phase0.Slot // DutySlot is used only for the RoleCommittee since the BeaconVoteValueCheckF requires the duty's slot
 	Input             []byte
 	SlashableSlots    map[string][]phase0.Slot // map share pk to a list of slashable slots
-	ShareValidatorsPK []types.ShareValidatorPK `json:"omitempty"` // Optional. Specify validators shares for beacon vote value check
+	ShareValidatorsPK []types.ShareValidatorPK `json:"ShareValidatorsPK,omitempty"` // Optional. Specify validators shares for beacon vote value check
 	ExpectedError     string
 	AnyError          bool
 	PrivateKeys       *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
@@ -79,9 +81,11 @@ func (tests *SpecTest) GetPostState() (interface{}, error) {
 }
 
 type MultiSpecTest struct {
-	Name        string
-	Tests       []*SpecTest
-	PrivateKeys *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+	Name          string
+	Type          string
+	Documentation string
+	Tests         []*SpecTest
+	PrivateKeys   *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *MultiSpecTest) TestName() string {
@@ -106,4 +110,29 @@ func (test *SpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
 
 func (tests *MultiSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
 	tests.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
+}
+
+func NewSpecTest(name, documentation string, network types.BeaconNetwork, role types.RunnerRole, dutySlot phase0.Slot, input []byte, slashableSlots map[string][]phase0.Slot, shareValidatorsPK []types.ShareValidatorPK, expectedError string, anyError bool) *SpecTest {
+	return &SpecTest{
+		Name:              name,
+		Type:              "Value check: validations for input of different runner roles",
+		Documentation:     documentation,
+		Network:           network,
+		RunnerRole:        role,
+		DutySlot:          dutySlot,
+		Input:             input,
+		SlashableSlots:    slashableSlots,
+		ShareValidatorsPK: shareValidatorsPK,
+		ExpectedError:     expectedError,
+		AnyError:          anyError,
+	}
+}
+
+func NewMultiSpecTest(name, documentation string, tests []*SpecTest) *MultiSpecTest {
+	return &MultiSpecTest{
+		Name:          name,
+		Type:          "Multi value check: multiple value check tests",
+		Documentation: documentation,
+		Tests:         tests,
+	}
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -22,9 +23,10 @@ func InvalidSignedMessageEmptySignature() tests.SpecTest {
 
 	expectedError := "invalid SignedSSVMessage: empty signature"
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus invalid signed message empty signature",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus invalid signed message empty signature",
+		testdoc.PostConsensusInvalidSignedMessageEmptySignatureDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -77,7 +79,7 @@ func InvalidSignedMessageEmptySignature() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{

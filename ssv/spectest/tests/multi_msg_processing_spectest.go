@@ -6,14 +6,17 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 type MultiMsgProcessingSpecTest struct {
-	Name        string
-	Tests       []*MsgProcessingSpecTest
-	PrivateKeys *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+	Name          string
+	Type          string
+	Documentation string
+	Tests         []*MsgProcessingSpecTest
+	PrivateKeys   *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (tests *MultiMsgProcessingSpecTest) TestName() string {
@@ -53,4 +56,13 @@ func (tests *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
 
 func (tests *MultiMsgProcessingSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
 	tests.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
+}
+
+func NewMultiMsgProcessingSpecTest(name, documentation string, tests []*MsgProcessingSpecTest) *MultiMsgProcessingSpecTest {
+	return &MultiMsgProcessingSpecTest{
+		Name:          name,
+		Type:          testdoc.MultiMsgProcessingSpecTestType,
+		Documentation: documentation,
+		Tests:         tests,
+	}
 }

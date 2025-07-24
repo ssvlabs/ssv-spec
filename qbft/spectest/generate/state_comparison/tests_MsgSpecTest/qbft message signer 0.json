@@ -1,5 +1,7 @@
 {
   "Name": "signer 0",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
+  "Documentation": "Test signed message with signer ID 0, which is not allowed.",
   "Messages": [
     {
       "Signatures": [

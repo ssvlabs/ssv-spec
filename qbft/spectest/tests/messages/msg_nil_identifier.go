@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,14 +20,16 @@ func MsgNilIdentifier() tests.SpecTest {
 		Root:       testingutils.TestingQBFTRootData,
 	})
 
-	test := &tests.MsgSpecTest{
-		Name: "msg identifier nil",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		ExpectedError: "message identifier is invalid",
-	}
+	test := tests.NewMsgSpecTest(
+		"msg identifier nil",
+		testdoc.MessagesMsgNilIdentifierDoc,
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		"message identifier is invalid",
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }

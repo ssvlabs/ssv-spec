@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -19,11 +20,14 @@ func VersionedBlockValidation() *ProposerSpecTest {
 		panic(err.Error())
 	}
 
-	return &ProposerSpecTest{
-		Name:            "consensus data versioned block validation",
-		DataCd:          testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
-		DataBlk:         testingutils.TestingBeaconBlockBytesV(spec.DataVersionDeneb),
-		ExpectedCdRoot:  types.ExpectedCdRoot(expectedCdRoot),
-		ExpectedBlkRoot: types.ExpectedBlkRoot(expectedBlkRoot),
-	}
+	return NewProposerSpecTest(
+		"consensus data versioned block validation",
+		testdoc.ProposerSpecTestVersionedBlockValidationDoc,
+		false,
+		testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
+		testingutils.TestingBeaconBlockBytesV(spec.DataVersionDeneb),
+		types.ExpectedBlkRoot(expectedBlkRoot),
+		types.ExpectedCdRoot(expectedCdRoot),
+		"",
+	)
 }

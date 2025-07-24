@@ -2,13 +2,14 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// JustificationsNotHeighest tests a proposal for > 1 round, prepared previously with rc justification prepares at different heights but the prepare justification is not the highest
-func JustificationsNotHeighest() tests.SpecTest {
+// JustificationsNotHighest tests a proposal for > 1 round, prepared previously with rc justification prepares at different heights but the prepare justification is not the highest
+func JustificationsNotHighest() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.Round = 3
 	ks := testingutils.Testing4SharesSet()
@@ -33,19 +34,25 @@ func JustificationsNotHeighest() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 3),
 	}
 
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingProposalMessageWithParams(
 			ks.OperatorKeys[1], types.OperatorID(1), 3, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs1)),
 	}
-	test := &tests.MsgProcessingSpecTest{
-		Name:           "proposal justification not highest",
-		Pre:            pre,
-		InputMessages:  msgs,
-		OutputMessages: []*types.SignedSSVMessage{},
-		ExpectedError:  "invalid signed message: proposal not justified: signed prepare not valid",
-	}
+
+	test := tests.NewMsgProcessingSpecTest(
+		"proposal justification not highest",
+		testdoc.ProposalJustificationNotHighestDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		nil,
+		"invalid signed message: proposal not justified: signed prepare not valid",
+		nil,
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }

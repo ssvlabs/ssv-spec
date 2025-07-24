@@ -1,8 +1,11 @@
 {
   "Name": "past msg duty does not exist",
+  "Type": "Multi committee: multiple committee tests",
+  "Documentation": "Tests committee behavior when processing past proposal messages for a duty that doesn't exist",
   "Tests": [
     {
       "Name": "30 attestation (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -1321,6 +1324,7 @@
     },
     {
       "Name": "30 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -2759,6 +2763,7 @@
     },
     {
       "Name": "30 attestation 30 sync committee (phase0)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -4527,6 +4532,7 @@
     },
     {
       "Name": "30 attestation (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -5845,6 +5851,7 @@
     },
     {
       "Name": "30 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {
@@ -7283,6 +7290,7 @@
     },
     {
       "Name": "30 attestation 30 sync committee (electra)",
+      "Documentation": "",
       "Committee": {
         "Runners": {},
         "CommitteeMember": {

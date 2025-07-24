@@ -7,6 +7,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -41,9 +42,10 @@ func PostFutureDecided() tests.SpecTest {
 
 	expectedError := "can't start duty: duty for slot 12 already passed. Current height is 62"
 
-	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty post future decided",
-		Tests: []*StartNewRunnerDutySpecTest{
+	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
+		"new duty post future decided",
+		testdoc.NewDutyPostFutureDecidedDoc,
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
 				Runner:                  futureDecide(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
@@ -69,7 +71,7 @@ func PostFutureDecided() tests.SpecTest {
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50),
 			},
 		},
-	}
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 

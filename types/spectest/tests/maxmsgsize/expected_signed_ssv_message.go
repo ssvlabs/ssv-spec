@@ -1,6 +1,9 @@
 package maxmsgsize
 
-import "github.com/ssvlabs/ssv-spec/types"
+import (
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+)
 
 const (
 	expectedSizePrepareSignedSSVMessage                  = 484
@@ -54,55 +57,61 @@ func expectedSignedSSVMessageWithFullDataFromObject(obj types.Encoder, numSigner
 }
 
 func ExpectedPrepareSignedSSVMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected prepare SignedSSVMessage",
-		Object:                expectedSignedSSVMessageFromObject(expectedPrepare(), 1),
-		ExpectedEncodedLength: expectedSizePrepareSignedSSVMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected prepare SignedSSVMessage",
+		testdoc.StructureSizeTestExpectedPrepareSignedSSVMessageDoc,
+		expectedSignedSSVMessageFromObject(expectedPrepare(), 1),
+		expectedSizePrepareSignedSSVMessage,
+		false,
+	)
 }
 
 func ExpectedCommitSignedSSVMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected commit SignedSSVMessage",
-		Object:                expectedSignedSSVMessageFromObject(expectedCommit(), 1),
-		ExpectedEncodedLength: expectedSizeCommitSignedSSVMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected commit SignedSSVMessage",
+		testdoc.StructureSizeTestExpectedCommitSignedSSVMessageDoc,
+		expectedSignedSSVMessageFromObject(expectedCommit(), 1),
+		expectedSizeCommitSignedSSVMessage,
+		false,
+	)
 }
 
 func ExpectedDecidedSignedSSVMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected decided SignedSSVMessage",
-		Object:                expectedSignedSSVMessageFromObject(expectedCommit(), 3),
-		ExpectedEncodedLength: expectedSizeDecidedSignedSSVMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected decided SignedSSVMessage",
+		testdoc.StructureSizeTestExpectedDecidedSignedSSVMessageDoc,
+		expectedSignedSSVMessageFromObject(expectedCommit(), 3),
+		expectedSizeDecidedSignedSSVMessage,
+		false,
+	)
 }
 
 func ExpectedRoundChangeSignedSSVMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected round change SignedSSVMessage",
-		Object:                expectedSignedSSVMessageFromObject(expectedRoundChange(3), 1),
-		ExpectedEncodedLength: expectedSizeRoundChangeSignedSSVMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected round change SignedSSVMessage",
+		testdoc.StructureSizeTestExpectedRoundChangeSignedSSVMessageDoc,
+		expectedSignedSSVMessageFromObject(expectedRoundChange(3), 1),
+		expectedSizeRoundChangeSignedSSVMessage,
+		false,
+	)
 }
 
 func ExpectedProposalSignedSSVMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected proposal SignedSSVMessage",
-		Object:                expectedSignedSSVMessageWithFullDataFromObject(expectedProposal(3), 1),
-		ExpectedEncodedLength: expectedSizeProposalSignedSSVMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected proposal SignedSSVMessage",
+		testdoc.StructureSizeTestExpectedProposalSignedSSVMessageDoc,
+		expectedSignedSSVMessageWithFullDataFromObject(expectedProposal(3), 1),
+		expectedSizeProposalSignedSSVMessage,
+		false,
+	)
 }
 
 func ExpectedPartialSignatureSignedSSVMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected partial signature SignedSSVMessage",
-		Object:                expectedSignedSSVMessageWithFullDataFromObject(expectedPartialSignatureMessages(1), 1),
-		ExpectedEncodedLength: expectedSizePartialSignatureMessagesSignedSSVMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected partial signature SignedSSVMessage",
+		testdoc.StructureSizeTestExpectedPartialSignatureSignedSSVMessageDoc,
+		expectedSignedSSVMessageWithFullDataFromObject(expectedPartialSignatureMessages(1), 1),
+		expectedSizePartialSignatureMessagesSignedSSVMessage,
+		false,
+	)
 }

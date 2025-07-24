@@ -1,5 +1,7 @@
 {
   "Name": "round change f+1 not duplicate prepared",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test that f+1 speedup is not accepted for duplicate signer when not previously prepared, expecting no round advancement.",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -81,7 +83,7 @@
       "FullData": null
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "",
   "ExpectedTimerState": null,
   "PrivateKeys": {

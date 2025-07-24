@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,13 +19,19 @@ func ForceStop() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	test := &tests.MsgProcessingSpecTest{
-		Name:          "force stop commit message",
-		Pre:           pre,
-		InputMessages: msgs,
-		ExpectedError: "instance stopped processing messages",
-	}
+	test := tests.NewMsgProcessingSpecTest(
+		"force stop commit message",
+		testdoc.CommitTestForceStopDoc,
+		pre,
+		"",
+		nil,
+		msgs,
+		nil,
+		"instance stopped processing messages",
+		nil,
+	)
 
 	test.SetPrivateKeys(ks)
+
 	return test
 }

@@ -2,6 +2,7 @@ package encryption
 
 import (
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -17,10 +18,11 @@ func SimpleEncrypt() *EncryptionSpecTest {
 		panic(err)
 	}
 
-	return &EncryptionSpecTest{
-		Name:      "simple encryption",
-		SKPem:     skPem,
-		PKPem:     pkPem,
-		PlainText: []byte("hello world"),
-	}
+	return NewEncryptionSpecTest(
+		"simple encryption",
+		testdoc.EncryptSimpleTestDoc,
+		skPem,
+		pkPem,
+		[]byte("hello world"),
+	)
 }

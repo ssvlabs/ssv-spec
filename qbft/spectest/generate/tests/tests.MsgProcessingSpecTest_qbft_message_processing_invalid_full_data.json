@@ -1,5 +1,7 @@
 {
   "Name": "invalid full data",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test proposal message with invalid full data field where hash of full data does not equal the root, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {

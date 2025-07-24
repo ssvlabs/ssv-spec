@@ -7,6 +7,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -24,10 +25,7 @@ func PastMessageDutyFinished() tests.SpecTest {
 	decidedValue := testingutils.TestBeaconVoteByts
 	msgID := testingutils.CommitteeMsgID(ks)
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "past msg duty finished",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 
@@ -116,7 +114,7 @@ func PastMessageDutyFinished() tests.SpecTest {
 		syncCommitteeDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), nil, validatorsIndexList)
 		attestationAndSyncCommitteeDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), validatorsIndexList, validatorsIndexList)
 
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+		tests = append(tests, []*committee.CommitteeSpecTest{
 			{
 				Name: fmt.Sprintf("%v attestation (%s)", numValidators, version.String()),
 				Committee: bumpHeight(testingutils.BaseCommittee(ksMap),
@@ -155,6 +153,12 @@ func PastMessageDutyFinished() tests.SpecTest {
 			},
 		}...)
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"past msg duty finished",
+		testdoc.CommitteePastMsgDutyFinishedDoc,
+		tests,
+	)
 
 	multiSpecTest.SetPrivateKeys(ks)
 

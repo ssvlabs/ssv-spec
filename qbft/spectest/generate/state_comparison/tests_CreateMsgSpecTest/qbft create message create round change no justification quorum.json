@@ -1,6 +1,8 @@
 {
   "Name": "create round change no justification quorum",
-  "Value": "0000000000000000000000000000000000000000000000000000000000000000",
+  "Type": "Message creation: validation of consensus message construction and encoding",
+  "Documentation": "Test creating a round change message that was previously prepared but failed to extract a justification quorum, resulting in an unjustified round change.",
+  "Value": "0102030400000000000000000000000000000000000000000000000000000000",
   "StateValue": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
   "Round": 1,
   "RoundChangeJustifications": null,

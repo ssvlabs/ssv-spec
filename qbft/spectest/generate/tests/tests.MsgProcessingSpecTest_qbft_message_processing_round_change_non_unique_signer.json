@@ -1,5 +1,7 @@
 {
   "Name": "round change non unique signer",
+  "Type": "Message processing: validation of consensus message handling and state transitions",
+  "Documentation": "Test round change message with non-unique signer IDs, expecting validation error.",
   "Pre": {
     "State": {
       "CommitteeMember": {
@@ -69,7 +71,7 @@
       "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
     }
   ],
-  "OutputMessages": [],
+  "OutputMessages": null,
   "ExpectedError": "invalid signed message: invalid SignedSSVMessage: non unique signer",
   "ExpectedTimerState": null,
   "PrivateKeys": {
