@@ -21,6 +21,7 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 		"post consensus invalid and valid validator index quorum",
 		testdoc.PostConsensusInvalidAndValidValidatorIndexesQuorumDoc,
 		[]*tests.MsgProcessingSpecTest{},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
@@ -86,8 +87,6 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 			},
 		}...)
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

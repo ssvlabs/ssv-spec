@@ -20,9 +20,8 @@ func SignedMsgNoSigners() tests.SpecTest {
 		nil,
 		nil,
 		"no signers",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

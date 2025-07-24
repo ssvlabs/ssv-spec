@@ -97,6 +97,7 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				ExpectedError:           expectedTaskError,
 			},
 		},
+		ks,
 	)
 	for _, version := range testingutils.SupportedAggregatorVersions {
 
@@ -154,8 +155,6 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 			},
 		}...)
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

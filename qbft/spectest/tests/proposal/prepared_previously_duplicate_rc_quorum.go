@@ -48,9 +48,8 @@ func PreparedPreviouslyDuplicateRCQuorum() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

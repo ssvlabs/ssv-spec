@@ -117,12 +117,7 @@ func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
 	return test.Pre.State, nil
 }
 
-// SetPrivateKeys populates the PrivateKeys field with keys from the given TestKeySet
-func (test *MsgProcessingSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
-	test.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
-}
-
-func NewMsgProcessingSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, inputMessages []*types.SignedSSVMessage, outputMessages []*types.SignedSSVMessage, expectedError string, expectedTimerState *testingutils.TimerState) *MsgProcessingSpecTest {
+func NewMsgProcessingSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, inputMessages []*types.SignedSSVMessage, outputMessages []*types.SignedSSVMessage, expectedError string, expectedTimerState *testingutils.TimerState, privateKeys *testingutils.TestKeySet) *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:               name,
 		Type:               testdoc.MsgProcessingSpecTestType,
@@ -134,5 +129,6 @@ func NewMsgProcessingSpecTest(name string, documentation string, pre *qbft.Insta
 		OutputMessages:     outputMessages,
 		ExpectedError:      expectedError,
 		ExpectedTimerState: expectedTimerState,
+		PrivateKeys:        testingutils.BuildPrivateKeyInfo(privateKeys),
 	}
 }

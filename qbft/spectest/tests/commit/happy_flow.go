@@ -39,9 +39,8 @@ func HappyFlow() tests.SpecTest {
 		outputMsgs,
 		"",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

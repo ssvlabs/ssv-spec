@@ -40,6 +40,7 @@ func PostDecided() tests.SpecTest {
 				ExpectedError: expectedErr,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
@@ -155,8 +156,6 @@ func PostDecided() tests.SpecTest {
 	for _, v := range testingutils.SupportedBlockVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

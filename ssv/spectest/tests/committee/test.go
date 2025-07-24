@@ -129,10 +129,6 @@ func (test *CommitteeSpecTest) GetPostState() (interface{}, error) {
 	return test.Committee, nil
 }
 
-func (test *CommitteeSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
-	test.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
-}
-
 type MultiCommitteeSpecTest struct {
 	Name          string
 	Type          string
@@ -176,20 +172,17 @@ func (tests *MultiCommitteeSpecTest) GetPostState() (interface{}, error) {
 	return ret, nil
 }
 
-func (tests *MultiCommitteeSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
-	tests.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
-}
-
-func NewMultiCommitteeSpecTest(name, documentation string, tests []*CommitteeSpecTest) *MultiCommitteeSpecTest {
+func NewMultiCommitteeSpecTest(name, documentation string, tests []*CommitteeSpecTest, ks *testingutils.TestKeySet) *MultiCommitteeSpecTest {
 	return &MultiCommitteeSpecTest{
 		Name:          name,
 		Type:          testdoc.MultiCommitteeSpecTestType,
 		Documentation: documentation,
 		Tests:         tests,
+		PrivateKeys:   testingutils.BuildPrivateKeyInfo(ks),
 	}
 }
 
-func NewCommitteeSpecTest(name, documentation string, committee *ssv.Committee, input []interface{}, postDutyCommitteeRoot string, postDutyCommittee types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, expectedError string) *CommitteeSpecTest {
+func NewCommitteeSpecTest(name, documentation string, committee *ssv.Committee, input []interface{}, postDutyCommitteeRoot string, postDutyCommittee types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, expectedError string, ks *testingutils.TestKeySet) *CommitteeSpecTest {
 	return &CommitteeSpecTest{
 		Name:                   name,
 		Type:                   testdoc.CommitteeSpecTestType,
@@ -201,5 +194,6 @@ func NewCommitteeSpecTest(name, documentation string, committee *ssv.Committee, 
 		OutputMessages:         outputMessages,
 		BeaconBroadcastedRoots: beaconBroadcastedRoots,
 		ExpectedError:          expectedError,
+		PrivateKeys:            testingutils.BuildPrivateKeyInfo(ks),
 	}
 }

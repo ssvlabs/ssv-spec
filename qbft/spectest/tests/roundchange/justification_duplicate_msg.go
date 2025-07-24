@@ -33,9 +33,8 @@ func JustificationDuplicateMsg() tests.SpecTest {
 		nil,
 		"invalid signed message: no justifications quorum",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

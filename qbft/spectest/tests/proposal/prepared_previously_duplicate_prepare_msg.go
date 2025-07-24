@@ -44,9 +44,8 @@ func PreparedPreviouslyDuplicatePrepareMsg() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: change round msg not valid: no justifications quorum",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

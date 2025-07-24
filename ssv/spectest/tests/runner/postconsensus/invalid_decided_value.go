@@ -119,6 +119,7 @@ func InvalidDecidedValue() tests.SpecTest {
 				ExpectedError: expectedErr,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
@@ -212,8 +213,6 @@ func InvalidDecidedValue() tests.SpecTest {
 			},
 		}...)
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

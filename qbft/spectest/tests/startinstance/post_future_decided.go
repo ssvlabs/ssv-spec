@@ -39,9 +39,8 @@ func PostFutureDecided() tests.SpecTest {
 		nil,
 		"attempting to start an instance with a past height",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

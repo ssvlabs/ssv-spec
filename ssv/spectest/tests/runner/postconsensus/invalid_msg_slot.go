@@ -123,6 +123,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				ExpectedError: "no post consensus phase for voluntary exit",
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
@@ -199,8 +200,6 @@ func InvalidMessageSlot() tests.SpecTest {
 			},
 		}...)
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 

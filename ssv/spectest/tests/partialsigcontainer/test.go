@@ -59,11 +59,7 @@ func (test *PartialSigContainerTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
 
-func (test *PartialSigContainerTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
-	test.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
-}
-
-func NewPartialSigContainerTest(name, documentation string, quorum uint64, validatorPubKey []byte, signatureMsgs []*types.PartialSignatureMessage, expectedError string, expectedResult []byte, expectedQuorum bool) *PartialSigContainerTest {
+func NewPartialSigContainerTest(name, documentation string, quorum uint64, validatorPubKey []byte, signatureMsgs []*types.PartialSignatureMessage, expectedError string, expectedResult []byte, expectedQuorum bool, ks *testingutils.TestKeySet) *PartialSigContainerTest {
 	return &PartialSigContainerTest{
 		Name:            name,
 		Type:            testdoc.PartialSigContainerTestType,
@@ -74,5 +70,6 @@ func NewPartialSigContainerTest(name, documentation string, quorum uint64, valid
 		ExpectedError:   expectedError,
 		ExpectedResult:  expectedResult,
 		ExpectedQuorum:  expectedQuorum,
+		PrivateKeys:     testingutils.BuildPrivateKeyInfo(ks),
 	}
 }

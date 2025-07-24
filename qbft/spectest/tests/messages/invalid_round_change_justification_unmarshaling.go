@@ -31,9 +31,8 @@ func InvalidRoundChangeJustificationsUnmarshalling() tests.SpecTest {
 		nil,
 		nil,
 		"incorrect size",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

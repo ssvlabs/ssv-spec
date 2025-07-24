@@ -100,6 +100,7 @@ func Quorum13Operators() tests.SpecTest {
 				DontStartDuty: true,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
@@ -212,8 +213,6 @@ func Quorum13Operators() tests.SpecTest {
 			},
 		}...)
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

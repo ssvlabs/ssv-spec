@@ -33,9 +33,8 @@ func FirstRoundJustification() tests.SpecTest {
 			Timeouts: 0,
 			Round:    qbft.NoRound,
 		},
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

@@ -26,9 +26,8 @@ func SignedMsgDuplicateSigners() tests.SpecTest {
 		nil,
 		nil,
 		"non unique signer",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

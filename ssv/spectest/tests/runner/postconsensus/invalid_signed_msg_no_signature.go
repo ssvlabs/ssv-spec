@@ -79,6 +79,7 @@ func InvalidSignedMessageNoSignature() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
@@ -155,8 +156,6 @@ func InvalidSignedMessageNoSignature() tests.SpecTest {
 			},
 		}...)
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

@@ -235,12 +235,7 @@ func (test *CreateMsgSpecTest) GetPostState() (interface{}, error) {
 	return test, nil
 }
 
-// SetPrivateKeys populates the PrivateKeys field with keys from the given TestKeySet
-func (test *CreateMsgSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
-	test.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
-}
-
-func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, stateValue []byte, round qbft.Round, roundChangeJustifications []*types.SignedSSVMessage, prepareJustifications []*types.SignedSSVMessage, createType string, expectedRoot string, expectedState types.Root, expectedError string) *CreateMsgSpecTest {
+func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, stateValue []byte, round qbft.Round, roundChangeJustifications []*types.SignedSSVMessage, prepareJustifications []*types.SignedSSVMessage, createType string, expectedRoot string, expectedState types.Root, expectedError string, ks *testingutils.TestKeySet) *CreateMsgSpecTest {
 	return &CreateMsgSpecTest{
 		Name:                      name,
 		Type:                      testdoc.CreateMsgSpecTestType,
@@ -254,5 +249,6 @@ func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, sta
 		ExpectedRoot:              expectedRoot,
 		ExpectedState:             expectedState,
 		ExpectedError:             expectedError,
+		PrivateKeys:               testingutils.BuildPrivateKeyInfo(ks),
 	}
 }

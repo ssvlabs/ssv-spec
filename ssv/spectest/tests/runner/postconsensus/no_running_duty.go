@@ -60,6 +60,7 @@ func NoRunningDuty() tests.SpecTest {
 				ExpectedError:           err,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
@@ -120,8 +121,6 @@ func NoRunningDuty() tests.SpecTest {
 			},
 		}...)
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

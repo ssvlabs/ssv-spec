@@ -28,9 +28,8 @@ func Duplicate() tests.SpecTest {
 		"could not reconstruct a valid signature",
 		nil,
 		false,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

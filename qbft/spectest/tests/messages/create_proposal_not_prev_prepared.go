@@ -28,9 +28,8 @@ func CreateProposalNotPreviouslyPrepared() tests.SpecTest {
 		"6a2917ae827e875a646e88ebb1d483a0a99e4f321e7f063138e99a7e7b08794e",
 		nil,
 		"",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

@@ -25,9 +25,8 @@ func WrongProposer() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal leader invalid",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

@@ -37,9 +37,8 @@ func ValidBeaconVote() tests.SpecTest {
 		"valid beacon vote",
 		testdoc.CommitteeValidBeaconVoteDoc,
 		tests,
+		ks,
 	)
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

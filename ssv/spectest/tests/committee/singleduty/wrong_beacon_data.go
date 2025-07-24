@@ -38,9 +38,8 @@ func WrongBeaconVote() tests.SpecTest {
 		"wrong beacon vote",
 		testdoc.CommitteeWrongBeaconVoteDoc,
 		tests,
+		ks,
 	)
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

@@ -33,9 +33,8 @@ func ValidMsg() tests.SpecTest {
 		nil,
 		"future msg from height, could not process",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

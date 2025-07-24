@@ -28,9 +28,8 @@ func FutureRound() tests.SpecTest {
 		nil,
 		"invalid signed message: wrong msg round",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

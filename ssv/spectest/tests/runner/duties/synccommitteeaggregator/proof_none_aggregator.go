@@ -28,9 +28,8 @@ func NoneAggregatorQuorum() tests.SpecTest {
 			hex.EncodeToString(testingutils.TestingContributionProofsSigned[2][:]): false,
 		},
 		"",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

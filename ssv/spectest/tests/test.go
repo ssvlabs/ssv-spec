@@ -2,8 +2,6 @@ package tests
 
 import (
 	"testing"
-
-	"github.com/ssvlabs/ssv-spec/types"
 )
 
 type SpecTest interface {
@@ -13,9 +11,3 @@ type SpecTest interface {
 }
 
 type TestF func() SpecTest
-
-type PrivateKeyInfo struct {
-	ValidatorSK  string
-	Shares       map[types.OperatorID]string
-	OperatorKeys map[types.OperatorID]string
-}

@@ -85,11 +85,7 @@ func (test *SyncCommitteeAggregatorProofSpecTest) overrideStateComparison(t *tes
 	test.PostDutyRunnerStateRoot = hex.EncodeToString(r[:])
 }
 
-func (tests *SyncCommitteeAggregatorProofSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
-	tests.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
-}
-
-func NewSyncCommitteeAggregatorProofSpecTest(name, documentation string, messages []*types.SignedSSVMessage, postDutyRunnerStateRoot string, postDutyRunnerState string, proofRootsMap map[string]bool, expectedError string) *SyncCommitteeAggregatorProofSpecTest {
+func NewSyncCommitteeAggregatorProofSpecTest(name, documentation string, messages []*types.SignedSSVMessage, postDutyRunnerStateRoot string, postDutyRunnerState string, proofRootsMap map[string]bool, expectedError string, ks *testingutils.TestKeySet) *SyncCommitteeAggregatorProofSpecTest {
 	return &SyncCommitteeAggregatorProofSpecTest{
 		Name:                    name,
 		Type:                    testdoc.SyncCommitteeAggregatorProofSpecTestType,
@@ -99,5 +95,6 @@ func NewSyncCommitteeAggregatorProofSpecTest(name, documentation string, message
 		PostDutyRunnerState:     postDutyRunnerState,
 		ProofRootsMap:           proofRootsMap,
 		ExpectedError:           expectedError,
+		PrivateKeys:             testingutils.BuildPrivateKeyInfo(ks),
 	}
 }

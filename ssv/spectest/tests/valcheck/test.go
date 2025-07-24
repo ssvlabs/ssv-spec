@@ -104,14 +104,6 @@ func (tests *MultiSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
 
-func (test *SpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
-	test.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
-}
-
-func (tests *MultiSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
-	tests.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
-}
-
 func NewSpecTest(name, documentation string, network types.BeaconNetwork, role types.RunnerRole, dutySlot phase0.Slot, input []byte, slashableSlots map[string][]phase0.Slot, shareValidatorsPK []types.ShareValidatorPK, expectedError string, anyError bool) *SpecTest {
 	return &SpecTest{
 		Name:              name,

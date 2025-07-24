@@ -33,9 +33,8 @@ func NoQuorum() tests.SpecTest {
 		// TODO: before merge ask engineering how often they see such message in production
 		"could not process msg: invalid signed message: did not receive proposal for this round",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

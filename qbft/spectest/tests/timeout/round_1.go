@@ -40,9 +40,8 @@ func Round1() tests.SpecTest {
 			Round:    2,
 		},
 		"",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

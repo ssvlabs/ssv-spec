@@ -34,9 +34,8 @@ func Quorum() tests.SpecTest {
 		"",
 		expectedSig.Serialize(),
 		true,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

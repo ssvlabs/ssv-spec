@@ -23,6 +23,7 @@ func MixedCommittees() tests.SpecTest {
 		"mixed committees",
 		testdoc.PostConsensusMixedCommitteesDoc,
 		[]*tests.MsgProcessingSpecTest{},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
@@ -86,8 +87,6 @@ func MixedCommittees() tests.SpecTest {
 			},
 		}...)
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

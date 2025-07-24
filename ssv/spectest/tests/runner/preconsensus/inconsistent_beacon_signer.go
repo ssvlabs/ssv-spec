@@ -58,6 +58,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				ExpectedError: "SignedSSVMessage has an invalid signature: unknown signer",
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
@@ -74,8 +75,6 @@ func InconsistentBeaconSigner() tests.SpecTest {
 			ExpectedError: "SignedSSVMessage has an invalid signature: unknown signer",
 		})
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

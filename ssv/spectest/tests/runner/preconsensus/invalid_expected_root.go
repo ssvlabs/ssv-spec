@@ -84,6 +84,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 				ExpectedError: "failed processing voluntary exit message: invalid pre-consensus message: wrong signing root",
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
@@ -100,8 +101,6 @@ func InvalidExpectedRoot() tests.SpecTest {
 			ExpectedError: "failed processing selection proof message: invalid pre-consensus message: wrong signing root",
 		})
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

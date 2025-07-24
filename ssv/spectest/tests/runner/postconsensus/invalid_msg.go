@@ -74,6 +74,7 @@ func InvalidMessage() tests.SpecTest {
 				ExpectedError:           err,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
@@ -150,8 +151,6 @@ func InvalidMessage() tests.SpecTest {
 			},
 		}...)
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

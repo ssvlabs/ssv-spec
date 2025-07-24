@@ -40,9 +40,8 @@ func RoundChangePartialQuorum() tests.SpecTest {
 			Timeouts: 1,
 			Round:    qbft.Round(2),
 		},
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

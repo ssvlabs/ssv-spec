@@ -67,9 +67,8 @@ func FirstHeight() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

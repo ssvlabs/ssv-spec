@@ -56,9 +56,8 @@ func LateProposalPastInstanceNonDuplicate() tests.SpecTest {
 		nil,
 		"not processing consensus message since instance is already decided",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

@@ -38,9 +38,8 @@ func InvalidIdentifier() tests.SpecTest {
 		nil,
 		"invalid msg: message doesn't belong to Identifier",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

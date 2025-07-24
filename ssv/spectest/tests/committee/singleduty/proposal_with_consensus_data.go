@@ -76,9 +76,8 @@ func ProposalWithConsensusData() tests.SpecTest {
 		"proposal with consensus data",
 		testdoc.CommitteeProposalWithConsensusDataDoc,
 		tests,
+		ks,
 	)
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

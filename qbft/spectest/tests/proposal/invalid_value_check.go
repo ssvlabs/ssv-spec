@@ -28,9 +28,8 @@ func InvalidValueCheck() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: proposal fullData invalid: invalid value",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

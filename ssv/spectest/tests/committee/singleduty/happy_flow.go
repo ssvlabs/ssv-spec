@@ -119,9 +119,8 @@ func HappyFlow() tests.SpecTest {
 		"happy flow",
 		testdoc.CommitteeHappyFlowDoc,
 		tests,
+		ks,
 	)
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

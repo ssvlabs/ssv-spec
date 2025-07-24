@@ -45,9 +45,8 @@ func ValidJustification() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

@@ -115,6 +115,7 @@ func Quorum10Operators() tests.SpecTest {
 				},
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
@@ -136,8 +137,6 @@ func Quorum10Operators() tests.SpecTest {
 			},
 		})
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

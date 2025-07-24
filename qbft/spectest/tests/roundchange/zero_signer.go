@@ -27,9 +27,8 @@ func ZeroSigner() tests.SpecTest {
 		nil,
 		"invalid signed message: invalid SignedSSVMessage: signer ID 0 not allowed",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

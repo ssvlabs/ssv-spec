@@ -69,6 +69,7 @@ func UnorderedExpectedRoots() tests.SpecTest {
 				DontStartDuty:           true,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
@@ -140,8 +141,6 @@ func UnorderedExpectedRoots() tests.SpecTest {
 			},
 		}...)
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

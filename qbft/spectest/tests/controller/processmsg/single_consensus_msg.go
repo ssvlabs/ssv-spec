@@ -24,9 +24,8 @@ func SingleConsensusMsg() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

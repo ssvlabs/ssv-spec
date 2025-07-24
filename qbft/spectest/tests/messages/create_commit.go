@@ -19,5 +19,6 @@ func CreateCommit() tests.SpecTest {
 		"6650657e621029ea09937d8f2766b3ea8b71ec19fc02201d9c9c9a45c2c1baa8",
 		nil,
 		"",
+		nil,
 	)
 }

@@ -35,9 +35,8 @@ func DuplicateQuorum() tests.SpecTest {
 		"",
 		expectedSig.Serialize(),
 		true,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

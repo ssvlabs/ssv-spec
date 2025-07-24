@@ -126,10 +126,6 @@ func (test *StartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
 	return test.Runner, err
 }
 
-func (test *StartNewRunnerDutySpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
-	test.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
-}
-
 type MultiStartNewRunnerDutySpecTest struct {
 	Name          string
 	Type          string
@@ -280,11 +276,7 @@ func (t *StartNewRunnerDutySpecTest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (tests *MultiStartNewRunnerDutySpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
-	tests.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
-}
-
-func NewStartNewRunnerDutySpecTest(name, documentation string, runner ssv.Runner, duty types.Duty, threshold uint64, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, expectedError string) *StartNewRunnerDutySpecTest {
+func NewStartNewRunnerDutySpecTest(name, documentation string, runner ssv.Runner, duty types.Duty, threshold uint64, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, expectedError string, ks *testingutils.TestKeySet) *StartNewRunnerDutySpecTest {
 	return &StartNewRunnerDutySpecTest{
 		Name:                    name,
 		Type:                    testdoc.RunnerDutiesSpecTestType,
@@ -296,14 +288,16 @@ func NewStartNewRunnerDutySpecTest(name, documentation string, runner ssv.Runner
 		PostDutyRunnerState:     postDutyRunnerState,
 		OutputMessages:          outputMessages,
 		ExpectedError:           expectedError,
+		PrivateKeys:             testingutils.BuildPrivateKeyInfo(ks),
 	}
 }
 
-func NewMultiStartNewRunnerDutySpecTest(name, documentation string, tests []*StartNewRunnerDutySpecTest) *MultiStartNewRunnerDutySpecTest {
+func NewMultiStartNewRunnerDutySpecTest(name, documentation string, tests []*StartNewRunnerDutySpecTest, ks *testingutils.TestKeySet) *MultiStartNewRunnerDutySpecTest {
 	return &MultiStartNewRunnerDutySpecTest{
 		Name:          name,
 		Type:          testdoc.MultiRunnerDutiesSpecTestType,
 		Documentation: documentation,
 		Tests:         tests,
+		PrivateKeys:   testingutils.BuildPrivateKeyInfo(ks),
 	}
 }

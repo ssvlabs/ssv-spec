@@ -29,9 +29,8 @@ func Round15() tests.SpecTest {
 			Round:    0,
 		},
 		"instance stopped processing timeouts",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

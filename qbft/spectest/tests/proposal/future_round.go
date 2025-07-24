@@ -52,9 +52,8 @@ func FutureRound() tests.SpecTest {
 			Timeouts: 1,
 			Round:    qbft.Round(10),
 		},
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

@@ -30,9 +30,8 @@ func EmptySigners() tests.SpecTest {
 		nil,
 		"invalid signed message: invalid SignedSSVMessage: no signers",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

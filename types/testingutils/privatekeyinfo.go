@@ -21,6 +21,10 @@ type PrivateKeyInfo struct {
 }
 
 func BuildPrivateKeyInfo(ks *TestKeySet) *PrivateKeyInfo {
+	if ks == nil {
+		return nil
+	}
+
 	privateKeyInfo := &PrivateKeyInfo{
 		ValidatorSK:      hex.EncodeToString(ks.ValidatorSK.Serialize()),
 		ValidatorPK:      hex.EncodeToString(ks.ValidatorPK.Serialize()),

@@ -78,6 +78,7 @@ func InvalidValidatorIndexQuorum() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
@@ -162,8 +163,6 @@ func InvalidValidatorIndexQuorum() tests.SpecTest {
 			},
 		}...)
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

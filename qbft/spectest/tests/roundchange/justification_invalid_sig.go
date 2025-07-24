@@ -33,9 +33,8 @@ func JustificationInvalidSig() tests.SpecTest {
 		nil,
 		"invalid signed message: round change justification invalid: msg signature invalid: crypto/rsa: verification error",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

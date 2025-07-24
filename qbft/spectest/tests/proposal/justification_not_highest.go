@@ -50,9 +50,8 @@ func JustificationsNotHighest() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: signed prepare not valid",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

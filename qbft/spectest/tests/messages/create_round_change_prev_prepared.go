@@ -28,9 +28,8 @@ func CreateRoundChangePreviouslyPrepared() tests.SpecTest {
 		"a6ffc48674f1522fb90aa7bde2aa76cac54480cf366cdd4afcd7f8b4d548809a",
 		nil,
 		"",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

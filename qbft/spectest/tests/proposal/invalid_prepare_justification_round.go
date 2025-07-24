@@ -44,9 +44,8 @@ func InvalidPrepareJustificationRound() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: wrong msg round",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

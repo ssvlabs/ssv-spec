@@ -24,6 +24,7 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 		"post consensus partial invalid sig quorum then valid quorum",
 		testdoc.PostConsensusPartialInvalidSignatureQuorumThenValidQuorumDoc,
 		[]*tests.MsgProcessingSpecTest{},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
@@ -92,8 +93,6 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 			},
 		}...)
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

@@ -37,9 +37,8 @@ func WrongHeight() tests.SpecTest {
 		outputMsgs,
 		"invalid signed message: wrong msg height",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

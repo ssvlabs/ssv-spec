@@ -29,9 +29,8 @@ func SignedMessageSigner0() tests.SpecTest {
 		nil,
 		nil,
 		"signer ID 0 not allowed",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

@@ -123,9 +123,8 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 		"past msg duty not finished",
 		testdoc.CommitteePastMsgDutyNotFinishedDoc,
 		tests,
+		ks,
 	)
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

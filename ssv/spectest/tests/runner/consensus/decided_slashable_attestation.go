@@ -26,9 +26,8 @@ func DecidedSlashableAttestation() tests.SpecTest {
 		[]string{},
 		false,
 		"failed processing consensus message: decided ValidatorConsensusData invalid: decided value is invalid: slashable attestation",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

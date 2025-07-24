@@ -69,6 +69,7 @@ func ValidMessage7Operators() tests.SpecTest {
 				DontStartDuty:           true,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
@@ -140,8 +141,6 @@ func ValidMessage7Operators() tests.SpecTest {
 			},
 		}...)
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

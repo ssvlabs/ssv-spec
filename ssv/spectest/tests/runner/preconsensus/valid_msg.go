@@ -79,6 +79,7 @@ func ValidMessage() tests.SpecTest {
 				},
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
@@ -94,8 +95,6 @@ func ValidMessage() tests.SpecTest {
 			},
 		})
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

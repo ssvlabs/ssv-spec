@@ -36,9 +36,8 @@ func NoInstanceRunning() tests.SpecTest {
 		nil,
 		"instance not found",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

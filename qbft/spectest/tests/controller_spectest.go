@@ -267,12 +267,7 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 	return ret, nil
 }
 
-// SetPrivateKeys populates the PrivateKeys field with keys from the given TestKeySet
-func (test *ControllerSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
-	test.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
-}
-
-func NewControllerSpecTest(name string, documentation string, runInstanceData []*RunInstanceData, outputMessages []*types.SignedSSVMessage, expectedError string, startHeight *qbft.Height) *ControllerSpecTest {
+func NewControllerSpecTest(name string, documentation string, runInstanceData []*RunInstanceData, outputMessages []*types.SignedSSVMessage, expectedError string, startHeight *qbft.Height, privateKeys *testingutils.TestKeySet) *ControllerSpecTest {
 	return &ControllerSpecTest{
 		Name:            name,
 		Type:            testdoc.ControllerSpecTestType,
@@ -281,5 +276,6 @@ func NewControllerSpecTest(name string, documentation string, runInstanceData []
 		OutputMessages:  outputMessages,
 		ExpectedError:   expectedError,
 		StartHeight:     startHeight,
+		PrivateKeys:     testingutils.BuildPrivateKeyInfo(privateKeys),
 	}
 }

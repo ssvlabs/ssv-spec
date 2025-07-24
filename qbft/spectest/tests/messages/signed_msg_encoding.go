@@ -30,9 +30,8 @@ func SignedMessageEncoding() tests.SpecTest {
 		[][]byte{b},
 		nil,
 		"",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

@@ -34,9 +34,8 @@ func Invalid() tests.SpecTest {
 		nil,
 		"could not process msg: invalid signed message: invalid SignedSSVMessage: no signers",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

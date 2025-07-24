@@ -37,9 +37,8 @@ func WrongData2() tests.SpecTest {
 		outputMsgs,
 		"invalid signed message: proposed data mismatch",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

@@ -19,6 +19,7 @@ func NormalProposerAcceptsBlindedBlock() tests.SpecTest {
 		"normal proposer accepts blinded block proposal",
 		testdoc.ProposerNormalReceivingBlindedBlockDoc,
 		[]*tests.MsgProcessingSpecTest{},
+		ks,
 	)
 
 	// proposerReceivingBlindedBlockV creates a test specification for versioned normal proposer receiving blinded block as proposal.
@@ -50,8 +51,6 @@ func NormalProposerAcceptsBlindedBlock() tests.SpecTest {
 	for _, v := range testingutils.SupportedBlockVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerReceivingBlindedBlockV(v)}...)
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

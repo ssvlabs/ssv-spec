@@ -48,9 +48,8 @@ func PrepareJustificationsUnmarshalling() tests.SpecTest {
 		[][]byte{encodedMsg},
 		[][32]byte{msgRoot},
 		"",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

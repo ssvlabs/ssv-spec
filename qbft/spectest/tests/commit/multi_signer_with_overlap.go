@@ -41,9 +41,8 @@ func MultiSignerWithOverlap() tests.SpecTest {
 		outputMsgs,
 		"invalid signed message: msg allows 1 signer",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

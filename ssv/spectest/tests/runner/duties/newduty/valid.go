@@ -40,6 +40,7 @@ func Valid() tests.SpecTest {
 				},
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
@@ -82,8 +83,6 @@ func Valid() tests.SpecTest {
 			},
 		})
 	}
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 

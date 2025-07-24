@@ -54,15 +54,12 @@ func (tests *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
 	return ret, nil
 }
 
-func (tests *MultiMsgProcessingSpecTest) SetPrivateKeys(ks *testingutils.TestKeySet) {
-	tests.PrivateKeys = testingutils.BuildPrivateKeyInfo(ks)
-}
-
-func NewMultiMsgProcessingSpecTest(name, documentation string, tests []*MsgProcessingSpecTest) *MultiMsgProcessingSpecTest {
+func NewMultiMsgProcessingSpecTest(name, documentation string, tests []*MsgProcessingSpecTest, ks *testingutils.TestKeySet) *MultiMsgProcessingSpecTest {
 	return &MultiMsgProcessingSpecTest{
 		Name:          name,
 		Type:          testdoc.MultiMsgProcessingSpecTestType,
 		Documentation: documentation,
 		Tests:         tests,
+		PrivateKeys:   testingutils.BuildPrivateKeyInfo(ks),
 	}
 }

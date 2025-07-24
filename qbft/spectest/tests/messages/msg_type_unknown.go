@@ -26,9 +26,8 @@ func MsgTypeUnknown() tests.SpecTest {
 		nil,
 		nil,
 		"message type is invalid",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

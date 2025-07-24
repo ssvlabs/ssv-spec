@@ -32,9 +32,8 @@ func OneSignature() tests.SpecTest {
 		"could not reconstruct a valid signature",
 		expectedSig.Serialize(),
 		false,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

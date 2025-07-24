@@ -27,9 +27,8 @@ func MsgNilIdentifier() tests.SpecTest {
 		nil,
 		nil,
 		"message identifier is invalid",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

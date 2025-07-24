@@ -34,9 +34,8 @@ func InvalidFullData() tests.SpecTest {
 		nil,
 		"invalid decided msg: H(data) != root",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

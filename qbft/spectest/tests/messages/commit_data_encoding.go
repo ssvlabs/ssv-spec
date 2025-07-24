@@ -22,9 +22,8 @@ func CommitDataEncoding() tests.SpecTest {
 		[][]byte{b},
 		[][32]byte{r},
 		"",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

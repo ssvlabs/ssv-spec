@@ -31,9 +31,8 @@ func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 		sc.Root(),
 		sc.ExpectedState,
 		"",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

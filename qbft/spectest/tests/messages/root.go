@@ -29,9 +29,8 @@ func GetRoot() tests.SpecTest {
 		nil,
 		[][32]byte{r},
 		"",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

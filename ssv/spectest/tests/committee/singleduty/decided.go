@@ -102,9 +102,8 @@ func Decided() tests.SpecTest {
 		"decided",
 		testdoc.CommitteeDecidedDoc,
 		tests,
+		ks,
 	)
-
-	multiSpecTest.SetPrivateKeys(ks)
 
 	return multiSpecTest
 }

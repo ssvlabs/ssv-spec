@@ -34,9 +34,8 @@ func Invalid() tests.SpecTest {
 		"could not reconstruct a valid signature",
 		expectedSig.Serialize(),
 		true,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

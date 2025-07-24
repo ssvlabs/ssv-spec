@@ -26,9 +26,8 @@ func WrongSignature() tests.SpecTest {
 		nil,
 		"invalid decided msg: invalid decided msg: msg signature invalid: crypto/rsa: verification error",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

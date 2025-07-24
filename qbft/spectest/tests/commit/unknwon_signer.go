@@ -37,9 +37,8 @@ func UnknownSigner() tests.SpecTest {
 		outputMsgs,
 		"invalid signed message: signer not in committee",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

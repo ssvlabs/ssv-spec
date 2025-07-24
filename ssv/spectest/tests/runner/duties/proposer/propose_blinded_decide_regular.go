@@ -49,9 +49,8 @@ func ProposeBlindedBlockDecidedRegular() tests.SpecTest {
 		},
 		false,
 		"",
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }

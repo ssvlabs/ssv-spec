@@ -26,9 +26,8 @@ func InvalidFullData() tests.SpecTest {
 		nil,
 		"invalid signed message: H(data) != root",
 		nil,
+		ks,
 	)
-
-	test.SetPrivateKeys(ks)
 
 	return test
 }
