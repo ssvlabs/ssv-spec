@@ -25,7 +25,7 @@ func DuplicateMsg() tests.SpecTest {
 			testingutils.TestingQBFTRootData, qbft.FirstRound, testingutils.MarshalJustifications(prepareMsgs), testingutils.TestingQBFTFullData),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change duplicate msg",
 		testdoc.RoundChangeDuplicateMsgDoc,
 		pre,
@@ -35,5 +35,8 @@ func DuplicateMsg() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

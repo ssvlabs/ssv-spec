@@ -24,12 +24,15 @@ func InvalidPrepareJustificationsUnmarshalling() tests.SpecTest {
 
 	msg.FullData = testingutils.TestingQBFTFullData
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"invalid prepare justification unmarshalling",
 		testdoc.MessagesInvalidPrepareJustificationUnmarshalingDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
 		"incorrect size",
+		ks,
 	)
+
+	return test
 }

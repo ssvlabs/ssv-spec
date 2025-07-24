@@ -10,7 +10,7 @@ import (
 // SingleConsensusMsg tests process msg of a single msg
 func SingleConsensusMsg() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"single consensus msg",
 		testdoc.ControllerProcessMsgSingleConsensusMsgDoc,
 		[]*tests.RunInstanceData{
@@ -24,5 +24,8 @@ func SingleConsensusMsg() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

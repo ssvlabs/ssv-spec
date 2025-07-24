@@ -64,6 +64,7 @@ func PostDecided() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

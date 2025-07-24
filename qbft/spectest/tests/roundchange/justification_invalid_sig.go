@@ -23,7 +23,7 @@ func JustificationInvalidSig() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"justification invalid sig",
 		testdoc.RoundChangeJustificationInvalidSigDoc,
 		pre,
@@ -33,5 +33,8 @@ func JustificationInvalidSig() tests.SpecTest {
 		nil,
 		"invalid signed message: round change justification invalid: msg signature invalid: crypto/rsa: verification error",
 		nil,
+		ks,
 	)
+
+	return test
 }

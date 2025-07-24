@@ -32,7 +32,7 @@ func F1DifferentFutureRounds() tests.SpecTest {
 			[32]byte{}, 0, [][]byte{}),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change f+1 prepared",
 		testdoc.RoundChangeF1DifferentFutureRoundsDoc,
 		pre,
@@ -45,7 +45,10 @@ func F1DifferentFutureRounds() tests.SpecTest {
 			Timeouts: 1,
 			Round:    qbft.Round(5),
 		},
+		ks,
 	)
+
+	return test
 }
 
 func f1DifferentFutureRoundsStateComparison() *comparable.StateComparison {

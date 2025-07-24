@@ -27,7 +27,7 @@ func WrongHeight() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"wrong commit height",
 		testdoc.CommitTestWrongHeightDoc,
 		pre,
@@ -37,5 +37,8 @@ func WrongHeight() tests.SpecTest {
 		outputMsgs,
 		"invalid signed message: wrong msg height",
 		nil,
+		ks,
 	)
+
+	return test
 }

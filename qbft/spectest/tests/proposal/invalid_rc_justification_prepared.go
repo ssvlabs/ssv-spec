@@ -41,7 +41,7 @@ func InvalidRoundChangeJustificationPrepared() tests.SpecTest {
 		),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"proposal rc msg invalid (prepared)",
 		testdoc.ProposalInvalidRCJustificationPreparedDoc,
 		pre,
@@ -51,5 +51,8 @@ func InvalidRoundChangeJustificationPrepared() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: change round msg not valid: msg signature invalid: crypto/rsa: verification error",
 		nil,
+		ks,
 	)
+
+	return test
 }

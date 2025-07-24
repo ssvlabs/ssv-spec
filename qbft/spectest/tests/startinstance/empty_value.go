@@ -18,5 +18,6 @@ func EmptyValue() tests.SpecTest {
 		nil,
 		"value invalid: invalid value",
 		nil,
+		nil,
 	)
 }

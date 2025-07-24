@@ -56,6 +56,7 @@ func ShuffledHappyFlowDutiesWithTheSameValidators() tests.SpecTest {
 		"shuffled happy flow duties with same validators",
 		testdoc.CommitteeShuffledHappyFlowDutiesWithSameValidatorsDoc,
 		tests,
+		nil,
 	)
 
 	return multiSpecTest

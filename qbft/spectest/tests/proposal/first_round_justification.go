@@ -20,7 +20,7 @@ func FirstRoundJustification() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"proposal first round justification",
 		testdoc.ProposalFirstRoundJustificationDoc,
 		pre,
@@ -33,5 +33,8 @@ func FirstRoundJustification() tests.SpecTest {
 			Timeouts: 0,
 			Round:    qbft.NoRound,
 		},
+		ks,
 	)
+
+	return test
 }

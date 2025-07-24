@@ -22,7 +22,7 @@ func LateRoundChange() tests.SpecTest {
 	)
 	msgs = append(msgs, testingutils.TestingRoundChangeMessage(ks.OperatorKeys[4], 4))
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"late round change",
 		testdoc.ControllerLateMsgLateRoundChangeDoc,
 		[]*tests.RunInstanceData{
@@ -44,7 +44,10 @@ func LateRoundChange() tests.SpecTest {
 		nil,
 		"not processing consensus message since instance is already decided",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 // lateRoundChangeStateComparison returns the expected state for the late round change test

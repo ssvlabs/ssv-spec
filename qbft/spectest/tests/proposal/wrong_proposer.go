@@ -15,7 +15,7 @@ func WrongProposer() tests.SpecTest {
 		testingutils.TestingProposalMessage(ks.OperatorKeys[2], types.OperatorID(2)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"wrong proposer",
 		testdoc.ProposalWrongProposerDoc,
 		pre,
@@ -25,5 +25,8 @@ func WrongProposer() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal leader invalid",
 		nil,
+		ks,
 	)
+
+	return test
 }

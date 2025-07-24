@@ -58,6 +58,7 @@ func FailedThanSuccessfulDuties() tests.SpecTest {
 		"failed than successful duties",
 		testdoc.CommitteeFailedThanSuccessfulDutiesDoc,
 		tests,
+		nil,
 	)
 
 	return multiSpecTest

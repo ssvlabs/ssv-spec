@@ -19,7 +19,7 @@ func ForceStop() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"force stop prepare message",
 		testdoc.PrepareForceStopDoc,
 		pre,
@@ -29,5 +29,8 @@ func ForceStop() tests.SpecTest {
 		nil,
 		"instance stopped processing messages",
 		nil,
+		ks,
 	)
+
+	return test
 }

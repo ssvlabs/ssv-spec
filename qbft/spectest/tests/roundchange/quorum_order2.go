@@ -32,7 +32,7 @@ func QuorumOrder2() tests.SpecTest {
 			testingutils.MarshalJustifications(inputMessages), testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change quorum order 2",
 		testdoc.RoundChangeQuorumOrder2Doc,
 		pre,
@@ -42,5 +42,8 @@ func QuorumOrder2() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

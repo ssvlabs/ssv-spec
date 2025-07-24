@@ -34,7 +34,7 @@ func PreparedPreviouslyDuplicatePrepareMsg() tests.SpecTest {
 		),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"duplicate prepare msg justification",
 		testdoc.ProposalPreparedPreviouslyDuplicatePrepareMsgDoc,
 		pre,
@@ -44,5 +44,8 @@ func PreparedPreviouslyDuplicatePrepareMsg() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: change round msg not valid: no justifications quorum",
 		nil,
+		ks,
 	)
+
+	return test
 }

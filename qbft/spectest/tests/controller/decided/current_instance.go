@@ -16,7 +16,7 @@ func CurrentInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := currentInstanceStateComparison()
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide current instance",
 		testdoc.ControllerDecidedCurrentInstanceDoc,
 		[]*tests.RunInstanceData{
@@ -47,7 +47,10 @@ func CurrentInstance() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func currentInstanceStateComparison() *comparable.StateComparison {

@@ -24,7 +24,7 @@ func NotProposer() tests.SpecTest {
 			[32]byte{}, 0, [][]byte{}),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change justification not proposer",
 		testdoc.RoundChangeNotProposerDoc,
 		pre,
@@ -34,5 +34,8 @@ func NotProposer() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

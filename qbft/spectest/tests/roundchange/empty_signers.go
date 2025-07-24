@@ -20,7 +20,7 @@ func EmptySigners() tests.SpecTest {
 		msg,
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change empty signer",
 		testdoc.RoundChangeEmptySignersDoc,
 		pre,
@@ -30,5 +30,8 @@ func EmptySigners() tests.SpecTest {
 		nil,
 		"invalid signed message: invalid SignedSSVMessage: no signers",
 		nil,
+		ks,
 	)
+
+	return test
 }

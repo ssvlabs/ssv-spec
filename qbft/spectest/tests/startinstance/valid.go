@@ -24,5 +24,6 @@ func Valid() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		nil,
 	)
 }

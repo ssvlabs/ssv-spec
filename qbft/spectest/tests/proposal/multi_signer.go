@@ -20,7 +20,7 @@ func MultiSigner() tests.SpecTest {
 		),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"proposal multi signer",
 		testdoc.ProposalMultiSignerDoc,
 		pre,
@@ -30,5 +30,8 @@ func MultiSigner() tests.SpecTest {
 		nil,
 		"invalid signed message: msg allows 1 signer",
 		nil,
+		ks,
 	)
+
+	return test
 }

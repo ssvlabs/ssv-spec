@@ -50,6 +50,7 @@ func SequencedDecidedDuties() tests.SpecTest {
 		"sequenced decided duties",
 		testdoc.CommitteeSequencedDecidedDutiesDoc,
 		tests,
+		nil,
 	)
 
 	return multiSpecTest

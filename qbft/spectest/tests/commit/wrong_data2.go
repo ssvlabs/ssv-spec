@@ -27,7 +27,7 @@ func WrongData2() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"commit data != prepared data",
 		testdoc.CommitTestWrongData2Doc,
 		pre,
@@ -37,5 +37,8 @@ func WrongData2() tests.SpecTest {
 		outputMsgs,
 		"invalid signed message: proposed data mismatch",
 		nil,
+		ks,
 	)
+
+	return test
 }

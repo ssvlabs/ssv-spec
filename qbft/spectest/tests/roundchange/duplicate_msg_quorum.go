@@ -39,7 +39,7 @@ func DuplicateMsgQuorum() tests.SpecTest {
 			ks.OperatorKeys[1], types.OperatorID(1), 2, testingutils.MarshalJustifications(rcMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change duplicate msg quorum",
 		testdoc.RoundChangeDuplicateMsgQuorumDoc,
 		pre,
@@ -49,5 +49,8 @@ func DuplicateMsgQuorum() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

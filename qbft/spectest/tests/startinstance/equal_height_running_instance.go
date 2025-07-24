@@ -26,5 +26,6 @@ func EqualHeightRunningInstance() tests.SpecTest {
 		nil,
 		"instance already running",
 		nil,
+		nil,
 	)
 }

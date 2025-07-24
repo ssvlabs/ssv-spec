@@ -76,6 +76,7 @@ func PostQuorum() tests.SpecTest {
 				ExpectedError: "failed processing voluntary exit message: invalid pre-consensus message: no running duty",
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

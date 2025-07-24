@@ -102,6 +102,7 @@ func Decided() tests.SpecTest {
 		"decided",
 		testdoc.CommitteeDecidedDoc,
 		tests,
+		ks,
 	)
 
 	return multiSpecTest

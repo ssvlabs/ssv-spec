@@ -19,5 +19,6 @@ func CreateProposal() tests.SpecTest {
 		"43c23219aaf744537a2e8b3896937a2e9aa24a8eaf8fcabf8ec7376f76669f3c",
 		nil,
 		"",
+		nil,
 	)
 }

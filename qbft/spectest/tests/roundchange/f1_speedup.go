@@ -23,7 +23,7 @@ func F1Speedup() tests.SpecTest {
 			[32]byte{}, 0, [][]byte{}),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"f+1 speed up",
 		testdoc.RoundChangeF1SpeedupDoc,
 		pre,
@@ -36,5 +36,8 @@ func F1Speedup() tests.SpecTest {
 			Timeouts: 1,
 			Round:    qbft.Round(10),
 		},
+		ks,
 	)
+
+	return test
 }

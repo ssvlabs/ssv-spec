@@ -12,7 +12,7 @@ import (
 // CurrentInstanceFutureRound tests a decided msg received for current running instance for a future round
 func CurrentInstanceFutureRound() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide current instance future round",
 		testdoc.ControllerDecidedCurrentInstanceFutureRoundDoc,
 		[]*tests.RunInstanceData{
@@ -36,5 +36,8 @@ func CurrentInstanceFutureRound() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

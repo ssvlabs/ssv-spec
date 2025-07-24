@@ -20,7 +20,7 @@ func Invalid() tests.SpecTest {
 		qbft.FirstHeight,
 	)
 	msg.OperatorIDs = []types.OperatorID{}
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide invalid msg",
 		testdoc.ControllerDecidedInvalidDoc,
 		[]*tests.RunInstanceData{
@@ -34,5 +34,8 @@ func Invalid() tests.SpecTest {
 		nil,
 		"could not process msg: invalid signed message: invalid SignedSSVMessage: no signers",
 		nil,
+		ks,
 	)
+
+	return test
 }

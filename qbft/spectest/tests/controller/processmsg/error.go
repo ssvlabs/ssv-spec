@@ -11,7 +11,7 @@ import (
 func MsgError() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"process msg error",
 		testdoc.ControllerProcessMsgErrorDoc,
 		[]*tests.RunInstanceData{
@@ -25,5 +25,8 @@ func MsgError() tests.SpecTest {
 		nil,
 		"could not process msg: invalid signed message: proposal not justified: change round has no quorum",
 		nil,
+		ks,
 	)
+
+	return test
 }

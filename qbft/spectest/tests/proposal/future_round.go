@@ -39,7 +39,7 @@ func FutureRound() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 10),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"proposal future round prev prepared",
 		testdoc.ProposalFutureRoundDoc,
 		pre,
@@ -52,5 +52,8 @@ func FutureRound() tests.SpecTest {
 			Timeouts: 1,
 			Round:    qbft.Round(10),
 		},
+		ks,
 	)
+
+	return test
 }

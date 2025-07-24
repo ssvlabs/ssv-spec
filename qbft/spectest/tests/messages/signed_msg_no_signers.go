@@ -13,12 +13,15 @@ func SignedMsgNoSigners() tests.SpecTest {
 	msg := testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1))
 	msg.OperatorIDs = nil
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"no signers",
 		testdoc.MessagesSignedMsgNoSignersDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
 		"no signers",
+		ks,
 	)
+
+	return test
 }

@@ -16,7 +16,7 @@ func CreateProposalNotPreviouslyPrepared() tests.SpecTest {
 		testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
 
-	return tests.NewCreateMsgSpecTest(
+	test := tests.NewCreateMsgSpecTest(
 		"create proposal not previously prepared",
 		testdoc.MessagesCreateProposalNotPrevPreparedDoc,
 		[32]byte{1, 2, 3, 4},
@@ -28,5 +28,8 @@ func CreateProposalNotPreviouslyPrepared() tests.SpecTest {
 		"6a2917ae827e875a646e88ebb1d483a0a99e4f321e7f063138e99a7e7b08794e",
 		nil,
 		"",
+		ks,
 	)
+
+	return test
 }

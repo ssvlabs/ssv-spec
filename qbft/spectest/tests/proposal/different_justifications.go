@@ -50,7 +50,7 @@ func DifferentJustifications() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 3),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"different proposal round change justification",
 		testdoc.ProposalDifferentJustificationDoc,
 		pre,
@@ -60,5 +60,8 @@ func DifferentJustifications() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

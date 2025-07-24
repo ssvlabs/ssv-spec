@@ -22,7 +22,7 @@ func LatePrepare() tests.SpecTest {
 	)
 	msgs = append(msgs, testingutils.TestingPrepareMessage(ks.OperatorKeys[4], 4))
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"late prepare",
 		testdoc.ControllerLateMsgLatePrepareDoc,
 		[]*tests.RunInstanceData{
@@ -45,7 +45,10 @@ func LatePrepare() tests.SpecTest {
 		nil,
 		"not processing consensus message since instance is already decided",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 // LatePrepareStateComparison returns the expected state comparison for LatePrepare test.

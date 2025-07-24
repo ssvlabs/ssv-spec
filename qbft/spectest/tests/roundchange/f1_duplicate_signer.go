@@ -24,7 +24,7 @@ func F1DuplicateSigner() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change f+1 duplicate",
 		testdoc.RoundChangeF1DuplicateSignerDoc,
 		pre,
@@ -34,5 +34,8 @@ func F1DuplicateSigner() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

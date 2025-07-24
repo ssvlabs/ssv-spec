@@ -20,7 +20,7 @@ func InvalidFullData() tests.SpecTest {
 	)
 	msg.FullData = []byte("invalid")
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide invalid full data",
 		testdoc.ControllerDecidedInvalidFullDataDoc,
 		[]*tests.RunInstanceData{
@@ -34,5 +34,8 @@ func InvalidFullData() tests.SpecTest {
 		nil,
 		"invalid decided msg: H(data) != root",
 		nil,
+		ks,
 	)
+
+	return test
 }

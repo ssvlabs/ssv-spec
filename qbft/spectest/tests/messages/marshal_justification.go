@@ -41,12 +41,15 @@ func MarshalJustifications() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"marshal RC and Prepare justifications",
 		testdoc.MessagesMarshalJustificationDoc,
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{encodedMsg},
 		[][32]byte{msgRoot},
 		"",
+		ks,
 	)
+
+	return test
 }

@@ -77,6 +77,7 @@ func WrongMessageID() tests.SpecTest {
 		"wrong message ID",
 		testdoc.CommitteeWrongMessageIDDoc,
 		tests,
+		ks,
 	)
 
 	return multiSpecTest

@@ -42,7 +42,7 @@ func DuplicateMsgQuorumPreparedRCFirst() tests.SpecTest {
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change duplicate msg quorum (prev prepared rc first)",
 		testdoc.RoundChangeDuplicateMsgQuorumPreparedRCFirstDoc,
 		pre,
@@ -52,7 +52,10 @@ func DuplicateMsgQuorumPreparedRCFirst() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func duplicateMsgQuorumPreparedRCFirstStateComparison() *comparable.StateComparison {

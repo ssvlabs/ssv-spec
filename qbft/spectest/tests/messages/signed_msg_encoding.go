@@ -23,12 +23,15 @@ func SignedMessageEncoding() tests.SpecTest {
 
 	b, _ := msg.Encode()
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"signed message encoding",
 		testdoc.MessagesSignedMsgEncodingDoc,
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{b},
 		nil,
 		"",
+		ks,
 	)
+
+	return test
 }

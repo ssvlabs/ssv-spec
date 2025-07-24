@@ -19,12 +19,15 @@ func MsgTypeUnknown() tests.SpecTest {
 		Root:       testingutils.TestingQBFTRootData,
 	})
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"msg type unknown",
 		testdoc.MessagesMsgTypeUnknownDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
 		"message type is invalid",
+		ks,
 	)
+
+	return test
 }

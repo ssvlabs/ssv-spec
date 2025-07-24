@@ -19,7 +19,7 @@ func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
 	}
 	sc := CreateRoundChangeNoJustificationQuorumSC()
-	return tests.NewCreateMsgSpecTest(
+	test := tests.NewCreateMsgSpecTest(
 		"create round change no justification quorum",
 		testdoc.MessagesCreateRoundChangeNoJustificationQuorumDoc,
 		[32]byte{1, 2, 3, 4},
@@ -31,7 +31,10 @@ func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 		sc.Root(),
 		sc.ExpectedState,
 		"",
+		ks,
 	)
+
+	return test
 }
 
 func CreateRoundChangeNoJustificationQuorumSC() *comparable.StateComparison {

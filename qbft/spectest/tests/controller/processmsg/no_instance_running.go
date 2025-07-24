@@ -12,7 +12,7 @@ import (
 // NoInstanceRunning tests a process msg for height in which there is no running instance
 func NoInstanceRunning() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"no instance running",
 		testdoc.ControllerProcessMsgNoInstanceRunningDoc,
 		[]*tests.RunInstanceData{
@@ -36,5 +36,8 @@ func NoInstanceRunning() tests.SpecTest {
 		nil,
 		"instance not found",
 		nil,
+		ks,
 	)
+
+	return test
 }

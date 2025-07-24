@@ -30,7 +30,7 @@ func PostDecided() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"prepare post decided",
 		testdoc.PreparePostDecidedDoc,
 		pre,
@@ -40,5 +40,8 @@ func PostDecided() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

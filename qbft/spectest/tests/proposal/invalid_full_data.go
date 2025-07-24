@@ -16,7 +16,7 @@ func InvalidFullData() tests.SpecTest {
 
 	inputMessages := []*types.SignedSSVMessage{msg}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"invalid full data",
 		testdoc.ProposalInvalidFullDataDoc,
 		pre,
@@ -26,5 +26,8 @@ func InvalidFullData() tests.SpecTest {
 		nil,
 		"invalid signed message: H(data) != root",
 		nil,
+		ks,
 	)
+
+	return test
 }

@@ -40,7 +40,7 @@ func JustificationsNotHighest() tests.SpecTest {
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs1)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"proposal justification not highest",
 		testdoc.ProposalJustificationNotHighestDoc,
 		pre,
@@ -50,5 +50,8 @@ func JustificationsNotHighest() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: signed prepare not valid",
 		nil,
+		ks,
 	)
+
+	return test
 }

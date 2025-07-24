@@ -26,5 +26,6 @@ func StartNoDuty() tests.SpecTest {
 		[]*types.PartialSignatureMessages{},
 		nil,
 		"no beacon duties",
+		nil,
 	)
 }

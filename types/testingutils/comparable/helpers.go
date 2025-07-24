@@ -113,6 +113,9 @@ func CompareWithJson(t *testing.T, test any, testName string, testType string) {
 	expectedTestMap, err := GetExpectedStateFromScFile(testName, testType)
 	require.NoError(t, err)
 
+	// Remove PrivateKeys field from test
+	delete(testMap, "PrivateKeys")
+
 	diff := cmp.Diff(testMap, expectedTestMap)
 	if diff != "" {
 		t.Errorf("%s inputs changed. %v", testName, diff)

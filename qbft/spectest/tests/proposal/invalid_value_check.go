@@ -18,7 +18,7 @@ func InvalidValueCheck() tests.SpecTest {
 			qbft.FirstHeight),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"invalid proposal value check",
 		testdoc.ProposalInvalidValueCheckDoc,
 		pre,
@@ -28,5 +28,8 @@ func InvalidValueCheck() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: proposal fullData invalid: invalid value",
 		nil,
+		ks,
 	)
+
+	return test
 }

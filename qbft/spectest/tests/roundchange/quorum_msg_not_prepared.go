@@ -34,7 +34,7 @@ func QuorumMsgNotPrepared() tests.SpecTest {
 			testingutils.MarshalJustifications(inputMessages), testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change quorum msg not prepared",
 		testdoc.RoundChangeQuorumMsgNotPreparedDoc,
 		pre,
@@ -44,7 +44,10 @@ func QuorumMsgNotPrepared() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func quorumMsgNotPreparedStateComparison() *comparable.StateComparison {

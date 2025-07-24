@@ -12,7 +12,7 @@ import (
 // LateDecidedSmallerQuorum tests processing a decided msg for a just decided instance (with a smaller quorum)
 func LateDecidedSmallerQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide late decided smaller quorum",
 		testdoc.ControllerDecidedLateDecidedSmallerQuorumDoc,
 		[]*tests.RunInstanceData{
@@ -31,5 +31,8 @@ func LateDecidedSmallerQuorum() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

@@ -129,6 +129,7 @@ func MissingSomeShares() tests.SpecTest {
 		"start committee duty with missing shares",
 		testdoc.CommitteeMissingSomeSharesDoc,
 		tests,
+		ks,
 	)
 
 	return multiSpecTest

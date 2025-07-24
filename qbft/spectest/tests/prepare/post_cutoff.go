@@ -18,7 +18,7 @@ func PostCutoff() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 15),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round cutoff prepare message",
 		testdoc.PreparePostCutoffDoc,
 		pre,
@@ -28,5 +28,8 @@ func PostCutoff() tests.SpecTest {
 		nil,
 		"instance stopped processing messages",
 		nil,
+		ks,
 	)
+
+	return test
 }

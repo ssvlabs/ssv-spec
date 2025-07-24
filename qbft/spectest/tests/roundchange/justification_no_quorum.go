@@ -22,7 +22,7 @@ func JustificationNoQuorum() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change justification no quorum",
 		testdoc.RoundChangeJustificationNoQuorumDoc,
 		pre,
@@ -32,5 +32,8 @@ func JustificationNoQuorum() tests.SpecTest {
 		nil,
 		"invalid signed message: no justifications quorum",
 		nil,
+		ks,
 	)
+
+	return test
 }

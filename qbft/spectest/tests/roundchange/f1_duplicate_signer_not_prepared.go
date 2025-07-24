@@ -17,7 +17,7 @@ func F1DuplicateSignerNotPrepared() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 5),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change f+1 not duplicate prepared",
 		testdoc.RoundChangeF1DuplicateSignerNotPreparedDoc,
 		pre,
@@ -27,5 +27,8 @@ func F1DuplicateSignerNotPrepared() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

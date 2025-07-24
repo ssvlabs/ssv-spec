@@ -12,7 +12,7 @@ import (
 // PastInstance tests a decided msg received for past instance
 func PastInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide past instance",
 		testdoc.ControllerDecidedPastInstanceDoc,
 		[]*tests.RunInstanceData{
@@ -32,5 +32,8 @@ func PastInstance() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

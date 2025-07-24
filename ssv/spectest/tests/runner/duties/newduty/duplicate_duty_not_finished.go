@@ -97,6 +97,7 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				ExpectedError:           expectedTaskError,
 			},
 		},
+		ks,
 	)
 	for _, version := range testingutils.SupportedAggregatorVersions {
 

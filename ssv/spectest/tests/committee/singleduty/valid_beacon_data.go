@@ -37,6 +37,7 @@ func ValidBeaconVote() tests.SpecTest {
 		"valid beacon vote",
 		testdoc.CommitteeValidBeaconVoteDoc,
 		tests,
+		ks,
 	)
 
 	return multiSpecTest

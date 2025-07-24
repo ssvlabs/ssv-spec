@@ -63,6 +63,7 @@ func FutureDecided() tests.SpecTest {
 				ExpectedError: errStr,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

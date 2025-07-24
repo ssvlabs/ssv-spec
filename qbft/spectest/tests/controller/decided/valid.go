@@ -12,7 +12,7 @@ import (
 // Valid tests a valid decided msg with unique 2f+1 signers
 func Valid() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"valid",
 		testdoc.ControllerDecidedValidDoc,
 		[]*tests.RunInstanceData{
@@ -30,5 +30,8 @@ func Valid() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

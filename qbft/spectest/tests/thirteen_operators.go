@@ -40,7 +40,7 @@ func ThirteenOperators() SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return NewMsgProcessingSpecTest(
+	test := NewMsgProcessingSpecTest(
 		"happy flow thirteen operators",
 		testdoc.MsgProcessingHappyFlowThirteenOperatorsDoc,
 		pre,
@@ -50,5 +50,8 @@ func ThirteenOperators() SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

@@ -26,7 +26,7 @@ func PastRound() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change past round",
 		testdoc.RoundChangePastRoundDoc,
 		pre,
@@ -36,5 +36,8 @@ func PastRound() tests.SpecTest {
 		nil,
 		"invalid signed message: past round",
 		nil,
+		ks,
 	)
+
+	return test
 }

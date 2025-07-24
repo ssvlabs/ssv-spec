@@ -24,12 +24,15 @@ func InvalidRoundChangeJustificationsUnmarshalling() tests.SpecTest {
 
 	msg.FullData = testingutils.TestingQBFTFullData
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"invalid round change justification unmarshalling",
 		testdoc.MessagesInvalidRoundChangeJustificationUnmarshalingDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
 		"incorrect size",
+		ks,
 	)
+
+	return test
 }

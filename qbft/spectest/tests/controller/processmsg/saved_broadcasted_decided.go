@@ -15,7 +15,7 @@ import (
 func BroadcastedDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := broadcastedDecidedStateComparison()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"broadcast decided",
 		testdoc.ControllerProcessMsgBroadcastedDecidedDoc,
 		[]*tests.RunInstanceData{
@@ -40,7 +40,10 @@ func BroadcastedDecided() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func broadcastedDecidedStateComparison() *comparable.StateComparison {

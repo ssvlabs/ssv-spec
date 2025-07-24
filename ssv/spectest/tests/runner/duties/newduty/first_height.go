@@ -11,7 +11,7 @@ import (
 func FirstHeight() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return NewMultiStartNewRunnerDutySpecTest(
+	test := NewMultiStartNewRunnerDutySpecTest(
 		"new duty first height",
 		testdoc.NewDutyFirstHeightDoc,
 		[]*StartNewRunnerDutySpecTest{
@@ -67,5 +67,8 @@ func FirstHeight() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},
+		ks,
 	)
+
+	return test
 }

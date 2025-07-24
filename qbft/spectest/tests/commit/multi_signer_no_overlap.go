@@ -30,7 +30,7 @@ func MultiSignerNoOverlap() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"multi signer, no overlap",
 		testdoc.CommitTestMultiSignerNoOverlapDoc,
 		pre,
@@ -40,5 +40,8 @@ func MultiSignerNoOverlap() tests.SpecTest {
 		outputMsgs,
 		"invalid signed message: msg allows 1 signer",
 		nil,
+		ks,
 	)
+
+	return test
 }

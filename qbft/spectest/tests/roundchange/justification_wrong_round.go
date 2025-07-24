@@ -23,7 +23,7 @@ func JustificationWrongRound() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change justification wrong round",
 		testdoc.RoundChangeJustificationWrongRoundDoc,
 		pre,
@@ -33,5 +33,8 @@ func JustificationWrongRound() tests.SpecTest {
 		nil,
 		"invalid signed message: round change justification invalid: wrong msg round",
 		nil,
+		ks,
 	)
+
+	return test
 }

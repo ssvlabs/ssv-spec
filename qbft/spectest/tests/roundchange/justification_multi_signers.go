@@ -28,7 +28,7 @@ func JustificationMultiSigners() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"justification multi signer",
 		testdoc.RoundChangeJustificationMultiSignersDoc,
 		pre,
@@ -38,5 +38,8 @@ func JustificationMultiSigners() tests.SpecTest {
 		nil,
 		"invalid signed message: round change justification invalid: msg allows 1 signer",
 		nil,
+		ks,
 	)
+
+	return test
 }

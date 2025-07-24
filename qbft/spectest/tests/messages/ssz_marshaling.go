@@ -41,12 +41,15 @@ func SSZMarshaling() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"SSZ marshalling of signed messaged",
 		testdoc.MessagesSSZMarshalingDoc,
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{encodedMsg},
 		[][32]byte{msgRoot},
 		"",
+		ks,
 	)
+
+	return test
 }

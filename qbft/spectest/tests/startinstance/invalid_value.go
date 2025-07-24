@@ -19,5 +19,6 @@ func InvalidValue() tests.SpecTest {
 		nil,
 		"value invalid: invalid value",
 		nil,
+		nil,
 	)
 }

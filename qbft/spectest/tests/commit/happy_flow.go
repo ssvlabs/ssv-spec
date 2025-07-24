@@ -29,7 +29,7 @@ func HappyFlow() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"commit happy flow",
 		testdoc.CommitTestHappyFlowDoc,
 		pre,
@@ -39,5 +39,8 @@ func HappyFlow() tests.SpecTest {
 		outputMsgs,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

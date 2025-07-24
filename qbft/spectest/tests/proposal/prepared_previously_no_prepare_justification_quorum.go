@@ -35,7 +35,7 @@ func PreparedPreviouslyNoPrepareJustificationQuorum() tests.SpecTest {
 		),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"no prepare quorum (prepared)",
 		testdoc.ProposalPreparedPreviouslyNoPrepareJustificationQuorumDoc,
 		pre,
@@ -45,7 +45,10 @@ func PreparedPreviouslyNoPrepareJustificationQuorum() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: change round msg not valid: no justifications quorum",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func preparedPreviouslyNoPrepareJustificationQuorumStateComparison() *comparable.StateComparison {

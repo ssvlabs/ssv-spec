@@ -51,6 +51,7 @@ func ShuffledDecidedDuties() tests.SpecTest {
 		"shuffled decided duties",
 		testdoc.CommitteeShuffledDecidedDutiesDoc,
 		tests,
+		nil,
 	)
 
 	return multiSpecTest

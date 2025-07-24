@@ -46,6 +46,7 @@ func NotDecided() tests.SpecTest {
 				},
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

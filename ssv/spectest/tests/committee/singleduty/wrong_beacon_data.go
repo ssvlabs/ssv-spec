@@ -38,6 +38,7 @@ func WrongBeaconVote() tests.SpecTest {
 		"wrong beacon vote",
 		testdoc.CommitteeWrongBeaconVoteDoc,
 		tests,
+		ks,
 	)
 
 	return multiSpecTest

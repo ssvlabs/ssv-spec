@@ -27,7 +27,7 @@ func RoundChangePartialQuorum() tests.SpecTest {
 
 	outputMessages := []*types.SignedSSVMessage{outMsg}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change partial quorum",
 		testdoc.RoundChangePartialQuorumDoc,
 		pre,
@@ -40,7 +40,10 @@ func RoundChangePartialQuorum() tests.SpecTest {
 			Timeouts: 1,
 			Round:    qbft.Round(2),
 		},
+		ks,
 	)
+
+	return test
 }
 
 func roundChangePartialQuorumStateComparison() *comparable.StateComparison {

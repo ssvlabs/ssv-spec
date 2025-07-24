@@ -20,12 +20,15 @@ func MsgNilIdentifier() tests.SpecTest {
 		Root:       testingutils.TestingQBFTRootData,
 	})
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"msg identifier nil",
 		testdoc.MessagesMsgNilIdentifierDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
 		"message identifier is invalid",
+		ks,
 	)
+
+	return test
 }

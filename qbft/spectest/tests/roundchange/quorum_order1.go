@@ -34,7 +34,7 @@ func QuorumOrder1() tests.SpecTest {
 			testingutils.MarshalJustifications(inputMessages), testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change quorum order 1",
 		testdoc.RoundChangeQuorumOrder1Doc,
 		pre,
@@ -44,7 +44,10 @@ func QuorumOrder1() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func quorumOrder1StateComparison() *comparable.StateComparison {

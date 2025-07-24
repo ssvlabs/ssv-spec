@@ -22,7 +22,7 @@ func LateCommit() tests.SpecTest {
 	)
 	msgs = append(msgs, testingutils.TestingCommitMessage(ks.OperatorKeys[4], types.OperatorID(4)))
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"late commit",
 		testdoc.ControllerLateMsgLateCommitDoc,
 		[]*tests.RunInstanceData{
@@ -44,7 +44,10 @@ func LateCommit() tests.SpecTest {
 		nil,
 		"not processing consensus message since instance is already decided",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 // LateCommitStateComparison returns the expected state comparison for LateCommit test.

@@ -56,6 +56,7 @@ func StartDuty() tests.SpecTest {
 		"start duty",
 		testdoc.CommitteeStartDutyDoc,
 		tests,
+		nil,
 	)
 
 	return multiSpecTest

@@ -26,7 +26,7 @@ func NonUniqueSigner() tests.SpecTest {
 		msg,
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change non unique signer",
 		testdoc.RoundChangeNonUniqueSignerDoc,
 		pre,
@@ -36,5 +36,8 @@ func NonUniqueSigner() tests.SpecTest {
 		nil,
 		"invalid signed message: invalid SignedSSVMessage: non unique signer",
 		nil,
+		ks,
 	)
+
+	return test
 }

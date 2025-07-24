@@ -17,7 +17,7 @@ func WrongHeight() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRoundAndHeight(ks.OperatorKeys[1], types.OperatorID(1), 2, 2),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change invalid height",
 		testdoc.RoundChangeWrongHeightDoc,
 		pre,
@@ -27,5 +27,8 @@ func WrongHeight() tests.SpecTest {
 		nil,
 		"invalid signed message: wrong msg height",
 		nil,
+		ks,
 	)
+
+	return test
 }

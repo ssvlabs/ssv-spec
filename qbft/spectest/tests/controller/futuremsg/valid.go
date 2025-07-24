@@ -20,7 +20,7 @@ func ValidMsg() tests.SpecTest {
 	// create base controller
 	contr := createBaseController()
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"future valid msg",
 		testdoc.ControllerFutureMsgValidDoc,
 		[]*tests.RunInstanceData{
@@ -33,7 +33,10 @@ func ValidMsg() tests.SpecTest {
 		nil,
 		"future msg from height, could not process",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func createBaseController() *qbft.Controller {

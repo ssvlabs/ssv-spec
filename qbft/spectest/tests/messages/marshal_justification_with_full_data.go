@@ -34,12 +34,15 @@ func MarshalJustificationsWithFullData() tests.SpecTest {
 		panic(err)
 	}
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"marshal justifications with full data",
 		testdoc.MessagesMarshalJustificationWithFullDataDoc,
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{b},
 		[][32]byte{r},
 		"",
+		ks,
 	)
+
+	return test
 }
