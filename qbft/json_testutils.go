@@ -18,7 +18,7 @@ func (c *Controller) Encode() ([]byte, error) {
 }
 
 func (c *Controller) Decode(data []byte) error {
-	err := json.Unmarshal(data, &c)
+	err := json.Unmarshal(data, c)
 	if err != nil {
 		return errors.Wrap(err, "could not decode controller")
 	}
