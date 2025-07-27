@@ -11,6 +11,7 @@ const (
 
 	RoleValidatorRegistration
 	RoleVoluntaryExit
+	RoleAggregatorCommittee // New role for combined aggregator and sync committee contribution
 
 	RoleUnknown = -1
 )
@@ -30,6 +31,8 @@ func (r RunnerRole) String() string {
 		return "VALIDATOR_REGISTRATION_RUNNER"
 	case RoleVoluntaryExit:
 		return "VOLUNTARY_EXIT_RUNNER"
+	case RoleAggregatorCommittee:
+		return "AGGREGATOR_COMMITTEE_RUNNER"
 	default:
 		return "UNDEFINED"
 	}

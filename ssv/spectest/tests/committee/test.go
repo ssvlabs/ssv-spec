@@ -10,6 +10,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
+
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
@@ -85,7 +86,7 @@ func (test *CommitteeSpecTest) runPreTesting() error {
 		var err error
 		switch input := input.(type) {
 		case types.Duty:
-			err = test.Committee.StartDuty(input.(*types.CommitteeDuty))
+			err = test.Committee.StartDuty(input)
 		case *types.SignedSSVMessage:
 			err = test.Committee.ProcessMessage(input)
 		default:

@@ -58,7 +58,7 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	var committee []*types.Operator
 	switch test.Runner.(type) {
 	case *ssv.CommitteeRunner:
-		var runnerInstance *ssv.CommitteeRunner
+		var runnerInstance ssv.Runner
 		for _, runner := range c.Runners {
 			runnerInstance = runner
 			break

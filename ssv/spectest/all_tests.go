@@ -2,6 +2,7 @@ package spectest
 
 import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	aggregatorcommitteesingleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/aggregatorcommittee/singleduty"
 	committeemultipleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/multipleduty"
 	committeesingleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/singleduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner"
@@ -92,6 +93,8 @@ var AllTests = []tests.TestF{
 	committeemultipleduty.ShuffledHappyFlowDutiesWithTheSameValidators,
 	committeemultipleduty.ShuffledHappyFlowDutiesWithDifferentValidators,
 	committeemultipleduty.FailedThanSuccessfulDuties,
+
+	aggregatorcommitteesingleduty.HappyFlow,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
