@@ -1,12 +1,15 @@
 package messages
 
-import "github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+)
 
 // CreateCommit tests creating a commit msg
 func CreateCommit() tests.SpecTest {
 	return tests.NewCreateMsgSpecTest(
 		"create commit",
-		"Test creating a commit message for QBFT consensus.",
+		testdoc.MessagesCreateCommitDoc,
 		[32]byte{1, 2, 3, 4},
 		nil,
 		10,
@@ -16,5 +19,6 @@ func CreateCommit() tests.SpecTest {
 		"6650657e621029ea09937d8f2766b3ea8b71ec19fc02201d9c9c9a45c2c1baa8",
 		nil,
 		"",
+		nil,
 	)
 }

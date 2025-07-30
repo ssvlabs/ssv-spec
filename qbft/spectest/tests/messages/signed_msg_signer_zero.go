@@ -3,6 +3,7 @@ package messages
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -21,12 +22,15 @@ func SignedMessageSigner0() tests.SpecTest {
 		[]types.OperatorID{1, 2, 0},
 	)
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"signer 0",
-		"Test signed message with signer ID 0, which is not allowed.",
+		testdoc.MessagesSignedMsgSignerZeroDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
 		"signer ID 0 not allowed",
+		ks,
 	)
+
+	return test
 }

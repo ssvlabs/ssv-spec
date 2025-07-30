@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,7 +19,7 @@ func PreDecided() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus before decided",
-		"Tests post-consensus message processing before duty is decided, expecting error",
+		testdoc.PostConsensusPreDecidedDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
@@ -40,6 +41,7 @@ func PreDecided() tests.SpecTest {
 				ExpectedError:          err,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

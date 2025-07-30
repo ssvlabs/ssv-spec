@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -23,12 +24,15 @@ func InvalidPrepareJustificationsUnmarshalling() tests.SpecTest {
 
 	msg.FullData = testingutils.TestingQBFTFullData
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"invalid prepare justification unmarshalling",
-		"Test unmarshalling invalid prepare justifications, expecting validation error during message validation.",
+		testdoc.MessagesInvalidPrepareJustificationUnmarshalingDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
 		"incorrect size",
+		ks,
 	)
+
+	return test
 }

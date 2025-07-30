@@ -3,6 +3,7 @@ package decided
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -38,9 +39,9 @@ func CurrentInstancePastRound() tests.SpecTest {
 		testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 2, 3}),
 	}...)
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide current instance past round",
-		"Test a decided message received for current running instance for a past round, expecting the instance to be decided.",
+		testdoc.ControllerDecidedCurrentInstancePastRoundDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue:    []byte{1, 2, 3, 4},
@@ -54,5 +55,8 @@ func CurrentInstancePastRound() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

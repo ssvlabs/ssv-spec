@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -49,9 +50,9 @@ func LatePreparePastInstance() tests.SpecTest {
 	)
 	sc := latePreparePastInstanceStateComparison(2, lateMsg)
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"late prepare past instance",
-		"Test processing prepare message for a previously decided instance, expecting error.",
+		testdoc.ControllerLateMsgLatePreparePastInstanceDoc,
 		[]*tests.RunInstanceData{
 			instanceData(qbft.FirstHeight),
 			instanceData(1),
@@ -67,7 +68,10 @@ func LatePreparePastInstance() tests.SpecTest {
 		nil,
 		"not processing consensus message since instance is already decided",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 // latePreparePastInstanceStateComparison returns a comparable.StateComparison for controller running up to the given height.

@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -35,9 +36,9 @@ func QuorumNotTriggeredTwice() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"quorum not triggered twice",
-		"Test that after a round change quorum triggers a proposal, further round change messages do not trigger another proposal.",
+		testdoc.RoundChangeQuorumNotTriggeredTwiceDoc,
 		pre,
 		"",
 		nil,
@@ -45,5 +46,8 @@ func QuorumNotTriggeredTwice() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

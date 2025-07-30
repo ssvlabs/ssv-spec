@@ -5,7 +5,9 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 )
 
@@ -19,6 +21,7 @@ type PartialSigContainerTest struct {
 	ExpectedError   string
 	ExpectedResult  []byte
 	ExpectedQuorum  bool
+	PrivateKeys     *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *PartialSigContainerTest) TestName() string {
@@ -56,10 +59,10 @@ func (test *PartialSigContainerTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
 
-func NewPartialSigContainerTest(name, documentation string, quorum uint64, validatorPubKey []byte, signatureMsgs []*types.PartialSignatureMessage, expectedError string, expectedResult []byte, expectedQuorum bool) *PartialSigContainerTest {
+func NewPartialSigContainerTest(name, documentation string, quorum uint64, validatorPubKey []byte, signatureMsgs []*types.PartialSignatureMessage, expectedError string, expectedResult []byte, expectedQuorum bool, ks *testingutils.TestKeySet) *PartialSigContainerTest {
 	return &PartialSigContainerTest{
 		Name:            name,
-		Type:            "Partial signature container: validation of signature aggregation and quorum verification",
+		Type:            testdoc.PartialSigContainerTestType,
 		Documentation:   documentation,
 		Quorum:          quorum,
 		ValidatorPubKey: validatorPubKey,
@@ -67,5 +70,6 @@ func NewPartialSigContainerTest(name, documentation string, quorum uint64, valid
 		ExpectedError:   expectedError,
 		ExpectedResult:  expectedResult,
 		ExpectedQuorum:  expectedQuorum,
+		PrivateKeys:     testingutils.BuildPrivateKeyInfo(ks),
 	}
 }

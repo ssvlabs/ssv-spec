@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -23,7 +24,7 @@ func InvalidSignedMessageNoSignatures() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus invalid signed msg no signatures",
-		"Tests pre-consensus message processing with invalid signed message (no signatures)",
+		testdoc.PreConsensusInvalidSignedMessageNoSignatureDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
@@ -91,6 +92,7 @@ func InvalidSignedMessageNoSignatures() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

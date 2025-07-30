@@ -2,6 +2,7 @@ package startinstance
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 )
 
@@ -12,7 +13,7 @@ func LowerHeight() tests.SpecTest {
 
 	return tests.NewControllerSpecTest(
 		"start instance lower height",
-		"Test starting a new QBFT instance with a height lower than the previous instance, expecting error.",
+		testdoc.StartInstanceLowerHeightDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -25,6 +26,7 @@ func LowerHeight() tests.SpecTest {
 		},
 		nil,
 		"attempting to start an instance with a past height",
+		nil,
 		nil,
 	)
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,7 +17,7 @@ func InvalidOperatorSignature() tests.SpecTest {
 	expectedError := "SignedSSVMessage has an invalid signature: crypto/rsa: verification error"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus invalid operator signature",
-		"Tests pre-consensus message processing with invalid operator signature, expecting error",
+		testdoc.PreConsensusInvalidOperatorSignatureDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
@@ -58,6 +59,7 @@ func InvalidOperatorSignature() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

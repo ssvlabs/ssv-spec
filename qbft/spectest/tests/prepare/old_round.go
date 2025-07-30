@@ -2,6 +2,7 @@ package prepare
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -27,9 +28,9 @@ func OldRound() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], 1, 9),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"prepare prev round",
-		"Test prepare message for a round less than the current state round, expecting validation error due to outdated round.",
+		testdoc.PrepareOldRoundDoc,
 		pre,
 		"",
 		nil,
@@ -37,5 +38,8 @@ func OldRound() tests.SpecTest {
 		nil,
 		"invalid signed message: past round",
 		nil,
+		ks,
 	)
+
+	return test
 }

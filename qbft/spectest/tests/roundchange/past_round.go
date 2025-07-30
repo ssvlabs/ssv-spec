@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -25,9 +26,9 @@ func PastRound() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change past round",
-		"Test round change msg with past round, expecting error.",
+		testdoc.RoundChangePastRoundDoc,
 		pre,
 		"",
 		nil,
@@ -35,5 +36,8 @@ func PastRound() tests.SpecTest {
 		nil,
 		"invalid signed message: past round",
 		nil,
+		ks,
 	)
+
+	return test
 }

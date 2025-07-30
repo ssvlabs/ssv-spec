@@ -1,6 +1,7 @@
 package startinstance
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -9,7 +10,7 @@ import (
 func InvalidValue() tests.SpecTest {
 	return tests.NewControllerSpecTest(
 		"start instance invalid value",
-		"Test starting a new QBFT instance with an invalid value, expecting value validation error.",
+		testdoc.StartInstanceInvalidValueDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: testingutils.TestingInvalidValueCheck,
@@ -17,6 +18,7 @@ func InvalidValue() tests.SpecTest {
 		},
 		nil,
 		"value invalid: invalid value",
+		nil,
 		nil,
 	)
 }

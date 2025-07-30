@@ -1,6 +1,7 @@
 package processmsg
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -9,9 +10,9 @@ import (
 // SingleConsensusMsg tests process msg of a single msg
 func SingleConsensusMsg() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"single consensus msg",
-		"Test processing a single consensus message.",
+		testdoc.ControllerProcessMsgSingleConsensusMsgDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -23,5 +24,8 @@ func SingleConsensusMsg() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

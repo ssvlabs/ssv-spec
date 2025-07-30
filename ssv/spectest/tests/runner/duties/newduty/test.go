@@ -14,14 +14,15 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
-	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+	comparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 type StartNewRunnerDutySpecTest struct {
 	Name                    string
-	Type                    string `json:"omitempty"`
+	Type                    string `json:"Type,omitempty"`
 	Documentation           string
 	Runner                  ssv.Runner
 	Duty                    types.Duty
@@ -30,6 +31,7 @@ type StartNewRunnerDutySpecTest struct {
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 	OutputMessages          []*types.PartialSignatureMessages
 	ExpectedError           string
+	PrivateKeys             *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *StartNewRunnerDutySpecTest) TestName() string {
@@ -129,6 +131,7 @@ type MultiStartNewRunnerDutySpecTest struct {
 	Type          string
 	Documentation string
 	Tests         []*StartNewRunnerDutySpecTest
+	PrivateKeys   *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (tests *MultiStartNewRunnerDutySpecTest) TestName() string {
@@ -273,10 +276,10 @@ func (t *StartNewRunnerDutySpecTest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func NewStartNewRunnerDutySpecTest(name, documentation string, runner ssv.Runner, duty types.Duty, threshold uint64, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, expectedError string) *StartNewRunnerDutySpecTest {
+func NewStartNewRunnerDutySpecTest(name, documentation string, runner ssv.Runner, duty types.Duty, threshold uint64, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, expectedError string, ks *testingutils.TestKeySet) *StartNewRunnerDutySpecTest {
 	return &StartNewRunnerDutySpecTest{
 		Name:                    name,
-		Type:                    "Start new runner duty",
+		Type:                    testdoc.RunnerDutiesSpecTestType,
 		Documentation:           documentation,
 		Runner:                  runner,
 		Duty:                    duty,
@@ -285,14 +288,16 @@ func NewStartNewRunnerDutySpecTest(name, documentation string, runner ssv.Runner
 		PostDutyRunnerState:     postDutyRunnerState,
 		OutputMessages:          outputMessages,
 		ExpectedError:           expectedError,
+		PrivateKeys:             testingutils.BuildPrivateKeyInfo(ks),
 	}
 }
 
-func NewMultiStartNewRunnerDutySpecTest(name, documentation string, tests []*StartNewRunnerDutySpecTest) *MultiStartNewRunnerDutySpecTest {
+func NewMultiStartNewRunnerDutySpecTest(name, documentation string, tests []*StartNewRunnerDutySpecTest, ks *testingutils.TestKeySet) *MultiStartNewRunnerDutySpecTest {
 	return &MultiStartNewRunnerDutySpecTest{
 		Name:          name,
-		Type:          "Multi start new runner duty",
+		Type:          testdoc.MultiRunnerDutiesSpecTestType,
 		Documentation: documentation,
 		Tests:         tests,
+		PrivateKeys:   testingutils.BuildPrivateKeyInfo(ks),
 	}
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,7 +19,7 @@ func ValidDecided7Operators() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus valid decided 7 operators",
-		"Tests valid consensus decided message processing with 7 operators",
+		testdoc.ConsensusValidDecided7OperatorsDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:                    "sync committee contribution",
@@ -33,6 +34,7 @@ func ValidDecided7Operators() tests.SpecTest {
 				},
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

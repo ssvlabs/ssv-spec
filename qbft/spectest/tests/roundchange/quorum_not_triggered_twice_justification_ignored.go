@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -38,9 +39,9 @@ func QuorumNotTriggeredTwiceJustificationIgnored() tests.SpecTest {
 			[][]byte{}),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"quorum not triggered twice justification ignored",
-		"Test that after a round change quorum triggers a proposal, further round change messages with justifications are ignored and do not trigger another proposal.",
+		testdoc.RoundChangeQuorumNotTriggeredTwiceJustificationIgnoredDoc,
 		pre,
 		"",
 		nil,
@@ -48,5 +49,8 @@ func QuorumNotTriggeredTwiceJustificationIgnored() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

@@ -7,6 +7,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -39,7 +40,7 @@ func PostDecided() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus post decided",
-		"Tests pre-consensus message processing after duty is decided",
+		testdoc.PreConsensusPostDecidedDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee aggregator selection proof",
@@ -63,6 +64,7 @@ func PostDecided() tests.SpecTest {
 				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

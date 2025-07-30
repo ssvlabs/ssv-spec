@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -49,9 +50,9 @@ func PreparedPreviouslyJustification() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"previously prepared proposal",
-		"Test proposal for round > 1 that was prepared previously with valid quorum of round change messages justification, expecting full consensus flow.",
+		testdoc.ProposalPreparedPreviouslyJustificationDoc,
 		pre,
 		"",
 		nil,
@@ -59,5 +60,8 @@ func PreparedPreviouslyJustification() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

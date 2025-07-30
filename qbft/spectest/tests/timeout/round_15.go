@@ -1,6 +1,7 @@
 package timeout
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,9 +18,9 @@ func Round15() tests.SpecTest {
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[1],
 		types.OperatorID(1), 15))
 
-	return NewSpecTest(
+	test := NewSpecTest(
 		"round 15",
-		"Test UponRoundTimeout for round 15, checks that instance stops processing timeouts after a high round.",
+		testdoc.TimeoutRound15Doc,
 		pre,
 		sc.Root(),
 		sc.ExpectedState,
@@ -29,7 +30,10 @@ func Round15() tests.SpecTest {
 			Round:    0,
 		},
 		"instance stopped processing timeouts",
+		ks,
 	)
+
+	return test
 }
 
 func round15StateComparison() *comparable.StateComparison {

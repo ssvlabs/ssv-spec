@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -24,7 +25,7 @@ func InvalidSignedMessageDifferentLength() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid signed message different length",
-		"Tests post-consensus message processing with invalid signed message (different signature lengths)",
+		testdoc.PostConsensusInvalidSignedMessageDifferentLengthDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
@@ -78,6 +79,7 @@ func InvalidSignedMessageDifferentLength() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

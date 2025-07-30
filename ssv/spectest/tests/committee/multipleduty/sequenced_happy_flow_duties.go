@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -51,8 +52,9 @@ func SequencedHappyFlowDuties() tests.SpecTest {
 
 	multiSpecTest := committee.NewMultiCommitteeSpecTest(
 		"sequenced happy flow duties",
-		"Tests complete happy flow execution for sequences of duties including consensus and post-consensus phases",
+		testdoc.CommitteeSequencedHappyFlowDutiesDoc,
 		tests,
+		nil,
 	)
 
 	return multiSpecTest

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -15,7 +16,7 @@ func InvalidThenQuorum() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus invalid then quorum",
-		"Tests pre-consensus message processing with invalid messages followed by valid quorum",
+		testdoc.PreConsensusInvalidThenQuorumDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
@@ -75,6 +76,7 @@ func InvalidThenQuorum() tests.SpecTest {
 				},
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

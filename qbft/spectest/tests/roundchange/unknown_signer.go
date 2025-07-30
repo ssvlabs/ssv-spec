@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,9 +17,9 @@ func UnknownSigner() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(5), 2),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change unknown signer",
-		"Test round change message with a signer not in the committee, expecting validation error.",
+		testdoc.RoundChangeUnknownSignerDoc,
 		pre,
 		"",
 		nil,
@@ -26,5 +27,8 @@ func UnknownSigner() tests.SpecTest {
 		nil,
 		"invalid signed message: signer not in committee",
 		nil,
+		ks,
 	)
+
+	return test
 }

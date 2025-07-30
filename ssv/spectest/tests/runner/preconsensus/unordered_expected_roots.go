@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -15,7 +16,7 @@ func UnorderedExpectedRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus unordered expected roots",
-		"Tests pre-consensus message processing with unordered expected roots, expecting error",
+		testdoc.PreConsensusUnorderedExpectedRootsDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
@@ -74,6 +75,7 @@ func UnorderedExpectedRoots() tests.SpecTest {
 				},
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

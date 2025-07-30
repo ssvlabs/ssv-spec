@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -24,9 +25,9 @@ func F1DifferentFutureRoundsNotPrepared() tests.SpecTest {
 			[32]byte{}, 0, [][]byte{}),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change f+1 not prepared",
-		"Test f+1 speedup scenario where no previous round was prepared, expecting round to advance to the lowest future round received.",
+		testdoc.RoundChangeF1DifferentFutureRoundsNotPreparedDoc,
 		pre,
 		sc.Root(),
 		sc.ExpectedState,
@@ -34,7 +35,10 @@ func F1DifferentFutureRoundsNotPrepared() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func f1DifferentFutureRoundsNotPreparedStateComparison() *comparable.StateComparison {

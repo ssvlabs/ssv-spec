@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -26,9 +27,9 @@ func UnknownSigner() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"unknown commit signer",
-		"Test processing of a commit message with an unknown signer, expecting error",
+		testdoc.CommitTestUnknownSignerDoc,
 		pre,
 		"",
 		nil,
@@ -36,5 +37,8 @@ func UnknownSigner() tests.SpecTest {
 		outputMsgs,
 		"invalid signed message: signer not in committee",
 		nil,
+		ks,
 	)
+
+	return test
 }

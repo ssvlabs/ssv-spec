@@ -1,6 +1,7 @@
 package proposal
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -25,9 +26,9 @@ func PostPrepared() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"proposal post prepare",
-		"Test processing proposal message after the instance has already prepared, expecting validation error.",
+		testdoc.ProposalPostPreparedDoc,
 		pre,
 		"",
 		nil,
@@ -35,5 +36,8 @@ func PostPrepared() tests.SpecTest {
 		outputMessages,
 		"invalid signed message: proposal is not valid with current state",
 		nil,
+		ks,
 	)
+
+	return test
 }

@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,9 +17,9 @@ func F1DuplicateSignerNotPrepared() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 5),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change f+1 not duplicate prepared",
-		"Test that f+1 speedup is not accepted for duplicate signer when not previously prepared, expecting no round advancement.",
+		testdoc.RoundChangeF1DuplicateSignerNotPreparedDoc,
 		pre,
 		"",
 		nil,
@@ -26,5 +27,8 @@ func F1DuplicateSignerNotPrepared() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,9 +21,9 @@ func PostDecided() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[4], 4),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"post decided",
-		"Test processing of a commit message after instance decided",
+		testdoc.CommitTestPostDecidedDoc,
 		pre,
 		"",
 		nil,
@@ -30,5 +31,8 @@ func PostDecided() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -34,9 +35,9 @@ func AfterProposal() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change after proposal accepted",
-		"Test round change messages after previous quorum and proposal acceptance, followed by another round change.",
+		testdoc.RoundChangeAfterProposalDoc,
 		pre,
 		"",
 		nil,
@@ -44,5 +45,8 @@ func AfterProposal() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

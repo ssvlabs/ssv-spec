@@ -1,6 +1,7 @@
 package prepare
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,9 +19,9 @@ func DuplicateMsg() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"duplicate prepare message",
-		"Test processing of duplicate prepare messages from the same signer",
+		testdoc.PrepareDuplicateMsgDoc,
 		pre,
 		"",
 		nil,
@@ -28,5 +29,8 @@ func DuplicateMsg() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

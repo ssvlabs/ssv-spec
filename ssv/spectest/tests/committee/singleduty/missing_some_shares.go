@@ -7,6 +7,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -126,8 +127,9 @@ func MissingSomeShares() tests.SpecTest {
 
 	multiSpecTest := committee.NewMultiCommitteeSpecTest(
 		"start committee duty with missing shares",
-		"Tests complete duty execution for a committee that only has shares for a fraction of the duty's validators",
+		testdoc.CommitteeMissingSomeSharesDoc,
 		tests,
+		ks,
 	)
 
 	return multiSpecTest

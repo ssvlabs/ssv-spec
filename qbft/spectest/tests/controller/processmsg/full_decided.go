@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,9 +15,9 @@ import (
 func FullDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := fullDecidedStateComparison()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"full decided",
-		"Test processing messages and first time deciding, expecting successful decision.",
+		testdoc.ControllerProcessMsgFullDecidedDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: testingutils.TestingQBFTFullData,
@@ -39,7 +40,10 @@ func FullDecided() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func fullDecidedStateComparison() *qbftcomparable.StateComparison {

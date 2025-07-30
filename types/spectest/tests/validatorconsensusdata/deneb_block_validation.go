@@ -2,6 +2,7 @@ package validatorconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -9,7 +10,7 @@ import (
 func DenebBlockValidation() *ValidatorConsensusDataTest {
 	return NewValidatorConsensusDataTest(
 		"valid deneb block",
-		"Test validation of valid consensus data with Deneb block",
+		testdoc.ValidatorConsensusDataTestDenebBlockDoc,
 		*testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb),
 		"",
 	)

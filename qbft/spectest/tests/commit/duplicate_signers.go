@@ -3,6 +3,7 @@ package commit
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,9 +18,9 @@ func DuplicateSigners() tests.SpecTest {
 	commit := testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2]}, []types.OperatorID{1, 2})
 	commit.OperatorIDs = []types.OperatorID{1, 1}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"duplicate signers",
-		"Test processing of a commit message with duplicate signers",
+		testdoc.CommitTestDuplicateSignersDoc,
 		pre,
 		"",
 		nil,
@@ -27,5 +28,8 @@ func DuplicateSigners() tests.SpecTest {
 		nil,
 		"invalid signed message: invalid SignedSSVMessage: non unique signer",
 		nil,
+		ks,
 	)
+
+	return test
 }

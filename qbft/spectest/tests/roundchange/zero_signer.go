@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,9 +17,9 @@ func ZeroSigner() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(0), 2),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change zero signer",
-		"Test round change message with signer ID 0, expecting validation error.",
+		testdoc.RoundChangeZeroSignerDoc,
 		pre,
 		"",
 		nil,
@@ -26,5 +27,8 @@ func ZeroSigner() tests.SpecTest {
 		nil,
 		"invalid signed message: invalid SignedSSVMessage: signer ID 0 not allowed",
 		nil,
+		ks,
 	)
+
+	return test
 }

@@ -2,6 +2,7 @@ package prepare
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -30,9 +31,9 @@ func PrepareQuorumTriggeredTwice() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"prepared quorum committed twice",
-		"Test triggering prepare quorum twice by sending more than 2f+1 prepare messages, expecting commit message broadcast.",
+		testdoc.PrepareQuorumTriggeredTwiceDoc,
 		pre,
 		sc.Root(),
 		sc.ExpectedState,
@@ -40,7 +41,10 @@ func PrepareQuorumTriggeredTwice() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func prepareQuorumTriggeredTwiceStateComparison() *comparable.StateComparison {

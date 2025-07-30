@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -22,9 +23,9 @@ func JustificationInvalidRound() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"justification invalid round",
-		"Test round change justification with prepared round greater than message round, expecting error.",
+		testdoc.RoundChangeJustificationInvalidRoundDoc,
 		pre,
 		"",
 		nil,
@@ -32,5 +33,8 @@ func JustificationInvalidRound() tests.SpecTest {
 		nil,
 		"invalid signed message: round change justification invalid: wrong msg round",
 		nil,
+		ks,
 	)
+
+	return test
 }

@@ -1,6 +1,7 @@
 package prepare
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -23,9 +24,9 @@ func HappyFlow() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"prepare happy flow",
-		"Test a complete prepare happy flow with proposal and prepare quorum",
+		testdoc.PrepareHappyFlowDoc,
 		pre,
 		"",
 		nil,
@@ -33,5 +34,8 @@ func HappyFlow() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -48,7 +49,7 @@ func WrongDutyPubKey() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"wrong duty pubkey",
-		"Tests decided value with duty validator pubkey != the duty runner's pubkey",
+		testdoc.DutyExeWrongDutyPubKeyDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:     "sync committee contribution",
@@ -61,6 +62,7 @@ func WrongDutyPubKey() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

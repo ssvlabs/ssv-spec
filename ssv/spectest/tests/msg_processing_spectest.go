@@ -9,21 +9,21 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
-	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
-
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 type MsgProcessingSpecTest struct {
 	Name          string
-	Type          string `json:"omitempty"`
+	Type          string `json:"Type,omitempty"`
 	Documentation string
 	Runner        ssv.Runner
 	Duty          types.Duty
@@ -37,6 +37,7 @@ type MsgProcessingSpecTest struct {
 	BeaconBroadcastedRoots []string
 	DontStartDuty          bool // if set to true will not start a duty for the runner
 	ExpectedError          string
+	PrivateKeys            *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {
@@ -289,10 +290,23 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func NewMsgProcessingSpecTest(name, documentation string, runner ssv.Runner, duty types.Duty, messages []*types.SignedSSVMessage, decidedSlashable bool, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, dontStartDuty bool, expectedError string) *MsgProcessingSpecTest {
+func NewMsgProcessingSpecTest(
+	name, documentation string,
+	runner ssv.Runner,
+	duty types.Duty,
+	messages []*types.SignedSSVMessage,
+	decidedSlashable bool,
+	postDutyRunnerStateRoot string,
+	postDutyRunnerState types.Root,
+	outputMessages []*types.PartialSignatureMessages,
+	beaconBroadcastedRoots []string,
+	dontStartDuty bool,
+	expectedError string,
+	ks *testingutils.TestKeySet,
+) *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:                    name,
-		Type:                    "SSV message processing: validation of message handling and state transitions",
+		Type:                    testdoc.MsgProcessingSpecTestType,
 		Documentation:           documentation,
 		Runner:                  runner,
 		Duty:                    duty,
@@ -304,5 +318,6 @@ func NewMsgProcessingSpecTest(name, documentation string, runner ssv.Runner, dut
 		BeaconBroadcastedRoots:  beaconBroadcastedRoots,
 		DontStartDuty:           dontStartDuty,
 		ExpectedError:           expectedError,
+		PrivateKeys:             testingutils.BuildPrivateKeyInfo(ks),
 	}
 }

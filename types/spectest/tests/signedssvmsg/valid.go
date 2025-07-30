@@ -2,6 +2,7 @@ package signedssvmsg
 
 import (
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -19,7 +20,7 @@ func Valid() *SignedSSVMessageTest {
 
 	return NewSignedSSVMessageTest(
 		"valid",
-		"Test validation of a valid signed SSV message with proper RSA signature",
+		testdoc.SignedSSVMessageTestValidDoc,
 		[]*types.SignedSSVMessage{msg},
 		"",
 		[][]byte{pkBytes},

@@ -3,6 +3,7 @@ package roundchange
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -27,9 +28,9 @@ func JustificationMultiSigners() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"justification multi signer",
-		"Test round change justification with a prepare message signed by multiple signers, expecting error.",
+		testdoc.RoundChangeJustificationMultiSignersDoc,
 		pre,
 		"",
 		nil,
@@ -37,5 +38,8 @@ func JustificationMultiSigners() tests.SpecTest {
 		nil,
 		"invalid signed message: round change justification invalid: msg allows 1 signer",
 		nil,
+		ks,
 	)
+
+	return test
 }

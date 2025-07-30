@@ -1,6 +1,9 @@
 package share
 
-import "github.com/ssvlabs/ssv-spec/types/testingutils"
+import (
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+)
 
 // Encoding tests encoding of a ssv message
 func Encoding() *EncodingTest {
@@ -18,7 +21,7 @@ func Encoding() *EncodingTest {
 
 	return NewEncodingTest(
 		"share encoding",
-		"Test encoding and decoding of share with hash tree root verification",
+		testdoc.ShareEncodingTestDoc,
 		byts,
 		root,
 	)

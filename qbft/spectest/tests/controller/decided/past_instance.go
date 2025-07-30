@@ -3,6 +3,7 @@ package decided
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -11,9 +12,9 @@ import (
 // PastInstance tests a decided msg received for past instance
 func PastInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide past instance",
-		"Test decided messages received for past instances, expecting multiple instances to be decided.",
+		testdoc.ControllerDecidedPastInstanceDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -31,5 +32,8 @@ func PastInstance() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

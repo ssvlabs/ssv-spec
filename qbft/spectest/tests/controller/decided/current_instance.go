@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -15,9 +16,9 @@ func CurrentInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := currentInstanceStateComparison()
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide current instance",
-		"Test a decided message received for current running instance, expecting the instance to be decided.",
+		testdoc.ControllerDecidedCurrentInstanceDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -46,7 +47,10 @@ func CurrentInstance() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func currentInstanceStateComparison() *comparable.StateComparison {

@@ -8,6 +8,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -57,7 +58,7 @@ func PostInvalidDecided() tests.SpecTest {
 
 	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
 		"new duty post invalid decided",
-		"Tests new duty start after an invalid decided value, expecting error",
+		testdoc.NewDutyPostInvalidDecidedDoc,
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name: "sync committee aggregator",
@@ -83,6 +84,7 @@ func PostInvalidDecided() tests.SpecTest {
 				},
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,7 +18,7 @@ func Quorum() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus quorum",
-		"Tests post-consensus quorum message processing across different runner types",
+		testdoc.PostConsensusQuorumDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
@@ -43,6 +44,7 @@ func Quorum() tests.SpecTest {
 				DontStartDuty: true,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

@@ -1,6 +1,7 @@
 package messages
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -21,9 +22,9 @@ func CreateProposalPreviouslyPrepared() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 	}
 
-	return tests.NewCreateMsgSpecTest(
+	test := tests.NewCreateMsgSpecTest(
 		"create proposal previously prepared",
-		"Test creating a proposal message when previously prepared with round change and prepare justifications.",
+		testdoc.MessagesCreateProposalPrevPreparedDoc,
 		[32]byte{1, 2, 3, 4},
 		nil,
 		10,
@@ -33,5 +34,8 @@ func CreateProposalPreviouslyPrepared() tests.SpecTest {
 		"f3d483dc8eaa4019fd9e3d586279f2d1ae993b3ac4ad0020e8c0033b5f516167",
 		nil,
 		"",
+		ks,
 	)
+
+	return test
 }

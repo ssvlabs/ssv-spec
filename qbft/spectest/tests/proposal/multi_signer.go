@@ -3,6 +3,7 @@ package proposal
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,9 +20,9 @@ func MultiSigner() tests.SpecTest {
 		),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"proposal multi signer",
-		"Test proposal message with multiple signers, expecting validation error since only one signer is allowed.",
+		testdoc.ProposalMultiSignerDoc,
 		pre,
 		"",
 		nil,
@@ -29,5 +30,8 @@ func MultiSigner() tests.SpecTest {
 		nil,
 		"invalid signed message: msg allows 1 signer",
 		nil,
+		ks,
 	)
+
+	return test
 }

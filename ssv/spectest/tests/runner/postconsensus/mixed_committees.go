@@ -3,6 +3,7 @@ package postconsensus
 import (
 	"fmt"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,8 +21,9 @@ func MixedCommittees() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"mixed committees",
-		"Tests post-consensus message processing with mixed committee types, expecting correct handling of multiple committee scenarios",
+		testdoc.PostConsensusMixedCommitteesDoc,
 		[]*tests.MsgProcessingSpecTest{},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {

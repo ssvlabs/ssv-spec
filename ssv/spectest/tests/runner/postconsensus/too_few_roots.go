@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,7 +19,7 @@ func TooFewRoots() tests.SpecTest {
 	err := "invalid PartialSignatureMessages: no PartialSignatureMessages messages"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus too few roots",
-		"Tests post-consensus message processing with too few roots, expecting error handling for missing roots.",
+		testdoc.PostConsensusTooFewRootsDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
@@ -72,6 +73,7 @@ func TooFewRoots() tests.SpecTest {
 				ExpectedError:           err,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

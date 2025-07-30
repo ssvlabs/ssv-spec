@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -48,8 +49,9 @@ func ShuffledDecidedDuties() tests.SpecTest {
 
 	multiSpecTest := committee.NewMultiCommitteeSpecTest(
 		"shuffled decided duties",
-		"Tests decision phase for sequences of duties with shuffled input messages while preserving order between duty messages",
+		testdoc.CommitteeShuffledDecidedDutiesDoc,
 		tests,
+		nil,
 	)
 
 	return multiSpecTest

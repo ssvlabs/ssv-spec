@@ -1,6 +1,7 @@
 package proposal
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -26,9 +27,9 @@ func NotPreparedPreviouslyJustification() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 5),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"proposal justification (not prepared)",
-		"Test proposal for round > 1 that was not prepared previously, with valid round change justification, expecting prepare message broadcast.",
+		testdoc.ProposalNotPreparedPreviouslyJustificationDoc,
 		pre,
 		"",
 		nil,
@@ -36,5 +37,8 @@ func NotPreparedPreviouslyJustification() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

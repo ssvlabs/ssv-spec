@@ -1,85 +1,28 @@
 {
-		"Name": "duplicate signers",
-		"Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
-		"Documentation": "Test signed message with duplicate signers, expecting validation error.",
-		"Messages": [
-				{
-						"Signatures": [
-								"Mgz+3/i1OdDksD9uukJZZkOJVngs4/fsrrU1BTEwSauwbf8VpZP7zCVNpN7RW+0AhTCeHs/t6uCeEAg0fXU3Ngn7I1zIhFJmwsRV+i59zsEpMYDVVUK6PraH3WF6usIngeiaik0LlkYiJrg4kR1kZeJ7V3yqymCDFBwP4UkE5iehwJxwN7XydMiVjAbcdbAT2CSK0gVcxyJFvS4cTVWzYGpeg3HFSsr3Lq+zDRQNdUyo7hVewN8FC2wYkMt9I8UHlXhpf2ZAolIrl3wb8Lz93IGqsNLRbcAHUDDLw5zfXrQeQ5+5xPQ5fD4xqK+hSBD0QGqmhC82Vju7a0I0llm1FA==",
-								"Mgz+3/i1OdDksD9uukJZZkOJVngs4/fsrrU1BTEwSauwbf8VpZP7zCVNpN7RW+0AhTCeHs/t6uCeEAg0fXU3Ngn7I1zIhFJmwsRV+i59zsEpMYDVVUK6PraH3WF6usIngeiaik0LlkYiJrg4kR1kZeJ7V3yqymCDFBwP4UkE5iehwJxwN7XydMiVjAbcdbAT2CSK0gVcxyJFvS4cTVWzYGpeg3HFSsr3Lq+zDRQNdUyo7hVewN8FC2wYkMt9I8UHlXhpf2ZAolIrl3wb8Lz93IGqsNLRbcAHUDDLw5zfXrQeQ5+5xPQ5fD4xqK+hSBD0QGqmhC82Vju7a0I0llm1FA==",
-								"VOEYr49ORL61wVkIif9Jv0Z85Mdl/T0za/v8dblspGhfvr7V1a/CbBQkiKCs7h8IeDJZrJ2v0aDnc9j49LUC0buORfskygfjvg9U0AuwMJ1ohRKWJ79WG8PdcH0r4h9JyspSqM4YjQrO2TCDthutLAsFbdklo28Hl6koVWPqqRlh7FJjJYYBMbkPh8slLvVdl8Mz2aWY8jSaVF5oZE8pmP4uZcPws03NA3r0s7zdQ80usxgj225ahSvMOwiXtKOlaENuU1pRJXFiQV3ptIOZH86UeJWp/e04pLiFyQVrz4Rk43tmN1Vf4RkwM9chx/ZXomLT8J1Ri1zu5N42cCGWtg=="
-						],
-						"OperatorIDs": [
-								1,
-								1,
-								2
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AgAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
-				}
-		],
-		"EncodedMessages": null,
-		"ExpectedRoots": null,
-		"ExpectedError": "non unique signer"
+  "Name": "duplicate signers",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
+  "Documentation": "Test signed message with duplicate signers, expecting validation error.",
+  "Messages": [
+    {
+      "Signatures": [
+        "Mgz+3/i1OdDksD9uukJZZkOJVngs4/fsrrU1BTEwSauwbf8VpZP7zCVNpN7RW+0AhTCeHs/t6uCeEAg0fXU3Ngn7I1zIhFJmwsRV+i59zsEpMYDVVUK6PraH3WF6usIngeiaik0LlkYiJrg4kR1kZeJ7V3yqymCDFBwP4UkE5iehwJxwN7XydMiVjAbcdbAT2CSK0gVcxyJFvS4cTVWzYGpeg3HFSsr3Lq+zDRQNdUyo7hVewN8FC2wYkMt9I8UHlXhpf2ZAolIrl3wb8Lz93IGqsNLRbcAHUDDLw5zfXrQeQ5+5xPQ5fD4xqK+hSBD0QGqmhC82Vju7a0I0llm1FA==",
+        "Mgz+3/i1OdDksD9uukJZZkOJVngs4/fsrrU1BTEwSauwbf8VpZP7zCVNpN7RW+0AhTCeHs/t6uCeEAg0fXU3Ngn7I1zIhFJmwsRV+i59zsEpMYDVVUK6PraH3WF6usIngeiaik0LlkYiJrg4kR1kZeJ7V3yqymCDFBwP4UkE5iehwJxwN7XydMiVjAbcdbAT2CSK0gVcxyJFvS4cTVWzYGpeg3HFSsr3Lq+zDRQNdUyo7hVewN8FC2wYkMt9I8UHlXhpf2ZAolIrl3wb8Lz93IGqsNLRbcAHUDDLw5zfXrQeQ5+5xPQ5fD4xqK+hSBD0QGqmhC82Vju7a0I0llm1FA==",
+        "VOEYr49ORL61wVkIif9Jv0Z85Mdl/T0za/v8dblspGhfvr7V1a/CbBQkiKCs7h8IeDJZrJ2v0aDnc9j49LUC0buORfskygfjvg9U0AuwMJ1ohRKWJ79WG8PdcH0r4h9JyspSqM4YjQrO2TCDthutLAsFbdklo28Hl6koVWPqqRlh7FJjJYYBMbkPh8slLvVdl8Mz2aWY8jSaVF5oZE8pmP4uZcPws03NA3r0s7zdQ80usxgj225ahSvMOwiXtKOlaENuU1pRJXFiQV3ptIOZH86UeJWp/e04pLiFyQVrz4Rk43tmN1Vf4RkwM9chx/ZXomLT8J1Ri1zu5N42cCGWtg=="
+      ],
+      "OperatorIDs": [
+        1,
+        1,
+        2
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AgAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+    }
+  ],
+  "EncodedMessages": null,
+  "ExpectedRoots": null,
+  "ExpectedError": "non unique signer"
 }

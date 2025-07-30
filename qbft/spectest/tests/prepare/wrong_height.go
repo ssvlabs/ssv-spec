@@ -1,6 +1,7 @@
 package prepare
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,9 +18,9 @@ func WrongHeight() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithHeight(ks.OperatorKeys[1], types.OperatorID(1), 2),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"prepare wrong height",
-		"Test prepare message received with incorrect height, expecting validation error.",
+		testdoc.PrepareWrongHeightDoc,
 		pre,
 		"",
 		nil,
@@ -27,5 +28,8 @@ func WrongHeight() tests.SpecTest {
 		nil,
 		"invalid signed message: wrong msg height",
 		nil,
+		ks,
 	)
+
+	return test
 }

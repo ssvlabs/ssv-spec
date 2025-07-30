@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -22,9 +23,9 @@ func JustificationDuplicateMsg() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"justification duplicate msg",
-		"Test round change justification with duplicate messages, should not result in a justification quorum.",
+		testdoc.RoundChangeJustificationDuplicateMsgDoc,
 		pre,
 		"",
 		nil,
@@ -32,5 +33,8 @@ func JustificationDuplicateMsg() tests.SpecTest {
 		nil,
 		"invalid signed message: no justifications quorum",
 		nil,
+		ks,
 	)
+
+	return test
 }

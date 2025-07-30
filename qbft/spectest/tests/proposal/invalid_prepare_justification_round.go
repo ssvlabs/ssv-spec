@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -33,9 +34,9 @@ func InvalidPrepareJustificationRound() tests.SpecTest {
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
 	}
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"invalid prepare justification round",
-		"Test proposal for round > 1 that was prepared previously but contains prepare justification with round different from the highest prepared round, expecting validation error.",
+		testdoc.ProposalInvalidPrepareJustificationRoundDoc,
 		pre,
 		sc.Root(),
 		sc.ExpectedState,
@@ -43,7 +44,10 @@ func InvalidPrepareJustificationRound() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: wrong msg round",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func invalidPrepareJustificationRoundStateComparison() *comparable.StateComparison {

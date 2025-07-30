@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,9 +18,9 @@ func InvalidValueCheck() tests.SpecTest {
 			qbft.FirstHeight),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"invalid proposal value check",
-		"Test proposal that fails the value check validation, expecting validation error.",
+		testdoc.ProposalInvalidValueCheckDoc,
 		pre,
 		"",
 		nil,
@@ -27,5 +28,8 @@ func InvalidValueCheck() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: proposal fullData invalid: invalid value",
 		nil,
+		ks,
 	)
+
+	return test
 }

@@ -1,6 +1,7 @@
 package messages
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 )
 
@@ -8,7 +9,7 @@ import (
 func CreatePrepare() tests.SpecTest {
 	return tests.NewCreateMsgSpecTest(
 		"create prepare",
-		"Test creating a prepare message for QBFT consensus.",
+		testdoc.MessagesCreatePrepareDoc,
 		[32]byte{1, 2, 3, 4},
 		nil,
 		10,
@@ -18,5 +19,6 @@ func CreatePrepare() tests.SpecTest {
 		"fe85e25b3cf7168e9e6417a9daaa71567a3c0c689b633d8154e252d8225c113c",
 		nil,
 		"",
+		nil,
 	)
 }

@@ -1,15 +1,15 @@
 {
-		"Name": "no messages",
-		"Type": "Partial signature messages: validation of partial signature messages",
-		"Documentation": "Test validation error when partial signature messages contain no messages",
-		"Messages": [
-				{
-						"Type": 0,
-						"Slot": "12",
-						"Messages": []
-				}
-		],
-		"EncodedMessages": null,
-		"ExpectedRoots": null,
-		"ExpectedError": "no PartialSignatureMessages messages"
+  "Name": "no messages",
+  "Type": "Partial signature messages: validation of partial signature messages",
+  "Documentation": "Test validation error when partial signature messages contain no messages",
+  "Messages": [
+    {
+      "Type": 0,
+      "Slot": "12",
+      "Messages": []
+    }
+  ],
+  "EncodedMessages": null,
+  "ExpectedRoots": null,
+  "ExpectedError": "no PartialSignatureMessages messages"
 }

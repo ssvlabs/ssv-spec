@@ -3,6 +3,7 @@ package latemsg
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -40,9 +41,9 @@ func LateCommitPastRound() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[4], 4),
 	}...)
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"late commit past round",
-		"Test processing late commit message for an instance which just decided for a round less than decided round, expecting error.",
+		testdoc.ControllerLateMsgLateCommitPastRoundDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue:    []byte{1, 2, 3, 4},
@@ -61,5 +62,8 @@ func LateCommitPastRound() tests.SpecTest {
 		nil,
 		"not processing consensus message since instance is already decided",
 		nil,
+		ks,
 	)
+
+	return test
 }

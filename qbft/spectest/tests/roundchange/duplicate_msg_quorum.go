@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -38,9 +39,9 @@ func DuplicateMsgQuorum() tests.SpecTest {
 			ks.OperatorKeys[1], types.OperatorID(1), 2, testingutils.MarshalJustifications(rcMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change duplicate msg quorum",
-		"Test duplicate round change message for a signer, followed by enough messages to reach quorum and trigger proposal broadcast.",
+		testdoc.RoundChangeDuplicateMsgQuorumDoc,
 		pre,
 		"",
 		nil,
@@ -48,5 +49,8 @@ func DuplicateMsgQuorum() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

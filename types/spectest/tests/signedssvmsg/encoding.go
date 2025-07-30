@@ -1,6 +1,7 @@
 package signedssvmsg
 
 import (
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -18,7 +19,7 @@ func Encoding() *EncodingTest {
 
 	return NewEncodingTest(
 		"encoding",
-		"Test encoding of a signed SSV message to bytes",
+		testdoc.SignedSSVMessageEncodingTestDoc,
 		byts,
 	)
 }

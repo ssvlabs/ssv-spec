@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -35,8 +36,9 @@ func WrongBeaconVote() tests.SpecTest {
 
 	multiSpecTest := committee.NewMultiCommitteeSpecTest(
 		"wrong beacon vote",
-		"Tests committee behavior when processing proposal messages with invalid beacon vote data (source >= target)",
+		testdoc.CommitteeWrongBeaconVoteDoc,
 		tests,
+		ks,
 	)
 
 	return multiSpecTest

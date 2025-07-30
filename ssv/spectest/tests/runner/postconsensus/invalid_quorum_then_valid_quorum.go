@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,7 +18,7 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 	expectedError := "got post-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid quorum then valid quorum",
-		"Tests post-consensus quorum formation with an invalid quorum followed by a valid quorum, expecting error then successful termination",
+		testdoc.PostConsensusInvalidQuorumThenValidQuorumDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
@@ -46,6 +47,7 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

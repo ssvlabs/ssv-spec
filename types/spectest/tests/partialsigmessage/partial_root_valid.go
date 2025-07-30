@@ -3,6 +3,7 @@ package partialsigmessage
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -14,7 +15,7 @@ func PartialRootValid() *MsgSpecTest {
 
 	return NewMsgSpecTest(
 		"partial root valid",
-		"Test validation of partial signature message with 32-byte signing root",
+		testdoc.MsgSpecTestPartialRootValidDoc,
 		[]*types.PartialSignatureMessages{msg},
 		nil,
 		nil,

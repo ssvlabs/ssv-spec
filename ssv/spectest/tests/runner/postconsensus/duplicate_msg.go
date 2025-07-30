@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,7 +18,7 @@ func DuplicateMsg() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus duplicate msg",
-		"Tests post-consensus message processing with duplicate SignedPartialSignatureMessages from the same signer, expecting correct handling of duplicates",
+		testdoc.PostConsensusDuplicateMsgDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
@@ -38,6 +39,7 @@ func DuplicateMsg() tests.SpecTest {
 				DontStartDuty:           true,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

@@ -8,6 +8,7 @@ import (
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	"github.com/stretchr/testify/require"
 )
@@ -43,7 +44,7 @@ func (test *SSVMessageTest) Run(t *testing.T) {
 func NewSSVMessageTest(name, documentation string, messageIDs []types.MessageID, belongsToValidator bool) *SSVMessageTest {
 	return &SSVMessageTest{
 		Name:               name,
-		Type:               "SSV message validation: testing message ID ownership and routing logic",
+		Type:               testdoc.SSVMessageTestType,
 		Documentation:      documentation,
 		MessageIDs:         messageIDs,
 		BelongsToValidator: belongsToValidator,

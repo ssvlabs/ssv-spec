@@ -2,6 +2,7 @@ package proposer
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -31,7 +32,7 @@ func ThirteenOperators() tests.SpecTest {
 
 	return tests.NewRoundRobinSpecTest(
 		"13 member committee",
-		"Test round-robin proposer selection for a 13-member committee across multiple heights and rounds.",
+		testdoc.ProposerThirteenOperatorsDoc,
 		testingutils.TestingCommitteeMember(testingutils.Testing13SharesSet()),
 		heights,
 		rounds,

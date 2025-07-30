@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,7 +18,7 @@ func InvalidValidatorIndex() tests.SpecTest {
 	expectedError := "failed processing post consensus message: invalid post-consensus message: unknown validator index"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid validator index",
-		"Tests post-consensus message processing with invalid validator indexes, expecting error",
+		testdoc.PostConsensusInvalidValidatorIndexDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
@@ -71,6 +72,7 @@ func InvalidValidatorIndex() tests.SpecTest {
 				ExpectedError:           expectedError,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

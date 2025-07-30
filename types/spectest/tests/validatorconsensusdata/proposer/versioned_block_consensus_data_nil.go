@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -22,7 +23,7 @@ func VersionedBlockConsensusDataNil() *ProposerSpecTest {
 
 	return NewProposerSpecTest(
 		"consensus data versioned block corrupted consensus data",
-		"Test validation error for consensus data with nil block data",
+		testdoc.ProposerSpecTestVersionedBlockConsensusDataNilDoc,
 		false,
 		cdSSZ,
 		nil,

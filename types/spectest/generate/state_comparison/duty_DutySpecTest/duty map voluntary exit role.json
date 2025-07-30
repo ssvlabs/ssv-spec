@@ -1,7 +1,7 @@
 {
-		"Name": "map voluntary exit role",
-		"Type": "Duty: validation of beacon role to runner role conversion",
-		"Documentation": "Test mapping of BNRoleVoluntaryExit",
-		"BeaconRole": 6,
-		"RunnerRole": 5
+  "Name": "map voluntary exit role",
+  "Type": "Duty: validation of beacon role to runner role conversion",
+  "Documentation": "Test mapping of BNRoleVoluntaryExit",
+  "BeaconRole": 6,
+  "RunnerRole": 5
 }

@@ -1,6 +1,7 @@
 package valcheckattestations
 
 import (
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -17,7 +18,7 @@ func BeaconVoteDataNil() tests.SpecTest {
 
 	return valcheck.NewSpecTest(
 		"consensus data value check nil",
-		"Tests attestation value check with nil attestation data",
+		testdoc.ValCheckAttestationBeaconVoteDataNilDoc,
 		types.PraterNetwork,
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,

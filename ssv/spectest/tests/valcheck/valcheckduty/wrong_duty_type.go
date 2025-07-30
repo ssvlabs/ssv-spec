@@ -3,6 +3,7 @@ package valcheckduty
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -18,7 +19,7 @@ func WrongDutyType() tests.SpecTest {
 
 	return valcheck.NewMultiSpecTest(
 		"wrong duty type",
-		"Tests duty value check with wrong duty type",
+		testdoc.ValCheckDutyWrongDutyTypeDoc,
 		[]*valcheck.SpecTest{
 			{
 				Name:       "committee",

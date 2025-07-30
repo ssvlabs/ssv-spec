@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -28,7 +29,7 @@ func WrongValidatorPK() tests.SpecTest {
 	expectedErr := "duty invalid: wrong validator pk"
 	return valcheck.NewMultiSpecTest(
 		"wrong validator PK",
-		"Tests duty value check with wrong validator public key across different roles",
+		testdoc.ValCheckDutyWrongValidatorPKDoc,
 		[]*valcheck.SpecTest{
 			{
 				Name:       "committee",

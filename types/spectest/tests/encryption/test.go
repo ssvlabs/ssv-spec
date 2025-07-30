@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/stretchr/testify/require"
 )
 
@@ -46,7 +47,7 @@ func (test *EncryptionSpecTest) Run(t *testing.T) {
 func NewEncryptionSpecTest(name, documentation string, skPem []byte, pkPem []byte, plainText []byte) *EncryptionSpecTest {
 	return &EncryptionSpecTest{
 		Name:          name,
-		Type:          "Encryption: validation of public/private key operations and message encryption/decryption",
+		Type:          testdoc.EncryptionSpecTestType,
 		Documentation: documentation,
 		SKPem:         skPem,
 		PKPem:         pkPem,

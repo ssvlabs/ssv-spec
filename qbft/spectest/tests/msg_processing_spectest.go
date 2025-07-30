@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -29,6 +30,7 @@ type MsgProcessingSpecTest struct {
 	OutputMessages     []*types.SignedSSVMessage
 	ExpectedError      string
 	ExpectedTimerState *testingutils.TimerState
+	PrivateKeys        *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *MsgProcessingSpecTest) Run(t *testing.T) {
@@ -115,10 +117,10 @@ func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
 	return test.Pre.State, nil
 }
 
-func NewMsgProcessingSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, inputMessages []*types.SignedSSVMessage, outputMessages []*types.SignedSSVMessage, expectedError string, expectedTimerState *testingutils.TimerState) *MsgProcessingSpecTest {
+func NewMsgProcessingSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, inputMessages []*types.SignedSSVMessage, outputMessages []*types.SignedSSVMessage, expectedError string, expectedTimerState *testingutils.TimerState, privateKeys *testingutils.TestKeySet) *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:               name,
-		Type:               "Message processing: validation of consensus message handling and state transitions",
+		Type:               testdoc.MsgProcessingSpecTestType,
 		Documentation:      documentation,
 		Pre:                pre,
 		PostRoot:           postRoot,
@@ -127,5 +129,6 @@ func NewMsgProcessingSpecTest(name string, documentation string, pre *qbft.Insta
 		OutputMessages:     outputMessages,
 		ExpectedError:      expectedError,
 		ExpectedTimerState: expectedTimerState,
+		PrivateKeys:        testingutils.BuildPrivateKeyInfo(privateKeys),
 	}
 }

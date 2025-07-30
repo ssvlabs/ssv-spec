@@ -3,6 +3,7 @@ package validatorconsensusdata
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -22,7 +23,7 @@ func ValidatorRegistration() *ValidatorConsensusDataTest {
 
 	return NewValidatorConsensusDataTest(
 		"validator registration",
-		"Test validation error for validator registration consensus data which has no consensus data",
+		testdoc.ValidatorConsensusDataTestValidatorRegistrationDoc,
 		cd,
 		"validator registration has no consensus data",
 	)

@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -33,9 +34,9 @@ func PreparedPreviouslyDuplicatePrepareMsg() tests.SpecTest {
 		),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"duplicate prepare msg justification",
-		"Test proposal for round > 1 that was prepared previously with prepare messages but contains duplicates, expecting validation error due to no quorum.",
+		testdoc.ProposalPreparedPreviouslyDuplicatePrepareMsgDoc,
 		pre,
 		"",
 		nil,
@@ -43,5 +44,8 @@ func PreparedPreviouslyDuplicatePrepareMsg() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: change round msg not valid: no justifications quorum",
 		nil,
+		ks,
 	)
+
+	return test
 }

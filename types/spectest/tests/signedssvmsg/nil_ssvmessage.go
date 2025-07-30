@@ -2,6 +2,7 @@ package signedssvmsg
 
 import (
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -10,7 +11,7 @@ func NilSSVMessage() *SignedSSVMessageTest {
 
 	return NewSignedSSVMessageTest(
 		"nil ssvmessage",
-		"Test validation error for signed SSV message with nil SSVMessage",
+		testdoc.SignedSSVMessageTestNilSSVMessageDoc,
 		[]*types.SignedSSVMessage{
 			{
 				OperatorIDs: []types.OperatorID{1},

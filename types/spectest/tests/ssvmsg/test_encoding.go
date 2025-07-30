@@ -5,15 +5,17 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
 )
 
 type EncodingTest struct {
-	Name         string
-	Type         string
-	Data         []byte
-	ExpectedRoot [32]byte
+	Name          string
+	Type          string
+	Documentation string
+	Data          []byte
+	ExpectedRoot  [32]byte
 }
 
 func (test *EncodingTest) TestName() string {
@@ -38,11 +40,12 @@ func (test *EncodingTest) Run(t *testing.T) {
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
 
-func NewEncodingTest(name string, data []byte, expectedRoot [32]byte) *EncodingTest {
+func NewEncodingTest(name, documentation string, data []byte, expectedRoot [32]byte) *EncodingTest {
 	return &EncodingTest{
-		Name:         name,
-		Type:         "SSV message encoding",
-		Data:         data,
-		ExpectedRoot: expectedRoot,
+		Name:          name,
+		Type:          testdoc.SSVMessageEncodingTestType,
+		Documentation: documentation,
+		Data:          data,
+		ExpectedRoot:  expectedRoot,
 	}
 }

@@ -3,6 +3,7 @@ package commit
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -29,9 +30,9 @@ func MultiSignerNoOverlap() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"multi signer, no overlap",
-		"Test processing of a multi signer commit message with no overlap, expecting error",
+		testdoc.CommitTestMultiSignerNoOverlapDoc,
 		pre,
 		"",
 		nil,
@@ -39,5 +40,8 @@ func MultiSignerNoOverlap() tests.SpecTest {
 		outputMsgs,
 		"invalid signed message: msg allows 1 signer",
 		nil,
+		ks,
 	)
+
+	return test
 }

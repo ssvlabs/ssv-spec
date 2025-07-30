@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -33,9 +34,9 @@ func QuorumMsgNotPrepared() tests.SpecTest {
 			testingutils.MarshalJustifications(inputMessages), testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change quorum msg not prepared",
-		"Test liveness scenario where the round change message that completes quorum is not previously prepared, which can cause a liveness issue with proposal justification.",
+		testdoc.RoundChangeQuorumMsgNotPreparedDoc,
 		pre,
 		sc.Root(),
 		sc.ExpectedState,
@@ -43,7 +44,10 @@ func QuorumMsgNotPrepared() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func quorumMsgNotPreparedStateComparison() *comparable.StateComparison {

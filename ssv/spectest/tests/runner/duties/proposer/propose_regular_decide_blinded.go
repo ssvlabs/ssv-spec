@@ -6,6 +6,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/qbft"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,9 +15,9 @@ import (
 // ProposeRegularBlockDecidedBlinded tests proposing a regular block but the decided block is a blinded block. Full flow
 func ProposeRegularBlockDecidedBlinded() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"propose regular decide blinded",
-		"Tests proposing a regular block but the decided block is a blinded block",
+		testdoc.ProposeRegularBlockDecidedBlindedDoc,
 		testingutils.ProposerRunner(ks),
 		testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 		[]*types.SignedSSVMessage{
@@ -50,5 +51,8 @@ func ProposeRegularBlockDecidedBlinded() tests.SpecTest {
 		},
 		false,
 		"",
+		ks,
 	)
+
+	return test
 }

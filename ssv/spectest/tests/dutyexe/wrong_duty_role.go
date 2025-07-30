@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -48,7 +49,7 @@ func WrongDutyRole() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"wrong duty role",
-		"Tests behavior when processing decided value duty with wrong duty role (!= duty runner role)",
+		testdoc.DutyExeWrongDutyRoleDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:     "sync committee contribution",
@@ -61,6 +62,7 @@ func WrongDutyRole() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

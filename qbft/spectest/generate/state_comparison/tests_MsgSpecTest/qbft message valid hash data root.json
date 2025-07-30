@@ -1,81 +1,24 @@
 {
-		"Name": "valid hash data root",
-		"Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
-		"Documentation": "Test a valid hash data root for QBFT message validation.",
-		"Messages": [
-				{
-						"Signatures": [
-								"CzU9/GbbgfT1J/6fnAe07EDzLIirezU9AfNDzGNfautfsVAs4CKX/dQNXon/teMl7QeoZGEswQ2LqT7KuKvtaaX8QYXoO2+aTzpnI996omxXcYMf1UW3+kEfG+PeTqLzJgOR/y1iK4Fwry+znYDBJqbW2MhLFdSlqIIGB1FRQyM9HR+2fVncaLJdNAh6DPrjqXlgBHpvtiqFHLYPfPVER1+Yd18nufjUoUhamPlkaDzTsQq1TmPgYZf5+GCRmhS5zs+UwDf+fNwSnCfAjtvHHkmpLOtGDTrvWVoIj5XJmR3Nm3E8bXu2DY7Cpjj2LUS2swDLPQDl+LbzQdMfpj6yrQ=="
-						],
-						"OperatorIDs": [
-								1
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
-				}
-		],
-		"EncodedMessages": null,
-		"ExpectedRoots": null,
-		"ExpectedError": ""
+  "Name": "valid hash data root",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
+  "Documentation": "Test a valid hash data root for QBFT message validation.",
+  "Messages": [
+    {
+      "Signatures": [
+        "CzU9/GbbgfT1J/6fnAe07EDzLIirezU9AfNDzGNfautfsVAs4CKX/dQNXon/teMl7QeoZGEswQ2LqT7KuKvtaaX8QYXoO2+aTzpnI996omxXcYMf1UW3+kEfG+PeTqLzJgOR/y1iK4Fwry+znYDBJqbW2MhLFdSlqIIGB1FRQyM9HR+2fVncaLJdNAh6DPrjqXlgBHpvtiqFHLYPfPVER1+Yd18nufjUoUhamPlkaDzTsQq1TmPgYZf5+GCRmhS5zs+UwDf+fNwSnCfAjtvHHkmpLOtGDTrvWVoIj5XJmR3Nm3E8bXu2DY7Cpjj2LUS2swDLPQDl+LbzQdMfpj6yrQ=="
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+    }
+  ],
+  "EncodedMessages": null,
+  "ExpectedRoots": null,
+  "ExpectedError": ""
 }

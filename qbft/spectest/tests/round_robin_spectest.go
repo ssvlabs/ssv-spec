@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
 )
@@ -43,7 +44,7 @@ func (test *RoundRobinSpecTest) GetPostState() (interface{}, error) {
 func NewRoundRobinSpecTest(name string, documentation string, share *types.CommitteeMember, heights []qbft.Height, rounds []qbft.Round, proposers []types.OperatorID) *RoundRobinSpecTest {
 	return &RoundRobinSpecTest{
 		Name:          name,
-		Type:          "Round robin proposer: validation of fair proposer selection algorithm",
+		Type:          testdoc.RoundRobinSpecTestType,
 		Documentation: documentation,
 		Share:         share,
 		Heights:       heights,

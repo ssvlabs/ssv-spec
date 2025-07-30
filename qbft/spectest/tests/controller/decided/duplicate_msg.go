@@ -3,6 +3,7 @@ package decided
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -11,9 +12,9 @@ import (
 // DuplicateMsg tests a duplicate decided msg processing
 func DuplicateMsg() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide duplicate msg",
-		"Test processing duplicate decided messages, expecting only one instance to be decided.",
+		testdoc.ControllerDecidedDuplicateMsgDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -30,5 +31,8 @@ func DuplicateMsg() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

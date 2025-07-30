@@ -1,6 +1,7 @@
 package roundchange
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,9 +18,9 @@ func PostCutoff() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 16),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round cutoff round change message",
-		"Test processing a round change message when the round is greater than or equal to the cutoff, expecting the instance to stop processing messages.",
+		testdoc.RoundChangePostCutoffDoc,
 		pre,
 		"",
 		nil,
@@ -27,5 +28,8 @@ func PostCutoff() tests.SpecTest {
 		nil,
 		"instance stopped processing messages",
 		nil,
+		ks,
 	)
+
+	return test
 }

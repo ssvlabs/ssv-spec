@@ -1,12 +1,15 @@
 package duty
 
-import "github.com/ssvlabs/ssv-spec/types"
+import (
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+)
 
 // MapAttester tests mapping of BNRoleAttester.
 func MapAttester() *DutySpecTest {
 	return NewDutySpecTest(
 		"map attester role",
-		"Test mapping of BNRoleAttester",
+		testdoc.MapAttesterTestDoc,
 		types.BNRoleAttester,
 		types.RoleCommittee,
 	)

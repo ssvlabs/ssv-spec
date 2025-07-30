@@ -1,6 +1,7 @@
 package proposal
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,9 +15,9 @@ func WrongProposer() tests.SpecTest {
 		testingutils.TestingProposalMessage(ks.OperatorKeys[2], types.OperatorID(2)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"wrong proposer",
-		"Test proposal by a node that is not the designated proposer for the current round, expecting validation error.",
+		testdoc.ProposalWrongProposerDoc,
 		pre,
 		"",
 		nil,
@@ -24,5 +25,8 @@ func WrongProposer() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal leader invalid",
 		nil,
+		ks,
 	)
+
+	return test
 }

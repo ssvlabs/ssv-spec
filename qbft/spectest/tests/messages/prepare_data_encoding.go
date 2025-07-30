@@ -1,6 +1,7 @@
 package messages
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,12 +15,15 @@ func PrepareDataEncoding() tests.SpecTest {
 	r, _ := msg.GetRoot()
 	b, _ := msg.Encode()
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"prepare data encoding",
-		"Test encoding of prepare data for QBFT message validation.",
+		testdoc.MessagesPrepareDataEncodingDoc,
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{b},
 		[][32]byte{r},
 		"",
+		ks,
 	)
+
+	return test
 }

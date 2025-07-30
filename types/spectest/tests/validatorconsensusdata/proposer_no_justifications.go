@@ -2,6 +2,7 @@ package validatorconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -14,7 +15,7 @@ func ProposerNoJustifications() *ValidatorConsensusDataTest {
 
 	return NewValidatorConsensusDataTest(
 		"proposer no justification",
-		"Test proposer consensus data with no pre-consensus justifications",
+		testdoc.ValidatorConsensusDataTestProposerNoJustificationsDoc,
 		*cd,
 		"",
 	)

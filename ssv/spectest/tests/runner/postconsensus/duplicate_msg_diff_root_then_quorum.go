@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,7 +20,7 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus duplicate msg different root then quorum",
-		"Tests post-consensus message processing where duplicate messages from the same signer have different roots, followed by a quorum, expecting correct error and recovery handling.",
+		testdoc.PostConsensusDuplicateMsgDiffRootThenQuorumDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
@@ -47,6 +48,7 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

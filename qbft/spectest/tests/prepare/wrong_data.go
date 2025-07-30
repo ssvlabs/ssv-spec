@@ -1,6 +1,7 @@
 package prepare
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,9 +19,9 @@ func WrongData() tests.SpecTest {
 		testingutils.TestingPrepareMessageWrongRoot(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"prepare wrong data",
-		"Test prepare message with data different from the accepted proposal data, expecting validation error.",
+		testdoc.PrepareWrongDataDoc,
 		pre,
 		"",
 		nil,
@@ -28,5 +29,8 @@ func WrongData() tests.SpecTest {
 		nil,
 		"invalid signed message: proposed data mismatch",
 		nil,
+		ks,
 	)
+
+	return test
 }

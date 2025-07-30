@@ -2,11 +2,12 @@ package maxmsgsize
 
 import (
 	"encoding/json"
-	"strings"
+	"fmt"
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/stretchr/testify/require"
 )
 
@@ -44,8 +45,7 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 		Name                  string
 		ExpectedEncodedLength int
 		IsMaxSize             bool
-
-		Object interface{}
+		Object                interface{}
 	}
 
 	// Unmarshal alias
@@ -63,37 +63,45 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	var getDecoder = func() *json.Decoder {
-		decoder := json.NewDecoder(strings.NewReader(string(byts)))
-		decoder.DisallowUnknownFields()
-		return decoder
+	// First try to determine the type from the JSON
+	var objMap map[string]interface{}
+	if err := json.Unmarshal(byts, &objMap); err != nil {
+		return err
 	}
 
-	var possibleObjects = []types.Encoder{
-		&qbft.Message{},
-		&types.PartialSignatureMessage{},
-		&types.PartialSignatureMessages{},
-		&types.SSVMessage{},
-		&types.SignedSSVMessage{},
-		&types.ValidatorConsensusData{},
-		&types.BeaconVote{},
+	// Try to determine the type based on the fields present
+	var correctType types.Encoder
+	switch {
+	case objMap["MsgType"] != nil && objMap["MsgID"] != nil:
+		correctType = &types.SSVMessage{}
+	case objMap["Signatures"] != nil && objMap["OperatorIDs"] != nil:
+		correctType = &types.SignedSSVMessage{}
+	case objMap["SigningRoot"] != nil && objMap["Signer"] != nil && objMap["ValidatorIndex"] != nil:
+		correctType = &types.PartialSignatureMessage{}
+	case objMap["Type"] != nil && objMap["Slot"] != nil && objMap["Messages"] != nil:
+		correctType = &types.PartialSignatureMessages{}
+	case objMap["Round"] != nil && objMap["Height"] != nil:
+		correctType = &qbft.Message{}
+	case objMap["Duty"] != nil && objMap["DataSSZ"] != nil:
+		correctType = &types.ValidatorConsensusData{}
+	case objMap["BlockRoot"] != nil && objMap["Source"] != nil && objMap["Target"] != nil:
+		correctType = &types.BeaconVote{}
+	default:
+		return fmt.Errorf("could not determine object type from JSON")
 	}
 
-	for _, obj := range possibleObjects {
-		err := getDecoder().Decode(&obj)
-		if err == nil {
-			t.Object = obj
-			return nil
-		}
+	// Try to unmarshal with hex handling
+	if err := json.Unmarshal(byts, correctType); err != nil {
+		return err
 	}
-
-	panic("unknown type")
+	t.Object = correctType
+	return nil
 }
 
 func NewStructureSizeTest(name, documentation string, object types.Encoder, expectedEncodedLength int, isMaxSize bool) *StructureSizeTest {
 	return &StructureSizeTest{
 		Name:                  name,
-		Type:                  "Structure size: validation of structure size",
+		Type:                  testdoc.StructureSizeTestType,
 		Documentation:         documentation,
 		Object:                object,
 		ExpectedEncodedLength: expectedEncodedLength,

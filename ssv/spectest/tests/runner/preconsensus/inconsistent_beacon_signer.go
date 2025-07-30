@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -15,7 +16,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus inconsistent beacon signer",
-		"Tests pre-consensus message processing with inconsistent beacon signer, expecting error",
+		testdoc.PreConsensusInconsistentBeaconSignerDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
@@ -57,6 +58,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				ExpectedError: "SignedSSVMessage has an invalid signature: unknown signer",
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

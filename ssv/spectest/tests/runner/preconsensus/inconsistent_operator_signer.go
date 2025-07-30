@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,7 +17,7 @@ func InconsistentOperatorSigner() tests.SpecTest {
 	expectedError := "invalid PartialSignatureMessages: signer from signed message is inconsistent with partial signature signers"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus inconsistent operator signer",
-		"Tests pre-consensus message processing with inconsistent operator signer, expecting error",
+		testdoc.PreConsensusInconsistentOperatorSignerDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
@@ -58,6 +59,7 @@ func InconsistentOperatorSigner() tests.SpecTest {
 				ExpectedError: expectedError,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

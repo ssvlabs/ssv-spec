@@ -1,6 +1,7 @@
 package proposal
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,9 +20,9 @@ func DuplicateMsg() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"proposal duplicate message",
-		"Test processing of duplicate proposal messages from the same signer",
+		testdoc.ProposalDuplicateMsgDoc,
 		pre,
 		"",
 		nil,
@@ -29,5 +30,8 @@ func DuplicateMsg() tests.SpecTest {
 		outputMessages,
 		"invalid signed message: proposal is not valid with current state",
 		nil,
+		ks,
 	)
+
+	return test
 }

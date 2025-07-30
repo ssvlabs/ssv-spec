@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,9 +17,9 @@ func FutureRound() tests.SpecTest {
 		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[1], 1, 2),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"commit future round",
-		"Test processing of a commit message with a future round, expecting error",
+		testdoc.CommitTestFutureRoundDoc,
 		pre,
 		"",
 		nil,
@@ -26,5 +27,8 @@ func FutureRound() tests.SpecTest {
 		nil,
 		"invalid signed message: wrong msg round",
 		nil,
+		ks,
 	)
+
+	return test
 }

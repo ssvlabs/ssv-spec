@@ -2,6 +2,7 @@ package startinstance
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -12,9 +13,9 @@ import (
 func PreviousDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"start instance prev decided",
-		"Test starting a new QBFT instance when the previous instance has already decided.",
+		testdoc.StartInstancePrevDecidedDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -38,7 +39,10 @@ func PreviousDecided() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comparable.StateComparison {

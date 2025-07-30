@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,9 +17,9 @@ func CurrentRound() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"commit current round",
-		"Test processing of a commit message in the current round",
+		testdoc.CommitTestCurrentRoundDoc,
 		pre,
 		"",
 		nil,
@@ -26,5 +27,8 @@ func CurrentRound() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

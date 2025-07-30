@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,9 +17,9 @@ func InvalidValCheckData() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	sc := invalidValCheckDataStateComparison()
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide invalid value (should pass)",
-		"Test a decided message with invalid decided data that should pass validation since it's already decided.",
+		testdoc.ControllerDecidedInvalidValCheckDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -44,7 +45,10 @@ func InvalidValCheckData() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func invalidValCheckDataStateComparison() *comparable.StateComparison {

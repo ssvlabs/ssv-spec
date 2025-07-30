@@ -1,6 +1,7 @@
 package proposal
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,9 +21,9 @@ func SecondProposalForRound() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"second proposal for round",
-		"Test second proposal from the same signer for the current round when a proposal is already accepted, expecting validation error.",
+		testdoc.ProposalSecondProposalForRoundDoc,
 		pre,
 		"",
 		nil,
@@ -30,5 +31,8 @@ func SecondProposalForRound() tests.SpecTest {
 		outputMessages,
 		"invalid signed message: proposal is not valid with current state",
 		nil,
+		ks,
 	)
+
+	return test
 }

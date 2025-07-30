@@ -1,6 +1,7 @@
 package processmsg
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -10,9 +11,9 @@ import (
 func MsgError() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"process msg error",
-		"Test processing a message that returns an error, expecting validation error.",
+		testdoc.ControllerProcessMsgErrorDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -24,5 +25,8 @@ func MsgError() tests.SpecTest {
 		nil,
 		"could not process msg: invalid signed message: proposal not justified: change round has no quorum",
 		nil,
+		ks,
 	)
+
+	return test
 }

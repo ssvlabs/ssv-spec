@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -15,7 +16,6 @@ import (
 func FarFutureDutySlot() tests.SpecTest {
 	consensusDataBytsF := func(cd *types.ValidatorConsensusData) []byte {
 		cdCopy := &types.ValidatorConsensusData{}
-
 		b, _ := json.Marshal(cd)
 		if err := json.Unmarshal(b, cdCopy); err != nil {
 			panic(err.Error())
@@ -29,7 +29,7 @@ func FarFutureDutySlot() tests.SpecTest {
 	expectedErr := "duty invalid: duty epoch is into far future"
 	return valcheck.NewMultiSpecTest(
 		"far future duty slot",
-		"Tests duty value check with duty slot too far in the future",
+		testdoc.ValCheckDutyFarFutureDutySlotDoc,
 		[]*valcheck.SpecTest{
 			{
 				Name:       "committee",

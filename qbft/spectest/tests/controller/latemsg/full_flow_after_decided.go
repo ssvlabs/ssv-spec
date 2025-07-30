@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -39,9 +40,9 @@ func FullFlowAfterDecided() tests.SpecTest {
 		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[4], types.OperatorID(4), 2),
 	}
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"full flow after decided",
-		"Test a decided message for round 1 followed by a full proposal, prepare, commit flow for round 2, expecting error.",
+		testdoc.ControllerLateMsgFullFlowAfterDecidedDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue:    []byte{1, 2, 3, 4},
@@ -55,5 +56,8 @@ func FullFlowAfterDecided() tests.SpecTest {
 		nil,
 		"not processing consensus message since instance is already decided",
 		nil,
+		ks,
 	)
+
+	return test
 }

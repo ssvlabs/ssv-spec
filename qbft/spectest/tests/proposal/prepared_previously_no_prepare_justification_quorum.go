@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -34,9 +35,9 @@ func PreparedPreviouslyNoPrepareJustificationQuorum() tests.SpecTest {
 		),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"no prepare quorum (prepared)",
-		"Test proposal for round > 1 that was prepared previously but lacks quorum of prepare messages in justification, expecting validation error.",
+		testdoc.ProposalPreparedPreviouslyNoPrepareJustificationQuorumDoc,
 		pre,
 		sc.Root(),
 		sc.ExpectedState,
@@ -44,7 +45,10 @@ func PreparedPreviouslyNoPrepareJustificationQuorum() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: change round msg not valid: no justifications quorum",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func preparedPreviouslyNoPrepareJustificationQuorumStateComparison() *comparable.StateComparison {

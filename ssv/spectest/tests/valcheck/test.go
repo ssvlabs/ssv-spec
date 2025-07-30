@@ -20,9 +20,10 @@ type SpecTest struct {
 	DutySlot          phase0.Slot // DutySlot is used only for the RoleCommittee since the BeaconVoteValueCheckF requires the duty's slot
 	Input             []byte
 	SlashableSlots    map[string][]phase0.Slot // map share pk to a list of slashable slots
-	ShareValidatorsPK []types.ShareValidatorPK `json:"omitempty"` // Optional. Specify validators shares for beacon vote value check
+	ShareValidatorsPK []types.ShareValidatorPK `json:"ShareValidatorsPK,omitempty"` // Optional. Specify validators shares for beacon vote value check
 	ExpectedError     string
 	AnyError          bool
+	PrivateKeys       *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *SpecTest) TestName() string {
@@ -84,6 +85,7 @@ type MultiSpecTest struct {
 	Type          string
 	Documentation string
 	Tests         []*SpecTest
+	PrivateKeys   *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *MultiSpecTest) TestName() string {

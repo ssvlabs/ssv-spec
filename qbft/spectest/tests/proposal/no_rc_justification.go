@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -24,9 +25,9 @@ func NoRCJustification() tests.SpecTest {
 		),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"no rc quorum",
-		"Test proposal for round > 1 that was not prepared previously and lacks quorum of round change messages in justification, expecting validation error.",
+		testdoc.ProposalNoRCJustificationDoc,
 		pre,
 		"",
 		nil,
@@ -34,5 +35,8 @@ func NoRCJustification() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: change round has no quorum",
 		nil,
+		ks,
 	)
+
+	return test
 }

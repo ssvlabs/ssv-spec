@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -31,7 +32,7 @@ type RunInstanceData struct {
 	ControllerPostState  types.Root `json:"-"` // Field is ignored by encoding/json
 	ExpectedTimerState   *testingutils.TimerState
 	ExpectedDecidedState DecidedState
-	Height               *qbft.Height `json:"omitempty"`
+	Height               *qbft.Height `json:"Height,omitempty"`
 }
 
 type ControllerSpecTest struct {
@@ -41,7 +42,8 @@ type ControllerSpecTest struct {
 	RunInstanceData []*RunInstanceData
 	OutputMessages  []*types.SignedSSVMessage
 	ExpectedError   string
-	StartHeight     *qbft.Height `json:"omitempty"`
+	StartHeight     *qbft.Height                 `json:"StartHeight,omitempty"`
+	PrivateKeys     *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 
 	// consts for ControllerSpecTest
 	Controller *qbft.Controller `json:"Controller,omitempty"`
@@ -268,15 +270,16 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 	return ret, nil
 }
 
-func NewControllerSpecTest(name string, documentation string, runInstanceData []*RunInstanceData, outputMessages []*types.SignedSSVMessage, expectedError string, startHeight *qbft.Height) *ControllerSpecTest {
+func NewControllerSpecTest(name string, documentation string, runInstanceData []*RunInstanceData, outputMessages []*types.SignedSSVMessage, expectedError string, startHeight *qbft.Height, privateKeys *testingutils.TestKeySet) *ControllerSpecTest {
 	test := &ControllerSpecTest{
 		Name:            name,
-		Type:            "QBFT controller: validation of consensus state management and instance lifecycle",
+		Type:            testdoc.ControllerSpecTestType,
 		Documentation:   documentation,
 		RunInstanceData: runInstanceData,
 		OutputMessages:  outputMessages,
 		ExpectedError:   expectedError,
 		StartHeight:     startHeight,
+		PrivateKeys:     testingutils.BuildPrivateKeyInfo(privateKeys),
 	}
 	test.Controller = test.generateController()
 	return test

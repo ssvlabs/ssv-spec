@@ -2,6 +2,7 @@ package timeout
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -29,9 +30,9 @@ func Round3() tests.SpecTest {
 		}),
 	}
 
-	return NewSpecTest(
+	test := NewSpecTest(
 		"round 3",
-		"Test UponRoundTimeout for round 3, checks state transition and broadcasted round change message.",
+		testdoc.TimeoutRound3Doc,
 		pre,
 		sc.Root(),
 		sc.ExpectedState,
@@ -41,7 +42,10 @@ func Round3() tests.SpecTest {
 			Round:    4,
 		},
 		"",
+		ks,
 	)
+
+	return test
 }
 
 func round3StateComparison() *comparable.StateComparison {

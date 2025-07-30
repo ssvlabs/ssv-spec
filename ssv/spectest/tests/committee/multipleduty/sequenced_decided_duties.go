@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -47,8 +48,9 @@ func SequencedDecidedDuties() tests.SpecTest {
 
 	multiSpecTest := committee.NewMultiCommitteeSpecTest(
 		"sequenced decided duties",
-		"Tests decision phase for sequences of duties without completing post-consensus",
+		testdoc.CommitteeSequencedDecidedDutiesDoc,
 		tests,
+		nil,
 	)
 
 	return multiSpecTest

@@ -2,13 +2,13 @@ package timeout
 
 import (
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -24,6 +24,7 @@ type SpecTest struct {
 	OutputMessages     []*types.SignedSSVMessage
 	ExpectedTimerState *testingutils.TimerState
 	ExpectedError      string
+	PrivateKeys        *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *SpecTest) TestName() string {
@@ -73,14 +74,10 @@ func (test *SpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
 
-func (test *SpecTest) MarshalSC() ([]byte, error) {
-	return json.Marshal(test)
-}
-
-func NewSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, outputMessages []*types.SignedSSVMessage, expectedTimerState *testingutils.TimerState, expectedError string) *SpecTest {
+func NewSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, outputMessages []*types.SignedSSVMessage, expectedTimerState *testingutils.TimerState, expectedError string, privateKeys *testingutils.TestKeySet) *SpecTest {
 	return &SpecTest{
 		Name:               name,
-		Type:               "Timeout: validation of round timeout handling and state transitions",
+		Type:               testdoc.TimeoutSpecTestType,
 		Documentation:      documentation,
 		Pre:                pre,
 		PostRoot:           postRoot,
@@ -88,5 +85,6 @@ func NewSpecTest(name string, documentation string, pre *qbft.Instance, postRoot
 		OutputMessages:     outputMessages,
 		ExpectedTimerState: expectedTimerState,
 		ExpectedError:      expectedError,
+		PrivateKeys:        testingutils.BuildPrivateKeyInfo(privateKeys),
 	}
 }

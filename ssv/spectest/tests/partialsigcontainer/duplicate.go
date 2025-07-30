@@ -2,6 +2,7 @@ package partialsigcontainer
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,14 +19,17 @@ func Duplicate() tests.SpecTest {
 	msg3 := testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, spec.DataVersionPhase0)
 	msgs := []*types.PartialSignatureMessage{msg1.Messages[0], msg2.Messages[0], msg3.Messages[0]}
 
-	return NewPartialSigContainerTest(
+	test := NewPartialSigContainerTest(
 		"duplicate",
-		"Tests partial signature container with duplicate signatures (below quorum)",
+		testdoc.PartialSigContainerDuplicateDoc,
 		ks.Threshold,
 		ks.ValidatorPK.Serialize(),
 		msgs,
 		"could not reconstruct a valid signature",
 		nil,
 		false,
+		ks,
 	)
+
+	return test
 }

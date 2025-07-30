@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -21,9 +22,9 @@ func DuplicateMsgDifferentRoot() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"proposal duplicate message different value",
-		"Test duplicate proposal message processing where the second message has a different root value, expecting validation error.",
+		testdoc.ProposalDuplicateMsgDifferentRootDoc,
 		pre,
 		sc.Root(),
 		sc.ExpectedState,
@@ -31,7 +32,10 @@ func DuplicateMsgDifferentRoot() tests.SpecTest {
 		outputMessages,
 		"invalid signed message: proposal is not valid with current state",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func duplicateMsgDifferentRootStateComparison() *comparable.StateComparison {

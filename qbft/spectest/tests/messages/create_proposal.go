@@ -1,6 +1,7 @@
 package messages
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 )
 
@@ -8,7 +9,7 @@ import (
 func CreateProposal() tests.SpecTest {
 	return tests.NewCreateMsgSpecTest(
 		"create proposal",
-		"Test creating a proposal message when not previously prepared.",
+		testdoc.MessagesCreateProposalDoc,
 		[32]byte{1, 2, 3, 4},
 		nil,
 		10,
@@ -18,5 +19,6 @@ func CreateProposal() tests.SpecTest {
 		"43c23219aaf744537a2e8b3896937a2e9aa24a8eaf8fcabf8ec7376f76669f3c",
 		nil,
 		"",
+		nil,
 	)
 }

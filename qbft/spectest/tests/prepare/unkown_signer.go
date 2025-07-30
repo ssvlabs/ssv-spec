@@ -1,6 +1,7 @@
 package prepare
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,9 +18,9 @@ func UnknownSigner() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(5)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"prepare unknown signer",
-		"Test prepare message from a signer not in the committee, expecting validation error.",
+		testdoc.PrepareUnknownSignerDoc,
 		pre,
 		"",
 		nil,
@@ -27,5 +28,8 @@ func UnknownSigner() tests.SpecTest {
 		nil,
 		"invalid signed message: signer not in committee",
 		nil,
+		ks,
 	)
+
+	return test
 }

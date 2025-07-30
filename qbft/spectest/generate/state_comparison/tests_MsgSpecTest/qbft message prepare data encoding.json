@@ -1,118 +1,61 @@
 {
-		"Name": "prepare data encoding",
-		"Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
-		"Documentation": "Test encoding of prepare data for QBFT message validation.",
-		"Messages": [
-				{
-						"Signatures": [
-								"g0BBLoygeLOHqaIj4pmkzrTfJc+5ChUS5DzxiV4EFVyRkQp7w1x4hGsS++AwQqcUC6Z+j7i/icSFuQnSMdS5W/SUYiyWgzY75xd+fa/IBRFqAZkJICUdtIcBBo4U7DgenowmoSfArGNm/swIP+zlZ8akA9VWWGgh9EoBpEYyumGPSnsbVSbLvD/iSIuv2myboKPuEI8NqQzjUezRQC+ahB/ml1m6S341ymfTjsdGbhVlPBZsWXUlJUHFpn3rl8hDUiSz4yROPgSC4xXH++0CesXLWeUgEisx5e0NRFs8OGLnnH6vBSgdWYYnQy5nfWCEZSQgZdWhlOUwoX/zjoqVzg=="
-						],
-						"OperatorIDs": [
-								1
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": null
-				}
-		],
-		"EncodedMessages": [
-				"EAAAABQBAAAcAQAA5AEAAAQAAACDQEEujKB4s4epoiPimaTOtN8lz7kKFRLkPPGJXgQVXJGRCnvDXHiEaxL74DBCpxQLpn6PuL+JxIW5CdIx1Llb9JRiLJaDNjvnF359r8gFEWoBmQkgJR20hwEGjhTsOB6ejCahJ8CsY2b+zAg/7OVnxqQD1VZYaCH0SgGkRjK6YY9KextVJsu8P+JIi6/abJugo+4Qjw2pDONR7NFAL5qEH+aXWbpLfjXKZ9OOx0ZuFWU8FmxZdSUlQcWmfeuXyENSJLPjJE4+BILjFcf77QJ6xctZ5SASKzHl7Q1EWzw4Yuecfq8FKB1ZhidDLmd9YIRlJCBl1aGU5TChf/OOipXOAQAAAAAAAAAAAAAAAAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAEwAAAC+lW+3307zdTFoLViDIAhPyRTD8P7TNSY+W0QGLmwptAAAAAAAAAAAhAAAAIQAAAABAgMEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
-		],
-		"ExpectedRoots": [
-				[
-						110,
-						17,
-						7,
-						86,
-						14,
-						118,
-						28,
-						0,
-						36,
-						17,
-						104,
-						115,
-						69,
-						229,
-						230,
-						43,
-						211,
-						19,
-						88,
-						220,
-						11,
-						93,
-						14,
-						246,
-						94,
-						149,
-						180,
-						81,
-						231,
-						41,
-						21,
-						16
-				]
-		],
-		"ExpectedError": ""
+  "Name": "prepare data encoding",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
+  "Documentation": "Test encoding of prepare data for QBFT message validation.",
+  "Messages": [
+    {
+      "Signatures": [
+        "g0BBLoygeLOHqaIj4pmkzrTfJc+5ChUS5DzxiV4EFVyRkQp7w1x4hGsS++AwQqcUC6Z+j7i/icSFuQnSMdS5W/SUYiyWgzY75xd+fa/IBRFqAZkJICUdtIcBBo4U7DgenowmoSfArGNm/swIP+zlZ8akA9VWWGgh9EoBpEYyumGPSnsbVSbLvD/iSIuv2myboKPuEI8NqQzjUezRQC+ahB/ml1m6S341ymfTjsdGbhVlPBZsWXUlJUHFpn3rl8hDUiSz4yROPgSC4xXH++0CesXLWeUgEisx5e0NRFs8OGLnnH6vBSgdWYYnQy5nfWCEZSQgZdWhlOUwoX/zjoqVzg=="
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    }
+  ],
+  "EncodedMessages": [
+    "EAAAABQBAAAcAQAA5AEAAAQAAACDQEEujKB4s4epoiPimaTOtN8lz7kKFRLkPPGJXgQVXJGRCnvDXHiEaxL74DBCpxQLpn6PuL+JxIW5CdIx1Llb9JRiLJaDNjvnF359r8gFEWoBmQkgJR20hwEGjhTsOB6ejCahJ8CsY2b+zAg/7OVnxqQD1VZYaCH0SgGkRjK6YY9KextVJsu8P+JIi6/abJugo+4Qjw2pDONR7NFAL5qEH+aXWbpLfjXKZ9OOx0ZuFWU8FmxZdSUlQcWmfeuXyENSJLPjJE4+BILjFcf77QJ6xctZ5SASKzHl7Q1EWzw4Yuecfq8FKB1ZhidDLmd9YIRlJCBl1aGU5TChf/OOipXOAQAAAAAAAAAAAAAAAAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAEwAAAC+lW+3307zdTFoLViDIAhPyRTD8P7TNSY+W0QGLmwptAAAAAAAAAAAhAAAAIQAAAABAgMEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+  ],
+  "ExpectedRoots": [
+    [
+      110,
+      17,
+      7,
+      86,
+      14,
+      118,
+      28,
+      0,
+      36,
+      17,
+      104,
+      115,
+      69,
+      229,
+      230,
+      43,
+      211,
+      19,
+      88,
+      220,
+      11,
+      93,
+      14,
+      246,
+      94,
+      149,
+      180,
+      81,
+      231,
+      41,
+      21,
+      16
+    ]
+  ],
+  "ExpectedError": ""
 }

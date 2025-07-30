@@ -2,6 +2,7 @@ package startinstance
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -10,7 +11,7 @@ import (
 func Valid() tests.SpecTest {
 	return tests.NewControllerSpecTest(
 		"start instance valid",
-		"Test starting a new QBFT instance with valid input value and timer state.",
+		testdoc.StartInstanceValidDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -22,6 +23,7 @@ func Valid() tests.SpecTest {
 		},
 		nil,
 		"",
+		nil,
 		nil,
 	)
 }

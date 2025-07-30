@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -14,12 +15,12 @@ import (
 // WrongValidatorIndex tests duty.ValidatorIndex wrong
 func WrongValidatorIndex() tests.SpecTest {
 	consensusDataBytsF := func(cd *types.ValidatorConsensusData) []byte {
-		cdCopy := &types.ValidatorConsensusData{}
+		cdCopy := types.ValidatorConsensusData{}
 		b, _ := json.Marshal(cd)
-		if err := json.Unmarshal(b, cdCopy); err != nil {
+		if err := json.Unmarshal(b, &cdCopy); err != nil {
 			panic(err.Error())
 		}
-		cdCopy.Duty.ValidatorIndex = testingutils.TestingValidatorIndex + 100
+		cdCopy.Duty.ValidatorIndex = testingutils.TestingWrongValidatorIndex
 
 		ret, _ := cdCopy.Encode()
 		return ret
@@ -28,7 +29,7 @@ func WrongValidatorIndex() tests.SpecTest {
 	expectedErr := "duty invalid: wrong validator index"
 	return valcheck.NewMultiSpecTest(
 		"wrong validator index",
-		"Tests duty value check with wrong validator index across different roles",
+		testdoc.ValCheckDutyWrongValidatorIndexDoc,
 		[]*valcheck.SpecTest{
 			{
 				Name:       "committee",

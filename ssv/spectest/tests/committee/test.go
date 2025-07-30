@@ -10,6 +10,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/stretchr/testify/require"
@@ -21,7 +22,7 @@ import (
 
 type CommitteeSpecTest struct {
 	Name                   string
-	Type                   string `json:"omitempty"`
+	Type                   string `json:"Type,omitempty"`
 	Documentation          string
 	Committee              *ssv.Committee
 	Input                  []interface{} // Can be a types.Duty or a *types.SignedSSVMessage
@@ -30,6 +31,7 @@ type CommitteeSpecTest struct {
 	OutputMessages         []*types.PartialSignatureMessages
 	BeaconBroadcastedRoots []string
 	ExpectedError          string
+	PrivateKeys            *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *CommitteeSpecTest) TestName() string {
@@ -132,6 +134,7 @@ type MultiCommitteeSpecTest struct {
 	Type          string
 	Documentation string
 	Tests         []*CommitteeSpecTest
+	PrivateKeys   *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (tests *MultiCommitteeSpecTest) TestName() string {
@@ -169,19 +172,20 @@ func (tests *MultiCommitteeSpecTest) GetPostState() (interface{}, error) {
 	return ret, nil
 }
 
-func NewMultiCommitteeSpecTest(name, documentation string, tests []*CommitteeSpecTest) *MultiCommitteeSpecTest {
+func NewMultiCommitteeSpecTest(name, documentation string, tests []*CommitteeSpecTest, ks *testingutils.TestKeySet) *MultiCommitteeSpecTest {
 	return &MultiCommitteeSpecTest{
 		Name:          name,
-		Type:          "Multi committee: multiple committee tests",
+		Type:          testdoc.MultiCommitteeSpecTestType,
 		Documentation: documentation,
 		Tests:         tests,
+		PrivateKeys:   testingutils.BuildPrivateKeyInfo(ks),
 	}
 }
 
-func NewCommitteeSpecTest(name, documentation string, committee *ssv.Committee, input []interface{}, postDutyCommitteeRoot string, postDutyCommittee types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, expectedError string) *CommitteeSpecTest {
+func NewCommitteeSpecTest(name, documentation string, committee *ssv.Committee, input []interface{}, postDutyCommitteeRoot string, postDutyCommittee types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, expectedError string, ks *testingutils.TestKeySet) *CommitteeSpecTest {
 	return &CommitteeSpecTest{
 		Name:                   name,
-		Type:                   "Committee: validation of committee member selection and quorum requirements",
+		Type:                   testdoc.CommitteeSpecTestType,
 		Documentation:          documentation,
 		Committee:              committee,
 		Input:                  input,
@@ -190,5 +194,6 @@ func NewCommitteeSpecTest(name, documentation string, committee *ssv.Committee, 
 		OutputMessages:         outputMessages,
 		BeaconBroadcastedRoots: beaconBroadcastedRoots,
 		ExpectedError:          expectedError,
+		PrivateKeys:            testingutils.BuildPrivateKeyInfo(ks),
 	}
 }

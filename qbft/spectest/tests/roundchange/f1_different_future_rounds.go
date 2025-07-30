@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -31,9 +32,9 @@ func F1DifferentFutureRounds() tests.SpecTest {
 			[32]byte{}, 0, [][]byte{}),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change f+1 prepared",
-		"Test f+1 speedup scenario with one round change message previously prepared, expecting round to advance and proposal to be broadcast.",
+		testdoc.RoundChangeF1DifferentFutureRoundsDoc,
 		pre,
 		sc.Root(),
 		sc.ExpectedState,
@@ -44,7 +45,10 @@ func F1DifferentFutureRounds() tests.SpecTest {
 			Timeouts: 1,
 			Round:    qbft.Round(5),
 		},
+		ks,
 	)
+
+	return test
 }
 
 func f1DifferentFutureRoundsStateComparison() *comparable.StateComparison {

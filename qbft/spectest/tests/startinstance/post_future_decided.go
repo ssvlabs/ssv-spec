@@ -3,6 +3,7 @@ package startinstance
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -11,9 +12,9 @@ import (
 // PostFutureDecided tests starting a new instance after deciding with future decided msg
 func PostFutureDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"start instance post future decided",
-		"Test starting a new QBFT instance after a future decided message, then attempting to start with a past height.",
+		testdoc.StartInstancePostFutureDecidedDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -38,5 +39,8 @@ func PostFutureDecided() tests.SpecTest {
 		nil,
 		"attempting to start an instance with a past height",
 		nil,
+		ks,
 	)
+
+	return test
 }

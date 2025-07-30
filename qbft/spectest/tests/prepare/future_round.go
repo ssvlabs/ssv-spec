@@ -1,6 +1,7 @@
 package prepare
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,9 +18,9 @@ func FutureRound() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 3),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"prepare future round",
-		"Test prepare message for a round greater than the current state round, expecting validation error.",
+		testdoc.PrepareFutureRoundDoc,
 		pre,
 		"",
 		nil,
@@ -27,5 +28,8 @@ func FutureRound() tests.SpecTest {
 		nil,
 		"invalid signed message: wrong msg round",
 		nil,
+		ks,
 	)
+
+	return test
 }

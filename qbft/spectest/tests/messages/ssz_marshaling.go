@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -40,12 +41,15 @@ func SSZMarshaling() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"SSZ marshalling of signed messaged",
-		"Test valid SSZ marshaling of a signed QBFT message with justifications.",
+		testdoc.MessagesSSZMarshalingDoc,
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{encodedMsg},
 		[][32]byte{msgRoot},
 		"",
+		ks,
 	)
+
+	return test
 }

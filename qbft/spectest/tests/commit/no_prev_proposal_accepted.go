@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,9 +17,9 @@ func NoPrevAcceptedProposal() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"no previous accepted proposal",
-		"Test processing of a commit message without a previous accepted proposal",
+		testdoc.CommitTestNoPrevAcceptedProposalDoc,
 		pre,
 		"",
 		nil,
@@ -26,5 +27,8 @@ func NoPrevAcceptedProposal() tests.SpecTest {
 		nil,
 		"invalid signed message: did not receive proposal for this round",
 		nil,
+		ks,
 	)
+
+	return test
 }

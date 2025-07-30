@@ -3,6 +3,7 @@ package validatorconsensusdata
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -16,7 +17,7 @@ func InvalidDenebBlockValidation() *ValidatorConsensusDataTest {
 	}
 	return NewValidatorConsensusDataTest(
 		"invalid deneb block",
-		"Test validation error for invalid consensus data with empty Deneb block data",
+		testdoc.ValidatorConsensusDataTestInvalidDenebBlockDoc,
 		*cd,
 		"could not unmarshal ssz: incorrect size",
 	)

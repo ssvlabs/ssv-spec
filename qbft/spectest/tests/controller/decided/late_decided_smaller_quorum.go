@@ -3,6 +3,7 @@ package decided
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -11,9 +12,9 @@ import (
 // LateDecidedSmallerQuorum tests processing a decided msg for a just decided instance (with a smaller quorum)
 func LateDecidedSmallerQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide late decided smaller quorum",
-		"Test processing a decided message for a just decided instance with a smaller quorum, expecting the instance to remain decided.",
+		testdoc.ControllerDecidedLateDecidedSmallerQuorumDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -30,5 +31,8 @@ func LateDecidedSmallerQuorum() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

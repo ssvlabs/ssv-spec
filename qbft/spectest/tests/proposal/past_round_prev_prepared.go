@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -31,9 +32,9 @@ func PastRoundProposalPrevPrepared() tests.SpecTest {
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"proposal past round (not prev prepared)",
-		"Test proposal for a past round that was previously prepared, expecting validation error due to outdated round.",
+		testdoc.ProposalPastRoundPrevPreparedDoc,
 		pre,
 		"",
 		nil,
@@ -41,5 +42,8 @@ func PastRoundProposalPrevPrepared() tests.SpecTest {
 		nil,
 		"invalid signed message: past round",
 		nil,
+		ks,
 	)
+
+	return test
 }

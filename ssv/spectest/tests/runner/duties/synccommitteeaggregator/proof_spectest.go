@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/stretchr/testify/require"
@@ -24,6 +25,7 @@ type SyncCommitteeAggregatorProofSpecTest struct {
 	PostDutyRunnerState     string
 	ProofRootsMap           map[string]bool // if true then root returned from beacon node will be an aggregator
 	ExpectedError           string
+	PrivateKeys             *testingutils.PrivateKeyInfo
 
 	// consts for proof spectest
 	OperatorID types.OperatorID
@@ -86,16 +88,17 @@ func (test *SyncCommitteeAggregatorProofSpecTest) overrideStateComparison(t *tes
 	test.PostDutyRunnerStateRoot = hex.EncodeToString(r[:])
 }
 
-func NewSyncCommitteeAggregatorProofSpecTest(name, documentation string, messages []*types.SignedSSVMessage, postDutyRunnerStateRoot string, postDutyRunnerState string, proofRootsMap map[string]bool, expectedError string) *SyncCommitteeAggregatorProofSpecTest {
+func NewSyncCommitteeAggregatorProofSpecTest(name, documentation string, messages []*types.SignedSSVMessage, postDutyRunnerStateRoot string, postDutyRunnerState string, proofRootsMap map[string]bool, expectedError string, ks *testingutils.TestKeySet) *SyncCommitteeAggregatorProofSpecTest {
 	return &SyncCommitteeAggregatorProofSpecTest{
 		Name:                    name,
-		Type:                    "Sync committee aggregator proof",
+		Type:                    testdoc.SyncCommitteeAggregatorProofSpecTestType,
 		Documentation:           documentation,
 		Messages:                messages,
 		PostDutyRunnerStateRoot: postDutyRunnerStateRoot,
 		PostDutyRunnerState:     postDutyRunnerState,
 		ProofRootsMap:           proofRootsMap,
 		ExpectedError:           expectedError,
+		PrivateKeys:             testingutils.BuildPrivateKeyInfo(ks),
 
 		// consts for proof spectest
 		OperatorID: testingutils.TestingOperatorID,

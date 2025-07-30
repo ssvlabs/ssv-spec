@@ -3,6 +3,7 @@ package maxmsgsize
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 )
 
 const (
@@ -83,7 +84,7 @@ func maxQbftMessageWith2Justification() *qbft.Message {
 func MaxQBFTMessageWithNoJustification() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"max qbftMessage with no justification",
-		"Test the maximum size of a QBFT message with no justifications",
+		testdoc.StructureSizeTestMaxQBFTMessageWithNoJustificationDoc,
 		maxQbftMessageNoJustification(),
 		maxSizeQBFTMessageWithNoJustification,
 		false,
@@ -93,7 +94,7 @@ func MaxQBFTMessageWithNoJustification() *StructureSizeTest {
 func MaxQBFTMessageWith1Justification() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"max qbftMessage with 1 justification",
-		"Test the maximum size of a QBFT message with 1 justification",
+		testdoc.StructureSizeTestMaxQBFTMessageWith1JustificationDoc,
 		maxQbftMessageWith1Justification(),
 		maxSizeQBFTMessageWith1Justification,
 		false,
@@ -103,7 +104,7 @@ func MaxQBFTMessageWith1Justification() *StructureSizeTest {
 func MaxQBFTMessageWith2Justification() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"max qbftMessage with 2 justifications",
-		"Test the maximum size of a QBFT message with 2 justifications",
+		testdoc.StructureSizeTestMaxQBFTMessageWith2JustificationDoc,
 		maxQbftMessageWith2Justification(),
 		maxSizeQBFTMessageWith2Justification,
 		true,

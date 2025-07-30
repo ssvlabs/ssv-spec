@@ -6,6 +6,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -52,7 +53,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 
 	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
 		"duplicate duty finished",
-		"Tests new duty start with duplicate duty that has finished",
+		testdoc.NewDutyDuplicateDutyFinishedDoc,
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
@@ -99,6 +100,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				ExpectedError:           expectedTaskError,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

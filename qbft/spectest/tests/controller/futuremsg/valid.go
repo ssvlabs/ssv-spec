@@ -2,6 +2,7 @@ package futuremsg
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,9 +20,9 @@ func ValidMsg() tests.SpecTest {
 	// create base controller
 	contr := createBaseController()
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"future valid msg",
-		"Test future message that is valid but not yet ready to be processed, expecting error.",
+		testdoc.ControllerFutureMsgValidDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue:          []byte{1, 2, 3, 4},
@@ -32,7 +33,10 @@ func ValidMsg() tests.SpecTest {
 		nil,
 		"future msg from height, could not process",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func createBaseController() *qbft.Controller {

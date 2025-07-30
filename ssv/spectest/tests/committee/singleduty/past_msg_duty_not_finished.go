@@ -7,6 +7,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -120,8 +121,9 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 
 	multiSpecTest := committee.NewMultiCommitteeSpecTest(
 		"past msg duty not finished",
-		"Tests committee behavior when processing past proposal messages for a duty that has not finished (consensus already finished)",
+		testdoc.CommitteePastMsgDutyNotFinishedDoc,
 		tests,
+		ks,
 	)
 
 	return multiSpecTest

@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -26,9 +27,9 @@ func RoundChangePartialQuorum() tests.SpecTest {
 
 	outputMessages := []*types.SignedSSVMessage{outMsg}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change partial quorum",
-		"Test round change with partial quorum, checks timer state and output message.",
+		testdoc.RoundChangePartialQuorumDoc,
 		pre,
 		sc.Root(),
 		sc.ExpectedState,
@@ -39,7 +40,10 @@ func RoundChangePartialQuorum() tests.SpecTest {
 			Timeouts: 1,
 			Round:    qbft.Round(2),
 		},
+		ks,
 	)
+
+	return test
 }
 
 func roundChangePartialQuorumStateComparison() *comparable.StateComparison {

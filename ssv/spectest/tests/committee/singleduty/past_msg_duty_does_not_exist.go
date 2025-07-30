@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -79,8 +80,9 @@ func PastMessageDutyDoesNotExist() tests.SpecTest {
 
 	multiSpecTest := committee.NewMultiCommitteeSpecTest(
 		"past msg duty does not exist",
-		"Tests committee behavior when processing past proposal messages for a duty that doesn't exist",
+		testdoc.CommitteePastMsgDutyDoesNotExistDoc,
 		tests,
+		ks,
 	)
 
 	return multiSpecTest

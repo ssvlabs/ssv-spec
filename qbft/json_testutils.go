@@ -2,7 +2,9 @@ package qbft
 
 import (
 	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
+	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -37,6 +39,18 @@ func (c *Controller) GetRoot() ([32]byte, error) {
 	}
 	ret := sha256.Sum256(marshaledRoot)
 	return ret, nil
+}
+
+// UnmarshalJSON is a custom JSON unmarshaller for Controller
+func (c *Controller) UnmarshalJSON(data []byte) error {
+	type ControllerAlias Controller
+	aux := &struct {
+		*ControllerAlias
+	}{
+		ControllerAlias: (*ControllerAlias)(c),
+	}
+
+	return json.Unmarshal(data, aux)
 }
 
 // Instance
@@ -125,4 +139,69 @@ func (c *MsgContainer) GetRoot() ([32]byte, error) {
 	}
 	ret := sha256.Sum256(marshaledRoot)
 	return ret, nil
+}
+
+// Message
+func (m *Message) MarshalJSON() ([]byte, error) {
+	return json.Marshal(map[string]interface{}{
+		"MsgType":                  m.MsgType,
+		"Height":                   m.Height,
+		"Round":                    m.Round,
+		"Identifier":               m.Identifier,
+		"Root":                     hex.EncodeToString(m.Root[:]),
+		"DataRound":                m.DataRound,
+		"RoundChangeJustification": m.RoundChangeJustification,
+		"PrepareJustification":     m.PrepareJustification,
+	})
+}
+
+func (m *Message) UnmarshalJSON(data []byte) error {
+	type Alias Message
+	aux := &struct {
+		Root string `json:"Root"`
+		*Alias
+	}{
+		Alias: (*Alias)(m),
+	}
+
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	if aux.Root != "" {
+		if bytes, err := hex.DecodeString(aux.Root); err == nil {
+			if len(bytes) != 32 {
+				return errors.New("Root must be exactly 32 bytes")
+			}
+			copy(m.Root[:], bytes)
+			return nil
+		}
+	}
+
+	return nil
+}
+
+// Value type for hex encoding json
+
+type Value [32]byte
+
+func (r *Value) MarshalJSON() ([]byte, error) {
+	return json.Marshal(hex.EncodeToString(r[:]))
+}
+
+func (r *Value) UnmarshalJSON(data []byte) error {
+	hexStr := hexStringFromJSON(data)
+	bytes, err := hex.DecodeString(hexStr)
+	if err != nil {
+		return errors.Wrap(err, "failed to decode Value")
+	}
+	copy(r[:], bytes)
+	return nil
+}
+
+// helpers
+
+// hexStringFromJSON trims surrounding quotes from a JSON string value.
+func hexStringFromJSON(data []byte) string {
+	return strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
 }

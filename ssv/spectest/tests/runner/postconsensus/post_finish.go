@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,7 +18,7 @@ func PostFinish() tests.SpecTest {
 	err := "failed processing post consensus message: invalid post-consensus message: no running duty"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus post finish",
-		"Tests post-consensus message processing after duty is finished",
+		testdoc.PostConsensusPostFinishDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
@@ -71,6 +72,7 @@ func PostFinish() tests.SpecTest {
 				ExpectedError:           err,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

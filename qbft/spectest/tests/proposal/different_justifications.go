@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -49,9 +50,9 @@ func DifferentJustifications() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 3),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"different proposal round change justification",
-		"Test proposal for round > 1 that was prepared previously with round change justification containing prepare messages at different heights, testing the highest prepared calculation.",
+		testdoc.ProposalDifferentJustificationDoc,
 		pre,
 		"",
 		nil,
@@ -59,5 +60,8 @@ func DifferentJustifications() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -40,9 +41,9 @@ func InvalidRoundChangeJustificationPrepared() tests.SpecTest {
 		),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"proposal rc msg invalid (prepared)",
-		"Test proposal for round > 1 that was prepared previously but contains invalid round change justification with mismatched signer ID, expecting validation error.",
+		testdoc.ProposalInvalidRCJustificationPreparedDoc,
 		pre,
 		"",
 		nil,
@@ -50,5 +51,8 @@ func InvalidRoundChangeJustificationPrepared() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: change round msg not valid: msg signature invalid: crypto/rsa: verification error",
 		nil,
+		ks,
 	)
+
+	return test
 }

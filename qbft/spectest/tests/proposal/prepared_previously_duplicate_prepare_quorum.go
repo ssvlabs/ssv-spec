@@ -2,6 +2,7 @@ package proposal
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -40,9 +41,9 @@ func PreparedPreviouslyDuplicatePrepareQuorum() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"duplicate prepare msg justification quorum",
-		"Test proposal for round > 1 that was prepared previously with quorum of prepare messages but contains duplicate messages, expecting prepare message broadcast.",
+		testdoc.ProposalPreparedPreviouslyDuplicatePrepareQuorumDoc,
 		pre,
 		"",
 		nil,
@@ -50,5 +51,8 @@ func PreparedPreviouslyDuplicatePrepareQuorum() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

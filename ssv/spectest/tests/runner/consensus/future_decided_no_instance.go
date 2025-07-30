@@ -7,6 +7,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -46,7 +47,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus future decided no running instance",
-		"Tests consensus decided message processing with future messages when no instance exists",
+		testdoc.ConsensusFutureDecidedNoInstanceDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:           "sync committee contribution",
@@ -57,6 +58,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

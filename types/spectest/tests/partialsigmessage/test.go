@@ -7,6 +7,7 @@ import (
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/stretchr/testify/require"
 )
 
@@ -72,7 +73,7 @@ func (tests *MsgSpecTest) GetPostState() (interface{}, error) {
 func NewMsgSpecTest(name, documentation string, messages []*types.PartialSignatureMessages, encodedMessages [][]byte, expectedRoots [][32]byte, expectedError string) *MsgSpecTest {
 	return &MsgSpecTest{
 		Name:            name,
-		Type:            "Partial signature messages: validation of partial signature messages",
+		Type:            testdoc.MsgSpecTestType,
 		Documentation:   documentation,
 		Messages:        messages,
 		EncodedMessages: encodedMessages,

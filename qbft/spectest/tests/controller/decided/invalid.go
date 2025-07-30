@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,9 +20,9 @@ func Invalid() tests.SpecTest {
 		qbft.FirstHeight,
 	)
 	msg.OperatorIDs = []types.OperatorID{}
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide invalid msg",
-		"Test decided message where msg.validate() fails, expecting validation error.",
+		testdoc.ControllerDecidedInvalidDoc,
 		[]*tests.RunInstanceData{
 			{
 				InputValue: []byte{1, 2, 3, 4},
@@ -33,5 +34,8 @@ func Invalid() tests.SpecTest {
 		nil,
 		"could not process msg: invalid signed message: invalid SignedSSVMessage: no signers",
 		nil,
+		ks,
 	)
+
+	return test
 }
