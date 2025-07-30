@@ -29,6 +29,7 @@ func PreviousNotDecided() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		nil,
 	)
 }
 

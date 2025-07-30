@@ -18,7 +18,7 @@ func FutureRound() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 3),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"prepare future round",
 		testdoc.PrepareFutureRoundDoc,
 		pre,
@@ -28,5 +28,8 @@ func FutureRound() tests.SpecTest {
 		nil,
 		"invalid signed message: wrong msg round",
 		nil,
+		ks,
 	)
+
+	return test
 }

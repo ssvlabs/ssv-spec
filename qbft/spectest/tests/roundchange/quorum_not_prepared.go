@@ -24,7 +24,7 @@ func QuorumNotPrepared() tests.SpecTest {
 			testingutils.MarshalJustifications(inputMessages)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change not prepared",
 		testdoc.RoundChangeQuorumNotPreparedDoc,
 		pre,
@@ -34,5 +34,8 @@ func QuorumNotPrepared() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

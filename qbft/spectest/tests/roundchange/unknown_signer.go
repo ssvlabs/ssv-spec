@@ -17,7 +17,7 @@ func UnknownSigner() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(5), 2),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change unknown signer",
 		testdoc.RoundChangeUnknownSignerDoc,
 		pre,
@@ -27,5 +27,8 @@ func UnknownSigner() tests.SpecTest {
 		nil,
 		"invalid signed message: signer not in committee",
 		nil,
+		ks,
 	)
+
+	return test
 }

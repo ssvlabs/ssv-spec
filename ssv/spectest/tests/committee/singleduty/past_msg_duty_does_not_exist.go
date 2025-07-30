@@ -82,6 +82,7 @@ func PastMessageDutyDoesNotExist() tests.SpecTest {
 		"past msg duty does not exist",
 		testdoc.CommitteePastMsgDutyDoesNotExistDoc,
 		tests,
+		ks,
 	)
 
 	return multiSpecTest

@@ -17,7 +17,7 @@ func ZeroSigner() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(0), 2),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change zero signer",
 		testdoc.RoundChangeZeroSignerDoc,
 		pre,
@@ -27,5 +27,8 @@ func ZeroSigner() tests.SpecTest {
 		nil,
 		"invalid signed message: invalid SignedSSVMessage: signer ID 0 not allowed",
 		nil,
+		ks,
 	)
+
+	return test
 }

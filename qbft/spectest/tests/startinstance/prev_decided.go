@@ -13,7 +13,7 @@ import (
 func PreviousDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"start instance prev decided",
 		testdoc.StartInstancePrevDecidedDoc,
 		[]*tests.RunInstanceData{
@@ -39,7 +39,10 @@ func PreviousDecided() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comparable.StateComparison {

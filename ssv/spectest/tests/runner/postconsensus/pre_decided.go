@@ -41,6 +41,7 @@ func PreDecided() tests.SpecTest {
 				ExpectedError:          err,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

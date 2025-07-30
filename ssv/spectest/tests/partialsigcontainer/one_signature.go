@@ -23,7 +23,7 @@ func OneSignature() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return NewPartialSigContainerTest(
+	test := NewPartialSigContainerTest(
 		"one signature",
 		testdoc.PartialSigContainerOneSignatureDoc,
 		ks.Threshold,
@@ -32,5 +32,8 @@ func OneSignature() tests.SpecTest {
 		"could not reconstruct a valid signature",
 		expectedSig.Serialize(),
 		false,
+		ks,
 	)
+
+	return test
 }

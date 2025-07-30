@@ -15,7 +15,7 @@ func UnknownSigner() tests.SpecTest {
 		testingutils.TestingProposalMessage(ks.OperatorKeys[2], types.OperatorID(5)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"unknown proposal signer",
 		testdoc.ProposalUnknownSignerDoc,
 		pre,
@@ -25,5 +25,8 @@ func UnknownSigner() tests.SpecTest {
 		nil,
 		"invalid signed message: signer not in committee",
 		nil,
+		ks,
 	)
+
+	return test
 }

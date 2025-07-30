@@ -25,7 +25,7 @@ func Invalid() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return NewPartialSigContainerTest(
+	test := NewPartialSigContainerTest(
 		"invalid",
 		testdoc.PartialSigContainerInvalidDoc,
 		ks.Threshold,
@@ -34,5 +34,8 @@ func Invalid() tests.SpecTest {
 		"could not reconstruct a valid signature",
 		expectedSig.Serialize(),
 		true,
+		ks,
 	)
+
+	return test
 }

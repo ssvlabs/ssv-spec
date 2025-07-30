@@ -12,7 +12,7 @@ import (
 // DuplicateMsg tests a duplicate decided msg processing
 func DuplicateMsg() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide duplicate msg",
 		testdoc.ControllerDecidedDuplicateMsgDoc,
 		[]*tests.RunInstanceData{
@@ -31,5 +31,8 @@ func DuplicateMsg() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

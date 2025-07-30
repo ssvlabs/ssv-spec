@@ -21,7 +21,7 @@ func SecondProposalForRound() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"second proposal for round",
 		testdoc.ProposalSecondProposalForRoundDoc,
 		pre,
@@ -31,5 +31,8 @@ func SecondProposalForRound() tests.SpecTest {
 		outputMessages,
 		"invalid signed message: proposal is not valid with current state",
 		nil,
+		ks,
 	)
+
+	return test
 }

@@ -119,6 +119,7 @@ func HappyFlow() tests.SpecTest {
 		"happy flow",
 		testdoc.CommitteeHappyFlowDoc,
 		tests,
+		ks,
 	)
 
 	return multiSpecTest

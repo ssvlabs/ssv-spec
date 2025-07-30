@@ -28,5 +28,6 @@ func StartWithNoSharesForDuty() tests.SpecTest {
 		[]*types.PartialSignatureMessages{},
 		nil,
 		"no shares for duty's validators",
+		nil,
 	)
 }

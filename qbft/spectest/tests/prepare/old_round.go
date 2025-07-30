@@ -28,7 +28,7 @@ func OldRound() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], 1, 9),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"prepare prev round",
 		testdoc.PrepareOldRoundDoc,
 		pre,
@@ -38,5 +38,8 @@ func OldRound() tests.SpecTest {
 		nil,
 		"invalid signed message: past round",
 		nil,
+		ks,
 	)
+
+	return test
 }

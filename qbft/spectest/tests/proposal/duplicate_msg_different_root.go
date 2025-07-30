@@ -22,7 +22,7 @@ func DuplicateMsgDifferentRoot() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"proposal duplicate message different value",
 		testdoc.ProposalDuplicateMsgDifferentRootDoc,
 		pre,
@@ -32,7 +32,10 @@ func DuplicateMsgDifferentRoot() tests.SpecTest {
 		outputMessages,
 		"invalid signed message: proposal is not valid with current state",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func duplicateMsgDifferentRootStateComparison() *comparable.StateComparison {

@@ -37,6 +37,7 @@ type CreateMsgSpecTest struct {
 	ExpectedRoot                                     string
 	ExpectedState                                    types.Root `json:"-"` // Field is ignored by encoding/json"
 	ExpectedError                                    string
+	PrivateKeys                                      *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 // UnmarshalJSON implements custom JSON unmarshaling for CreateMsgSpecTest
@@ -228,10 +229,13 @@ func (test *CreateMsgSpecTest) TestName() string {
 }
 
 func (test *CreateMsgSpecTest) GetPostState() (interface{}, error) {
+	// remove private keys
+	test.PrivateKeys = nil
+
 	return test, nil
 }
 
-func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, stateValue []byte, round qbft.Round, roundChangeJustifications []*types.SignedSSVMessage, prepareJustifications []*types.SignedSSVMessage, createType string, expectedRoot string, expectedState types.Root, expectedError string) *CreateMsgSpecTest {
+func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, stateValue []byte, round qbft.Round, roundChangeJustifications []*types.SignedSSVMessage, prepareJustifications []*types.SignedSSVMessage, createType string, expectedRoot string, expectedState types.Root, expectedError string, ks *testingutils.TestKeySet) *CreateMsgSpecTest {
 	return &CreateMsgSpecTest{
 		Name:                      name,
 		Type:                      testdoc.CreateMsgSpecTestType,
@@ -245,5 +249,6 @@ func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, sta
 		ExpectedRoot:              expectedRoot,
 		ExpectedState:             expectedState,
 		ExpectedError:             expectedError,
+		PrivateKeys:               testingutils.BuildPrivateKeyInfo(ks),
 	}
 }

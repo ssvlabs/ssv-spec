@@ -22,12 +22,15 @@ func GetRoot() tests.SpecTest {
 
 	r, _ := msg.GetRoot()
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"get root",
 		testdoc.MessagesRootDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		[][32]byte{r},
 		"",
+		ks,
 	)
+
+	return test
 }

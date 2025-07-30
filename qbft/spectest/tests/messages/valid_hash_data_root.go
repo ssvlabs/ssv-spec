@@ -22,12 +22,15 @@ func ValidHashDataRoot() tests.SpecTest {
 
 	msg.FullData = testingutils.TestingQBFTFullData
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"valid hash data root",
 		testdoc.MessagesValidHashDataRootDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
 		"",
+		ks,
 	)
+
+	return test
 }

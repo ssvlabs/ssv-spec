@@ -17,12 +17,15 @@ func SignedMsgMultiSigners() tests.SpecTest {
 		[]types.OperatorID{1, 2, 3},
 	)
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"multi signers",
 		testdoc.MessagesSignedMsgMultiSignersDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
 		"",
+		ks,
 	)
+
+	return test
 }

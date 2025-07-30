@@ -28,7 +28,7 @@ func F1SpeedupPrevPrepared() tests.SpecTest {
 			[32]byte{}, 0, [][]byte{}),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"f+1 speed up prev prepared",
 		testdoc.RoundChangeF1SpeedupPrevPreparedDoc,
 		pre,
@@ -38,5 +38,8 @@ func F1SpeedupPrevPrepared() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

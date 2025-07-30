@@ -48,7 +48,7 @@ func HappyFlow() tests.SpecTest {
 		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change happy flow",
 		testdoc.RoundChangeHappyFlowDoc,
 		pre,
@@ -61,5 +61,8 @@ func HappyFlow() tests.SpecTest {
 			Timeouts: 1,
 			Round:    qbft.Round(2),
 		},
+		ks,
 	)
+
+	return test
 }

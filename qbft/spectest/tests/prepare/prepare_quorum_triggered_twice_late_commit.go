@@ -30,7 +30,7 @@ func PrepareQuorumTriggeredTwiceLateCommit() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"prepared quorum committed twice late commit",
 		testdoc.PrepareQuorumTriggeredTwiceLateCommitDoc,
 		pre,
@@ -40,5 +40,8 @@ func PrepareQuorumTriggeredTwiceLateCommit() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

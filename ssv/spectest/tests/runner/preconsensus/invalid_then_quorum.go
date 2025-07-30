@@ -76,6 +76,7 @@ func InvalidThenQuorum() tests.SpecTest {
 				},
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

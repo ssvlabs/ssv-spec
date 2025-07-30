@@ -37,6 +37,7 @@ type MsgProcessingSpecTest struct {
 	BeaconBroadcastedRoots []string
 	DontStartDuty          bool // if set to true will not start a duty for the runner
 	ExpectedError          string
+	PrivateKeys            *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {
@@ -289,7 +290,20 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func NewMsgProcessingSpecTest(name, documentation string, runner ssv.Runner, duty types.Duty, messages []*types.SignedSSVMessage, decidedSlashable bool, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, dontStartDuty bool, expectedError string) *MsgProcessingSpecTest {
+func NewMsgProcessingSpecTest(
+	name, documentation string,
+	runner ssv.Runner,
+	duty types.Duty,
+	messages []*types.SignedSSVMessage,
+	decidedSlashable bool,
+	postDutyRunnerStateRoot string,
+	postDutyRunnerState types.Root,
+	outputMessages []*types.PartialSignatureMessages,
+	beaconBroadcastedRoots []string,
+	dontStartDuty bool,
+	expectedError string,
+	ks *testingutils.TestKeySet,
+) *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:                    name,
 		Type:                    testdoc.MsgProcessingSpecTestType,
@@ -304,5 +318,6 @@ func NewMsgProcessingSpecTest(name, documentation string, runner ssv.Runner, dut
 		BeaconBroadcastedRoots:  beaconBroadcastedRoots,
 		DontStartDuty:           dontStartDuty,
 		ExpectedError:           expectedError,
+		PrivateKeys:             testingutils.BuildPrivateKeyInfo(ks),
 	}
 }

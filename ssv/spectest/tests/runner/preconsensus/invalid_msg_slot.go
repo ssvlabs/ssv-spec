@@ -90,6 +90,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				ExpectedError: "failed processing voluntary exit message: invalid pre-consensus message: invalid partial sig slot",
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

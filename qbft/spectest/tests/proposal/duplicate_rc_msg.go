@@ -24,7 +24,7 @@ func DuplicateRCMsg() tests.SpecTest {
 			testingutils.TestingQBFTRootData, testingutils.MarshalJustifications(rcMsgs), nil),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"duplicate rc msg justification",
 		testdoc.ProposalDuplicateRCMsgDoc,
 		pre,
@@ -34,5 +34,8 @@ func DuplicateRCMsg() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: change round has no quorum",
 		nil,
+		ks,
 	)
+
+	return test
 }

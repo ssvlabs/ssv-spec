@@ -17,7 +17,7 @@ func CurrentRound() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"commit current round",
 		testdoc.CommitTestCurrentRoundDoc,
 		pre,
@@ -27,5 +27,8 @@ func CurrentRound() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

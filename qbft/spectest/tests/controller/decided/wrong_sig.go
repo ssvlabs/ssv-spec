@@ -12,7 +12,7 @@ import (
 // WrongSignature tests a single decided received with a wrong signature
 func WrongSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide wrong sig",
 		testdoc.ControllerDecidedWrongSigDoc,
 		[]*tests.RunInstanceData{
@@ -26,5 +26,8 @@ func WrongSignature() tests.SpecTest {
 		nil,
 		"invalid decided msg: invalid decided msg: msg signature invalid: crypto/rsa: verification error",
 		nil,
+		ks,
 	)
+
+	return test
 }

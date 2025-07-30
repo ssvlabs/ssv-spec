@@ -71,6 +71,7 @@ func PostFutureDecided() tests.SpecTest {
 					testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50),
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

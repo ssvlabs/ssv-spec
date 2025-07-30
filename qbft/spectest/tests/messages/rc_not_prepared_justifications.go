@@ -14,12 +14,15 @@ func RoundChangeNotPreparedJustifications() tests.SpecTest {
 	msg := testingutils.TestingRoundChangeMessageWithParams(
 		ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight, testingutils.TestingQBFTRootData, qbft.NoRound, nil)
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"rc not prev prepared justifications",
 		testdoc.MessagesRCNotPreparedJustificationsDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
 		"",
+		ks,
 	)
+
+	return test
 }

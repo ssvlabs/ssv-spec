@@ -100,6 +100,7 @@ func Quorum13Operators() tests.SpecTest {
 				DontStartDuty: true,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

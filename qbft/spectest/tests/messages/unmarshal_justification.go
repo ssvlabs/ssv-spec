@@ -34,12 +34,15 @@ func UnmarshalJustifications() tests.SpecTest {
 		panic(err)
 	}
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"unmarshal justifications",
 		testdoc.MessagesUnmarshalJustificationDoc,
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{b},
 		[][32]byte{r},
 		"",
+		ks,
 	)
+
+	return test
 }

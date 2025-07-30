@@ -28,7 +28,7 @@ func NoPrepareQuorum() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"commit no prepare quorum",
 		testdoc.CommitTestNoPrepareQuorumDoc,
 		pre,
@@ -38,5 +38,8 @@ func NoPrepareQuorum() tests.SpecTest {
 		outputMsgs,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

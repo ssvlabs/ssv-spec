@@ -25,7 +25,7 @@ func F1DifferentFutureRoundsNotPrepared() tests.SpecTest {
 			[32]byte{}, 0, [][]byte{}),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change f+1 not prepared",
 		testdoc.RoundChangeF1DifferentFutureRoundsNotPreparedDoc,
 		pre,
@@ -35,7 +35,10 @@ func F1DifferentFutureRoundsNotPrepared() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func f1DifferentFutureRoundsNotPreparedStateComparison() *comparable.StateComparison {

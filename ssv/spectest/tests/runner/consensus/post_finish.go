@@ -55,6 +55,7 @@ func PostFinish() tests.SpecTest {
 				ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

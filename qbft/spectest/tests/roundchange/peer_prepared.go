@@ -32,7 +32,7 @@ func PeerPrepared() tests.SpecTest {
 			testingutils.MarshalJustifications(inputMessages), testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change peer prepared",
 		testdoc.RoundChangePeerPreparedDoc,
 		pre,
@@ -42,5 +42,8 @@ func PeerPrepared() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

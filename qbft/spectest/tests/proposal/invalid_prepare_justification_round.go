@@ -34,7 +34,7 @@ func InvalidPrepareJustificationRound() tests.SpecTest {
 			testingutils.MarshalJustifications(rcMsgs), testingutils.MarshalJustifications(prepareMsgs),
 		),
 	}
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"invalid prepare justification round",
 		testdoc.ProposalInvalidPrepareJustificationRoundDoc,
 		pre,
@@ -44,7 +44,10 @@ func InvalidPrepareJustificationRound() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: wrong msg round",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func invalidPrepareJustificationRoundStateComparison() *comparable.StateComparison {

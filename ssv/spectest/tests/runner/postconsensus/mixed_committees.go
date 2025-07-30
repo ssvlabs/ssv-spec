@@ -23,6 +23,7 @@ func MixedCommittees() tests.SpecTest {
 		"mixed committees",
 		testdoc.PostConsensusMixedCommitteesDoc,
 		[]*tests.MsgProcessingSpecTest{},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
