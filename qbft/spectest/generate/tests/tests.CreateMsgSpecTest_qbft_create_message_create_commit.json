@@ -9,5 +9,14 @@
   "PrepareJustifications": null,
   "CreateType": "CreateCommit",
   "ExpectedRoot": "6650657e621029ea09937d8f2766b3ea8b71ec19fc02201d9c9c9a45c2c1baa8",
-  "ExpectedError": ""
+  "ExpectedError": "",
+  "CommitteeMember": {
+    "OperatorID": 0,
+    "CommitteeID": "0000000000000000000000000000000000000000000000000000000000000000",
+    "SSVOperatorPubKey": null,
+    "FaultyNodes": 0,
+    "Committee": null,
+    "DomainType": "00000000"
+  },
+  "Identifier": "AQIDBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 }

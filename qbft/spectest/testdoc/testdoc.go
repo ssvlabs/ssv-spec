@@ -243,3 +243,10 @@ const MsgProcessingHappyFlowDoc = "Test a complete QBFT happy flow from proposal
 const MsgProcessingHappyFlowSevenOperatorsDoc = "Test a complete QBFT happy flow from proposal to decision with 7 operators"
 const MsgProcessingHappyFlowTenOperatorsDoc = "Test a complete QBFT happy flow from proposal to decision with 10 operators"
 const MsgProcessingHappyFlowThirteenOperatorsDoc = "Test a complete QBFT happy flow from proposal to decision with 13 operators"
+
+// Documentation for Timeout tests
+const TimeoutRound1Doc = "Test UponRoundTimeout for round 1, checks state transition and broadcasted round change message."
+const TimeoutRound2Doc = "Test UponRoundTimeout for round 2, checks state transition and broadcasted round change message."
+const TimeoutRound3Doc = "Test UponRoundTimeout for round 3, checks state transition and broadcasted round change message."
+const TimeoutRound5Doc = "Test UponRoundTimeout for round 5, checks state transition and broadcasted round change message."
+const TimeoutRound15Doc = "Test UponRoundTimeout for round 15, checks that instance stops processing timeouts after a high round."

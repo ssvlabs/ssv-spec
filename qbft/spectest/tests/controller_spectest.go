@@ -44,6 +44,9 @@ type ControllerSpecTest struct {
 	ExpectedError   string
 	StartHeight     *qbft.Height                 `json:"StartHeight,omitempty"`
 	PrivateKeys     *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+
+	// consts for ControllerSpecTest
+	Controller *qbft.Controller `json:"Controller,omitempty"`
 }
 
 func (test *ControllerSpecTest) TestName() string {
@@ -268,7 +271,7 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 }
 
 func NewControllerSpecTest(name string, documentation string, runInstanceData []*RunInstanceData, outputMessages []*types.SignedSSVMessage, expectedError string, startHeight *qbft.Height, privateKeys *testingutils.TestKeySet) *ControllerSpecTest {
-	return &ControllerSpecTest{
+	test := &ControllerSpecTest{
 		Name:            name,
 		Type:            testdoc.ControllerSpecTestType,
 		Documentation:   documentation,
@@ -278,4 +281,6 @@ func NewControllerSpecTest(name string, documentation string, runInstanceData []
 		StartHeight:     startHeight,
 		PrivateKeys:     testingutils.BuildPrivateKeyInfo(privateKeys),
 	}
+	test.Controller = test.generateController()
+	return test
 }

@@ -9,5 +9,14 @@
   "PrepareJustifications": null,
   "CreateType": "createProposal",
   "ExpectedRoot": "43c23219aaf744537a2e8b3896937a2e9aa24a8eaf8fcabf8ec7376f76669f3c",
-  "ExpectedError": ""
+  "ExpectedError": "",
+  "CommitteeMember": {
+    "OperatorID": 0,
+    "CommitteeID": "0000000000000000000000000000000000000000000000000000000000000000",
+    "SSVOperatorPubKey": null,
+    "FaultyNodes": 0,
+    "Committee": null,
+    "DomainType": "00000000"
+  },
+  "Identifier": "AQIDBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 }
