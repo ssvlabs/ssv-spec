@@ -28,7 +28,7 @@ type SyncCommitteeAggregatorProofSpecTest struct {
 	PrivateKeys             *testingutils.PrivateKeyInfo
 
 	// consts for proof spectest
-	OperatorID types.OperatorID
+	OperatorID types.OperatorID // used as the testing committee member's operator id
 }
 
 func (test *SyncCommitteeAggregatorProofSpecTest) TestName() string {

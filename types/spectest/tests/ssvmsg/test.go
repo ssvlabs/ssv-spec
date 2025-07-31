@@ -21,7 +21,7 @@ type SSVMessageTest struct {
 	BelongsToValidator bool
 
 	// consts for SSVMessageTest
-	ValidatorIndex phase0.ValidatorIndex
+	ValidatorIndex phase0.ValidatorIndex // used to create the testing shares
 }
 
 func (test *SSVMessageTest) TestName() string {
