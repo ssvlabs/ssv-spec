@@ -65,25 +65,22 @@ func NotDecided() tests.SpecTest {
 	for _, version := range testingutils.SupportedAttestationVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{
 			{
-				Name:           fmt.Sprintf("attester (%s)", version.String()),
-				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty(version)),
-				Duty:           testingutils.TestingAttesterDutyNextEpoch(version),
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
+				Name:      fmt.Sprintf("attester (%s)", version.String()),
+				Runner:    startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty(version)),
+				Duty:      testingutils.TestingAttesterDutyNextEpoch(version),
+				Threshold: ks.Threshold,
 			},
 			{
-				Name:           fmt.Sprintf("sync committee (%s)", version.String()),
-				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty(version)),
-				Duty:           testingutils.TestingSyncCommitteeDutyNextEpoch(version),
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
+				Name:      fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner:    startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty(version)),
+				Duty:      testingutils.TestingSyncCommitteeDutyNextEpoch(version),
+				Threshold: ks.Threshold,
 			},
 			{
-				Name:           fmt.Sprintf("attester and sync committee (%s)", version.String()),
-				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties(version)),
-				Duty:           testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch(version),
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
+				Name:      fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner:    startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties(version)),
+				Duty:      testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch(version),
+				Threshold: ks.Threshold,
 			},
 		}...)
 	}

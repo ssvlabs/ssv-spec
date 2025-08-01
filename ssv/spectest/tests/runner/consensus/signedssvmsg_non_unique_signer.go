@@ -161,8 +161,7 @@ func NonUniqueSigners() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedError: expectedError,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -173,8 +172,7 @@ func NonUniqueSigners() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedError: expectedError,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -185,8 +183,7 @@ func NonUniqueSigners() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedError: expectedError,
 			},
 		}...)
 	}

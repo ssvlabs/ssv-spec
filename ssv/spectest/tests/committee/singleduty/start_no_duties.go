@@ -5,7 +5,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
-	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -23,7 +22,7 @@ func StartNoDuty() tests.SpecTest {
 		},
 		"",
 		nil,
-		[]*types.PartialSignatureMessages{},
+		nil,
 		nil,
 		"no beacon duties",
 		nil,

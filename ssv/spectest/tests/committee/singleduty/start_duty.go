@@ -6,7 +6,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
-	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -30,7 +29,6 @@ func StartDuty() tests.SpecTest {
 					Input: []interface{}{
 						testingutils.TestingAttesterDutyForValidators(version, validatorsIndexList),
 					},
-					OutputMessages: []*types.PartialSignatureMessages{},
 				},
 				{
 					Name:      fmt.Sprintf("%v sync committee (%s)", numValidators, version.String()),
@@ -38,7 +36,6 @@ func StartDuty() tests.SpecTest {
 					Input: []interface{}{
 						testingutils.TestingSyncCommitteeDutyForValidators(version, validatorsIndexList),
 					},
-					OutputMessages: []*types.PartialSignatureMessages{},
 				},
 				{
 					Name:      fmt.Sprintf("%v attestation %v sync committee (%s)", numValidators, numValidators, version.String()),
@@ -46,7 +43,6 @@ func StartDuty() tests.SpecTest {
 					Input: []interface{}{
 						testingutils.TestingCommitteeDuty(validatorsIndexList, validatorsIndexList, version),
 					},
-					OutputMessages: []*types.PartialSignatureMessages{},
 				},
 			}...)
 		}

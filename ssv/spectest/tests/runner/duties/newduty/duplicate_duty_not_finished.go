@@ -83,7 +83,6 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				Duty:                    &testingutils.TestingValidatorRegistrationDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedTaskError,
 			},
 			{
@@ -93,7 +92,6 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				Duty:                    &testingutils.TestingVoluntaryExitDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedTaskError,
 			},
 		},
@@ -132,7 +130,6 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				Duty:                    testingutils.TestingAttesterDuty(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedVersionedError,
 			},
 			{
@@ -141,7 +138,6 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeDuty(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedVersionedError,
 			},
 			{
@@ -150,7 +146,6 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDuties(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedVersionedError,
 			},
 		}...)
