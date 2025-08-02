@@ -1318,7 +1318,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "no runner found for message's slot"
     },
@@ -2757,7 +2757,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "no runner found for message's slot"
     },
@@ -4526,7 +4526,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "no runner found for message's slot"
     },
@@ -5845,7 +5845,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "no runner found for message's slot"
     },
@@ -7284,7 +7284,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "no runner found for message's slot"
     },
@@ -9053,7 +9053,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "no runner found for message's slot"
     }

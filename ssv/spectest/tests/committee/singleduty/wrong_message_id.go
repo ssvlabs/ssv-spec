@@ -57,8 +57,7 @@ func WrongMessageID() tests.SpecTest {
 					testingutils.TestingSyncCommitteeDutyForValidators(version, validatorsIndexList),
 					decidedMessage(),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedError: expectedError,
 			},
 			{
 				Name:      fmt.Sprintf("attestation (%s)", version.String()),
@@ -67,8 +66,7 @@ func WrongMessageID() tests.SpecTest {
 					testingutils.TestingAttesterDutyForValidators(version, validatorsIndexList),
 					decidedMessage(),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedError: expectedError,
 			},
 		}...)
 	}

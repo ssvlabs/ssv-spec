@@ -29,7 +29,6 @@ func ValidBeaconVote() tests.SpecTest {
 					ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 					qbft.Height(testingutils.TestingDutySlotV(version))),
 			},
-			OutputMessages: []*types.PartialSignatureMessages{},
 		})
 	}
 

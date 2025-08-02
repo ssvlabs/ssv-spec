@@ -536,7 +536,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "can't start non-beacon duty: duty for slot 12 already passed. Current slot is 12",
       "ValidatorDuty": {
         "Type": 5,
@@ -617,7 +617,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "can't start non-beacon duty: duty for slot 12 already passed. Current slot is 12",
       "ValidatorDuty": {
         "Type": 6,
@@ -1278,7 +1278,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "can't start duty: duty for slot 12 already passed. Current height is 12",
       "CommitteeDuty": {
         "Slot": "12",
@@ -1502,7 +1502,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "can't start duty: duty for slot 12 already passed. Current height is 12",
       "CommitteeDuty": {
         "Slot": "12",
@@ -1741,7 +1741,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "can't start duty: duty for slot 12 already passed. Current height is 12",
       "CommitteeDuty": {
         "Slot": "12",
@@ -1976,7 +1976,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "can't start duty: duty for slot 7424012 already passed. Current height is 7424012",
       "CommitteeDuty": {
         "Slot": "7424012",
@@ -2200,7 +2200,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "can't start duty: duty for slot 7424012 already passed. Current height is 7424012",
       "CommitteeDuty": {
         "Slot": "7424012",
@@ -2439,7 +2439,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "can't start duty: duty for slot 7424012 already passed. Current height is 7424012",
       "CommitteeDuty": {
         "Slot": "7424012",

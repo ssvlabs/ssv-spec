@@ -92,7 +92,6 @@ func ConsensusNotStarted() tests.SpecTest {
 				Duty:                    testingutils.TestingAttesterDutyNextEpoch(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:                    fmt.Sprintf("sync committee (%s)", version.String()),
@@ -100,7 +99,6 @@ func ConsensusNotStarted() tests.SpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:                    fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -108,7 +106,6 @@ func ConsensusNotStarted() tests.SpecTest {
 				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 		}...)
 	}

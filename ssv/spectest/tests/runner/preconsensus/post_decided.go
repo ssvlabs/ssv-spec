@@ -61,7 +61,6 @@ func PostDecided() tests.SpecTest {
 				PostDutyRunnerStateRoot: postDecidedSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     postDecidedSyncCommitteeContributionSC().ExpectedState,
 				DontStartDuty:           true,
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 		},
 		ks,
@@ -84,8 +83,7 @@ func PostDecided() tests.SpecTest {
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4, version))),
 			},
-			DontStartDuty:  true,
-			OutputMessages: []*types.PartialSignatureMessages{},
+			DontStartDuty: true,
 		})
 	}
 
@@ -110,7 +108,6 @@ func PostDecided() tests.SpecTest {
 			PostDutyRunnerStateRoot: postDecidedProposerSC(version).Root(),
 			PostDutyRunnerState:     postDecidedProposerSC(version).ExpectedState,
 			DontStartDuty:           true,
-			OutputMessages:          []*types.PartialSignatureMessages{},
 		}
 	}
 
@@ -135,7 +132,6 @@ func PostDecided() tests.SpecTest {
 			PostDutyRunnerStateRoot: postDecidedBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     postDecidedBlindedProposerSC(version).ExpectedState,
 			DontStartDuty:           true,
-			OutputMessages:          []*types.PartialSignatureMessages{},
 		}
 	}
 

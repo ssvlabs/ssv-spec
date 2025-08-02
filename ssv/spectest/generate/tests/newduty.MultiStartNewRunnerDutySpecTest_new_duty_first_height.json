@@ -392,7 +392,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "",
       "CommitteeDuty": {
         "Slot": "0",
@@ -484,7 +484,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "",
       "CommitteeDuty": {
         "Slot": "0",
@@ -580,7 +580,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "",
       "CommitteeDuty": {
         "Slot": "0",

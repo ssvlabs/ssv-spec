@@ -42,8 +42,7 @@ func ProposalWithConsensusData() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestAttesterConsensusDataByts,
 						height),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedError: expectedError,
 			},
 			{
 				Name:      fmt.Sprintf("%v sync committee (%s)", numValidators, version.String()),
@@ -54,8 +53,7 @@ func ProposalWithConsensusData() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestSyncCommitteeConsensusDataByts,
 						height),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedError: expectedError,
 			},
 			{
 				Name:      fmt.Sprintf("%v attestations %v sync committees (%s)", numValidators, numValidators, version.String()),
@@ -66,8 +64,7 @@ func ProposalWithConsensusData() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestAttesterConsensusDataByts,
 						height),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedError: expectedError,
 			},
 		}...)
 	}

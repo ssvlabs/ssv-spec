@@ -203,11 +203,13 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 	}
 
 	outputMsgs := make([]*types.PartialSignatureMessages, 0)
-	for _, msg := range m["OutputMessages"].([]interface{}) {
-		byts, _ := json.Marshal(msg)
-		typedMsg := &types.PartialSignatureMessages{}
-		require.NoError(t, json.Unmarshal(byts, typedMsg))
-		outputMsgs = append(outputMsgs, typedMsg)
+	if m["OutputMessages"] != nil {
+		for _, msg := range m["OutputMessages"].([]interface{}) {
+			byts, _ := json.Marshal(msg)
+			typedMsg := &types.PartialSignatureMessages{}
+			require.NoError(t, json.Unmarshal(byts, typedMsg))
+			outputMsgs = append(outputMsgs, typedMsg)
+		}
 	}
 
 	shareInstance := &types.Share{}
@@ -277,12 +279,13 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	}
 
 	outputMsgs := make([]*types.PartialSignatureMessages, 0)
-	require.NotNilf(t, m["OutputMessages"], "OutputMessages can't be nil")
-	for _, msg := range m["OutputMessages"].([]interface{}) {
-		byts, _ := json.Marshal(msg)
-		typedMsg := &types.PartialSignatureMessages{}
-		require.NoError(t, json.Unmarshal(byts, typedMsg))
-		outputMsgs = append(outputMsgs, typedMsg)
+	if m["OutputMessages"] != nil {
+		for _, msg := range m["OutputMessages"].([]interface{}) {
+			byts, _ := json.Marshal(msg)
+			typedMsg := &types.PartialSignatureMessages{}
+			require.NoError(t, json.Unmarshal(byts, typedMsg))
+			outputMsgs = append(outputMsgs, typedMsg)
+		}
 	}
 
 	beaconBroadcastedRoots := make([]string, 0)
@@ -364,12 +367,13 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 	}
 
 	outputMsgs := make([]*types.PartialSignatureMessages, 0)
-	require.NotNilf(t, m["OutputMessages"], "OutputMessages can't be nil")
-	for _, msg := range m["OutputMessages"].([]interface{}) {
-		byts, _ := json.Marshal(msg)
-		typedMsg := &types.PartialSignatureMessages{}
-		require.NoError(t, json.Unmarshal(byts, typedMsg))
-		outputMsgs = append(outputMsgs, typedMsg)
+	if m["OutputMessages"] != nil {
+		for _, msg := range m["OutputMessages"].([]interface{}) {
+			byts, _ := json.Marshal(msg)
+			typedMsg := &types.PartialSignatureMessages{}
+			require.NoError(t, json.Unmarshal(byts, typedMsg))
+			outputMsgs = append(outputMsgs, typedMsg)
+		}
 	}
 
 	beaconBroadcastedRoots := make([]string, 0)

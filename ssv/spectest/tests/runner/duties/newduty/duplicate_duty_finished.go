@@ -86,7 +86,6 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    &testingutils.TestingValidatorRegistrationDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedTaskError,
 			},
 			{
@@ -96,7 +95,6 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    &testingutils.TestingVoluntaryExitDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedTaskError,
 			},
 		},
@@ -136,7 +134,6 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    testingutils.TestingAttesterDuty(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedVersionedError,
 			},
 			{
@@ -145,7 +142,6 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeDuty(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedVersionedError,
 			},
 			{
@@ -154,7 +150,6 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDuties(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				ExpectedError:           expectedVersionedError,
 			},
 		}...)

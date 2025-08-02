@@ -119,28 +119,25 @@ func PostWrongDecided() tests.SpecTest {
 
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{
 			{
-				Name:           fmt.Sprintf("attester (%s)", version.String()),
-				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty(version), higherSlot),
-				Duty:           testingutils.TestingAttesterDuty(version),
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedVersionedError,
+				Name:          fmt.Sprintf("attester (%s)", version.String()),
+				Runner:        decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty(version), higherSlot),
+				Duty:          testingutils.TestingAttesterDuty(version),
+				Threshold:     ks.Threshold,
+				ExpectedError: expectedVersionedError,
 			},
 			{
-				Name:           fmt.Sprintf("sync committee (%s)", version.String()),
-				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty(version), higherSlot),
-				Duty:           testingutils.TestingSyncCommitteeDuty(version),
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedVersionedError,
+				Name:          fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner:        decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty(version), higherSlot),
+				Duty:          testingutils.TestingSyncCommitteeDuty(version),
+				Threshold:     ks.Threshold,
+				ExpectedError: expectedVersionedError,
 			},
 			{
-				Name:           fmt.Sprintf("attester and sync committee (%s)", version.String()),
-				Runner:         decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties(version), higherSlot),
-				Duty:           testingutils.TestingAttesterAndSyncCommitteeDuties(version),
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedVersionedError,
+				Name:          fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner:        decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties(version), higherSlot),
+				Duty:          testingutils.TestingAttesterAndSyncCommitteeDuties(version),
+				Threshold:     ks.Threshold,
+				ExpectedError: expectedVersionedError,
 			},
 		}...)
 	}

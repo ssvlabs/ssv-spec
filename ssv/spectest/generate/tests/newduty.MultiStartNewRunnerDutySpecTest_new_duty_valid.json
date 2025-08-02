@@ -292,7 +292,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "7f926e54651ed34901256e8c82a40658647afe17cb089f6c1d7406e7350f4c2e",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "",
       "CommitteeDuty": {
         "Slot": "12",
@@ -384,7 +384,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "",
       "CommitteeDuty": {
         "Slot": "12",
@@ -480,7 +480,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "",
       "CommitteeDuty": {
         "Slot": "12",
@@ -587,7 +587,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "7f926e54651ed34901256e8c82a40658647afe17cb089f6c1d7406e7350f4c2e",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "",
       "CommitteeDuty": {
         "Slot": "7424012",
@@ -679,7 +679,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "",
       "CommitteeDuty": {
         "Slot": "7424012",
@@ -775,7 +775,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "",
       "CommitteeDuty": {
         "Slot": "7424012",
