@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
@@ -184,7 +185,45 @@ var TestingSignedAggregatorCommitteeBeaconObjectSSZRoot = func(duty *types.Aggre
 		ret = append(ret, GetSSZRootNoError(signedAgg))
 	}
 
-	// TODO: Handle sync committee contributions
+	// Handle sync committee contributions
+	contributions, err := consensusData.GetSyncCommitteeContributions()
+	if err != nil {
+		panic(err)
+	}
+
+	for i, contrib := range contributions {
+		validatorIndex := consensusData.Contributors[i].ValidatorIndex
+		ks := ksMap[validatorIndex]
+		if ks == nil {
+			continue
+		}
+
+		// Create ContributionAndProof
+		contributionAndProof := &altair.ContributionAndProof{
+			AggregatorIndex: validatorIndex,
+			Contribution:    &contrib.Contribution,
+			SelectionProof:  phase0.BLSSignature(contrib.SelectionProofSig),
+		}
+
+		// Sign the contribution and proof
+		signer := NewTestingKeyManager()
+		beacon := NewTestingBeaconNode()
+		d, _ := beacon.DomainData(1, types.DomainContributionAndProof)
+
+		sig, _, _ := signer.SignBeaconObject(contributionAndProof, d, ks.ValidatorPK.Serialize(), types.DomainContributionAndProof)
+
+		// Convert signature to BLSSignature
+		var blsSig phase0.BLSSignature
+		copy(blsSig[:], sig)
+
+		// Create signed contribution and proof
+		signedContribution := &altair.SignedContributionAndProof{
+			Message:   contributionAndProof,
+			Signature: blsSig,
+		}
+
+		ret = append(ret, GetSSZRootNoError(signedContribution))
+	}
 
 	return ret
 }

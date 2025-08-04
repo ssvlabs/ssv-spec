@@ -16,13 +16,15 @@ import (
 
 // AggregatorCommitteeRunner runs aggregate and sync committee contribution duties
 type AggregatorCommitteeRunner struct {
-	BaseRunner      *BaseRunner
-	beacon          BeaconNode
-	network         Network
-	signer          types.BeaconSigner
-	operatorSigner  *types.OperatorSigner
-	valCheck        qbft.ProposedValueCheckF
-	submittedDuties map[types.BeaconRole]map[phase0.ValidatorIndex]struct{}
+	BaseRunner     *BaseRunner
+	beacon         BeaconNode
+	network        Network
+	signer         types.BeaconSigner
+	operatorSigner *types.OperatorSigner
+	valCheck       qbft.ProposedValueCheckF
+	// For aggregator role: tracks by validator index only (one submission per validator)
+	// For sync committee contribution role: tracks by validator index and root (multiple submissions per validator)
+	submittedDuties map[types.BeaconRole]map[phase0.ValidatorIndex]map[[32]byte]struct{}
 }
 
 // NewAggregatorCommitteeRunner creates a new aggregator committee runner
@@ -53,7 +55,7 @@ func NewAggregatorCommitteeRunner(
 		signer:          signer,
 		operatorSigner:  operatorSigner,
 		valCheck:        valCheck,
-		submittedDuties: make(map[types.BeaconRole]map[phase0.ValidatorIndex]struct{}),
+		submittedDuties: make(map[types.BeaconRole]map[phase0.ValidatorIndex]map[[32]byte]struct{}),
 	}, nil
 }
 
@@ -64,8 +66,8 @@ func (r *AggregatorCommitteeRunner) StartNewDuty(duty types.Duty, quorum uint64)
 	}
 
 	// Initialize submission tracking for both duty types
-	r.submittedDuties[types.BNRoleAggregator] = make(map[phase0.ValidatorIndex]struct{})
-	r.submittedDuties[types.BNRoleSyncCommitteeContribution] = make(map[phase0.ValidatorIndex]struct{})
+	r.submittedDuties[types.BNRoleAggregator] = make(map[phase0.ValidatorIndex]map[[32]byte]struct{})
+	r.submittedDuties[types.BNRoleSyncCommitteeContribution] = make(map[phase0.ValidatorIndex]map[[32]byte]struct{})
 
 	return nil
 }
@@ -111,6 +113,7 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 			continue
 		}
 
+		// TODO(Aleg) why this sort? why not root sort?
 		sort.Slice(metadataList, func(i, j int) bool {
 			return metadataList[i].ValidatorIndex < metadataList[j].ValidatorIndex
 		})
@@ -201,7 +204,6 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 
 // ProcessConsensus processes consensus messages
 func (r *AggregatorCommitteeRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
-	// Use base runner's consensus processing
 	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg, &types.AggregatorCommitteeConsensusData{})
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
@@ -294,12 +296,10 @@ func (r *AggregatorCommitteeRunner) ProcessConsensus(signedMsg *types.SignedSSVM
 		Messages: messages,
 	}
 
-	// Broadcast the post-consensus signatures
 	return r.broadcastPartialSignatureMessage(postConsensusMsg)
 }
 
 func (r *AggregatorCommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
-	// Get all roots that received a quorum of signatures
 	quorum, rootsList, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing post consensus message")
@@ -336,7 +336,7 @@ func (r *AggregatorCommitteeRunner) ProcessPostConsensus(signedMsg *types.Partia
 				continue
 			}
 
-			if r.HasSubmitted(role, validator) {
+			if r.HasSubmitted(role, validator, root) {
 				continue
 			}
 
@@ -395,7 +395,7 @@ func (r *AggregatorCommitteeRunner) ProcessPostConsensus(signedMsg *types.Partia
 					continue
 				}
 
-				r.RecordSubmission(types.BNRoleAggregator, validator)
+				r.RecordSubmission(types.BNRoleAggregator, validator, root)
 
 			case types.BNRoleSyncCommitteeContribution:
 				contribAndProof := beaconObj.(*altair.ContributionAndProof)
@@ -409,10 +409,9 @@ func (r *AggregatorCommitteeRunner) ProcessPostConsensus(signedMsg *types.Partia
 					continue
 				}
 
-				r.RecordSubmission(types.BNRoleSyncCommitteeContribution, validator)
+				r.RecordSubmission(types.BNRoleSyncCommitteeContribution, validator, root)
 
 			default:
-				// This should never happen as findValidatorsForRoot only returns valid roles
 				return errors.Errorf("unexpected role type in post-consensus: %v", role)
 			}
 		}
@@ -651,7 +650,7 @@ func (r *AggregatorCommitteeRunner) processSyncCommitteeSelectionProof(
 		}
 	}
 
-	contributions, _, err := r.beacon.GetSyncCommitteeContribution(
+	contributions, _, err := r.GetBeaconNode().GetSyncCommitteeContribution(
 		vDuty.Slot, []phase0.BLSSignature{selectionProof}, []uint64{subnetID})
 	if err != nil {
 		return err
@@ -760,7 +759,6 @@ func (r *AggregatorCommitteeRunner) expectedPreConsensusRoots() (
 			}
 
 		default:
-			// This should never happen - aggregator committee duty should only contain valid role types
 			return nil, nil, errors.Errorf("invalid duty type in aggregator committee duty: %v", vDuty.Type)
 		}
 	}
@@ -772,12 +770,12 @@ func (r *AggregatorCommitteeRunner) expectedPreConsensusRoots() (
 // phase. It returns the aggregate and sync committee contribution validator to root maps, as well as beacon objects.
 func (r *AggregatorCommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	aggregatorMap map[phase0.ValidatorIndex][32]byte,
-	contributionMap map[phase0.ValidatorIndex][32]byte,
+	contributionMap map[phase0.ValidatorIndex][][32]byte,
 	beaconObjects map[phase0.ValidatorIndex]map[[32]byte]interface{},
 	error error,
 ) {
 	aggregatorMap = make(map[phase0.ValidatorIndex][32]byte)
-	contributionMap = make(map[phase0.ValidatorIndex][32]byte)
+	contributionMap = make(map[phase0.ValidatorIndex][][32]byte)
 	beaconObjects = make(map[phase0.ValidatorIndex]map[[32]byte]interface{})
 
 	consensusData := &types.AggregatorCommitteeConsensusData{}
@@ -820,7 +818,6 @@ func (r *AggregatorCommitteeRunner) expectedPostConsensusRootsAndBeaconObjects()
 	if err != nil {
 		return nil, nil, nil, errors.Wrap(err, "could not get sync committee contributions")
 	}
-
 	for i, contribution := range contributions {
 		validatorIndex := consensusData.Contributors[i].ValidatorIndex
 
@@ -842,7 +839,7 @@ func (r *AggregatorCommitteeRunner) expectedPostConsensusRootsAndBeaconObjects()
 			continue
 		}
 
-		contributionMap[validatorIndex] = root
+		contributionMap[validatorIndex] = append(contributionMap[validatorIndex], root)
 
 		// Store beacon object
 		if _, ok := beaconObjects[validatorIndex]; !ok {
@@ -903,7 +900,7 @@ func findValidatorsForPreConsensusRoot(
 func findValidatorsForPostConsensusRoot(
 	expectedRoot [32]byte,
 	aggregatorMap map[phase0.ValidatorIndex][32]byte,
-	contributionMap map[phase0.ValidatorIndex][32]byte,
+	contributionMap map[phase0.ValidatorIndex][][32]byte,
 ) (types.BeaconRole, []phase0.ValidatorIndex, bool) {
 	var validators []phase0.ValidatorIndex
 
@@ -918,9 +915,12 @@ func findValidatorsForPostConsensusRoot(
 	}
 
 	// Check contribution map
-	for validator, root := range contributionMap {
-		if root == expectedRoot {
-			validators = append(validators, validator)
+	for validator, roots := range contributionMap {
+		for _, root := range roots {
+			if root == expectedRoot {
+				validators = append(validators, validator)
+				break
+			}
 		}
 	}
 	if len(validators) > 0 {
@@ -980,20 +980,37 @@ func (r *AggregatorCommitteeRunner) constructSignedAggregateAndProof(
 	return ret, nil
 }
 
-func (r *AggregatorCommitteeRunner) RecordSubmission(role types.BeaconRole, validatorIndex phase0.ValidatorIndex) {
+func (r *AggregatorCommitteeRunner) RecordSubmission(role types.BeaconRole, validatorIndex phase0.ValidatorIndex, root [32]byte) {
 	if _, ok := r.submittedDuties[role]; !ok {
-		r.submittedDuties[role] = make(map[phase0.ValidatorIndex]struct{})
+		r.submittedDuties[role] = make(map[phase0.ValidatorIndex]map[[32]byte]struct{})
 	}
-	r.submittedDuties[role][validatorIndex] = struct{}{}
+	if _, ok := r.submittedDuties[role][validatorIndex]; !ok {
+		r.submittedDuties[role][validatorIndex] = make(map[[32]byte]struct{})
+	}
+	r.submittedDuties[role][validatorIndex][root] = struct{}{}
 }
 
-// HasSubmitted checks if a validator has already submitted for a given role
-func (r *AggregatorCommitteeRunner) HasSubmitted(role types.BeaconRole, validatorIndex phase0.ValidatorIndex) bool {
+// HasSubmitted checks if a validator has already submitted for a given role and root
+func (r *AggregatorCommitteeRunner) HasSubmitted(role types.BeaconRole, validatorIndex phase0.ValidatorIndex, root [32]byte) bool {
 	if _, ok := r.submittedDuties[role]; !ok {
 		return false
 	}
-	_, submitted := r.submittedDuties[role][validatorIndex]
+	if _, ok := r.submittedDuties[role][validatorIndex]; !ok {
+		return false
+	}
+	_, submitted := r.submittedDuties[role][validatorIndex][root]
 	return submitted
+}
+
+// HasSubmittedForValidator checks if a validator has submitted any duty for a given role
+func (r *AggregatorCommitteeRunner) HasSubmittedForValidator(role types.BeaconRole, validatorIndex phase0.ValidatorIndex) bool {
+	if _, ok := r.submittedDuties[role]; !ok {
+		return false
+	}
+	if _, ok := r.submittedDuties[role][validatorIndex]; !ok {
+		return false
+	}
+	return len(r.submittedDuties[role][validatorIndex]) > 0
 }
 
 // HasSubmittedAllDuties checks if all expected duties have been submitted
@@ -1009,7 +1026,7 @@ func (r *AggregatorCommitteeRunner) HasSubmittedAllDuties() bool {
 			continue
 		}
 
-		if !r.HasSubmitted(vDuty.Type, vDuty.ValidatorIndex) {
+		if !r.HasSubmittedForValidator(vDuty.Type, vDuty.ValidatorIndex) {
 			return false
 		}
 	}

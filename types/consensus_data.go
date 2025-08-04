@@ -467,7 +467,6 @@ func (a *AggregatorCommitteeConsensusData) GetSyncCommitteeContributions() (Cont
 	contributions := make(Contributions, 0, len(a.SyncCommitteeContributions))
 
 	for i, contribution := range a.SyncCommitteeContributions {
-		// Convert BLSSignature to [96]byte
 		var sigBytes [96]byte
 		copy(sigBytes[:], a.Contributors[i].SelectionProof[:])
 

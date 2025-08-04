@@ -66,11 +66,11 @@ func TestAggregatorCommitteeConsensusDataForDuty(duty *types.AggregatorCommittee
 			consensusData.Attestations = append(consensusData.Attestations, marshaledAtt)
 
 		case types.BNRoleSyncCommitteeContribution:
-			for _, contribution := range TestingSyncCommitteeContributions {
+			for i, contribution := range TestingSyncCommitteeContributions {
 				// Add sync committee contributor data
 				consensusData.Contributors = append(consensusData.Contributors, types.AssignedAggregator{
 					ValidatorIndex: validatorDuty.ValidatorIndex,
-					//CommitteeIndex: contribution.SubcommitteeIndex,
+					SelectionProof: TestingContributionProofsSigned[i],
 				})
 
 				// Add sync committee contribution
