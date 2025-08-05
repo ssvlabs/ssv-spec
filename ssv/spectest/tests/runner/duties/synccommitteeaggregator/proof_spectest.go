@@ -26,6 +26,9 @@ type SyncCommitteeAggregatorProofSpecTest struct {
 	ProofRootsMap           map[string]bool // if true then root returned from beacon node will be an aggregator
 	ExpectedError           string
 	PrivateKeys             *testingutils.PrivateKeyInfo
+
+	// consts for proof spectest
+	OperatorID types.OperatorID // used as the testing committee member's operator id
 }
 
 func (test *SyncCommitteeAggregatorProofSpecTest) TestName() string {
@@ -96,5 +99,8 @@ func NewSyncCommitteeAggregatorProofSpecTest(name, documentation string, message
 		ProofRootsMap:           proofRootsMap,
 		ExpectedError:           expectedError,
 		PrivateKeys:             testingutils.BuildPrivateKeyInfo(ks),
+
+		// consts for proof spectest
+		OperatorID: testingutils.TestingOperatorID,
 	}
 }

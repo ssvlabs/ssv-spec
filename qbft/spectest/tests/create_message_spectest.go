@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"crypto/rsa"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -23,6 +24,11 @@ const (
 	CreateRoundChange = "CreateRoundChange"
 )
 
+type TestSigner struct {
+	OperatorID types.OperatorID
+	OperatorSK *rsa.PrivateKey
+}
+
 type CreateMsgSpecTest struct {
 	Name          string
 	Type          string
@@ -38,6 +44,11 @@ type CreateMsgSpecTest struct {
 	ExpectedState                                    types.Root `json:"-"` // Field is ignored by encoding/json"
 	ExpectedError                                    string
 	PrivateKeys                                      *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+
+	// consts for CreateMsgSpecTest
+	CommitteeMember *types.CommitteeMember `json:"CommitteeMember,omitempty"`
+	Identifier      []byte                 `json:"Identifier,omitempty"`
+	OperatorID      types.OperatorID       `json:"OperatorID,omitempty"`
 }
 
 // UnmarshalJSON implements custom JSON unmarshaling for CreateMsgSpecTest
@@ -155,6 +166,11 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	err = qbftMsg.Validate()
 	require.NoError(t, err)
 
+	// remove consts for state comparison
+	test.CommitteeMember = nil
+	test.Identifier = nil
+	test.OperatorID = 0
+
 	typescomparable.CompareWithJson(t, test, test.TestName(), reflect.TypeOf(test).String())
 }
 
@@ -229,13 +245,22 @@ func (test *CreateMsgSpecTest) TestName() string {
 }
 
 func (test *CreateMsgSpecTest) GetPostState() (interface{}, error) {
-	// remove private keys
+	test.CommitteeMember = nil
+	test.Identifier = nil
+	test.OperatorID = 0
 	test.PrivateKeys = nil
 
 	return test, nil
 }
 
 func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, stateValue []byte, round qbft.Round, roundChangeJustifications []*types.SignedSSVMessage, prepareJustifications []*types.SignedSSVMessage, createType string, expectedRoot string, expectedState types.Root, expectedError string, ks *testingutils.TestKeySet) *CreateMsgSpecTest {
+	committeeMember := &types.CommitteeMember{}
+	operatorID := types.OperatorID(0)
+	if ks != nil {
+		committeeMember = testingutils.TestingCommitteeMember(ks)
+		operatorID = testingutils.TestingOperatorSigner(ks).OperatorID
+	}
+
 	return &CreateMsgSpecTest{
 		Name:                      name,
 		Type:                      testdoc.CreateMsgSpecTestType,
@@ -250,5 +275,10 @@ func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, sta
 		ExpectedState:             expectedState,
 		ExpectedError:             expectedError,
 		PrivateKeys:               testingutils.BuildPrivateKeyInfo(ks),
+
+		// consts for CreateMsgSpecTest
+		CommitteeMember: committeeMember,
+		Identifier:      testingutils.TestingIdentifier,
+		OperatorID:      operatorID,
 	}
 }

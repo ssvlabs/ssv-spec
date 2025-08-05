@@ -9,5 +9,14 @@
   "PrepareJustifications": null,
   "CreateType": "CreatePrepare",
   "ExpectedRoot": "fe85e25b3cf7168e9e6417a9daaa71567a3c0c689b633d8154e252d8225c113c",
-  "ExpectedError": ""
+  "ExpectedError": "",
+  "CommitteeMember": {
+    "OperatorID": 0,
+    "CommitteeID": "0000000000000000000000000000000000000000000000000000000000000000",
+    "SSVOperatorPubKey": null,
+    "FaultyNodes": 0,
+    "Committee": null,
+    "DomainType": "00000000"
+  },
+  "Identifier": "AQIDBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 }
