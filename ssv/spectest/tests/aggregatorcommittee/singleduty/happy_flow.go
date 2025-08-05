@@ -78,12 +78,11 @@ func HappyFlow() tests.SpecTest {
 
 	// Add sync committee contribution test cases
 	for _, version := range []spec.DataVersion{spec.DataVersionPhase0} {
-		for _, numValidators := range []int{1} {
+		// Testing with up to 20 validators instead of 30, because each testing duty has 3 subcommittees, and there are at most 64 sync committee contributors per slot
+		for _, numValidators := range []int{1, 20} {
 
 			validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
-			ksMap := map[phase0.ValidatorIndex]*testingutils.TestKeySet{
-				1: testingutils.Testing4SharesSet(),
-			}
+			ksMap := testingutils.KeySetMapForValidators(numValidators)
 			shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
 			duty := testingutils.TestingSyncCommitteeContributorDutyForValidators(version, validatorsIndexList)
