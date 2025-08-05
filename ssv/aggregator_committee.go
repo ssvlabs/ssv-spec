@@ -1,6 +1,7 @@
 package ssv
 
 import (
+	"bytes"
 	"sort"
 
 	"github.com/attestantio/go-eth2-client/spec"
@@ -103,8 +104,16 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 		rootSet[root] = struct{}{}
 	}
 
-	var anyErr error
+	var sortedRoots [][32]byte
 	for root := range rootSet {
+		sortedRoots = append(sortedRoots, root)
+	}
+	sort.Slice(sortedRoots, func(i, j int) bool {
+		return bytes.Compare(sortedRoots[i][:], sortedRoots[j][:]) < 0
+	})
+
+	var anyErr error
+	for _, root := range sortedRoots {
 		metadataList, found := findValidatorsForPreConsensusRoot(root, aggregatorMap, contributionMap)
 		if !found {
 			// Edge case: since operators may have divergent sets of validators,
@@ -158,16 +167,26 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 			case types.BNRoleAggregator:
 				vDuty := r.findValidatorDuty(validatorIndex, types.BNRoleAggregator)
 				if vDuty != nil {
-					if err := r.processAggregatorSelectionProof(blsSig, vDuty, aggregatorData); err == nil {
-						hasAnyAggregator = true
+					isAggregator, err := r.processAggregatorSelectionProof(blsSig, vDuty, aggregatorData)
+					if err == nil {
+						if isAggregator {
+							hasAnyAggregator = true
+						}
+					} else {
+						anyErr = errors.Wrap(err, "failed to process aggregator selection proof")
 					}
 				}
 
 			case types.BNRoleSyncCommitteeContribution:
 				vDuty := r.findValidatorDuty(validatorIndex, types.BNRoleSyncCommitteeContribution)
 				if vDuty != nil {
-					if err := r.processSyncCommitteeSelectionProof(blsSig, metadata.SyncCommitteeIndex, vDuty, aggregatorData); err == nil {
-						hasAnyAggregator = true
+					isAggregator, err := r.processSyncCommitteeSelectionProof(blsSig, metadata.SyncCommitteeIndex, vDuty, aggregatorData)
+					if err == nil {
+						if isAggregator {
+							hasAnyAggregator = true
+						}
+					} else {
+						anyErr = errors.Wrap(err, "failed to process sync committee selection proof")
 					}
 				}
 
@@ -593,20 +612,20 @@ func (r *AggregatorCommitteeRunner) processAggregatorSelectionProof(
 	selectionProof phase0.BLSSignature,
 	vDuty *types.ValidatorDuty,
 	aggregatorData *types.AggregatorCommitteeConsensusData,
-) error {
+) (bool, error) {
 	isAggregator := r.beacon.IsAggregator(
 		vDuty.Slot, vDuty.CommitteeIndex, vDuty.CommitteeLength, selectionProof[:])
 
 	if !isAggregator {
 		// Not selected as aggregator
-		return nil
+		return false, nil
 	}
 
 	// TODO: waitToSlotTwoThirds(vDuty.Slot)
 
 	attestation, err := r.beacon.GetAggregateAttestation(vDuty.Slot, vDuty.CommitteeIndex)
 	if err != nil {
-		return errors.Wrap(err, "failed to get aggregate attestation")
+		return true, errors.Wrap(err, "failed to get aggregate attestation")
 	}
 
 	aggregatorData.Aggregators = append(aggregatorData.Aggregators, types.AssignedAggregator{
@@ -618,13 +637,13 @@ func (r *AggregatorCommitteeRunner) processAggregatorSelectionProof(
 	// Marshal attestation for storage
 	attestationBytes, err := attestation.MarshalSSZ()
 	if err != nil {
-		return errors.Wrap(err, "failed to marshal attestation")
+		return true, errors.Wrap(err, "failed to marshal attestation")
 	}
 
 	aggregatorData.AggregatorsCommitteeIndexes = append(aggregatorData.AggregatorsCommitteeIndexes, uint64(vDuty.CommitteeIndex))
 	aggregatorData.Attestations = append(aggregatorData.Attestations, attestationBytes)
 
-	return nil
+	return true, nil
 }
 
 // processSyncCommitteeSelectionProof handles sync committee selection proofs with known index
@@ -633,37 +652,37 @@ func (r *AggregatorCommitteeRunner) processSyncCommitteeSelectionProof(
 	syncCommitteeIndex uint64,
 	vDuty *types.ValidatorDuty,
 	aggregatorData *types.AggregatorCommitteeConsensusData,
-) error {
+) (bool, error) {
 	subnetID := r.beacon.SyncCommitteeSubnetID(phase0.CommitteeIndex(syncCommitteeIndex))
 
 	isAggregator := r.beacon.IsSyncCommitteeAggregator(selectionProof[:])
 
 	if !isAggregator {
-		return nil // Not selected as sync committee aggregator
+		return false, nil // Not selected as sync committee aggregator
 	}
 
 	// Check if we already have a contribution for this sync committee subnet ID
 	for _, existingSubnet := range aggregatorData.SyncCommitteeSubnets {
 		if existingSubnet == subnetID {
 			// Contribution already exists for this subnet—skip duplicate.
-			return nil
+			return true, nil
 		}
 	}
 
 	contributions, _, err := r.GetBeaconNode().GetSyncCommitteeContribution(
 		vDuty.Slot, []phase0.BLSSignature{selectionProof}, []uint64{subnetID})
 	if err != nil {
-		return err
+		return true, err
 	}
 
 	// Type assertion to get the actual Contributions object
 	contribs, ok := contributions.(*types.Contributions)
 	if !ok {
-		return errors.Errorf("unexpected contributions type: %T", contributions)
+		return true, errors.Errorf("unexpected contributions type: %T", contributions)
 	}
 
 	if len(*contribs) == 0 {
-		return errors.New("no contributions found")
+		return true, errors.New("no contributions found")
 	}
 
 	// Append the contribution(s)
@@ -681,7 +700,7 @@ func (r *AggregatorCommitteeRunner) processSyncCommitteeSelectionProof(
 		aggregatorData.SyncCommitteeContributions = append(aggregatorData.SyncCommitteeContributions, contrib.Contribution)
 	}
 
-	return nil
+	return true, nil
 }
 
 // expectedAggregatorSelectionRoot calculates the expected signing root for aggregator selection
