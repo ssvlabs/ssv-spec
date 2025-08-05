@@ -333,6 +333,14 @@ func (r *AggregatorCommitteeRunner) ProcessPostConsensus(signedMsg *types.Partia
 		rootSet[root] = struct{}{}
 	}
 
+	var sortedRoots [][32]byte
+	for root := range rootSet {
+		sortedRoots = append(sortedRoots, root)
+	}
+	sort.Slice(sortedRoots, func(i, j int) bool {
+		return bytes.Compare(sortedRoots[i][:], sortedRoots[j][:]) < 0
+	})
+
 	aggregatorMap, contributionMap, beaconObjects, err := r.expectedPostConsensusRootsAndBeaconObjects()
 	if err != nil {
 		return errors.Wrap(err, "could not get expected post consensus roots and beacon objects")
@@ -341,7 +349,7 @@ func (r *AggregatorCommitteeRunner) ProcessPostConsensus(signedMsg *types.Partia
 	var anyErr error
 
 	// For each root that got at least one quorum, find the duties and try to submit
-	for root := range rootSet {
+	for _, root := range sortedRoots {
 		// Get validators related to the given root
 		role, validators, found := findValidatorsForPostConsensusRoot(root, aggregatorMap, contributionMap)
 
