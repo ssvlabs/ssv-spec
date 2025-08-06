@@ -111,6 +111,10 @@ var TestingAggregatorAndSyncCommitteeContributorDuties = func(version spec.DataV
 	return TestingAggregatorCommitteeDuty([]int{TestingValidatorIndex}, []int{TestingValidatorIndex}, version)
 }
 
+var TestingAggregatorAndSyncCommitteeContributorDutiesForValidators = func(version spec.DataVersion, validatorIndexList []int) *types.AggregatorCommitteeDuty {
+	return TestingAggregatorCommitteeDuty(validatorIndexList, validatorIndexList, version)
+}
+
 // ==================================================
 // Beacon Roots for AggregatorCommittee duty
 // ==================================================
