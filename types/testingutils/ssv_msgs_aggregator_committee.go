@@ -121,20 +121,23 @@ var PostConsensusAggregatorCommitteeMsgForDuty = func(duty *types.AggregatorComm
 			continue
 		}
 
-		if validatorDuty.Type == types.BNRoleAggregator {
+		switch validatorDuty.Type {
+		case types.BNRoleAggregator:
 			pSigMsgs := PostConsensusAggregatorMsgWithValidatorIndex(ks.Shares[id], id, validatorDuty.ValidatorIndex, version)
 			if ret == nil {
 				ret = pSigMsgs
 			} else {
 				ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
 			}
-		} else if validatorDuty.Type == types.BNRoleSyncCommitteeContribution {
+		case types.BNRoleSyncCommitteeContribution:
 			pSigMsgs := PostConsensusCustomSlotSyncCommitteeContributionMsgWithValidatorIndex(ks.Shares[id], validatorDuty.ValidatorIndex, id, ks, validatorDuty.Slot)
 			if ret == nil {
 				ret = pSigMsgs
 			} else {
 				ret.Messages = append(ret.Messages, pSigMsgs.Messages...)
 			}
+		default:
+			panic(fmt.Sprintf("type %v not expected", validatorDuty.Type))
 		}
 	}
 
