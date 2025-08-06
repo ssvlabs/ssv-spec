@@ -3378,7 +3378,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: not processing consensus message since instance is already decided"
     },
@@ -6997,7 +6997,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: not processing consensus message since instance is already decided"
     },
@@ -11426,7 +11426,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: not processing consensus message since instance is already decided"
     },
@@ -14805,7 +14805,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: not processing consensus message since instance is already decided"
     },
@@ -18424,7 +18424,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: not processing consensus message since instance is already decided"
     },
@@ -22853,7 +22853,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: not processing consensus message since instance is already decided"
     }

@@ -1304,7 +1304,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "",
       "CommitteeDuty": {
         "Slot": "50",
@@ -1528,7 +1528,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "",
       "CommitteeDuty": {
         "Slot": "50",
@@ -1767,7 +1767,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "",
       "CommitteeDuty": {
         "Slot": "50",
@@ -2002,7 +2002,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "",
       "CommitteeDuty": {
         "Slot": "7424044",
@@ -2226,7 +2226,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "",
       "CommitteeDuty": {
         "Slot": "7424044",
@@ -2465,7 +2465,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "",
       "CommitteeDuty": {
         "Slot": "7424044",

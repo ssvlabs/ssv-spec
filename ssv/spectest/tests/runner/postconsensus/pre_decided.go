@@ -37,8 +37,7 @@ func PreDecided() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				BeaconBroadcastedRoots: []string{},
-				ExpectedError:          err,
+				ExpectedError: err,
 			},
 		},
 		ks,
@@ -59,8 +58,7 @@ func PreDecided() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
 			},
-			BeaconBroadcastedRoots: []string{},
-			ExpectedError:          err,
+			ExpectedError: err,
 		},
 		)
 	}
@@ -74,9 +72,7 @@ func PreDecided() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				ExpectedError:          err,
+				ExpectedError: err,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -85,9 +81,7 @@ func PreDecided() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				ExpectedError:          err,
+				ExpectedError: err,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -96,9 +90,7 @@ func PreDecided() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				ExpectedError:          err,
+				ExpectedError: err,
 			},
 		}...)
 	}
@@ -121,8 +113,7 @@ func PreDecided() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
-			BeaconBroadcastedRoots: []string{},
-			ExpectedError:          err,
+			ExpectedError: err,
 		}
 	}
 
@@ -144,8 +135,7 @@ func PreDecided() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
-			BeaconBroadcastedRoots: []string{},
-			ExpectedError:          err,
+			ExpectedError: err,
 		}
 	}
 

@@ -3167,7 +3167,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: not processing consensus message since consensus has already finished"
     },
@@ -6575,7 +6575,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: not processing consensus message since consensus has already finished"
     },
@@ -10643,7 +10643,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: not processing consensus message since consensus has already finished"
     },
@@ -13811,7 +13811,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: not processing consensus message since consensus has already finished"
     },
@@ -17219,7 +17219,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: not processing consensus message since consensus has already finished"
     },
@@ -21287,7 +21287,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: not processing consensus message since consensus has already finished"
     }
