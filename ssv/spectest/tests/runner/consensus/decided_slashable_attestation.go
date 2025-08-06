@@ -13,7 +13,7 @@ func DecidedSlashableAttestation() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"decide on slashable attestation",
 		testdoc.ConsensusDecidedSlashableAttestationDoc,
 		testingutils.CommitteeRunner(ks),
@@ -26,5 +26,8 @@ func DecidedSlashableAttestation() tests.SpecTest {
 		[]string{},
 		false,
 		"failed processing consensus message: decided ValidatorConsensusData invalid: decided value is invalid: slashable attestation",
+		ks,
 	)
+
+	return test
 }

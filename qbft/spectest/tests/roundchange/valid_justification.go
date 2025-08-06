@@ -35,7 +35,7 @@ func ValidJustification() tests.SpecTest {
 			testingutils.MarshalJustifications(inputMessages), testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"valid justification",
 		testdoc.RoundChangeValidJustificationDoc,
 		pre,
@@ -45,5 +45,8 @@ func ValidJustification() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

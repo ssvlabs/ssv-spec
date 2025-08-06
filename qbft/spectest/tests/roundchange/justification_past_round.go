@@ -33,7 +33,7 @@ func JustificationPastRound() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"round change past round quorum",
 		testdoc.RoundChangeJustificationPastRoundDoc,
 		pre,
@@ -43,5 +43,8 @@ func JustificationPastRound() tests.SpecTest {
 		nil,
 		"invalid signed message: past round",
 		nil,
+		ks,
 	)
+
+	return test
 }

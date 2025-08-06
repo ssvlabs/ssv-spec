@@ -22,5 +22,6 @@ func InvalidValCheck() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		nil,
 	)
 }

@@ -39,7 +39,7 @@ func QuorumNotTriggeredTwiceJustificationIgnored() tests.SpecTest {
 			[][]byte{}),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"quorum not triggered twice justification ignored",
 		testdoc.RoundChangeQuorumNotTriggeredTwiceJustificationIgnoredDoc,
 		pre,
@@ -49,5 +49,8 @@ func QuorumNotTriggeredTwiceJustificationIgnored() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

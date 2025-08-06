@@ -28,7 +28,7 @@ func MultiDecidedInstances() tests.SpecTest {
 		}
 	}
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"multi decide instances",
 		testdoc.ControllerDecidedMultiDecidedInstanceDoc,
 		[]*tests.RunInstanceData{
@@ -47,5 +47,8 @@ func MultiDecidedInstances() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

@@ -7,6 +7,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // MsgSpecTest tests encoding and decoding of a msg
@@ -18,6 +20,7 @@ type MsgSpecTest struct {
 	EncodedMessages [][]byte
 	ExpectedRoots   [][32]byte
 	ExpectedError   string
+	PrivateKeys     *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *MsgSpecTest) Run(t *testing.T) {
@@ -62,10 +65,13 @@ func (test *MsgSpecTest) TestName() string {
 }
 
 func (test *MsgSpecTest) GetPostState() (interface{}, error) {
+	// remove private keys
+	test.PrivateKeys = nil
+
 	return test, nil
 }
 
-func NewMsgSpecTest(name string, documentation string, messages []*types.SignedSSVMessage, encodedMessages [][]byte, expectedRoots [][32]byte, expectedError string) *MsgSpecTest {
+func NewMsgSpecTest(name string, documentation string, messages []*types.SignedSSVMessage, encodedMessages [][]byte, expectedRoots [][32]byte, expectedError string, ks *testingutils.TestKeySet) *MsgSpecTest {
 	return &MsgSpecTest{
 		Name:            name,
 		Type:            testdoc.MsgSpecTestType,
@@ -74,5 +80,6 @@ func NewMsgSpecTest(name string, documentation string, messages []*types.SignedS
 		EncodedMessages: encodedMessages,
 		ExpectedRoots:   expectedRoots,
 		ExpectedError:   expectedError,
+		PrivateKeys:     testingutils.BuildPrivateKeyInfo(ks),
 	}
 }

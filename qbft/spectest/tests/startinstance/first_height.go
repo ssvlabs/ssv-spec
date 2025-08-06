@@ -27,5 +27,6 @@ func FirstHeight() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		nil,
 	)
 }

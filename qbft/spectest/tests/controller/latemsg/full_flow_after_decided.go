@@ -40,7 +40,7 @@ func FullFlowAfterDecided() tests.SpecTest {
 		testingutils.TestingCommitMessageWithRound(ks.OperatorKeys[4], types.OperatorID(4), 2),
 	}
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"full flow after decided",
 		testdoc.ControllerLateMsgFullFlowAfterDecidedDoc,
 		[]*tests.RunInstanceData{
@@ -56,5 +56,8 @@ func FullFlowAfterDecided() tests.SpecTest {
 		nil,
 		"not processing consensus message since instance is already decided",
 		nil,
+		ks,
 	)
+
+	return test
 }

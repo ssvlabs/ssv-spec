@@ -18,7 +18,7 @@ func WrongData1() tests.SpecTest {
 		testingutils.TestingCommitMessageWrongRoot(ks.OperatorKeys[1], 1),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"commit data != acceptedProposalData.Data",
 		testdoc.CommitTestWrongData1Doc,
 		pre,
@@ -28,5 +28,8 @@ func WrongData1() tests.SpecTest {
 		nil,
 		"invalid signed message: proposed data mismatch",
 		nil,
+		ks,
 	)
+
+	return test
 }

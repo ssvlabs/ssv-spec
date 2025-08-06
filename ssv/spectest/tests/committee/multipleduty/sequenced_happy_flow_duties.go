@@ -54,6 +54,7 @@ func SequencedHappyFlowDuties() tests.SpecTest {
 		"sequenced happy flow duties",
 		testdoc.CommitteeSequencedHappyFlowDutiesDoc,
 		tests,
+		nil,
 	)
 
 	return multiSpecTest

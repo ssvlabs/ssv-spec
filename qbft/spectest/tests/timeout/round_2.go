@@ -29,7 +29,7 @@ func Round2() tests.SpecTest {
 		}),
 	}
 
-	return NewSpecTest(
+	test := NewSpecTest(
 		"round 2",
 		"Test UponRoundTimeout for round 2, checks state transition and broadcasted round change message.",
 		pre,
@@ -41,7 +41,10 @@ func Round2() tests.SpecTest {
 			Round:    3,
 		},
 		"",
+		ks,
 	)
+
+	return test
 }
 
 func round2StateComparison() *comparable.StateComparison {

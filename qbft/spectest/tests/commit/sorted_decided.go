@@ -13,7 +13,7 @@ import (
 func SortedDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"sorted decided",
 		testdoc.CommitTestSortedDecidedDoc,
 		[]*tests.RunInstanceData{
@@ -40,5 +40,8 @@ func SortedDecided() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

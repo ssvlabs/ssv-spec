@@ -15,7 +15,7 @@ func InvalidIdentifier() tests.SpecTest {
 	invalidPK := make([]byte, 32)
 	identifier := types.NewMsgID(testingutils.TestingSSVDomainType, invalidPK, types.RoleCommittee)
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"invalid identifier",
 		testdoc.ControllerProcessMsgInvalidIdentifierDoc,
 		[]*tests.RunInstanceData{
@@ -38,5 +38,8 @@ func InvalidIdentifier() tests.SpecTest {
 		nil,
 		"invalid msg: message doesn't belong to Identifier",
 		nil,
+		ks,
 	)
+
+	return test
 }

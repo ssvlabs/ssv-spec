@@ -19,7 +19,7 @@ func WrongData() tests.SpecTest {
 		testingutils.TestingPrepareMessageWrongRoot(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"prepare wrong data",
 		testdoc.PrepareWrongDataDoc,
 		pre,
@@ -29,5 +29,8 @@ func WrongData() tests.SpecTest {
 		nil,
 		"invalid signed message: proposed data mismatch",
 		nil,
+		ks,
 	)
+
+	return test
 }

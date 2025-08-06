@@ -31,7 +31,7 @@ func NoCommitQuorum() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"no commit quorum",
 		testdoc.CommitTestNoCommitQuorumDoc,
 		pre,
@@ -41,7 +41,10 @@ func NoCommitQuorum() tests.SpecTest {
 		outputMsgs,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func NoCommitQuorumStateComparison() *comparable.StateComparison {

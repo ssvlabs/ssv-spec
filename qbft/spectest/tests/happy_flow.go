@@ -31,7 +31,7 @@ func HappyFlow() SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return NewMsgProcessingSpecTest(
+	test := NewMsgProcessingSpecTest(
 		"happy flow",
 		testdoc.MsgProcessingHappyFlowDoc,
 		pre,
@@ -41,7 +41,10 @@ func HappyFlow() SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }
 
 func happyFlowStateComparison() *qbftcomparable.StateComparison {

@@ -26,7 +26,7 @@ func PostPrepared() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"proposal post prepare",
 		testdoc.ProposalPostPreparedDoc,
 		pre,
@@ -36,5 +36,8 @@ func PostPrepared() tests.SpecTest {
 		outputMessages,
 		"invalid signed message: proposal is not valid with current state",
 		nil,
+		ks,
 	)
+
+	return test
 }

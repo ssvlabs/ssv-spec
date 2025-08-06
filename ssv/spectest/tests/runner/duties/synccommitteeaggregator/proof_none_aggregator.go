@@ -12,7 +12,7 @@ import (
 // NoneAggregatorQuorum tests a quorum of selection proofs but none of which are aggregator
 func NoneAggregatorQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return NewSyncCommitteeAggregatorProofSpecTest(
+	test := NewSyncCommitteeAggregatorProofSpecTest(
 		"sync committee aggregator none is aggregator",
 		testdoc.SyncCommitteeAggregatorProofNoneAggregatorDoc,
 		[]*types.SignedSSVMessage{
@@ -28,5 +28,8 @@ func NoneAggregatorQuorum() tests.SpecTest {
 			hex.EncodeToString(testingutils.TestingContributionProofsSigned[2][:]): false,
 		},
 		"",
+		ks,
 	)
+
+	return test
 }

@@ -12,7 +12,7 @@ import (
 // AllAggregatorQuorum tests a quorum of selection proofs of which all are aggregator
 func AllAggregatorQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return NewSyncCommitteeAggregatorProofSpecTest(
+	test := NewSyncCommitteeAggregatorProofSpecTest(
 		"sync committee aggregator all are aggregators",
 		testdoc.SyncCommitteeAggregatorProofAllAggregatorDoc,
 		[]*types.SignedSSVMessage{
@@ -28,5 +28,8 @@ func AllAggregatorQuorum() tests.SpecTest {
 			hex.EncodeToString(testingutils.TestingContributionProofsSigned[2][:]): true,
 		},
 		"",
+		ks,
 	)
+
+	return test
 }

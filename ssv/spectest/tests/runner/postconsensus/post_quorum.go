@@ -47,6 +47,7 @@ func PostQuorum() tests.SpecTest {
 				ExpectedError: expectedErr,
 			},
 		},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

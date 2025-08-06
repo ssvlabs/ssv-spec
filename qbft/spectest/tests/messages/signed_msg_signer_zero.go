@@ -22,12 +22,15 @@ func SignedMessageSigner0() tests.SpecTest {
 		[]types.OperatorID{1, 2, 0},
 	)
 
-	return tests.NewMsgSpecTest(
+	test := tests.NewMsgSpecTest(
 		"signer 0",
 		testdoc.MessagesSignedMsgSignerZeroDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
 		"signer ID 0 not allowed",
+		ks,
 	)
+
+	return test
 }

@@ -23,6 +23,7 @@ func PartialInvalidRootQuorumThenValidQuorum() tests.SpecTest {
 		"post consensus partial invalid root quorum then valid quorum",
 		testdoc.PostConsensusPartialInvalidRootQuorumThenValidQuorumDoc,
 		[]*tests.MsgProcessingSpecTest{},
+		ks,
 	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {

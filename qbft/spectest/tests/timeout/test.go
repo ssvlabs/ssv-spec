@@ -24,6 +24,7 @@ type SpecTest struct {
 	OutputMessages     []*types.SignedSSVMessage
 	ExpectedTimerState *testingutils.TimerState
 	ExpectedError      string
+	PrivateKeys        *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *SpecTest) TestName() string {
@@ -73,7 +74,7 @@ func (test *SpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
 
-func NewSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, outputMessages []*types.SignedSSVMessage, expectedTimerState *testingutils.TimerState, expectedError string) *SpecTest {
+func NewSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, outputMessages []*types.SignedSSVMessage, expectedTimerState *testingutils.TimerState, expectedError string, privateKeys *testingutils.TestKeySet) *SpecTest {
 	return &SpecTest{
 		Name:               name,
 		Type:               testdoc.TimeoutSpecTestType,
@@ -84,5 +85,6 @@ func NewSpecTest(name string, documentation string, pre *qbft.Instance, postRoot
 		OutputMessages:     outputMessages,
 		ExpectedTimerState: expectedTimerState,
 		ExpectedError:      expectedError,
+		PrivateKeys:        testingutils.BuildPrivateKeyInfo(privateKeys),
 	}
 }

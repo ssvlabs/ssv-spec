@@ -12,7 +12,7 @@ import (
 // FutureInstance tests decided msg received for future (not yet started) instance
 func FutureInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"decide future instance",
 		testdoc.ControllerDecidedFutureInstanceDoc,
 		[]*tests.RunInstanceData{
@@ -30,5 +30,8 @@ func FutureInstance() tests.SpecTest {
 		nil,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

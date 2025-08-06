@@ -17,7 +17,7 @@ func NoPrevAcceptedProposal() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"no previous accepted proposal",
 		testdoc.CommitTestNoPrevAcceptedProposalDoc,
 		pre,
@@ -27,5 +27,8 @@ func NoPrevAcceptedProposal() tests.SpecTest {
 		nil,
 		"invalid signed message: did not receive proposal for this round",
 		nil,
+		ks,
 	)
+
+	return test
 }

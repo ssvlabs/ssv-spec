@@ -41,7 +41,7 @@ func PreparedPreviouslyDuplicatePrepareQuorum() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"duplicate prepare msg justification quorum",
 		testdoc.ProposalPreparedPreviouslyDuplicatePrepareQuorumDoc,
 		pre,
@@ -51,5 +51,8 @@ func PreparedPreviouslyDuplicatePrepareQuorum() tests.SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

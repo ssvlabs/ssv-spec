@@ -41,7 +41,7 @@ func LateCommitPastRound() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[4], 4),
 	}...)
 
-	return tests.NewControllerSpecTest(
+	test := tests.NewControllerSpecTest(
 		"late commit past round",
 		testdoc.ControllerLateMsgLateCommitPastRoundDoc,
 		[]*tests.RunInstanceData{
@@ -62,5 +62,8 @@ func LateCommitPastRound() tests.SpecTest {
 		nil,
 		"not processing consensus message since instance is already decided",
 		nil,
+		ks,
 	)
+
+	return test
 }

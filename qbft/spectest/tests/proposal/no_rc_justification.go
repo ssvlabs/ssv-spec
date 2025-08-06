@@ -25,7 +25,7 @@ func NoRCJustification() tests.SpecTest {
 		),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"no rc quorum",
 		testdoc.ProposalNoRCJustificationDoc,
 		pre,
@@ -35,5 +35,8 @@ func NoRCJustification() tests.SpecTest {
 		nil,
 		"invalid signed message: proposal not justified: change round has no quorum",
 		nil,
+		ks,
 	)
+
+	return test
 }

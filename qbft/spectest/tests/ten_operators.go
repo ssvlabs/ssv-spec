@@ -36,7 +36,7 @@ func TenOperators() SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1)),
 	}
 
-	return NewMsgProcessingSpecTest(
+	test := NewMsgProcessingSpecTest(
 		"happy flow ten operators",
 		testdoc.MsgProcessingHappyFlowTenOperatorsDoc,
 		pre,
@@ -46,5 +46,8 @@ func TenOperators() SpecTest {
 		outputMessages,
 		"",
 		nil,
+		ks,
 	)
+
+	return test
 }

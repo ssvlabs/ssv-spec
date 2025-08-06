@@ -23,7 +23,7 @@ func JustificationDuplicateMsg() tests.SpecTest {
 			testingutils.MarshalJustifications(prepareMsgs)),
 	}
 
-	return tests.NewMsgProcessingSpecTest(
+	test := tests.NewMsgProcessingSpecTest(
 		"justification duplicate msg",
 		testdoc.RoundChangeJustificationDuplicateMsgDoc,
 		pre,
@@ -33,5 +33,8 @@ func JustificationDuplicateMsg() tests.SpecTest {
 		nil,
 		"invalid signed message: no justifications quorum",
 		nil,
+		ks,
 	)
+
+	return test
 }

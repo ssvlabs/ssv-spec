@@ -26,7 +26,7 @@ func DuplicateQuorum() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return NewPartialSigContainerTest(
+	test := NewPartialSigContainerTest(
 		"duplicate quorum",
 		testdoc.PartialSigContainerDuplicateQuorumDoc,
 		ks.Threshold,
@@ -35,5 +35,8 @@ func DuplicateQuorum() tests.SpecTest {
 		"",
 		expectedSig.Serialize(),
 		true,
+		ks,
 	)
+
+	return test
 }
