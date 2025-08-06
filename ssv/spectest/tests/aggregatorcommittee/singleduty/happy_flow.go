@@ -188,6 +188,7 @@ func HappyFlow() tests.SpecTest {
 		"aggregator committee runner happy flow",
 		"Testing aggregator committee runner with complete duty flow for both aggregator and sync committee contribution",
 		testCases,
+		ks,
 	)
 
 	return multiSpecTest
