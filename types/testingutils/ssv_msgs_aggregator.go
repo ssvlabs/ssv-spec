@@ -26,40 +26,48 @@ var PreConsensusSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, 
 }
 
 var PreConsensusSelectionProofWrongBeaconSigMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlotV(version), TestingDutySlotV(version), 1, true, false)
+	return selectionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, TestingDutySlotV(version), 1, true, false)
 }
 
 var PreConsensusSelectionProofWrongRootSigMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlotV(version), TestingDutySlotV(version), 1, false, true)
+	return selectionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, TestingDutySlotV(version), 1, false, true)
 }
 
 var PreConsensusSelectionProofNextEpochMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlotNextEpochV(version), TestingDutySlotNextEpochV(version), 1, false, false)
+	return selectionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, TestingDutySlotNextEpochV(version), 1, false, false)
 }
 
 var PreConsensusSelectionProofTooManyRootsMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlotV(version), TestingDutySlotV(version), 3, false, false)
+	return selectionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, TestingDutySlotV(version), 3, false, false)
 }
 
 var PreConsensusSelectionProofTooFewRootsMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlotV(version), TestingDutySlotV(version), 0, false, false)
+	return selectionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, TestingDutySlotV(version), 0, false, false)
 }
 
 var PreConsensusCustomSlotSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
-	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, slot, slot, 1, false, false)
+	return selectionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, slot, 1, false, false)
+}
+
+var PreConsensusSelectionProofMsgWithValidatorIndex = func(msgSK, beaconSK *bls.SecretKey, validatorIndex phase0.ValidatorIndex, msgID, beaconID types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	return PreConsensusCustomSlotSelectionProofMsgWithValidatorIndex(msgSK, beaconSK, validatorIndex, msgID, beaconID, TestingDutySlotV(version))
+}
+
+var PreConsensusCustomSlotSelectionProofMsgWithValidatorIndex = func(msgSK, beaconSK *bls.SecretKey, validatorIndex phase0.ValidatorIndex, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
+	return selectionProofMsg(msgSK, beaconSK, validatorIndex, msgID, beaconID, slot, 1, false, false)
 }
 
 var PreConsensusWrongMsgSlotSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	return selectionProofMsg(msgSK, beaconSK, msgID, beaconID, TestingDutySlotV(version), TestingDutySlotV(version)+1, 1, false, false)
+	return selectionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, TestingDutySlotV(version), 1, false, false)
 }
 
 var selectionProofMsg = func(
 	sk *bls.SecretKey,
 	beaconsk *bls.SecretKey,
+	validatorIndex phase0.ValidatorIndex,
 	id types.OperatorID,
 	beaconid types.OperatorID,
 	slot phase0.Slot,
-	msgSlot phase0.Slot,
 	msgCnt int,
 	wrongBeaconSig bool,
 	wrongSigningRoot bool,
@@ -81,7 +89,7 @@ var selectionProofMsg = func(
 			PartialSignature: signed[:],
 			SigningRoot:      root,
 			Signer:           beaconid,
-			ValidatorIndex:   TestingValidatorIndex,
+			ValidatorIndex:   validatorIndex,
 		})
 	}
 
@@ -98,11 +106,11 @@ var selectionProofMsg = func(
 // ==================================================
 
 var PostConsensusAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	return postConsensusAggregatorMsg(sk, id, false, false, version)
+	return postConsensusAggregatorMsg(sk, id, TestingValidatorIndex, false, false, version)
 }
 
 var PostConsensusAggregatorTooManyRootsMsg = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	ret := postConsensusAggregatorMsg(sk, id, false, false, version)
+	ret := postConsensusAggregatorMsg(sk, id, TestingValidatorIndex, false, false, version)
 	ret.Messages = append(ret.Messages, ret.Messages[0])
 
 	msg := &types.PartialSignatureMessages{
@@ -123,11 +131,11 @@ var PostConsensusAggregatorTooFewRootsMsg = func(sk *bls.SecretKey, id types.Ope
 }
 
 var PostConsensusWrongAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	return postConsensusAggregatorMsg(sk, id, true, false, version)
+	return postConsensusAggregatorMsg(sk, id, TestingValidatorIndex, true, false, version)
 }
 
 var PostConsensusWrongValidatorIndexAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	msg := postConsensusAggregatorMsg(sk, id, true, false, version)
+	msg := postConsensusAggregatorMsg(sk, id, TestingValidatorIndex, true, false, version)
 	for _, m := range msg.Messages {
 		m.ValidatorIndex = TestingWrongValidatorIndex
 	}
@@ -135,12 +143,17 @@ var PostConsensusWrongValidatorIndexAggregatorMsg = func(sk *bls.SecretKey, id t
 }
 
 var PostConsensusWrongSigAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	return postConsensusAggregatorMsg(sk, id, false, true, version)
+	return postConsensusAggregatorMsg(sk, id, TestingValidatorIndex, false, true, version)
+}
+
+var PostConsensusAggregatorMsgWithValidatorIndex = func(sk *bls.SecretKey, id types.OperatorID, validatorIndex phase0.ValidatorIndex, version spec.DataVersion) *types.PartialSignatureMessages {
+	return postConsensusAggregatorMsg(sk, id, validatorIndex, false, false, version)
 }
 
 var postConsensusAggregatorMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
+	validatorIndex phase0.ValidatorIndex,
 	wrongRoot bool,
 	wrongBeaconSig bool,
 	version spec.DataVersion,
@@ -149,9 +162,9 @@ var postConsensusAggregatorMsg = func(
 	beacon := NewTestingBeaconNode()
 	d, _ := beacon.DomainData(1, types.DomainAggregateAndProof)
 
-	aggData := TestingAggregateAndProofV(version)
+	aggData := TestingAggregateAndProofV(version, validatorIndex)
 	if wrongRoot {
-		aggData = TestingWrongAggregateAndProofV(version)
+		aggData = TestingWrongAggregateAndProofV(version, validatorIndex)
 	}
 
 	signed, root, _ := signer.SignBeaconObject(aggData.(ssz.HashRoot), d, sk.GetPublicKey().Serialize(), types.DomainAggregateAndProof)
@@ -167,7 +180,7 @@ var postConsensusAggregatorMsg = func(
 				PartialSignature: signed,
 				SigningRoot:      root,
 				Signer:           id,
-				ValidatorIndex:   TestingValidatorIndex,
+				ValidatorIndex:   validatorIndex,
 			},
 		},
 	}

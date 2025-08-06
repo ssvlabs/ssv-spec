@@ -48,6 +48,7 @@ const (
 
 	BNRoleValidatorRegistration
 	BNRoleVoluntaryExit
+	BNRoleAggregatorCommittee // Internal SSV role combining Aggregator + SyncCommitteeContribution
 
 	BNRoleUnknown = math.MaxUint64
 )
@@ -69,6 +70,8 @@ func (r BeaconRole) String() string {
 		return "VALIDATOR_REGISTRATION"
 	case BNRoleVoluntaryExit:
 		return "VOLUNTARY_EXIT"
+	case BNRoleAggregatorCommittee:
+		return "AGGREGATOR_COMMITTEE"
 	default:
 		return "UNDEFINED"
 	}
@@ -108,13 +111,15 @@ func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
 	case BNRoleProposer:
 		return RoleProposer
 	case BNRoleAggregator:
-		return RoleAggregator
+		return RoleAggregator  // Still use old runner for now
 	case BNRoleSyncCommitteeContribution:
-		return RoleSyncCommitteeContribution
+		return RoleSyncCommitteeContribution  // Still use old runner for now
 	case BNRoleValidatorRegistration:
 		return RoleValidatorRegistration
 	case BNRoleVoluntaryExit:
 		return RoleVoluntaryExit
+	case BNRoleAggregatorCommittee:
+		return RoleAggregatorCommittee  // New mapping (but won't be used until Phase 2)
 	}
 	return RoleUnknown
 }
@@ -143,6 +148,20 @@ func (cd *CommitteeDuty) DutySlot() spec.Slot {
 
 func (cd *CommitteeDuty) RunnerRole() RunnerRole {
 	return RoleCommittee
+}
+
+// AggregatorCommitteeDuty represents combined aggregator and sync committee contribution duties
+type AggregatorCommitteeDuty struct {
+	Slot            spec.Slot
+	ValidatorDuties []*ValidatorDuty
+}
+
+func (acd *AggregatorCommitteeDuty) DutySlot() spec.Slot {
+	return acd.Slot
+}
+
+func (acd *AggregatorCommitteeDuty) RunnerRole() RunnerRole {
+	return RoleAggregatorCommittee
 }
 
 //

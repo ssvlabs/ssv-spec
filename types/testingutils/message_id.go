@@ -8,7 +8,6 @@ var AggregatorMsgID = func() []byte {
 }()
 
 var CommitteeMsgID = func(keySet *TestKeySet) []byte {
-
 	// Identifier
 	committee := make([]uint64, 0)
 	for _, op := range keySet.Committee() {
@@ -17,6 +16,18 @@ var CommitteeMsgID = func(keySet *TestKeySet) []byte {
 	committeeID := types.GetCommitteeID(committee)
 
 	ret := types.NewMsgID(TestingSSVDomainType, committeeID[:], types.RoleCommittee)
+	return ret[:]
+}
+
+var AggregatorCommitteeMsgID = func(keySet *TestKeySet) []byte {
+	// Identifier
+	committee := make([]uint64, 0)
+	for _, op := range keySet.Committee() {
+		committee = append(committee, op.Signer)
+	}
+	committeeID := types.GetCommitteeID(committee)
+
+	ret := types.NewMsgID(TestingSSVDomainType, committeeID[:], types.RoleAggregatorCommittee)
 	return ret[:]
 }
 
