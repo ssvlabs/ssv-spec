@@ -50,18 +50,7 @@ func WrongDutyPubKey() tests.SpecTest {
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"wrong duty pubkey",
 		testdoc.DutyExeWrongDutyPubKeyDoc,
-		[]*tests.MsgProcessingSpecTest{
-			{
-				Name:     "sync committee contribution",
-				Runner:   testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:     &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleSyncCommitteeContribution)},
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-				},
-				ExpectedError: expectedError,
-			},
-		},
+		[]*tests.MsgProcessingSpecTest{},
 		ks,
 	)
 

@@ -28,12 +28,12 @@ func NilSSVMessage() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
-					testingutils.TestSyncCommitteeContributionConsensusData,
+				Runner: decideAggregatorRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty,
+					testingutils.TestAggregatorCommitteeConsensusDataForDuty(testingutils.TestingSyncCommitteeContributionDuty, spec.DataVersionPhase0),
 				),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
+				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 				Messages:                []*types.SignedSSVMessage{invalidMsg},
 				PostDutyRunnerStateRoot: "f58387d4d4051a2de786e4cbf9dc370a8b19a544f52af04f71195feb3863fc5c",
 				OutputMessages:          []*types.PartialSignatureMessages{},

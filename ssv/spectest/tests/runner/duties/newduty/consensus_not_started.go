@@ -26,8 +26,8 @@ func ConsensusNotStarted() tests.SpecTest {
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
-				Runner:                  startRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				Runner:                  startRunner(testingutils.AggregatorCommitteeRunner(ks), testingutils.TestingSyncCommitteeContributionDuty),
+				Duty:                    testingutils.TestingSyncCommitteeContributionNexEpochDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "c78b42fb7db3a7683a78c2dd6a672d8d007c0997e580440c346b02d6f60f40b3",
 				OutputMessages: []*types.PartialSignatureMessages{

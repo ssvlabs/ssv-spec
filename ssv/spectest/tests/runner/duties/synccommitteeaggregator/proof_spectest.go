@@ -56,7 +56,7 @@ func (test *SyncCommitteeAggregatorProofSpecTest) runPreTesting() (ssv.Runner, e
 	r.GetBeaconNode().(*testingutils.TestingBeaconNode).SetSyncCommitteeAggregatorRootHexes(test.ProofRootsMap)
 	v.Beacon = r.GetBeaconNode()
 
-	lastErr := v.StartDuty(&testingutils.TestingSyncCommitteeContributionDuty)
+	lastErr := v.StartDuty(testingutils.TestingSyncCommitteeContributionDuty)
 	for _, msg := range test.Messages {
 		err := v.ProcessMessage(msg)
 		if err != nil {

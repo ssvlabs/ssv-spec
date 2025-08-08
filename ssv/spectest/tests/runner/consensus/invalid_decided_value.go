@@ -16,6 +16,7 @@ import (
 // InvalidDecidedValue tests an invalid decided value ValidatorConsensusData.Validate() != nil (unknown duty role)
 func InvalidDecidedValue() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+	ksMap := testingutils.KeySetMapForValidators(4)
 	consensusDataByts := func() []byte {
 		cd := &types.ValidatorConsensusData{
 			Duty: types.ValidatorDuty{
@@ -45,20 +46,23 @@ func InvalidDecidedValue() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(
+						ks,
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(testingutils.TestingSyncCommitteeContributionDuty, ksMap, 1, spec.DataVersionPhase0))),
 						nil,
-						testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					)),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(
+						ks,
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(testingutils.TestingSyncCommitteeContributionDuty, ksMap, 2, spec.DataVersionPhase0))),
 						nil,
-						testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2),
 					)),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(
+						ks,
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(testingutils.TestingSyncCommitteeContributionDuty, ksMap, 3, spec.DataVersionPhase0))),
 						nil,
-						testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3),
 					)),
 
 					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
@@ -67,7 +71,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						},
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.SyncCommitteeContributionMsgID,
+						testingutils.AggregatorCommitteeMsgID(ks),
 						consensusDataByts(),
 					),
 				},
@@ -75,7 +79,7 @@ func InvalidDecidedValue() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: expectedErr,
+				ExpectedError: expectedCommitteeErr,
 			},
 			{
 				Name:   "proposer",

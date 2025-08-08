@@ -21,8 +21,8 @@ func DuplicateMsg() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),

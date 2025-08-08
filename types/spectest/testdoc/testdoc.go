@@ -135,6 +135,9 @@ const SSZSpecTestWithdrawalsMarshalingDoc = "Test SSZ marshaling and hash tree r
 // ValidatorConsensusDataTest
 const ValidatorConsensusDataTestType = "Validator consensus data: validation of validator consensus data"
 
+// AggregatorConsensusDataTest
+const AggregatorConsensusDataTestType = "Aggregator consensus data: validation of aggregator committee consensus data"
+
 // Documentation for ValidatorConsensusDataTest
 const ValidatorConsensusDataTestInvalidDenebBlockDoc = "Test validation error for invalid consensus data with empty Deneb block data"
 const ValidatorConsensusDataTestInvalidDenebBlindedBlockDoc = "Test validation error for invalid consensus data with empty Deneb blinded block data"
@@ -152,7 +155,6 @@ const ValidatorConsensusDataTestPhase0AggregatorValidationDoc = "Test validation
 const ValidatorConsensusDataTestElectraAggregatorValidationDoc = "Test validation of valid consensus data with Electra AggregateAndProof"
 const ValidatorConsensusDataTestProposerNoJustificationsDoc = "Test proposer consensus data with no pre-consensus justifications"
 const ValidatorConsensusDataTestSyncCommitteeContributionValidationDoc = "Test validation of valid consensus data with sync committee contribution"
-const ValidatorConsensusDataTestSyncCommitteeContributionNoJustificationsDoc = "Test sync committee contribution consensus data with no sync committee contribution pre-consensus justifications"
 const ValidatorConsensusDataTestVoluntaryExitDoc = "Test validation error for voluntary exit consensus data which has no consensus data"
 const ValidatorConsensusDataTestValidatorRegistrationDoc = "Test validation error for validator registration consensus data which has no consensus data"
 const ValidatorConsensusDataTestDenebBlockDoc = "Test validation of valid consensus data with Deneb block"
@@ -161,6 +163,9 @@ const ValidatorConsensusDataTestInvalidPhase0AggregatorDoc = "Test validation er
 const ValidatorConsensusDataTestInvalidElectraAggregatorDoc = "Test validation error for invalid consensus data with Electra AggregateAndProof using incorrect data"
 const ValidatorConsensusDataTestInvalidDutyDoc = "Test validation error for consensus data with unknown duty role"
 const ValidatorConsensusDataTestInvalidSyncCommitteeContributionDoc = "Test validation error for invalid consensus data with sync committee contribution using incorrect data"
+
+// Documentation for AggregatorConsensusDataTest
+const AggregatorConsensusDataTestSyncCommitteeContributionNoJustificationsDoc = "Test sync committee contribution consensus data with no sync committee contribution pre-consensus justifications"
 
 // ValidatorConsensusDataEncodingTest
 const ValidatorConsensusDataEncodingTestType = "Validator consensus data encoding"

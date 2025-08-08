@@ -24,6 +24,20 @@ func finishCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) 
 	return ret
 }
 
+func finishAggregatorRunner(r ssv.Runner, duty types.Duty, decidedValue *types.AggregatorCommitteeConsensusData) ssv.Runner {
+	ret := decideAggregatorRunner(r, duty, decidedValue)
+	ret.GetBaseRunner().State.Finished = true
+	return ret
+}
+
+func decideRunner(r ssv.Runner, duty types.Duty, cd *types.ValidatorConsensusData) ssv.Runner {
+	cdBytes, err := cd.Encode()
+	if err != nil {
+		panic(err)
+	}
+	return decideRunnerForData(r, duty, cdBytes)
+}
+
 func decideCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) ssv.Runner {
 	bvBytes, err := bv.Encode()
 	if err != nil {
@@ -32,7 +46,7 @@ func decideCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) 
 	return decideRunnerForData(r, duty, bvBytes)
 }
 
-func decideRunner(r ssv.Runner, duty types.Duty, cd *types.ValidatorConsensusData) ssv.Runner {
+func decideAggregatorRunner(r ssv.Runner, duty types.Duty, cd *types.AggregatorCommitteeConsensusData) ssv.Runner {
 	cdBytes, err := cd.Encode()
 	if err != nil {
 		panic(err)
@@ -79,11 +93,11 @@ func ValidMessage() tests.SpecTest {
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty,
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
 				},

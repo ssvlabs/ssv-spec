@@ -22,12 +22,12 @@ func PostFinish() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
-				Runner: finishRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
-					testingutils.TestSyncCommitteeContributionConsensusData,
+				Runner: finishAggregatorRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty,
+					testingutils.TestAggregatorCommitteeConsensusDataForDuty(testingutils.TestingSyncCommitteeContributionDuty, spec.DataVersionPhase0),
 				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[4], 4, ks))),
 				},

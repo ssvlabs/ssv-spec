@@ -16,7 +16,7 @@ import (
 func PostFinish() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	finishRunner := func(runner ssv.Runner, duty *types.ValidatorDuty) ssv.Runner {
+	finishRunner := func(runner ssv.Runner, duty types.Duty) ssv.Runner {
 		runner.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		runner.GetBaseRunner().State.Finished = true
 		return runner
@@ -29,10 +29,10 @@ func PostFinish() tests.SpecTest {
 			{
 				Name: "sync committee aggregator selection proof",
 				Runner: finishRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty,
 				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4))),
 				},

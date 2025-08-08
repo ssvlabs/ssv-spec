@@ -24,12 +24,12 @@ func InvalidMessage() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
-					testingutils.TestSyncCommitteeContributionConsensusData,
+				Runner: decideAggregatorRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty,
+					testingutils.TestAggregatorCommitteeConsensusDataForDuty(testingutils.TestingSyncCommitteeContributionDuty, spec.DataVersionPhase0),
 				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignedSSVMessageWithSigner(0, ks.OperatorKeys[1], testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 0, ks))),
 				},

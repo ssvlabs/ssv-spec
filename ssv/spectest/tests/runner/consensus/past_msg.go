@@ -62,8 +62,8 @@ func PastMessage() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
-				Runner: bumpHeight(testingutils.SyncCommitteeContributionRunner(ks)),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: bumpHeight(testingutils.AggregatorCommitteeRunner(ks)),
+				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					pastMsgF(testingutils.TestSyncCommitteeContributionConsensusData, testingutils.SyncCommitteeContributionMsgID),
 				},

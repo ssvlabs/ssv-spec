@@ -16,7 +16,7 @@ func TestingAggregatorCommitteeDutyOnlyAggregator(version spec.DataVersion) *typ
 
 // TestingAggregatorCommitteeDutyOnlySyncCommittee creates a duty with only sync committee validators
 func TestingAggregatorCommitteeDutyOnlySyncCommittee() *types.AggregatorCommitteeDuty {
-	return TestingSyncCommitteeContributorDuty(spec.DataVersionPhase0) // Using Phase0 as default
+	return TestingSyncCommitteeContributionDuty
 }
 
 // TestingAggregatorCommitteeDutyMixed creates a duty with both aggregator and sync committee validators
@@ -31,5 +31,5 @@ func TestingAggregatorCommitteeDutyMultipleAggregators(version spec.DataVersion)
 
 // TestingAggregatorCommitteeDutyMultipleSyncCommittee creates a duty with multiple sync committee validators
 func TestingAggregatorCommitteeDutyMultipleSyncCommittee() *types.AggregatorCommitteeDuty {
-	return TestingSyncCommitteeContributorDutyForValidators(spec.DataVersionPhase0, []int{1, 2})
+	return TestingSyncCommitteeContributionDutyForValidators([]int{1, 2})
 }

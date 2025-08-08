@@ -452,20 +452,15 @@ func fixCommitteeForRun(t *testing.T, committeeMap map[string]interface{}, hasAg
 	// First check if we have an aggregator duty in the input
 	if hasAggregatorDuty {
 		runnerType = "aggregator_committee"
-		t.Logf("Found AggregatorCommitteeDuty in input - using AggregatorCommitteeRunner")
 	} else {
 		// Otherwise, check existing runners
-		t.Logf("Fixing committee with %d runners", len(c.Runners))
-		for slot, runner := range c.Runners {
-			switch r := runner.(type) {
+		for _, runner := range c.Runners {
+			switch runner.(type) {
 			case *ssv.AggregatorCommitteeRunner:
 				runnerType = "aggregator_committee"
-				t.Logf("Found AggregatorCommitteeRunner at slot %v", slot)
 			case *ssv.CommitteeRunner:
-				t.Logf("Found CommitteeRunner at slot %v", slot)
 				runnerType = "committee"
 			default:
-				t.Logf("Found unknown runner type %T at slot %v", r, slot)
 				runnerType = "committee"
 			}
 			if runnerType != "" {
@@ -608,7 +603,7 @@ func baseRunnerForRole(role types.RunnerRole, base *ssv.BaseRunner, ks *testingu
 		ret.(*ssv.ProposerRunner).BaseRunner = base
 		return ret
 	case types.RoleSyncCommitteeContribution:
-		ret := testingutils.SyncCommitteeContributionRunner(ks)
+		ret := testingutils.AggregatorCommitteeRunner(ks)
 		ret.(*ssv.SyncCommitteeAggregatorRunner).BaseRunner = base
 		return ret
 	case types.RoleAggregatorCommittee:

@@ -24,7 +24,7 @@ func HappyFlow() tests.SpecTest {
 	var testCases []*committee.CommitteeSpecTest
 
 	// Add aggregator test cases
-	for _, version := range testingutils.SupportedAttestationVersions {
+	for _, version := range testingutils.SupportedAggregatorVersions {
 		for _, numValidators := range []int{1, 30} {
 
 			validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
@@ -85,7 +85,7 @@ func HappyFlow() tests.SpecTest {
 			ksMap := testingutils.KeySetMapForValidators(numValidators)
 			shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
-			duty := testingutils.TestingSyncCommitteeContributorDutyForValidators(version, validatorsIndexList)
+			duty := testingutils.TestingSyncCommitteeContributionDutyForValidators(validatorsIndexList)
 			slot := testingutils.TestingDutySlotV(version)
 			height := qbft.Height(slot)
 
@@ -93,7 +93,7 @@ func HappyFlow() tests.SpecTest {
 
 			testCases = append(testCases, []*committee.CommitteeSpecTest{
 				{
-					Name: fmt.Sprintf("%v aggregator and sync committee contribution (%s)", numValidators, version.String()),
+					Name: fmt.Sprintf("%v sync committee contribution (%s)", numValidators, version.String()),
 					Committee: testingutils.
 						BaseAggregatorCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap).(*ssv.AggregatorCommitteeRunner)),
 					Input: []interface{}{
@@ -147,7 +147,7 @@ func HappyFlow() tests.SpecTest {
 
 			testCases = append(testCases, []*committee.CommitteeSpecTest{
 				{
-					Name: fmt.Sprintf("%v sync committee contribution (%s)", numValidators, version.String()),
+					Name: fmt.Sprintf("%v aggregator and sync committee contribution (%s)", numValidators, version.String()),
 					Committee: testingutils.
 						BaseAggregatorCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap).(*ssv.AggregatorCommitteeRunner)),
 					Input: []interface{}{

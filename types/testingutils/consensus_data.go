@@ -86,7 +86,17 @@ var TestProposerBlindedBlockConsensusDataBytsV = func(version spec.DataVersion) 
 // ==================================================
 
 var TestSyncCommitteeContributionConsensusData = &types.ValidatorConsensusData{
-	Duty:    TestingSyncCommitteeContributionDuty,
+	Duty: types.ValidatorDuty{
+		Type:                          types.BNRoleSyncCommitteeContribution,
+		PubKey:                        TestingValidatorPubKey,
+		Slot:                          TestingDutySlot,
+		ValidatorIndex:                TestingValidatorIndex,
+		CommitteeIndex:                TestingCommitteeIndex,
+		CommitteesAtSlot:              TestingCommitteesAtSlot,
+		CommitteeLength:               TestingCommitteeLenght,
+		ValidatorCommitteeIndex:       TestingValidatorCommitteeIndex,
+		ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
+	},
 	DataSSZ: TestingContributionsDataBytes,
 	Version: spec.DataVersionPhase0,
 }

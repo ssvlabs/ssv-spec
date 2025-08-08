@@ -40,22 +40,20 @@ func PostFutureDecided() tests.SpecTest {
 		return r
 	}
 
-	expectedError := "can't start duty: duty for slot 12 already passed. Current height is 62"
-
 	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
 		"new duty post future decided",
 		testdoc.NewDutyPostFutureDecidedDoc,
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
-				Runner:                  futureDecide(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner:                  futureDecide(testingutils.AggregatorCommitteeRunner(ks), testingutils.TestingSyncCommitteeContributionDuty),
+				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "0c2bf5b2570aad7da85cfe5aa81361524a727265c22b41e72e7e9ff2f9b2c215",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedError: fmt.Sprintf("failed to start new duty: can't start duty: duty for slot %d already passed. Current height is %d", testingutils.TestingDutySlot, testingutils.TestingDutySlot+50),
 			},
 			{
 				Name:                    "proposer",

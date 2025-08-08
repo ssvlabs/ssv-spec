@@ -39,10 +39,6 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 		return r
 	}
 
-	expectedError := fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
-		testingutils.TestingDutySlot,
-		testingutils.TestingDutySlot)
-
 	expectedTaskError := fmt.Sprintf("can't start non-beacon duty: duty for slot %d already passed. "+
 		"Current slot is %d",
 		testingutils.TestingDutySlot,
@@ -54,14 +50,16 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
-				Runner:                  notFinishRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner:                  notFinishRunner(testingutils.AggregatorCommitteeRunner(ks), testingutils.TestingSyncCommitteeContributionDuty),
+				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "f8f6de434622433553716a8d16abf43d92ddad8fd33f0350c39f87d12e30d7e2",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedError: fmt.Sprintf("failed to start new duty: can't start duty: duty for slot %d already passed. Current height is %d",
+					testingutils.TestingDutySlot,
+					testingutils.TestingDutySlot),
 			},
 			{
 				Name:                    "proposer",

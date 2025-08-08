@@ -46,8 +46,8 @@ func FutureMessage() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					futureMsgF(testingutils.TestSyncCommitteeContributionConsensusData, testingutils.SyncCommitteeContributionMsgID),
 				},

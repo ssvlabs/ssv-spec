@@ -62,9 +62,9 @@ func PostInvalidDecided() tests.SpecTest {
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name: "sync committee aggregator",
-				Runner: decideWrong(testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				Runner: decideWrong(testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty),
+				Duty:                    testingutils.TestingSyncCommitteeContributionNexEpochDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "4112802181d740f78b68b0c67e4220e689af2ac1011a51d0f4c10c4df315fac5",
 				OutputMessages: []*types.PartialSignatureMessages{

@@ -19,19 +19,24 @@
             "RunningInstance": null,
             "DecidedValue": null,
             "Finished": false,
-            "ValidatorDuty": {
-              "Type": 4,
-              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "AggregatorCommitteeDuty": {
               "Slot": "12",
-              "ValidatorIndex": "1",
-              "CommitteeIndex": 3,
-              "CommitteeLength": 128,
-              "CommitteesAtSlot": 36,
-              "ValidatorCommitteeIndex": 11,
-              "ValidatorSyncCommitteeIndices": [
-                0,
-                1,
-                2
+              "ValidatorDuties": [
+                {
+                  "Type": 4,
+                  "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+                  "Slot": "12",
+                  "ValidatorIndex": "1",
+                  "CommitteeIndex": 3,
+                  "CommitteeLength": 128,
+                  "CommitteesAtSlot": 36,
+                  "ValidatorCommitteeIndex": 11,
+                  "ValidatorSyncCommitteeIndices": [
+                    0,
+                    1,
+                    2
+                  ]
+                }
               ]
             }
           },
@@ -69,7 +74,7 @@
             }
           },
           "QBFTController": {
-            "Identifier": "AAADAQMAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+            "Identifier": "AAADAQYAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
             "Height": 0,
             "StoredInstances": [],
             "CommitteeMember": {
@@ -99,7 +104,7 @@
             }
           },
           "BeaconNetwork": "now_test_network",
-          "RunnerRoleType": 3
+          "RunnerRoleType": 6
         }
       },
       "PostDutyRunnerStateRoot": "c78b42fb7db3a7683a78c2dd6a672d8d007c0997e580440c346b02d6f60f40b3",
@@ -130,19 +135,24 @@
         }
       ],
       "ExpectedError": "",
-      "ValidatorDuty": {
-        "Type": 4,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+      "AggregatorCommitteeDuty": {
         "Slot": "50",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 3,
-        "CommitteeLength": 128,
-        "CommitteesAtSlot": 36,
-        "ValidatorCommitteeIndex": 11,
-        "ValidatorSyncCommitteeIndices": [
-          0,
-          1,
-          2
+        "ValidatorDuties": [
+          {
+            "Type": 4,
+            "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+            "Slot": "50",
+            "ValidatorIndex": "1",
+            "CommitteeIndex": 3,
+            "CommitteeLength": 128,
+            "CommitteesAtSlot": 36,
+            "ValidatorCommitteeIndex": 11,
+            "ValidatorSyncCommitteeIndices": [
+              0,
+              1,
+              2
+            ]
+          }
         ]
       }
     },

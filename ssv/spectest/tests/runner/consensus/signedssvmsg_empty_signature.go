@@ -29,8 +29,8 @@ func EmptySignature() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),

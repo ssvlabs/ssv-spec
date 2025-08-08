@@ -29,10 +29,6 @@ var AggregatorCommitteeRunnerWithShareMap = func(shareMap map[phase0.ValidatorIn
 	return baseRunnerWithShareMap(types.RoleAggregatorCommittee, shareMap)
 }
 
-var AttesterRunner7Operators = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleCommittee, keySet)
-}
-
 var ProposerRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleProposer, keySet)
 }
@@ -43,14 +39,6 @@ var ProposerBlindedBlockRunner = func(keySet *TestKeySet) ssv.Runner {
 
 var AggregatorRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleAggregator, keySet)
-}
-
-var SyncCommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleCommittee, keySet)
-}
-
-var SyncCommitteeContributionRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleSyncCommitteeContribution, keySet)
 }
 
 var ValidatorRegistrationRunner = func(keySet *TestKeySet) ssv.Runner {

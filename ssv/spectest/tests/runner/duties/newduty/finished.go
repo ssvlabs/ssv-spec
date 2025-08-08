@@ -43,9 +43,9 @@ func Finished() tests.SpecTest {
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name: "sync committee aggregator",
-				Runner: finishRunner(testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty, true),
-				Duty:      &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				Runner: finishRunner(testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty, true),
+				Duty:      testingutils.TestingSyncCommitteeContributionNexEpochDuty,
 				Threshold: ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty

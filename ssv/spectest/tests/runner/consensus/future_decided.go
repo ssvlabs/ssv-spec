@@ -20,7 +20,7 @@ func FutureDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	getID := func(role types.RunnerRole) []byte {
-		if role == types.RoleCommittee {
+		if role == types.RoleCommittee || role == types.RoleAggregatorCommittee {
 			opIDs := make([]types.OperatorID, len(ks.Committee()))
 			for i, member := range ks.Committee() {
 				opIDs[i] = member.Signer
@@ -42,8 +42,8 @@ func FutureDecided() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),
@@ -52,7 +52,7 @@ func FutureDecided() tests.SpecTest {
 						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 						[]types.OperatorID{1, 2, 3},
 						testingutils.TestingDutySlot+1,
-						getID(types.RoleSyncCommitteeContribution),
+						getID(types.RoleAggregatorCommittee),
 					),
 				},
 				PostDutyRunnerStateRoot: futureDecidedSyncCommitteeContributionSC().Root(),
@@ -60,7 +60,7 @@ func FutureDecided() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: errStr,
+				ExpectedError: errStrCommittee,
 			},
 		},
 		ks,

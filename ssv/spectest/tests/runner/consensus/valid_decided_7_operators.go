@@ -23,8 +23,8 @@ func ValidDecided7Operators() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:                    "sync committee contribution",
-				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner:                  testingutils.AggregatorCommitteeRunner(ks),
+				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.RoleSyncCommitteeContribution),
 				PostDutyRunnerStateRoot: validDecided7OperatorsSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     validDecided7OperatorsSyncCommitteeContributionSC().ExpectedState,

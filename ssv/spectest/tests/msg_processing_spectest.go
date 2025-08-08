@@ -58,7 +58,7 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	beaconNetwork := &testingutils.TestingBeaconNode{}
 	var committee []*types.Operator
 	switch test.Runner.(type) {
-	case *ssv.CommitteeRunner:
+	case *ssv.CommitteeRunner, *ssv.AggregatorCommitteeRunner:
 		var runnerInstance ssv.Runner
 		for _, runner := range c.Runners {
 			runnerInstance = runner
@@ -139,6 +139,33 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 			}
 		}
 
+	case *ssv.AggregatorCommitteeRunner:
+		c = testingutils.BaseCommitteeWithRunner(ketSetMap, test.Runner.(*ssv.AggregatorCommitteeRunner))
+
+		if !test.DontStartDuty {
+			lastErr = c.StartDuty(test.Duty.(*types.AggregatorCommitteeDuty))
+		} else {
+			c.Runners[test.Duty.DutySlot()] = test.Runner.(*ssv.AggregatorCommitteeRunner)
+		}
+
+		for _, msg := range test.Messages {
+			err := c.ProcessMessage(msg)
+			if err != nil {
+				lastErr = err
+			}
+			if test.DecidedSlashable && IsQBFTProposalMessage(msg) {
+				consensusMsg, err := qbft.DecodeMessage(msg.SSVMessage.Data)
+				if err != nil {
+					panic(err)
+				}
+				slot := phase0.Slot(consensusMsg.Height)
+				for _, validatorShare := range test.Runner.GetBaseRunner().Share {
+					test.Runner.GetSigner().(*testingutils.TestingKeyManager).AddSlashableSlot(validatorShare.
+						SharePubKey, slot)
+				}
+			}
+		}
+
 	default:
 		v = testingutils.BaseValidator(testingutils.KeySetForShare(share))
 		v.DutyRunners[test.Runner.GetBaseRunner().RunnerRoleType] = test.Runner
@@ -180,6 +207,8 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 	switch test.Runner.(type) {
 	case *ssv.CommitteeRunner:
 		runner = &ssv.CommitteeRunner{}
+	case *ssv.AggregatorCommitteeRunner:
+		runner = &ssv.AggregatorCommitteeRunner{}
 	case *ssv.AggregatorRunner:
 		runner = &ssv.AggregatorRunner{}
 	case *ssv.ProposerRunner:
@@ -229,8 +258,9 @@ type MsgProcessingSpecTestAlias struct {
 	BeaconBroadcastedRoots  []string
 	DontStartDuty           bool
 	ExpectedError           string
-	ValidatorDuty           *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
-	CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+	ValidatorDuty           *types.ValidatorDuty           `json:"ValidatorDuty,omitempty"`
+	CommitteeDuty           *types.CommitteeDuty           `json:"CommitteeDuty,omitempty"`
+	AggregatorCommitteeDuty *types.AggregatorCommitteeDuty `json:"AggregatorCommitteeDuty,omitempty"`
 }
 
 func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
@@ -252,8 +282,10 @@ func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
 			alias.ValidatorDuty = duty
 		} else if committeeDuty, ok := t.Duty.(*types.CommitteeDuty); ok {
 			alias.CommitteeDuty = committeeDuty
+		} else if aggregatorCommitteeDuty, ok := t.Duty.(*types.AggregatorCommitteeDuty); ok {
+			alias.AggregatorCommitteeDuty = aggregatorCommitteeDuty
 		} else {
-			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't ValidatorDuty or CommitteeDuty")
+			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't ValidatorDuty, CommitteeDuty or AggregatorCommitteeDuty")
 		}
 	}
 	byts, err := json.Marshal(alias)

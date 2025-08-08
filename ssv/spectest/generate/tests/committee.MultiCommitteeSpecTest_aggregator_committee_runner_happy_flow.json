@@ -4378,7 +4378,7 @@
       "ExpectedError": ""
     },
     {
-      "Name": "1 aggregator and sync committee contribution (phase0)",
+      "Name": "1 sync committee contribution (phase0)",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -4704,7 +4704,7 @@
       "ExpectedError": ""
     },
     {
-      "Name": "20 aggregator and sync committee contribution (phase0)",
+      "Name": "20 sync committee contribution (phase0)",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -6645,7 +6645,7 @@
       "ExpectedError": ""
     },
     {
-      "Name": "1 sync committee contribution (phase0)",
+      "Name": "1 aggregator and sync committee contribution (phase0)",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -6995,7 +6995,7 @@
       "ExpectedError": ""
     },
     {
-      "Name": "20 sync committee contribution (phase0)",
+      "Name": "20 aggregator and sync committee contribution (phase0)",
       "Documentation": "",
       "Committee": {
         "Runners": {},

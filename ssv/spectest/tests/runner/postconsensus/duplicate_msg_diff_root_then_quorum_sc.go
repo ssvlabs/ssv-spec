@@ -20,7 +20,7 @@ func duplicateMsgDifferentRootsThenQuorumSyncCommitteeContributionSC() *comparab
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
-			ret := testingutils.SyncCommitteeContributionRunner(ks)
+			ret := testingutils.AggregatorCommitteeRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),

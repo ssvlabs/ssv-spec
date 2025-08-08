@@ -15,28 +15,12 @@ import (
 func TooManyRoots() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
+	ksMap := testingutils.KeySetMapForValidators(4)
 	err := "failed processing post consensus message: invalid post-consensus message: wrong expected roots count"
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus too many roots",
 		testdoc.PostConsensusTooManyRootsDoc,
 		[]*tests.MsgProcessingSpecTest{
-			{
-				Name: "sync committee contribution",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
-					testingutils.TestSyncCommitteeContributionConsensusData,
-				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionTooManyRootsMsg(ks.Shares[1], 1, ks))),
-				},
-				PostDutyRunnerStateRoot: "f58387d4d4051a2de786e4cbf9dc370a8b19a544f52af04f71195feb3863fc5c",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
-				DontStartDuty:           true,
-				ExpectedError:           err,
-			},
 			{
 				Name: "proposer",
 				Runner: decideRunner(
@@ -149,5 +133,22 @@ func TooManyRoots() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name: "sync committee contribution",
+		Runner: decideAggregatorRunner(
+			testingutils.AggregatorCommitteeRunner(ks),
+			testingutils.TestingSyncCommitteeContributionDuty,
+			testingutils.TestAggregatorCommitteeConsensusDataForDuty(testingutils.TestingSyncCommitteeContributionDuty, spec.DataVersionPhase0),
+		),
+		Duty: testingutils.TestingSyncCommitteeContributionDuty,
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMsgForDuty(testingutils.TestingSyncCommitteeContributionDuty, ksMap, 1, spec.DataVersionPhase0))),
+		},
+		PostDutyRunnerStateRoot: "f58387d4d4051a2de786e4cbf9dc370a8b19a544f52af04f71195feb3863fc5c",
+		OutputMessages:          []*types.PartialSignatureMessages{},
+		BeaconBroadcastedRoots:  []string{},
+		DontStartDuty:           true,
+		// No error for this runner type
+	})
 	return multiSpecTest
 }

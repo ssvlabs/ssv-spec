@@ -14,24 +14,11 @@ import (
 // NoRunningDuty tests a valid partial pre consensus msg before duty starts
 func NoRunningDuty() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-
+	ksMap := testingutils.KeySetMapForValidators(4)
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus no running duty",
 		testdoc.PreConsensusNoRunningDutyDoc,
 		[]*tests.MsgProcessingSpecTest{
-			{
-				Name:   "sync committee contribution",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
-				},
-				PostDutyRunnerStateRoot: noRunningDutySyncCommitteeContributionSC().Root(),
-				PostDutyRunnerState:     noRunningDutySyncCommitteeContributionSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				DontStartDuty:           true,
-				ExpectedError:           "failed processing sync committee selection proof message: invalid pre-consensus message: no running duty",
-			},
 			{
 				Name:   "validator registration",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),
@@ -60,6 +47,21 @@ func NoRunningDuty() tests.SpecTest {
 			},
 		},
 		ks,
+	)
+
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name:   "sync committee contribution",
+		Runner: testingutils.AggregatorCommitteeRunner(ks),
+		Duty:   testingutils.TestingSyncCommitteeContributionDuty,
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(testingutils.TestingSyncCommitteeContributionDuty, ksMap, 1, spec.DataVersionPhase0))),
+		},
+		PostDutyRunnerStateRoot: noRunningDutySyncCommitteeContributionSC().Root(),
+		PostDutyRunnerState:     noRunningDutySyncCommitteeContributionSC().ExpectedState,
+		OutputMessages:          []*types.PartialSignatureMessages{},
+		DontStartDuty:           true,
+		ExpectedError:           "failed processing pre-consensus message: invalid pre-consensus message: no running duty",
+	},
 	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {

@@ -21,8 +21,8 @@ func Valid() tests.SpecTest {
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
-				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner:                  testingutils.AggregatorCommitteeRunner(ks),
+				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
 				OutputMessages: []*types.PartialSignatureMessages{

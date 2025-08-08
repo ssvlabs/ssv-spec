@@ -174,12 +174,12 @@ func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, nam
 	switch test.Runner.(type) {
 	case *ssv.CommitteeRunner:
 		runner = &ssv.CommitteeRunner{}
+	case *ssv.AggregatorCommitteeRunner:
+		runner = &ssv.AggregatorCommitteeRunner{}
 	case *ssv.AggregatorRunner:
 		runner = &ssv.AggregatorRunner{}
 	case *ssv.ProposerRunner:
 		runner = &ssv.ProposerRunner{}
-	case *ssv.SyncCommitteeAggregatorRunner:
-		runner = &ssv.SyncCommitteeAggregatorRunner{}
 	case *ssv.ValidatorRegistrationRunner:
 		runner = &ssv.ValidatorRegistrationRunner{}
 	case *ssv.VoluntaryExitRunner:
@@ -211,8 +211,9 @@ func (t *StartNewRunnerDutySpecTest) MarshalJSON() ([]byte, error) {
 		PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 		OutputMessages          []*types.PartialSignatureMessages
 		ExpectedError           string
-		ValidatorDuty           *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
-		CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+		ValidatorDuty           *types.ValidatorDuty           `json:"ValidatorDuty,omitempty"`
+		CommitteeDuty           *types.CommitteeDuty           `json:"CommitteeDuty,omitempty"`
+		AggregatorCommitteeDuty *types.AggregatorCommitteeDuty `json:"AggregatorCommitteeDuty,omitempty"`
 	}
 
 	alias := &StartNewRunnerDutySpecTestAlias{
@@ -229,8 +230,10 @@ func (t *StartNewRunnerDutySpecTest) MarshalJSON() ([]byte, error) {
 			alias.ValidatorDuty = duty
 		} else if committeeDuty, ok := t.Duty.(*types.CommitteeDuty); ok {
 			alias.CommitteeDuty = committeeDuty
+		} else if aggregatorCommitteeDuty, ok := t.Duty.(*types.AggregatorCommitteeDuty); ok {
+			alias.AggregatorCommitteeDuty = aggregatorCommitteeDuty
 		} else {
-			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't ValidatorDuty or CommitteeDuty")
+			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't ValidatorDuty, CommitteeDuty or AggregatorCommitteeDuty")
 		}
 	}
 	byts, err := json.Marshal(alias)

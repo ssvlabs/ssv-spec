@@ -17,7 +17,7 @@ func postDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
-			ret := testingutils.SyncCommitteeContributionRunner(ks)
+			ret := testingutils.AggregatorCommitteeRunner(ks)
 			ret.GetBaseRunner().State = &ssv.State{
 				PreConsensusContainer: ssvcomparable.SetMessagesInContainer(
 					ssv.NewPartialSigContainer(3),
@@ -27,7 +27,7 @@ func postDecidedSyncCommitteeContributionSC() *comparable.StateComparison {
 					ssv.NewPartialSigContainer(3),
 					[]*types.SignedSSVMessage{},
 				),
-				StartingDuty: &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				StartingDuty: testingutils.TestingSyncCommitteeContributionNexEpochDuty,
 				Finished:     false,
 			}
 			instance := &qbft.Instance{

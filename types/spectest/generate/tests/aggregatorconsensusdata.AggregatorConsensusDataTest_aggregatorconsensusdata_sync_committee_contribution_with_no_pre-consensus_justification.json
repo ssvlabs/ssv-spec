@@ -1,0 +1,57 @@
+{
+  "Name": "sync committee contribution with no pre-consensus justification",
+  "Type": "Aggregator consensus data: validation of aggregator committee consensus data",
+  "Documentation": "Test sync committee contribution consensus data with no sync committee contribution pre-consensus justifications",
+  "ConsensusData": {
+    "Version": "phase0",
+    "Aggregators": [],
+    "AggregatorsCommitteeIndexes": [],
+    "Attestations": [],
+    "Contributors": [
+      {
+        "ValidatorIndex": "1",
+        "SelectionProof": "0xb18833bb7549ec33e8ac414ba002fd45bb094ca300bd24596f04a434a89beea462401da7c6b92fb3991bd17163eb603604a40e8dd6781266c990023446776ff42a9313df26a0a34184a590e57fa4003d610c2fa214db4e7dec468592010298bc",
+        "CommitteeIndex": 0
+      },
+      {
+        "ValidatorIndex": "1",
+        "SelectionProof": "0x9094342c95146554df849dc20f7425fca692dacee7cb45258ddd264a8e5929861469fda3d1567b9521cba83188ffd61a0dbe6d7180c7a96f5810d18db305e9143772b766d368aa96d3751f98d0ce2db9f9e6f26325702088d87f0de500c67c68",
+        "CommitteeIndex": 0
+      },
+      {
+        "ValidatorIndex": "1",
+        "SelectionProof": "0xa7f88ce43eff3aa8cdd2e3957c5bead4e21353fbecac6079a5398d03019bc45ff7c951785172deee70e9bc5abbc8ca6a0f0441e9d4cc9da74c31121357f7d7c7de9533f6f457da493e3314e22d554ab76613e469b050e246aff539a33807197c",
+        "CommitteeIndex": 0
+      }
+    ],
+    "SyncCommitteeSubnets": [
+      0,
+      1,
+      2
+    ],
+    "SyncCommitteeContributions": [
+      {
+        "slot": "12",
+        "beacon_block_root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102",
+        "subcommittee_index": "0",
+        "aggregation_bits": "0x00000000000000000000000000000000",
+        "signature": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      {
+        "slot": "12",
+        "beacon_block_root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102",
+        "subcommittee_index": "1",
+        "aggregation_bits": "0x00000000000000000000000000000000",
+        "signature": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      {
+        "slot": "12",
+        "beacon_block_root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102",
+        "subcommittee_index": "2",
+        "aggregation_bits": "0x00000000000000000000000000000000",
+        "signature": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    ]
+  },
+  "ExpectedError": ""
+}

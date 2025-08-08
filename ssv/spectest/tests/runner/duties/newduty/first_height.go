@@ -17,8 +17,8 @@ func FirstHeight() tests.SpecTest {
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:      "sync committee aggregator",
-				Runner:    testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:      &testingutils.TestingSyncCommitteeContributionDutyFirstSlot,
+				Runner:    testingutils.AggregatorCommitteeRunner(ks),
+				Duty:      testingutils.TestingSyncCommitteeContributionDuty,
 				Threshold: ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusCustomSlotContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, 0),

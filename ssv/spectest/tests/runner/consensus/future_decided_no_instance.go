@@ -20,7 +20,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	getID := func(role types.RunnerRole) []byte {
-		if role == types.RoleCommittee {
+		if role == types.RoleCommittee || role == types.RoleAggregatorCommittee {
 			opIDs := make([]types.OperatorID, len(ks.Committee()))
 			for i, member := range ks.Committee() {
 				opIDs[i] = member.Signer
@@ -51,11 +51,12 @@ func FutureDecidedNoInstance() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:           "sync committee contribution",
-				Runner:         testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:           &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner:         testingutils.AggregatorCommitteeRunner(ks),
+				Duty:           testingutils.TestingSyncCommitteeContributionDuty,
 				DontStartDuty:  true,
-				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleSyncCommitteeContribution, testingutils.TestingDutySlot+1)},
+				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleAggregatorCommittee, testingutils.TestingDutySlot+1)},
 				OutputMessages: []*types.PartialSignatureMessages{},
+				ExpectedError:  expectedErr,
 			},
 		},
 		ks,

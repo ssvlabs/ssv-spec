@@ -36,8 +36,8 @@ func NotDecided() tests.SpecTest {
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
-				Runner:                  startRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				Runner:                  startRunner(testingutils.AggregatorCommitteeRunner(ks), testingutils.TestingSyncCommitteeContributionDuty),
+				Duty:                    testingutils.TestingSyncCommitteeContributionNexEpochDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: notDecidedSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     notDecidedSyncCommitteeContributionSC().ExpectedState,

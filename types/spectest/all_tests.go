@@ -3,6 +3,7 @@ package spectest
 import (
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/aggregatorconsensusdata"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
@@ -77,11 +78,12 @@ var AllTests = []SpecTest{
 
 	validatorconsensusdata.SyncCommitteeContributionConsensusDataEncoding(),
 	validatorconsensusdata.SyncCommitteeContributionValidation(),
-	validatorconsensusdata.SyncCommitteeContributionNoJustifications(),
 	validatorconsensusdata.InvalidSyncCommitteeContributionValidation(),
 
 	validatorconsensusdata.ValidatorRegistration(),
 	validatorconsensusdata.VoluntaryExit(),
+
+	aggregatorconsensusdata.SyncCommitteeContributionNoJustifications(),
 
 	consensusdataproposer.VersionedBlockValidation(),
 	consensusdataproposer.VersionedBlindedBlockValidation(),

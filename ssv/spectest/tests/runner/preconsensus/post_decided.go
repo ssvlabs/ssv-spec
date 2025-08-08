@@ -17,7 +17,7 @@ import (
 func PostDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	decideRunner := func(r ssv.Runner, duty *types.ValidatorDuty, decidedValue *types.ValidatorConsensusData, preMsgs []*types.PartialSignatureMessages) ssv.Runner {
+	decideRunner := func(r ssv.Runner, duty types.Duty, decidedValue *types.ValidatorConsensusData, preMsgs []*types.PartialSignatureMessages) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		for _, msg := range preMsgs {
 			err := r.ProcessPreConsensus(msg)
@@ -45,8 +45,8 @@ func PostDecided() tests.SpecTest {
 			{
 				Name: "sync committee aggregator selection proof",
 				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty,
 					testingutils.TestSyncCommitteeContributionConsensusData,
 					[]*types.PartialSignatureMessages{
 						testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
@@ -54,7 +54,7 @@ func PostDecided() tests.SpecTest {
 						testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3),
 					},
 				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4))),
 				},

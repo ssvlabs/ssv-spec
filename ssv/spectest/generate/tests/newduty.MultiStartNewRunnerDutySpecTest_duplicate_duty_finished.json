@@ -43,7 +43,7 @@
                   ],
                   "DomainType": "00000301"
                 },
-                "ID": "AAADAQMAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                "ID": "AAADAQYAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
                 "Round": 1,
                 "Height": 12,
                 "LastPreparedRound": 0,
@@ -68,19 +68,24 @@
             },
             "DecidedValue": null,
             "Finished": true,
-            "ValidatorDuty": {
-              "Type": 4,
-              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "AggregatorCommitteeDuty": {
               "Slot": "12",
-              "ValidatorIndex": "1",
-              "CommitteeIndex": 3,
-              "CommitteeLength": 128,
-              "CommitteesAtSlot": 36,
-              "ValidatorCommitteeIndex": 11,
-              "ValidatorSyncCommitteeIndices": [
-                0,
-                1,
-                2
+              "ValidatorDuties": [
+                {
+                  "Type": 4,
+                  "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+                  "Slot": "12",
+                  "ValidatorIndex": "1",
+                  "CommitteeIndex": 3,
+                  "CommitteeLength": 128,
+                  "CommitteesAtSlot": 36,
+                  "ValidatorCommitteeIndex": 11,
+                  "ValidatorSyncCommitteeIndices": [
+                    0,
+                    1,
+                    2
+                  ]
+                }
               ]
             }
           },
@@ -118,7 +123,7 @@
             }
           },
           "QBFTController": {
-            "Identifier": "AAADAQMAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+            "Identifier": "AAADAQYAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
             "Height": 12,
             "StoredInstances": [
               {
@@ -148,7 +153,7 @@
                     ],
                     "DomainType": "00000301"
                   },
-                  "ID": "AAADAQMAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                  "ID": "AAADAQYAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
                   "Round": 1,
                   "Height": 12,
                   "LastPreparedRound": 0,
@@ -199,7 +204,7 @@
             }
           },
           "BeaconNetwork": "now_test_network",
-          "RunnerRoleType": 3
+          "RunnerRoleType": 6
         }
       },
       "PostDutyRunnerStateRoot": "c8ce3cec33a9e557f52c1392f96b613ed2d37b24b54a1c9429a7dbff91f212eb",
@@ -229,20 +234,25 @@
           ]
         }
       ],
-      "ExpectedError": "can't start duty: duty for slot 12 already passed. Current height is 12",
-      "ValidatorDuty": {
-        "Type": 4,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+      "ExpectedError": "failed to start new duty: can't start duty: duty for slot 12 already passed. Current height is 12",
+      "AggregatorCommitteeDuty": {
         "Slot": "12",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 3,
-        "CommitteeLength": 128,
-        "CommitteesAtSlot": 36,
-        "ValidatorCommitteeIndex": 11,
-        "ValidatorSyncCommitteeIndices": [
-          0,
-          1,
-          2
+        "ValidatorDuties": [
+          {
+            "Type": 4,
+            "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+            "Slot": "12",
+            "ValidatorIndex": "1",
+            "CommitteeIndex": 3,
+            "CommitteeLength": 128,
+            "CommitteesAtSlot": 36,
+            "ValidatorCommitteeIndex": 11,
+            "ValidatorSyncCommitteeIndices": [
+              0,
+              1,
+              2
+            ]
+          }
         ]
       }
     },

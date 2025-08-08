@@ -21,8 +21,8 @@ func ValidDecided13Operators() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:                    "sync committee contribution",
-				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner:                  testingutils.AggregatorCommitteeRunner(ks),
+				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.RoleSyncCommitteeContribution),
 				PostDutyRunnerStateRoot: "2feec534f4ef14ea96e83b17d4feaf3f40e4739a72fc7118c7da1ef2c1331937",
 				OutputMessages: []*types.PartialSignatureMessages{

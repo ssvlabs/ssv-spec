@@ -95,13 +95,15 @@ var TestingAggregatorDutyForValidators = func(version spec.DataVersion, validato
 // AggregatorCommitteeDuty - SyncCommittee Contributor only
 // ==================================================
 
-var TestingSyncCommitteeContributorDuty = func(version spec.DataVersion) *types.AggregatorCommitteeDuty {
-	return TestingAggregatorCommitteeDuty(nil, []int{TestingValidatorIndex}, version)
+var TestingSyncCommitteeContributionDuty = TestingAggregatorCommitteeDutyForSlot(TestingDutySlot, nil, []int{TestingValidatorIndex})
+
+var TestingSyncCommitteeContributionDutyForValidators = func(validatorIndexList []int) *types.AggregatorCommitteeDuty {
+	return TestingAggregatorCommitteeDuty(nil, validatorIndexList, spec.DataVersionPhase0)
 }
 
-var TestingSyncCommitteeContributorDutyForValidators = func(version spec.DataVersion, validatorIndexList []int) *types.AggregatorCommitteeDuty {
-	return TestingAggregatorCommitteeDuty(nil, validatorIndexList, version)
-}
+var TestingSyncCommitteeContributionDutyFirstSlot = TestingAggregatorCommitteeDutyForSlot(TestingDutySlot, nil, []int{TestingValidatorIndex})
+
+var TestingSyncCommitteeContributionNexEpochDuty = TestingAggregatorCommitteeDutyForSlot(TestingDutySlot2, nil, []int{TestingValidatorIndex})
 
 // ==================================================
 // AggregatorCommitteeDuty - Aggregator and SyncCommittee Contributor

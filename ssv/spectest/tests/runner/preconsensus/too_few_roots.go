@@ -20,19 +20,6 @@ func TooFewRoots() tests.SpecTest {
 		testdoc.PreConsensusTooFewRootsDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
-				Name:   "sync committee aggregator selection proof",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofTooFewRootsMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
-				},
-				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
-				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: wrong expected roots count",
-			},
-			{
 				Name:   "randao",
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
