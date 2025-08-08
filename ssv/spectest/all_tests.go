@@ -3,13 +3,14 @@ package spectest
 import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	aggregatorcommitteesingleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/aggregatorcommittee/singleduty"
+	committeemultipleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/multipleduty"
+	committeesingleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/singleduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/dutyexe"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
 	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/postconsensus"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/preconsensus"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckproposer"
@@ -72,26 +73,26 @@ var AllTests = []tests.TestF{
 	newduty.DuplicateDutyNotFinished,
 	// newduty.FirstHeight,
 
-	// committeesingleduty.StartDuty,
-	// committeesingleduty.StartNoDuty,
-	// committeesingleduty.ValidBeaconVote,
-	// committeesingleduty.WrongBeaconVote,
-	// committeesingleduty.Decided,
-	// committeesingleduty.HappyFlow,
-	// committeesingleduty.PastMessageDutyNotFinished,
-	// committeesingleduty.PastMessageDutyFinished,
-	// committeesingleduty.PastMessageDutyDoesNotExist,
-	// committeesingleduty.ProposalWithConsensusData,
-	// committeesingleduty.WrongMessageID,
-	// committeesingleduty.StartWithNoSharesForDuty,
-	// committeesingleduty.MissingSomeShares,
+	committeesingleduty.StartDuty,
+	committeesingleduty.StartNoDuty,
+	committeesingleduty.ValidBeaconVote,
+	committeesingleduty.WrongBeaconVote,
+	committeesingleduty.Decided,
+	committeesingleduty.HappyFlow,
+	committeesingleduty.PastMessageDutyNotFinished,
+	committeesingleduty.PastMessageDutyFinished,
+	committeesingleduty.PastMessageDutyDoesNotExist,
+	committeesingleduty.ProposalWithConsensusData,
+	committeesingleduty.WrongMessageID,
+	committeesingleduty.StartWithNoSharesForDuty,
+	committeesingleduty.MissingSomeShares,
 
-	// committeemultipleduty.SequencedDecidedDuties,
-	// committeemultipleduty.SequencedHappyFlowDuties,
-	// committeemultipleduty.ShuffledDecidedDuties,
-	// committeemultipleduty.ShuffledHappyFlowDutiesWithTheSameValidators,
-	// committeemultipleduty.ShuffledHappyFlowDutiesWithDifferentValidators,
-	// committeemultipleduty.FailedThanSuccessfulDuties,
+	committeemultipleduty.SequencedDecidedDuties,
+	committeemultipleduty.SequencedHappyFlowDuties,
+	committeemultipleduty.ShuffledDecidedDuties,
+	committeemultipleduty.ShuffledHappyFlowDutiesWithTheSameValidators,
+	committeemultipleduty.ShuffledHappyFlowDutiesWithDifferentValidators,
+	committeemultipleduty.FailedThanSuccessfulDuties,
 
 	aggregatorcommitteesingleduty.HappyFlow,
 
@@ -126,9 +127,9 @@ var AllTests = []tests.TestF{
 	proposer.BlindedRunnerAcceptsNormalBlock,
 	proposer.NormalProposerAcceptsBlindedBlock,
 
-	preconsensus.NoRunningDuty,
-	preconsensus.TooFewRoots,
-	preconsensus.TooManyRoots,
+	// preconsensus.NoRunningDuty,
+	// preconsensus.TooFewRoots,
+	// preconsensus.TooManyRoots,
 	// preconsensus.UnorderedExpectedRoots,
 	// preconsensus.InvalidSignedMessage,
 	// preconsensus.InvalidOperatorSignature,
