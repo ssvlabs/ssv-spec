@@ -149,7 +149,6 @@ func ValidMessage() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlotV(version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -160,7 +159,6 @@ func ValidMessage() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlotV(version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -171,7 +169,6 @@ func ValidMessage() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlotV(version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		}...)
 	}

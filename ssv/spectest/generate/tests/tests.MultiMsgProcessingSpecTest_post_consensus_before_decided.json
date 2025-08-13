@@ -161,7 +161,7 @@
           ]
         }
       ],
-      "BeaconBroadcastedRoots": [],
+      "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "failed processing post consensus message: invalid post-consensus message: no decided value",
       "ValidatorDuty": {
@@ -326,7 +326,7 @@
           ]
         }
       ],
-      "BeaconBroadcastedRoots": [],
+      "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "failed processing post consensus message: invalid post-consensus message: no decided value",
       "ValidatorDuty": {
@@ -487,7 +487,7 @@
           ]
         }
       ],
-      "BeaconBroadcastedRoots": [],
+      "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "failed processing post consensus message: invalid post-consensus message: no decided value",
       "ValidatorDuty": {
@@ -592,8 +592,8 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
-      "BeaconBroadcastedRoots": [],
+      "OutputMessages": null,
+      "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "failed processing post consensus message: invalid post-consensus message: no decided value",
       "CommitteeDuty": {
@@ -703,8 +703,8 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
-      "BeaconBroadcastedRoots": [],
+      "OutputMessages": null,
+      "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "failed processing post consensus message: invalid post-consensus message: no decided value",
       "CommitteeDuty": {
@@ -818,8 +818,8 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
-      "BeaconBroadcastedRoots": [],
+      "OutputMessages": null,
+      "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "failed processing post consensus message: invalid post-consensus message: no decided value",
       "CommitteeDuty": {
@@ -944,8 +944,8 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
-      "BeaconBroadcastedRoots": [],
+      "OutputMessages": null,
+      "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "failed processing post consensus message: invalid post-consensus message: no decided value",
       "CommitteeDuty": {
@@ -1055,8 +1055,8 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
-      "BeaconBroadcastedRoots": [],
+      "OutputMessages": null,
+      "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "failed processing post consensus message: invalid post-consensus message: no decided value",
       "CommitteeDuty": {
@@ -1170,8 +1170,8 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
-      "BeaconBroadcastedRoots": [],
+      "OutputMessages": null,
+      "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "failed processing post consensus message: invalid post-consensus message: no decided value",
       "CommitteeDuty": {
@@ -1352,7 +1352,7 @@
           ]
         }
       ],
-      "BeaconBroadcastedRoots": [],
+      "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "failed processing post consensus message: invalid post-consensus message: no decided value",
       "ValidatorDuty": {
@@ -1513,7 +1513,7 @@
           ]
         }
       ],
-      "BeaconBroadcastedRoots": [],
+      "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "failed processing post consensus message: invalid post-consensus message: no decided value",
       "ValidatorDuty": {
@@ -1674,7 +1674,7 @@
           ]
         }
       ],
-      "BeaconBroadcastedRoots": [],
+      "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "failed processing post consensus message: invalid post-consensus message: no decided value",
       "ValidatorDuty": {
@@ -1835,7 +1835,7 @@
           ]
         }
       ],
-      "BeaconBroadcastedRoots": [],
+      "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "failed processing post consensus message: invalid post-consensus message: no decided value",
       "ValidatorDuty": {
@@ -1996,7 +1996,7 @@
           ]
         }
       ],
-      "BeaconBroadcastedRoots": [],
+      "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "failed processing post consensus message: invalid post-consensus message: no decided value",
       "ValidatorDuty": {
@@ -2157,7 +2157,7 @@
           ]
         }
       ],
-      "BeaconBroadcastedRoots": [],
+      "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
       "ExpectedError": "failed processing post consensus message: invalid post-consensus message: no decided value",
       "ValidatorDuty": {

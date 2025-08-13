@@ -1366,7 +1366,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "can't start duty: duty for slot 12 already passed. Current height is 62",
       "CommitteeDuty": {
         "Slot": "12",
@@ -1640,7 +1640,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "can't start duty: duty for slot 12 already passed. Current height is 62",
       "CommitteeDuty": {
         "Slot": "12",
@@ -1929,7 +1929,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "can't start duty: duty for slot 12 already passed. Current height is 62",
       "CommitteeDuty": {
         "Slot": "12",
@@ -2214,7 +2214,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "can't start duty: duty for slot 7424012 already passed. Current height is 7424062",
       "CommitteeDuty": {
         "Slot": "7424012",
@@ -2488,7 +2488,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "can't start duty: duty for slot 7424012 already passed. Current height is 7424062",
       "CommitteeDuty": {
         "Slot": "7424012",
@@ -2777,7 +2777,7 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "ExpectedError": "can't start duty: duty for slot 7424012 already passed. Current height is 7424062",
       "CommitteeDuty": {
         "Slot": "7424012",

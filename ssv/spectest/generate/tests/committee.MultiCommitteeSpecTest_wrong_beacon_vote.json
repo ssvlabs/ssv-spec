@@ -1768,7 +1768,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: attestation data source \u003e= target"
     },
@@ -3537,7 +3537,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: attestation data source \u003e= target"
     }

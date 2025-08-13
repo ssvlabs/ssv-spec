@@ -262,7 +262,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "b0cca0c92980c8fc614fd4ca8f468e6fafceb38266748223c9865adbb4c3cc5c",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "bc00bf2168785915f01d9c92cb647defa4e98f211a4c27e9b031ffee37eeeae4",
         "9cc921c178847ff0173698456266dc82454edf8aad8b50c2401ac170dd83615d",
@@ -541,7 +541,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "f70f0d66eef58758b860051f98aa2d2bad666540ef817884c2b5526cf477dbf8"
       ],
@@ -814,7 +814,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "fce842dbd96b15fb1a8a6d1bfa2c9ce47dc88e74531abdb69d666c043d908abc"
       ],
@@ -1092,7 +1092,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "80641c9de207e4fb82cb83ebbd5338437dc08cb6282ce47ff3ca66b406cd00b8"
       ],
@@ -1379,7 +1379,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "d65c039becb42839faa125161a2a8feca88d363db1749556de9fe4ea01a9c982"
       ],
@@ -1681,7 +1681,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "80641c9de207e4fb82cb83ebbd5338437dc08cb6282ce47ff3ca66b406cd00b8",
         "d65c039becb42839faa125161a2a8feca88d363db1749556de9fe4ea01a9c982"
@@ -1980,7 +1980,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "60a8498be325eb6689e8501634726cac902261186ca94f95be92758b5a5fb3a7"
       ],
@@ -2267,7 +2267,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "9d0869abc61d97929518c0f3b10e9aae344ea03621ca1fe815c47672165ea970"
       ],
@@ -2569,7 +2569,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "60a8498be325eb6689e8501634726cac902261186ca94f95be92758b5a5fb3a7",
         "9d0869abc61d97929518c0f3b10e9aae344ea03621ca1fe815c47672165ea970"
@@ -2863,7 +2863,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "23628dbd74d9c8ff3ef0c97b6ce3a372830b7b691969624fee75b18971f88b98",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "10183cdaea14fba962c389d29e01a0f4bec3199851c40197e02fbe98ae97fef9"
       ],
@@ -3136,7 +3136,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "e26fc63545bdb1012fe0c9fa8ef51adb38e6a571f97fdcda8ff2da4d64956750",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "10183cdaea14fba962c389d29e01a0f4bec3199851c40197e02fbe98ae97fef9"
       ],
@@ -3409,7 +3409,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "00848d09b69c6a674779dec6d04633a5a60d8392594f67a770abf3f0ed11c2f5",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "7566b263455230d5250a162dc29924463f74e85ea558486d63fe9e1e9e91c85d"
       ],
@@ -3682,7 +3682,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "be95d202f47f470acfe407ea0458d6185d439f0a3379a52e46ffc0a2e067469d",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "d2b611753af6167e7ea3317e517849e290a2e34ef40c8bf954c1b13f80269d3c"
       ],
@@ -3955,7 +3955,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "4d79fc29e14795dc84d22deecc2cc945643f649cf6a14b0a804a0837651dc492",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "53f2f1900e431c7161e4b1f077672c198aea60e2a23fd58e40b5438594f54628"
       ],
@@ -4228,7 +4228,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "e62d1d9749351214457086db6a93115f56cd1f18816837559ac1e3108dee1729",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "6b3850da01083b77203a02aa28cab231cec3d4752ed2700556c2b42fe3ce0cf0"
       ],

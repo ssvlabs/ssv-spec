@@ -44,7 +44,6 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForKeySet(ksMap, 3, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForKeySet(ksMap, 4, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: testingutils.TestingSignedAttestationResponseSSZRootForKeyMap(ksMap, version),
 				DontStartDuty:          true,
 				ExpectedError:          expectedError,
@@ -64,7 +63,6 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsgForKeySet(ksMap, 3, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsgForKeySet(ksMap, 4, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: testingutils.TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap(ksMap, version),
 				DontStartDuty:          true,
 				ExpectedError:          expectedError,
@@ -84,7 +82,6 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsgForKeySet(ksMap, 3, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsgForKeySet(ksMap, 4, version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: append(
 					testingutils.TestingSignedAttestationResponseSSZRootForKeyMap(ksMap, version),
 					testingutils.TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap(ksMap, version)...),

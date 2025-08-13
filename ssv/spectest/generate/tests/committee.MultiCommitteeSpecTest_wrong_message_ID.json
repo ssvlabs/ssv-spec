@@ -108,7 +108,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "Message invalid: msg ID doesn't match committee ID"
     },
@@ -213,7 +213,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "Message invalid: msg ID doesn't match committee ID"
     },
@@ -322,7 +322,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "Message invalid: msg ID doesn't match committee ID"
     },
@@ -427,7 +427,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "Message invalid: msg ID doesn't match committee ID"
     }

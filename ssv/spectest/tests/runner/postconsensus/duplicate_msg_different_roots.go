@@ -35,8 +35,6 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     duplicateMsgDifferentRootsSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
 				ExpectedError:           expectedError,
 			},
@@ -57,10 +55,8 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusWrongAggregatorMsg(ks.Shares[1], 1, version))),
 			},
-			OutputMessages:         []*types.PartialSignatureMessages{},
-			BeaconBroadcastedRoots: []string{},
-			DontStartDuty:          true,
-			ExpectedError:          expectedError,
+			DontStartDuty: true,
+			ExpectedError: expectedError,
 		},
 		)
 	}
@@ -79,9 +75,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusWrongAttestationMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				DontStartDuty:          true,
+				DontStartDuty: true,
 			},
 			{
 				Name: fmt.Sprintf("sync committee (%s)", version.String()),
@@ -95,9 +89,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusWrongSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				DontStartDuty:          true,
+				DontStartDuty: true,
 			},
 			{
 				Name: fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -111,9 +103,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusWrongAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				DontStartDuty:          true,
+				DontStartDuty: true,
 			},
 		}...)
 	}
@@ -134,8 +124,6 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: duplicateMsgDifferentRootsProposerSC(version).Root(),
 			PostDutyRunnerState:     duplicateMsgDifferentRootsProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.PartialSignatureMessages{},
-			BeaconBroadcastedRoots:  []string{},
 			DontStartDuty:           true,
 			ExpectedError:           expectedError,
 		}
@@ -157,8 +145,6 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: duplicateMsgDifferentRootsBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     duplicateMsgDifferentRootsBlindedProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.PartialSignatureMessages{},
-			BeaconBroadcastedRoots:  []string{},
 			DontStartDuty:           true,
 			ExpectedError:           expectedError,
 		}

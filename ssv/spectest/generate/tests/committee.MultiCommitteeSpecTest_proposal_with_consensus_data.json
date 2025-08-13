@@ -1318,7 +1318,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding beacon vote: incorrect size"
     },
@@ -2757,7 +2757,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding beacon vote: incorrect size"
     },
@@ -4526,7 +4526,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding beacon vote: incorrect size"
     },
@@ -5845,7 +5845,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding beacon vote: incorrect size"
     },
@@ -7284,7 +7284,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding beacon vote: incorrect size"
     },
@@ -9053,7 +9053,7 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding beacon vote: incorrect size"
     }

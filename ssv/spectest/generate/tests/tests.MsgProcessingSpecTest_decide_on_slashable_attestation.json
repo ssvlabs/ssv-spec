@@ -172,8 +172,8 @@
   ],
   "DecidedSlashable": true,
   "PostDutyRunnerStateRoot": "",
-  "OutputMessages": [],
-  "BeaconBroadcastedRoots": [],
+  "OutputMessages": null,
+  "BeaconBroadcastedRoots": null,
   "DontStartDuty": false,
   "ExpectedError": "failed processing consensus message: decided ValidatorConsensusData invalid: decided value is invalid: slashable attestation",
   "CommitteeDuty": {

@@ -170,8 +170,7 @@ func InvalidDecidedValue() tests.SpecTest {
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedErr,
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -189,8 +188,7 @@ func InvalidDecidedValue() tests.SpecTest {
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedErr,
+				ExpectedError: expectedErr,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -208,8 +206,7 @@ func InvalidDecidedValue() tests.SpecTest {
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedErr,
+				ExpectedError: expectedErr,
 			},
 		}...)
 	}
