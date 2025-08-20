@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -47,7 +48,7 @@ func (tests *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
 	for _, test := range tests.Tests {
 		_, _, err := test.runPreTesting()
 		if err != nil && test.ExpectedError != err.Error() {
-			return nil, err
+			return nil, fmt.Errorf("expected error: %s, got: %s", test.ExpectedError, err)
 		}
 		ret[test.Name] = test.Runner
 	}

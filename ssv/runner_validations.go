@@ -7,6 +7,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -15,7 +16,7 @@ func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, psigMsgs *types.Part
 		return errors.New("no running duty")
 	}
 
-	if err := b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot()); err != nil {
+	if err := b.validatePartialSigMsg(psigMsgs, b.State.StartingDuty.DutySlot()); err != nil {
 		return err
 	}
 
@@ -70,14 +71,14 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 			return errors.Wrap(err, "failed to parse decided value to BeaconData")
 		}
 
-		return b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot())
+		return b.validatePartialSigMsg(psigMsgs, b.State.StartingDuty.DutySlot())
 	default:
 		decidedValue := &types.ValidatorConsensusData{}
 		if err := decidedValue.Decode(decidedValueBytes); err != nil {
 			return errors.Wrap(err, "failed to parse decided value to ValidatorConsensusData")
 		}
 
-		if err := b.validatePartialSigMsgForSlot(psigMsgs, decidedValue.Duty.Slot); err != nil {
+		if err := b.validatePartialSigMsg(psigMsgs, decidedValue.Duty.Slot); err != nil {
 			return err
 		}
 

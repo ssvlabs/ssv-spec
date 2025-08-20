@@ -1,10 +1,13 @@
 package ssv
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -32,15 +35,19 @@ func (b *BaseRunner) signBeaconObject(runner Runner, duty *types.ValidatorDuty,
 }
 
 // Validate message content without verifying signatures
-func (b *BaseRunner) validatePartialSigMsgForSlot(
-	psigMsgs *types.PartialSignatureMessages,
-	slot phase0.Slot,
-) error {
+func (b *BaseRunner) validatePartialSigMsg(psigMsgs *types.PartialSignatureMessages, expectedSlot phase0.Slot) error {
 	if err := psigMsgs.Validate(); err != nil {
 		return errors.Wrap(err, "PartialSignatureMessages invalid")
 	}
-	if psigMsgs.Slot != slot {
-		return errors.New("invalid partial sig slot")
+
+	if psigMsgs.Slot < expectedSlot {
+		// this message is targeting a slot that's already passed - our runner has advanced to the next slot already,
+		// and we cannot process it anymore
+		return fmt.Errorf("invalid partial sig slot: %d, want: %d", psigMsgs.Slot, expectedSlot)
+	}
+
+	if psigMsgs.Slot > expectedSlot {
+		return fmt.Errorf("future partial sig msg, message slot: %d, want slot: %d", psigMsgs.Slot, expectedSlot)
 	}
 
 	// Get signer

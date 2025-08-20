@@ -153,7 +153,7 @@ func (tests *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error
 	for _, test := range tests.Tests {
 		err := test.runPreTesting()
 		if err != nil && test.ExpectedError != err.Error() {
-			return nil, err
+			return nil, fmt.Errorf("expected error: %s, got: %s", test.ExpectedError, err)
 		}
 		ret[test.Name] = test.Runner
 	}
