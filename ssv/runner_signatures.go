@@ -47,7 +47,7 @@ func (b *BaseRunner) validatePartialSigMsg(psigMsgs *types.PartialSignatureMessa
 	}
 
 	if psigMsgs.Slot > expectedSlot {
-		return fmt.Errorf("future partial sig msg, message slot: %d, want slot: %d", psigMsgs.Slot, expectedSlot)
+		return fmt.Errorf("%w, message slot: %d, want slot: %d", ErrFuturePartialSigMsg, psigMsgs.Slot, expectedSlot)
 	}
 
 	// Get signer

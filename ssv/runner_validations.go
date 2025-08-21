@@ -13,7 +13,7 @@ import (
 
 func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, psigMsgs *types.PartialSignatureMessages) error {
 	if !b.hasRunningDuty() {
-		return errors.New("no running duty")
+		return ErrNoRunningDuty
 	}
 
 	if err := b.validatePartialSigMsg(psigMsgs, b.State.StartingDuty.DutySlot()); err != nil {
@@ -47,7 +47,7 @@ func (b *BaseRunner) FallBackAndVerifyEachSignature(container *PartialSigContain
 
 func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.PartialSignatureMessages) error {
 	if !b.hasRunningDuty() {
-		return errors.New("no running duty")
+		return ErrNoRunningDuty
 	}
 
 	// TODO https://github.com/ssvlabs/ssv-spec/issues/142 need to fix with this issue solution instead.

@@ -5,6 +5,7 @@ import (
 	"sort"
 
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -127,7 +128,7 @@ func baseCommitValidationIgnoreSignature(
 		return errors.New("commit msg type is wrong")
 	}
 	if msg.QBFTMessage.Height != height {
-		return errors.New("wrong msg height")
+		return ErrWrongMsgHeight
 	}
 
 	if !msg.SignedMessage.CheckSignersInCommittee(operators) {
@@ -170,7 +171,7 @@ func validateCommit(
 	}
 
 	if msg.QBFTMessage.Round != round {
-		return errors.New("wrong msg round")
+		return ErrWrongMsgRound
 	}
 
 	if !bytes.Equal(proposedMsg.QBFTMessage.Root[:], msg.QBFTMessage.Root[:]) {

@@ -4,6 +4,7 @@ import (
 	"bytes"
 
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -56,7 +57,7 @@ func isValidProposal(
 		return errors.New("msg type is not proposal")
 	}
 	if msg.QBFTMessage.Height != state.Height {
-		return errors.New("wrong msg height")
+		return ErrWrongMsgHeight
 	}
 	if len(msg.SignedMessage.OperatorIDs) != 1 {
 		return errors.New("msg allows 1 signer")

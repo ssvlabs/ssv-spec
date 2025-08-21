@@ -140,7 +140,7 @@ func (i *Instance) BaseMsgValidation(msg *ProcessingMessage) error {
 	case PrepareMsgType:
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
 		if proposedMsg == nil {
-			return errors.New("did not receive proposal for this round")
+			return ErrNoProposalForRound
 		}
 		return validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 			msg,
@@ -152,7 +152,7 @@ func (i *Instance) BaseMsgValidation(msg *ProcessingMessage) error {
 	case CommitMsgType:
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
 		if proposedMsg == nil {
-			return errors.New("did not receive proposal for this round")
+			return ErrNoProposalForRound
 		}
 		return validateCommit(
 			msg,

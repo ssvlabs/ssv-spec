@@ -4,6 +4,7 @@ import (
 	"bytes"
 
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -240,15 +241,14 @@ func validRoundChangeForDataIgnoreSignature(
 	round Round,
 	fullData []byte,
 ) error {
-
 	if msg.QBFTMessage.MsgType != RoundChangeMsgType {
 		return errors.New("round change msg type is wrong")
 	}
 	if msg.QBFTMessage.Height != height {
-		return errors.New("wrong msg height")
+		return ErrWrongMsgHeight
 	}
 	if msg.QBFTMessage.Round != round {
-		return errors.New("wrong msg round")
+		return ErrWrongMsgRound
 	}
 	if len(msg.SignedMessage.OperatorIDs) != 1 {
 		return errors.New("msg allows 1 signer")

@@ -1,9 +1,12 @@
 package ssv
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -122,6 +125,18 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 	}
 
 	decidedSignedMsg, err := b.QBFTController.ProcessMsg(msg)
+	if errors.Is(err, qbft.ErrInstanceNotFound) {
+		return false, nil, fmt.Errorf("%w: %v", ErrInstanceNotFound, err)
+	}
+	if errors.Is(err, qbft.ErrFutureMsg) {
+		return false, nil, fmt.Errorf("%w: %v", ErrFutureConsensusMsg, err)
+	}
+	if errors.Is(err, qbft.ErrNoProposalForRound) {
+		return false, nil, fmt.Errorf("%w: %v", ErrNoProposalForRound, err)
+	}
+	if errors.Is(err, qbft.ErrWrongMsgRound) {
+		return false, nil, fmt.Errorf("%w: %v", ErrWrongMsgRound, err)
+	}
 	if err != nil {
 		return false, nil, err
 	}

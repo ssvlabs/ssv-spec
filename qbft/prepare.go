@@ -4,6 +4,7 @@ import (
 	"bytes"
 
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -90,10 +91,10 @@ func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 		return errors.New("prepare msg type is wrong")
 	}
 	if msg.QBFTMessage.Height != height {
-		return errors.New("wrong msg height")
+		return ErrWrongMsgHeight
 	}
 	if msg.QBFTMessage.Round != round {
-		return errors.New("wrong msg round")
+		return ErrWrongMsgRound
 	}
 
 	if err := msg.Validate(); err != nil {
