@@ -30,7 +30,7 @@ func NoQuorum() tests.SpecTest {
 			},
 		},
 		nil,
-		"no proposal for round: invalid signed message: did not receive proposal for this round",
+		"could not process msg: invalid signed message: no proposal for round",
 		nil,
 		ks,
 	)
