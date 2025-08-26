@@ -3,6 +3,7 @@ package messages
 import (
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // CreateCommit tests creating a commit msg
@@ -10,13 +11,13 @@ func CreateCommit() tests.SpecTest {
 	return tests.NewCreateMsgSpecTest(
 		"create commit",
 		testdoc.MessagesCreateCommitDoc,
-		[32]byte{1, 2, 3, 4},
-		nil,
+		testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData,
 		10,
 		nil,
 		nil,
 		tests.CreateCommit,
-		"6650657e621029ea09937d8f2766b3ea8b71ec19fc02201d9c9c9a45c2c1baa8",
+		"f48d140d8beee146db7decbad3dd17c99dba6f2a88069f4721818279dbfe380c",
 		nil,
 		"",
 		nil,

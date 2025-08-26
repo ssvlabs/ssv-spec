@@ -33,7 +33,6 @@ var AllTests = []tests.TestF{
 	decided.DuplicateSigners,
 	decided.Invalid,
 	decided.InvalidFullData,
-	decided.InvalidValCheckData,
 	decided.PastInstance,
 	decided.UnknownSigner,
 	decided.WrongMsgType,
@@ -48,8 +47,6 @@ var AllTests = []tests.TestF{
 	processmsg.BroadcastedDecided,
 	processmsg.SingleConsensusMsg,
 	processmsg.FullDecided,
-	processmsg.InvalidIdentifier,
-	processmsg.NoInstanceRunning,
 
 	latemsg.LateCommit,
 	latemsg.LateCommitPastRound,

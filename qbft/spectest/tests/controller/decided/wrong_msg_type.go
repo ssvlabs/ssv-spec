@@ -18,7 +18,7 @@ func WrongMsgType() tests.SpecTest {
 		testdoc.ControllerDecidedWrongMsgTypeDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingMultiSignerProposalMessageWithHeight(
 						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},

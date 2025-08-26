@@ -11,9 +11,9 @@ import (
 func CreateProposalPreviouslyPrepared() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	roundChangeJustifications := []*types.SignedSSVMessage{
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
-		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 10),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 10),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 10),
 	}
 
 	prepareJustifications := []*types.SignedSSVMessage{
@@ -25,13 +25,13 @@ func CreateProposalPreviouslyPrepared() tests.SpecTest {
 	test := tests.NewCreateMsgSpecTest(
 		"create proposal previously prepared",
 		testdoc.MessagesCreateProposalPrevPreparedDoc,
-		[32]byte{1, 2, 3, 4},
-		nil,
+		testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData,
 		10,
 		roundChangeJustifications,
 		prepareJustifications,
 		tests.CreateProposal,
-		"f3d483dc8eaa4019fd9e3d586279f2d1ae993b3ac4ad0020e8c0033b5f516167",
+		"8a6f83ee8559ed52d469cec0b67894f48afa9e39e7baa054033d3367ed3dfb76",
 		nil,
 		"",
 		ks,

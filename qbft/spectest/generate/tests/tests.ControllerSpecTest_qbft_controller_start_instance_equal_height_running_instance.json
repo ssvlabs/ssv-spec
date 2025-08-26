@@ -4,7 +4,7 @@
   "Documentation": "Test starting a new QBFT instance for the current height when an instance is already running, expecting error.",
   "RunInstanceData": [
     {
-      "InputValue": "AQIDBA==",
+      "InputValue": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw==",
       "InputMessages": null,
       "ControllerPostRoot": "",
       "ExpectedTimerState": null,
@@ -16,7 +16,7 @@
       "Height": 0
     },
     {
-      "InputValue": "AQIDBA==",
+      "InputValue": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw==",
       "InputMessages": null,
       "ControllerPostRoot": "",
       "ExpectedTimerState": null,

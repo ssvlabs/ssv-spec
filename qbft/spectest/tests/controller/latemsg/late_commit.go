@@ -27,7 +27,7 @@ func LateCommit() tests.SpecTest {
 		testdoc.ControllerLateMsgLateCommitDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue:    []byte{1, 2, 3, 4},
+				InputValue:    testingutils.TestingQBFTFullData,
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: testingutils.TestingQBFTFullData,
@@ -72,7 +72,7 @@ func lateCommitStateComparison() *comparable.StateComparison {
 	)
 
 	instance := &qbft.Instance{
-		StartValue: []byte{1, 2, 3, 4},
+		StartValue: testingutils.TestingQBFTFullData,
 		State: &qbft.State{
 			CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 			ID:              testingutils.TestingIdentifier,

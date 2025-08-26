@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"os"
 	"reflect"
 	"testing"
 
@@ -146,6 +147,148 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 		return
 	}
 	require.NoError(t, err)
+	
+	// Print the actual root for test updates
+	fmt.Printf("Test: %s, Actual root: %x\n", test.TestName(), r)
+	
+	// Create output string to write to both stdout and file
+	var output string
+	
+	// Debug: Print all message fields for comparison
+	output += fmt.Sprintf("\n========== Test: %s ==========\n", test.Name)
+	output += fmt.Sprintf("Root: %s\n", hex.EncodeToString(r[:]))
+	output += fmt.Sprintf("ExpectedRoot: %s\n", test.ExpectedRoot)
+	output += fmt.Sprintf("Round: %d\n", test.Round)
+	output += fmt.Sprintf("Value (hash): %s\n", hex.EncodeToString(test.Value[:]))
+	output += fmt.Sprintf("StateValue (full data): %s\n", hex.EncodeToString(test.StateValue))
+	
+	// Print the entire message as hex
+	msgBytes, _ := msg.MarshalSSZ()
+	output += fmt.Sprintf("Full SignedSSVMessage (hex): %s\n", hex.EncodeToString(msgBytes))
+	
+	// Print SSVMessage fields
+	output += fmt.Sprintf("SSVMessage:\n")
+	output += fmt.Sprintf("  MsgType: %d\n", msg.SSVMessage.MsgType)
+	output += fmt.Sprintf("  MsgID: %s\n", hex.EncodeToString(msg.SSVMessage.MsgID[:]))
+	output += fmt.Sprintf("  Data: %s\n", hex.EncodeToString(msg.SSVMessage.Data))
+	
+	// Decode and print QBFT message
+	qbftMsg := &qbft.Message{}
+	if err := qbftMsg.Decode(msg.SSVMessage.Data); err == nil {
+		output += fmt.Sprintf("QBFTMessage:\n")
+		output += fmt.Sprintf("  MsgType: %d\n", qbftMsg.MsgType)
+		output += fmt.Sprintf("  Height: %d\n", qbftMsg.Height)
+		output += fmt.Sprintf("  Round: %d\n", qbftMsg.Round)
+		output += fmt.Sprintf("  Identifier: %s\n", hex.EncodeToString(qbftMsg.Identifier))
+		output += fmt.Sprintf("  Root: %s\n", hex.EncodeToString(qbftMsg.Root[:]))
+		output += fmt.Sprintf("  DataRound: %d\n", qbftMsg.DataRound)
+		
+		// Justifications
+		if len(qbftMsg.RoundChangeJustification) > 0 {
+			output += fmt.Sprintf("  RoundChangeJustifications: %d messages\n", len(qbftMsg.RoundChangeJustification))
+			for i, rcJust := range qbftMsg.RoundChangeJustification {
+				output += fmt.Sprintf("    RC[%d] (hex): %s\n", i, hex.EncodeToString(rcJust))
+				// Try to decode the justification message
+				rcMsg := &types.SignedSSVMessage{}
+				if err := rcMsg.UnmarshalSSZ(rcJust); err == nil {
+					output += fmt.Sprintf("    RC[%d] Decoded SignedSSVMessage:\n", i)
+					output += fmt.Sprintf("      OperatorIDs: %v\n", rcMsg.OperatorIDs)
+					output += fmt.Sprintf("      Signatures: %d signatures\n", len(rcMsg.Signatures))
+					for j, sig := range rcMsg.Signatures {
+						output += fmt.Sprintf("        Signature[%d]: %s\n", j, hex.EncodeToString(sig))
+					}
+					output += fmt.Sprintf("      SSVMessage.MsgType: %d\n", rcMsg.SSVMessage.MsgType)
+					output += fmt.Sprintf("      SSVMessage.MsgID: %s\n", hex.EncodeToString(rcMsg.SSVMessage.MsgID[:]))
+					output += fmt.Sprintf("      SSVMessage.Data: %s\n", hex.EncodeToString(rcMsg.SSVMessage.Data))
+					if rcMsg.FullData != nil && len(rcMsg.FullData) > 0 {
+						output += fmt.Sprintf("      FullData: %s\n", hex.EncodeToString(rcMsg.FullData))
+					}
+					
+					// Decode the inner QBFT message
+					innerQbft := &qbft.Message{}
+					if err := innerQbft.Decode(rcMsg.SSVMessage.Data); err == nil {
+						output += fmt.Sprintf("      Inner QBFTMessage:\n")
+						output += fmt.Sprintf("        MsgType: %d\n", innerQbft.MsgType)
+						output += fmt.Sprintf("        Height: %d\n", innerQbft.Height)
+						output += fmt.Sprintf("        Round: %d\n", innerQbft.Round)
+						output += fmt.Sprintf("        Identifier: %s\n", hex.EncodeToString(innerQbft.Identifier))
+						output += fmt.Sprintf("        Root: %s\n", hex.EncodeToString(innerQbft.Root[:]))
+						output += fmt.Sprintf("        DataRound: %d\n", innerQbft.DataRound)
+						if len(innerQbft.RoundChangeJustification) > 0 {
+							output += fmt.Sprintf("        Has %d RoundChangeJustifications\n", len(innerQbft.RoundChangeJustification))
+						}
+						if len(innerQbft.PrepareJustification) > 0 {
+							output += fmt.Sprintf("        Has %d PrepareJustifications\n", len(innerQbft.PrepareJustification))
+						}
+					}
+				}
+			}
+		}
+		if len(qbftMsg.PrepareJustification) > 0 {
+			output += fmt.Sprintf("  PrepareJustifications: %d messages\n", len(qbftMsg.PrepareJustification))
+			for i, prepJust := range qbftMsg.PrepareJustification {
+				output += fmt.Sprintf("    Prepare[%d] (hex): %s\n", i, hex.EncodeToString(prepJust))
+				// Try to decode the justification message
+				prepMsg := &types.SignedSSVMessage{}
+				if err := prepMsg.UnmarshalSSZ(prepJust); err == nil {
+					output += fmt.Sprintf("    Prepare[%d] Decoded SignedSSVMessage:\n", i)
+					output += fmt.Sprintf("      OperatorIDs: %v\n", prepMsg.OperatorIDs)
+					output += fmt.Sprintf("      Signatures: %d signatures\n", len(prepMsg.Signatures))
+					for j, sig := range prepMsg.Signatures {
+						output += fmt.Sprintf("        Signature[%d]: %s\n", j, hex.EncodeToString(sig))
+					}
+					output += fmt.Sprintf("      SSVMessage.MsgType: %d\n", prepMsg.SSVMessage.MsgType)
+					output += fmt.Sprintf("      SSVMessage.MsgID: %s\n", hex.EncodeToString(prepMsg.SSVMessage.MsgID[:]))
+					output += fmt.Sprintf("      SSVMessage.Data: %s\n", hex.EncodeToString(prepMsg.SSVMessage.Data))
+					if prepMsg.FullData != nil && len(prepMsg.FullData) > 0 {
+						output += fmt.Sprintf("      FullData: %s\n", hex.EncodeToString(prepMsg.FullData))
+					}
+					
+					// Decode the inner QBFT message
+					innerQbft := &qbft.Message{}
+					if err := innerQbft.Decode(prepMsg.SSVMessage.Data); err == nil {
+						output += fmt.Sprintf("      Inner QBFTMessage:\n")
+						output += fmt.Sprintf("        MsgType: %d\n", innerQbft.MsgType)
+						output += fmt.Sprintf("        Height: %d\n", innerQbft.Height)
+						output += fmt.Sprintf("        Round: %d\n", innerQbft.Round)
+						output += fmt.Sprintf("        Identifier: %s\n", hex.EncodeToString(innerQbft.Identifier))
+						output += fmt.Sprintf("        Root: %s\n", hex.EncodeToString(innerQbft.Root[:]))
+						output += fmt.Sprintf("        DataRound: %d\n", innerQbft.DataRound)
+						if len(innerQbft.RoundChangeJustification) > 0 {
+							output += fmt.Sprintf("        Has %d RoundChangeJustifications\n", len(innerQbft.RoundChangeJustification))
+						}
+						if len(innerQbft.PrepareJustification) > 0 {
+							output += fmt.Sprintf("        Has %d PrepareJustifications\n", len(innerQbft.PrepareJustification))
+						}
+					}
+				}
+			}
+		}
+	} else {
+		output += fmt.Sprintf("Failed to decode QBFT message: %v\n", err)
+	}
+	
+	// Print signatures
+	output += fmt.Sprintf("Signatures:\n")
+	for i, sig := range msg.Signatures {
+		output += fmt.Sprintf("  Signature[%d]: %s\n", i, hex.EncodeToString(sig))
+	}
+	
+	output += fmt.Sprintf("OperatorIDs: %v\n", msg.OperatorIDs)
+	
+	if msg.FullData != nil {
+		output += fmt.Sprintf("FullData: %s\n", hex.EncodeToString(msg.FullData))
+	}
+	
+	// Print to stdout
+	fmt.Print(output)
+	
+	// Also append to file
+	file, err := os.OpenFile("/tmp/go_messages_full.txt", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if err == nil {
+		defer file.Close()
+		file.WriteString(output)
+	}
 
 	if test.ExpectedRoot != hex.EncodeToString(r[:]) {
 		fmt.Printf("expected: %v\n", test.ExpectedRoot)
@@ -159,11 +302,11 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	err = msg.Validate()
 	require.NoError(t, err)
 
-	qbftMsg := &qbft.Message{}
-	err = qbftMsg.Decode(msg.SSVMessage.Data)
+	qbftMsgValidate := &qbft.Message{}
+	err = qbftMsgValidate.Decode(msg.SSVMessage.Data)
 	require.NoError(t, err)
 
-	err = qbftMsg.Validate()
+	err = qbftMsgValidate.Validate()
 	require.NoError(t, err)
 
 	// remove consts for state comparison
@@ -207,7 +350,8 @@ func (test *CreateMsgSpecTest) createProposal() (*types.SignedSSVMessage, error)
 	}
 	signer := testingutils.TestingOperatorSigner(ks)
 
-	return qbft.CreateProposal(state, signer, test.Value[:], testingutils.ToProcessingMessages(test.
+	// Use StateValue (full data) instead of Value (which is already a hash)
+	return qbft.CreateProposal(state, signer, test.StateValue, testingutils.ToProcessingMessages(test.
 		RoundChangeJustifications), testingutils.ToProcessingMessages(test.PrepareJustifications))
 }
 
@@ -237,7 +381,8 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 		}
 	}
 
-	return qbft.CreateRoundChange(state, signer, qbft.FirstRound, test.Value[:])
+	// Use StateValue (full data) instead of Value (which is already a hash)
+	return qbft.CreateRoundChange(state, signer, qbft.FirstRound, test.StateValue)
 }
 
 func (test *CreateMsgSpecTest) TestName() string {

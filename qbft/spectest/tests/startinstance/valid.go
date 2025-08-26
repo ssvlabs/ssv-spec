@@ -14,7 +14,7 @@ func Valid() tests.SpecTest {
 		testdoc.StartInstanceValidDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				ExpectedTimerState: &testingutils.TimerState{
 					Timeouts: 1,
 					Round:    qbft.FirstRound,
