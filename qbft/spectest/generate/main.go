@@ -44,12 +44,6 @@ func main() {
 		panic(err.Error())
 	}
 	for name, test := range all {
-		// Debug print for create message tests
-		if strings.Contains(name, "CreateMsgSpecTest") {
-			if msgTest, ok := test.(*tests.CreateMsgSpecTest); ok {
-				log.Printf("Test %s has ExpectedRoot: %s\n", name, msgTest.ExpectedRoot)
-			}
-		}
 		byts, err := json.MarshalIndent(test, "", "  ")
 		if err != nil {
 			panic(err.Error())

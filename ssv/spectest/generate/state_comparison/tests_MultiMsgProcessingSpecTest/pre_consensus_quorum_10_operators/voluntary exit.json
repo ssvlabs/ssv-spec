@@ -1,0 +1,100 @@
+{
+  "BaseRunner": {
+    "State": {
+      "PreConsensusContainer": {
+        "Signatures": {
+          "1": {
+            "921b07b8aa67eab7c38b8214bd22c43ac3d8b7137c09535f843242558db21786": {
+              "1": "qKCYs8Q1h5Jzhkc6Ijl1jNpBWGxF3Bc00OT1KkmZjd8AP2yA6Cva+bImzm5UUmNCDXdO555g2p80s5xRNfenD3fL9WxwjAmgzt0/tW+dX4kOwMrkfZxZr+a65Mhuxkvw",
+              "2": "iGMzy5WC0f+Z+4KSIIUSVr8Zr0BQu9V1eXJ0ldvm5xj13Eb5IcGuaL31snk5MO/1EjLtH4QHU1yjWSI+qmDY/2FhFSZtU6/bkPojDk8sHX5EfSoakzpbAWpEPnwqMZU0",
+              "3": "lzipIocOEv0SoIEgskuK4G6izw7jEjpTcF3LWYpl/5QAzdQ4rpffTnTacRAo91RvDi/20YMQC2FOTMvyf4GNhkzCy4/S6h/NV31Oq6sZ1Shem52YiFmj8pSOwY0v7UMh",
+              "4": "gyWWDou9jEK6p2qYOcO3nX72gVCwQD9AFMDKhPl2AuSoYVvAZ+PpCMVrM8DV85tPBYY26qEChrrglw8j/672zV0v7vSe4mb1SFLRIXRKf8UD5tXEeEyU4dJObAA5tmHA",
+              "5": "iJ1y7+kGIJ7LIns1z8wPePLxi3AbGPefNFnWY2D51iVlSKfHosjwpdos7Ghb1/CWDBJb0FlX03YzGflVtyjz6NGK0moaqxmBU/maBwJHT+6jsP3liRpUVFyr8Z6nYtGh",
+              "6": "mO1AgMnin+0QlZAECGysaHOjTmux1g3x1waNcu221H+rm7zJCQ6Vhe9k4rMo3sLRCH2srPd6uUwL+kfnkWnujAktJUMnfwc7flm8INfZU0lN6SEgyx05aeFtByhr8ipr",
+              "7": "kZEVBKumPlm5C202k+Nlmq/OWVKmixnADWmMFe9Ol0awlwuNao+8WFngPWFS8647E3kt1MOzjEifETGy//q9KoSq3zm2OVCTS8O+yyywiTMRbf7j6sOh9BGuhdYq8k7J"
+            }
+          }
+        },
+        "Quorum": 7
+      },
+      "PostConsensusContainer": {
+        "Signatures": {},
+        "Quorum": 7
+      },
+      "RunningInstance": null,
+      "DecidedValue": null,
+      "Finished": true,
+      "ValidatorDuty": {
+        "Type": 6,
+        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Slot": "12",
+        "ValidatorIndex": "1",
+        "CommitteeIndex": 0,
+        "CommitteeLength": 0,
+        "CommitteesAtSlot": 0,
+        "ValidatorCommitteeIndex": 0,
+        "ValidatorSyncCommitteeIndices": null
+      }
+    },
+    "Share": {
+      "1": {
+        "Committee": [
+          {
+            "SharePubKey": "uaw8M/4ZQSTsUSNYBhD6l6Czq7ScOaI0hAQhUIwIxCsJgy0Pm0FjXeul8TMDRmHx",
+            "Signer": 1
+          },
+          {
+            "SharePubKey": "kz1pTGkkb5iqKz1t524qR2rdHuj5H6A5SbEVvHoPZ3u5ZGIgBH/krSlDVUVCQlID",
+            "Signer": 2
+          },
+          {
+            "SharePubKey": "oa8IOuuo3GEYpGecefYZvvNk1VYbI8fxLPDSfgQIMZu+/rxyyutWy8+21ul3ilKG",
+            "Signer": 3
+          },
+          {
+            "SharePubKey": "rbbPE1h+tjwTMBvXBq0uQeiY7zjgW8F3SHU/GbiTh6NSfksUWkw4+ePzXeQF/QdH",
+            "Signer": 4
+          },
+          {
+            "SharePubKey": "ovesq67A79GGQk7tkM5WjCDtuuuf9+xT9fGA5wk3pppddGByCSve0md4ED5rGJNo",
+            "Signer": 5
+          },
+          {
+            "SharePubKey": "k0G6HgfsQWNlvKiso3P/s80hTVrPnkjyTPrc0+2uB+PaplJffnFvSdmjkBNW4Mye",
+            "Signer": 6
+          },
+          {
+            "SharePubKey": "jKJiWGQ9GMT6EaPHMt+EWZKfacZB1sXPUXgWYugOJa3hMm1CbTGoRXXnYRS8yz/R",
+            "Signer": 7
+          },
+          {
+            "SharePubKey": "q0rU1AgNbIxwQ0gfqb5DpEbdriONEftFDWGhOesWB/KjAmm7SijrQkMfybi/qNAt",
+            "Signer": 8
+          },
+          {
+            "SharePubKey": "obBtOlWzBdTeziCtVY5FteuDACOmXzBRXfZONryRSaDgvfQlc01s+Qewj67gYRtH",
+            "Signer": 9
+          },
+          {
+            "SharePubKey": "tJ7NtDheMBJsjieXeanh6kC+9ONNv116vN0v2xyqUfEqqfST3Ku/Vx3rhBvtAidF",
+            "Signer": 10
+          }
+        ],
+        "DomainType": [
+          0,
+          0,
+          3,
+          1
+        ],
+        "FeeRecipientAddress": "535953b5a6040074948cf185eaa7d2abbd66808f",
+        "Graffiti": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "SharePubKey": "uaw8M/4ZQSTsUSNYBhD6l6Czq7ScOaI0hAQhUIwIxCsJgy0Pm0FjXeul8TMDRmHx",
+        "ValidatorIndex": "1",
+        "ValidatorPubKey": "8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0"
+      }
+    },
+    "QBFTController": null,
+    "BeaconNetwork": "now_test_network",
+    "RunnerRoleType": 5
+  }
+}
