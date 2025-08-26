@@ -104,8 +104,7 @@ func FutureDecided() tests.SpecTest {
 						getID(types.RoleCommittee),
 					),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  errStrCommittee,
+				ExpectedError: errStrCommittee,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -119,8 +118,7 @@ func FutureDecided() tests.SpecTest {
 						getID(types.RoleCommittee),
 					),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  errStrCommittee,
+				ExpectedError: errStrCommittee,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -134,8 +132,7 @@ func FutureDecided() tests.SpecTest {
 						getID(types.RoleCommittee),
 					),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  errStrCommittee,
+				ExpectedError: errStrCommittee,
 			},
 		}...)
 	}

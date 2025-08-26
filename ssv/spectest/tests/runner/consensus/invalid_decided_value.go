@@ -177,8 +177,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						testingutils.TestWrongBeaconVoteByts,
 					),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedCommitteeErr,
+				ExpectedError: expectedCommitteeErr,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -195,8 +194,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						testingutils.TestWrongBeaconVoteByts,
 					),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedCommitteeErr,
+				ExpectedError: expectedCommitteeErr,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -213,8 +211,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						testingutils.TestWrongBeaconVoteByts,
 					),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedCommitteeErr,
+				ExpectedError: expectedCommitteeErr,
 			},
 		}...)
 	}

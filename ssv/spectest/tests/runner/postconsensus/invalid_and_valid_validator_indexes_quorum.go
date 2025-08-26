@@ -40,7 +40,6 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForValidatorsIndex(ks.Shares[2], 2, version, validatorsIndex))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForValidatorsIndex(ks.Shares[3], 3, version, validatorsIndex))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObjectForValidatorIndex(ks, version, testingutils.TestingValidatorIndex)),
 				},
@@ -59,7 +58,6 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsgForValidatorsIndex(ks.Shares[2], 2, version, validatorsIndex))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsgForValidatorsIndex(ks.Shares[3], 3, version, validatorsIndex))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRootForValidatorIndex(ks, testingutils.TestingValidatorIndex, version)),
 				},
@@ -78,7 +76,6 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsgForValidatorsIndex(ks.Shares[2], 2, version, validatorsIndex))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsgForValidatorsIndex(ks.Shares[3], 3, version, validatorsIndex))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObjectForValidatorIndex(ks, version, testingutils.TestingValidatorIndex)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRootForValidatorIndex(ks, testingutils.TestingValidatorIndex, version)),
