@@ -1,14 +1,16 @@
 package valcheck
 
 import (
-	"testing"
+    "testing"
+    "errors"
 
-	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/ssvlabs/ssv-spec/qbft"
-	"github.com/ssvlabs/ssv-spec/ssv"
-	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/testingutils"
-	"github.com/stretchr/testify/require"
+    "github.com/attestantio/go-eth2-client/spec/phase0"
+    "github.com/ssvlabs/ssv-spec/qbft"
+    "github.com/ssvlabs/ssv-spec/ssv"
+    "github.com/ssvlabs/ssv-spec/types"
+    "github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
+    "github.com/ssvlabs/ssv-spec/types/testingutils"
+    "github.com/stretchr/testify/require"
 )
 
 type SpecTest struct {
@@ -44,11 +46,11 @@ func (test *SpecTest) Run(t *testing.T) {
 		require.NotNil(t, err)
 		return
 	}
-	if len(test.ExpectedError) > 0 {
-		require.EqualError(t, err, test.ExpectedError)
-	} else {
-		require.NoError(t, err)
-	}
+    if len(test.ExpectedError) > 0 {
+        require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(err))
+    } else {
+        require.NoError(t, err)
+    }
 }
 
 func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueCheckF {

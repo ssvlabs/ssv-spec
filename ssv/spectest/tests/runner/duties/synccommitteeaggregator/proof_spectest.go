@@ -1,19 +1,21 @@
 package synccommitteeaggregator
 
 import (
-	"encoding/hex"
-	"os"
-	"reflect"
-	"testing"
+    "encoding/hex"
+    "errors"
+    "os"
+    "reflect"
+    "testing"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
-	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+    "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
-	"github.com/stretchr/testify/require"
+    "github.com/stretchr/testify/require"
 
-	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/testingutils"
+    "github.com/ssvlabs/ssv-spec/types"
+    "github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
+    "github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 type SyncCommitteeAggregatorProofSpecTest struct {
@@ -39,11 +41,11 @@ func (test *SyncCommitteeAggregatorProofSpecTest) Run(t *testing.T) {
 	test.overrideStateComparison(t)
 	r, lastErr := test.runPreTesting()
 
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, lastErr, test.ExpectedError)
-	} else {
-		require.NoError(t, lastErr)
-	}
+    if len(test.ExpectedError) != 0 {
+        require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(lastErr))
+    } else {
+        require.NoError(t, lastErr)
+    }
 
 	// post root
 	postRoot, err := r.GetBaseRunner().State.GetRoot()
