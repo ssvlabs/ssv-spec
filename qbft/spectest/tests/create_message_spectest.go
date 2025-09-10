@@ -9,7 +9,6 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"

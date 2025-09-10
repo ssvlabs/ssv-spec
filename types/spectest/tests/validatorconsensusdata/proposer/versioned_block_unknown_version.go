@@ -1,14 +1,12 @@
 package consensusdataproposer
 
 import (
-	"fmt"
+    "github.com/attestantio/go-eth2-client/spec"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
-	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
-	"github.com/ssvlabs/ssv-spec/types/testingutils"
+    "github.com/ssvlabs/ssv-spec/types"
+    "github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+    "github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
+    "github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // VersionedBlockUnknownVersion tests a valid consensus data with unknown block
