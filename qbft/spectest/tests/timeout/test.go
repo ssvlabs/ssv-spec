@@ -1,17 +1,19 @@
 package timeout
 
 import (
-	"encoding/hex"
-	"fmt"
-	"testing"
+    "encoding/hex"
+    "errors"
+    "fmt"
+    "testing"
 
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
-	testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
-	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/testingutils"
-	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+    testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
+    "github.com/ssvlabs/ssv-spec/types"
+    "github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
+    "github.com/ssvlabs/ssv-spec/types/testingutils"
+    typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 type SpecTest struct {
@@ -34,11 +36,11 @@ func (test *SpecTest) TestName() string {
 func (test *SpecTest) Run(t *testing.T) {
 	err := test.Pre.UponRoundTimeout()
 
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, err, test.ExpectedError)
-	} else {
-		require.NoError(t, err)
-	}
+    if len(test.ExpectedError) != 0 {
+        require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(err))
+    } else {
+        require.NoError(t, err)
+    }
 
 	// test calling timeout
 	timer, ok := test.Pre.GetConfig().GetTimer().(*testingutils.TestQBFTTimer)
