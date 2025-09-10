@@ -44,15 +44,21 @@ var errorStringToCode = map[string]Code{
 
 // FromError returns the error code for a given error.
 func FromError(err error) Code {
-	if err == nil {
-		return 0
-	}
-	msg := err.Error()
-	if code, ok := errorStringToCode[msg]; ok {
-		return code
-	}
-	if strings.HasPrefix(msg, "unknown block version") {
-		return ErrUnknownBlockVersion
-	}
-	return 0
+    if err == nil {
+        return 0
+    }
+    msg := err.Error()
+    if code, ok := errorStringToCode[msg]; ok {
+        return code
+    }
+    if strings.HasPrefix(msg, "unknown block version") {
+        return ErrUnknownBlockVersion
+    }
+    // Allow substring match for wrapped errors used across suites
+    for key, code := range errorStringToCode {
+        if strings.Contains(msg, key) {
+            return code
+        }
+    }
+    return 0
 }
