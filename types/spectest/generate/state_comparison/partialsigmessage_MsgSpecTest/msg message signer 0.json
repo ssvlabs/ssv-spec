@@ -30,5 +30,5 @@
   ],
   "EncodedMessages": null,
   "ExpectedRoots": null,
-  "ExpectedError": "message invalid: signer ID 0 not allowed"
+  "ExpectedErrorCode": 3
 }

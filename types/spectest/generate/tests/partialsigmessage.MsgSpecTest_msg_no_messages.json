@@ -11,5 +11,5 @@
   ],
   "EncodedMessages": null,
   "ExpectedRoots": null,
-  "ExpectedError": "no PartialSignatureMessages messages"
+  "ExpectedErrorCode": 4
 }

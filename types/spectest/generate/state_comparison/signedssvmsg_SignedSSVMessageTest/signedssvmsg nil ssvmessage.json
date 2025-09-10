@@ -14,6 +14,6 @@
       "FullData": null
     }
   ],
-  "ExpectedError": "nil SSVMessage",
+  "ExpectedErrorCode": 10,
   "RSAPublicKey": null
 }

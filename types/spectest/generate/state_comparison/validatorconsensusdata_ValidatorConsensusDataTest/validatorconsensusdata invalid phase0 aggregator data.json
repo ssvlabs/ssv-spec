@@ -17,5 +17,5 @@
     "Version": "phase0",
     "DataSSZ": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQI="
   },
-  "ExpectedError": "could not unmarshal ssz: incorrect size"
+  "ExpectedErrorCode": 7
 }

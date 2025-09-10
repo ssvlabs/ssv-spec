@@ -49,5 +49,5 @@
   },
   "ExpectedHasQuorum": true,
   "ExpectedFullCommittee": false,
-  "ExpectedError": "non unique signer"
+  "ExpectedErrorCode": 1
 }

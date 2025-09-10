@@ -18,6 +18,6 @@
       "FullData": null
     }
   ],
-  "ExpectedError": "signer ID 0 not allowed",
+  "ExpectedErrorCode": 13,
   "RSAPublicKey": null
 }

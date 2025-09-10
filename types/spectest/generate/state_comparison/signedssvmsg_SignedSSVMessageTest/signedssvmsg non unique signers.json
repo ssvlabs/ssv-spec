@@ -22,6 +22,6 @@
       "FullData": null
     }
   ],
-  "ExpectedError": "non unique signer",
+  "ExpectedErrorCode": 1,
   "RSAPublicKey": null
 }

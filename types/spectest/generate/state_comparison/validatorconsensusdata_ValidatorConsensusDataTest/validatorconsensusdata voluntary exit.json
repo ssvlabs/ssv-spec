@@ -17,5 +17,5 @@
     "Version": "capella",
     "DataSSZ": "AAAAAAAAAAABAAAAAAAAAA=="
   },
-  "ExpectedError": "voluntary exit has no consensus data"
+  "ExpectedErrorCode": 8
 }

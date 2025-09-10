@@ -23,6 +23,6 @@
       "FullData": null
     }
   ],
-  "ExpectedError": "number of signatures is different than number of signers",
+  "ExpectedErrorCode": 12,
   "RSAPublicKey": null
 }
