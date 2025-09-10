@@ -1,16 +1,16 @@
 package tests
 
 import (
-    "path/filepath"
-    "reflect"
-    "strings"
-    "testing"
+	"path/filepath"
+	"reflect"
+	"strings"
+	"testing"
 
-    "github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
-    "github.com/ssvlabs/ssv-spec/types"
-    "github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
-    "github.com/ssvlabs/ssv-spec/types/testingutils"
-    "github.com/pkg/errors"
+	"github.com/pkg/errors"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 type MultiMsgProcessingSpecTest struct {
@@ -46,13 +46,13 @@ func (tests *MultiMsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
 
 func (tests *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
 	ret := make(map[string]types.Root, len(tests.Tests))
-    for _, test := range tests.Tests {
-        _, _, err := test.runPreTesting()
-        if err != nil && errcodes.FromError(err) != errcodes.FromError(errors.New(test.ExpectedError)) {
-            return nil, err
-        }
-        ret[test.Name] = test.Runner
-    }
+	for _, test := range tests.Tests {
+		_, _, err := test.runPreTesting()
+		if err != nil && errcodes.FromError(err) != errcodes.FromError(errors.New(test.ExpectedError)) {
+			return nil, err
+		}
+		ret[test.Name] = test.Runner
+	}
 	return ret, nil
 }
 

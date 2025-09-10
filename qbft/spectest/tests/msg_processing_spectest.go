@@ -1,21 +1,21 @@
 package tests
 
 import (
-    "encoding/hex"
-    "errors"
-    "fmt"
-    "os"
-    "reflect"
-    "testing"
+	"encoding/hex"
+	"errors"
+	"fmt"
+	"os"
+	"reflect"
+	"testing"
 
 	"github.com/stretchr/testify/require"
 
-    "github.com/ssvlabs/ssv-spec/qbft"
-    testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
-    "github.com/ssvlabs/ssv-spec/types"
-    "github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
-    "github.com/ssvlabs/ssv-spec/types/testingutils"
-    typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/qbft"
+	testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 // ChangeProposerFuncInstanceHeight tests with this height will return proposer operator ID 2
@@ -41,11 +41,11 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 
 	lastErr := test.runPreTesting()
 
-    if len(test.ExpectedError) != 0 {
-        require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(lastErr))
-    } else {
-        require.NoError(t, lastErr)
-    }
+	if len(test.ExpectedError) != 0 {
+		require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(lastErr))
+	} else {
+		require.NoError(t, lastErr)
+	}
 
 	if test.ExpectedTimerState != nil {
 		// checks round timer state

@@ -1,11 +1,11 @@
 package newduty
 
 import (
-    "encoding/hex"
-    "encoding/json"
-    "errors"
-    "fmt"
-    "os"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -14,11 +14,11 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
-    "github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
-    "github.com/ssvlabs/ssv-spec/types"
-    "github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
-    "github.com/ssvlabs/ssv-spec/types/testingutils"
-    comparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	comparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 type StartNewRunnerDutySpecTest struct {
@@ -48,11 +48,11 @@ func (test *StartNewRunnerDutySpecTest) overrideStateComparison(t *testing.T) {
 // It simply runs without calling oveerideStateComparison
 func (test *StartNewRunnerDutySpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	err := test.runPreTesting()
-    if len(test.ExpectedError) > 0 {
-        require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(err))
-    } else {
-        require.NoError(t, err)
-    }
+	if len(test.ExpectedError) > 0 {
+		require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(err))
+	} else {
+		require.NoError(t, err)
+	}
 
 	// test output message
 	broadcastedSignedMsgs := test.Runner.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
@@ -151,13 +151,13 @@ func (tests *MultiStartNewRunnerDutySpecTest) Run(t *testing.T) {
 
 func (tests *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
 	ret := make(map[string]types.Root, len(tests.Tests))
-    for _, test := range tests.Tests {
-        err := test.runPreTesting()
-        if err != nil && errcodes.FromError(err) != errcodes.FromError(errors.New(test.ExpectedError)) {
-            return nil, err
-        }
-        ret[test.Name] = test.Runner
-    }
+	for _, test := range tests.Tests {
+		err := test.runPreTesting()
+		if err != nil && errcodes.FromError(err) != errcodes.FromError(errors.New(test.ExpectedError)) {
+			return nil, err
+		}
+		ret[test.Name] = test.Runner
+	}
 	return ret, nil
 }
 

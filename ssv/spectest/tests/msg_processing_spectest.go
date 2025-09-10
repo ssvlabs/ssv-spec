@@ -1,12 +1,12 @@
 package tests
 
 import (
-    "encoding/hex"
-    "encoding/json"
-    "errors"
-    "os"
-    "reflect"
-    "testing"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"os"
+	"reflect"
+	"testing"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
@@ -15,11 +15,11 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
 
-    "github.com/ssvlabs/ssv-spec/ssv"
-    "github.com/ssvlabs/ssv-spec/types"
-    "github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
-    "github.com/ssvlabs/ssv-spec/types/testingutils"
-    typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 type MsgProcessingSpecTest struct {
@@ -49,11 +49,11 @@ func (test *MsgProcessingSpecTest) TestName() string {
 func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	v, c, lastErr := test.runPreTesting()
 
-    if len(test.ExpectedError) != 0 {
-        require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(lastErr))
-    } else {
-        require.NoError(t, lastErr)
-    }
+	if len(test.ExpectedError) != 0 {
+		require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(lastErr))
+	} else {
+		require.NoError(t, lastErr)
+	}
 
 	network := &testingutils.TestingNetwork{}
 	beaconNetwork := &testingutils.TestingBeaconNode{}

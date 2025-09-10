@@ -1,13 +1,13 @@
 package committee
 
 import (
-    "encoding/hex"
-    "errors"
-    "os"
-    "path/filepath"
-    "reflect"
-    "strings"
-    "testing"
+	"encoding/hex"
+	"errors"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strings"
+	"testing"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
@@ -16,10 +16,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-    "github.com/ssvlabs/ssv-spec/ssv"
-    "github.com/ssvlabs/ssv-spec/types"
-    "github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
-    "github.com/ssvlabs/ssv-spec/types/testingutils"
+	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 type CommitteeSpecTest struct {
@@ -44,11 +44,11 @@ func (test *CommitteeSpecTest) TestName() string {
 func (test *CommitteeSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	lastErr := test.runPreTesting()
 
-    if len(test.ExpectedError) != 0 {
-        require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(lastErr))
-    } else {
-        require.NoError(t, lastErr)
-    }
+	if len(test.ExpectedError) != 0 {
+		require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(lastErr))
+	} else {
+		require.NoError(t, lastErr)
+	}
 
 	broadcastedMsgs := make([]*types.SignedSSVMessage, 0)
 	broadcastedRoots := make([]phase0.Root, 0)

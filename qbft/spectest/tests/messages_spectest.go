@@ -1,16 +1,16 @@
 package tests
 
 import (
-    "errors"
-    "testing"
+	"errors"
+	"testing"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
-    "github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/require"
 
-    "github.com/ssvlabs/ssv-spec/types/testingutils"
-    "github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // MsgSpecTest tests encoding and decoding of a msg
@@ -55,11 +55,11 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 	}
 
 	// check error
-    if len(test.ExpectedError) != 0 {
-        require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(lastErr))
-    } else {
-        require.NoError(t, lastErr)
-    }
+	if len(test.ExpectedError) != 0 {
+		require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(lastErr))
+	} else {
+		require.NoError(t, lastErr)
+	}
 }
 
 func (test *MsgSpecTest) TestName() string {

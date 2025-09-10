@@ -1,22 +1,22 @@
 package tests
 
 import (
-    "crypto/rsa"
-    "encoding/hex"
-    "encoding/json"
-    "fmt"
-    "errors"
-    "reflect"
-    "testing"
+	"crypto/rsa"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"reflect"
+	"testing"
 
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
-    "github.com/ssvlabs/ssv-spec/types"
-    "github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
-    "github.com/ssvlabs/ssv-spec/types/testingutils"
-    typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
-    "github.com/stretchr/testify/require"
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+	"github.com/stretchr/testify/require"
 )
 
 const (
@@ -132,10 +132,10 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 		t.Fail()
 	}
 
-    if err != nil && len(test.ExpectedError) != 0 {
-        require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(err))
-        return
-    }
+	if err != nil && len(test.ExpectedError) != 0 {
+		require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(err))
+		return
+	}
 	require.NoError(t, err)
 
 	if test.Round == qbft.NoRound {
@@ -143,10 +143,10 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	}
 
 	r, err := msg.GetRoot()
-    if len(test.ExpectedError) != 0 {
-        require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(err))
-        return
-    }
+	if len(test.ExpectedError) != 0 {
+		require.Equal(t, errcodes.FromError(errors.New(test.ExpectedError)), errcodes.FromError(err))
+		return
+	}
 	require.NoError(t, err)
 
 	if test.ExpectedRoot != hex.EncodeToString(r[:]) {
