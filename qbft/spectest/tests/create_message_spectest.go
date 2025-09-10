@@ -233,7 +233,7 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 		for _, msg := range test.PrepareJustifications {
 			_, err := state.PrepareContainer.AddFirstMsgForSignerAndRound(testingutils.ToProcessingMessage(msg))
 			if err != nil {
-				return nil, errors.Wrap(err, "could not add first message for signer")
+				return nil, fmt.Errorf("could not add first message for signer: %w", err)
 			}
 		}
 	}
