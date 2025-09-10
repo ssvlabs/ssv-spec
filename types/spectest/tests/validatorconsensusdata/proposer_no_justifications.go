@@ -17,6 +17,6 @@ func ProposerNoJustifications() *ValidatorConsensusDataTest {
 		"proposer no justification",
 		testdoc.ValidatorConsensusDataTestProposerNoJustificationsDoc,
 		*cd,
-		"",
+		0,
 	)
 }

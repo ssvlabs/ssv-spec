@@ -12,7 +12,7 @@ func Phase0AggregatorValidation() *ValidatorConsensusDataTest {
 		"phase0 aggregator valid",
 		testdoc.ValidatorConsensusDataTestPhase0AggregatorValidationDoc,
 		*testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0),
-		"",
+		0,
 	)
 }
 
@@ -22,6 +22,6 @@ func ElectraAggregatorValidation() *ValidatorConsensusDataTest {
 		"electra aggregator valid",
 		testdoc.ValidatorConsensusDataTestElectraAggregatorValidationDoc,
 		*testingutils.TestAggregatorConsensusData(spec.DataVersionElectra),
-		"",
+		0,
 	)
 }

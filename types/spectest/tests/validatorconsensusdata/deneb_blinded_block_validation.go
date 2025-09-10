@@ -12,6 +12,6 @@ func DenebBlindedBlockValidation() *ValidatorConsensusDataTest {
 		"valid deneb blinded block",
 		testdoc.ValidatorConsensusDataTestDenebBlindedBlockDoc,
 		*testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb),
-		"",
+		0,
 	)
 }

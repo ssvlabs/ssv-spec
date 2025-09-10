@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -21,6 +22,6 @@ func InvalidCapellaBlindedBlockValidation() *ValidatorConsensusDataTest {
 		"invalid capella blinded block",
 		testdoc.ValidatorConsensusDataTestInvalidCapellaBlindedBlockDoc,
 		*cd,
-		"could not unmarshal ssz: incorrect size",
+		errcodes.ErrIncorrectSize,
 	)
 }

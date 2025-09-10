@@ -19,6 +19,6 @@ func PartialSigValid() *MsgSpecTest {
 		[]*types.PartialSignatureMessages{msg},
 		nil,
 		nil,
-		"",
+		0,
 	)
 }

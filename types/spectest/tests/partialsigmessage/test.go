@@ -8,17 +8,18 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
 	"github.com/stretchr/testify/require"
 )
 
 type MsgSpecTest struct {
-	Name            string
-	Type            string
-	Documentation   string
-	Messages        []*types.PartialSignatureMessages
-	EncodedMessages [][]byte
-	ExpectedRoots   [][32]byte
-	ExpectedError   string
+	Name              string
+	Type              string
+	Documentation     string
+	Messages          []*types.PartialSignatureMessages
+	EncodedMessages   [][]byte
+	ExpectedRoots     [][32]byte
+	ExpectedErrorCode errcodes.Code
 }
 
 func (test *MsgSpecTest) TestName() string {
@@ -57,8 +58,8 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 	}
 
 	// check error
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, lastErr, test.ExpectedError)
+	if test.ExpectedErrorCode != 0 {
+		require.Equal(t, test.ExpectedErrorCode, errcodes.FromError(lastErr))
 	} else {
 		require.NoError(t, lastErr)
 	}
@@ -70,14 +71,14 @@ func (tests *MsgSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
 
-func NewMsgSpecTest(name, documentation string, messages []*types.PartialSignatureMessages, encodedMessages [][]byte, expectedRoots [][32]byte, expectedError string) *MsgSpecTest {
+func NewMsgSpecTest(name, documentation string, messages []*types.PartialSignatureMessages, encodedMessages [][]byte, expectedRoots [][32]byte, expectedErrorCode errcodes.Code) *MsgSpecTest {
 	return &MsgSpecTest{
-		Name:            name,
-		Type:            testdoc.MsgSpecTestType,
-		Documentation:   documentation,
-		Messages:        messages,
-		EncodedMessages: encodedMessages,
-		ExpectedRoots:   expectedRoots,
-		ExpectedError:   expectedError,
+		Name:              name,
+		Type:              testdoc.MsgSpecTestType,
+		Documentation:     documentation,
+		Messages:          messages,
+		EncodedMessages:   encodedMessages,
+		ExpectedRoots:     expectedRoots,
+		ExpectedErrorCode: expectedErrorCode,
 	}
 }

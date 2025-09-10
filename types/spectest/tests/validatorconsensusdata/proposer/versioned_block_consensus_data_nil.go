@@ -5,6 +5,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -29,6 +30,6 @@ func VersionedBlockConsensusDataNil() *ProposerSpecTest {
 		nil,
 		[32]byte{},
 		[32]byte{},
-		"could not unmarshal ssz: incorrect size",
+		errcodes.ErrIncorrectSize,
 	)
 }

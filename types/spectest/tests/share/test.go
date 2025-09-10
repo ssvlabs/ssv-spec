@@ -8,6 +8,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
 	"github.com/stretchr/testify/require"
 )
 
@@ -19,7 +20,7 @@ type ShareTest struct {
 	Message               types.SignedSSVMessage
 	ExpectedHasQuorum     bool
 	ExpectedFullCommittee bool
-	ExpectedError         string
+	ExpectedErrorCode     errcodes.Code
 }
 
 func (test *ShareTest) TestName() string {
@@ -41,8 +42,8 @@ func (test *ShareTest) Run(t *testing.T) {
 
 	// Validate message
 	err := test.Message.Validate()
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, err, test.ExpectedError)
+	if test.ExpectedErrorCode != 0 {
+		require.Equal(t, test.ExpectedErrorCode, errcodes.FromError(err))
 	} else {
 		require.NoError(t, err)
 	}
@@ -50,7 +51,7 @@ func (test *ShareTest) Run(t *testing.T) {
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
 
-func NewShareTest(name, documentation string, share types.Share, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedError string) *ShareTest {
+func NewShareTest(name, documentation string, share types.Share, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedErrorCode errcodes.Code) *ShareTest {
 	return &ShareTest{
 		Name:                  name,
 		Type:                  testdoc.ShareTestType,
@@ -59,6 +60,6 @@ func NewShareTest(name, documentation string, share types.Share, message types.S
 		Message:               message,
 		ExpectedHasQuorum:     expectedHasQuorum,
 		ExpectedFullCommittee: expectedFullCommittee,
-		ExpectedError:         expectedError,
+		ExpectedErrorCode:     expectedErrorCode,
 	}
 }

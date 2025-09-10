@@ -3,6 +3,7 @@ package signedssvmsg
 import (
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -20,7 +21,7 @@ func SignersAndSignaturesWithDifferentLength() *SignedSSVMessageTest {
 				SSVMessage:  testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
-		"number of signatures is different than number of signers",
+		errcodes.ErrSignersSignaturesLengthMismatch,
 		nil,
 	)
 }

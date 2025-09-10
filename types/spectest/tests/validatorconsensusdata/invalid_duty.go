@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -23,6 +24,6 @@ func InvalidDuty() *ValidatorConsensusDataTest {
 		"invalid duty",
 		testdoc.ValidatorConsensusDataTestInvalidDutyDoc,
 		*cd,
-		"unknown duty role",
+		errcodes.ErrUnknownDutyRole,
 	)
 }

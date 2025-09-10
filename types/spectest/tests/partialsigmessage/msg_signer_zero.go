@@ -5,6 +5,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -23,6 +24,6 @@ func MessageSigner0() *MsgSpecTest {
 		[]*types.PartialSignatureMessages{msgPre, msgPost},
 		nil,
 		nil,
-		"message invalid: signer ID 0 not allowed",
+		errcodes.ErrMessageSignerZero,
 	)
 }

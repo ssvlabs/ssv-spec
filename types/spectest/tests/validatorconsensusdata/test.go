@@ -8,15 +8,16 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
 	"github.com/stretchr/testify/require"
 )
 
 type ValidatorConsensusDataTest struct {
-	Name          string
-	Type          string
-	Documentation string
-	ConsensusData types.ValidatorConsensusData
-	ExpectedError string
+	Name              string
+	Type              string
+	Documentation     string
+	ConsensusData     types.ValidatorConsensusData
+	ExpectedErrorCode errcodes.Code
 }
 
 func (test *ValidatorConsensusDataTest) TestName() string {
@@ -27,8 +28,8 @@ func (test *ValidatorConsensusDataTest) Run(t *testing.T) {
 
 	err := test.ConsensusData.Validate()
 
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, err, test.ExpectedError)
+	if test.ExpectedErrorCode != 0 {
+		require.Equal(t, test.ExpectedErrorCode, errcodes.FromError(err))
 	} else {
 		require.NoError(t, err)
 	}
@@ -36,12 +37,12 @@ func (test *ValidatorConsensusDataTest) Run(t *testing.T) {
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
 
-func NewValidatorConsensusDataTest(name, documentation string, consensusData types.ValidatorConsensusData, expectedError string) *ValidatorConsensusDataTest {
+func NewValidatorConsensusDataTest(name, documentation string, consensusData types.ValidatorConsensusData, expectedErrorCode errcodes.Code) *ValidatorConsensusDataTest {
 	return &ValidatorConsensusDataTest{
-		Name:          name,
-		Type:          testdoc.ValidatorConsensusDataTestType,
-		Documentation: documentation,
-		ConsensusData: consensusData,
-		ExpectedError: expectedError,
+		Name:              name,
+		Type:              testdoc.ValidatorConsensusDataTestType,
+		Documentation:     documentation,
+		ConsensusData:     consensusData,
+		ExpectedErrorCode: expectedErrorCode,
 	}
 }

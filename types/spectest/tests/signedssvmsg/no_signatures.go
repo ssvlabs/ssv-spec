@@ -3,6 +3,7 @@ package signedssvmsg
 import (
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -21,7 +22,7 @@ func NoSignatures() *SignedSSVMessageTest {
 				SSVMessage:  testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
-		"no signatures",
+		errcodes.ErrNoSignatures,
 		nil,
 	)
 }

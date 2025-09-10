@@ -5,6 +5,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -23,6 +24,6 @@ func QuorumWithDuplicate() *CommitteeMemberTest {
 		*msg,
 		true,
 		false,
-		"non unique signer",
+		errcodes.ErrNonUniqueSigner,
 	)
 }

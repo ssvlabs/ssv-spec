@@ -3,6 +3,7 @@ package validatorconsensusdata
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -17,7 +18,7 @@ func Phase0InvalidAggregatorValidation() *ValidatorConsensusDataTest {
 		"invalid phase0 aggregator data",
 		testdoc.ValidatorConsensusDataTestInvalidPhase0AggregatorDoc,
 		*cd,
-		"could not unmarshal ssz: incorrect size",
+		errcodes.ErrIncorrectSize,
 	)
 }
 
@@ -32,6 +33,6 @@ func ElectraInvalidAggregatorValidation() *ValidatorConsensusDataTest {
 		"invalid electra aggregator data",
 		testdoc.ValidatorConsensusDataTestInvalidElectraAggregatorDoc,
 		*cd,
-		"could not unmarshal ssz: incorrect size",
+		errcodes.ErrIncorrectSize,
 	)
 }

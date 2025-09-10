@@ -12,6 +12,6 @@ func DenebBlockValidation() *ValidatorConsensusDataTest {
 		"valid deneb block",
 		testdoc.ValidatorConsensusDataTestDenebBlockDoc,
 		*testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb),
-		"",
+		0,
 	)
 }

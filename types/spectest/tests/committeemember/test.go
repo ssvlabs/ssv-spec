@@ -8,6 +8,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
 	"github.com/stretchr/testify/require"
 )
 
@@ -19,7 +20,7 @@ type CommitteeMemberTest struct {
 	Message               types.SignedSSVMessage
 	ExpectedHasQuorum     bool
 	ExpectedFullCommittee bool
-	ExpectedError         string
+	ExpectedErrorCode     errcodes.Code
 }
 
 func (test *CommitteeMemberTest) TestName() string {
@@ -41,8 +42,8 @@ func (test *CommitteeMemberTest) Run(t *testing.T) {
 
 	// Validate message
 	err := test.Message.Validate()
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, err, test.ExpectedError)
+	if test.ExpectedErrorCode != 0 {
+		require.Equal(t, test.ExpectedErrorCode, errcodes.FromError(err))
 	} else {
 		require.NoError(t, err)
 	}
@@ -57,7 +58,7 @@ func (test *CommitteeMemberTest) Run(t *testing.T) {
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
 
-func NewCommitteeMemberTest(name, documentation string, committeeMember types.CommitteeMember, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedError string) *CommitteeMemberTest {
+func NewCommitteeMemberTest(name, documentation string, committeeMember types.CommitteeMember, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedErrorCode errcodes.Code) *CommitteeMemberTest {
 	return &CommitteeMemberTest{
 		Name:                  name,
 		Type:                  testdoc.CommitteeMemberTestType,
@@ -66,6 +67,6 @@ func NewCommitteeMemberTest(name, documentation string, committeeMember types.Co
 		Message:               message,
 		ExpectedHasQuorum:     expectedHasQuorum,
 		ExpectedFullCommittee: expectedFullCommittee,
-		ExpectedError:         expectedError,
+		ExpectedErrorCode:     expectedErrorCode,
 	}
 }

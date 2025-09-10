@@ -12,6 +12,6 @@ func ElectraBlockValidation() *ValidatorConsensusDataTest {
 		"valid electra block",
 		testdoc.ValidatorConsensusDataTestElectraBlockDoc,
 		*testingutils.TestProposerConsensusDataV(spec.DataVersionElectra),
-		"",
+		0,
 	)
 }

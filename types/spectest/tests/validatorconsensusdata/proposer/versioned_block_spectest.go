@@ -11,18 +11,19 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/errcodes"
 )
 
 type ProposerSpecTest struct {
-	Name            string
-	Type            string
-	Documentation   string
-	Blinded         bool
-	DataCd          []byte
-	DataBlk         []byte
-	ExpectedBlkRoot types.ExpectedBlkRoot
-	ExpectedCdRoot  types.ExpectedCdRoot
-	ExpectedError   string
+	Name              string
+	Type              string
+	Documentation     string
+	Blinded           bool
+	DataCd            []byte
+	DataBlk           []byte
+	ExpectedBlkRoot   types.ExpectedBlkRoot
+	ExpectedCdRoot    types.ExpectedCdRoot
+	ExpectedErrorCode errcodes.Code
 }
 
 func (test *ProposerSpecTest) TestName() string {
@@ -37,8 +38,8 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 	if test.Blinded {
 		// blk data
 		vBlk, hashRoot, err := cd.GetBlindedBlockData()
-		if len(test.ExpectedError) != 0 {
-			require.EqualError(t, err, test.ExpectedError)
+		if test.ExpectedErrorCode != 0 {
+			require.Equal(t, test.ExpectedErrorCode, errcodes.FromError(err))
 			return
 		}
 		require.NoError(t, err)
@@ -76,8 +77,8 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 	} else {
 		// blk data
 		vBlk, hashRoot, err := cd.GetBlockData()
-		if len(test.ExpectedError) != 0 {
-			require.EqualError(t, err, test.ExpectedError)
+		if test.ExpectedErrorCode != 0 {
+			require.Equal(t, test.ExpectedErrorCode, errcodes.FromError(err))
 			return
 		}
 
@@ -127,16 +128,16 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
 
-func NewProposerSpecTest(name string, documentation string, blinded bool, dataCd []byte, dataBlk []byte, expectedBlkRoot [32]byte, expectedCdRoot [32]byte, expectedError string) *ProposerSpecTest {
+func NewProposerSpecTest(name string, documentation string, blinded bool, dataCd []byte, dataBlk []byte, expectedBlkRoot [32]byte, expectedCdRoot [32]byte, expectedErrorCode errcodes.Code) *ProposerSpecTest {
 	return &ProposerSpecTest{
-		Name:            name,
-		Type:            testdoc.ProposerSpecTestType,
-		Documentation:   documentation,
-		Blinded:         blinded,
-		DataCd:          dataCd,
-		DataBlk:         dataBlk,
-		ExpectedBlkRoot: expectedBlkRoot,
-		ExpectedCdRoot:  expectedCdRoot,
-		ExpectedError:   expectedError,
+		Name:              name,
+		Type:              testdoc.ProposerSpecTestType,
+		Documentation:     documentation,
+		Blinded:           blinded,
+		DataCd:            dataCd,
+		DataBlk:           dataBlk,
+		ExpectedBlkRoot:   expectedBlkRoot,
+		ExpectedCdRoot:    expectedCdRoot,
+		ExpectedErrorCode: expectedErrorCode,
 	}
 }

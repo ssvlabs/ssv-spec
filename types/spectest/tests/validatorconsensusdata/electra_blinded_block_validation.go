@@ -12,6 +12,6 @@ func ElectraBlindedBlockValidation() *ValidatorConsensusDataTest {
 		"valid electra blinded block",
 		testdoc.ValidatorConsensusDataTestElectraBlindedBlockDoc,
 		*testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionElectra),
-		"",
+		0,
 	)
 }

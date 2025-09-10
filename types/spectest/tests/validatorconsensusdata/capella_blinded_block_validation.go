@@ -12,6 +12,6 @@ func CapellaBlindedBlockValidation() *ValidatorConsensusDataTest {
 		"valid capella blinded block",
 		testdoc.ValidatorConsensusDataTestCapellaBlindedBlockDoc,
 		*testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionCapella),
-		"",
+		0,
 	)
 }

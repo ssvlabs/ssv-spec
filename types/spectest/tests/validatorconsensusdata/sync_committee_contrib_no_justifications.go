@@ -22,6 +22,6 @@ func SyncCommitteeContributionNoJustifications() *ValidatorConsensusDataTest {
 		"sync committee contribution with no pre-consensus justification",
 		testdoc.ValidatorConsensusDataTestSyncCommitteeContributionNoJustificationsDoc,
 		cd,
-		"",
+		0,
 	)
 }

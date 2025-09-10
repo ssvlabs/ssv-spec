@@ -20,6 +20,6 @@ func ValidContributionProofMetaData() *MsgSpecTest {
 		[]*types.PartialSignatureMessages{msg},
 		nil,
 		nil,
-		"",
+		0,
 	)
 }
