@@ -32,6 +32,6 @@ func VersionedBlindedBlockUnknownVersion() *ProposerSpecTest {
 		nil,
 		[32]byte{},
 		[32]byte{},
-		fmt.Sprintf("unknown block version %s", unknownDataVersion.String()),
+		fmt.Sprintf("unknown block version %d", unknownDataVersion),
 	)
 }
