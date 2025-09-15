@@ -23,6 +23,5 @@ generate-jsons:
 
 .PHONY: generate-ssz
 generate-ssz:
-	@go generate ./qbft/
-	@go generate ./ssv/
-	@go generate ./types/
+	@bash ./scripts/generate_qbft_ssz.sh
+	@bash ./scripts/generate_types_ssz.sh
