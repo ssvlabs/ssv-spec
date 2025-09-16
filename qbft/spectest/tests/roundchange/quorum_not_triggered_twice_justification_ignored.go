@@ -17,7 +17,7 @@ func QuorumNotTriggeredTwiceJustificationIgnored() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = nil // proposal resets on upon timeout
 	pre.State.Round = 2
-	testData := []byte{1, 2}
+	testData := testingutils.TestingQBFTFullData
 	testDataRoot := sha256.Sum256(testData)
 
 	prepareMsgs := []*types.SignedSSVMessage{

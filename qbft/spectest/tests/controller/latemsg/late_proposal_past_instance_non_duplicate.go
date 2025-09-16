@@ -19,7 +19,7 @@ func LateProposalPastInstanceNonDuplicate() tests.SpecTest {
 
 	scFirstHeight := lateProposalPastInstanceStateComparison(qbft.FirstHeight, nil)
 	instanceData := &tests.RunInstanceData{
-		InputValue:    []byte{1, 2, 3, 4},
+		InputValue:    testingutils.TestingQBFTFullData,
 		InputMessages: allMsgsForFirstHeight,
 		ExpectedDecidedState: tests.DecidedState{
 			DecidedVal: testingutils.TestingQBFTFullData,
@@ -45,7 +45,7 @@ func LateProposalPastInstanceNonDuplicate() tests.SpecTest {
 		[]*tests.RunInstanceData{
 			instanceData,
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					lateMsg,
 				},

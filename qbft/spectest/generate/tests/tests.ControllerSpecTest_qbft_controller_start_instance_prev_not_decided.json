@@ -4,9 +4,9 @@
   "Documentation": "Test starting a new QBFT instance when the previous instance has not decided.",
   "RunInstanceData": [
     {
-      "InputValue": "AQIDBA==",
+      "InputValue": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw==",
       "InputMessages": null,
-      "ControllerPostRoot": "3add49b635da6d8f6118af8969327b0ef70454016342ff0c2079e6694f8a1d3f",
+      "ControllerPostRoot": "ba6c314a00d6dc9ed2aed02f8b8f04b92081671959d186b79e945fca8e36f466",
       "ExpectedTimerState": null,
       "ExpectedDecidedState": {
         "DecidedVal": null,
@@ -15,9 +15,9 @@
       }
     },
     {
-      "InputValue": "AQIDBA==",
+      "InputValue": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw==",
       "InputMessages": null,
-      "ControllerPostRoot": "39e2cdbaa20c33cad92e88ae2e893e487a78690e5bb15b1ed715e93082ff7ce5",
+      "ControllerPostRoot": "cc81a2ecaab22e00484c6b5e0e99a5ec30f1edb1b7174e9cf033b680a24c620b",
       "ExpectedTimerState": null,
       "ExpectedDecidedState": {
         "DecidedVal": null,

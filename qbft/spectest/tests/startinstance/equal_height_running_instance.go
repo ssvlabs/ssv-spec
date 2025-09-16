@@ -4,6 +4,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // EqualHeightRunningInstance tests starting an instance for height equal to a running instance
@@ -15,11 +16,11 @@ func EqualHeightRunningInstance() tests.SpecTest {
 		testdoc.StartInstanceEqualHeightRunningInstanceDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				Height:     &height,
 			},
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				Height:     &height,
 			},
 		},
