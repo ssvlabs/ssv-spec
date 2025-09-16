@@ -4,7 +4,7 @@
   "Documentation": "Test starting a new QBFT instance with valid input value and timer state.",
   "RunInstanceData": [
     {
-      "InputValue": "AQIDBA==",
+      "InputValue": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw==",
       "InputMessages": null,
       "ControllerPostRoot": "",
       "ExpectedTimerState": {

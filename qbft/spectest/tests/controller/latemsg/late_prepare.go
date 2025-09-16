@@ -27,7 +27,7 @@ func LatePrepare() tests.SpecTest {
 		testdoc.ControllerLateMsgLatePrepareDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue:    []byte{1, 2, 3, 4},
+				InputValue:    testingutils.TestingQBFTFullData,
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: testingutils.TestingQBFTFullData,
@@ -75,7 +75,7 @@ func latePrepareStateComparison() *comparable.StateComparison {
 	)
 
 	instance := &qbft.Instance{
-		StartValue: []byte{1, 2, 3, 4},
+		StartValue: testingutils.TestingQBFTFullData,
 		State: &qbft.State{
 			CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 			ID:              testingutils.TestingIdentifier,

@@ -27,7 +27,7 @@ func LateRoundChangePastInstance() tests.SpecTest {
 	instanceData := func(height qbft.Height) *tests.RunInstanceData {
 		sc := lateRoundChangePastInstanceStateComparison(height, nil)
 		return &tests.RunInstanceData{
-			InputValue:    []byte{1, 2, 3, 4},
+			InputValue:    testingutils.TestingQBFTFullData,
 			InputMessages: msgPerHeight[height],
 			ExpectedDecidedState: tests.DecidedState{
 				BroadcastedDecided: testingutils.TestingCommitMultiSignerMessageWithHeight(
@@ -57,7 +57,7 @@ func LateRoundChangePastInstance() tests.SpecTest {
 			instanceData(qbft.FirstHeight),
 			instanceData(1),
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingMultiSignerRoundChangeMessageWithHeight(
 						[]*rsa.PrivateKey{ks.OperatorKeys[4]},
@@ -102,7 +102,7 @@ func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *typ
 		contr.Height = qbft.Height(i)
 
 		instance := &qbft.Instance{
-			StartValue: []byte{1, 2, 3, 4},
+			StartValue: testingutils.TestingQBFTFullData,
 			State: &qbft.State{
 				CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 				ID:              testingutils.TestingIdentifier,

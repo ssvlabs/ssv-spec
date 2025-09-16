@@ -20,7 +20,7 @@ func BroadcastedDecided() tests.SpecTest {
 		testdoc.ControllerProcessMsgBroadcastedDecidedDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(
 					testingutils.TestingQBFTRootData,
 					testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks,
@@ -64,7 +64,7 @@ func broadcastedDecidedStateComparison() *comparable.StateComparison {
 	)
 
 	instance := &qbft.Instance{
-		StartValue: []byte{1, 2, 3, 4},
+		StartValue: testingutils.TestingQBFTFullData,
 		State: &qbft.State{
 			CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 			ID:              testingutils.TestingIdentifier,
