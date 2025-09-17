@@ -3,7 +3,7 @@ module github.com/ssvlabs/ssv-spec
 go 1.22
 
 require (
-	// TODO: Update go-eth2-client when a stable version is released.
+	// TODO(fulu): Update go-eth2-client when a stable version with Fulu support is released.
 	github.com/attestantio/go-eth2-client v0.26.1-0.20250829122455-ff89a2135a43
 	github.com/ethereum/go-ethereum v1.14.8
 	github.com/ferranbt/fastssz v0.1.4

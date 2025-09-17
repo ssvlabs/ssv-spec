@@ -46,8 +46,7 @@ func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 }
 
 // GetAttestationData returns attestation data by the given slot and committee index
-func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot) (*phase0.
-AttestationData, spec.DataVersion, error) {
+func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot) (*phase0.AttestationData, spec.DataVersion, error) {
 	version := VersionBySlot(slot)
 	data := *TestingAttestationData(version)
 	data.Slot = slot
