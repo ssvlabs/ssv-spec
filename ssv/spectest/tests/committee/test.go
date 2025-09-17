@@ -2,6 +2,7 @@ package committee
 
 import (
 	"encoding/hex"
+	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -10,6 +11,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
+
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
@@ -165,7 +167,7 @@ func (tests *MultiCommitteeSpecTest) GetPostState() (interface{}, error) {
 	for _, test := range tests.Tests {
 		err := test.runPreTesting()
 		if err != nil && test.ExpectedError != err.Error() {
-			return nil, err
+			return nil, fmt.Errorf("expected error: %s, got: %s", test.ExpectedError, err)
 		}
 		ret[test.Name] = test.Committee
 	}

@@ -37,7 +37,7 @@ func FutureMessage() tests.SpecTest {
 		return signed
 	}
 
-	expectedError := "failed processing consensus message: future msg from height, could not process"
+	expectedError := "failed processing consensus message: future consensus msg: future msg from height, could not process"
 	expectedErrorCommittee := "no runner found for message's slot"
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(

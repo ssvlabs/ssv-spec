@@ -121,7 +121,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "failed processing sync committee selection proof message: invalid pre-consensus message: invalid partial sig slot",
+      "ExpectedError": "failed processing sync committee selection proof message: invalid pre-consensus message: future partial sig msg, message slot: 50, want slot: 12",
       "ValidatorDuty": {
         "Type": 4,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -244,7 +244,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "failed processing randao message: invalid pre-consensus message: invalid partial sig slot",
+      "ExpectedError": "failed processing randao message: invalid pre-consensus message: invalid partial sig slot: 50, want: 7413760",
       "ValidatorDuty": {
         "Type": 2,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -363,7 +363,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "failed processing randao message: invalid pre-consensus message: invalid partial sig slot",
+      "ExpectedError": "failed processing randao message: invalid pre-consensus message: invalid partial sig slot: 50, want: 7413760",
       "ValidatorDuty": {
         "Type": 2,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -453,7 +453,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "failed processing validator registration message: invalid pre-consensus message: invalid partial sig slot",
+      "ExpectedError": "failed processing validator registration message: invalid pre-consensus message: future partial sig msg, message slot: 50, want slot: 12",
       "ValidatorDuty": {
         "Type": 5,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -543,7 +543,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "failed processing voluntary exit message: invalid pre-consensus message: invalid partial sig slot",
+      "ExpectedError": "failed processing voluntary exit message: invalid pre-consensus message: future partial sig msg, message slot: 50, want slot: 12",
       "ValidatorDuty": {
         "Type": 6,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -662,7 +662,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "failed processing selection proof message: invalid pre-consensus message: invalid partial sig slot",
+      "ExpectedError": "failed processing selection proof message: invalid pre-consensus message: future partial sig msg, message slot: 50, want slot: 12",
       "ValidatorDuty": {
         "Type": 1,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -781,7 +781,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "failed processing selection proof message: invalid pre-consensus message: invalid partial sig slot",
+      "ExpectedError": "failed processing selection proof message: invalid pre-consensus message: invalid partial sig slot: 50, want: 7424012",
       "ValidatorDuty": {
         "Type": 1,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
