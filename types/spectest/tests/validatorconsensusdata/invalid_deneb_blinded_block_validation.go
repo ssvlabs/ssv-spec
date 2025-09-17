@@ -20,6 +20,6 @@ func InvalidDenebBlindedBlockValidation() *ValidatorConsensusDataTest {
 		"invalid deneb blinded block",
 		testdoc.ValidatorConsensusDataTestInvalidDenebBlindedBlockDoc,
 		*cd,
-		"could not unmarshal ssz: incorrect size",
+		"could not unmarshal ssz (blinded err: incorrect size, regular err: incorrect size)",
 	)
 }

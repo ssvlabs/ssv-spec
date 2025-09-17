@@ -10,11 +10,10 @@ import (
 // ==================================================
 
 const (
+	ForkEpochFulu = 242000
 
-	// Electra Fork Epoch: TODO - update to the correct value
 	ForkEpochPraterElectra = 232000
 
-	//Deneb Fork Epoch
 	ForkEpochPraterDeneb = 231680
 
 	// ForkEpochPraterCapella Goerli taken from https://github.com/ethereum/execution-specs/blob/37a8f892341eb000e56e962a051a87e05a2e4443/network-upgrades/mainnet-upgrades/shanghai.md?plain=1#L18
@@ -55,6 +54,11 @@ const (
 	TestingDutySlotElectra          = ForkEpochPraterElectra*32 + 12
 	TestingDutySlotElectraNextEpoch = TestingDutySlotElectra + 32
 	TestingDutySlotElectraInvalid   = TestingDutySlotElectra + 50
+
+	TestingDutyEpochFulu         = ForkEpochFulu
+	TestingDutySlotFulu          = ForkEpochFulu*32 + 12
+	TestingDutySlotFuluNextEpoch = TestingDutySlotFulu + 32
+	TestingDutySlotFuluInvalid   = TestingDutySlotFulu + 50
 )
 
 var TestingDutyEpochV = func(version spec.DataVersion) phase0.Epoch {
@@ -71,6 +75,8 @@ var TestingDutyEpochV = func(version spec.DataVersion) phase0.Epoch {
 		return TestingDutyEpochDeneb
 	case spec.DataVersionElectra:
 		return TestingDutyEpochElectra
+	case spec.DataVersionFulu:
+		return TestingDutyEpochFulu
 
 	default:
 		panic("unsupported version")
@@ -91,6 +97,8 @@ var TestingDutySlotV = func(version spec.DataVersion) phase0.Slot {
 		return TestingDutySlotDeneb
 	case spec.DataVersionElectra:
 		return TestingDutySlotElectra
+	case spec.DataVersionFulu:
+		return TestingDutySlotFulu
 
 	default:
 		panic("unsupported version")
@@ -98,7 +106,6 @@ var TestingDutySlotV = func(version spec.DataVersion) phase0.Slot {
 }
 
 var TestingDutySlotNextEpochV = func(version spec.DataVersion) phase0.Slot {
-
 	switch version {
 	case spec.DataVersionPhase0:
 		return TestingDutySlotPhase0NextEpoch
@@ -112,6 +119,8 @@ var TestingDutySlotNextEpochV = func(version spec.DataVersion) phase0.Slot {
 		return TestingDutySlotDenebNextEpoch
 	case spec.DataVersionElectra:
 		return TestingDutySlotElectraNextEpoch
+	case spec.DataVersionFulu:
+		return TestingDutySlotFuluNextEpoch
 
 	default:
 		panic("unsupported version")
@@ -132,6 +141,8 @@ var TestingInvalidDutySlotV = func(version spec.DataVersion) phase0.Slot {
 		return TestingDutySlotDenebInvalid
 	case spec.DataVersionElectra:
 		return TestingDutySlotElectraInvalid
+	case spec.DataVersionFulu:
+		return TestingDutySlotFuluInvalid
 
 	default:
 		panic("unsupported version")
@@ -149,8 +160,11 @@ var VersionBySlot = func(slot phase0.Slot) spec.DataVersion {
 		return spec.DataVersionCapella
 	} else if slot < ForkEpochPraterElectra*32 {
 		return spec.DataVersionDeneb
+	} else if slot < ForkEpochFulu*32 {
+		return spec.DataVersionElectra
 	}
-	return spec.DataVersionElectra
+
+	return spec.DataVersionFulu
 }
 
 var VersionByEpoch = func(epoch phase0.Epoch) spec.DataVersion {
@@ -164,6 +178,8 @@ var VersionByEpoch = func(epoch phase0.Epoch) spec.DataVersion {
 		return spec.DataVersionCapella
 	} else if epoch < ForkEpochPraterElectra {
 		return spec.DataVersionDeneb
+	} else if epoch < ForkEpochFulu {
+		return spec.DataVersionElectra
 	}
-	return spec.DataVersionElectra
+	return spec.DataVersionFulu
 }

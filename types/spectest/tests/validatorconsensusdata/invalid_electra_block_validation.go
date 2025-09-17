@@ -21,6 +21,6 @@ func InvalidElectraBlockValidation() *ValidatorConsensusDataTest {
 		"invalid electra block",
 		testdoc.ValidatorConsensusDataTestInvalidElectraBlockDoc,
 		*cd,
-		"could not unmarshal ssz: incorrect size",
+		"could not unmarshal ssz (blinded err: incorrect size, regular err: incorrect size)",
 	)
 }

@@ -7,5 +7,5 @@
   "DataBlk": null,
   "ExpectedBlkRoot": "0000000000000000000000000000000000000000000000000000000000000000",
   "ExpectedCdRoot": "0000000000000000000000000000000000000000000000000000000000000000",
-  "ExpectedError": "unknown block version unknown"
+  "ExpectedError": "unknown block version 100"
 }

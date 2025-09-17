@@ -8,6 +8,7 @@ import (
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/go-bitfield"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -511,7 +512,6 @@ func constructAttestationData(vote *types.BeaconVote, duty *types.ValidatorDuty,
 }
 
 func VersionedAttestationWithSignature(att *spec.VersionedAttestation, specSig phase0.BLSSignature) (*spec.VersionedAttestation, error) {
-
 	switch att.Version {
 	case spec.DataVersionPhase0:
 		if att.Phase0 == nil {
@@ -543,8 +543,13 @@ func VersionedAttestationWithSignature(att *spec.VersionedAttestation, specSig p
 			return att, errors.New("no Electra attestation")
 		}
 		att.Electra.Signature = specSig
+	case spec.DataVersionFulu:
+		if att.Fulu == nil {
+			return att, errors.New("no Fulu attestation")
+		}
+		att.Fulu.Signature = specSig
 	default:
-		return att, errors.New("unknown version")
+		return nil, errors.Errorf("unknown version: %s", att.Version)
 	}
 
 	return att, nil
@@ -574,7 +579,6 @@ func ConstructElectraAttestationWithoutSignature(attestationData *phase0.Attesta
 }
 
 func ConstructVersionedAttestationWithoutSignature(attestationData *phase0.AttestationData, dataVersion spec.DataVersion, validatorDuty *types.ValidatorDuty) (*spec.VersionedAttestation, error) {
-
 	ret := &spec.VersionedAttestation{
 		Version:        dataVersion,
 		ValidatorIndex: &validatorDuty.ValidatorIndex,
@@ -598,6 +602,9 @@ func ConstructVersionedAttestationWithoutSignature(attestationData *phase0.Attes
 		return ret, nil
 	case spec.DataVersionElectra:
 		ret.Electra = ConstructElectraAttestationWithoutSignature(attestationData, validatorDuty)
+		return ret, nil
+	case spec.DataVersionFulu:
+		ret.Fulu = ConstructElectraAttestationWithoutSignature(attestationData, validatorDuty)
 		return ret, nil
 	default:
 		return nil, errors.New("unknown version")

@@ -7,5 +7,5 @@
   "DataBlk": null,
   "ExpectedBlkRoot": "0000000000000000000000000000000000000000000000000000000000000000",
   "ExpectedCdRoot": "0000000000000000000000000000000000000000000000000000000000000000",
-  "ExpectedError": "could not unmarshal ssz: incorrect size"
+  "ExpectedError": "could not unmarshal ssz (blinded err: incorrect size, regular err: incorrect size)"
 }
