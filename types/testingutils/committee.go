@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -20,8 +21,8 @@ var BaseCommittee = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet) *ssv.C
 		shareMap[valIdx] = TestingShare(ks, valIdx)
 	}
 
-	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) *ssv.CommitteeRunner {
-		return CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)
+	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+		return CommitteeRunnerWithShareMap(shareMap)
 	}
 	return ssv.NewCommittee(
 		*TestingCommitteeMember(keySetSample),
@@ -30,7 +31,7 @@ var BaseCommittee = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet) *ssv.C
 	)
 }
 
-var BaseCommitteeWithRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, runner *ssv.CommitteeRunner) *ssv.Committee {
+var BaseCommitteeWithRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, runner ssv.Runner) *ssv.Committee {
 
 	var keySetSample *TestKeySet
 	for _, ks := range keySetMap {
@@ -43,7 +44,7 @@ var BaseCommitteeWithRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeyS
 		shareMap[valIdx] = TestingShare(ks, valIdx)
 	}
 
-	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) *ssv.CommitteeRunner {
+	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
 		return runner
 	}
 
@@ -67,7 +68,7 @@ var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.Validat
 		shareMap[valIdx] = TestingShare(ks, valIdx)
 	}
 
-	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) *ssv.CommitteeRunner {
+	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
 		runner, err := ssv.NewCommitteeRunner(
 			runnerSample.BaseRunner.BeaconNetwork,
 			shareMap,
@@ -86,7 +87,48 @@ var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.Validat
 		if err != nil {
 			panic(err)
 		}
-		return runner.(*ssv.CommitteeRunner)
+		return runner
+	}
+
+	return ssv.NewCommittee(
+		*TestingCommitteeMember(keySetSample),
+		shareMap,
+		createRunnerF,
+	)
+}
+
+var BaseAggregatorCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, runnerSample *ssv.AggregatorCommitteeRunner) *ssv.Committee {
+	var keySetSample *TestKeySet
+	for _, ks := range keySetMap {
+		keySetSample = ks
+		break
+	}
+
+	shareMap := make(map[phase0.ValidatorIndex]*types.Share)
+	for valIdx, ks := range keySetMap {
+		shareMap[valIdx] = TestingShare(ks, valIdx)
+	}
+
+	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+		runner, err := ssv.NewAggregatorCommitteeRunner(
+			runnerSample.BaseRunner.BeaconNetwork,
+			shareMap,
+			qbft.NewController(
+				runnerSample.BaseRunner.QBFTController.Identifier,
+				runnerSample.BaseRunner.QBFTController.CommitteeMember,
+				runnerSample.BaseRunner.QBFTController.GetConfig(),
+				TestingOperatorSigner(keySetSample),
+			),
+			NewTestingBeaconNode(),
+			NewTestingNetwork(1, keySetSample.OperatorKeys[1]),
+			runnerSample.GetSigner(),
+			runnerSample.GetOperatorSigner(),
+			runnerSample.GetValCheckF(),
+		)
+		if err != nil {
+			panic(err)
+		}
+		return runner
 	}
 
 	return ssv.NewCommittee(

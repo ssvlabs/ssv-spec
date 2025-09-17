@@ -168,3 +168,28 @@ func SyncCommitteeContributionValueCheckF(
 		return nil
 	}
 }
+
+func AggregatorCommitteeValueCheckF(
+	signer types.BeaconSigner,
+	network types.BeaconNetwork,
+) qbft.ProposedValueCheckF {
+	return func(data []byte) error {
+		cd := &types.AggregatorCommitteeConsensusData{}
+		if err := cd.Decode(data); err != nil {
+			return errors.Wrap(err, "failed decoding aggregator committee consensus data")
+		}
+		if err := cd.Validate(); err != nil {
+			return errors.Wrap(err, "invalid value")
+		}
+
+		// Basic validation - consensus data should have either aggregator or sync committee data
+		hasAggregators := len(cd.Aggregators) > 0
+		hasContributors := len(cd.Contributors) > 0
+		
+		if !hasAggregators && !hasContributors {
+			return errors.New("no aggregators or sync committee contributors in consensus data")
+		}
+
+		return nil
+	}
+}

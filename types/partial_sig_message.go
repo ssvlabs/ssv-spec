@@ -20,6 +20,8 @@ const (
 	ValidatorRegistrationPartialSig
 	// VoluntaryExitPartialSig is a partial signature over a VoluntaryExit object
 	VoluntaryExitPartialSig
+	// AggregatorCommitteePartialSig is a partial signature for combined aggregator and sync committee selection proofs
+	AggregatorCommitteePartialSig
 )
 
 type PartialSignatureMessages struct {
