@@ -11,21 +11,21 @@ import (
 func CreateProposalNotPreviouslyPrepared() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	roundChangeJustifications := []*types.SignedSSVMessage{
-		testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
-		testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
-		testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 10),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 10),
+		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 10),
 	}
 
 	test := tests.NewCreateMsgSpecTest(
 		"create proposal not previously prepared",
 		testdoc.MessagesCreateProposalNotPrevPreparedDoc,
-		[32]byte{1, 2, 3, 4},
-		nil,
+		testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData,
 		10,
 		roundChangeJustifications,
 		nil,
 		tests.CreateProposal,
-		"6a2917ae827e875a646e88ebb1d483a0a99e4f321e7f063138e99a7e7b08794e",
+		"ebe29a35a3862c7f720568f6aea8273e522d2a4307e84eb08b91fe2fbd8a2920",
 		nil,
 		"",
 		ks,

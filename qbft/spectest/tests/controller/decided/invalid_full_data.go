@@ -25,7 +25,7 @@ func InvalidFullData() tests.SpecTest {
 		testdoc.ControllerDecidedInvalidFullDataDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					msg,
 				},

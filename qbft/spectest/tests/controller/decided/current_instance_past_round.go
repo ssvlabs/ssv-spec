@@ -44,7 +44,7 @@ func CurrentInstancePastRound() tests.SpecTest {
 		testdoc.ControllerDecidedCurrentInstancePastRoundDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue:    []byte{1, 2, 3, 4},
+				InputValue:    testingutils.TestingQBFTFullData,
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt: 1,

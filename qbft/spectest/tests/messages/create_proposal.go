@@ -3,6 +3,7 @@ package messages
 import (
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // CreateProposal tests creating a proposal msg, not previously prepared
@@ -10,13 +11,13 @@ func CreateProposal() tests.SpecTest {
 	return tests.NewCreateMsgSpecTest(
 		"create proposal",
 		testdoc.MessagesCreateProposalDoc,
-		[32]byte{1, 2, 3, 4},
-		nil,
+		testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData,
 		10,
 		nil,
 		nil,
 		tests.CreateProposal,
-		"43c23219aaf744537a2e8b3896937a2e9aa24a8eaf8fcabf8ec7376f76669f3c",
+		"a3225c24c7a759c09ecc69d4df1d5727a9ea417685b0084809377a285693cd48",
 		nil,
 		"",
 		nil,

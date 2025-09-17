@@ -16,12 +16,12 @@ func PreviousNotDecided() tests.SpecTest {
 		testdoc.StartInstancePrevNotDecidedDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue:          []byte{1, 2, 3, 4},
+				InputValue:          testingutils.TestingQBFTFullData,
 				ControllerPostRoot:  previousNotDecided1SC().Root(),
 				ControllerPostState: previousNotDecided1SC().ExpectedState,
 			},
 			{
-				InputValue:          []byte{1, 2, 3, 4},
+				InputValue:          testingutils.TestingQBFTFullData,
 				ControllerPostRoot:  previousNotDecided2SC().Root(),
 				ControllerPostState: previousNotDecided2SC().ExpectedState,
 			},
@@ -51,7 +51,7 @@ func previousNotDecided1SC() *qbftcomparable.StateComparison {
 			Height:            qbft.FirstHeight,
 			LastPreparedRound: qbft.NoRound,
 		},
-		StartValue: []byte{1, 2, 3, 4},
+		StartValue: testingutils.TestingQBFTFullData,
 	}
 	qbftcomparable.SetMessages(instance, []*types.SignedSSVMessage{})
 	contr.StoredInstances = append(contr.StoredInstances, instance)
@@ -76,7 +76,7 @@ func previousNotDecided2SC() *qbftcomparable.StateComparison {
 			Height:            qbft.FirstHeight,
 			LastPreparedRound: qbft.NoRound,
 		},
-		StartValue: []byte{1, 2, 3, 4},
+		StartValue: testingutils.TestingQBFTFullData,
 	}
 	qbftcomparable.SetMessages(instance1, []*types.SignedSSVMessage{})
 	instance1.ForceStop()
@@ -89,7 +89,7 @@ func previousNotDecided2SC() *qbftcomparable.StateComparison {
 			Height:            1,
 			LastPreparedRound: qbft.NoRound,
 		},
-		StartValue: []byte{1, 2, 3, 4},
+		StartValue: testingutils.TestingQBFTFullData,
 	}
 	qbftcomparable.SetMessages(instance2, []*types.SignedSSVMessage{})
 	contr.StoredInstances = []*qbft.Instance{instance2, instance1}

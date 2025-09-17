@@ -159,7 +159,7 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	err = msg.Validate()
 	require.NoError(t, err)
 
-	qbftMsg := &qbft.Message{}
+	qbftMsg:= &qbft.Message{}
 	err = qbftMsg.Decode(msg.SSVMessage.Data)
 	require.NoError(t, err)
 
@@ -207,7 +207,8 @@ func (test *CreateMsgSpecTest) createProposal() (*types.SignedSSVMessage, error)
 	}
 	signer := testingutils.TestingOperatorSigner(ks)
 
-	return qbft.CreateProposal(state, signer, test.Value[:], testingutils.ToProcessingMessages(test.
+	// Use StateValue (full data) instead of Value (which is already a hash)
+	return qbft.CreateProposal(state, signer, test.StateValue, testingutils.ToProcessingMessages(test.
 		RoundChangeJustifications), testingutils.ToProcessingMessages(test.PrepareJustifications))
 }
 
@@ -237,7 +238,8 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 		}
 	}
 
-	return qbft.CreateRoundChange(state, signer, qbft.FirstRound, test.Value[:])
+	// Use StateValue (full data) instead of Value (which is already a hash)
+	return qbft.CreateRoundChange(state, signer, qbft.FirstRound, test.StateValue)
 }
 
 func (test *CreateMsgSpecTest) TestName() string {
