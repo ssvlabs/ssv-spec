@@ -65,6 +65,10 @@ var AllTests = []SpecTest{
 	validatorconsensusdata.ElectraBlindedBlockValidation(),
 	validatorconsensusdata.InvalidElectraBlockValidation(),
 	validatorconsensusdata.InvalidElectraBlindedBlockValidation(),
+	validatorconsensusdata.FuluBlockValidation(),
+	validatorconsensusdata.FuluBlindedBlockValidation(),
+	validatorconsensusdata.InvalidFuluBlockValidation(),
+	validatorconsensusdata.InvalidFuluBlindedBlockValidation(),
 
 	validatorconsensusdata.Phase0AggregatorConsensusDataEncoding(),
 	validatorconsensusdata.Phase0AggregatorValidation(),

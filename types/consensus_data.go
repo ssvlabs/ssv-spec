@@ -5,6 +5,7 @@ import (
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
 	apiv1deneb "github.com/attestantio/go-eth2-client/api/v1/deneb"
 	apiv1electra "github.com/attestantio/go-eth2-client/api/v1/electra"
+	apiv1fulu "github.com/attestantio/go-eth2-client/api/v1/fulu"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
@@ -161,25 +162,18 @@ type ValidatorConsensusData struct {
 	DataSSZ []byte `ssz-max:"8388608"` // 2^23 to account for potential gas limit increases
 }
 
-func (cid *ValidatorConsensusData) Validate() error {
-	switch cid.Duty.Type {
+func (cd *ValidatorConsensusData) Validate() error {
+	switch cd.Duty.Type {
 	case BNRoleAggregator:
-		if _, _, err := cid.GetAggregateAndProof(); err != nil {
+		if _, _, err := cd.GetAggregateAndProof(); err != nil {
 			return err
 		}
 	case BNRoleProposer:
-		var err1, err2 error
-		_, _, err1 = cid.GetBlockData()
-		_, _, err2 = cid.GetBlindedBlockData()
-
-		if err1 != nil && err2 != nil {
-			return err1
-		}
-		if err1 == nil && err2 == nil {
-			return errors.New("no beacon data")
+		if _, _, err := cd.GetBlockData(); err != nil {
+			return err
 		}
 	case BNRoleSyncCommitteeContribution:
-		if _, err := cid.GetSyncCommitteeContributions(); err != nil {
+		if _, err := cd.GetSyncCommitteeContributions(); err != nil {
 			return err
 		}
 	case BNRoleValidatorRegistration:
@@ -192,126 +186,138 @@ func (cid *ValidatorConsensusData) Validate() error {
 	return nil
 }
 
-// GetBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
-func (ci *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot ssz.HashRoot, err error) {
-	switch ci.Version {
+// GetBlockData returns block data for both blinded and regular blocks
+func (cd *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot ssz.HashRoot, err error) {
+	switch cd.Version {
 	case spec.DataVersionCapella:
-		ret := &capella.BeaconBlock{}
-		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		blindedBlock := &apiv1capella.BlindedBeaconBlock{}
+		blindedErr := blindedBlock.UnmarshalSSZ(cd.DataSSZ)
+		if blindedErr == nil {
+			return &api.VersionedProposal{Version: cd.Version, Blinded: true, CapellaBlinded: blindedBlock}, blindedBlock, nil
 		}
-		return &api.VersionedProposal{Capella: ret, Version: ci.Version}, ret, nil
+
+		regularBlock := &capella.BeaconBlock{}
+		regularErr := regularBlock.UnmarshalSSZ(cd.DataSSZ)
+		if regularErr == nil {
+			return &api.VersionedProposal{Capella: regularBlock, Version: cd.Version}, regularBlock, nil
+		}
+
+		return nil, nil, errors.Errorf("could not unmarshal ssz (blinded err: %v, regular err: %v)", blindedErr, regularErr)
 	case spec.DataVersionDeneb:
-		ret := &apiv1deneb.BlockContents{}
-		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		blindedBlock := &apiv1deneb.BlindedBeaconBlock{}
+		blindedErr := blindedBlock.UnmarshalSSZ(cd.DataSSZ)
+		if blindedErr == nil {
+			return &api.VersionedProposal{Version: cd.Version, Blinded: true, DenebBlinded: blindedBlock}, blindedBlock, nil
 		}
-		return &api.VersionedProposal{Deneb: ret, Version: ci.Version}, ret.Block, nil
+
+		regularContents := &apiv1deneb.BlockContents{}
+		regularErr := regularContents.UnmarshalSSZ(cd.DataSSZ)
+		if regularErr == nil {
+			return &api.VersionedProposal{Deneb: regularContents, Version: cd.Version}, regularContents.Block, nil
+		}
+
+		return nil, nil, errors.Errorf("could not unmarshal ssz (blinded err: %v, regular err: %v)", blindedErr, regularErr)
 	case spec.DataVersionElectra:
-		ret := &apiv1electra.BlockContents{}
-		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		blindedBlock := &apiv1electra.BlindedBeaconBlock{}
+		blindedErr := blindedBlock.UnmarshalSSZ(cd.DataSSZ)
+		if blindedErr == nil {
+			return &api.VersionedProposal{Version: cd.Version, Blinded: true, ElectraBlinded: blindedBlock}, blindedBlock, nil
 		}
-		return &api.VersionedProposal{Electra: ret, Version: ci.Version}, ret.Block, nil
+
+		regularContents := &apiv1electra.BlockContents{}
+		regularErr := regularContents.UnmarshalSSZ(cd.DataSSZ)
+		if regularErr == nil {
+			return &api.VersionedProposal{Electra: regularContents, Version: cd.Version}, regularContents.Block, nil
+		}
+
+		return nil, nil, errors.Errorf("could not unmarshal ssz (blinded err: %v, regular err: %v)", blindedErr, regularErr)
+	case spec.DataVersionFulu:
+		blindedBlock := &apiv1electra.BlindedBeaconBlock{}
+		blindedErr := blindedBlock.UnmarshalSSZ(cd.DataSSZ)
+		if blindedErr == nil {
+			return &api.VersionedProposal{Version: cd.Version, Blinded: true, FuluBlinded: blindedBlock}, blindedBlock, nil
+		}
+
+		regularContents := &apiv1fulu.BlockContents{}
+		regularErr := regularContents.UnmarshalSSZ(cd.DataSSZ)
+		if regularErr == nil {
+			return &api.VersionedProposal{Fulu: regularContents, Version: cd.Version}, regularContents.Block, nil
+		}
+
+		return nil, nil, errors.Errorf("could not unmarshal ssz (blinded err: %v, regular err: %v)", blindedErr, regularErr)
 	default:
-		return nil, nil, errors.Errorf("unknown block version %s", ci.Version.String())
+		return nil, nil, errors.Errorf("unknown block version %d", cd.Version)
 	}
 }
 
-// GetBlindedBlockData ISSUE 221: GetBlockData/GetBlindedBlockData return versioned block only
-func (ci *ValidatorConsensusData) GetBlindedBlockData() (*api.VersionedBlindedProposal, ssz.HashRoot, error) {
-	switch ci.Version {
-	case spec.DataVersionCapella:
-		ret := &apiv1capella.BlindedBeaconBlock{}
-		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
-		}
-		return &api.VersionedBlindedProposal{Capella: ret, Version: ci.Version}, ret, nil
-	case spec.DataVersionDeneb:
-		ret := &apiv1deneb.BlindedBeaconBlock{}
-		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
-		}
-		return &api.VersionedBlindedProposal{Deneb: ret, Version: ci.Version}, ret, nil
-	case spec.DataVersionElectra:
-		ret := &apiv1electra.BlindedBeaconBlock{}
-		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
-		}
-		return &api.VersionedBlindedProposal{Electra: ret, Version: ci.Version}, ret, nil
-	default:
-		return nil, nil, errors.Errorf("unknown blinded block version %s", ci.Version.String())
-	}
-}
-
-func (ci *ValidatorConsensusData) GetAggregateAndProof() (*spec.VersionedAggregateAndProof, ssz.HashRoot, error) {
-
-	switch ci.Version {
+func (cd *ValidatorConsensusData) GetAggregateAndProof() (*spec.VersionedAggregateAndProof, ssz.HashRoot, error) {
+	switch cd.Version {
 	case spec.DataVersionPhase0:
 		ret := &phase0.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
 
-		return &spec.VersionedAggregateAndProof{Version: ci.Version, Phase0: ret}, ret, nil
-
+		return &spec.VersionedAggregateAndProof{Version: cd.Version, Phase0: ret}, ret, nil
 	case spec.DataVersionAltair:
 		ret := &phase0.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
 
-		return &spec.VersionedAggregateAndProof{Version: ci.Version, Altair: ret}, ret, nil
-
+		return &spec.VersionedAggregateAndProof{Version: cd.Version, Altair: ret}, ret, nil
 	case spec.DataVersionBellatrix:
 		ret := &phase0.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
 
-		return &spec.VersionedAggregateAndProof{Version: ci.Version, Bellatrix: ret}, ret, nil
-
+		return &spec.VersionedAggregateAndProof{Version: cd.Version, Bellatrix: ret}, ret, nil
 	case spec.DataVersionCapella:
 		ret := &phase0.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
 
-		return &spec.VersionedAggregateAndProof{Version: ci.Version, Capella: ret}, ret, nil
-
+		return &spec.VersionedAggregateAndProof{Version: cd.Version, Capella: ret}, ret, nil
 	case spec.DataVersionDeneb:
 		ret := &phase0.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
 
-		return &spec.VersionedAggregateAndProof{Version: ci.Version, Deneb: ret}, ret, nil
-
+		return &spec.VersionedAggregateAndProof{Version: cd.Version, Deneb: ret}, ret, nil
 	case spec.DataVersionElectra:
 		ret := &electra.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
 			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
 		}
 
-		return &spec.VersionedAggregateAndProof{Version: ci.Version, Electra: ret}, ret, nil
+		return &spec.VersionedAggregateAndProof{Version: cd.Version, Electra: ret}, ret, nil
+	case spec.DataVersionFulu:
+		ret := &electra.AggregateAndProof{}
+		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
+			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+		}
 
+		return &spec.VersionedAggregateAndProof{Version: cd.Version, Fulu: ret}, ret, nil
 	default:
-		return nil, nil, errors.New("unknown version for aggregate and proof")
+		return nil, nil, errors.Errorf("unknown aggregate and proof version %d", cd.Version)
 	}
 }
 
-func (ci *ValidatorConsensusData) GetSyncCommitteeContributions() (Contributions, error) {
+func (cd *ValidatorConsensusData) GetSyncCommitteeContributions() (Contributions, error) {
 	ret := Contributions{}
-	if err := ret.UnmarshalSSZ(ci.DataSSZ); err != nil {
+	if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
 		return nil, errors.Wrap(err, "could not unmarshal ssz")
 	}
 	return ret, nil
 }
 
-func (cid *ValidatorConsensusData) Encode() ([]byte, error) {
-	return cid.MarshalSSZ()
+func (cd *ValidatorConsensusData) Encode() ([]byte, error) {
+	return cd.MarshalSSZ()
 }
 
-func (cid *ValidatorConsensusData) Decode(data []byte) error {
-	return cid.UnmarshalSSZ(data)
+func (cd *ValidatorConsensusData) Decode(data []byte) error {
+	return cd.UnmarshalSSZ(data)
 }
