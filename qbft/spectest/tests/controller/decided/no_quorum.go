@@ -30,8 +30,7 @@ func NoQuorum() tests.SpecTest {
 			},
 		},
 		nil,
-		// TODO: before merge ask engineering how often they see such message in production
-		"could not process msg: invalid signed message: did not receive proposal for this round",
+		"could not process msg: invalid signed message: no proposal for round",
 		nil,
 		ks,
 	)

@@ -24,7 +24,7 @@ func NoPreviousProposal() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"invalid signed message: did not receive proposal for this round",
+		"invalid signed message: no proposal for round",
 		nil,
 		ks,
 	)

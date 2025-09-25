@@ -89,18 +89,16 @@ func (c *Controller) ProcessMsg(signedMessage *types.SignedSSVMessage) (*types.S
 		return nil, err
 	}
 	if isFuture {
-		return nil, fmt.Errorf("future msg from height, could not process")
+		return nil, ErrFutureMsg
 	}
 
 	return c.UponExistingInstanceMsg(msg)
-
 }
 
 func (c *Controller) UponExistingInstanceMsg(msg *ProcessingMessage) (*types.SignedSSVMessage, error) {
-
 	inst := c.InstanceForHeight(msg.QBFTMessage.Height)
 	if inst == nil {
-		return nil, errors.New("instance not found")
+		return nil, ErrInstanceNotFound
 	}
 
 	prevDecided, _ := inst.IsDecided()
