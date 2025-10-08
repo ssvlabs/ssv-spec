@@ -1,0 +1,92 @@
+package types
+
+const (
+	UnmarshalSSZErrorCode int = iota + 1
+	FutureMessageErrorCode
+	ZeroCommitMessagesErrorCode
+	NoRunningDutyErrorCode
+	CommitMessageInvalidErrorCode
+	CommitMessageTypeWrongErrorCode
+	WrongMessageHeightErrorCode
+	SignerIsNotInCommitteeErrorCode
+	NonUniqueSignerErrorCode
+	ValidatorRegistrationNoConsensusDataErrorCode
+	ValidatorExitNoConsensusDataErrorCode
+	UnknownDutyRoleDataErrorCode
+	UnknownBlockVersionErrorCode
+	IncorrectNumberOfSignaturesErrorCode
+	EmptySignatureErrorCode
+	NilSSVMessageErrorCode
+	NoSignaturesErrorCode
+	NoSignersErrorCode
+	ZeroSignerNotAllowedErrorCode
+	InconsistentSignersErrorCode
+	NoPartialSigMessagesErrorCode
+	NoRunnerForSlotErrorCode
+	SkipConsensusMessageAsInstanceIsDecidedErrorCode
+	SkipConsensusMessageAsConsensusHasFinishedErrorCode
+	DecodeBeaconVoteErrorCode
+	NoBeaconDutiesErrorCode
+	NoValidatorSharesErrorCode
+	AttestationSourceNotLessThanTargetErrorCode
+	AttestationTargetEpochTooFarFutureErrorCode
+	MessageIDCommitteeIDMismatchErrorCode
+	MessageTypeInvalidErrorCode
+	MessageRoundInvalidErrorCode
+	MessageIdentifierInvalidErrorCode
+	ReconstructSignatureErrorCode
+	SlashableAttestationErrorCode
+	DecidedWrongInstanceErrorCode
+	ValidatorRegistrationNoConsensusPhaseErrorCode
+	ValidatorRegistrationNoPostConsensusPhaseErrorCode
+	ValidatorExitNoConsensusPhaseErrorCode
+	ValidatorExitNoPostConsensusPhaseErrorCode
+	SSVMessageHasInvalidSignatureErrorCode
+	DutyAlreadyPassedErrorCode
+	WrongSigningRootErrorCode
+	PartialSigInconsistentSignerErrorCode
+	NoDecidedValueErrorCode
+	NoRunningConsensusInstanceErrorCode
+	ConsensusInstanceNotDecidedErrorCode
+	InvalidPartialSigMessageSlotErrorCode
+	FuturePartialSigMessageSlotErrorCode
+	UnknownValidatorIndexErrorCode
+	WrongRootsCountErrorCode
+	DutyEpochTooFarFutureErrorCode
+	WrongBeaconRoleTypeErrorCode
+	WrongValidatorIndexErrorCode
+	WrongValidatorPubkeyErrorCode
+	InstanceStoppedProcessingMessagesErrorCode
+	WrongMessageRoundErrorCode
+	MessageAllowsOneSignerOnlyErrorCode
+	NoProposalForCurrentRoundErrorCode
+	PastRoundErrorCode
+	ProposedDataMismatchErrorCode
+	RoundChangeNoQuorumErrorCode
+	ProposalInvalidErrorCode
+	RootHashInvalidErrorCode
+	MessageSignatureInvalidErrorCode
+	QBFTValueInvalidErrorCode
+	PrepareMessageInvalidErrorCode
+	JustificationsNoQuorumInvalidErrorCode
+	ProposalLeaderInvalidErrorCode
+	InstanceAlreadyRunningErrorCode
+	StartInstanceErrorCode
+	TimeoutInstanceErrorCode
+)
+
+type Error struct {
+	Code    int
+	Message string
+}
+
+func NewError(code int, message string) *Error {
+	return &Error{
+		Code:    code,
+		Message: message,
+	}
+}
+
+func (e *Error) Error() string {
+	return e.Message
+}

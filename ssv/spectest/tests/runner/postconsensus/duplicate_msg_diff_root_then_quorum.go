@@ -16,7 +16,7 @@ import (
 func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "failed processing post consensus message: invalid post-consensus message: wrong signing root"
+	expectedErrorCode := types.WrongSigningRootErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus duplicate msg different root then quorum",
@@ -43,8 +43,8 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		},
 		ks,
@@ -68,8 +68,8 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks, version)),
 			},
-			DontStartDuty: true,
-			ExpectedError: expectedError,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		},
 		)
 	}
@@ -162,8 +162,8 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
-			DontStartDuty: true,
-			ExpectedError: expectedError,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 
@@ -188,8 +188,8 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
 			},
-			DontStartDuty: true,
-			ExpectedError: expectedError,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 

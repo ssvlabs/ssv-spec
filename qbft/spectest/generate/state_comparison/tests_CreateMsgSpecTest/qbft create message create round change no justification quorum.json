@@ -38,5 +38,5 @@
   ],
   "CreateType": "CreateRoundChange",
   "ExpectedRoot": "d393bc19e7c444b0db6b30be1d64244d414c140fb40259db39d0c8d81d12f846",
-  "ExpectedError": ""
+  "ExpectedErrorCode": 0
 }

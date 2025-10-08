@@ -38,7 +38,7 @@ func MultiSignerNoOverlap() tests.SpecTest {
 		nil,
 		msgs,
 		outputMsgs,
-		"invalid signed message: msg allows 1 signer",
+		types.MessageAllowsOneSignerOnlyErrorCode,
 		nil,
 		ks,
 	)

@@ -47,5 +47,5 @@
   },
   "ExpectedHasQuorum": true,
   "ExpectedFullCommittee": false,
-  "ExpectedError": ""
+  "ExpectedErrorCode": 0
 }

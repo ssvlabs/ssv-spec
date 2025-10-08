@@ -24,7 +24,7 @@ func InvalidFullData() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"invalid signed message: H(data) != root",
+		types.RootHashInvalidErrorCode,
 		nil,
 		ks,
 	)

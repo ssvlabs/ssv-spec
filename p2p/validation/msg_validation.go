@@ -2,6 +2,7 @@ package validation
 
 import (
 	"context"
+	"fmt"
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-libp2p/core/peer"
@@ -112,7 +113,7 @@ func validateFutureMsg(
 
 	// verify signature
 	if err := types.Verify(msg, committeeMember.Committee); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
+		return types.NewError(types.MessageSignatureInvalidErrorCode, fmt.Sprintf("msg signature invalid: %v", err))
 	}
 
 	return nil

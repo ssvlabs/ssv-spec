@@ -20,5 +20,5 @@
   ],
   "EncodedMessages": null,
   "ExpectedRoots": null,
-  "ExpectedError": "incorrect size"
+  "ExpectedErrorCode": 1
 }

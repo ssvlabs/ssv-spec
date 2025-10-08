@@ -22,7 +22,7 @@ func SingleConsensusMsg() tests.SpecTest {
 			},
 		},
 		nil,
-		"",
+		0,
 		nil,
 		ks,
 	)

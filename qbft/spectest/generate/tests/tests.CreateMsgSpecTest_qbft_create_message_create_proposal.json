@@ -9,7 +9,7 @@
   "PrepareJustifications": null,
   "CreateType": "createProposal",
   "ExpectedRoot": "a3225c24c7a759c09ecc69d4df1d5727a9ea417685b0084809377a285693cd48",
-  "ExpectedError": "",
+  "ExpectedErrorCode": 0,
   "CommitteeMember": {
     "OperatorID": 0,
     "CommitteeID": "0000000000000000000000000000000000000000000000000000000000000000",

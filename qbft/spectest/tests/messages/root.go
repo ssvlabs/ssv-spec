@@ -28,7 +28,7 @@ func GetRoot() tests.SpecTest {
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		[][32]byte{r},
-		"",
+		0,
 		ks,
 	)
 

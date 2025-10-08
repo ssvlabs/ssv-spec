@@ -70,7 +70,7 @@ func LateRoundChangePastInstance() tests.SpecTest {
 			},
 		},
 		nil,
-		"not processing consensus message since instance is already decided",
+		types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		nil,
 		ks,
 	)

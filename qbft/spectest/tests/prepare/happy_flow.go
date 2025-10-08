@@ -32,7 +32,7 @@ func HappyFlow() tests.SpecTest {
 		nil,
 		inputMessages,
 		outputMessages,
-		"",
+		0,
 		nil,
 		ks,
 	)

@@ -43,7 +43,7 @@ func FutureDecidedNoInstance() tests.SpecTest {
 		return signedMsg
 	}
 
-	expectedErr := "no runner found for message's slot"
+	expectedErrCode := types.NoRunnerForSlotErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus future decided no running instance",
@@ -74,28 +74,28 @@ func FutureDecidedNoInstance() tests.SpecTest {
 	for _, version := range testingutils.SupportedAttestationVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
 			{
-				Name:          fmt.Sprintf("attester (%s)", version.String()),
-				Runner:        testingutils.CommitteeRunner(ks),
-				Duty:          testingutils.TestingAttesterDuty(version),
-				DontStartDuty: true,
-				Messages:      []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
-				ExpectedError: expectedErr,
+				Name:              fmt.Sprintf("attester (%s)", version.String()),
+				Runner:            testingutils.CommitteeRunner(ks),
+				Duty:              testingutils.TestingAttesterDuty(version),
+				DontStartDuty:     true,
+				Messages:          []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
-				Name:          fmt.Sprintf("sync committee (%s)", version.String()),
-				Runner:        testingutils.CommitteeRunner(ks),
-				Duty:          testingutils.TestingSyncCommitteeDuty(version),
-				DontStartDuty: true,
-				Messages:      []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
-				ExpectedError: expectedErr,
+				Name:              fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner:            testingutils.CommitteeRunner(ks),
+				Duty:              testingutils.TestingSyncCommitteeDuty(version),
+				DontStartDuty:     true,
+				Messages:          []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
-				Name:          fmt.Sprintf("attester and sync committee (%s)", version.String()),
-				Runner:        testingutils.CommitteeRunner(ks),
-				Duty:          testingutils.TestingAttesterAndSyncCommitteeDuties(version),
-				DontStartDuty: true,
-				Messages:      []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
-				ExpectedError: expectedErr,
+				Name:              fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner:            testingutils.CommitteeRunner(ks),
+				Duty:              testingutils.TestingAttesterAndSyncCommitteeDuties(version),
+				DontStartDuty:     true,
+				Messages:          []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
+				ExpectedErrorCode: expectedErrCode,
 			},
 		}...)
 	}

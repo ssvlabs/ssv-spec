@@ -1,6 +1,8 @@
 package ssv
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -34,7 +36,7 @@ func NewAggregatorRunner(
 ) (Runner, error) {
 
 	if len(share) != 1 {
-		return nil, errors.New("must have one share")
+		return nil, fmt.Errorf("must have one share")
 	}
 
 	return &AggregatorRunner{
@@ -366,7 +368,7 @@ func constructVersionedSignedAggregateAndProof(aggregateAndProof spec.VersionedA
 		}
 
 	default:
-		return nil, errors.New("unknown version for signed aggregate and proof")
+		return nil, fmt.Errorf("unknown version for signed aggregate and proof")
 	}
 
 	return ret, nil

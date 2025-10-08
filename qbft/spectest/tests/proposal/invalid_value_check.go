@@ -26,7 +26,7 @@ func InvalidValueCheck() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"invalid signed message: proposal not justified: proposal fullData invalid: invalid value",
+		types.QBFTValueInvalidErrorCode,
 		nil,
 		ks,
 	)

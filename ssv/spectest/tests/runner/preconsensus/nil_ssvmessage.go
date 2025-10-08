@@ -14,7 +14,7 @@ import (
 // NilSSVMessage tests a SignedSSVMessage with a nil SSVMessage
 func NilSSVMessage() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "invalid SignedSSVMessage: nil SSVMessage"
+	expectedErrorCode := types.NilSSVMessageErrorCode
 
 	invalidMsg := &types.SignedSSVMessage{
 		Signatures:  [][]byte{{1, 2, 3, 4}},
@@ -35,7 +35,7 @@ func NilSSVMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:                    "randao",
@@ -46,7 +46,7 @@ func NilSSVMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:                    "randao (blinded block)",
@@ -57,7 +57,7 @@ func NilSSVMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		},
 		ks,
@@ -72,7 +72,7 @@ func NilSSVMessage() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		})
 	}
 

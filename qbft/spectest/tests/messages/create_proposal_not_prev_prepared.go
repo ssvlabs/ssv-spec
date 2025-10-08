@@ -27,7 +27,7 @@ func CreateProposalNotPreviouslyPrepared() tests.SpecTest {
 		tests.CreateProposal,
 		"ebe29a35a3862c7f720568f6aea8273e522d2a4307e84eb08b91fe2fbd8a2920",
 		nil,
-		"",
+		0,
 		ks,
 	)
 

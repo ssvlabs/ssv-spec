@@ -2,9 +2,11 @@ package committeesingleduty
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
+	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -26,7 +28,7 @@ func StartWithNoSharesForDuty() tests.SpecTest {
 		nil,
 		nil,
 		nil,
-		"no shares for duty's validators",
+		types.NoValidatorSharesErrorCode,
 		nil,
 	)
 }

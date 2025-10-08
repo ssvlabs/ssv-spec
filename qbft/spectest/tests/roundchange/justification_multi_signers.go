@@ -36,7 +36,7 @@ func JustificationMultiSigners() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"invalid signed message: round change justification invalid: msg allows 1 signer",
+		types.MessageAllowsOneSignerOnlyErrorCode,
 		nil,
 		ks,
 	)

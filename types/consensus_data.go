@@ -1,6 +1,8 @@
 package types
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/api"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
 	apiv1deneb "github.com/attestantio/go-eth2-client/api/v1/deneb"
@@ -12,7 +14,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
-	"github.com/pkg/errors"
 )
 
 type Contribution struct {
@@ -177,11 +178,11 @@ func (cd *ValidatorConsensusData) Validate() error {
 			return err
 		}
 	case BNRoleValidatorRegistration:
-		return errors.New("validator registration has no consensus data")
+		return NewError(ValidatorRegistrationNoConsensusDataErrorCode, "validator registration has no consensus data")
 	case BNRoleVoluntaryExit:
-		return errors.New("voluntary exit has no consensus data")
+		return NewError(ValidatorExitNoConsensusDataErrorCode, "voluntary exit has no consensus data")
 	default:
-		return errors.New("unknown duty role")
+		return NewError(UnknownDutyRoleDataErrorCode, "unknown duty role")
 	}
 	return nil
 }
@@ -202,7 +203,7 @@ func (cd *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, si
 			return &api.VersionedProposal{Capella: regularBlock, Version: cd.Version}, regularBlock, nil
 		}
 
-		return nil, nil, errors.Errorf("could not unmarshal ssz (blinded err: %v, regular err: %v)", blindedErr, regularErr)
+		return nil, nil, NewError(UnmarshalSSZErrorCode, fmt.Sprintf("could not unmarshal ssz (blinded err: %v, regular err: %v)", blindedErr, regularErr))
 	case spec.DataVersionDeneb:
 		blindedBlock := &apiv1deneb.BlindedBeaconBlock{}
 		blindedErr := blindedBlock.UnmarshalSSZ(cd.DataSSZ)
@@ -216,7 +217,7 @@ func (cd *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, si
 			return &api.VersionedProposal{Deneb: regularContents, Version: cd.Version}, regularContents.Block, nil
 		}
 
-		return nil, nil, errors.Errorf("could not unmarshal ssz (blinded err: %v, regular err: %v)", blindedErr, regularErr)
+		return nil, nil, NewError(UnmarshalSSZErrorCode, fmt.Sprintf("could not unmarshal ssz (blinded err: %v, regular err: %v)", blindedErr, regularErr))
 	case spec.DataVersionElectra:
 		blindedBlock := &apiv1electra.BlindedBeaconBlock{}
 		blindedErr := blindedBlock.UnmarshalSSZ(cd.DataSSZ)
@@ -230,7 +231,7 @@ func (cd *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, si
 			return &api.VersionedProposal{Electra: regularContents, Version: cd.Version}, regularContents.Block, nil
 		}
 
-		return nil, nil, errors.Errorf("could not unmarshal ssz (blinded err: %v, regular err: %v)", blindedErr, regularErr)
+		return nil, nil, NewError(UnmarshalSSZErrorCode, fmt.Sprintf("could not unmarshal ssz (blinded err: %v, regular err: %v)", blindedErr, regularErr))
 	case spec.DataVersionFulu:
 		blindedBlock := &apiv1electra.BlindedBeaconBlock{}
 		blindedErr := blindedBlock.UnmarshalSSZ(cd.DataSSZ)
@@ -244,9 +245,9 @@ func (cd *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, si
 			return &api.VersionedProposal{Fulu: regularContents, Version: cd.Version}, regularContents.Block, nil
 		}
 
-		return nil, nil, errors.Errorf("could not unmarshal ssz (blinded err: %v, regular err: %v)", blindedErr, regularErr)
+		return nil, nil, NewError(UnmarshalSSZErrorCode, fmt.Sprintf("could not unmarshal ssz (blinded err: %v, regular err: %v)", blindedErr, regularErr))
 	default:
-		return nil, nil, errors.Errorf("unknown block version %d", cd.Version)
+		return nil, nil, NewError(UnknownBlockVersionErrorCode, fmt.Sprintf("unknown block version %d", cd.Version))
 	}
 }
 
@@ -255,61 +256,61 @@ func (cd *ValidatorConsensusData) GetAggregateAndProof() (*spec.VersionedAggrega
 	case spec.DataVersionPhase0:
 		ret := &phase0.AggregateAndProof{}
 		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+			return nil, nil, NewError(UnmarshalSSZErrorCode, fmt.Sprintf("could not unmarshal ssz: %s", err))
 		}
 
 		return &spec.VersionedAggregateAndProof{Version: cd.Version, Phase0: ret}, ret, nil
 	case spec.DataVersionAltair:
 		ret := &phase0.AggregateAndProof{}
 		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+			return nil, nil, NewError(UnmarshalSSZErrorCode, fmt.Sprintf("could not unmarshal ssz: %s", err))
 		}
 
 		return &spec.VersionedAggregateAndProof{Version: cd.Version, Altair: ret}, ret, nil
 	case spec.DataVersionBellatrix:
 		ret := &phase0.AggregateAndProof{}
 		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+			return nil, nil, NewError(UnmarshalSSZErrorCode, fmt.Sprintf("could not unmarshal ssz: %s", err))
 		}
 
 		return &spec.VersionedAggregateAndProof{Version: cd.Version, Bellatrix: ret}, ret, nil
 	case spec.DataVersionCapella:
 		ret := &phase0.AggregateAndProof{}
 		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+			return nil, nil, NewError(UnmarshalSSZErrorCode, fmt.Sprintf("could not unmarshal ssz: %s", err))
 		}
 
 		return &spec.VersionedAggregateAndProof{Version: cd.Version, Capella: ret}, ret, nil
 	case spec.DataVersionDeneb:
 		ret := &phase0.AggregateAndProof{}
 		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+			return nil, nil, NewError(UnmarshalSSZErrorCode, fmt.Sprintf("could not unmarshal ssz: %s", err))
 		}
 
 		return &spec.VersionedAggregateAndProof{Version: cd.Version, Deneb: ret}, ret, nil
 	case spec.DataVersionElectra:
 		ret := &electra.AggregateAndProof{}
 		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+			return nil, nil, NewError(UnmarshalSSZErrorCode, fmt.Sprintf("could not unmarshal ssz: %s", err))
 		}
 
 		return &spec.VersionedAggregateAndProof{Version: cd.Version, Electra: ret}, ret, nil
 	case spec.DataVersionFulu:
 		ret := &electra.AggregateAndProof{}
 		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, errors.Wrap(err, "could not unmarshal ssz")
+			return nil, nil, NewError(UnmarshalSSZErrorCode, fmt.Sprintf("could not unmarshal ssz: %s", err))
 		}
 
 		return &spec.VersionedAggregateAndProof{Version: cd.Version, Fulu: ret}, ret, nil
 	default:
-		return nil, nil, errors.Errorf("unknown aggregate and proof version %d", cd.Version)
+		return nil, nil, fmt.Errorf("unknown aggregate and proof version %d", cd.Version)
 	}
 }
 
 func (cd *ValidatorConsensusData) GetSyncCommitteeContributions() (Contributions, error) {
 	ret := Contributions{}
 	if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-		return nil, errors.Wrap(err, "could not unmarshal ssz")
+		return nil, NewError(UnmarshalSSZErrorCode, fmt.Sprintf("could not unmarshal ssz: %s", err))
 	}
 	return ret, nil
 }

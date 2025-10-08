@@ -14,7 +14,7 @@ import (
 // InvalidBeaconSignatureInQuorum tests a quorum with an invalid PartialSignatureMessage signature
 func InvalidBeaconSignatureInQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "got pre-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature"
+	expectedErrorCode := types.ReconstructSignatureErrorCode
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus invalid beacon signature in quorum",
 		testdoc.PreConsensusInvalidBeaconSignatureInQuorumDoc,
@@ -32,7 +32,7 @@ func InvalidBeaconSignatureInQuorum() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   "randao",
@@ -47,7 +47,7 @@ func InvalidBeaconSignatureInQuorum() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   "randao (blinded block)",
@@ -62,7 +62,7 @@ func InvalidBeaconSignatureInQuorum() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		},
 		ks,
@@ -81,7 +81,7 @@ func InvalidBeaconSignatureInQuorum() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		})
 	}
 

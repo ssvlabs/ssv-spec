@@ -110,7 +110,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "Message invalid: msg ID doesn't match committee ID"
+      "ExpectedErrorCode": 30
     },
     {
       "Name": "attestation (phase0)",
@@ -215,7 +215,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "Message invalid: msg ID doesn't match committee ID"
+      "ExpectedErrorCode": 30
     },
     {
       "Name": "sync committees (electra)",
@@ -324,7 +324,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "Message invalid: msg ID doesn't match committee ID"
+      "ExpectedErrorCode": 30
     },
     {
       "Name": "attestation (electra)",
@@ -429,7 +429,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "Message invalid: msg ID doesn't match committee ID"
+      "ExpectedErrorCode": 30
     }
   ],
   "PrivateKeys": {

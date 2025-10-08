@@ -39,7 +39,7 @@ func NoCommitQuorum() tests.SpecTest {
 		sc.ExpectedState,
 		msgs,
 		outputMsgs,
-		"",
+		0,
 		nil,
 		ks,
 	)

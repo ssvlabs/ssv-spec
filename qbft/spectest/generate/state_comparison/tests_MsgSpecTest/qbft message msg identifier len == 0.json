@@ -20,5 +20,5 @@
   ],
   "EncodedMessages": null,
   "ExpectedRoots": null,
-  "ExpectedError": "message identifier is invalid"
+  "ExpectedErrorCode": 33
 }

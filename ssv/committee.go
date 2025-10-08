@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -36,10 +37,10 @@ func NewCommittee(
 // StartDuty starts a new duty for the given slot
 func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 	if len(duty.ValidatorDuties) == 0 {
-		return errors.New("no beacon duties")
+		return types.NewError(types.NoBeaconDutiesErrorCode, "no beacon duties")
 	}
 	if _, exists := c.Runners[duty.Slot]; exists {
-		return errors.New(fmt.Sprintf("CommitteeRunner for slot %d already exists", duty.Slot))
+		return fmt.Errorf("CommitteeRunner for slot %d already exists", duty.Slot)
 	}
 
 	// Filter duty and create share map according validators that belong to c.Share
@@ -57,7 +58,7 @@ func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 	}
 
 	if len(dutyShares) == 0 {
-		return errors.New("no shares for duty's validators")
+		return types.NewError(types.NoValidatorSharesErrorCode, "no shares for duty's validators")
 	}
 
 	c.Runners[filteredDuty.Slot] = c.CreateRunnerFn(dutyShares)
@@ -74,7 +75,7 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 
 	// Verify SignedSSVMessage's signature
 	if err := types.Verify(signedSSVMessage, c.CommitteeMember.Committee); err != nil {
-		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
+		return types.NewError(types.SSVMessageHasInvalidSignatureErrorCode, fmt.Sprintf("SignedSSVMessage has an invalid signature: %v", err))
 	}
 
 	msg := signedSSVMessage.SSVMessage
@@ -95,7 +96,7 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 
 		runner, exists := c.Runners[phase0.Slot(qbftMsg.Height)]
 		if !exists {
-			return errors.New("no runner found for message's slot")
+			return types.NewError(types.NoRunnerForSlotErrorCode, "no runner found for message's slot")
 		}
 		return runner.ProcessConsensus(signedSSVMessage)
 	case types.SSVPartialSignatureMsgType:
@@ -106,7 +107,7 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 
 		// Validate
 		if len(signedSSVMessage.OperatorIDs) != 1 {
-			return errors.New("PartialSignatureMessage has more than 1 signer")
+			return fmt.Errorf("PartialSignatureMessage has more than 1 signer")
 		}
 
 		if err := pSigMessages.ValidateForSigner(signedSSVMessage.OperatorIDs[0]); err != nil {
@@ -116,12 +117,12 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 		if pSigMessages.Type == types.PostConsensusPartialSig {
 			runner, exists := c.Runners[pSigMessages.Slot]
 			if !exists {
-				return errors.New("no runner found for message's slot")
+				return types.NewError(types.NoRunnerForSlotErrorCode, "no runner found for message's slot")
 			}
 			return runner.ProcessPostConsensus(pSigMessages)
 		}
 	default:
-		return errors.New("unknown msg")
+		return fmt.Errorf("unknown msg")
 	}
 	return nil
 
@@ -129,11 +130,11 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 
 func (c *Committee) validateMessage(msg *types.SSVMessage) error {
 	if !(c.CommitteeMember.CommitteeID.MessageIDBelongs(msg.GetID())) {
-		return errors.New("msg ID doesn't match committee ID")
+		return types.NewError(types.MessageIDCommitteeIDMismatchErrorCode, "msg ID doesn't match committee ID")
 	}
 
 	if len(msg.GetData()) == 0 {
-		return errors.New("msg data is invalid")
+		return fmt.Errorf("msg data is invalid")
 	}
 
 	return nil

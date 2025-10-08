@@ -30,7 +30,7 @@ func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 		tests.CreateRoundChange,
 		sc.Root(),
 		sc.ExpectedState,
-		"",
+		0,
 		ks,
 	)
 

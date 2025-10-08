@@ -29,7 +29,7 @@ func DuplicateMsg() tests.SpecTest {
 			},
 		},
 		nil,
-		"",
+		0,
 		nil,
 		ks,
 	)

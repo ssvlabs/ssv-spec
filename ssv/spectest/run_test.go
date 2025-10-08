@@ -234,7 +234,7 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 		Runner:                  runner,
 		Threshold:               ks.Threshold,
 		PostDutyRunnerStateRoot: m["PostDutyRunnerStateRoot"].(string),
-		ExpectedError:           m["ExpectedError"].(string),
+		ExpectedErrorCode:       int(m["ExpectedErrorCode"].(float64)),
 		OutputMessages:          outputMsgs,
 	}
 }
@@ -320,7 +320,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		DecidedSlashable:        m["DecidedSlashable"].(bool),
 		PostDutyRunnerStateRoot: m["PostDutyRunnerStateRoot"].(string),
 		DontStartDuty:           m["DontStartDuty"].(bool),
-		ExpectedError:           m["ExpectedError"].(string),
+		ExpectedErrorCode:       int(m["ExpectedErrorCode"].(float64)),
 		OutputMessages:          outputMsgs,
 		BeaconBroadcastedRoots:  beaconBroadcastedRoots,
 	}
@@ -392,7 +392,7 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 		PostDutyCommitteeRoot:  m["PostDutyCommitteeRoot"].(string),
 		OutputMessages:         outputMsgs,
 		BeaconBroadcastedRoots: beaconBroadcastedRoots,
-		ExpectedError:          m["ExpectedError"].(string),
+		ExpectedErrorCode:      int(m["ExpectedErrorCode"].(float64)),
 	}
 }
 

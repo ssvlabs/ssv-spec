@@ -44,7 +44,7 @@ func Slashable() tests.SpecTest {
 			},
 		},
 		[]types.ShareValidatorPK{sharePKBytes},
-		"slashable attestation",
+		types.SlashableAttestationErrorCode,
 		false,
 	)
 }

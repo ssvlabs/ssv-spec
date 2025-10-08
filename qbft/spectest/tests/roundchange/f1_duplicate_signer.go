@@ -32,7 +32,7 @@ func F1DuplicateSigner() tests.SpecTest {
 		nil,
 		msgs,
 		nil,
-		"",
+		0,
 		nil,
 		ks,
 	)
