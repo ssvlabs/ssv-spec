@@ -89,7 +89,7 @@ func (c *Controller) ProcessMsg(signedMessage *types.SignedSSVMessage) (*types.S
 		return nil, err
 	}
 	if isFuture {
-		return nil, fmt.Errorf("future msg from height, could not process")
+		return nil, types.NewError(types.FutureMessageErrorCode, "future msg from height, could not process")
 	}
 
 	return c.UponExistingInstanceMsg(msg)
@@ -107,7 +107,7 @@ func (c *Controller) UponExistingInstanceMsg(msg *ProcessingMessage) (*types.Sig
 
 	// if previously decided, we don't process more messages
 	if prevDecided {
-		return nil, errors.New("not processing consensus message since instance is already decided")
+		return nil, types.NewError(types.SkipConsensusMsgAsInstanceIsDecidedErrorCode, "not processing consensus message since instance is already decided")
 	}
 
 	decided, _, decidedMsg, err := inst.ProcessMsg(msg)
@@ -131,7 +131,7 @@ func (c *Controller) UponExistingInstanceMsg(msg *ProcessingMessage) (*types.Sig
 func (c *Controller) BaseMsgValidation(msg *ProcessingMessage) error {
 	// verify msg belongs to controller
 	if !bytes.Equal(c.Identifier, msg.QBFTMessage.Identifier) {
-		return errors.New("message doesn't belong to Identifier")
+		return types.NewError(types.MsgDoesNotBelongToIndetifierErrorCode, "message doesn't belong to Identifier")
 	}
 	return nil
 }

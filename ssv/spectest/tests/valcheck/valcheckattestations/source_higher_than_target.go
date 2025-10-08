@@ -34,7 +34,7 @@ func SourceHigherThanTarget() tests.SpecTest {
 		input,
 		nil,
 		nil,
-		"attestation data source >= target",
+		types.AttestationSourceNotLessThanTargetErrorCode,
 		false,
 	)
 }

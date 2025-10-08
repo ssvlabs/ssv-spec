@@ -15,7 +15,7 @@ import (
 func PreDecided() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	err := "failed processing post consensus message: invalid post-consensus message: no decided value"
+	errCode := types.NoDecidedValueErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus before decided",
@@ -37,7 +37,7 @@ func PreDecided() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: err,
+				ExpectedErrorCode: errCode,
 			},
 		},
 		ks,
@@ -58,7 +58,7 @@ func PreDecided() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
 			},
-			ExpectedError: err,
+			ExpectedErrorCode: errCode,
 		},
 		)
 	}
@@ -72,7 +72,7 @@ func PreDecided() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version))),
 				},
-				ExpectedError: err,
+				ExpectedErrorCode: errCode,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -81,7 +81,7 @@ func PreDecided() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				ExpectedError: err,
+				ExpectedErrorCode: errCode,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -90,7 +90,7 @@ func PreDecided() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				ExpectedError: err,
+				ExpectedErrorCode: errCode,
 			},
 		}...)
 	}
@@ -113,7 +113,7 @@ func PreDecided() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
-			ExpectedError: err,
+			ExpectedErrorCode: errCode,
 		}
 	}
 
@@ -135,7 +135,7 @@ func PreDecided() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
-			ExpectedError: err,
+			ExpectedErrorCode: errCode,
 		}
 	}
 

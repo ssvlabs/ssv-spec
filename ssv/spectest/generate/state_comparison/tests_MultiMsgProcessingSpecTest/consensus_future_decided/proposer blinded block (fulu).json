@@ -152,7 +152,7 @@
             "LastPreparedValue": null,
             "ProposalAcceptedForCurrentRound": null,
             "Decided": true,
-            "DecidedValue": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
+            "DecidedValue": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw==",
             "ProposeContainer": {
               "Msgs": {}
             },
@@ -165,9 +165,9 @@
                   {
                     "SignedMessage": {
                       "Signatures": [
-                        "GA7iwEZ6GE1j5AnNgLLb1UOe11aQPw0XDUm6IqC+JzgiY2R7mxIwpaOm9bW1KsiYakD9ZASRO2Hd9JJn3xrCVg4YyM3CaHmF69jNMLVP0DABHW91BK1kTYIXtd1lYpVFGPlU+abiK2iZETSm1u+m3Cl9esI7e4j47vzfBdZouokODeG5pdX/P6Cy8a3NKw915plduE/LY2Uwoe4wwB443pYY1ijQThgUCzngHS0xIDM5UK50EU/4QSKTOOF/eGVHnCBB+Ip426Xfc6Yrt3FbITEdtTMoBznfO/4lSgEOSHBdRIOfz1ACzOcPOCBz9qQhD/vSxt6vDsP2L7wrLhZCYg==",
-                        "AmpDk3ptOgELkGZ4ZsImBwycD3aOMfZVXnMzBSNNf+6ACPwyAvIOxvg43Mr/EXwwlv8FwOPof+LyT9UeNJbTX6DdaPxzEKaX5TclagmdEhSDPg56sy5+AW3X/VuvmmAkcZq4KBiQq+YqqvfKeD9HokZCv+1E4xr+D+yUHU46wUS8eJwj+hLh2ttjbrJSIZQogcH4hTxoqCTdN4qMq24SqbtR1zHVsiUp13awaykMsSb6B7xyG2XauJ/2eKZiZRSSsgUGZqEFJSgnfoCqOaPrVOZcwgHyHm7qECrwcP9G2l3mwWRI3OflXVJlx9tYmbvj3KSeY/tfmwQsmrlDZ15zCw==",
-                        "GiUph6yRFCwqjqmmdmlWMMrcA5dbImwUH+loQoOCx2Z45IuQWFuX0hq68BVOw2aPblGUSg5l1MxSGxGNKpH0R1ZM1LpShiH2PSJlqvgwM9O3mtQrYREsivNJiAq4rGYIqP+9bQZV9S60lY4BduZt/3hFzgPOGp4wvtwq7VkKbmv6Mxv9LZOe5kyvQjkxhA7opZw0F8UqHSiRdM138eC2qNp57W6BYMANRgjXIpB1iPWhU6XGhi4v1TBEzBFxfaMVrtgPvpDAJjYkjr2fq2wQcLpuognW8uuzxsDFkmED1gueHt/BIl1H393PhvG3ldAFBlhg3WzBHvgF0qGLPNZbNA=="
+                        "UeEjoaNcXgMUHj5aA8rAh2KMLlGuZ8k+KbY7Jm0I+d/9EZ90uKtQicbeBaDJ9yL6kxE1dRK9G8VptAezd8qpHkjcQ5GSCgpUw7f6CqBFxCdgdi3xO6CFaVdPYPofwuxF94dFvqOm6WMil2Jkuq4RRskUpF+/12CE4FwH+X4iXVuBItkxOE2gR6jYcNSyImSKKR/Ddo5YTf/yL4sq/wkiT6xzpXLIMcU7ICN1P5rq/OwBF/XhEBQw1c17ZXXCHmT3Z9WBVxSUck3DogcDXoHgezTu7e2q9G6S61JGZBHXoTFjShKk6fva3XGOMNv1S7+QcDUFFVpMzK/neqoIy0tClw==",
+                        "jUZfN+U3rX0+y8C4e9A/DVQpbYNwmxaNTcuoyLYXOiQe/i5iBKXy+NHU8XbrVOp6S9S3QYuWHvd52Sw8B2p3Yw7Xhk8ajFz4Yiy/iwuKlQQr7v48nmsFIwGGKQtiaKRqc5mUcIAwubSQZXlt73NKO5IVivtGmRDeEgsHzpFewYpGA2dz15mymzLOzBrtfjGOgjMwWL1Iqw5pcGnDDR3rvahKsb1ZFmwJMLo6HpUhz4yrJOacEK4qz4PkuU1o0ye3XZMTPhdGvDT+CAeolO0ra99ru01pwMjZ9769/gH3US7meVY7pvhhfaxbuGx/NyjoXb1JoQtFyzHLgSYSCnYsYQ==",
+                        "a2p/crsjWau/BMxcP+MN6IMUNKEyqUWeKiaEcQ13mH/VEMpSWuWkDN0vrq1rD/HLtA29I0SlOnQxD0FveRUrEV1XFMESQ6usf47ZBMD46e1V3DlMevn3OapgmtUvIjnNoBCxTckA1hjx2rBnexCtiEjCStYdL2x+avZBGw0FSD8MLDrdEADsuKbWtB797iWKNX3dgpm/dy6NjFzdahlRE6Ydsj2ux57wL8OCEDMHsMUEwiKAy1uRCpYp0ea2ux2r1WZTeANjWz7itdvv2Erxd0UA5majjHqT4l53SVtQMj7NdtBJm0Pa7GjCYGL0JjRGChoB6k16BiQeyiSA+OzSyw=="
                       ],
                       "OperatorIDs": [
                         1,
@@ -177,9 +177,9 @@
                       "SSVMessage": {
                         "MsgType": 0,
                         "MsgID": "00000301020000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
-                        "Data": "AgAAAAAAAAANKnYAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAAAAwECAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
+                        "Data": "AgAAAAAAAAANKnYAAAAAAAEAAAAAAAAATAAAAHO/vTMRyAd8WcEWytODvoodlYzGLGnYXcuGxHls6t+GAAAAAAAAAACEAAAAhAAAAAAAAwECAAAAjoAGZVGoGzGCWHCe2vfdH2PNaGoOTbiym7t6z+ZWCGd69aUn2USO5Hg1SF4CtQvA"
                       },
-                      "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+                      "FullData": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw=="
                     },
                     "QBFTMessage": {
                       "DataRound": 0,
@@ -187,7 +187,7 @@
                       "Identifier": "AAADAQIAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
                       "MsgType": 2,
                       "PrepareJustification": [],
-                      "Root": "be956fb7df4ef37531682d588320084fc914c3f0fed335263e5b44062e6c29b4",
+                      "Root": "73bfbd3311c8077c59c116cad383be8a1d958cc62c69d85dcb86c4796ceadf86",
                       "Round": 1,
                       "RoundChangeJustification": []
                     }

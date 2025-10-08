@@ -5,6 +5,7 @@ import (
 	reflect2 "reflect"
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/attestantio/go-eth2-client/spec"
@@ -15,15 +16,15 @@ import (
 )
 
 type ProposerSpecTest struct {
-	Name            string
-	Type            string
-	Documentation   string
-	Blinded         bool
-	DataCd          []byte
-	DataBlk         []byte
-	ExpectedBlkRoot types.ExpectedBlkRoot
-	ExpectedCdRoot  types.ExpectedCdRoot
-	ExpectedError   string
+	Name              string
+	Type              string
+	Documentation     string
+	Blinded           bool
+	DataCd            []byte
+	DataBlk           []byte
+	ExpectedBlkRoot   types.ExpectedBlkRoot
+	ExpectedCdRoot    types.ExpectedCdRoot
+	ExpectedErrorCode int
 }
 
 func (test *ProposerSpecTest) TestName() string {
@@ -37,11 +38,10 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 
 	// blk data - GetBlockData now handles both blinded and regular blocks
 	vBlk, hashRoot, err := cd.GetBlockData()
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, err, test.ExpectedError)
+	tests.AssertErrorCode(t, test.ExpectedErrorCode, err)
+	if err != nil {
 		return
 	}
-	require.NoError(t, err)
 	require.NotNil(t, hashRoot)
 	require.NotNil(t, vBlk)
 
@@ -120,16 +120,16 @@ func (test *ProposerSpecTest) Run(t *testing.T) {
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
 
-func NewProposerSpecTest(name string, documentation string, blinded bool, dataCd []byte, dataBlk []byte, expectedBlkRoot [32]byte, expectedCdRoot [32]byte, expectedError string) *ProposerSpecTest {
+func NewProposerSpecTest(name string, documentation string, blinded bool, dataCd []byte, dataBlk []byte, expectedBlkRoot [32]byte, expectedCdRoot [32]byte, expectedErrorCode int) *ProposerSpecTest {
 	return &ProposerSpecTest{
-		Name:            name,
-		Type:            testdoc.ProposerSpecTestType,
-		Documentation:   documentation,
-		Blinded:         blinded,
-		DataCd:          dataCd,
-		DataBlk:         dataBlk,
-		ExpectedBlkRoot: expectedBlkRoot,
-		ExpectedCdRoot:  expectedCdRoot,
-		ExpectedError:   expectedError,
+		Name:              name,
+		Type:              testdoc.ProposerSpecTestType,
+		Documentation:     documentation,
+		Blinded:           blinded,
+		DataCd:            dataCd,
+		DataBlk:           dataBlk,
+		ExpectedBlkRoot:   expectedBlkRoot,
+		ExpectedCdRoot:    expectedCdRoot,
+		ExpectedErrorCode: expectedErrorCode,
 	}
 }

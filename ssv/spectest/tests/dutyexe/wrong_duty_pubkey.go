@@ -45,7 +45,7 @@ func WrongDutyPubKey() tests.SpecTest {
 		return signedMessage
 	}
 
-	expectedError := "failed processing consensus message: invalid msg: message doesn't belong to Identifier"
+	expectedErrorCode := types.MsgDoesNotBelongToIndetifierErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"wrong duty pubkey",
@@ -59,7 +59,7 @@ func WrongDutyPubKey() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		},
 		ks,
@@ -74,7 +74,7 @@ func WrongDutyPubKey() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		})
 	}
 
@@ -88,7 +88,7 @@ func WrongDutyPubKey() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 
@@ -102,7 +102,7 @@ func WrongDutyPubKey() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 

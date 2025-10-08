@@ -54,7 +54,7 @@ func PastMessage() tests.SpecTest {
 	// The Committee object (used in CommitteeRunner tests) don't have a runner for the past slot
 	// (this feature can't be implemented with this test spec)
 	// Another "past_msg" test (that is added in the committee package) runs with an existing past runner
-	expectedErrCommittee := "no runner found for message's slot"
+	expectedErrCommitteeCode := types.NoRunnerForSlotErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus past message",
@@ -103,7 +103,7 @@ func PastMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "no consensus phase for validator registration",
+				ExpectedErrorCode: types.ValidatorRegistrationNoConsensusPhaseErrorCode,
 			},
 			{
 				Name:   "voluntary exit",
@@ -118,7 +118,7 @@ func PastMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "no consensus phase for voluntary exit",
+				ExpectedErrorCode: types.ValidatorExitNoConsensusPhaseErrorCode,
 			},
 		},
 		ks,
@@ -147,8 +147,8 @@ func PastMessage() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedErrCommittee,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrCommitteeCode,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -157,8 +157,8 @@ func PastMessage() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedErrCommittee,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrCommitteeCode,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -167,8 +167,8 @@ func PastMessage() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedErrCommittee,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrCommitteeCode,
 			},
 		}...)
 	}

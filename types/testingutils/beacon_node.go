@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"encoding/hex"
+	"fmt"
 
 	"github.com/attestantio/go-eth2-client/api"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
@@ -15,7 +16,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
-	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -119,7 +119,7 @@ func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, graffiti, randao [
 	case spec.DataVersionFulu:
 		return vBlk, vBlk.Fulu, nil
 	default:
-		return nil, nil, errors.Errorf("unsupported version %s", version)
+		return nil, nil, fmt.Errorf("unsupported version %s", version)
 	}
 }
 
@@ -132,7 +132,7 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 		switch block.Version {
 		case spec.DataVersionCapella:
 			if block.CapellaBlinded == nil {
-				return errors.Errorf("%s blinded block is nil", block.Version.String())
+				return fmt.Errorf("%s blinded block is nil", block.Version.String())
 			}
 			sb := &apiv1capella.SignedBlindedBeaconBlock{
 				Message:   block.CapellaBlinded,
@@ -141,7 +141,7 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 			r, _ = sb.HashTreeRoot()
 		case spec.DataVersionDeneb:
 			if block.DenebBlinded == nil {
-				return errors.Errorf("%s blinded block is nil", block.Version.String())
+				return fmt.Errorf("%s blinded block is nil", block.Version.String())
 			}
 			sb := &apiv1deneb.SignedBlindedBeaconBlock{
 				Message:   block.DenebBlinded,
@@ -150,7 +150,7 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 			r, _ = sb.HashTreeRoot()
 		case spec.DataVersionElectra:
 			if block.ElectraBlinded == nil {
-				return errors.Errorf("%s blinded block is nil", block.Version.String())
+				return fmt.Errorf("%s blinded block is nil", block.Version.String())
 			}
 			sb := &apiv1electra.SignedBlindedBeaconBlock{
 				Message:   block.ElectraBlinded,
@@ -159,7 +159,7 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 			r, _ = sb.HashTreeRoot()
 		case spec.DataVersionFulu:
 			if block.FuluBlinded == nil {
-				return errors.Errorf("%s blinded block is nil", block.Version.String())
+				return fmt.Errorf("%s blinded block is nil", block.Version.String())
 			}
 			sb := &apiv1electra.SignedBlindedBeaconBlock{
 				Message:   block.FuluBlinded,
@@ -167,14 +167,14 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 			}
 			r, _ = sb.HashTreeRoot()
 		default:
-			return errors.Errorf("unknown blinded block version %d", block.Version)
+			return fmt.Errorf("unknown blinded block version %d", block.Version)
 		}
 	} else {
 		// Handle full blocks
 		switch block.Version {
 		case spec.DataVersionCapella:
 			if block.Capella == nil {
-				return errors.Errorf("%s block is nil", block.Version.String())
+				return fmt.Errorf("%s block is nil", block.Version.String())
 			}
 			sb := &capella.SignedBeaconBlock{
 				Message:   block.Capella,
@@ -183,10 +183,10 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 			r, _ = sb.HashTreeRoot()
 		case spec.DataVersionDeneb:
 			if block.Deneb == nil {
-				return errors.Errorf("%s block contents is nil", block.Version.String())
+				return fmt.Errorf("%s block contents is nil", block.Version.String())
 			}
 			if block.Deneb.Block == nil {
-				return errors.Errorf("%s block is nil", block.Version.String())
+				return fmt.Errorf("%s block is nil", block.Version.String())
 			}
 			sb := &apiv1deneb.SignedBlockContents{
 				SignedBlock: &deneb.SignedBeaconBlock{
@@ -199,10 +199,10 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 			r, _ = sb.HashTreeRoot()
 		case spec.DataVersionElectra:
 			if block.Electra == nil {
-				return errors.Errorf("%s block contents is nil", block.Version.String())
+				return fmt.Errorf("%s block contents is nil", block.Version.String())
 			}
 			if block.Electra.Block == nil {
-				return errors.Errorf("%s block is nil", block.Version.String())
+				return fmt.Errorf("%s block is nil", block.Version.String())
 			}
 			sb := &apiv1electra.SignedBlockContents{
 				SignedBlock: &electra.SignedBeaconBlock{
@@ -215,10 +215,10 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 			r, _ = sb.HashTreeRoot()
 		case spec.DataVersionFulu:
 			if block.Fulu == nil {
-				return errors.Errorf("%s block contents is nil", block.Version.String())
+				return fmt.Errorf("%s block contents is nil", block.Version.String())
 			}
 			if block.Fulu.Block == nil {
-				return errors.Errorf("%s block is nil", block.Version.String())
+				return fmt.Errorf("%s block is nil", block.Version.String())
 			}
 			sb := &apiv1fulu.SignedBlockContents{
 				SignedBlock: &electra.SignedBeaconBlock{
@@ -230,7 +230,7 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 			}
 			r, _ = sb.HashTreeRoot()
 		default:
-			return errors.Errorf("unknown block version %d", block.Version)
+			return types.NewError(types.UnknownBlockVersionErrorCode, fmt.Sprintf("unknown block version %d", block.Version))
 		}
 	}
 

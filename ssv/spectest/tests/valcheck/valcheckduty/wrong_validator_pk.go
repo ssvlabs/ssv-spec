@@ -26,7 +26,7 @@ func WrongValidatorPK() tests.SpecTest {
 		return ret
 	}
 
-	expectedErr := "duty invalid: wrong validator pk"
+	expectedErrCode := types.WrongValidatorPubkeyErrorCode
 	return valcheck.NewMultiSpecTest(
 		"wrong validator PK",
 		testdoc.ValCheckDutyWrongValidatorPKDoc,
@@ -39,32 +39,32 @@ func WrongValidatorPK() tests.SpecTest {
 				// No error since input doesn't contain validator public key
 			},
 			{
-				Name:          "sync committee aggregator",
-				Network:       types.BeaconTestNetwork,
-				RunnerRole:    types.RoleSyncCommitteeContribution,
-				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
-				ExpectedError: expectedErr,
+				Name:              "sync committee aggregator",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleSyncCommitteeContribution,
+				Input:             consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
-				Name:          "aggregator phase0",
-				Network:       types.BeaconTestNetwork,
-				RunnerRole:    types.RoleAggregator,
-				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
-				ExpectedError: expectedErr,
+				Name:              "aggregator phase0",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleAggregator,
+				Input:             consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
-				Name:          "aggregator electra",
-				Network:       types.BeaconTestNetwork,
-				RunnerRole:    types.RoleAggregator,
-				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionElectra)),
-				ExpectedError: expectedErr,
+				Name:              "aggregator electra",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleAggregator,
+				Input:             consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionElectra)),
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
-				Name:          "proposer",
-				Network:       types.BeaconTestNetwork,
-				RunnerRole:    types.RoleProposer,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
-				ExpectedError: expectedErr,
+				Name:              "proposer",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleProposer,
+				Input:             consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
+				ExpectedErrorCode: expectedErrCode,
 			},
 		},
 	)

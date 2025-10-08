@@ -1,6 +1,8 @@
 package ssv
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -30,9 +32,8 @@ func NewVoluntaryExitRunner(
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
 ) (Runner, error) {
-
 	if len(share) != 1 {
-		return nil, errors.New("must have one share")
+		return nil, fmt.Errorf("must have one share")
 	}
 
 	return &VoluntaryExitRunner{
@@ -99,11 +100,11 @@ func (r *VoluntaryExitRunner) ProcessPreConsensus(signedMsg *types.PartialSignat
 }
 
 func (r *VoluntaryExitRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
-	return errors.New("no consensus phase for voluntary exit")
+	return types.NewError(types.ValidatorExitNoConsensusPhaseErrorCode, "no consensus phase for voluntary exit")
 }
 
 func (r *VoluntaryExitRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
-	return errors.New("no post consensus phase for voluntary exit")
+	return types.NewError(types.ValidatorExitNoPostConsensusPhaseErrorCode, "no post consensus phase for voluntary exit")
 }
 
 func (r *VoluntaryExitRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
@@ -116,7 +117,7 @@ func (r *VoluntaryExitRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRo
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *VoluntaryExitRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return nil, [4]byte{}, errors.New("no post consensus roots for voluntary exit")
+	return nil, [4]byte{}, fmt.Errorf("no post consensus roots for voluntary exit")
 }
 
 // Validator voluntary exit duty doesn't need consensus nor post-consensus.

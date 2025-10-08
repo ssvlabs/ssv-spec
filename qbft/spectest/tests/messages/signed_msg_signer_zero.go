@@ -28,7 +28,7 @@ func SignedMessageSigner0() tests.SpecTest {
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
-		"signer ID 0 not allowed",
+		types.ZeroSignerNotAllowedErrorCode,
 		ks,
 	)
 

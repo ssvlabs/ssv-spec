@@ -1,8 +1,6 @@
 package consensusdataproposer
 
 import (
-	"fmt"
-
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/types"
@@ -32,6 +30,6 @@ func VersionedBlockUnknownVersion() *ProposerSpecTest {
 		nil,
 		[32]byte{},
 		[32]byte{},
-		fmt.Sprintf("unknown block version %d", unknownDataVersion),
+		types.UnknownBlockVersionErrorCode,
 	)
 }

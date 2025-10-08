@@ -34,7 +34,7 @@ func NonUniqueSigner() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"invalid signed message: invalid SignedSSVMessage: non unique signer",
+		types.NonUniqueSignerErrorCode,
 		nil,
 		ks,
 	)

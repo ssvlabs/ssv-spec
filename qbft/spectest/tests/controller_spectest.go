@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
-	testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -36,14 +36,14 @@ type RunInstanceData struct {
 }
 
 type ControllerSpecTest struct {
-	Name            string
-	Type            string
-	Documentation   string
-	RunInstanceData []*RunInstanceData
-	OutputMessages  []*types.SignedSSVMessage
-	ExpectedError   string
-	StartHeight     *qbft.Height                 `json:"StartHeight,omitempty"`
-	PrivateKeys     *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+	Name              string
+	Type              string
+	Documentation     string
+	RunInstanceData   []*RunInstanceData
+	OutputMessages    []*types.SignedSSVMessage
+	ExpectedErrorCode int
+	StartHeight       *qbft.Height                 `json:"StartHeight,omitempty"`
+	PrivateKeys       *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 
 	// consts for ControllerSpecTest
 	Controller *qbft.Controller `json:"Controller,omitempty"`
@@ -74,8 +74,8 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 		}
 	}
 
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, lastErr, test.ExpectedError)
+	if len(test.ExpectedErrorCode) != 0 {
+		require.EqualError(t, lastErr, test.ExpectedErrorCode)
 	} else {
 		require.NoError(t, lastErr)
 	}
@@ -245,13 +245,13 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 			height = *runData.Height
 		}
 		err := contr.StartNewInstance(height, runData.InputValue)
-		if err != nil && len(test.ExpectedError) == 0 {
+		if err != nil && len(test.ExpectedErrorCode) == 0 {
 			return nil, err
 		}
 
 		for _, msg := range runData.InputMessages {
 			_, err := contr.ProcessMsg(msg)
-			if err != nil && len(test.ExpectedError) == 0 {
+			if err != nil && len(test.ExpectedErrorCode) == 0 {
 				return nil, err
 			}
 		}
@@ -270,16 +270,16 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 	return ret, nil
 }
 
-func NewControllerSpecTest(name string, documentation string, runInstanceData []*RunInstanceData, outputMessages []*types.SignedSSVMessage, expectedError string, startHeight *qbft.Height, privateKeys *testingutils.TestKeySet) *ControllerSpecTest {
+func NewControllerSpecTest(name string, documentation string, runInstanceData []*RunInstanceData, outputMessages []*types.SignedSSVMessage, expectedErrorCode int, startHeight *qbft.Height, privateKeys *testingutils.TestKeySet) *ControllerSpecTest {
 	test := &ControllerSpecTest{
-		Name:            name,
-		Type:            testdoc.ControllerSpecTestType,
-		Documentation:   documentation,
-		RunInstanceData: runInstanceData,
-		OutputMessages:  outputMessages,
-		ExpectedError:   expectedError,
-		StartHeight:     startHeight,
-		PrivateKeys:     testingutils.BuildPrivateKeyInfo(privateKeys),
+		Name:              name,
+		Type:              testdoc.ControllerSpecTestType,
+		Documentation:     documentation,
+		RunInstanceData:   runInstanceData,
+		OutputMessages:    outputMessages,
+		ExpectedErrorCode: expectedErrorCode,
+		StartHeight:       startHeight,
+		PrivateKeys:       testingutils.BuildPrivateKeyInfo(privateKeys),
 	}
 	test.Controller = test.generateController()
 	return test

@@ -1,6 +1,8 @@
 package ssv
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/electra"
@@ -33,7 +35,7 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 	valCheck qbft.ProposedValueCheckF,
 ) (Runner, error) {
 	if len(share) == 0 {
-		return nil, errors.New("no shares")
+		return nil, fmt.Errorf("no shares")
 	}
 	return &CommitteeRunner{
 		BaseRunner: &BaseRunner{
@@ -82,7 +84,7 @@ func (cr CommitteeRunner) HasRunningDuty() bool {
 }
 
 func (cr CommitteeRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
-	return errors.New("no pre consensus phase for committee runner")
+	return fmt.Errorf("no pre consensus phase for committee runner")
 }
 
 func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
@@ -515,41 +517,41 @@ func VersionedAttestationWithSignature(att *spec.VersionedAttestation, specSig p
 	switch att.Version {
 	case spec.DataVersionPhase0:
 		if att.Phase0 == nil {
-			return att, errors.New("no Phase0 attestation")
+			return att, fmt.Errorf("no Phase0 attestation")
 		}
 		att.Phase0.Signature = specSig
 	case spec.DataVersionAltair:
 		if att.Altair == nil {
-			return att, errors.New("no Altair attestation")
+			return att, fmt.Errorf("no Altair attestation")
 		}
 		att.Altair.Signature = specSig
 	case spec.DataVersionBellatrix:
 		if att.Bellatrix == nil {
-			return att, errors.New("no Bellatrix attestation")
+			return att, fmt.Errorf("no Bellatrix attestation")
 		}
 		att.Bellatrix.Signature = specSig
 	case spec.DataVersionCapella:
 		if att.Capella == nil {
-			return att, errors.New("no Capella attestation")
+			return att, fmt.Errorf("no Capella attestation")
 		}
 		att.Capella.Signature = specSig
 	case spec.DataVersionDeneb:
 		if att.Deneb == nil {
-			return att, errors.New("no Deneb attestation")
+			return att, fmt.Errorf("no Deneb attestation")
 		}
 		att.Deneb.Signature = specSig
 	case spec.DataVersionElectra:
 		if att.Electra == nil {
-			return att, errors.New("no Electra attestation")
+			return att, fmt.Errorf("no Electra attestation")
 		}
 		att.Electra.Signature = specSig
 	case spec.DataVersionFulu:
 		if att.Fulu == nil {
-			return att, errors.New("no Fulu attestation")
+			return att, fmt.Errorf("no Fulu attestation")
 		}
 		att.Fulu.Signature = specSig
 	default:
-		return nil, errors.Errorf("unknown version: %s", att.Version)
+		return nil, fmt.Errorf("unknown version: %s", att.Version)
 	}
 
 	return att, nil
@@ -607,6 +609,6 @@ func ConstructVersionedAttestationWithoutSignature(attestationData *phase0.Attes
 		ret.Fulu = ConstructElectraAttestationWithoutSignature(attestationData, validatorDuty)
 		return ret, nil
 	default:
-		return nil, errors.New("unknown version")
+		return nil, fmt.Errorf("unknown version")
 	}
 }

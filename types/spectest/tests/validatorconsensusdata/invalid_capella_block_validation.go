@@ -22,6 +22,6 @@ func InvalidCapellaBlockValidation() *ValidatorConsensusDataTest {
 		"invalid capella block",
 		testdoc.ValidatorConsensusDataTestInvalidCapellaBlockDoc,
 		*cd,
-		"could not unmarshal ssz (blinded err: incorrect size, regular err: incorrect size)",
+		types.UnmarshalSSZErrorCode,
 	)
 }

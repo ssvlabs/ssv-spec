@@ -4,11 +4,13 @@ import (
 	"testing"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/stretchr/testify/require"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
-	"github.com/stretchr/testify/require"
 )
 
 type SpecTest struct {
@@ -21,7 +23,7 @@ type SpecTest struct {
 	Input             []byte
 	SlashableSlots    map[string][]phase0.Slot // map share pk to a list of slashable slots
 	ShareValidatorsPK []types.ShareValidatorPK `json:"ShareValidatorsPK,omitempty"` // Optional. Specify validators shares for beacon vote value check
-	ExpectedError     string
+	ExpectedErrorCode int
 	AnyError          bool
 	PrivateKeys       *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
@@ -44,11 +46,7 @@ func (test *SpecTest) Run(t *testing.T) {
 		require.NotNil(t, err)
 		return
 	}
-	if len(test.ExpectedError) > 0 {
-		require.EqualError(t, err, test.ExpectedError)
-	} else {
-		require.NoError(t, err)
-	}
+	tests.AssertErrorCode(t, test.ExpectedErrorCode, err)
 }
 
 func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueCheckF {
@@ -100,11 +98,11 @@ func (test *MultiSpecTest) Run(t *testing.T) {
 	}
 }
 
-func (tests *MultiSpecTest) GetPostState() (interface{}, error) {
+func (test *MultiSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
 
-func NewSpecTest(name, documentation string, network types.BeaconNetwork, role types.RunnerRole, dutySlot phase0.Slot, input []byte, slashableSlots map[string][]phase0.Slot, shareValidatorsPK []types.ShareValidatorPK, expectedError string, anyError bool) *SpecTest {
+func NewSpecTest(name, documentation string, network types.BeaconNetwork, role types.RunnerRole, dutySlot phase0.Slot, input []byte, slashableSlots map[string][]phase0.Slot, shareValidatorsPK []types.ShareValidatorPK, expectedErrorCode int, anyError bool) *SpecTest {
 	return &SpecTest{
 		Name:              name,
 		Type:              "Value check: validations for input of different runner roles",
@@ -115,7 +113,7 @@ func NewSpecTest(name, documentation string, network types.BeaconNetwork, role t
 		Input:             input,
 		SlashableSlots:    slashableSlots,
 		ShareValidatorsPK: shareValidatorsPK,
-		ExpectedError:     expectedError,
+		ExpectedErrorCode: expectedErrorCode,
 		AnyError:          anyError,
 	}
 }

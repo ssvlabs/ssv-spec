@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -45,7 +46,7 @@ func WrongDutyRole() tests.SpecTest {
 		return signedMessage
 	}
 
-	expectedError := "failed processing consensus message: invalid msg: message doesn't belong to Identifier"
+	expectedErrorCode := types.MsgDoesNotBelongToIndetifierErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"wrong duty role",
@@ -59,7 +60,7 @@ func WrongDutyRole() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		},
 		ks,
@@ -74,7 +75,7 @@ func WrongDutyRole() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		},
 		)
 	}
@@ -89,7 +90,7 @@ func WrongDutyRole() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 
@@ -103,7 +104,7 @@ func WrongDutyRole() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 

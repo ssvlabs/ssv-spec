@@ -53,7 +53,7 @@ func PostQuorum() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedValidatorRegistration(ks)),
 				},
-				ExpectedError: "failed processing validator registration message: invalid pre-consensus message: no running duty",
+				ExpectedErrorCode: types.NoRunningDutyErrorCode,
 			},
 			{
 				Name:   "voluntary exit",
@@ -73,7 +73,7 @@ func PostQuorum() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedVoluntaryExit(ks)),
 				},
-				ExpectedError: "failed processing voluntary exit message: invalid pre-consensus message: no running duty",
+				ExpectedErrorCode: types.NoRunningDutyErrorCode,
 			},
 		},
 		ks,

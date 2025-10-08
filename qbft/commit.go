@@ -5,6 +5,7 @@ import (
 	"sort"
 
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -45,7 +46,7 @@ func commitQuorumForRoundRoot(state *State, commitMsgContainer *MsgContainer, ro
 
 func aggregateCommitMsgs(msgs []*ProcessingMessage, fullData []byte) (*types.SignedSSVMessage, error) {
 	if len(msgs) == 0 {
-		return nil, errors.New("can't aggregate zero commit msgs")
+		return nil, types.NewError(types.ZeroCommitMessagesErrorCode, "can't aggregate zero commit msgs")
 	}
 
 	var ret *types.SignedSSVMessage
@@ -120,18 +121,18 @@ func baseCommitValidationIgnoreSignature(
 ) error {
 
 	if err := msg.Validate(); err != nil {
-		return errors.Wrap(err, "signed commit invalid")
+		return types.NewError(types.SignedCommitIsInvalidErrorCode, "signed commit invalid")
 	}
 
 	if msg.QBFTMessage.MsgType != CommitMsgType {
-		return errors.New("commit msg type is wrong")
+		return types.NewError(types.CommitMessageTypeWrongErrorCode, "commit msg type is wrong")
 	}
 	if msg.QBFTMessage.Height != height {
-		return errors.New("wrong msg height")
+		return types.NewError(types.WrongMessageHeightErrorCode, "wrong msg height")
 	}
 
 	if !msg.SignedMessage.CheckSignersInCommittee(operators) {
-		return errors.New("signer not in committee")
+		return types.NewError(types.SignerIsNotInCommitteeErrorCode, "signer not in committee")
 	}
 
 	return nil
