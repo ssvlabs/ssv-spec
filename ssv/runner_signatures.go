@@ -45,14 +45,14 @@ func (b *BaseRunner) validatePartialSigMsgForSlot(
 
 	if psigMsgs.Slot < expectedSlot {
 		// This message is targeting a slot that's already passed - our runner cannot process it anymore
-		return types.NewError(types.InvalidPartialSigMessageSlot, fmt.Sprintf(
+		return types.NewError(types.InvalidPartialSigMessageSlotErrorCode, fmt.Sprintf(
 			"invalid partial sig slot: %d, expected slot: %d",
 			psigMsgs.Slot,
 			expectedSlot,
 		))
 	}
 	if psigMsgs.Slot > expectedSlot {
-		return types.NewError(types.FuturePartialSigMessageSlot, fmt.Sprintf(
+		return types.NewError(types.FuturePartialSigMessageSlotErrorCode, fmt.Sprintf(
 			"future partial sig msg: message slot: %d, expected slot: %d",
 			psigMsgs.Slot,
 			expectedSlot,

@@ -35,7 +35,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedErrorCode: types.FuturePartialSigMessageSlot,
+				ExpectedErrorCode: types.FuturePartialSigMessageSlotErrorCode,
 			},
 			{
 				Name:   "randao",
@@ -48,7 +48,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedErrorCode: types.InvalidPartialSigMessageSlot,
+				ExpectedErrorCode: types.InvalidPartialSigMessageSlotErrorCode,
 			},
 			{
 				Name:   "randao (blinded block)",
@@ -61,7 +61,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedErrorCode: types.InvalidPartialSigMessageSlot,
+				ExpectedErrorCode: types.InvalidPartialSigMessageSlotErrorCode,
 			},
 			{
 				Name:   "validator registration",
@@ -74,7 +74,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedErrorCode: types.FuturePartialSigMessageSlot,
+				ExpectedErrorCode: types.FuturePartialSigMessageSlotErrorCode,
 			},
 			{
 				Name:   "voluntary exit",
@@ -87,7 +87,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedErrorCode: types.FuturePartialSigMessageSlot,
+				ExpectedErrorCode: types.FuturePartialSigMessageSlotErrorCode,
 			},
 			{
 				Name:   fmt.Sprintf("aggregator selection proof (%s)", spec.DataVersionPhase0.String()),
@@ -99,7 +99,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionPhase0), // broadcasts when starting a new duty
 				},
-				ExpectedErrorCode: types.FuturePartialSigMessageSlot,
+				ExpectedErrorCode: types.FuturePartialSigMessageSlotErrorCode,
 			},
 			{
 				Name:   fmt.Sprintf("aggregator selection proof (%s)", spec.DataVersionElectra.String()),
@@ -111,7 +111,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionElectra), // broadcasts when starting a new duty
 				},
-				ExpectedErrorCode: types.InvalidPartialSigMessageSlot,
+				ExpectedErrorCode: types.InvalidPartialSigMessageSlotErrorCode,
 			},
 		},
 		ks,
