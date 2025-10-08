@@ -51,13 +51,13 @@ func (ps *PartialSigContainer) HasSignature(validatorIndex phase0.ValidatorIndex
 // GetSignature returns the signature for a given root and signer
 func (ps *PartialSigContainer) GetSignature(validatorIndex phase0.ValidatorIndex, signer types.OperatorID, signingRoot [32]byte) (types.Signature, error) {
 	if ps.Signatures[validatorIndex] == nil {
-		return nil, fmt.Errorf("Dont have signature for the given validator index")
+		return nil, fmt.Errorf("dont have signature for the given validator index")
 	}
 	if ps.Signatures[validatorIndex][signingRootHex(signingRoot)] == nil {
-		return nil, fmt.Errorf("Dont have signature for the given signing root")
+		return nil, fmt.Errorf("dont have signature for the given signing root")
 	}
 	if ps.Signatures[validatorIndex][signingRootHex(signingRoot)][signer] == nil {
-		return nil, fmt.Errorf("Dont have signature on signing root for the given signer")
+		return nil, fmt.Errorf("dont have signature on signing root for the given signer")
 	}
 	return ps.Signatures[validatorIndex][signingRootHex(signingRoot)][signer], nil
 }

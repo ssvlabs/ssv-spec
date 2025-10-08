@@ -40,7 +40,7 @@ func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
 		return types.NewError(types.NoBeaconDutiesErrorCode, "no beacon duties")
 	}
 	if _, exists := c.Runners[duty.Slot]; exists {
-		return fmt.Errorf(fmt.Sprintf("CommitteeRunner for slot %d already exists", duty.Slot))
+		return fmt.Errorf("CommitteeRunner for slot %d already exists", duty.Slot)
 	}
 
 	// Filter duty and create share map according validators that belong to c.Share
