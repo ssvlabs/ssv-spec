@@ -48,8 +48,8 @@ const (
 	NoDecidedValueErrorCode
 	NoRunningConsensusInstanceErrorCode
 	ConsensusInstanceNotDecidedErrorCode
-	InvalidPartialSigMessageSlotErrorCode
-	FuturePartialSigMessageSlotErrorCode
+	PartialSigMessageInvalidSlotErrorCode
+	PartialSigMessageFutureSlotErrorCode
 	UnknownValidatorIndexErrorCode
 	WrongRootsCountErrorCode
 	DutyEpochTooFarFutureErrorCode
