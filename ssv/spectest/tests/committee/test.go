@@ -135,14 +135,14 @@ type MultiCommitteeSpecTest struct {
 	PrivateKeys   *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
-func (test *MultiCommitteeSpecTest) TestName() string {
-	return test.Name
+func (mTest *MultiCommitteeSpecTest) TestName() string {
+	return mTest.Name
 }
 
-func (test *MultiCommitteeSpecTest) Run(t *testing.T) {
-	test.overrideStateComparison(t)
+func (mTest *MultiCommitteeSpecTest) Run(t *testing.T) {
+	mTest.overrideStateComparison(t)
 
-	for _, test := range test.Tests {
+	for _, test := range mTest.Tests {
 		t.Run(test.TestName(), func(t *testing.T) {
 			test.RunAsPartOfMultiTest(t)
 		})
@@ -150,17 +150,17 @@ func (test *MultiCommitteeSpecTest) Run(t *testing.T) {
 }
 
 // overrideStateComparison overrides the post state comparison for all tests in the multi test
-func (test *MultiCommitteeSpecTest) overrideStateComparison(t *testing.T) {
-	testsName := strings.ReplaceAll(test.TestName(), " ", "_")
-	for _, test := range test.Tests {
+func (mTest *MultiCommitteeSpecTest) overrideStateComparison(t *testing.T) {
+	testsName := strings.ReplaceAll(mTest.TestName(), " ", "_")
+	for _, test := range mTest.Tests {
 		path := filepath.Join(testsName, test.TestName())
-		overrideStateComparison(t, test, path, reflect.TypeOf(test).String())
+		overrideStateComparison(t, test, path, reflect.TypeOf(mTest).String())
 	}
 }
 
-func (test *MultiCommitteeSpecTest) GetPostState() (interface{}, error) {
-	ret := make(map[string]types.Root, len(test.Tests))
-	for _, test := range test.Tests {
+func (mTest *MultiCommitteeSpecTest) GetPostState() (interface{}, error) {
+	ret := make(map[string]types.Root, len(mTest.Tests))
+	for _, test := range mTest.Tests {
 		err := test.runPreTesting()
 		if err != nil && !tests.MatchesErrorCode(test.ExpectedErrorCode, err) {
 			return nil, fmt.Errorf(

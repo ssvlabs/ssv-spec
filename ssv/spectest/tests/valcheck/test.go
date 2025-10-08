@@ -86,19 +86,19 @@ type MultiSpecTest struct {
 	PrivateKeys   *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
-func (test *MultiSpecTest) TestName() string {
-	return test.Name
+func (mTest *MultiSpecTest) TestName() string {
+	return mTest.Name
 }
 
-func (test *MultiSpecTest) Run(t *testing.T) {
-	for _, test := range test.Tests {
+func (mTest *MultiSpecTest) Run(t *testing.T) {
+	for _, test := range mTest.Tests {
 		t.Run(test.TestName(), func(t *testing.T) {
 			test.Run(t)
 		})
 	}
 }
 
-func (test *MultiSpecTest) GetPostState() (interface{}, error) {
+func (mTest *MultiSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
 

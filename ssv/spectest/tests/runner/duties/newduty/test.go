@@ -131,23 +131,23 @@ type MultiStartNewRunnerDutySpecTest struct {
 	PrivateKeys   *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
-func (test *MultiStartNewRunnerDutySpecTest) TestName() string {
-	return test.Name
+func (mTest *MultiStartNewRunnerDutySpecTest) TestName() string {
+	return mTest.Name
 }
 
-func (test *MultiStartNewRunnerDutySpecTest) Run(t *testing.T) {
-	test.overrideStateComparison(t)
+func (mTest *MultiStartNewRunnerDutySpecTest) Run(t *testing.T) {
+	mTest.overrideStateComparison(t)
 
-	for _, test := range test.Tests {
+	for _, test := range mTest.Tests {
 		t.Run(test.TestName(), func(t *testing.T) {
 			test.RunAsPartOfMultiTest(t)
 		})
 	}
 }
 
-func (test *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
-	ret := make(map[string]types.Root, len(test.Tests))
-	for _, test := range test.Tests {
+func (mTest *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
+	ret := make(map[string]types.Root, len(mTest.Tests))
+	for _, test := range mTest.Tests {
 		err := test.runPreTesting()
 		if err != nil && !tests.MatchesErrorCode(test.ExpectedErrorCode, err) {
 			return nil, fmt.Errorf(
@@ -163,11 +163,11 @@ func (test *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error)
 }
 
 // overrideStateComparison overrides the post state comparison for all tests in the multi test
-func (test *MultiStartNewRunnerDutySpecTest) overrideStateComparison(t *testing.T) {
-	testsName := strings.ReplaceAll(test.TestName(), " ", "_")
-	for _, test := range test.Tests {
+func (mTest *MultiStartNewRunnerDutySpecTest) overrideStateComparison(t *testing.T) {
+	testsName := strings.ReplaceAll(mTest.TestName(), " ", "_")
+	for _, test := range mTest.Tests {
 		path := filepath.Join(testsName, test.TestName())
-		overrideStateComparison(t, test, path, reflect.TypeOf(test).String())
+		overrideStateComparison(t, test, path, reflect.TypeOf(mTest).String())
 	}
 }
 

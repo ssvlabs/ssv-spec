@@ -20,14 +20,14 @@ type MultiMsgProcessingSpecTest struct {
 	PrivateKeys   *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
-func (test *MultiMsgProcessingSpecTest) TestName() string {
-	return test.Name
+func (mTest *MultiMsgProcessingSpecTest) TestName() string {
+	return mTest.Name
 }
 
-func (test *MultiMsgProcessingSpecTest) Run(t *testing.T) {
-	test.overrideStateComparison(t)
+func (mTest *MultiMsgProcessingSpecTest) Run(t *testing.T) {
+	mTest.overrideStateComparison(t)
 
-	for _, test := range test.Tests {
+	for _, test := range mTest.Tests {
 		t.Run(test.TestName(), func(t *testing.T) {
 			test.RunAsPartOfMultiTest(t)
 		})
@@ -35,17 +35,17 @@ func (test *MultiMsgProcessingSpecTest) Run(t *testing.T) {
 }
 
 // overrideStateComparison overrides the post state comparison for all tests in the multi test
-func (test *MultiMsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
-	testsName := strings.ReplaceAll(test.TestName(), " ", "_")
-	for _, test := range test.Tests {
+func (mTest *MultiMsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
+	testsName := strings.ReplaceAll(mTest.TestName(), " ", "_")
+	for _, test := range mTest.Tests {
 		path := filepath.Join(testsName, test.TestName())
-		overrideStateComparison(t, test, path, reflect.TypeOf(test).String())
+		overrideStateComparison(t, test, path, reflect.TypeOf(mTest).String())
 	}
 }
 
-func (test *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
-	ret := make(map[string]types.Root, len(test.Tests))
-	for _, test := range test.Tests {
+func (mTest *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
+	ret := make(map[string]types.Root, len(mTest.Tests))
+	for _, test := range mTest.Tests {
 		_, _, err := test.runPreTesting()
 		if err != nil && !MatchesErrorCode(test.ExpectedErrorCode, err) {
 			return nil, fmt.Errorf(

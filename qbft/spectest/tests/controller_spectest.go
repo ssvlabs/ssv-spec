@@ -74,11 +74,7 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 		}
 	}
 
-	if len(test.ExpectedErrorCode) != 0 {
-		require.EqualError(t, lastErr, test.ExpectedErrorCode)
-	} else {
-		require.NoError(t, lastErr)
-	}
+	tests.AssertErrorCode(t, test.ExpectedErrorCode, lastErr)
 }
 
 func (test *ControllerSpecTest) generateController() *qbft.Controller {
