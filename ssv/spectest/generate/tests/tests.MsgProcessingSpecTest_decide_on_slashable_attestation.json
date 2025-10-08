@@ -175,7 +175,7 @@
   "OutputMessages": null,
   "BeaconBroadcastedRoots": null,
   "DontStartDuty": false,
-  "ExpectedErrorCode": 33,
+  "ExpectedErrorCode": 35,
   "CommitteeDuty": {
     "Slot": "12",
     "ValidatorDuties": [

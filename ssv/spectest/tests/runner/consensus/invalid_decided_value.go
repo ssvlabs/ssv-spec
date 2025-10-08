@@ -35,7 +35,7 @@ func InvalidDecidedValue() tests.SpecTest {
 		return byts
 	}
 
-	expectedErrCode := types.UnknownDutyRoleDataErrorCode
+	expectedErrCode := types.QBFTValueInvalidErrorCode
 	expectedCommitteeErrCode := types.AttestationSourceNotLessThanTargetErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
