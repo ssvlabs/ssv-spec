@@ -42,7 +42,7 @@ func PreparedPreviouslyDuplicatePrepareMsg() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"invalid signed message: proposal not justified: change round msg not valid: no justifications quorum",
+		types.JustificationsNoQuorumInvalidErrorCode,
 		nil,
 		ks,
 	)

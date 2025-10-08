@@ -17,7 +17,7 @@ func PostDecided() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	expectedErrCode := types.SkipConsensusMsgAsConsensusHasFinishedErrorCode
+	expectedErrCode := types.SkipConsensusMessageAsConsensusHasFinishedErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus valid post decided",

@@ -109,7 +109,7 @@ func PastMessageDutyFinished() tests.SpecTest {
 			return signed
 		}
 
-		expectedErrorCode := types.SkipConsensusMsgAsInstanceIsDecidedErrorCode
+		expectedErrorCode := types.SkipConsensusMessageAsInstanceIsDecidedErrorCode
 
 		attesterDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), validatorsIndexList, nil)
 		syncCommitteeDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), nil, validatorsIndexList)

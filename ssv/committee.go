@@ -130,7 +130,7 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 
 func (c *Committee) validateMessage(msg *types.SSVMessage) error {
 	if !(c.CommitteeMember.CommitteeID.MessageIDBelongs(msg.GetID())) {
-		return types.NewError(types.MsgIDCommitteeIDMismatchErrorCode, "msg ID doesn't match committee ID")
+		return types.NewError(types.MessageIDCommitteeIDMismatchErrorCode, "msg ID doesn't match committee ID")
 	}
 
 	if len(msg.GetData()) == 0 {

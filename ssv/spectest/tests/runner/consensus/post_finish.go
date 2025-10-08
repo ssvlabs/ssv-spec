@@ -52,7 +52,7 @@ func PostFinish() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
 				},
-				ExpectedErrorCode: types.SkipConsensusMsgAsInstanceIsDecidedErrorCode,
+				ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 			},
 		},
 		ks,
@@ -85,7 +85,7 @@ func PostFinish() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks, version)),
 			},
-			ExpectedErrorCode: types.SkipConsensusMsgAsInstanceIsDecidedErrorCode,
+			ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		},
 		)
 	}
@@ -114,7 +114,7 @@ func PostFinish() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObject(ks, version)),
 				},
-				ExpectedErrorCode: types.SkipConsensusMsgAsInstanceIsDecidedErrorCode,
+				ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -135,7 +135,7 @@ func PostFinish() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks, version)),
 				},
-				ExpectedErrorCode: types.SkipConsensusMsgAsInstanceIsDecidedErrorCode,
+				ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -157,7 +157,7 @@ func PostFinish() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObject(ks, version)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks, version)),
 				},
-				ExpectedErrorCode: types.SkipConsensusMsgAsInstanceIsDecidedErrorCode,
+				ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 			},
 		}...)
 	}
@@ -196,7 +196,7 @@ func PostFinish() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
-			ExpectedErrorCode: types.SkipConsensusMsgAsInstanceIsDecidedErrorCode,
+			ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		}
 	}
 
@@ -230,7 +230,7 @@ func PostFinish() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
 			},
-			ExpectedErrorCode: types.SkipConsensusMsgAsInstanceIsDecidedErrorCode,
+			ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		}
 	}
 

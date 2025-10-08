@@ -1,0 +1,42 @@
+{
+  "Name": "create round change no justification quorum",
+  "Type": "Message creation: validation of consensus message construction and encoding",
+  "Documentation": "Test creating a round change message that was previously prepared but failed to extract a justification quorum, resulting in an unjustified round change.",
+  "Value": "73bfbd3311c8077c59c116cad383be8a1d958cc62c69d85dcb86c4796ceadf86",
+  "StateValue": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw==",
+  "Round": 1,
+  "RoundChangeJustifications": null,
+  "PrepareJustifications": [
+    {
+      "Signatures": [
+        "ISa/QoQfj7DeeX0JNNuIrOZvFvaoAClXw7/5wFx5r9nyDw9veV4X85P26Q1LYYePZ0K80QHjws/nLtZ4Ryl8WALPFS4grXZWHOzkuFt62tNATldGu83TdocXXtA6vAgi+VGpF0/1Gxujl0M221pWPljYgjFs998shcvOMSD3RkaxDpuNrqT+X0qTkkitranfvfTz4pYxXaTp0WKIiI8pQijFSq6m4/6ch0QRZuynik0ShecXEIksBnbOfltqp728xWo61RPd/mWlcTzKqpIeu/wKXReMFlG6FBLJKYk2UQyBV8zeIOuMuJuzvzIXvQbKT0vf4MlLaXpTpXNr+5mc1Q=="
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAHO/vTMRyAd8WcEWytODvoodlYzGLGnYXcuGxHls6t+GAAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    },
+    {
+      "Signatures": [
+        "mEl1ZMdla8+EE6rfglyIn0mdDQdsgHb4+wJ84DhrZ3H3waLcDcbgsdpWXfBQV2/uRQFsdtx2au7DUH9emiEXD+f8eDHXFuatPQ9ZkZGuxSPYtz6l02cCriZBlJCC6nmAmwYV7yypAMDCQrPkekO95S66atVOS4xTshx/Q4+Hy7hq5WkA6DzBLnOjQhJnVjKfbcuHvJqQtzlKpcBVDJkVNf8eveFqcycWus6VohjcBtiCOY0KHgJlRkp5PkcpM4x29myKTEWQMH3HvBoAd9ZuvBf1PNt/xDpGZmxOWCyPzDHiPFplQIYlGus5MHWRr2jQsr55O7eJ9WvzDWTJ/kO2Xw=="
+      ],
+      "OperatorIDs": [
+        2
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAHO/vTMRyAd8WcEWytODvoodlYzGLGnYXcuGxHls6t+GAAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    }
+  ],
+  "CreateType": "CreateRoundChange",
+  "ExpectedRoot": "d393bc19e7c444b0db6b30be1d64244d414c140fb40259db39d0c8d81d12f846",
+  "ExpectedErrorCode": 0
+}

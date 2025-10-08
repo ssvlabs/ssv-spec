@@ -37,7 +37,7 @@ func PostFutureDecided() tests.SpecTest {
 			},
 		},
 		nil,
-		"attempting to start an instance with a past height",
+		types.StartInstanceErrorCode,
 		nil,
 		ks,
 	)

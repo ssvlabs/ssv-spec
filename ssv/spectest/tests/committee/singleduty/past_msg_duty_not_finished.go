@@ -80,7 +80,7 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 			return signed
 		}
 
-		expectedErrorCode := types.SkipConsensusMsgAsConsensusHasFinishedErrorCode
+		expectedErrorCode := types.SkipConsensusMessageAsConsensusHasFinishedErrorCode
 
 		attesterDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), validatorsIndexList, nil)
 		syncCommitteeDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), nil, validatorsIndexList)

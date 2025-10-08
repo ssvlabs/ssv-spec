@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -90,10 +91,10 @@ func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 		return errors.New("prepare msg type is wrong")
 	}
 	if msg.QBFTMessage.Height != height {
-		return errors.New("wrong msg height")
+		return types.NewError(types.WrongMessageHeightErrorCode, "wrong msg height")
 	}
 	if msg.QBFTMessage.Round != round {
-		return errors.New("wrong msg round")
+		return types.NewError(types.WrongMessageRoundErrorCode, "wrong msg round")
 	}
 
 	if err := msg.Validate(); err != nil {
@@ -101,15 +102,15 @@ func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 	}
 
 	if !bytes.Equal(msg.QBFTMessage.Root[:], root[:]) {
-		return errors.New("proposed data mismatch")
+		return types.NewError(types.ProposedDataMismatchErrorCode, "proposed data mismatch")
 	}
 
 	if len(msg.SignedMessage.OperatorIDs) != 1 {
-		return errors.New("msg allows 1 signer")
+		return types.NewError(types.MessageAllowsOneSignerOnlyErrorCode, "msg allows 1 signer")
 	}
 
 	if !msg.SignedMessage.CheckSignersInCommittee(operators) {
-		return errors.New("signer not in committee")
+		return types.NewError(types.SignerIsNotInCommitteeErrorCode, "signer not in committee")
 	}
 
 	return nil
@@ -128,7 +129,7 @@ func validSignedPrepareForHeightRoundAndRootVerifySignature(
 
 	// Verify signature
 	if err := types.Verify(msg.SignedMessage, operators); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
+		return types.NewError(types.MessageSignatureInvalidErrorCode, fmt.Sprintf("msg signature invalid: %v", err))
 	}
 
 	return nil

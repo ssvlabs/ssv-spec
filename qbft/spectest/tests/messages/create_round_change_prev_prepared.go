@@ -27,7 +27,7 @@ func CreateRoundChangePreviouslyPrepared() tests.SpecTest {
 		tests.CreateRoundChange,
 		"56037aa401ffe4de6c79c737c6f2fb39bd6d36d4e5c71894fdaac0cda7ab4d1a",
 		nil,
-		"",
+		0,
 		ks,
 	)
 

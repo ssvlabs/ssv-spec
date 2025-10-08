@@ -42,7 +42,7 @@ func LateProposal() tests.SpecTest {
 			},
 		},
 		nil,
-		types.SkipConsensusMsgAsInstanceIsDecidedErrorCode,
+		types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		nil,
 		ks,
 	)

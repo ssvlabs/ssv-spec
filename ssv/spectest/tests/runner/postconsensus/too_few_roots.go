@@ -16,7 +16,7 @@ func TooFewRoots() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	errCode := types.NoPartialSigMsgsErrorCode
+	errCode := types.NoPartialSigMessagesErrorCode
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus too few roots",
 		testdoc.PostConsensusTooFewRootsDoc,

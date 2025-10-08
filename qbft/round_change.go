@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -245,13 +246,13 @@ func validRoundChangeForDataIgnoreSignature(
 		return errors.New("round change msg type is wrong")
 	}
 	if msg.QBFTMessage.Height != height {
-		return errors.New("wrong msg height")
+		return types.NewError(types.WrongMessageHeightErrorCode, "wrong msg height")
 	}
 	if msg.QBFTMessage.Round != round {
-		return errors.New("wrong msg round")
+		return types.NewError(types.WrongMessageRoundErrorCode, "wrong msg round")
 	}
 	if len(msg.SignedMessage.OperatorIDs) != 1 {
-		return errors.New("msg allows 1 signer")
+		return types.NewError(types.MessageAllowsOneSignerOnlyErrorCode, "msg allows 1 signer")
 	}
 
 	if err := msg.Validate(); err != nil {
@@ -259,7 +260,7 @@ func validRoundChangeForDataIgnoreSignature(
 	}
 
 	if !msg.SignedMessage.CheckSignersInCommittee(state.CommitteeMember.Committee) {
-		return errors.New("signer not in committee")
+		return types.NewError(types.SignerIsNotInCommitteeErrorCode, "signer not in committee")
 	}
 
 	// Addition to formal spec
@@ -294,11 +295,11 @@ func validRoundChangeForDataIgnoreSignature(
 		}
 
 		if !bytes.Equal(r[:], msg.QBFTMessage.Root[:]) {
-			return errors.New("H(data) != root")
+			return types.NewError(types.RootHashInvalidErrorCode, "H(data) != root")
 		}
 
 		if !HasQuorum(state.CommitteeMember, prepareMsgs) {
-			return errors.New("no justifications quorum")
+			return types.NewError(types.JustificationsNoQuorumInvalidErrorCode, "no justifications quorum")
 		}
 
 		if msg.QBFTMessage.DataRound > round {
@@ -326,7 +327,7 @@ func validRoundChangeForDataVerifySignature(
 
 	// Verify signature
 	if err := types.Verify(msg.SignedMessage, state.CommitteeMember.Committee); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
+		return types.NewError(types.MessageSignatureInvalidErrorCode, fmt.Sprintf("msg signature invalid: %v", err))
 	}
 
 	return nil

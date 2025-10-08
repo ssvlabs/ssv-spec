@@ -121,7 +121,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 		prevDecided, _ = b.State.RunningInstance.IsDecided()
 	}
 	if prevDecided {
-		return true, nil, types.NewError(types.SkipConsensusMsgAsConsensusHasFinishedErrorCode, "not processing consensus message since consensus has already finished")
+		return true, nil, types.NewError(types.SkipConsensusMessageAsConsensusHasFinishedErrorCode, "not processing consensus message since consensus has already finished")
 	}
 
 	decidedSignedMsg, err := b.QBFTController.ProcessMsg(msg)

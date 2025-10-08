@@ -42,7 +42,7 @@ func WrongMessageID() tests.SpecTest {
 		return signedMessage
 	}
 
-	expectedErrorCode := types.MsgIDCommitteeIDMismatchErrorCode
+	expectedErrorCode := types.MessageIDCommitteeIDMismatchErrorCode
 
 	validatorsIndexList := testingutils.ValidatorIndexList(1)
 	ksMap := testingutils.KeySetMapForValidators(1)

@@ -21,6 +21,6 @@ func NoMsgs() *MsgSpecTest {
 		[]*types.PartialSignatureMessages{msg},
 		nil,
 		nil,
-		types.NoPartialSigMsgsErrorCode,
+		types.NoPartialSigMessagesErrorCode,
 	)
 }

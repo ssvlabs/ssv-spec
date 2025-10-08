@@ -38,7 +38,7 @@ func PrepareQuorumTriggeredTwiceLateCommit() tests.SpecTest {
 		sc.ExpectedState,
 		inputMessages,
 		outputMessages,
-		"",
+		0,
 		nil,
 		ks,
 	)

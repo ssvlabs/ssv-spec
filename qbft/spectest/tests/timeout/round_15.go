@@ -29,7 +29,7 @@ func Round15() tests.SpecTest {
 			Timeouts: 0,
 			Round:    0,
 		},
-		"instance stopped processing timeouts",
+		types.TimeoutInstanceErrorCode,
 		ks,
 	)
 

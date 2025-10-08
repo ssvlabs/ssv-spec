@@ -30,7 +30,7 @@ func JustificationNoQuorum() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"invalid signed message: no justifications quorum",
+		types.JustificationsNoQuorumInvalidErrorCode,
 		nil,
 		ks,
 	)

@@ -2,6 +2,7 @@ package qbft
 
 import (
 	"bytes"
+	"fmt"
 	"sort"
 
 	"github.com/pkg/errors"
@@ -121,7 +122,7 @@ func baseCommitValidationIgnoreSignature(
 ) error {
 
 	if err := msg.Validate(); err != nil {
-		return types.NewError(types.SignedCommitIsInvalidErrorCode, "signed commit invalid")
+		return types.NewError(types.CommitMessageInvalidErrorCode, fmt.Sprintf("signed commit invalid: %v", err))
 	}
 
 	if msg.QBFTMessage.MsgType != CommitMsgType {
@@ -149,7 +150,7 @@ func baseCommitValidationVerifySignature(
 
 	// verify signature
 	if err := types.Verify(msg.SignedMessage, operators); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
+		return types.NewError(types.MessageSignatureInvalidErrorCode, fmt.Sprintf("msg signature invalid: %v", err))
 	}
 
 	return nil
@@ -167,15 +168,15 @@ func validateCommit(
 	}
 
 	if len(msg.SignedMessage.OperatorIDs) != 1 {
-		return errors.New("msg allows 1 signer")
+		return types.NewError(types.MessageAllowsOneSignerOnlyErrorCode, "msg allows 1 signer")
 	}
 
 	if msg.QBFTMessage.Round != round {
-		return errors.New("wrong msg round")
+		return types.NewError(types.WrongMessageRoundErrorCode, "wrong msg round")
 	}
 
 	if !bytes.Equal(proposedMsg.QBFTMessage.Root[:], msg.QBFTMessage.Root[:]) {
-		return errors.New("proposed data mismatch")
+		return types.NewError(types.ProposedDataMismatchErrorCode, "proposed data mismatch")
 	}
 
 	return nil

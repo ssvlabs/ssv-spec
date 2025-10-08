@@ -1,0 +1,61 @@
+{
+  "Name": "commit data nil or len 0",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
+  "Documentation": "Test encoding of commit data for QBFT message validation.",
+  "Messages": [
+    {
+      "Signatures": [
+        "s0TxzL3I15J/x7pLgA8NV/ASxVbZQsrfxQAud5Mi2zrqYMO2mjbhba+RrM9DWEhpFBhsmnrOBU7Xx1/Kr3q7WMBNc3PMxbb6XoAsEkw2wcTcyYxOUOdK5LbYqIUCM5Q8O9Po5GuAvJDtMT9nagS7jE7jp4szB1ewfz851aK/VsbSq2AbD2MvqStFGCOEoLLpnuTO9oduZSmA6N2D/A8yAMxgeWxKIlnca0ARx2f7EUdwMwWteLk4kvDMiDkaGZdZUszAuTGi3OXGwcU2PFMar27JI4nMyIwST5iTAnaFQ9eyx7Wa7XB7OefSomWOOEhFd2Me+yqzWQS4zbTqKjB5cg=="
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AgAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAHO/vTMRyAd8WcEWytODvoodlYzGLGnYXcuGxHls6t+GAAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    }
+  ],
+  "EncodedMessages": [
+    "EAAAABQBAAAcAQAA5AEAAAQAAACzRPHMvcjXkn/HukuADw1X8BLFVtlCyt/FAC53kyLbOupgw7aaNuFtr5Gsz0NYSGkUGGyaes4FTtfHX8qvertYwE1zc8zFtvpegCwSTDbBxNzJjE5Q50rkttiohQIzlDw70+jka4C8kO0xP2dqBLuMTuOnizMHV7B/PznVor9WxtKrYBsPYy+pK0UYI4Sgsume5M72h25lKYDo3YP8DzIAzGB5bEoiWdxrQBHHZ/sRR3AzBa14uTiS8MyIORoZl1lSzMC5MaLc5cbBxTY8UxqvbskjiczIjBJPmJMCdoVD17LHtZrtcHs559KiZY44SEV3Yx77KrNZBLjNtOoqMHlyAQAAAAAAAAAAAAAAAAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAIAAAAAAAAAAAAAAAAAAAABAAAAAAAAAEwAAABzv70zEcgHfFnBFsrTg76KHZWMxixp2F3LhsR5bOrfhgAAAAAAAAAAhAAAAIQAAAABAgMEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+  ],
+  "ExpectedRoots": [
+    [
+      182,
+      170,
+      182,
+      246,
+      121,
+      106,
+      255,
+      123,
+      81,
+      244,
+      181,
+      119,
+      140,
+      217,
+      9,
+      104,
+      193,
+      26,
+      124,
+      132,
+      222,
+      68,
+      84,
+      167,
+      228,
+      53,
+      99,
+      222,
+      132,
+      243,
+      139,
+      67
+    ]
+  ],
+  "ExpectedErrorCode": 0
+}

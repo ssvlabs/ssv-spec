@@ -43,7 +43,7 @@ func LatePrepare() tests.SpecTest {
 			},
 		},
 		nil,
-		types.SkipConsensusMsgAsInstanceIsDecidedErrorCode,
+		types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		nil,
 		ks,
 	)

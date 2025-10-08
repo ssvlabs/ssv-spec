@@ -14,7 +14,7 @@ import (
 // TooFewRoots tests too few expected roots
 func TooFewRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	expectedErrorCode := types.NoPartialSigMsgsErrorCode
+	expectedErrorCode := types.NoPartialSigMessagesErrorCode
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus too few roots",
 		testdoc.PreConsensusTooFewRootsDoc,

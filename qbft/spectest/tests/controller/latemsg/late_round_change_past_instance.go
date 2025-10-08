@@ -70,7 +70,7 @@ func LateRoundChangePastInstance() tests.SpecTest {
 			},
 		},
 		nil,
-		types.SkipConsensusMsgAsInstanceIsDecidedErrorCode,
+		types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		nil,
 		ks,
 	)

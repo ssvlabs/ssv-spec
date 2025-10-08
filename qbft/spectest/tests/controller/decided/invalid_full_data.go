@@ -32,7 +32,7 @@ func InvalidFullData() tests.SpecTest {
 			},
 		},
 		nil,
-		"invalid decided msg: H(data) != root",
+		types.RootHashInvalidErrorCode,
 		nil,
 		ks,
 	)

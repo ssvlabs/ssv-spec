@@ -91,7 +91,7 @@ func ProposerValueCheckF(
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
 		if err := cd.Validate(); err != nil {
-			return errors.Wrap(err, "invalid value")
+			return types.NewError(types.QBFTValueInvalidErrorCode, "invalid value")
 		}
 
 		if err := dutyValueCheck(&cd.Duty, network, types.BNRoleProposer, validatorPK, validatorIndex); err != nil {
@@ -123,7 +123,7 @@ func AggregatorValueCheckF(
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
 		if err := cd.Validate(); err != nil {
-			return errors.Wrap(err, "invalid value")
+			return types.NewError(types.QBFTValueInvalidErrorCode, "invalid value")
 		}
 
 		if err := dutyValueCheck(&cd.Duty, network, types.BNRoleAggregator, validatorPK, validatorIndex); err != nil {
@@ -145,7 +145,7 @@ func SyncCommitteeContributionValueCheckF(
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
 		if err := cd.Validate(); err != nil {
-			return errors.Wrap(err, "invalid value")
+			return types.NewError(types.QBFTValueInvalidErrorCode, "invalid value")
 		}
 
 		if err := dutyValueCheck(&cd.Duty, network, types.BNRoleSyncCommitteeContribution, validatorPK, validatorIndex); err != nil {

@@ -205,7 +205,7 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 
 func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
 	_, _, lastErr := test.runPreTesting()
-	if lastErr != nil && test.ExpectedErrorCode == 0 {
+	if lastErr != nil && test.ExpectedErrorCode == 0 { // only unexpected errors should return error
 		return nil, lastErr
 	}
 

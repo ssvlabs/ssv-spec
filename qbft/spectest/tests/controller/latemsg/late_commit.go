@@ -42,7 +42,7 @@ func LateCommit() tests.SpecTest {
 			},
 		},
 		nil,
-		types.SkipConsensusMsgAsInstanceIsDecidedErrorCode,
+		types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		nil,
 		ks,
 	)

@@ -45,7 +45,7 @@ func WrongDutyPubKey() tests.SpecTest {
 		return signedMessage
 	}
 
-	expectedErrorCode := types.MsgDoesNotBelongToIndetifierErrorCode
+	expectedErrorCode := types.MessageIdentifierInvalidErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"wrong duty pubkey",

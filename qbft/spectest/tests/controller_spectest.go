@@ -74,7 +74,7 @@ func (test *ControllerSpecTest) Run(t *testing.T) {
 		}
 	}
 
-	tests.AssertErrorCode(t, test.ExpectedErrorCode, lastErr)
+	AssertErrorCode(t, test.ExpectedErrorCode, lastErr)
 }
 
 func (test *ControllerSpecTest) generateController() *qbft.Controller {
@@ -241,13 +241,13 @@ func (test *ControllerSpecTest) GetPostState() (interface{}, error) {
 			height = *runData.Height
 		}
 		err := contr.StartNewInstance(height, runData.InputValue)
-		if err != nil && len(test.ExpectedErrorCode) == 0 {
+		if err != nil && test.ExpectedErrorCode == 0 { // only unexpected errors should return error
 			return nil, err
 		}
 
 		for _, msg := range runData.InputMessages {
 			_, err := contr.ProcessMsg(msg)
-			if err != nil && len(test.ExpectedErrorCode) == 0 {
+			if err != nil && test.ExpectedErrorCode == 0 { // only unexpected errors should return error
 				return nil, err
 			}
 		}

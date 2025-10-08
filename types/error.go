@@ -5,7 +5,7 @@ const (
 	FutureMessageErrorCode
 	ZeroCommitMessagesErrorCode
 	NoRunningDutyErrorCode
-	SignedCommitIsInvalidErrorCode
+	CommitMessageInvalidErrorCode
 	CommitMessageTypeWrongErrorCode
 	WrongMessageHeightErrorCode
 	SignerIsNotInCommitteeErrorCode
@@ -21,17 +21,19 @@ const (
 	NoSignersErrorCode
 	ZeroSignerNotAllowedErrorCode
 	InconsistentSignersErrorCode
-	NoPartialSigMsgsErrorCode
+	NoPartialSigMessagesErrorCode
 	NoRunnerForSlotErrorCode
-	SkipConsensusMsgAsInstanceIsDecidedErrorCode
-	SkipConsensusMsgAsConsensusHasFinishedErrorCode
+	SkipConsensusMessageAsInstanceIsDecidedErrorCode
+	SkipConsensusMessageAsConsensusHasFinishedErrorCode
 	DecodeBeaconVoteErrorCode
 	NoBeaconDutiesErrorCode
 	NoValidatorSharesErrorCode
 	AttestationSourceNotLessThanTargetErrorCode
 	AttestationTargetEpochTooFarFutureErrorCode
-	MsgIDCommitteeIDMismatchErrorCode
-	MsgDoesNotBelongToIndetifierErrorCode
+	MessageIDCommitteeIDMismatchErrorCode
+	MessageTypeInvalidErrorCode
+	MessageRoundInvalidErrorCode
+	MessageIdentifierInvalidErrorCode
 	ReconstructSignatureErrorCode
 	SlashableAttestationErrorCode
 	DecidedWrongInstanceErrorCode
@@ -46,48 +48,31 @@ const (
 	NoDecidedValueErrorCode
 	NoRunningConsensusInstanceErrorCode
 	ConsensusInstanceNotDecidedErrorCode
-	InvalidPartialSigMsgSlot
-	FuturePartialSigMsgSlot
+	InvalidPartialSigMessageSlot
+	FuturePartialSigMessageSlot
 	UnknownValidatorIndexErrorCode
 	WrongRootsCountErrorCode
 	DutyEpochTooFarFutureErrorCode
 	WrongBeaconRoleTypeErrorCode
 	WrongValidatorIndexErrorCode
 	WrongValidatorPubkeyErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
-	//TodoErrorCode
+	InstanceStoppedProcessingMessagesErrorCode
+	WrongMessageRoundErrorCode
+	MessageAllowsOneSignerOnlyErrorCode
+	NoProposalForCurrentRoundErrorCode
+	PastRoundErrorCode
+	ProposedDataMismatchErrorCode
+	RoundChangeNoQuorumErrorCode
+	ProposalInvalidErrorCode
+	RootHashInvalidErrorCode
+	MessageSignatureInvalidErrorCode
+	QBFTValueInvalidErrorCode
+	PrepareMessageInvalidErrorCode
+	JustificationsNoQuorumInvalidErrorCode
+	ProposalLeaderInvalidErrorCode
+	InstanceAlreadyRunningErrorCode
+	StartInstanceErrorCode
+	TimeoutInstanceErrorCode
 )
 
 type Error struct {

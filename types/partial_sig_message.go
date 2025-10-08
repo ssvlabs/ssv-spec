@@ -45,7 +45,7 @@ func (msgs PartialSignatureMessages) GetRoot() ([32]byte, error) {
 
 func (msgs PartialSignatureMessages) Validate() error {
 	if len(msgs.Messages) == 0 {
-		return NewError(NoPartialSigMsgsErrorCode, "no PartialSignatureMessages messages")
+		return NewError(NoPartialSigMessagesErrorCode, "no PartialSignatureMessages messages")
 	}
 
 	signer := msgs.Messages[0].Signer

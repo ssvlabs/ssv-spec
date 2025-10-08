@@ -41,7 +41,7 @@ func Round3() tests.SpecTest {
 			Timeouts: 1,
 			Round:    4,
 		},
-		"",
+		0,
 		ks,
 	)
 

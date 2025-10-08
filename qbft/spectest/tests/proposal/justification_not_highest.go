@@ -48,7 +48,7 @@ func JustificationsNotHighest() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"invalid signed message: proposal not justified: signed prepare not valid",
+		types.PrepareMessageInvalidErrorCode,
 		nil,
 		ks,
 	)

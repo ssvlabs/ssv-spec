@@ -66,7 +66,7 @@ func LatePreparePastInstance() tests.SpecTest {
 			},
 		},
 		nil,
-		types.SkipConsensusMsgAsInstanceIsDecidedErrorCode,
+		types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		nil,
 		ks,
 	)
