@@ -123,7 +123,7 @@ func unmarshalJustifications(data [][]byte) ([]*types.SignedSSVMessage, error) {
 	for i, d := range data {
 		sMsg := &types.SignedSSVMessage{}
 		if err := sMsg.UnmarshalSSZ(d); err != nil {
-			return nil, types.NewError(types.UnmarshalSSZErrorCode, fmt.Sprintf("unmarshal justification: %v", err))
+			return nil, types.WrapError(types.UnmarshalSSZErrorCode, fmt.Errorf("unmarshal justification: %w", err))
 		}
 		ret[i] = sMsg
 	}

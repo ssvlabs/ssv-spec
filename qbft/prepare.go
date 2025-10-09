@@ -129,7 +129,7 @@ func validSignedPrepareForHeightRoundAndRootVerifySignature(
 
 	// Verify signature
 	if err := types.Verify(msg.SignedMessage, operators); err != nil {
-		return types.NewError(types.MessageSignatureInvalidErrorCode, fmt.Sprintf("msg signature invalid: %v", err))
+		return types.WrapError(types.MessageSignatureInvalidErrorCode, fmt.Errorf("msg signature invalid: %w", err))
 	}
 
 	return nil

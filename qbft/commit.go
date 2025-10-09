@@ -122,7 +122,7 @@ func baseCommitValidationIgnoreSignature(
 ) error {
 
 	if err := msg.Validate(); err != nil {
-		return types.NewError(types.CommitMessageInvalidErrorCode, fmt.Sprintf("signed commit invalid: %v", err))
+		return types.WrapError(types.CommitMessageInvalidErrorCode, fmt.Errorf("signed commit invalid: %w", err))
 	}
 
 	if msg.QBFTMessage.MsgType != CommitMsgType {
@@ -150,7 +150,7 @@ func baseCommitValidationVerifySignature(
 
 	// verify signature
 	if err := types.Verify(msg.SignedMessage, operators); err != nil {
-		return types.NewError(types.MessageSignatureInvalidErrorCode, fmt.Sprintf("msg signature invalid: %v", err))
+		return types.WrapError(types.MessageSignatureInvalidErrorCode, fmt.Errorf("msg signature invalid: %w", err))
 	}
 
 	return nil

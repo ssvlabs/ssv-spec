@@ -1,5 +1,9 @@
 package types
 
+import (
+	"github.com/pkg/errors"
+)
+
 const (
 	UnmarshalSSZErrorCode int = iota + 1
 	FutureMessageErrorCode
@@ -76,17 +80,31 @@ const (
 )
 
 type Error struct {
-	Code    int
-	Message string
+	Code int
+
+	innerErr error
 }
 
 func NewError(code int, message string) *Error {
 	return &Error{
-		Code:    code,
-		Message: message,
+		Code:     code,
+		innerErr: errors.New(message), // nolint:staticcheck
 	}
 }
 
-func (e *Error) Error() string {
-	return e.Message
+func WrapError(code int, err error) *Error {
+	return &Error{
+		Code:     code,
+		innerErr: err,
+	}
+}
+
+func (e Error) Error() string {
+	return e.innerErr.Error()
+}
+
+func (e Error) Is(target error) bool {
+	var retryableErr *Error
+	ok := errors.As(target, &retryableErr)
+	return ok
 }

@@ -230,7 +230,7 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 			}
 			r, _ = sb.HashTreeRoot()
 		default:
-			return types.NewError(types.UnknownBlockVersionErrorCode, fmt.Sprintf("unknown block version %d", block.Version))
+			return types.WrapError(types.UnknownBlockVersionErrorCode, fmt.Errorf("unknown block version %d", block.Version))
 		}
 	}
 

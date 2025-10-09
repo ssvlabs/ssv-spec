@@ -47,7 +47,7 @@ func BeaconVoteValueCheckF(
 	return func(data []byte) error {
 		bv := types.BeaconVote{}
 		if err := bv.Decode(data); err != nil {
-			return types.NewError(types.DecodeBeaconVoteErrorCode, fmt.Sprintf("failed decoding beacon vote: %v", err))
+			return types.WrapError(types.DecodeBeaconVoteErrorCode, fmt.Errorf("failed decoding beacon vote: %w", err))
 		}
 
 		if bv.Target.Epoch > estimatedCurrentEpoch+1 {

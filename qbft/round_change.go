@@ -327,7 +327,7 @@ func validRoundChangeForDataVerifySignature(
 
 	// Verify signature
 	if err := types.Verify(msg.SignedMessage, state.CommitteeMember.Committee); err != nil {
-		return types.NewError(types.MessageSignatureInvalidErrorCode, fmt.Sprintf("msg signature invalid: %v", err))
+		return types.WrapError(types.MessageSignatureInvalidErrorCode, fmt.Errorf("msg signature invalid: %w", err))
 	}
 
 	return nil

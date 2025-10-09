@@ -61,7 +61,7 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 
 	// Verify SignedSSVMessage's signature
 	if err := types.Verify(signedSSVMessage, v.CommitteeMember.Committee); err != nil {
-		return types.NewError(types.SSVMessageHasInvalidSignatureErrorCode, fmt.Sprintf("SignedSSVMessage has an invalid signature: %v", err))
+		return types.WrapError(types.SSVMessageHasInvalidSignatureErrorCode, fmt.Errorf("SignedSSVMessage has an invalid signature: %w", err))
 	}
 
 	msg := signedSSVMessage.SSVMessage
