@@ -15,7 +15,7 @@ import (
 func UnknownSigner() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "SignedSSVMessage has an invalid signature: unknown signer"
+	expectedErrorCode := types.SSVMessageHasInvalidSignatureErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus unknown signer",
@@ -35,7 +35,7 @@ func UnknownSigner() tests.SpecTest {
 				PostDutyRunnerStateRoot: unknownSignerSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     unknownSignerSyncCommitteeContributionSC().ExpectedState,
 				DontStartDuty:           true,
-				ExpectedError:           expectedError,
+				ExpectedErrorCode:       expectedErrorCode,
 			},
 		},
 		ks,
@@ -53,8 +53,8 @@ func UnknownSigner() tests.SpecTest {
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 5, version))),
 			},
-			DontStartDuty: true,
-			ExpectedError: expectedError,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		},
 		)
 	}
@@ -72,8 +72,8 @@ func UnknownSigner() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 5, version))),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name: fmt.Sprintf("sync committee (%s)", version.String()),
@@ -86,8 +86,8 @@ func UnknownSigner() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 5, version))),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name: fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -100,8 +100,8 @@ func UnknownSigner() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 5, version))),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		}...)
 	}
@@ -122,7 +122,7 @@ func UnknownSigner() tests.SpecTest {
 			PostDutyRunnerStateRoot: unknownSignerProposerSC(version).Root(),
 			PostDutyRunnerState:     unknownSignerProposerSC(version).ExpectedState,
 			DontStartDuty:           true,
-			ExpectedError:           expectedError,
+			ExpectedErrorCode:       expectedErrorCode,
 		}
 	}
 
@@ -142,7 +142,7 @@ func UnknownSigner() tests.SpecTest {
 			PostDutyRunnerStateRoot: unknownSignerBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     unknownSignerBlindedProposerSC(version).ExpectedState,
 			DontStartDuty:           true,
-			ExpectedError:           expectedError,
+			ExpectedErrorCode:       expectedErrorCode,
 		}
 	}
 

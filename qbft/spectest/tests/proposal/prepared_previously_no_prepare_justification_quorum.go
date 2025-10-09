@@ -43,7 +43,7 @@ func PreparedPreviouslyNoPrepareJustificationQuorum() tests.SpecTest {
 		sc.ExpectedState,
 		inputMessages,
 		nil,
-		"invalid signed message: proposal not justified: change round msg not valid: no justifications quorum",
+		types.JustificationsNoQuorumInvalidErrorCode,
 		nil,
 		ks,
 	)

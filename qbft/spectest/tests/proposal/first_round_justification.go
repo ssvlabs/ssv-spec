@@ -28,7 +28,7 @@ func FirstRoundJustification() tests.SpecTest {
 		nil,
 		inputMessages,
 		outputMessages,
-		"",
+		0,
 		&testingutils.TimerState{
 			Timeouts: 0,
 			Round:    qbft.NoRound,

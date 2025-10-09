@@ -83,7 +83,7 @@ func VerifyReconstructedSignature(sig *bls.Sign, validatorPubKey []byte, root [3
 
 	// verify reconstructed sig
 	if res := sig.VerifyByte(pk, root[:]); !res {
-		return errors.New("could not reconstruct a valid signature")
+		return NewError(ReconstructSignatureErrorCode, "could not reconstruct a valid signature")
 	}
 	return nil
 }

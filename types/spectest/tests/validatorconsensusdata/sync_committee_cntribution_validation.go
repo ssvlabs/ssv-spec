@@ -11,6 +11,6 @@ func SyncCommitteeContributionValidation() *ValidatorConsensusDataTest {
 		"sync committee contribution valid",
 		testdoc.ValidatorConsensusDataTestSyncCommitteeContributionValidationDoc,
 		*testingutils.TestSyncCommitteeContributionConsensusData,
-		"",
+		0,
 	)
 }

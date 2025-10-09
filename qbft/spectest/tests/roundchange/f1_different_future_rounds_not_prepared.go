@@ -33,7 +33,7 @@ func F1DifferentFutureRoundsNotPrepared() tests.SpecTest {
 		sc.ExpectedState,
 		inputMessages,
 		outputMessages,
-		"",
+		0,
 		nil,
 		ks,
 	)

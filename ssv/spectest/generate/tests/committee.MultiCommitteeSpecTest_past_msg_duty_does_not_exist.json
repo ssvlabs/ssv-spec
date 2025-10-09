@@ -1320,7 +1320,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "no runner found for message's slot"
+      "ExpectedErrorCode": 22
     },
     {
       "Name": "30 sync committee (phase0)",
@@ -2759,7 +2759,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "no runner found for message's slot"
+      "ExpectedErrorCode": 22
     },
     {
       "Name": "30 attestation 30 sync committee (phase0)",
@@ -4528,7 +4528,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "no runner found for message's slot"
+      "ExpectedErrorCode": 22
     },
     {
       "Name": "30 attestation (electra)",
@@ -5847,7 +5847,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "no runner found for message's slot"
+      "ExpectedErrorCode": 22
     },
     {
       "Name": "30 sync committee (electra)",
@@ -7286,7 +7286,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "no runner found for message's slot"
+      "ExpectedErrorCode": 22
     },
     {
       "Name": "30 attestation 30 sync committee (electra)",
@@ -9055,7 +9055,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "no runner found for message's slot"
+      "ExpectedErrorCode": 22
     }
   ],
   "PrivateKeys": {

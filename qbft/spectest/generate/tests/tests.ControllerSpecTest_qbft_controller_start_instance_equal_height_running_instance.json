@@ -29,7 +29,7 @@
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "instance already running",
+  "ExpectedErrorCode": 70,
   "Controller": {
     "Identifier": "AQIDBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
     "Height": 0,

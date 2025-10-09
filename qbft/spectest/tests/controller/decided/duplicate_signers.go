@@ -28,7 +28,7 @@ func DuplicateSigners() tests.SpecTest {
 			},
 		},
 		nil,
-		"invalid decided msg: invalid decided msg: signed commit invalid: invalid SignedSSVMessage: non unique signer",
+		types.CommitMessageInvalidErrorCode,
 		nil,
 		ks,
 	)

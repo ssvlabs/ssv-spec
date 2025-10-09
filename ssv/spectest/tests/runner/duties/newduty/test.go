@@ -15,9 +15,10 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
-	comparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 type StartNewRunnerDutySpecTest struct {
@@ -30,7 +31,7 @@ type StartNewRunnerDutySpecTest struct {
 	PostDutyRunnerStateRoot string
 	PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 	OutputMessages          []*types.PartialSignatureMessages
-	ExpectedError           string
+	ExpectedErrorCode       int
 	PrivateKeys             *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
@@ -47,11 +48,7 @@ func (test *StartNewRunnerDutySpecTest) overrideStateComparison(t *testing.T) {
 // It simply runs without calling oveerideStateComparison
 func (test *StartNewRunnerDutySpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	err := test.runPreTesting()
-	if len(test.ExpectedError) > 0 {
-		require.EqualError(t, err, test.ExpectedError)
-	} else {
-		require.NoError(t, err)
-	}
+	tests.AssertErrorCode(t, test.ExpectedErrorCode, err)
 
 	// test output message
 	broadcastedSignedMsgs := test.Runner.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
@@ -134,26 +131,31 @@ type MultiStartNewRunnerDutySpecTest struct {
 	PrivateKeys   *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
-func (tests *MultiStartNewRunnerDutySpecTest) TestName() string {
-	return tests.Name
+func (mTest *MultiStartNewRunnerDutySpecTest) TestName() string {
+	return mTest.Name
 }
 
-func (tests *MultiStartNewRunnerDutySpecTest) Run(t *testing.T) {
-	tests.overrideStateComparison(t)
+func (mTest *MultiStartNewRunnerDutySpecTest) Run(t *testing.T) {
+	mTest.overrideStateComparison(t)
 
-	for _, test := range tests.Tests {
+	for _, test := range mTest.Tests {
 		t.Run(test.TestName(), func(t *testing.T) {
 			test.RunAsPartOfMultiTest(t)
 		})
 	}
 }
 
-func (tests *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
-	ret := make(map[string]types.Root, len(tests.Tests))
-	for _, test := range tests.Tests {
+func (mTest *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error) {
+	ret := make(map[string]types.Root, len(mTest.Tests))
+	for _, test := range mTest.Tests {
 		err := test.runPreTesting()
-		if err != nil && test.ExpectedError != err.Error() {
-			return nil, err
+		if err != nil && !tests.MatchesErrorCode(test.ExpectedErrorCode, err) {
+			return nil, fmt.Errorf(
+				"(%s) expected error with code: %d, got error: %s",
+				test.TestName(),
+				test.ExpectedErrorCode,
+				err,
+			)
 		}
 		ret[test.Name] = test.Runner
 	}
@@ -161,11 +163,11 @@ func (tests *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error
 }
 
 // overrideStateComparison overrides the post state comparison for all tests in the multi test
-func (tests *MultiStartNewRunnerDutySpecTest) overrideStateComparison(t *testing.T) {
-	testsName := strings.ReplaceAll(tests.TestName(), " ", "_")
-	for _, test := range tests.Tests {
+func (mTest *MultiStartNewRunnerDutySpecTest) overrideStateComparison(t *testing.T) {
+	testsName := strings.ReplaceAll(mTest.TestName(), " ", "_")
+	for _, test := range mTest.Tests {
 		path := filepath.Join(testsName, test.TestName())
-		overrideStateComparison(t, test, path, reflect.TypeOf(tests).String())
+		overrideStateComparison(t, test, path, reflect.TypeOf(mTest).String())
 	}
 }
 
@@ -210,7 +212,7 @@ func (t *StartNewRunnerDutySpecTest) MarshalJSON() ([]byte, error) {
 		PostDutyRunnerStateRoot string
 		PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 		OutputMessages          []*types.PartialSignatureMessages
-		ExpectedError           string
+		ExpectedErrorCode       int
 		ValidatorDuty           *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
 		CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
 	}
@@ -221,7 +223,7 @@ func (t *StartNewRunnerDutySpecTest) MarshalJSON() ([]byte, error) {
 		PostDutyRunnerStateRoot: t.PostDutyRunnerStateRoot,
 		PostDutyRunnerState:     t.PostDutyRunnerState,
 		OutputMessages:          t.OutputMessages,
-		ExpectedError:           t.ExpectedError,
+		ExpectedErrorCode:       t.ExpectedErrorCode,
 	}
 
 	if t.Duty != nil {
@@ -247,7 +249,7 @@ func (t *StartNewRunnerDutySpecTest) UnmarshalJSON(data []byte) error {
 		PostDutyRunnerStateRoot string
 		PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 		OutputMessages          []*types.PartialSignatureMessages
-		ExpectedError           string
+		ExpectedError           int
 		ValidatorDuty           *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
 		CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
 	}
@@ -264,7 +266,7 @@ func (t *StartNewRunnerDutySpecTest) UnmarshalJSON(data []byte) error {
 	t.PostDutyRunnerStateRoot = aux.PostDutyRunnerStateRoot
 	t.PostDutyRunnerState = aux.PostDutyRunnerState
 	t.OutputMessages = aux.OutputMessages
-	t.ExpectedError = aux.ExpectedError
+	t.ExpectedErrorCode = aux.ExpectedError
 
 	// Determine which type of duty was marshaled
 	if aux.ValidatorDuty != nil {
@@ -276,7 +278,7 @@ func (t *StartNewRunnerDutySpecTest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func NewStartNewRunnerDutySpecTest(name, documentation string, runner ssv.Runner, duty types.Duty, threshold uint64, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, expectedError string, ks *testingutils.TestKeySet) *StartNewRunnerDutySpecTest {
+func NewStartNewRunnerDutySpecTest(name, documentation string, runner ssv.Runner, duty types.Duty, threshold uint64, postDutyRunnerStateRoot string, postDutyRunnerState types.Root, outputMessages []*types.PartialSignatureMessages, expectedErrorCode int, ks *testingutils.TestKeySet) *StartNewRunnerDutySpecTest {
 	return &StartNewRunnerDutySpecTest{
 		Name:                    name,
 		Type:                    testdoc.RunnerDutiesSpecTestType,
@@ -287,7 +289,7 @@ func NewStartNewRunnerDutySpecTest(name, documentation string, runner ssv.Runner
 		PostDutyRunnerStateRoot: postDutyRunnerStateRoot,
 		PostDutyRunnerState:     postDutyRunnerState,
 		OutputMessages:          outputMessages,
-		ExpectedError:           expectedError,
+		ExpectedErrorCode:       expectedErrorCode,
 		PrivateKeys:             testingutils.BuildPrivateKeyInfo(ks),
 	}
 }

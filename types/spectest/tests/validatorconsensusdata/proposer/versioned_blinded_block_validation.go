@@ -28,6 +28,6 @@ func VersionedBlindedBlockValidation() *ProposerSpecTest {
 		testingutils.TestingBlindedBeaconBlockBytesV(spec.DataVersionDeneb),
 		types.ExpectedBlkRoot(expectedBlkRoot),
 		types.ExpectedCdRoot(expectedCdRoot),
-		"",
+		0,
 	)
 }

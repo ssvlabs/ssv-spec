@@ -3,6 +3,7 @@ package startinstance
 import (
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // NilValue tests a starting an instance for a nil value (not passing value check)
@@ -16,7 +17,7 @@ func NilValue() tests.SpecTest {
 			},
 		},
 		nil,
-		"value invalid: invalid value",
+		types.QBFTValueInvalidErrorCode,
 		nil,
 		nil,
 	)

@@ -35,7 +35,7 @@ func RoundChangePartialQuorum() tests.SpecTest {
 		sc.ExpectedState,
 		inputMessages,
 		outputMessages,
-		"",
+		0,
 		&testingutils.TimerState{
 			Timeouts: 1,
 			Round:    qbft.Round(2),

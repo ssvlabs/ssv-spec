@@ -15,7 +15,7 @@ import (
 func InvalidSignedMessage() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	expectedError := "invalid SignedSSVMessage: signer ID 0 not allowed"
+	expectedError := types.ZeroSignerNotAllowedErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus invalid signed msg",
@@ -32,7 +32,7 @@ func InvalidSignedMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 			{
 				Name:   "randao",
@@ -45,7 +45,7 @@ func InvalidSignedMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 			{
 				Name:   "randao (blinded block)",
@@ -58,7 +58,7 @@ func InvalidSignedMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 			{
 				Name:   "validator registration",
@@ -71,7 +71,7 @@ func InvalidSignedMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 			{
 				Name:   "voluntary exit",
@@ -84,7 +84,7 @@ func InvalidSignedMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 		},
 		ks,
@@ -101,7 +101,7 @@ func InvalidSignedMessage() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedError,
 		})
 	}
 

@@ -1515,7 +1515,7 @@
         "1bffbcd03f1b74f3194bf68a2f7f310263bf7b9f9aaffa526d8dd67254a1cd73"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -3484,7 +3484,7 @@
         "dd967356dfd693c84244ed6858755dd6bae39bd5487120b53459275ee7a29536"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -5933,7 +5933,7 @@
         "dd967356dfd693c84244ed6858755dd6bae39bd5487120b53459275ee7a29536"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -8232,7 +8232,7 @@
         "2c2285404bd67b0b4c83cfb84b304011f3cf9fc54f389dd98db8eacf806bc839"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -10201,7 +10201,7 @@
         "86acd2060da946db56ee718a4ede335fe088535f1d8b2e68f005f01f09435864"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -12650,7 +12650,7 @@
         "86acd2060da946db56ee718a4ede335fe088535f1d8b2e68f005f01f09435864"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [

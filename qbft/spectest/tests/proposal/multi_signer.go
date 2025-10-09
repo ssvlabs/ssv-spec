@@ -28,7 +28,7 @@ func MultiSigner() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"invalid signed message: msg allows 1 signer",
+		types.MessageAllowsOneSignerOnlyErrorCode,
 		nil,
 		ks,
 	)

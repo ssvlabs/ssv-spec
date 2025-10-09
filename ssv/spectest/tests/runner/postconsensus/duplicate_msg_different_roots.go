@@ -15,7 +15,7 @@ import (
 func DuplicateMsgDifferentRoots() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "failed processing post consensus message: invalid post-consensus message: wrong signing root"
+	expectedErrorCode := types.WrongSigningRootErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus duplicate msg different roots",
@@ -36,7 +36,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     duplicateMsgDifferentRootsSyncCommitteeContributionSC().ExpectedState,
 				DontStartDuty:           true,
-				ExpectedError:           expectedError,
+				ExpectedErrorCode:       expectedErrorCode,
 			},
 		},
 		ks,
@@ -55,8 +55,8 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusWrongAggregatorMsg(ks.Shares[1], 1, version))),
 			},
-			DontStartDuty: true,
-			ExpectedError: expectedError,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		},
 		)
 	}
@@ -125,7 +125,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 			PostDutyRunnerStateRoot: duplicateMsgDifferentRootsProposerSC(version).Root(),
 			PostDutyRunnerState:     duplicateMsgDifferentRootsProposerSC(version).ExpectedState,
 			DontStartDuty:           true,
-			ExpectedError:           expectedError,
+			ExpectedErrorCode:       expectedErrorCode,
 		}
 	}
 
@@ -146,7 +146,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 			PostDutyRunnerStateRoot: duplicateMsgDifferentRootsBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     duplicateMsgDifferentRootsBlindedProposerSC(version).ExpectedState,
 			DontStartDuty:           true,
-			ExpectedError:           expectedError,
+			ExpectedErrorCode:       expectedErrorCode,
 		}
 	}
 

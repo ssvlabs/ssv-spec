@@ -2,9 +2,11 @@ package qbft
 
 import (
 	"bytes"
+	"fmt"
 	"sort"
 
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -45,7 +47,7 @@ func commitQuorumForRoundRoot(state *State, commitMsgContainer *MsgContainer, ro
 
 func aggregateCommitMsgs(msgs []*ProcessingMessage, fullData []byte) (*types.SignedSSVMessage, error) {
 	if len(msgs) == 0 {
-		return nil, errors.New("can't aggregate zero commit msgs")
+		return nil, types.NewError(types.ZeroCommitMessagesErrorCode, "can't aggregate zero commit msgs")
 	}
 
 	var ret *types.SignedSSVMessage
@@ -120,18 +122,18 @@ func baseCommitValidationIgnoreSignature(
 ) error {
 
 	if err := msg.Validate(); err != nil {
-		return errors.Wrap(err, "signed commit invalid")
+		return types.WrapError(types.CommitMessageInvalidErrorCode, fmt.Errorf("signed commit invalid: %w", err))
 	}
 
 	if msg.QBFTMessage.MsgType != CommitMsgType {
-		return errors.New("commit msg type is wrong")
+		return types.NewError(types.CommitMessageTypeWrongErrorCode, "commit msg type is wrong")
 	}
 	if msg.QBFTMessage.Height != height {
-		return errors.New("wrong msg height")
+		return types.NewError(types.WrongMessageHeightErrorCode, "wrong msg height")
 	}
 
 	if !msg.SignedMessage.CheckSignersInCommittee(operators) {
-		return errors.New("signer not in committee")
+		return types.NewError(types.SignerIsNotInCommitteeErrorCode, "signer not in committee")
 	}
 
 	return nil
@@ -148,7 +150,7 @@ func baseCommitValidationVerifySignature(
 
 	// verify signature
 	if err := types.Verify(msg.SignedMessage, operators); err != nil {
-		return errors.Wrap(err, "msg signature invalid")
+		return types.WrapError(types.MessageSignatureInvalidErrorCode, fmt.Errorf("msg signature invalid: %w", err))
 	}
 
 	return nil
@@ -166,15 +168,15 @@ func validateCommit(
 	}
 
 	if len(msg.SignedMessage.OperatorIDs) != 1 {
-		return errors.New("msg allows 1 signer")
+		return types.NewError(types.MessageAllowsOneSignerOnlyErrorCode, "msg allows 1 signer")
 	}
 
 	if msg.QBFTMessage.Round != round {
-		return errors.New("wrong msg round")
+		return types.NewError(types.WrongMessageRoundErrorCode, "wrong msg round")
 	}
 
 	if !bytes.Equal(proposedMsg.QBFTMessage.Root[:], msg.QBFTMessage.Root[:]) {
-		return errors.New("proposed data mismatch")
+		return types.NewError(types.ProposedDataMismatchErrorCode, "proposed data mismatch")
 	}
 
 	return nil

@@ -30,7 +30,7 @@ func InvalidRoundChangeJustificationsUnmarshalling() tests.SpecTest {
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
-		"incorrect size",
+		types.UnmarshalSSZErrorCode,
 		ks,
 	)
 

@@ -17,5 +17,5 @@
     "Version": "capella",
     "DataSSZ": ""
   },
-  "ExpectedError": "could not unmarshal ssz (blinded err: incorrect size, regular err: incorrect size)"
+  "ExpectedErrorCode": 1
 }

@@ -33,7 +33,7 @@ func NoRCJustification() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"invalid signed message: proposal not justified: change round has no quorum",
+		types.RoundChangeNoQuorumErrorCode,
 		nil,
 		ks,
 	)

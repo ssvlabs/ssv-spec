@@ -20,7 +20,7 @@ func ZeroSigner() tests.SpecTest {
 		return msg
 	}
 
-	expectedError := "invalid SignedSSVMessage: signer ID 0 not allowed"
+	expectedError := types.ZeroSignerNotAllowedErrorCode
 
 	ks := testingutils.Testing4SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
@@ -43,7 +43,7 @@ func ZeroSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 			{
 				Name:   "proposer",
@@ -61,7 +61,7 @@ func ZeroSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 			{
 				Name:   "proposer (blinded block)",
@@ -79,7 +79,7 @@ func ZeroSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 			{
 				Name:   "validator registration",
@@ -100,7 +100,7 @@ func ZeroSigner() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedValidatorRegistration(ks)),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 			{
 				Name:   "voluntary exit",
@@ -121,7 +121,7 @@ func ZeroSigner() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedVoluntaryExit(ks)),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 		},
 		ks,
@@ -144,7 +144,7 @@ func ZeroSigner() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedError,
 		},
 		)
 	}
@@ -160,7 +160,7 @@ func ZeroSigner() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -171,7 +171,7 @@ func ZeroSigner() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -182,7 +182,7 @@ func ZeroSigner() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 		}...)
 	}

@@ -26,7 +26,7 @@ func ForceStop() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"instance stopped processing messages",
+		types.InstanceStoppedProcessingMessagesErrorCode,
 		nil,
 		ks,
 	)

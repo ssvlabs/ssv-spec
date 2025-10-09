@@ -84,5 +84,5 @@
   "PostDutyCommitteeRoot": "",
   "OutputMessages": null,
   "BeaconBroadcastedRoots": null,
-  "ExpectedError": "no shares for duty's validators"
+  "ExpectedErrorCode": 27
 }

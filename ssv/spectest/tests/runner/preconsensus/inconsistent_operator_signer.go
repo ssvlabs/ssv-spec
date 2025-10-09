@@ -14,7 +14,7 @@ import (
 // InconsistentOperatorSigner tests a SignedSSVMessage with inconsistent signer regarding its nested SignedPartialSignatureMessage
 func InconsistentOperatorSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "invalid PartialSignatureMessages: signer from signed message is inconsistent with partial signature signers"
+	expectedErrorCode := types.PartialSigInconsistentSignerErrorCode
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus inconsistent operator signer",
 		testdoc.PreConsensusInconsistentOperatorSignerDoc,
@@ -30,7 +30,7 @@ func InconsistentOperatorSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   "randao",
@@ -43,7 +43,7 @@ func InconsistentOperatorSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   "randao (blinded block)",
@@ -56,7 +56,7 @@ func InconsistentOperatorSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		},
 		ks,
@@ -73,7 +73,7 @@ func InconsistentOperatorSigner() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		})
 	}
 

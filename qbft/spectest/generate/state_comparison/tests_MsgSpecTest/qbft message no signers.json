@@ -18,5 +18,5 @@
   ],
   "EncodedMessages": null,
   "ExpectedRoots": null,
-  "ExpectedError": "no signers"
+  "ExpectedErrorCode": 18
 }

@@ -42,7 +42,7 @@ func InvalidPrepareJustificationRound() tests.SpecTest {
 		sc.ExpectedState,
 		inputMessages,
 		nil,
-		"invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: wrong msg round",
+		types.WrongMessageRoundErrorCode,
 		nil,
 		ks,
 	)

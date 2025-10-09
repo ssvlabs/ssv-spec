@@ -2,6 +2,7 @@ package valcheckattestations
 
 import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
@@ -34,7 +35,7 @@ func FarFutureTarget() tests.SpecTest {
 		input,
 		nil,
 		nil,
-		"attestation data target epoch is into far future",
+		types.AttestationTargetEpochTooFarFutureErrorCode,
 		false,
 	)
 }

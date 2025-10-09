@@ -21,7 +21,7 @@ func NoSigners() *SignedSSVMessageTest {
 				SSVMessage:  testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
-		"no signers",
+		types.NoSignersErrorCode,
 		nil,
 	)
 }

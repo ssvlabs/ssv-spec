@@ -21,7 +21,7 @@ func ZeroSigner() *SignedSSVMessageTest {
 				SSVMessage:  testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
-		"signer ID 0 not allowed",
+		types.ZeroSignerNotAllowedErrorCode,
 		nil,
 	)
 }

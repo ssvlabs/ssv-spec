@@ -16,6 +16,6 @@
       "FullData": null
     }
   ],
-  "ExpectedError": "no signatures",
+  "ExpectedErrorCode": 17,
   "RSAPublicKey": null
 }

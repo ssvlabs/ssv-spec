@@ -22,6 +22,6 @@ func SSZWithdrawalsMarshaling() *SSZSpecTest {
 		testdoc.SSZSpecTestWithdrawalsMarshalingDoc,
 		testingutils.TestProposerConsensusDataBytsV(spec.DataVersionCapella),
 		root,
-		"",
+		0,
 	)
 }

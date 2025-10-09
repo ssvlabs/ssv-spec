@@ -1,7 +1,10 @@
 package ssv
 
 import (
+	"fmt"
+
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -44,7 +47,7 @@ func (v *Validator) StartDuty(duty types.Duty) error {
 	role := duty.RunnerRole()
 	dutyRunner := v.DutyRunners[role]
 	if dutyRunner == nil {
-		return errors.Errorf("duty type %s not supported", role.String())
+		return fmt.Errorf("duty type %s not supported", role.String())
 	}
 	return dutyRunner.StartNewDuty(duty, v.CommitteeMember.GetQuorum())
 }
@@ -58,7 +61,7 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 
 	// Verify SignedSSVMessage's signature
 	if err := types.Verify(signedSSVMessage, v.CommitteeMember.Committee); err != nil {
-		return errors.Wrap(err, "SignedSSVMessage has an invalid signature")
+		return types.WrapError(types.SSVMessageHasInvalidSignatureErrorCode, fmt.Errorf("SignedSSVMessage has an invalid signature: %w", err))
 	}
 
 	msg := signedSSVMessage.SSVMessage
@@ -66,7 +69,7 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	// Get runner
 	dutyRunner := v.DutyRunners.DutyRunnerForMsgID(msg.GetID())
 	if dutyRunner == nil {
-		return errors.Errorf("could not get duty runner for msg ID")
+		return fmt.Errorf("could not get duty runner for msg ID")
 	}
 
 	// Validate message for runner

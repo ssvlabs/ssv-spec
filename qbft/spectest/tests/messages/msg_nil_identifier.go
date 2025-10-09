@@ -26,7 +26,7 @@ func MsgNilIdentifier() tests.SpecTest {
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
-		"message identifier is invalid",
+		types.MessageIdentifierInvalidErrorCode,
 		ks,
 	)
 

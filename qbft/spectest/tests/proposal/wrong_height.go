@@ -23,7 +23,7 @@ func WrongHeight() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"invalid signed message: wrong msg height",
+		types.WrongMessageHeightErrorCode,
 		nil,
 		ks,
 	)

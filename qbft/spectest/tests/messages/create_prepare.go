@@ -19,7 +19,7 @@ func CreatePrepare() tests.SpecTest {
 		tests.CreatePrepare,
 		"edf017cce3ba879ef8c16bda28c30c776ae6c522b41c7d0eb1cb1cf29f719613",
 		nil,
-		"",
+		0,
 		nil,
 	)
 }

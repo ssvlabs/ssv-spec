@@ -79,7 +79,7 @@ func (i *Instance) Start(value []byte, height Height) {
 
 func (i *Instance) Broadcast(msg *types.SignedSSVMessage) error {
 	if !i.CanProcessMessages() {
-		return errors.New("instance stopped processing messages")
+		return types.NewError(types.InstanceStoppedProcessingMessagesErrorCode, "instance stopped processing messages")
 	}
 
 	return i.GetConfig().GetNetwork().Broadcast(msg.SSVMessage.GetID(), msg)
@@ -88,7 +88,7 @@ func (i *Instance) Broadcast(msg *types.SignedSSVMessage) error {
 // ProcessMsg processes a new QBFT msg, returns non nil error on msg processing error
 func (i *Instance) ProcessMsg(msg *ProcessingMessage) (decided bool, decidedValue []byte, aggregatedCommit *types.SignedSSVMessage, err error) {
 	if !i.CanProcessMessages() {
-		return false, nil, nil, errors.New("instance stopped processing messages")
+		return false, nil, nil, types.NewError(types.InstanceStoppedProcessingMessagesErrorCode, "instance stopped processing messages")
 	}
 
 	if err := i.BaseMsgValidation(msg); err != nil {
@@ -126,7 +126,7 @@ func (i *Instance) BaseMsgValidation(msg *ProcessingMessage) error {
 	}
 
 	if msg.QBFTMessage.Round < i.State.Round {
-		return errors.New("past round")
+		return types.NewError(types.PastRoundErrorCode, "past round")
 	}
 
 	switch msg.QBFTMessage.MsgType {
@@ -140,7 +140,7 @@ func (i *Instance) BaseMsgValidation(msg *ProcessingMessage) error {
 	case PrepareMsgType:
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
 		if proposedMsg == nil {
-			return errors.New("did not receive proposal for this round")
+			return types.NewError(types.NoProposalForCurrentRoundErrorCode, "did not receive proposal for this round")
 		}
 		return validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 			msg,
@@ -152,7 +152,7 @@ func (i *Instance) BaseMsgValidation(msg *ProcessingMessage) error {
 	case CommitMsgType:
 		proposedMsg := i.State.ProposalAcceptedForCurrentRound
 		if proposedMsg == nil {
-			return errors.New("did not receive proposal for this round")
+			return types.NewError(types.NoProposalForCurrentRoundErrorCode, "did not receive proposal for this round")
 		}
 		return validateCommit(
 			msg,

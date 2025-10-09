@@ -13,6 +13,6 @@ func FuluBlindedBlockValidation() *ValidatorConsensusDataTest {
 		"valid fulu blinded block",
 		testdoc.ValidatorConsensusDataTestElectraBlindedBlockDoc,
 		*testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionFulu),
-		"",
+		0,
 	)
 }

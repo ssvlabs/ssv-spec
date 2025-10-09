@@ -50,7 +50,7 @@ func LateDecidedBiggerQuorum() tests.SpecTest {
 			},
 		},
 		nil,
-		"",
+		0,
 		nil,
 		ks,
 	)

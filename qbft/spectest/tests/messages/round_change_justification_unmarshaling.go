@@ -40,7 +40,7 @@ func RoundChangeJustificationsUnmarshalling() tests.SpecTest {
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{encodedMsg},
 		[][32]byte{msgRoot},
-		"",
+		0,
 		ks,
 	)
 

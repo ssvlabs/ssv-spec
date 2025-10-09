@@ -27,7 +27,7 @@
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "",
+  "ExpectedErrorCode": 0,
   "Controller": {
     "Identifier": "AQIDBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
     "Height": 0,

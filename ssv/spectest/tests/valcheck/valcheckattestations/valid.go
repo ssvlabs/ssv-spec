@@ -19,7 +19,7 @@ func Valid() tests.SpecTest {
 		testingutils.TestBeaconVoteByts,
 		nil,
 		nil,
-		"",
+		0,
 		false,
 	)
 }

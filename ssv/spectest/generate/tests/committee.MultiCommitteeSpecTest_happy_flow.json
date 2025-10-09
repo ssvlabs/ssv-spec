@@ -243,7 +243,7 @@
       "BeaconBroadcastedRoots": [
         "8b5a0ab838e9fd5bd5b3a7c0f6d4d8b81b03998145a8f14c94f7ce2cc09f6b97"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 sync committee (phase0)",
@@ -489,7 +489,7 @@
       "BeaconBroadcastedRoots": [
         "c530a60872f5f22823c40bdf8c2e025206c15a0e9df873d5e6f6547dd604473d"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 attestations 1 sync committees (phase0)",
@@ -753,7 +753,7 @@
         "8b5a0ab838e9fd5bd5b3a7c0f6d4d8b81b03998145a8f14c94f7ce2cc09f6b97",
         "c530a60872f5f22823c40bdf8c2e025206c15a0e9df873d5e6f6547dd604473d"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "30 attestation (phase0)",
@@ -2416,7 +2416,7 @@
         "3225b0cbef370907b6dd111a44af6de4ac031ccde65b431afd5d5d1878a63f1e",
         "1bffbcd03f1b74f3194bf68a2f7f310263bf7b9f9aaffa526d8dd67254a1cd73"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "30 sync committee (phase0)",
@@ -4199,7 +4199,7 @@
         "8997ce08386c739bcebae40c477383790c4dabdb1c45794c3083c65c03768eb4",
         "dd967356dfd693c84244ed6858755dd6bae39bd5487120b53459275ee7a29536"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "30 attestations 30 sync committees (phase0)",
@@ -6522,7 +6522,7 @@
         "8997ce08386c739bcebae40c477383790c4dabdb1c45794c3083c65c03768eb4",
         "dd967356dfd693c84244ed6858755dd6bae39bd5487120b53459275ee7a29536"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 attestation (electra)",
@@ -6764,7 +6764,7 @@
       "BeaconBroadcastedRoots": [
         "92e146679fd7f065a7a1008b87d4e856565f2af6d764947efd109eee6e761a91"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 sync committee (electra)",
@@ -7010,7 +7010,7 @@
       "BeaconBroadcastedRoots": [
         "e494a5a522ac996c7dba7290f06e087262d402029804f462f33d97945f5cd803"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 attestations 1 sync committees (electra)",
@@ -7274,7 +7274,7 @@
         "92e146679fd7f065a7a1008b87d4e856565f2af6d764947efd109eee6e761a91",
         "e494a5a522ac996c7dba7290f06e087262d402029804f462f33d97945f5cd803"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "30 attestation (electra)",
@@ -8937,7 +8937,7 @@
         "8602ab31d72ca5c62f649e86af64f4866d9f9b819d635fe889dd760674f31017",
         "2c2285404bd67b0b4c83cfb84b304011f3cf9fc54f389dd98db8eacf806bc839"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "30 sync committee (electra)",
@@ -10720,7 +10720,7 @@
         "91f85e0b7e4e694d586d1a7f4e02fb4cb34025679a320401a8f38e3ad6c60a8c",
         "86acd2060da946db56ee718a4ede335fe088535f1d8b2e68f005f01f09435864"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "30 attestations 30 sync committees (electra)",
@@ -13043,7 +13043,7 @@
         "91f85e0b7e4e694d586d1a7f4e02fb4cb34025679a320401a8f38e3ad6c60a8c",
         "86acd2060da946db56ee718a4ede335fe088535f1d8b2e68f005f01f09435864"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     }
   ],
   "PrivateKeys": {

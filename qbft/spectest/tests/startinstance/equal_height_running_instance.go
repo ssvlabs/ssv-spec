@@ -4,6 +4,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -25,7 +26,7 @@ func EqualHeightRunningInstance() tests.SpecTest {
 			},
 		},
 		nil,
-		"instance already running",
+		types.InstanceAlreadyRunningErrorCode,
 		nil,
 		nil,
 	)

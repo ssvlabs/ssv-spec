@@ -35,7 +35,7 @@ func UnknownSigner() tests.SpecTest {
 		nil,
 		msgs,
 		outputMsgs,
-		"invalid signed message: signer not in committee",
+		types.SignerIsNotInCommitteeErrorCode,
 		nil,
 		ks,
 	)

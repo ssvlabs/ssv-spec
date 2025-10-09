@@ -586,7 +586,7 @@
         "b88a88037a93b0f19701f1fda592c549f7106a97e2083a032109310a0ee0e020",
         "48253dd045eb0c5e23e0f02a226c6666fea04cbb1a45da662005f6f052638512"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 duties 8 sync committee (phase0)",
@@ -1203,7 +1203,7 @@
         "c6e9588f0bbfa3714960f7e48cfdb46ac9e0ac8bc8fb9fbd473023b0a399314b",
         "bec295634ca1dc94d3804304c3009ee60f282c3cf7053566c9c96bff684ceee2"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 duties 8 attestations 8 sync committees (phase0)",
@@ -1964,7 +1964,7 @@
         "c6e9588f0bbfa3714960f7e48cfdb46ac9e0ac8bc8fb9fbd473023b0a399314b",
         "bec295634ca1dc94d3804304c3009ee60f282c3cf7053566c9c96bff684ceee2"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 duties 30 attestation (phase0)",
@@ -3627,7 +3627,7 @@
         "3225b0cbef370907b6dd111a44af6de4ac031ccde65b431afd5d5d1878a63f1e",
         "1bffbcd03f1b74f3194bf68a2f7f310263bf7b9f9aaffa526d8dd67254a1cd73"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 duties 30 sync committee (phase0)",
@@ -5410,7 +5410,7 @@
         "8997ce08386c739bcebae40c477383790c4dabdb1c45794c3083c65c03768eb4",
         "dd967356dfd693c84244ed6858755dd6bae39bd5487120b53459275ee7a29536"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 duties 30 attestations 30 sync committees (phase0)",
@@ -7733,7 +7733,7 @@
         "8997ce08386c739bcebae40c477383790c4dabdb1c45794c3083c65c03768eb4",
         "dd967356dfd693c84244ed6858755dd6bae39bd5487120b53459275ee7a29536"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "2 duties 8 attestation (phase0)",
@@ -8469,7 +8469,7 @@
         "a21c729d57dfe571da5649ee43298a7c696de1c589360f22023a7a938292644b",
         "1386bc0f49972f6a4462771624e041df17874f5768ff5acbd0477c5be12975f8"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "2 duties 8 sync committee (phase0)",
@@ -9237,7 +9237,7 @@
         "07872c6ed53d49f0a1f620e0399cc51baa3804da804009d5bfe355932e84b421",
         "aa6f753b1732e788746ef574f146e9ee1076659a7c79c1237d0dc69937ea8444"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "2 duties 8 attestations 8 sync committees (phase0)",
@@ -10149,7 +10149,7 @@
         "07872c6ed53d49f0a1f620e0399cc51baa3804da804009d5bfe355932e84b421",
         "aa6f753b1732e788746ef574f146e9ee1076659a7c79c1237d0dc69937ea8444"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "2 duties 30 attestation (phase0)",
@@ -11963,7 +11963,7 @@
         "298fe4b01081c7ee57b41d7839138cbd5d8e3c0b4868d72987db1ea8c121f6f3",
         "0119ad2b16f65078f3d9dd2fe82d47a4fff50068ee00d9e0bfe329171cd044c3"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "2 duties 30 sync committee (phase0)",
@@ -13897,7 +13897,7 @@
         "2094d04b32a4fe9bb8490c7406aa6793babc88ae9317566b6bbfc0fe2a8eec9c",
         "a142603f8f615ebd8a84d115cdbe144214617d6e35adc06824dd74f79fca75e0"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "2 duties 30 attestations 30 sync committees (phase0)",
@@ -16371,7 +16371,7 @@
         "2094d04b32a4fe9bb8490c7406aa6793babc88ae9317566b6bbfc0fe2a8eec9c",
         "a142603f8f615ebd8a84d115cdbe144214617d6e35adc06824dd74f79fca75e0"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "4 duties 8 attestation (phase0)",
@@ -17409,7 +17409,7 @@
         "2af1e810f33bbd4991991451222326b95493390b53e1e0401c71eb50cf9ef42f",
         "27d0ba31b466d4be0260a45498e8fc28fd4064c87122e90eaf5036f0b3fdb3ec"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "4 duties 8 sync committee (phase0)",
@@ -18479,7 +18479,7 @@
         "19eeefd00736692644d4ce0d4e197efd98cb1180f44c89aebec02988a2c2c29c",
         "0927f66154057df1987b49c09e5dc979744757d751b15f5eb13f86f4287dd90d"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "4 duties 8 attestations 8 sync committees (phase0)",
@@ -19693,7 +19693,7 @@
         "19eeefd00736692644d4ce0d4e197efd98cb1180f44c89aebec02988a2c2c29c",
         "0927f66154057df1987b49c09e5dc979744757d751b15f5eb13f86f4287dd90d"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "4 duties 30 attestation (phase0)",
@@ -21773,7 +21773,7 @@
         "6b6c5f7aace2476b59778408c064a5223d303d5b1c014c4bc2485eec6af261aa",
         "168c37bc6f721a90ae15f0c5347af302184566e97210fb0573f839f84545969f"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "4 duties 30 sync committee (phase0)",
@@ -23965,7 +23965,7 @@
         "819a7e6ca052f98a58ce3a5d561a5ba2bab4698ab757049efd4e5630b36092e8",
         "61bb46a9ce59cfbc927b1d95d2eec4e6a2c25e8f4f55e5a6fc02e1a97463324e"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "4 duties 30 attestations 30 sync committees (phase0)",
@@ -26661,7 +26661,7 @@
         "819a7e6ca052f98a58ce3a5d561a5ba2bab4698ab757049efd4e5630b36092e8",
         "61bb46a9ce59cfbc927b1d95d2eec4e6a2c25e8f4f55e5a6fc02e1a97463324e"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 duties 8 attestation (electra)",
@@ -27246,7 +27246,7 @@
         "2bfb6dfd0b2d2f52dc35184f913d74906b5416e553278bf046d326cb35d16e0a",
         "71c6427e475fd4bb3a4f7567cbb55465d332c3052f382d9cc63b27f1c8997f3f"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 duties 8 sync committee (electra)",
@@ -27863,7 +27863,7 @@
         "b5e4c96fb01f143c6fe3257f36596f2c709dfbb8a1f2cd80f99676e800a10d01",
         "89d986abe1cc0248fb887fc35fa5d8a224006aaee2e6927f170036c07c397771"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 duties 8 attestations 8 sync committees (electra)",
@@ -28624,7 +28624,7 @@
         "b5e4c96fb01f143c6fe3257f36596f2c709dfbb8a1f2cd80f99676e800a10d01",
         "89d986abe1cc0248fb887fc35fa5d8a224006aaee2e6927f170036c07c397771"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 duties 30 attestation (electra)",
@@ -30287,7 +30287,7 @@
         "8602ab31d72ca5c62f649e86af64f4866d9f9b819d635fe889dd760674f31017",
         "2c2285404bd67b0b4c83cfb84b304011f3cf9fc54f389dd98db8eacf806bc839"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 duties 30 sync committee (electra)",
@@ -32070,7 +32070,7 @@
         "91f85e0b7e4e694d586d1a7f4e02fb4cb34025679a320401a8f38e3ad6c60a8c",
         "86acd2060da946db56ee718a4ede335fe088535f1d8b2e68f005f01f09435864"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 duties 30 attestations 30 sync committees (electra)",
@@ -34393,7 +34393,7 @@
         "91f85e0b7e4e694d586d1a7f4e02fb4cb34025679a320401a8f38e3ad6c60a8c",
         "86acd2060da946db56ee718a4ede335fe088535f1d8b2e68f005f01f09435864"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "2 duties 8 attestation (electra)",
@@ -35129,7 +35129,7 @@
         "01452021cd79c2ca548447e54235da411bf8fdee14221ba8fcb1c9b356056ba3",
         "41cac94bab3932b6b0f4cd08d2866c700753658d2d61afea1141bf74ba64dce7"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "2 duties 8 sync committee (electra)",
@@ -35897,7 +35897,7 @@
         "b3a07eae3406e85da6877f133d77d8ff6752529ac5ca0d6b33aa225c6998ebc8",
         "dd90b5c93de3611bbd4767a768a17ff24a48ff32b58df93f45accb6d33756365"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "2 duties 8 attestations 8 sync committees (electra)",
@@ -36809,7 +36809,7 @@
         "b3a07eae3406e85da6877f133d77d8ff6752529ac5ca0d6b33aa225c6998ebc8",
         "dd90b5c93de3611bbd4767a768a17ff24a48ff32b58df93f45accb6d33756365"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "2 duties 30 attestation (electra)",
@@ -38623,7 +38623,7 @@
         "f13aa915d16d83ce3d72807df9d6081d1f5306b1dcffa99c2491d9755a638165",
         "f6f2d9da6fe782bfb560b84fc6e0cf7719721311db92ffe26f1f29aedc1e2808"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "2 duties 30 sync committee (electra)",
@@ -40557,7 +40557,7 @@
         "8169ab8be15e7ca84bbc1e3de31552217693c8881b512ebb856a06fa7bd5fb01",
         "e2fbf8e3ea1efeb90e68b331e73ae49e83a8c4db03f809bf326f63a4c6d72d62"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "2 duties 30 attestations 30 sync committees (electra)",
@@ -43031,7 +43031,7 @@
         "8169ab8be15e7ca84bbc1e3de31552217693c8881b512ebb856a06fa7bd5fb01",
         "e2fbf8e3ea1efeb90e68b331e73ae49e83a8c4db03f809bf326f63a4c6d72d62"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "4 duties 8 attestation (electra)",
@@ -44069,7 +44069,7 @@
         "d7af03dc28e10f75e1a44b55fe4ee748c1f2c606f022949f0310721a6727b568",
         "4e7f860097ad3967124df3525a0f03e30c47d66ced01a769a1a013cbfee178fc"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "4 duties 8 sync committee (electra)",
@@ -45139,7 +45139,7 @@
         "24c84be2994be834a5731a934e1b50695b5c99f71548518738d3d1e6d4ef9d42",
         "43026653133d814da8a9164288d62087c1f24ae5fca3d11ef1038041f915ac9c"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "4 duties 8 attestations 8 sync committees (electra)",
@@ -46353,7 +46353,7 @@
         "24c84be2994be834a5731a934e1b50695b5c99f71548518738d3d1e6d4ef9d42",
         "43026653133d814da8a9164288d62087c1f24ae5fca3d11ef1038041f915ac9c"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "4 duties 30 attestation (electra)",
@@ -48433,7 +48433,7 @@
         "eeaa06e1da2b62fe33bb722fcd759a4f0d49bcea11523dd1dfef540abf078594",
         "53f2a672cf00684af370fc27eeda15be592a96f2d50f778f34647dbc2ea53868"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "4 duties 30 sync committee (electra)",
@@ -50625,7 +50625,7 @@
         "43d072cdd6f7c891755fb39ca0f44b925807d8142aa0f264003d5a61051418d1",
         "a9a38e3b2d1889d145c577916016fb442320e7e8f9c43c7000c1ce660d6488fd"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "4 duties 30 attestations 30 sync committees (electra)",
@@ -53321,7 +53321,7 @@
         "43d072cdd6f7c891755fb39ca0f44b925807d8142aa0f264003d5a61051418d1",
         "a9a38e3b2d1889d145c577916016fb442320e7e8f9c43c7000c1ce660d6488fd"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     }
   ]
 }

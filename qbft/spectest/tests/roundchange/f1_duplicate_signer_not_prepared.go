@@ -25,7 +25,7 @@ func F1DuplicateSignerNotPrepared() tests.SpecTest {
 		nil,
 		msgs,
 		nil,
-		"",
+		0,
 		nil,
 		ks,
 	)

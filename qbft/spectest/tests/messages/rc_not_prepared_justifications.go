@@ -20,7 +20,7 @@ func RoundChangeNotPreparedJustifications() tests.SpecTest {
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
-		"",
+		0,
 		ks,
 	)
 

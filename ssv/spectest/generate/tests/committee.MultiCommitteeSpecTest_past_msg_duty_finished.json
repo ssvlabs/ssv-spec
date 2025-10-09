@@ -3380,7 +3380,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "failed processing consensus message: not processing consensus message since instance is already decided"
+      "ExpectedErrorCode": 23
     },
     {
       "Name": "30 sync committee (phase0)",
@@ -6999,7 +6999,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "failed processing consensus message: not processing consensus message since instance is already decided"
+      "ExpectedErrorCode": 23
     },
     {
       "Name": "30 attestation 30 sync committee (phase0)",
@@ -11428,7 +11428,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "failed processing consensus message: not processing consensus message since instance is already decided"
+      "ExpectedErrorCode": 23
     },
     {
       "Name": "30 attestation (electra)",
@@ -14807,7 +14807,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "failed processing consensus message: not processing consensus message since instance is already decided"
+      "ExpectedErrorCode": 23
     },
     {
       "Name": "30 sync committee (electra)",
@@ -18426,7 +18426,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "failed processing consensus message: not processing consensus message since instance is already decided"
+      "ExpectedErrorCode": 23
     },
     {
       "Name": "30 attestation 30 sync committee (electra)",
@@ -22855,7 +22855,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "failed processing consensus message: not processing consensus message since instance is already decided"
+      "ExpectedErrorCode": 23
     }
   ],
   "PrivateKeys": {

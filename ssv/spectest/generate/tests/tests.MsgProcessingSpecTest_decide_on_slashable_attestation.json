@@ -175,7 +175,7 @@
   "OutputMessages": null,
   "BeaconBroadcastedRoots": null,
   "DontStartDuty": false,
-  "ExpectedError": "failed processing consensus message: decided ValidatorConsensusData invalid: decided value is invalid: slashable attestation",
+  "ExpectedErrorCode": 35,
   "CommitteeDuty": {
     "Slot": "12",
     "ValidatorDuties": [

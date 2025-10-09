@@ -1770,7 +1770,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "30 attestations 30 sync committees (electra)",
@@ -3539,7 +3539,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     }
   ],
   "PrivateKeys": {

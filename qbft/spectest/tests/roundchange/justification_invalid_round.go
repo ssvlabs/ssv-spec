@@ -31,7 +31,7 @@ func JustificationInvalidRound() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"invalid signed message: round change justification invalid: wrong msg round",
+		types.WrongMessageRoundErrorCode,
 		nil,
 		ks,
 	)

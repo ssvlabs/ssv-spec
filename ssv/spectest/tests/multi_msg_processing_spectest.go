@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -19,14 +20,14 @@ type MultiMsgProcessingSpecTest struct {
 	PrivateKeys   *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
-func (tests *MultiMsgProcessingSpecTest) TestName() string {
-	return tests.Name
+func (mTest *MultiMsgProcessingSpecTest) TestName() string {
+	return mTest.Name
 }
 
-func (tests *MultiMsgProcessingSpecTest) Run(t *testing.T) {
-	tests.overrideStateComparison(t)
+func (mTest *MultiMsgProcessingSpecTest) Run(t *testing.T) {
+	mTest.overrideStateComparison(t)
 
-	for _, test := range tests.Tests {
+	for _, test := range mTest.Tests {
 		t.Run(test.TestName(), func(t *testing.T) {
 			test.RunAsPartOfMultiTest(t)
 		})
@@ -34,20 +35,25 @@ func (tests *MultiMsgProcessingSpecTest) Run(t *testing.T) {
 }
 
 // overrideStateComparison overrides the post state comparison for all tests in the multi test
-func (tests *MultiMsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
-	testsName := strings.ReplaceAll(tests.TestName(), " ", "_")
-	for _, test := range tests.Tests {
+func (mTest *MultiMsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
+	testsName := strings.ReplaceAll(mTest.TestName(), " ", "_")
+	for _, test := range mTest.Tests {
 		path := filepath.Join(testsName, test.TestName())
-		overrideStateComparison(t, test, path, reflect.TypeOf(tests).String())
+		overrideStateComparison(t, test, path, reflect.TypeOf(mTest).String())
 	}
 }
 
-func (tests *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
-	ret := make(map[string]types.Root, len(tests.Tests))
-	for _, test := range tests.Tests {
+func (mTest *MultiMsgProcessingSpecTest) GetPostState() (interface{}, error) {
+	ret := make(map[string]types.Root, len(mTest.Tests))
+	for _, test := range mTest.Tests {
 		_, _, err := test.runPreTesting()
-		if err != nil && test.ExpectedError != err.Error() {
-			return nil, err
+		if err != nil && !MatchesErrorCode(test.ExpectedErrorCode, err) {
+			return nil, fmt.Errorf(
+				"(%s) expected error with code: %d, got error: %s",
+				test.TestName(),
+				test.ExpectedErrorCode,
+				err,
+			)
 		}
 		ret[test.Name] = test.Runner
 	}

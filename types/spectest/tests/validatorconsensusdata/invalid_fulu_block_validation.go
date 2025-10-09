@@ -21,6 +21,6 @@ func InvalidFuluBlockValidation() *ValidatorConsensusDataTest {
 		"invalid fulu block",
 		testdoc.ValidatorConsensusDataTestInvalidFuluBlockDoc,
 		*cd,
-		"could not unmarshal ssz (blinded err: incorrect size, regular err: incorrect size)",
+		types.UnmarshalSSZErrorCode,
 	)
 }

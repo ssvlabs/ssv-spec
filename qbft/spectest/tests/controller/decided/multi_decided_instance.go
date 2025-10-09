@@ -45,7 +45,7 @@ func MultiDecidedInstances() tests.SpecTest {
 			instanceData(10, "d1383c9a269c18df528f41f2563322a0b3bf490b4625f7fdc9277aca53dacc03"),
 		},
 		nil,
-		"",
+		0,
 		nil,
 		ks,
 	)

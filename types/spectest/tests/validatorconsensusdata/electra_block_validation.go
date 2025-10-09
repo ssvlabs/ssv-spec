@@ -2,6 +2,7 @@ package validatorconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -12,6 +13,6 @@ func ElectraBlockValidation() *ValidatorConsensusDataTest {
 		"valid electra block",
 		testdoc.ValidatorConsensusDataTestElectraBlockDoc,
 		*testingutils.TestProposerConsensusDataV(spec.DataVersionElectra),
-		"",
+		0,
 	)
 }

@@ -110,7 +110,7 @@ func (km *TestingKeyManager) IsAttestationSlashable(pk types.ShareValidatorPK, d
 	entry := hex.EncodeToString(pk)
 	for _, slot := range km.slashableSlots[entry] {
 		if slot == data.Slot {
-			return errors.New("slashable attestation")
+			return types.NewError(types.SlashableAttestationErrorCode, "slashable attestation")
 		}
 	}
 	return nil

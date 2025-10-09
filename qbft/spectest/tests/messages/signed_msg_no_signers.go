@@ -19,7 +19,7 @@ func SignedMsgNoSigners() tests.SpecTest {
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
-		"no signers",
+		types.NoSignersErrorCode,
 		ks,
 	)
 

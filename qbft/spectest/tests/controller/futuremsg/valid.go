@@ -25,13 +25,13 @@ func ValidMsg() tests.SpecTest {
 		testdoc.ControllerFutureMsgValidDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue:    testingutils.TestingQBFTFullData,
+				InputValue:          testingutils.TestingQBFTFullData,
 				InputMessages:       []*types.SignedSSVMessage{msg},
 				ControllerPostState: contr,
 			},
 		},
 		nil,
-		"future msg from height, could not process",
+		types.FutureMessageErrorCode,
 		nil,
 		ks,
 	)

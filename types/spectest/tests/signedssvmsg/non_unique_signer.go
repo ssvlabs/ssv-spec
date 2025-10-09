@@ -21,7 +21,7 @@ func NonUniqueSigner() *SignedSSVMessageTest {
 				SSVMessage:  testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
-		"non unique signer",
+		types.NonUniqueSignerErrorCode,
 		nil,
 	)
 }

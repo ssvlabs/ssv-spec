@@ -20,7 +20,7 @@ func InvalidValCheck() tests.SpecTest {
 		nil,
 		msgs,
 		nil,
-		"",
+		0,
 		nil,
 		nil,
 	)

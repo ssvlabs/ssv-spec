@@ -52,7 +52,7 @@ func MajoritySlashable() tests.SpecTest {
 		input,
 		slashableMap,
 		sharesPKBytes,
-		"slashable attestation",
+		types.SlashableAttestationErrorCode,
 		false,
 	)
 }

@@ -156,36 +156,36 @@ func (msg *SignedSSVMessage) GetRoot() ([32]byte, error) {
 func (msg *SignedSSVMessage) Validate() error {
 	// Validate OperatorID field
 	if len(msg.OperatorIDs) == 0 {
-		return errors.New("no signers")
+		return NewError(NoSignersErrorCode, "no signers")
 	}
 	// Check unique signers
 	signed := make(map[OperatorID]struct{})
 	for _, operatorID := range msg.OperatorIDs {
 		if _, exists := signed[operatorID]; exists {
-			return errors.New("non unique signer")
+			return NewError(NonUniqueSignerErrorCode, "non unique signer")
 		}
 		if operatorID == 0 {
-			return errors.New("signer ID 0 not allowed")
+			return NewError(ZeroSignerNotAllowedErrorCode, "signer ID 0 not allowed")
 		}
 
 		signed[operatorID] = struct{}{}
 	}
 	// Validate Signature field
 	if len(msg.Signatures) == 0 {
-		return errors.New("no signatures")
+		return NewError(NoSignaturesErrorCode, "no signatures")
 	}
 	for _, signature := range msg.Signatures {
 		if len(signature) == 0 {
-			return errors.New("empty signature")
+			return NewError(EmptySignatureErrorCode, "empty signature")
 		}
 	}
 	// Check that the numbers of signatures and signers are equal
 	if len(msg.Signatures) != len(msg.OperatorIDs) {
-		return errors.New("number of signatures is different than number of signers")
+		return NewError(IncorrectNumberOfSignaturesErrorCode, "number of signatures is different than number of signers")
 	}
 	// Validate SSVMessage
 	if msg.SSVMessage == nil {
-		return errors.New("nil SSVMessage")
+		return NewError(NilSSVMessageErrorCode, "nil SSVMessage")
 	}
 
 	return nil

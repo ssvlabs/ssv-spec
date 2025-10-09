@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
@@ -135,7 +136,7 @@ func ValidMessage() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedValidatorRegistration(ks)),
 				},
-				ExpectedError: "no post consensus phase for validator registration",
+				ExpectedErrorCode: types.ValidatorRegistrationNoPostConsensusPhaseErrorCode,
 			},
 			{
 				Name:   "voluntary exit",
@@ -154,7 +155,7 @@ func ValidMessage() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedVoluntaryExit(ks)),
 				},
-				ExpectedError: "no post consensus phase for voluntary exit",
+				ExpectedErrorCode: types.ValidatorExitNoPostConsensusPhaseErrorCode,
 			},
 		},
 		ks,

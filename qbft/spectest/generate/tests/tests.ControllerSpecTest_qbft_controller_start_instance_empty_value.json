@@ -16,7 +16,7 @@
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "value invalid: invalid value",
+  "ExpectedErrorCode": 66,
   "Controller": {
     "Identifier": "AQIDBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
     "Height": 0,

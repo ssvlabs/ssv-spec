@@ -23,7 +23,7 @@ func MsgError() tests.SpecTest {
 			},
 		},
 		nil,
-		"could not process msg: invalid signed message: proposal not justified: change round has no quorum",
+		types.RoundChangeNoQuorumErrorCode,
 		nil,
 		ks,
 	)

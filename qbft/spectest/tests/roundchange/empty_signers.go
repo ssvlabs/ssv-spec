@@ -28,7 +28,7 @@ func EmptySigners() tests.SpecTest {
 		nil,
 		msgs,
 		nil,
-		"invalid signed message: invalid SignedSSVMessage: no signers",
+		types.NoSignersErrorCode,
 		nil,
 		ks,
 	)

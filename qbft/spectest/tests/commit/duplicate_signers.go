@@ -26,7 +26,7 @@ func DuplicateSigners() tests.SpecTest {
 		nil,
 		[]*types.SignedSSVMessage{commit},
 		nil,
-		"invalid signed message: invalid SignedSSVMessage: non unique signer",
+		types.NonUniqueSignerErrorCode,
 		nil,
 		ks,
 	)

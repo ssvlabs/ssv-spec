@@ -15,7 +15,7 @@ import (
 func PostQuorum() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	expectedErr := "failed processing post consensus message: invalid post-consensus message: no running duty"
+	expectedErrCode := types.NoRunningDutyErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus post quorum",
@@ -42,8 +42,8 @@ func PostQuorum() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedErr,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrCode,
 			},
 		},
 		ks,
@@ -67,8 +67,8 @@ func PostQuorum() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks, version)),
 			},
-			DontStartDuty: true,
-			ExpectedError: expectedErr,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrCode,
 		},
 		)
 	}
@@ -92,8 +92,8 @@ func PostQuorum() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObject(ks, version)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedErr,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
 				Name: fmt.Sprintf("sync committee (%s)", version.String()),
@@ -112,8 +112,8 @@ func PostQuorum() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks, version)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedErr,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
 				Name: fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -133,8 +133,8 @@ func PostQuorum() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObject(ks, version)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks, version)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedErr,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrCode,
 			},
 		}...)
 	}
@@ -160,8 +160,8 @@ func PostQuorum() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
-			DontStartDuty: true,
-			ExpectedError: expectedErr,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrCode,
 		}
 	}
 
@@ -186,8 +186,8 @@ func PostQuorum() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
 			},
-			DontStartDuty: true,
-			ExpectedError: expectedErr,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrCode,
 		}
 	}
 

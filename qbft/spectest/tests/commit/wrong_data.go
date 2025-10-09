@@ -26,7 +26,7 @@ func WrongData1() tests.SpecTest {
 		nil,
 		msgs,
 		nil,
-		"invalid signed message: proposed data mismatch",
+		types.ProposedDataMismatchErrorCode,
 		nil,
 		ks,
 	)

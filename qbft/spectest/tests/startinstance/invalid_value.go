@@ -3,6 +3,7 @@ package startinstance
 import (
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -17,7 +18,7 @@ func InvalidValue() tests.SpecTest {
 			},
 		},
 		nil,
-		"value invalid: invalid value",
+		types.QBFTValueInvalidErrorCode,
 		nil,
 		nil,
 	)

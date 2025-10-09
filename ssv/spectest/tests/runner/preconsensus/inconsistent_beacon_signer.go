@@ -29,7 +29,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "SignedSSVMessage has an invalid signature: unknown signer",
+				ExpectedErrorCode: types.SSVMessageHasInvalidSignatureErrorCode,
 			},
 			{
 				Name:   "randao",
@@ -42,7 +42,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: "SignedSSVMessage has an invalid signature: unknown signer",
+				ExpectedErrorCode: types.SSVMessageHasInvalidSignatureErrorCode,
 			},
 			{
 				Name:   "randao (blinded block)",
@@ -55,7 +55,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: "SignedSSVMessage has an invalid signature: unknown signer",
+				ExpectedErrorCode: types.SSVMessageHasInvalidSignatureErrorCode,
 			},
 		},
 		ks,
@@ -72,7 +72,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: "SignedSSVMessage has an invalid signature: unknown signer",
+			ExpectedErrorCode: types.SSVMessageHasInvalidSignatureErrorCode,
 		})
 	}
 

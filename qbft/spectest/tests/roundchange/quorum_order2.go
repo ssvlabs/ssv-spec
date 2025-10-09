@@ -40,7 +40,7 @@ func QuorumOrder2() tests.SpecTest {
 		nil,
 		inputMessages,
 		outputMessages,
-		"",
+		0,
 		nil,
 		ks,
 	)

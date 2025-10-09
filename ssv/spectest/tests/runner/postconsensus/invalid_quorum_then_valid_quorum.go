@@ -15,7 +15,7 @@ import (
 func InvalidQuorumThenValidQuorum() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "got post-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature"
+	expectedErrorCode := types.ReconstructSignatureErrorCode
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid quorum then valid quorum",
 		testdoc.PostConsensusInvalidQuorumThenValidQuorumDoc,
@@ -42,8 +42,8 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		},
 		ks,
@@ -68,8 +68,8 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks, version)),
 			},
-			DontStartDuty: true,
-			ExpectedError: expectedError,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		},
 		)
 	}
@@ -94,8 +94,8 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObject(ks, version)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name: fmt.Sprintf("sync committee (%s)", version.String()),
@@ -115,8 +115,8 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks, version)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name: fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -137,8 +137,8 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObject(ks, version)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks, version)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		}...)
 	}
@@ -165,8 +165,8 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
-			DontStartDuty: true,
-			ExpectedError: expectedError,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 
@@ -192,8 +192,8 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
 			},
-			DontStartDuty: true,
-			ExpectedError: expectedError,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 

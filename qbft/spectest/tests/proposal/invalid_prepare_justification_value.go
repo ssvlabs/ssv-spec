@@ -45,7 +45,7 @@ func InvalidPrepareJustificationValue() tests.SpecTest {
 		sc.ExpectedState,
 		inputMessages,
 		nil,
-		"invalid signed message: proposal not justified: change round msg not valid: round change justification invalid: proposed data mismatch",
+		types.ProposedDataMismatchErrorCode,
 		nil,
 		ks,
 	)

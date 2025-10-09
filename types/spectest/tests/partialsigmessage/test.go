@@ -4,21 +4,23 @@ import (
 	reflect2 "reflect"
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+
+	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
-	"github.com/stretchr/testify/require"
 )
 
 type MsgSpecTest struct {
-	Name            string
-	Type            string
-	Documentation   string
-	Messages        []*types.PartialSignatureMessages
-	EncodedMessages [][]byte
-	ExpectedRoots   [][32]byte
-	ExpectedError   string
+	Name              string
+	Type              string
+	Documentation     string
+	Messages          []*types.PartialSignatureMessages
+	EncodedMessages   [][]byte
+	ExpectedRoots     [][32]byte
+	ExpectedErrorCode int
 }
 
 func (test *MsgSpecTest) TestName() string {
@@ -57,11 +59,7 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 	}
 
 	// check error
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, lastErr, test.ExpectedError)
-	} else {
-		require.NoError(t, lastErr)
-	}
+	tests.AssertErrorCode(t, test.ExpectedErrorCode, lastErr)
 
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
@@ -70,14 +68,14 @@ func (tests *MsgSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
 
-func NewMsgSpecTest(name, documentation string, messages []*types.PartialSignatureMessages, encodedMessages [][]byte, expectedRoots [][32]byte, expectedError string) *MsgSpecTest {
+func NewMsgSpecTest(name, documentation string, messages []*types.PartialSignatureMessages, encodedMessages [][]byte, expectedRoots [][32]byte, expectedErrorCode int) *MsgSpecTest {
 	return &MsgSpecTest{
-		Name:            name,
-		Type:            testdoc.MsgSpecTestType,
-		Documentation:   documentation,
-		Messages:        messages,
-		EncodedMessages: encodedMessages,
-		ExpectedRoots:   expectedRoots,
-		ExpectedError:   expectedError,
+		Name:              name,
+		Type:              testdoc.MsgSpecTestType,
+		Documentation:     documentation,
+		Messages:          messages,
+		EncodedMessages:   encodedMessages,
+		ExpectedRoots:     expectedRoots,
+		ExpectedErrorCode: expectedErrorCode,
 	}
 }

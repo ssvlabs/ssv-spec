@@ -19,7 +19,7 @@ func NilSSVMessage() *SignedSSVMessageTest {
 				SSVMessage:  nil,
 			},
 		},
-		"nil SSVMessage",
+		types.NilSSVMessageErrorCode,
 		nil,
 	)
 }

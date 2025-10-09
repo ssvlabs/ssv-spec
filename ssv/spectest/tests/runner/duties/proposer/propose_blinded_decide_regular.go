@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
@@ -48,7 +49,7 @@ func ProposeBlindedBlockDecidedRegular() tests.SpecTest {
 			testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, spec.DataVersionDeneb)),
 		},
 		false,
-		"",
+		0,
 		ks,
 	)
 

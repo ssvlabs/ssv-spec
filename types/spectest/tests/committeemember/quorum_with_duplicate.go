@@ -23,6 +23,6 @@ func QuorumWithDuplicate() *CommitteeMemberTest {
 		*msg,
 		true,
 		false,
-		"non unique signer",
+		types.NonUniqueSignerErrorCode,
 	)
 }

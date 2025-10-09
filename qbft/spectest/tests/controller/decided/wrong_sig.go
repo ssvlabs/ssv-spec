@@ -24,7 +24,7 @@ func WrongSignature() tests.SpecTest {
 			},
 		},
 		nil,
-		"invalid decided msg: invalid decided msg: msg signature invalid: crypto/rsa: verification error",
+		types.MessageSignatureInvalidErrorCode,
 		nil,
 		ks,
 	)

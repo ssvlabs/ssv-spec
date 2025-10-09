@@ -1,24 +1,23 @@
 package signedssvmsg
 
 import (
-	"testing"
-
 	"crypto"
 	"crypto/rsa"
 	"crypto/sha256"
+	"testing"
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
-	"github.com/stretchr/testify/require"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests"
 )
 
 type SignedSSVMessageTest struct {
-	Name          string
-	Type          string
-	Documentation string
-	Messages      []*types.SignedSSVMessage
-	ExpectedError string
-	RSAPublicKey  [][]byte
+	Name              string
+	Type              string
+	Documentation     string
+	Messages          []*types.SignedSSVMessage
+	ExpectedErrorCode int
+	RSAPublicKey      [][]byte
 }
 
 func (test *SignedSSVMessageTest) TestName() string {
@@ -54,21 +53,17 @@ func (test *SignedSSVMessageTest) Run(t *testing.T) {
 			}
 		}
 
-		if len(test.ExpectedError) != 0 {
-			require.EqualError(t, err, test.ExpectedError)
-		} else {
-			require.NoError(t, err)
-		}
+		tests.AssertErrorCode(t, test.ExpectedErrorCode, err)
 	}
 }
 
-func NewSignedSSVMessageTest(name, documentation string, messages []*types.SignedSSVMessage, expectedError string, rsaPublicKey [][]byte) *SignedSSVMessageTest {
+func NewSignedSSVMessageTest(name, documentation string, messages []*types.SignedSSVMessage, expectedErrorCode int, rsaPublicKey [][]byte) *SignedSSVMessageTest {
 	return &SignedSSVMessageTest{
-		Name:          name,
-		Type:          testdoc.SignedSSVMessageTestType,
-		Documentation: documentation,
-		Messages:      messages,
-		ExpectedError: expectedError,
-		RSAPublicKey:  rsaPublicKey,
+		Name:              name,
+		Type:              testdoc.SignedSSVMessageTestType,
+		Documentation:     documentation,
+		Messages:          messages,
+		ExpectedErrorCode: expectedErrorCode,
+		RSAPublicKey:      rsaPublicKey,
 	}
 }

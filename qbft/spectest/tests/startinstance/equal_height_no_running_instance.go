@@ -21,7 +21,7 @@ func EqualHeightNoRunningInstance() tests.SpecTest {
 			},
 		},
 		nil,
-		"",
+		0,
 		&height,
 		nil,
 	)

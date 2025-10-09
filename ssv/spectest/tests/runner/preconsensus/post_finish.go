@@ -39,7 +39,7 @@ func PostFinish() tests.SpecTest {
 				PostDutyRunnerStateRoot: postFinishSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     postFinishSyncCommitteeContributionSC().ExpectedState,
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing sync committee selection proof message: invalid pre-consensus message: no running duty",
+				ExpectedErrorCode:       types.NoRunningDutyErrorCode,
 			},
 			{
 				Name: "validator registration",
@@ -54,7 +54,7 @@ func PostFinish() tests.SpecTest {
 				PostDutyRunnerStateRoot: postFinishValidatorRegistrationSC().Root(),
 				PostDutyRunnerState:     postFinishValidatorRegistrationSC().ExpectedState,
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing validator registration message: invalid pre-consensus message: no running duty",
+				ExpectedErrorCode:       types.NoRunningDutyErrorCode,
 			},
 			{
 				Name: "voluntary exit",
@@ -69,7 +69,7 @@ func PostFinish() tests.SpecTest {
 				PostDutyRunnerStateRoot: postFinishVoluntaryExitSC().Root(),
 				PostDutyRunnerState:     postFinishVoluntaryExitSC().ExpectedState,
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing voluntary exit message: invalid pre-consensus message: no running duty",
+				ExpectedErrorCode:       types.NoRunningDutyErrorCode,
 			},
 		},
 		ks,
@@ -86,8 +86,8 @@ func PostFinish() tests.SpecTest {
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4, version))),
 			},
-			DontStartDuty: true,
-			ExpectedError: "failed processing selection proof message: invalid pre-consensus message: no running duty",
+			DontStartDuty:     true,
+			ExpectedErrorCode: types.NoRunningDutyErrorCode,
 		})
 	}
 
@@ -106,7 +106,7 @@ func PostFinish() tests.SpecTest {
 			PostDutyRunnerStateRoot: postFinishProposerSC(version).Root(),
 			PostDutyRunnerState:     postFinishProposerSC(version).ExpectedState,
 			DontStartDuty:           true,
-			ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
+			ExpectedErrorCode:       types.NoRunningDutyErrorCode,
 		}
 	}
 
@@ -125,7 +125,7 @@ func PostFinish() tests.SpecTest {
 			PostDutyRunnerStateRoot: postFinishBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     postFinishBlindedProposerSC(version).ExpectedState,
 			DontStartDuty:           true,
-			ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
+			ExpectedErrorCode:       types.NoRunningDutyErrorCode,
 		}
 	}
 

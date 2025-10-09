@@ -2,7 +2,7 @@ package tests
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
-	testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	qbftcomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -39,7 +39,7 @@ func HappyFlow() SpecTest {
 		sc.ExpectedState,
 		inputMessages,
 		outputMessages,
-		"",
+		0,
 		nil,
 		ks,
 	)

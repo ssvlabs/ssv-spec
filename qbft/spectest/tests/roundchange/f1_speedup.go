@@ -31,7 +31,7 @@ func F1Speedup() tests.SpecTest {
 		nil,
 		inputMessages,
 		outputMessages,
-		"",
+		0,
 		&testingutils.TimerState{
 			Timeouts: 1,
 			Round:    qbft.Round(10),

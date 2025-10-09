@@ -291,7 +291,7 @@
         "10183cdaea14fba962c389d29e01a0f4bec3199851c40197e02fbe98ae97fef9"
       ],
       "DontStartDuty": false,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "ValidatorDuty": {
         "Type": 2,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -592,7 +592,7 @@
         "d2b611753af6167e7ea3317e517849e290a2e34ef40c8bf954c1b13f80269d3c"
       ],
       "DontStartDuty": false,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "ValidatorDuty": {
         "Type": 2,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -893,7 +893,7 @@
         "6b3850da01083b77203a02aa28cab231cec3d4752ed2700556c2b42fe3ce0cf0"
       ],
       "DontStartDuty": false,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "ValidatorDuty": {
         "Type": 2,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -1194,7 +1194,7 @@
         "3078256cd8df2dc17c54083163e2aaeebeb1dbd632418ca7b710de3315a544f0"
       ],
       "DontStartDuty": false,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "ValidatorDuty": {
         "Type": 2,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",

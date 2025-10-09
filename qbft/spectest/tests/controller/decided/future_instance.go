@@ -28,7 +28,7 @@ func FutureInstance() tests.SpecTest {
 			},
 		},
 		nil,
-		"",
+		0,
 		nil,
 		ks,
 	)

@@ -84,7 +84,7 @@ func ValidateDecided(
 		return errors.Wrap(err, "could not hash input data")
 	}
 	if !bytes.Equal(r[:], msg.QBFTMessage.Root[:]) {
-		return errors.New("H(data) != root")
+		return types.NewError(types.RootHashInvalidErrorCode, "H(data) != root")
 	}
 
 	return nil

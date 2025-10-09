@@ -29,7 +29,7 @@ func SignedMessageEncoding() tests.SpecTest {
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{b},
 		nil,
-		"",
+		0,
 		ks,
 	)
 

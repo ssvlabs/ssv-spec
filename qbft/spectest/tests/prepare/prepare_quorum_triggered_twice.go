@@ -39,7 +39,7 @@ func PrepareQuorumTriggeredTwice() tests.SpecTest {
 		sc.ExpectedState,
 		inputMessages,
 		outputMessages,
-		"",
+		0,
 		nil,
 		ks,
 	)

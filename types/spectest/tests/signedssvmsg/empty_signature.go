@@ -21,7 +21,7 @@ func EmptySignature() *SignedSSVMessageTest {
 				SSVMessage:  testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
-		"empty signature",
+		types.EmptySignatureErrorCode,
 		nil,
 	)
 }

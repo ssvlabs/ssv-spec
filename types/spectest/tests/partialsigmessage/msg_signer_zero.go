@@ -23,6 +23,6 @@ func MessageSigner0() *MsgSpecTest {
 		[]*types.PartialSignatureMessages{msgPre, msgPost},
 		nil,
 		nil,
-		"message invalid: signer ID 0 not allowed",
+		types.ZeroSignerNotAllowedErrorCode,
 	)
 }

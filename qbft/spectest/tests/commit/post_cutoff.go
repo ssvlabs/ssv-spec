@@ -26,7 +26,7 @@ func PostCutoff() tests.SpecTest {
 		nil,
 		msgs,
 		nil,
-		"instance stopped processing messages",
+		types.InstanceStoppedProcessingMessagesErrorCode,
 		nil,
 		ks,
 	)

@@ -53,8 +53,7 @@ func PostWrongDecided() tests.SpecTest {
 		return r
 	}
 
-	expectedError := fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
-		testingutils.TestingDutySlot, 50)
+	expectedErrorCode := types.DutyAlreadyPassedErrorCode
 
 	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
 		"new duty post wrong decided",
@@ -69,7 +68,7 @@ func PostWrongDecided() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:                    "proposer",
@@ -80,8 +79,7 @@ func PostWrongDecided() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
-					testingutils.TestingDutySlotV(spec.DataVersionDeneb), testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50),
+				ExpectedErrorCode: types.DutyAlreadyPassedErrorCode,
 			},
 		},
 		ks,
@@ -92,8 +90,7 @@ func PostWrongDecided() tests.SpecTest {
 		refSlot := testingutils.TestingDutySlotV(version)
 		higherSlot := qbft.Height(refSlot + 50)
 
-		expectedVersionedError := fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
-			refSlot, higherSlot)
+		expectedVersionedErrorCode := types.DutyAlreadyPassedErrorCode
 
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
 			Name:                    fmt.Sprintf("aggregator (%s)", version.String()),
@@ -104,7 +101,7 @@ func PostWrongDecided() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedVersionedError,
+			ExpectedErrorCode: expectedVersionedErrorCode,
 		},
 		)
 	}
@@ -114,30 +111,29 @@ func PostWrongDecided() tests.SpecTest {
 		refSlot := testingutils.TestingDutySlotV(version)
 		higherSlot := qbft.Height(refSlot + 50)
 
-		expectedVersionedError := fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
-			refSlot, higherSlot)
+		expectedVersionedErrorCode := types.DutyAlreadyPassedErrorCode
 
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{
 			{
-				Name:          fmt.Sprintf("attester (%s)", version.String()),
-				Runner:        decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty(version), higherSlot),
-				Duty:          testingutils.TestingAttesterDuty(version),
-				Threshold:     ks.Threshold,
-				ExpectedError: expectedVersionedError,
+				Name:              fmt.Sprintf("attester (%s)", version.String()),
+				Runner:            decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty(version), higherSlot),
+				Duty:              testingutils.TestingAttesterDuty(version),
+				Threshold:         ks.Threshold,
+				ExpectedErrorCode: expectedVersionedErrorCode,
 			},
 			{
-				Name:          fmt.Sprintf("sync committee (%s)", version.String()),
-				Runner:        decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty(version), higherSlot),
-				Duty:          testingutils.TestingSyncCommitteeDuty(version),
-				Threshold:     ks.Threshold,
-				ExpectedError: expectedVersionedError,
+				Name:              fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner:            decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty(version), higherSlot),
+				Duty:              testingutils.TestingSyncCommitteeDuty(version),
+				Threshold:         ks.Threshold,
+				ExpectedErrorCode: expectedVersionedErrorCode,
 			},
 			{
-				Name:          fmt.Sprintf("attester and sync committee (%s)", version.String()),
-				Runner:        decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties(version), higherSlot),
-				Duty:          testingutils.TestingAttesterAndSyncCommitteeDuties(version),
-				Threshold:     ks.Threshold,
-				ExpectedError: expectedVersionedError,
+				Name:              fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner:            decideWrong(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties(version), higherSlot),
+				Duty:              testingutils.TestingAttesterAndSyncCommitteeDuties(version),
+				Threshold:         ks.Threshold,
+				ExpectedErrorCode: expectedVersionedErrorCode,
 			},
 		}...)
 	}

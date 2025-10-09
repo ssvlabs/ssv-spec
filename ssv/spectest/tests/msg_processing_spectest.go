@@ -10,6 +10,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
@@ -36,7 +37,7 @@ type MsgProcessingSpecTest struct {
 	OutputMessages         []*types.PartialSignatureMessages
 	BeaconBroadcastedRoots []string
 	DontStartDuty          bool // if set to true will not start a duty for the runner
-	ExpectedError          string
+	ExpectedErrorCode      int
 	PrivateKeys            *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
@@ -47,12 +48,7 @@ func (test *MsgProcessingSpecTest) TestName() string {
 // RunAsPartOfMultiTest runs the test as part of a MultiMsgProcessingSpecTest
 func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	v, c, lastErr := test.runPreTesting()
-
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, lastErr, test.ExpectedError)
-	} else {
-		require.NoError(t, lastErr)
-	}
+	tests.AssertErrorCode(t, test.ExpectedErrorCode, lastErr)
 
 	network := &testingutils.TestingNetwork{}
 	beaconNetwork := &testingutils.TestingBeaconNode{}
@@ -209,7 +205,7 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 
 func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
 	_, _, lastErr := test.runPreTesting()
-	if lastErr != nil && len(test.ExpectedError) == 0 {
+	if lastErr != nil && test.ExpectedErrorCode == 0 { // only unexpected errors should return error
 		return nil, lastErr
 	}
 
@@ -228,7 +224,7 @@ type MsgProcessingSpecTestAlias struct {
 	OutputMessages          []*types.PartialSignatureMessages
 	BeaconBroadcastedRoots  []string
 	DontStartDuty           bool
-	ExpectedError           string
+	ExpectedErrorCode       int
 	ValidatorDuty           *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
 	CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
 }
@@ -244,7 +240,7 @@ func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
 		OutputMessages:          t.OutputMessages,
 		BeaconBroadcastedRoots:  t.BeaconBroadcastedRoots,
 		DontStartDuty:           t.DontStartDuty,
-		ExpectedError:           t.ExpectedError,
+		ExpectedErrorCode:       t.ExpectedErrorCode,
 	}
 
 	if t.Duty != nil {
@@ -278,7 +274,7 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	t.OutputMessages = aux.OutputMessages
 	t.BeaconBroadcastedRoots = aux.BeaconBroadcastedRoots
 	t.DontStartDuty = aux.DontStartDuty
-	t.ExpectedError = aux.ExpectedError
+	t.ExpectedErrorCode = aux.ExpectedErrorCode
 
 	// Determine which type of duty was marshaled
 	if aux.ValidatorDuty != nil {
@@ -301,7 +297,7 @@ func NewMsgProcessingSpecTest(
 	outputMessages []*types.PartialSignatureMessages,
 	beaconBroadcastedRoots []string,
 	dontStartDuty bool,
-	expectedError string,
+	expectedErrorCode int,
 	ks *testingutils.TestKeySet,
 ) *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
@@ -317,7 +313,7 @@ func NewMsgProcessingSpecTest(
 		OutputMessages:          outputMessages,
 		BeaconBroadcastedRoots:  beaconBroadcastedRoots,
 		DontStartDuty:           dontStartDuty,
-		ExpectedError:           expectedError,
+		ExpectedErrorCode:       expectedErrorCode,
 		PrivateKeys:             testingutils.BuildPrivateKeyInfo(ks),
 	}
 }

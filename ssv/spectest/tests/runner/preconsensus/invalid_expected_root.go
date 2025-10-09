@@ -29,7 +29,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: wrong signing root",
+				ExpectedErrorCode: types.WrongSigningRootErrorCode,
 			},
 			{
 				Name:   "randao",
@@ -42,7 +42,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing randao message: invalid pre-consensus message: wrong signing root",
+				ExpectedErrorCode: types.WrongSigningRootErrorCode,
 			},
 			{
 				Name:   "randao (blinded block)",
@@ -55,7 +55,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing randao message: invalid pre-consensus message: wrong signing root",
+				ExpectedErrorCode: types.WrongSigningRootErrorCode,
 			},
 			{
 				Name:   "validator registration",
@@ -68,7 +68,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing validator registration message: invalid pre-consensus message: wrong signing root",
+				ExpectedErrorCode: types.WrongSigningRootErrorCode,
 			},
 			{
 				Name:   "voluntary exit",
@@ -81,7 +81,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing voluntary exit message: invalid pre-consensus message: wrong signing root",
+				ExpectedErrorCode: types.WrongSigningRootErrorCode,
 			},
 		},
 		ks,
@@ -98,7 +98,7 @@ func InvalidExpectedRoot() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: "failed processing selection proof message: invalid pre-consensus message: wrong signing root",
+			ExpectedErrorCode: types.WrongSigningRootErrorCode,
 		})
 	}
 

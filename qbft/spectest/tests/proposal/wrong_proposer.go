@@ -23,7 +23,7 @@ func WrongProposer() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"invalid signed message: proposal leader invalid",
+		types.ProposalLeaderInvalidErrorCode,
 		nil,
 		ks,
 	)

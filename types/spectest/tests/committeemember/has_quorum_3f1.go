@@ -22,6 +22,6 @@ func HasQuorum3f1() *CommitteeMemberTest {
 		*msg,
 		true,
 		true,
-		"",
+		0,
 	)
 }

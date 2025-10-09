@@ -281,7 +281,7 @@
       "FullData": null
     }
   ],
-  "ExpectedError": "",
+  "ExpectedErrorCode": 0,
   "ExpectedTimerState": {
     "Timeouts": 1,
     "Round": 2

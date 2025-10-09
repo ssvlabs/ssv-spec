@@ -2,6 +2,7 @@ package ssv
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -35,7 +36,7 @@ func NewSyncCommitteeAggregatorRunner(
 ) (Runner, error) {
 
 	if len(share) != 1 {
-		return nil, errors.New("must have one share")
+		return nil, fmt.Errorf("must have one share")
 	}
 
 	return &SyncCommitteeAggregatorRunner{

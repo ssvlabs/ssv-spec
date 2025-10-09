@@ -29,7 +29,7 @@ func WrongMsgType() tests.SpecTest {
 			},
 		},
 		nil,
-		"could not process msg: invalid signed message: msg allows 1 signer",
+		types.MessageAllowsOneSignerOnlyErrorCode,
 		nil,
 		ks,
 	)

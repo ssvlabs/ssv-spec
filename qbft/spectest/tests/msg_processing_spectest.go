@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
-	testdoc "github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -28,7 +28,7 @@ type MsgProcessingSpecTest struct {
 	PostState          types.Root `json:"-"` // Field is ignored by encoding/json
 	InputMessages      []*types.SignedSSVMessage
 	OutputMessages     []*types.SignedSSVMessage
-	ExpectedError      string
+	ExpectedErrorCode  int
 	ExpectedTimerState *testingutils.TimerState
 	PrivateKeys        *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
@@ -38,12 +38,7 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 	test.overrideStateComparison(t)
 
 	lastErr := test.runPreTesting()
-
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, lastErr, test.ExpectedError)
-	} else {
-		require.NoError(t, lastErr)
-	}
+	AssertErrorCode(t, test.ExpectedErrorCode, lastErr)
 
 	if test.ExpectedTimerState != nil {
 		// checks round timer state
@@ -111,13 +106,13 @@ func (test *MsgProcessingSpecTest) overrideStateComparison(t *testing.T) {
 
 func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
 	err := test.runPreTesting()
-	if err != nil && len(test.ExpectedError) == 0 { // only non expected errors should return error
+	if err != nil && test.ExpectedErrorCode == 0 { // only unexpected errors should return error
 		return nil, err
 	}
 	return test.Pre.State, nil
 }
 
-func NewMsgProcessingSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, inputMessages []*types.SignedSSVMessage, outputMessages []*types.SignedSSVMessage, expectedError string, expectedTimerState *testingutils.TimerState, privateKeys *testingutils.TestKeySet) *MsgProcessingSpecTest {
+func NewMsgProcessingSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, inputMessages []*types.SignedSSVMessage, outputMessages []*types.SignedSSVMessage, expectedErrorCode int, expectedTimerState *testingutils.TimerState, privateKeys *testingutils.TestKeySet) *MsgProcessingSpecTest {
 	return &MsgProcessingSpecTest{
 		Name:               name,
 		Type:               testdoc.MsgProcessingSpecTestType,
@@ -127,7 +122,7 @@ func NewMsgProcessingSpecTest(name string, documentation string, pre *qbft.Insta
 		PostState:          postState,
 		InputMessages:      inputMessages,
 		OutputMessages:     outputMessages,
-		ExpectedError:      expectedError,
+		ExpectedErrorCode:  expectedErrorCode,
 		ExpectedTimerState: expectedTimerState,
 		PrivateKeys:        testingutils.BuildPrivateKeyInfo(privateKeys),
 	}

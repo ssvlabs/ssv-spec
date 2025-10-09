@@ -19,7 +19,7 @@ func CreateProposal() tests.SpecTest {
 		tests.CreateProposal,
 		"a3225c24c7a759c09ecc69d4df1d5727a9ea417685b0084809377a285693cd48",
 		nil,
-		"",
+		0,
 		nil,
 	)
 }

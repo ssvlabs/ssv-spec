@@ -15,7 +15,7 @@ import (
 func UnknownSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	expectedError := "SignedSSVMessage has an invalid signature: unknown signer"
+	expectedError := types.SSVMessageHasInvalidSignatureErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus unknown msg signer",
@@ -33,7 +33,7 @@ func UnknownSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 		},
 		ks,
@@ -50,7 +50,7 @@ func UnknownSigner() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedError,
 		})
 	}
 
@@ -68,7 +68,7 @@ func UnknownSigner() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedError,
 		}
 	}
 
@@ -86,7 +86,7 @@ func UnknownSigner() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedError,
 		}
 	}
 

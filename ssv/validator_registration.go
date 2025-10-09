@@ -1,6 +1,8 @@
 package ssv
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/api"
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/spec"
@@ -35,7 +37,7 @@ func NewValidatorRegistrationRunner(
 ) (Runner, error) {
 
 	if len(share) != 1 {
-		return nil, errors.New("must have one share")
+		return nil, fmt.Errorf("must have one share")
 	}
 
 	return &ValidatorRegistrationRunner{
@@ -100,7 +102,7 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Parti
 	}
 
 	if err := r.beacon.SubmitValidatorRegistration(signed); err != nil {
-		return errors.Wrap(err, "could not submit validator registration")
+		return fmt.Errorf("could not submit validator registration: %w", err)
 	}
 
 	r.GetState().Finished = true
@@ -108,16 +110,16 @@ func (r *ValidatorRegistrationRunner) ProcessPreConsensus(signedMsg *types.Parti
 }
 
 func (r *ValidatorRegistrationRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
-	return errors.New("no consensus phase for validator registration")
+	return types.NewError(types.ValidatorRegistrationNoConsensusPhaseErrorCode, "no consensus phase for validator registration")
 }
 
 func (r *ValidatorRegistrationRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
-	return errors.New("no post consensus phase for validator registration")
+	return types.NewError(types.ValidatorRegistrationNoPostConsensusPhaseErrorCode, "no post consensus phase for validator registration")
 }
 
 func (r *ValidatorRegistrationRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	if r.BaseRunner.State == nil || r.BaseRunner.State.StartingDuty == nil {
-		return nil, types.DomainError, errors.New("no running duty to compute preconsensus roots and domain")
+		return nil, types.DomainError, fmt.Errorf("no running duty to compute preconsensus roots and domain")
 	}
 	vr, err := r.calculateValidatorRegistration(r.BaseRunner.State.StartingDuty.DutySlot())
 	if err != nil {
@@ -128,7 +130,7 @@ func (r *ValidatorRegistrationRunner) expectedPreConsensusRootsAndDomain() ([]ss
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *ValidatorRegistrationRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return nil, [4]byte{}, errors.New("no post consensus roots for validator registration")
+	return nil, [4]byte{}, fmt.Errorf("no post consensus roots for validator registration")
 }
 
 func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
@@ -183,7 +185,7 @@ func (r *ValidatorRegistrationRunner) calculateValidatorRegistration(slot phase0
 
 	share := r.GetShare()
 	if share == nil {
-		return nil, errors.New("no share to get validator public key")
+		return nil, fmt.Errorf("no share to get validator public key")
 	}
 
 	pk := phase0.BLSPubKey{}

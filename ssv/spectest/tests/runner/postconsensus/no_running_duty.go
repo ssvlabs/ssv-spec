@@ -15,7 +15,7 @@ import (
 func NoRunningDuty() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	err := "failed processing post consensus message: invalid post-consensus message: no running duty"
+	errCode := types.NoRunningDutyErrorCode
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus no running duty",
 		testdoc.PostConsensusNoRunningDutyDoc,
@@ -29,7 +29,7 @@ func NoRunningDuty() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: "843d535c51be1633f4d48589e339b8f7ff38185e094292fb7a7117f53c452019",
 				DontStartDuty:           true,
-				ExpectedError:           err,
+				ExpectedErrorCode:       errCode,
 			},
 			{
 				Name:   "proposer",
@@ -40,7 +40,7 @@ func NoRunningDuty() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: "4e23bc72477fcde5fd2301bb20f5b12303fe1516c5c238d319cf108cc98b8153",
 				DontStartDuty:           true,
-				ExpectedError:           err,
+				ExpectedErrorCode:       errCode,
 			},
 			{
 				Name:   "proposer (blinded block)",
@@ -51,7 +51,7 @@ func NoRunningDuty() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: "7e3497d83dfb9d984a1138c2118150e9f6041b03e936d7c42c6cfcf980c03d38",
 				DontStartDuty:           true,
-				ExpectedError:           err,
+				ExpectedErrorCode:       errCode,
 			},
 		},
 		ks,
@@ -67,7 +67,7 @@ func NoRunningDuty() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: "f5aec3ffac19854712478ecd8a97f2b1676c35bcf840d13da0d18aebfa8097d5",
 			DontStartDuty:           true,
-			ExpectedError:           err,
+			ExpectedErrorCode:       errCode,
 		},
 		)
 	}
@@ -82,8 +82,8 @@ func NoRunningDuty() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version))),
 				},
-				DontStartDuty: true,
-				ExpectedError: err,
+				DontStartDuty:     true,
+				ExpectedErrorCode: errCode,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -92,8 +92,8 @@ func NoRunningDuty() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				DontStartDuty: true,
-				ExpectedError: err,
+				DontStartDuty:     true,
+				ExpectedErrorCode: errCode,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -102,8 +102,8 @@ func NoRunningDuty() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				DontStartDuty: true,
-				ExpectedError: err,
+				DontStartDuty:     true,
+				ExpectedErrorCode: errCode,
 			},
 		}...)
 	}

@@ -38,7 +38,7 @@ func FullDecided() tests.SpecTest {
 			},
 		},
 		nil,
-		"",
+		0,
 		nil,
 		ks,
 	)

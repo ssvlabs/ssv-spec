@@ -2,6 +2,7 @@ package partialsigcontainer
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -32,7 +33,7 @@ func DuplicateQuorum() tests.SpecTest {
 		ks.Threshold,
 		ks.ValidatorPK.Serialize(),
 		msgs,
-		"",
+		0,
 		expectedSig.Serialize(),
 		true,
 		ks,

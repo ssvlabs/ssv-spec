@@ -36,7 +36,7 @@ func NoPrepareQuorum() tests.SpecTest {
 		nil,
 		msgs,
 		outputMsgs,
-		"",
+		0,
 		nil,
 		ks,
 	)
