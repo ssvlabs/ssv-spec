@@ -104,7 +104,7 @@ func (e Error) Error() string {
 }
 
 func (e Error) Is(target error) bool {
-	var retryableErr *Error
-	ok := errors.As(target, &retryableErr)
+	var err *Error
+	ok := errors.As(target, &err)
 	return ok
 }
