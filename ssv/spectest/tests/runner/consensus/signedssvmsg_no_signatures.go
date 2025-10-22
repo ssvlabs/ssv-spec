@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
@@ -20,7 +21,7 @@ func NoSignatures() tests.SpecTest {
 		return msg
 	}
 
-	expectedError := "invalid SignedSSVMessage: no signatures"
+	expectedErrorCode := types.NoSignaturesErrorCode
 
 	ks := testingutils.Testing4SharesSet()
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
@@ -43,7 +44,7 @@ func NoSignatures() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   "proposer",
@@ -61,7 +62,7 @@ func NoSignatures() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   "proposer (blinded block)",
@@ -79,7 +80,7 @@ func NoSignatures() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   "validator registration",
@@ -100,7 +101,7 @@ func NoSignatures() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedValidatorRegistration(ks)),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   "voluntary exit",
@@ -121,7 +122,7 @@ func NoSignatures() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedVoluntaryExit(ks)),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		},
 		ks,
@@ -144,7 +145,7 @@ func NoSignatures() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		},
 		)
 	}
@@ -160,7 +161,7 @@ func NoSignatures() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -171,7 +172,7 @@ func NoSignatures() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -182,7 +183,7 @@ func NoSignatures() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		}...)
 	}

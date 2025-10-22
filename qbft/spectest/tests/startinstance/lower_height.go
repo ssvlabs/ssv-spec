@@ -4,6 +4,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -26,7 +27,7 @@ func LowerHeight() tests.SpecTest {
 			},
 		},
 		nil,
-		"attempting to start an instance with a past height",
+		types.StartInstanceErrorCode,
 		nil,
 		nil,
 	)

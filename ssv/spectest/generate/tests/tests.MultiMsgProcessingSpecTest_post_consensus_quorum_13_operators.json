@@ -483,7 +483,7 @@
         "6afbfc096eb378a4639cb91edce27d53c819bb88d768e1fc33c08156bf6b6176"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "ValidatorDuty": {
         "Type": 4,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -974,7 +974,7 @@
         "7566b263455230d5250a162dc29924463f74e85ea558486d63fe9e1e9e91c85d"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "ValidatorDuty": {
         "Type": 2,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -1461,7 +1461,7 @@
         "d2b611753af6167e7ea3317e517849e290a2e34ef40c8bf954c1b13f80269d3c"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "ValidatorDuty": {
         "Type": 2,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -1948,7 +1948,7 @@
         "f70f0d66eef58758b860051f98aa2d2bad666540ef817884c2b5526cf477dbf8"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "ValidatorDuty": {
         "Type": 1,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -2435,7 +2435,7 @@
         "fce842dbd96b15fb1a8a6d1bfa2c9ce47dc88e74531abdb69d666c043d908abc"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "ValidatorDuty": {
         "Type": 1,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -2927,7 +2927,7 @@
         "80641c9de207e4fb82cb83ebbd5338437dc08cb6282ce47ff3ca66b406cd00b8"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -3428,7 +3428,7 @@
         "d65c039becb42839faa125161a2a8feca88d363db1749556de9fe4ea01a9c982"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -3945,7 +3945,7 @@
         "d65c039becb42839faa125161a2a8feca88d363db1749556de9fe4ea01a9c982"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -4457,7 +4457,7 @@
         "60a8498be325eb6689e8501634726cac902261186ca94f95be92758b5a5fb3a7"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -4958,7 +4958,7 @@
         "9d0869abc61d97929518c0f3b10e9aae344ea03621ca1fe815c47672165ea970"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -5475,7 +5475,7 @@
         "9d0869abc61d97929518c0f3b10e9aae344ea03621ca1fe815c47672165ea970"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [

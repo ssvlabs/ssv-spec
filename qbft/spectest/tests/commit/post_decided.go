@@ -29,7 +29,7 @@ func PostDecided() tests.SpecTest {
 		nil,
 		msgs,
 		nil,
-		"",
+		0,
 		nil,
 		ks,
 	)

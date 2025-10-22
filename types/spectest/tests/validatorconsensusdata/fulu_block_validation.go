@@ -13,6 +13,6 @@ func FuluBlockValidation() *ValidatorConsensusDataTest {
 		"valid fulu block",
 		testdoc.ValidatorConsensusDataTestElectraBlockDoc,
 		*testingutils.TestProposerConsensusDataV(spec.DataVersionFulu),
-		"",
+		0,
 	)
 }

@@ -49,7 +49,7 @@ func InvalidRoundChangeJustificationPrepared() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"invalid signed message: proposal not justified: change round msg not valid: msg signature invalid: crypto/rsa: verification error",
+		types.MessageSignatureInvalidErrorCode,
 		nil,
 		ks,
 	)

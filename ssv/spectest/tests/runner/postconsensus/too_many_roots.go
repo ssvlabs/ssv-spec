@@ -15,7 +15,7 @@ import (
 func TooManyRoots() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	err := "failed processing post consensus message: invalid post-consensus message: wrong expected roots count"
+	errCode := types.WrongRootsCountErrorCode
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus too many roots",
 		testdoc.PostConsensusTooManyRootsDoc,
@@ -33,7 +33,7 @@ func TooManyRoots() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: "f58387d4d4051a2de786e4cbf9dc370a8b19a544f52af04f71195feb3863fc5c",
 				DontStartDuty:           true,
-				ExpectedError:           err,
+				ExpectedErrorCode:       errCode,
 			},
 			{
 				Name: "proposer",
@@ -48,7 +48,7 @@ func TooManyRoots() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: "ff213af6f0bf2350bb37f48021c137dd5552b1c25cb5c6ebd0c1d27debf6080e",
 				DontStartDuty:           true,
-				ExpectedError:           err,
+				ExpectedErrorCode:       errCode,
 			},
 			{
 				Name: "proposer (blinded block)",
@@ -63,7 +63,7 @@ func TooManyRoots() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: "9b4524d5100835df4d71d0a1e559acdc33d541c44a746ebda115c5e7f3eaa85a",
 				DontStartDuty:           true,
-				ExpectedError:           err,
+				ExpectedErrorCode:       errCode,
 			},
 		},
 		ks,
@@ -83,7 +83,7 @@ func TooManyRoots() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: "1fb182fb19e446d61873abebc0ac85a3a9637b51d139cdbd7d8cb70cf7ffec82",
 			DontStartDuty:           true,
-			ExpectedError:           err,
+			ExpectedErrorCode:       errCode,
 		},
 		)
 	}

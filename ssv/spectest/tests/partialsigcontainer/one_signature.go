@@ -29,7 +29,7 @@ func OneSignature() tests.SpecTest {
 		ks.Threshold,
 		ks.ValidatorPK.Serialize(),
 		msgs,
-		"could not reconstruct a valid signature",
+		types.ReconstructSignatureErrorCode,
 		expectedSig.Serialize(),
 		false,
 		ks,

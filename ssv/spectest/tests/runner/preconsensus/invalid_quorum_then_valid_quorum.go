@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -13,7 +14,7 @@ import (
 // InvalidQuorumThenValid tests a runner receiving an invalid message forming an invalid quorum, then receiving a valid message forming a valid quorum, terminating successfully
 func InvalidQuorumThenValidQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "got pre-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature"
+	expectedErrorCode := types.ReconstructSignatureErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus invalid quorum then valid quorum",
@@ -35,7 +36,7 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   "validator registration",
@@ -56,7 +57,7 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedValidatorRegistration(ks)),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   "voluntary exit",
@@ -77,7 +78,7 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedVoluntaryExit(ks)),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		},
 		ks,
@@ -98,7 +99,7 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		})
 	}
 
@@ -120,7 +121,7 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 
@@ -142,7 +143,7 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 

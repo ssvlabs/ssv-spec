@@ -56,7 +56,7 @@ func HappyFlow() tests.SpecTest {
 		nil,
 		msgs,
 		outputMessages,
-		"",
+		0,
 		&testingutils.TimerState{
 			Timeouts: 1,
 			Round:    qbft.Round(2),

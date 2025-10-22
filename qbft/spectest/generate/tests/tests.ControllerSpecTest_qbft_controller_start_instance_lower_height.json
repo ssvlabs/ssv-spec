@@ -29,7 +29,7 @@
     }
   ],
   "OutputMessages": null,
-  "ExpectedError": "attempting to start an instance with a past height",
+  "ExpectedErrorCode": 71,
   "Controller": {
     "Identifier": "AQIDBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
     "Height": 0,

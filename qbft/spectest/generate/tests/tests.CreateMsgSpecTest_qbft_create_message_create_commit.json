@@ -9,7 +9,7 @@
   "PrepareJustifications": null,
   "CreateType": "CreateCommit",
   "ExpectedRoot": "f48d140d8beee146db7decbad3dd17c99dba6f2a88069f4721818279dbfe380c",
-  "ExpectedError": "",
+  "ExpectedErrorCode": 0,
   "CommitteeMember": {
     "OperatorID": 0,
     "CommitteeID": "0000000000000000000000000000000000000000000000000000000000000000",

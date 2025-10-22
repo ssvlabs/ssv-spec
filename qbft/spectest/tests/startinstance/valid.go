@@ -22,7 +22,7 @@ func Valid() tests.SpecTest {
 			},
 		},
 		nil,
-		"",
+		0,
 		nil,
 		nil,
 	)

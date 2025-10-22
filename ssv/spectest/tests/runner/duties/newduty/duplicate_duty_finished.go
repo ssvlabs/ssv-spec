@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
@@ -34,9 +35,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 		return r
 	}
 
-	expectedError := fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
-		testingutils.TestingDutySlot,
-		testingutils.TestingDutySlot)
+	expectedErrorCode := types.DutyAlreadyPassedErrorCode
 
 	// finishTaskRunner is a helper function that finishes a task runner and returns it
 	// task is an operation that isn't a beacon duty, e.g. validator registration
@@ -46,10 +45,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 		return r
 	}
 
-	expectedTaskError := fmt.Sprintf("can't start non-beacon duty: duty for slot %d already passed. "+
-		"Current slot is %d",
-		testingutils.TestingDutySlot,
-		testingutils.TestingDutySlot)
+	expectedTaskErrorCode := types.DutyAlreadyPassedErrorCode
 
 	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
 		"duplicate duty finished",
@@ -64,7 +60,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:                    "proposer",
@@ -75,9 +71,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
-					testingutils.TestingDutySlotV(spec.DataVersionDeneb),
-					testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
+				ExpectedErrorCode: types.DutyAlreadyPassedErrorCode,
 			},
 			{
 				Name: "validator registration",
@@ -86,7 +80,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    &testingutils.TestingValidatorRegistrationDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-				ExpectedError:           expectedTaskError,
+				ExpectedErrorCode:       expectedTaskErrorCode,
 			},
 			{
 				Name: "voluntary exit",
@@ -95,7 +89,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    &testingutils.TestingVoluntaryExitDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-				ExpectedError:           expectedTaskError,
+				ExpectedErrorCode:       expectedTaskErrorCode,
 			},
 		},
 		ks,
@@ -103,9 +97,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 
-		refSlot := testingutils.TestingDutySlotV(version)
-		expectedVersionedError := fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
-			refSlot, refSlot)
+		expectedVersionedErrorCode := types.DutyAlreadyPassedErrorCode
 
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
 			Name:                    fmt.Sprintf("aggregator (%s)", version.String()),
@@ -116,15 +108,13 @@ func DuplicateDutyFinished() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedVersionedError,
+			ExpectedErrorCode: expectedVersionedErrorCode,
 		})
 	}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 
-		refSlot := testingutils.TestingDutySlotV(version)
-		expectedVersionedError := fmt.Sprintf("can't start duty: duty for slot %d already passed. Current height is %d",
-			refSlot, refSlot)
+		expectedVersionedErrorCode := types.DutyAlreadyPassedErrorCode
 
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{
 
@@ -134,7 +124,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    testingutils.TestingAttesterDuty(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
-				ExpectedError:           expectedVersionedError,
+				ExpectedErrorCode:       expectedVersionedErrorCode,
 			},
 			{
 				Name:                    fmt.Sprintf("sync committee (%s)", version.String()),
@@ -142,7 +132,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeDuty(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
-				ExpectedError:           expectedVersionedError,
+				ExpectedErrorCode:       expectedVersionedErrorCode,
 			},
 			{
 				Name:                    fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -150,7 +140,7 @@ func DuplicateDutyFinished() tests.SpecTest {
 				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDuties(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "a96148ae850dd3d3a0d63869a95702174739151fa271ba463a3c163cabe35e13",
-				ExpectedError:           expectedVersionedError,
+				ExpectedErrorCode:       expectedVersionedErrorCode,
 			},
 		}...)
 	}

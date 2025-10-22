@@ -34,7 +34,7 @@ func PostPrepared() tests.SpecTest {
 		nil,
 		inputMessages,
 		outputMessages,
-		"invalid signed message: proposal is not valid with current state",
+		types.ProposalInvalidErrorCode,
 		nil,
 		ks,
 	)

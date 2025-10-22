@@ -22,7 +22,7 @@ func Valid() *SignedSSVMessageTest {
 		"valid",
 		testdoc.SignedSSVMessageTestValidDoc,
 		[]*types.SignedSSVMessage{msg},
-		"",
+		0,
 		[][]byte{pkBytes},
 	)
 }

@@ -2,6 +2,7 @@ package validatorconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -21,6 +22,6 @@ func InvalidElectraBlindedBlockValidation() *ValidatorConsensusDataTest {
 		"invalid electra blinded block",
 		testdoc.ValidatorConsensusDataTestInvalidElectraBlindedBlockDoc,
 		*cd,
-		"could not unmarshal ssz (blinded err: incorrect size, regular err: incorrect size)",
+		types.UnmarshalSSZErrorCode,
 	)
 }

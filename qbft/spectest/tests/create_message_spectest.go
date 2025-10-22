@@ -9,12 +9,13 @@ import (
 	"testing"
 
 	"github.com/pkg/errors"
+	"github.com/stretchr/testify/require"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
-	"github.com/stretchr/testify/require"
 )
 
 const (
@@ -42,7 +43,7 @@ type CreateMsgSpecTest struct {
 	CreateType                                       string
 	ExpectedRoot                                     string
 	ExpectedState                                    types.Root `json:"-"` // Field is ignored by encoding/json"
-	ExpectedError                                    string
+	ExpectedErrorCode                                int
 	PrivateKeys                                      *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 
 	// consts for CreateMsgSpecTest
@@ -86,7 +87,7 @@ func (test *CreateMsgSpecTest) UnmarshalJSON(data []byte) error {
 		RoundChangeJustifications, PrepareJustifications []*types.SignedSSVMessage
 		CreateType                                       string
 		ExpectedState                                    types.Root `json:"-"`
-		ExpectedError                                    string
+		ExpectedErrorCode                                int
 	}
 
 	temp := &CreateMsgSpecTestWithoutExpectedRoot{}
@@ -106,7 +107,7 @@ func (test *CreateMsgSpecTest) UnmarshalJSON(data []byte) error {
 	test.PrepareJustifications = temp.PrepareJustifications
 	test.CreateType = temp.CreateType
 	test.ExpectedState = temp.ExpectedState
-	test.ExpectedError = temp.ExpectedError
+	test.ExpectedErrorCode = temp.ExpectedErrorCode
 
 	// Set ExpectedRoot as string
 	test.ExpectedRoot = expectedRoot
@@ -129,23 +130,20 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	default:
 		t.Fail()
 	}
-
-	if err != nil && len(test.ExpectedError) != 0 {
-		require.EqualError(t, err, test.ExpectedError)
+	AssertErrorCode(t, test.ExpectedErrorCode, err)
+	if err != nil {
 		return
 	}
-	require.NoError(t, err)
 
 	if test.Round == qbft.NoRound {
 		require.Fail(t, "qbft round is invalid")
 	}
 
 	r, err := msg.GetRoot()
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, err, test.ExpectedError)
+	AssertErrorCode(t, test.ExpectedErrorCode, err)
+	if err != nil {
 		return
 	}
-	require.NoError(t, err)
 
 	if test.ExpectedRoot != hex.EncodeToString(r[:]) {
 		fmt.Printf("expected: %v\n", test.ExpectedRoot)
@@ -159,7 +157,7 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	err = msg.Validate()
 	require.NoError(t, err)
 
-	qbftMsg:= &qbft.Message{}
+	qbftMsg := &qbft.Message{}
 	err = qbftMsg.Decode(msg.SSVMessage.Data)
 	require.NoError(t, err)
 
@@ -255,7 +253,7 @@ func (test *CreateMsgSpecTest) GetPostState() (interface{}, error) {
 	return test, nil
 }
 
-func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, stateValue []byte, round qbft.Round, roundChangeJustifications []*types.SignedSSVMessage, prepareJustifications []*types.SignedSSVMessage, createType string, expectedRoot string, expectedState types.Root, expectedError string, ks *testingutils.TestKeySet) *CreateMsgSpecTest {
+func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, stateValue []byte, round qbft.Round, roundChangeJustifications []*types.SignedSSVMessage, prepareJustifications []*types.SignedSSVMessage, createType string, expectedRoot string, expectedState types.Root, expectedErrorCode int, ks *testingutils.TestKeySet) *CreateMsgSpecTest {
 	committeeMember := &types.CommitteeMember{}
 	operatorID := types.OperatorID(0)
 	if ks != nil {
@@ -275,7 +273,7 @@ func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, sta
 		CreateType:                createType,
 		ExpectedRoot:              expectedRoot,
 		ExpectedState:             expectedState,
-		ExpectedError:             expectedError,
+		ExpectedErrorCode:         expectedErrorCode,
 		PrivateKeys:               testingutils.BuildPrivateKeyInfo(ks),
 
 		// consts for CreateMsgSpecTest

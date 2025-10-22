@@ -1,9 +1,12 @@
 package ssv
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -118,7 +121,7 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 		prevDecided, _ = b.State.RunningInstance.IsDecided()
 	}
 	if prevDecided {
-		return true, nil, errors.New("not processing consensus message since consensus has already finished")
+		return true, nil, types.NewError(types.SkipConsensusMessageAsConsensusHasFinishedErrorCode, "not processing consensus message since consensus has already finished")
 	}
 
 	decidedSignedMsg, err := b.QBFTController.ProcessMsg(msg)
@@ -202,7 +205,7 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, signedMessage *types.S
 	}
 
 	if signedMessage.SSVMessage == nil {
-		return false, errors.New("ssv message is nil")
+		return false, fmt.Errorf("ssv message is nil")
 	}
 
 	decidedMessage, err := qbft.DecodeMessage(signedMessage.SSVMessage.Data)
@@ -215,11 +218,11 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, signedMessage *types.S
 	}
 
 	if b.State.RunningInstance == nil {
-		return false, errors.New("decided wrong instance")
+		return false, types.NewError(types.DecidedWrongInstanceErrorCode, "decided wrong instance")
 	}
 
 	if decidedMessage.Height != b.State.RunningInstance.GetHeight() {
-		return false, errors.New("decided wrong instance")
+		return false, types.NewError(types.DecidedWrongInstanceErrorCode, "decided wrong instance")
 	}
 
 	// verify we decided running instance only, if not we do not proceed
@@ -248,7 +251,7 @@ func (b *BaseRunner) decide(runner Runner, slot phase0.Slot, input types.Encoder
 	}
 	newInstance := runner.GetBaseRunner().QBFTController.InstanceForHeight(runner.GetBaseRunner().QBFTController.Height)
 	if newInstance == nil {
-		return errors.New("could not find newly created QBFT instance")
+		return fmt.Errorf("could not find newly created QBFT instance")
 	}
 
 	runner.GetBaseRunner().State.RunningInstance = newInstance
@@ -265,8 +268,10 @@ func (b *BaseRunner) hasRunningDuty() bool {
 
 func (b *BaseRunner) ShouldProcessDuty(duty types.Duty) error {
 	if b.QBFTController.Height >= qbft.Height(duty.DutySlot()) && b.QBFTController.Height != 0 {
-		return errors.Errorf("duty for slot %d already passed. Current height is %d", duty.DutySlot(),
-			b.QBFTController.Height)
+		return types.NewError(
+			types.DutyAlreadyPassedErrorCode,
+			fmt.Sprintf("duty for slot %d already passed. Current height is %d", duty.DutySlot(), b.QBFTController.Height),
+		)
 	}
 	return nil
 }
@@ -274,8 +279,10 @@ func (b *BaseRunner) ShouldProcessDuty(duty types.Duty) error {
 func (b *BaseRunner) ShouldProcessNonBeaconDuty(duty types.Duty) error {
 	// assume StartingDuty is not nil if state is not nil
 	if b.State != nil && b.State.StartingDuty.DutySlot() >= duty.DutySlot() {
-		return errors.Errorf("duty for slot %d already passed. Current slot is %d", duty.DutySlot(),
-			b.State.StartingDuty.DutySlot())
+		return types.NewError(
+			types.DutyAlreadyPassedErrorCode,
+			fmt.Sprintf("duty for slot %d already passed. Current slot is %d", duty.DutySlot(), b.State.StartingDuty.DutySlot()),
+		)
 	}
 	return nil
 }

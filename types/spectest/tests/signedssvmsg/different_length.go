@@ -20,7 +20,7 @@ func SignersAndSignaturesWithDifferentLength() *SignedSSVMessageTest {
 				SSVMessage:  testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusRandaoMsg(ks.Shares[1], 1)),
 			},
 		},
-		"number of signatures is different than number of signers",
+		types.IncorrectNumberOfSignaturesErrorCode,
 		nil,
 	)
 }
