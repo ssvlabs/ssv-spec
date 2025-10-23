@@ -2,6 +2,7 @@ package valcheckattestations
 
 import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -26,7 +27,6 @@ func UnmatchedSourceEpoch() tests.SpecTest {
 		Epoch: 1, // different from 0 above
 		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 	}
-	// target checkpoint with a different epoch
 	expectedTargetCheckpoint := phase0.Checkpoint{
 		Epoch: 2,
 		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
@@ -35,7 +35,7 @@ func UnmatchedSourceEpoch() tests.SpecTest {
 
 	return valcheck.NewSpecTest(
 		"attestation value check unmatched source epoch",
-		"", // Documentation string if any is needed
+		testdoc.ValCheckAttestationUnmatchedSourceEpochDoc,
 		types.BeaconTestNetwork,
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,

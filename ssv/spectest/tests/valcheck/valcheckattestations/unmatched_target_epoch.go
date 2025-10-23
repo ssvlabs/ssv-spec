@@ -38,7 +38,7 @@ func UnmatchedTargetEpoch() tests.SpecTest {
 
 	return valcheck.NewSpecTest(
 		"attestation value check unmatched target epoch",
-		testdoc.ValCheckAttestationFarFutureTargetDoc,
+		testdoc.ValCheckAttestationUnmatchedTargetEpochDoc,
 		types.BeaconTestNetwork,
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,
