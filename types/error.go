@@ -33,7 +33,7 @@ const (
 	NoBeaconDutiesErrorCode
 	NoValidatorSharesErrorCode
 	AttestationSourceNotLessThanTargetErrorCode
-	AttestationTargetEpochTooFarFutureErrorCode
+	CheckpointMismatch
 	MessageIDCommitteeIDMismatchErrorCode
 	MessageTypeInvalidErrorCode
 	MessageRoundInvalidErrorCode
@@ -77,8 +77,6 @@ const (
 	InstanceAlreadyRunningErrorCode
 	StartInstanceErrorCode
 	TimeoutInstanceErrorCode
-	SourceCheckpointMismatch
-	TargetCheckpointMismatch
 )
 
 type Error struct {

@@ -21,8 +21,8 @@ type SpecTest struct {
 	RunnerRole        types.RunnerRole
 	DutySlot          phase0.Slot // DutySlot is used only for the RoleCommittee since the BeaconVoteValueCheckF requires the duty's slot
 	Input             []byte
-	ExpectedSourceEpoch phase0.Epoch             // Specify expected source epoch for beacon vote value check
-	ExpectedTargetEpoch phase0.Epoch             // Specify expected target epoch for beacon vote value check
+	ExpectedSource    phase0.Checkpoint             // Specify expected source epoch for beacon vote value check
+	ExpectedTarget    phase0.Checkpoint             // Specify expected target epoch for beacon vote value check
 	SlashableSlots    map[string][]phase0.Slot // map share pk to a list of slashable slots
 	ShareValidatorsPK []types.ShareValidatorPK `json:"ShareValidatorsPK,omitempty"` // Optional. Specify validators shares for beacon vote value check
 	ExpectedErrorCode int
@@ -110,8 +110,8 @@ func NewSpecTest(
 	role types.RunnerRole,
 	dutySlot phase0.Slot,
 	input []byte,
-	expectedSourceEpoch phase0.Epoch,
-	expectedTargetEpoch phase0.Epoch,
+	expectedSource phase0.Checkpoint,
+	expectedTarget phase0.Checkpoint,
 	slashableSlots map[string][]phase0.Slot,
 	shareValidatorsPK []types.ShareValidatorPK,
 	expectedErrorCode int,
@@ -125,8 +125,8 @@ func NewSpecTest(
 		RunnerRole:          role,
 		DutySlot:            dutySlot,
 		Input:               input,
-		ExpectedSourceEpoch: expectedSourceEpoch,
-		ExpectedTargetEpoch: expectedTargetEpoch,
+		ExpectedSource:		 expectedSource,
+		ExpectedTarget:      expectedTarget,
 		SlashableSlots:      slashableSlots,
 		ShareValidatorsPK:   shareValidatorsPK,
 		ExpectedErrorCode:   expectedErrorCode,

@@ -32,7 +32,7 @@ func UnmatchedSourceEpoch() tests.SpecTest {
 		testingutils.TestingDutySlot,
 		input,
 		0,
-		1,
+		,
 		map[string][]phase0.Slot{},
 		[]types.ShareValidatorPK{},
 		types.AttestationTargetEpochTooFarFutureErrorCode,

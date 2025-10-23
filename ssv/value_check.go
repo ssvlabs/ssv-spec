@@ -57,11 +57,12 @@ func BeaconVoteValueCheckF(
 		}
 
 		if !reflect.DeepEqual(bv.Source, expectedSource) {
-			return types.NewError(types.SourceCheckpointMismatch, fmt.Sprintf("attestation data source checkpoint %v does not match expected %v", 
+			return types.NewError(types.CheckpointMismatch, fmt.Sprintf("attestation data source checkpoint %v does not match expected %v", 
 		bv.Source, expectedSource))
 		}
+		
 		if !reflect.DeepEqual(bv.Target, expectedTarget) {
-			return types.NewError(types.TargetCheckpointMismatch, fmt.Sprintf("attestation data target checkpoint %v does not match expected %v", 
+			return types.NewError(types.CheckpointMismatch, fmt.Sprintf("attestation data target checkpoint %v does not match expected %v", 
 				bv.Target, expectedTarget))
 		}
 
