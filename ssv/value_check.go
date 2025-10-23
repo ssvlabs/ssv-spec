@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"math"
+	"reflect"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
@@ -42,8 +43,8 @@ func BeaconVoteValueCheckF(
 	signer types.BeaconSigner,
 	slot phase0.Slot,
 	sharePublicKeys []types.ShareValidatorPK,
-	expectedSourceEpoch phase0.Epoch,
-	expectedTargetEpoch phase0.Epoch,
+	expectedSource *phase0.Checkpoint,
+	expectedTarget *phase0.Checkpoint,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		bv := types.BeaconVote{}
@@ -55,8 +56,13 @@ func BeaconVoteValueCheckF(
 			return types.NewError(types.AttestationSourceNotLessThanTargetErrorCode, "attestation data source >= target")
 		}
 
-		if bv.Source.Epoch != expectedSourceEpoch || bv.Target.Epoch != expectedTargetEpoch {
-			return errors.New("attestation data source/target epoch does not match expected")
+		if !reflect.DeepEqual(bv.Source, expectedSource) {
+			return types.NewError(types.SourceCheckpointMismatch, fmt.Sprintf("attestation data source checkpoint %v does not match expected %v", 
+		bv.Source, expectedSource))
+		}
+		if !reflect.DeepEqual(bv.Target, expectedTarget) {
+			return types.NewError(types.TargetCheckpointMismatch, fmt.Sprintf("attestation data target checkpoint %v does not match expected %v", 
+				bv.Target, expectedTarget))
 		}
 
 		attestationData := &phase0.AttestationData{

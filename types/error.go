@@ -77,6 +77,8 @@ const (
 	InstanceAlreadyRunningErrorCode
 	StartInstanceErrorCode
 	TimeoutInstanceErrorCode
+	SourceCheckpointMismatch
+	TargetCheckpointMismatch
 )
 
 type Error struct {
