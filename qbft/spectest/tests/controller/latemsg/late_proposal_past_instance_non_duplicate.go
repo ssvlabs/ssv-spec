@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,7 +19,7 @@ func LateProposalPastInstanceNonDuplicate() tests.SpecTest {
 
 	scFirstHeight := lateProposalPastInstanceStateComparison(qbft.FirstHeight, nil)
 	instanceData := &tests.RunInstanceData{
-		InputValue:    []byte{1, 2, 3, 4},
+		InputValue:    testingutils.TestingQBFTFullData,
 		InputMessages: allMsgsForFirstHeight,
 		ExpectedDecidedState: tests.DecidedState{
 			DecidedVal: testingutils.TestingQBFTFullData,
@@ -38,12 +39,13 @@ func LateProposalPastInstanceNonDuplicate() tests.SpecTest {
 
 	sc := lateProposalPastInstanceStateComparison(1, lateMsg)
 
-	return &tests.ControllerSpecTest{
-		Name: "late non duplicate proposal past instance",
-		RunInstanceData: []*tests.RunInstanceData{
+	test := tests.NewControllerSpecTest(
+		"late non duplicate proposal past instance",
+		testdoc.ControllerLateMsgLateProposalPastInstanceNonDuplicateDoc,
+		[]*tests.RunInstanceData{
 			instanceData,
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					lateMsg,
 				},
@@ -51,6 +53,11 @@ func LateProposalPastInstanceNonDuplicate() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-		ExpectedError: "not processing consensus message since instance is already decided",
-	}
+		nil,
+		types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
+		nil,
+		ks,
+	)
+
+	return test
 }

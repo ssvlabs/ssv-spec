@@ -6,6 +6,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,11 +17,12 @@ func PostDecided() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	expectedErr := "failed processing consensus message: not processing consensus message since consensus has already finished"
+	expectedErrCode := types.SkipConsensusMessageAsConsensusHasFinishedErrorCode
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus valid post decided",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus valid post decided",
+		testdoc.ConsensusPostDecidedDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -35,10 +37,11 @@ func PostDecided() tests.SpecTest {
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
 				},
-				ExpectedError: expectedErr,
+				ExpectedErrorCode: expectedErrCode,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -53,7 +56,7 @@ func PostDecided() tests.SpecTest {
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
 				testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version),
 			},
-			ExpectedError: expectedErr,
+			ExpectedErrorCode: expectedErrCode,
 		},
 		)
 	}
@@ -75,7 +78,7 @@ func PostDecided() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version),
 				},
-				ExpectedError: expectedErr,
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -88,7 +91,7 @@ func PostDecided() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version),
 				},
-				ExpectedError: expectedErr,
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -101,7 +104,7 @@ func PostDecided() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version),
 				},
-				ExpectedError: expectedErr,
+				ExpectedErrorCode: expectedErrCode,
 			},
 		}...)
 	}
@@ -124,7 +127,7 @@ func PostDecided() tests.SpecTest {
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
-			ExpectedError: expectedErr,
+			ExpectedErrorCode: expectedErrCode,
 		}
 	}
 
@@ -146,7 +149,7 @@ func PostDecided() tests.SpecTest {
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
-			ExpectedError: expectedErr,
+			ExpectedErrorCode: expectedErrCode,
 		}
 	}
 

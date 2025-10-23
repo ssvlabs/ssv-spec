@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -12,10 +13,7 @@ import (
 // SequencedDecidedDuties decides a sequence of duties
 func SequencedDecidedDuties() tests.SpecTest {
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "sequenced decided duties",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		// TODO add 500
@@ -24,7 +22,7 @@ func SequencedDecidedDuties() tests.SpecTest {
 				ksMap := testingutils.KeySetMapForValidators(numValidators)
 				shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
-				multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+				tests = append(tests, []*committee.CommitteeSpecTest{
 					{
 						Name:           fmt.Sprintf("%v duties %v attestation (%s)", numSequencedDuties, numValidators, version.String()),
 						Committee:      testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
@@ -47,6 +45,13 @@ func SequencedDecidedDuties() tests.SpecTest {
 			}
 		}
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"sequenced decided duties",
+		testdoc.CommitteeSequencedDecidedDutiesDoc,
+		tests,
+		nil,
+	)
 
 	return multiSpecTest
 }

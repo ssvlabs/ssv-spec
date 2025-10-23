@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,10 +15,11 @@ import (
 func InvalidQuorumThenValidQuorum() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "got post-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature"
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus invalid quorum then valid quorum",
-		Tests: []*tests.MsgProcessingSpecTest{
+	expectedErrorCode := types.ReconstructSignatureErrorCode
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus invalid quorum then valid quorum",
+		testdoc.PostConsensusInvalidQuorumThenValidQuorumDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -35,17 +37,17 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: invalidQuorumThenValidQuorumSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     invalidQuorumThenValidQuorumSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -63,12 +65,11 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3, version))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[4], 4, version))),
 			},
-			OutputMessages: []*types.PartialSignatureMessages{},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks, version)),
 			},
-			DontStartDuty: true,
-			ExpectedError: expectedError,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		},
 		)
 	}
@@ -90,12 +91,11 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[3], 3, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[4], 4, version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObject(ks, version)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name: fmt.Sprintf("sync committee (%s)", version.String()),
@@ -112,12 +112,11 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[3], 3, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[4], 4, version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks, version)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name: fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -134,13 +133,12 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[3], 3, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[4], 4, version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObject(ks, version)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks, version)),
 				},
-				DontStartDuty: true,
-				ExpectedError: expectedError,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		}...)
 	}
@@ -164,12 +162,11 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: invalidQuorumThenValidQuorumProposerSC(version).Root(),
 			PostDutyRunnerState:     invalidQuorumThenValidQuorumProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.PartialSignatureMessages{},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
-			DontStartDuty: true,
-			ExpectedError: expectedError,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 
@@ -192,12 +189,11 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: invalidQuorumThenValidQuorumBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     invalidQuorumThenValidQuorumBlindedProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.PartialSignatureMessages{},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
 			},
-			DontStartDuty: true,
-			ExpectedError: expectedError,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 

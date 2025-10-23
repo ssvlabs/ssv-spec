@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,10 +14,11 @@ import (
 // InvalidOperatorSignature tests a SignedSSVMessage with invalid signature
 func InvalidOperatorSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "SignedSSVMessage has an invalid signature: crypto/rsa: verification error"
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus invalid operator signature",
-		Tests: []*tests.MsgProcessingSpecTest{
+	expectedError := types.SSVMessageHasInvalidSignatureErrorCode
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus invalid operator signature",
+		testdoc.PreConsensusInvalidOperatorSignatureDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -28,7 +30,7 @@ func InvalidOperatorSignature() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 			{
 				Name:   "randao",
@@ -41,7 +43,7 @@ func InvalidOperatorSignature() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 			{
 				Name:   "randao (blinded block)",
@@ -54,10 +56,11 @@ func InvalidOperatorSignature() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -70,7 +73,7 @@ func InvalidOperatorSignature() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedError,
 		})
 	}
 

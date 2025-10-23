@@ -2,6 +2,7 @@ package valcheckproposer
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -10,9 +11,10 @@ import (
 
 // BlindedBlock tests if blinded blocks pass validation according to configuration
 func BlindedBlock() tests.SpecTest {
-	return &valcheck.MultiSpecTest{
-		Name: "blinded blocks",
-		Tests: []*valcheck.SpecTest{
+	return valcheck.NewMultiSpecTest(
+		"blinded blocks",
+		testdoc.ValCheckProposerBlindedBlockDoc,
+		[]*valcheck.SpecTest{
 			{
 				Name:       "blinded blocks accepted",
 				Network:    types.BeaconTestNetwork,
@@ -21,5 +23,5 @@ func BlindedBlock() tests.SpecTest {
 				AnyError:   false,
 			},
 		},
-	}
+	)
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,9 +14,10 @@ import (
 // TooManyRoots tests too many expected roots
 func TooManyRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus too many roots",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus too many roots",
+		testdoc.PreConsensusTooManyRootsDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -27,7 +29,7 @@ func TooManyRoots() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing sync committee selection proof message: invalid pre-consensus message: wrong expected roots count",
+				ExpectedErrorCode: types.WrongRootsCountErrorCode,
 			},
 			{
 				Name:   "randao",
@@ -40,7 +42,7 @@ func TooManyRoots() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing randao message: invalid pre-consensus message: wrong expected roots count",
+				ExpectedErrorCode: types.WrongRootsCountErrorCode,
 			},
 			{
 				Name:   "randao (blinded block)",
@@ -53,7 +55,7 @@ func TooManyRoots() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing randao message: invalid pre-consensus message: wrong expected roots count",
+				ExpectedErrorCode: types.WrongRootsCountErrorCode,
 			},
 			{
 				Name:   "validator registration",
@@ -66,7 +68,7 @@ func TooManyRoots() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing validator registration message: invalid pre-consensus message: wrong expected roots count",
+				ExpectedErrorCode: types.WrongRootsCountErrorCode,
 			},
 			{
 				Name:   "voluntary exit",
@@ -79,10 +81,11 @@ func TooManyRoots() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "failed processing voluntary exit message: invalid pre-consensus message: wrong expected roots count",
+				ExpectedErrorCode: types.WrongRootsCountErrorCode,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -95,7 +98,7 @@ func TooManyRoots() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: "failed processing selection proof message: invalid pre-consensus message: wrong expected roots count",
+			ExpectedErrorCode: types.WrongRootsCountErrorCode,
 		})
 	}
 

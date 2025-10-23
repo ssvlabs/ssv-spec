@@ -1,6 +1,8 @@
 package ssv
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
@@ -32,7 +34,7 @@ func NewProposerRunner(
 ) (Runner, error) {
 
 	if len(share) != 1 {
-		return nil, errors.New("must have one share")
+		return nil, fmt.Errorf("must have one share")
 	}
 
 	return &ProposerRunner{
@@ -86,7 +88,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 	duty := r.GetState().StartingDuty.(*types.ValidatorDuty)
 
 	// get block data
-	obj, ver, err := r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
+	vBlk, obj, err := r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
 	if err != nil {
 		return errors.Wrap(err, "failed to get Beacon block")
 	}
@@ -98,7 +100,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 
 	input := &types.ValidatorConsensusData{
 		Duty:    *duty,
-		Version: ver,
+		Version: vBlk.Version,
 		DataSSZ: byts,
 	}
 
@@ -124,16 +126,9 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 	var blkToSign ssz.HashRoot
 
 	cd := decidedValue.(*types.ValidatorConsensusData)
-	if r.decidedBlindedBlock() {
-		_, blkToSign, err = cd.GetBlindedBlockData()
-		if err != nil {
-			return errors.Wrap(err, "could not get blinded block data")
-		}
-	} else {
-		_, blkToSign, err = cd.GetBlockData()
-		if err != nil {
-			return errors.Wrap(err, "could not get block data")
-		}
+	_, blkToSign, err = cd.GetBlockData()
+	if err != nil {
+		return errors.Wrap(err, "could not get block data")
 	}
 
 	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.ValidatorDuty), blkToSign,
@@ -206,40 +201,17 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 		if err != nil {
 			return errors.Wrap(err, "could not create consensus data")
 		}
-		if r.decidedBlindedBlock() {
-			vBlindedBlk, _, err := validatorConsensusData.GetBlindedBlockData()
-			if err != nil {
-				return errors.Wrap(err, "could not get blinded block")
-			}
+		vBlk, _, err := validatorConsensusData.GetBlockData()
+		if err != nil {
+			return errors.Wrap(err, "could not get block")
+		}
 
-			if err := r.GetBeaconNode().SubmitBlindedBeaconBlock(vBlindedBlk, specSig); err != nil {
-				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed blinded Beacon block")
-			}
-		} else {
-			vBlk, _, err := validatorConsensusData.GetBlockData()
-			if err != nil {
-				return errors.Wrap(err, "could not get block")
-			}
-
-			if err := r.GetBeaconNode().SubmitBeaconBlock(vBlk, specSig); err != nil {
-				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed Beacon block")
-			}
+		if err := r.GetBeaconNode().SubmitBeaconBlock(vBlk, specSig); err != nil {
+			return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed Beacon block")
 		}
 	}
 	r.GetState().Finished = true
 	return nil
-}
-
-// decidedBlindedBlock returns true if decided value has a blinded block, false if regular block
-// WARNING!! should be called after decided only
-func (r *ProposerRunner) decidedBlindedBlock() bool {
-	validatorConsensusData := &types.ValidatorConsensusData{}
-	err := validatorConsensusData.Decode(r.GetState().DecidedValue)
-	if err != nil {
-		return false
-	}
-	_, _, err = validatorConsensusData.GetBlindedBlockData()
-	return err == nil
 }
 
 func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
@@ -253,13 +225,6 @@ func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, 
 	err := validatorConsensusData.Decode(r.GetState().DecidedValue)
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not create consensus data")
-	}
-	if r.decidedBlindedBlock() {
-		_, data, err := validatorConsensusData.GetBlindedBlockData()
-		if err != nil {
-			return nil, phase0.DomainType{}, errors.Wrap(err, "could not get blinded block data")
-		}
-		return []ssz.HashRoot{data}, types.DomainProposer, nil
 	}
 
 	_, data, err := validatorConsensusData.GetBlockData()

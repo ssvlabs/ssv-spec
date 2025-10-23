@@ -2,21 +2,27 @@ package validatorconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // Phase0AggregatorValidation tests a valid consensus data with AggregateAndProof
 func Phase0AggregatorValidation() *ValidatorConsensusDataTest {
-	return &ValidatorConsensusDataTest{
-		Name:          "phase0 aggregator valid",
-		ConsensusData: *testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0),
-	}
+	return NewValidatorConsensusDataTest(
+		"phase0 aggregator valid",
+		testdoc.ValidatorConsensusDataTestPhase0AggregatorValidationDoc,
+		*testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0),
+		0,
+	)
 }
 
 // ElectraAggregatorValidation tests a valid consensus data with AggregateAndProof
 func ElectraAggregatorValidation() *ValidatorConsensusDataTest {
-	return &ValidatorConsensusDataTest{
-		Name:          "electra aggregator valid",
-		ConsensusData: *testingutils.TestAggregatorConsensusData(spec.DataVersionElectra),
-	}
+	return NewValidatorConsensusDataTest(
+		"electra aggregator valid",
+		testdoc.ValidatorConsensusDataTestElectraAggregatorValidationDoc,
+		*testingutils.TestAggregatorConsensusData(spec.DataVersionElectra),
+		0,
+	)
 }

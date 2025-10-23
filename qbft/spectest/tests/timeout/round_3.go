@@ -2,6 +2,7 @@ package timeout
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,27 +18,34 @@ func Round3() tests.SpecTest {
 	pre.State.Round = 3
 	pre.State.ProposalAcceptedForCurrentRound = testingutils.ToProcessingMessage(testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 3))
 
-	return &SpecTest{
-		Name:      "round 3",
-		Pre:       pre,
-		PostRoot:  sc.Root(),
-		PostState: sc.ExpectedState,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.SignQBFTMsg(ks.OperatorKeys[1], types.OperatorID(1), &qbft.Message{
-				MsgType:                  qbft.RoundChangeMsgType,
-				Height:                   qbft.FirstHeight,
-				Round:                    4,
-				Identifier:               testingutils.TestingIdentifier,
-				Root:                     [32]byte{},
-				RoundChangeJustification: [][]byte{},
-				PrepareJustification:     [][]byte{},
-			}),
-		},
-		ExpectedTimerState: &testingutils.TimerState{
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.SignQBFTMsg(ks.OperatorKeys[1], types.OperatorID(1), &qbft.Message{
+			MsgType:                  qbft.RoundChangeMsgType,
+			Height:                   qbft.FirstHeight,
+			Round:                    4,
+			Identifier:               testingutils.TestingIdentifier,
+			Root:                     [32]byte{},
+			RoundChangeJustification: [][]byte{},
+			PrepareJustification:     [][]byte{},
+		}),
+	}
+
+	test := NewSpecTest(
+		"round 3",
+		testdoc.TimeoutRound3Doc,
+		pre,
+		sc.Root(),
+		sc.ExpectedState,
+		outputMessages,
+		&testingutils.TimerState{
 			Timeouts: 1,
 			Round:    4,
 		},
-	}
+		0,
+		ks,
+	)
+
+	return test
 }
 
 func round3StateComparison() *comparable.StateComparison {

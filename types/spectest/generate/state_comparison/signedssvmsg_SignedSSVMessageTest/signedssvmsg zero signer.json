@@ -1,78 +1,23 @@
 {
-		"Name": "zero signer",
-		"Messages": [
-				{
-						"Signatures": [
-								"AQIDBA=="
-						],
-						"OperatorIDs": [
-								0
-						],
-						"SSVMessage": {
-								"MsgType": 1,
-								"MsgID": [
-										0,
-										0,
-										3,
-										1,
-										1,
-										0,
-										0,
-										0,
-										142,
-										128,
-										6,
-										101,
-										81,
-										168,
-										27,
-										49,
-										130,
-										88,
-										112,
-										158,
-										218,
-										247,
-										221,
-										31,
-										99,
-										205,
-										104,
-										106,
-										14,
-										77,
-										184,
-										178,
-										155,
-										187,
-										122,
-										207,
-										230,
-										86,
-										8,
-										103,
-										122,
-										245,
-										165,
-										39,
-										217,
-										68,
-										142,
-										228,
-										120,
-										53,
-										72,
-										94,
-										2,
-										181,
-										11,
-										192
-								],
-								"Data": "AQAAAAAAAAAMAAAAAAAAABQAAACqYtWxqJS9TpuMtuxKg8vDgJM1H2V559u7tsvDiPWthvEQzZmecz+I5Gy02sZh6egKStIzFEk5lQEFG5kqiltYv76DvXtLIAPPczcX1wyMtA/y/XO8wILRIHH+Np8+mbTkiuaucDdgUACrzQm/z9biDJ1EUaIwDERr+4LeutIfvQEAAAAAAAAAAQAAAAAAAAA="
-						},
-						"FullData": null
-				}
-		],
-		"ExpectedError": "signer ID 0 not allowed",
-		"RSAPublicKey": null
+  "Name": "zero signer",
+  "Type": "Signed SSV message: validation of signed SSV message",
+  "Documentation": "Test validation error for signed SSV message with zero signer ID",
+  "Messages": [
+    {
+      "Signatures": [
+        "AQIDBA=="
+      ],
+      "OperatorIDs": [
+        0
+      ],
+      "SSVMessage": {
+        "MsgType": 1,
+        "MsgID": "00000301010000008e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+        "Data": "AQAAAAAAAAAMAAAAAAAAABQAAACqYtWxqJS9TpuMtuxKg8vDgJM1H2V559u7tsvDiPWthvEQzZmecz+I5Gy02sZh6egKStIzFEk5lQEFG5kqiltYv76DvXtLIAPPczcX1wyMtA/y/XO8wILRIHH+Np8+mbTkiuaucDdgUACrzQm/z9biDJ1EUaIwDERr+4LeutIfvQEAAAAAAAAAAQAAAAAAAAA="
+      },
+      "FullData": null
+    }
+  ],
+  "ExpectedErrorCode": 19,
+  "RSAPublicKey": null
 }

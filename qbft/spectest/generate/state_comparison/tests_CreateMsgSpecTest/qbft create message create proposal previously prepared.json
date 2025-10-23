@@ -1,472 +1,99 @@
 {
-		"Name": "create proposal previously prepared",
-		"Value": [
-				1,
-				2,
-				3,
-				4,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0
-		],
-		"StateValue": null,
-		"Round": 10,
-		"RoundChangeJustifications": [
-				{
-						"Signatures": [
-								"bcXGq11mpkubof6459ruVKLfnltyIOLoDfiOhD47wZfnDufnxtoeua/8t5fBKgD+H5gVR7npzyyU8fL2iRw2CW9Q312exSId8lsYcVZRzodNumCTQXoNbtqemKDtZT57GsbXXYvUns/slusBgyABUHfWcGqMFK7bPtS5ELChu+KLG+OJR68J7+rF7FVPnK+q1tDAJsbLDYiS9wPXsVTEJVPFc7RnM5q8j38pbNvBBE7NyUfyauJcEaI+WboqeXziKahrkuUKRGdoI0i+rtbomBUid1Df3AyXiv6TDgLNAOiu4DnPA74qpqBNoxg+gYgshhB+6/r3I/Z6nbTt7I6Gxg=="
-						],
-						"OperatorIDs": [
-								1
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AwAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": null
-				},
-				{
-						"Signatures": [
-								"FJ2teafUaMb2xr/C43TMxmzrJFC0p0gB64my1b9so/WedHieIjmplTZuO3kUlXMpDM8phB/D5el23ORv4YuAdczji0k93UlYB+8mTlqZNCLYZvFf6WcehH+JTv7iufK1yh0VB2wy84XmMD7f9+AoRe6qZCbINSkJ87qV3C2vrEBexWYQdnjr7wtglTEkEdCBAHd7McI+qCB0FdsDNcjLqwBO+UIPw5DXc7nIFpgC2U5qXv/50ANhxj5Hgx1aXA1rINBR7PvERuUq7SrOjhz3xzlHbXmRd7S4HfsXuYd3efrBZC/V1M3izJZNVsboPKHaCO68bYgFZT/6WagjQxidQA=="
-						],
-						"OperatorIDs": [
-								2
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AwAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": null
-				},
-				{
-						"Signatures": [
-								"ZSulLOlWOYaR0DXfygu+k8kL7Rfyb/kGKvqyhsYx/jhMu7v4OmdceZ8q/4lsvC5dRdppcTLtaYQFDbYLt7bGPoCX2zWHq4hrJqQc2TTJulPsBkMN0hrZHMNA6X9CnmIgxk9/okGavOeyjQo7YjDdOs13DKvi5KYazejb19ZktiQBChbKTkv8AqE0N6yGEZRAs3hNXut+0qVo7I+gY2os69sc0Y8wdZBaD3+YpIiLAwPiEUYcz3kdhWoT/1PP+rdqEbEw7HeJ8PN7UZxduCKGemYDZv/uVqGt31hHL8vlS2tvh0oEhKNJypdDU4ExHgmOy4a9qw7VisTMTKgVLq7Puw=="
-						],
-						"OperatorIDs": [
-								3
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AwAAAAAAAAAAAAAAAAAAAAIAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": null
-				}
-		],
-		"PrepareJustifications": [
-				{
-						"Signatures": [
-								"g0BBLoygeLOHqaIj4pmkzrTfJc+5ChUS5DzxiV4EFVyRkQp7w1x4hGsS++AwQqcUC6Z+j7i/icSFuQnSMdS5W/SUYiyWgzY75xd+fa/IBRFqAZkJICUdtIcBBo4U7DgenowmoSfArGNm/swIP+zlZ8akA9VWWGgh9EoBpEYyumGPSnsbVSbLvD/iSIuv2myboKPuEI8NqQzjUezRQC+ahB/ml1m6S341ymfTjsdGbhVlPBZsWXUlJUHFpn3rl8hDUiSz4yROPgSC4xXH++0CesXLWeUgEisx5e0NRFs8OGLnnH6vBSgdWYYnQy5nfWCEZSQgZdWhlOUwoX/zjoqVzg=="
-						],
-						"OperatorIDs": [
-								1
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": null
-				},
-				{
-						"Signatures": [
-								"dfmNuoBlZZxe8CWQO/iBCeSWtOt+xijMhsyx6xsxR1kpOjXdjZ5GQbYEeClVjRw/tywFtAFAyw1HB2DHmpPeCHsIn+BsLhkT4r8eZYldPXWLjuKlMw8OrqUiBQ11YgngEvLLJpLsk5mZf3ccU6KyM1/xj7Z8Yl6WsotukYMSGB8t3OJyxbD/go0IUtafOqI3Hgkb0A9m3uDybjRfBWICreNrcHgnjKxIowiigIwpNx2pmdCi+j3MLKVcTqfhOIqcMHVDMM5LVMNQi9MXp0ymsqXf3TGT133kcnjvLPj6/2WdAYwuWs9BrrKqQ1dDC627n4Lbje8mnNKcxDTCCi+8TA=="
-						],
-						"OperatorIDs": [
-								2
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": null
-				},
-				{
-						"Signatures": [
-								"CK+6dEz+S2R4iGi6DHHTa1BSXt6DqMp6maTtXMe2HyX7Y7+xU6J1z49rKH61VMzLhBJI3itygLd734iO6Lae7n9dC2AMEaS4NsajETlzGZGrAvNEU5+W/ORzOkt0zuAh1vqMJV9wkps1CwCuV5m4Tt2Uw6kpZfc5/W24Jmjux1sF0v1colJ2ehmGGmVONA2w38mMZZvnQSd7J4ENR/PqPD6j3qkP/OQk4gWJJKY/W82IXNLadHdcvJN7JDdstPzx9FzM1b6zmuP0qwRzjpjIdPAzWh1l4q/yw+WgqS0kMKJPVpDJFt1OdX4ygQ1dEtJx2l7YaOpf0C6KAZv83ricrg=="
-						],
-						"OperatorIDs": [
-								3
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": null
-				}
-		],
-		"CreateType": "createProposal",
-		"ExpectedRoot": "f3d483dc8eaa4019fd9e3d586279f2d1ae993b3ac4ad0020e8c0033b5f516167",
-		"ExpectedError": ""
+  "Name": "create proposal previously prepared",
+  "Type": "Message creation: validation of consensus message construction and encoding",
+  "Documentation": "Test creating a proposal message when previously prepared with round change and prepare justifications.",
+  "Value": "73bfbd3311c8077c59c116cad383be8a1d958cc62c69d85dcb86c4796ceadf86",
+  "StateValue": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw==",
+  "Round": 10,
+  "RoundChangeJustifications": [
+    {
+      "Signatures": [
+        "rVNAl/v8z0EOCOTWiwCL9i8/F0T89M6qw+5Fp3uycg5+dsGeZ/eekDbW/ReE1qYwGpWy47qoPQTurvC83wtnUeGY8j/BKZWhf2MnAv5M9yYd3ISaQ6132MaKJF3N9Wh7/arpZOlbg/xAQQEwSyvEWmmkufIFd+NKqQpf//YxMlBW4DGe4q9h6clEAzSLi2a0ITpVB5ZYWB3ivoxJyrgDiTnoditwvE1oQiRgUwG2YPkDK2d84mO/MYN/nbred2B8xvW4sWMq6LsGaG7jRxn2XjcVRMyDKQxlSYhLP0dsZDNf5jJAgSBzyIeMdtuUSHS5wd28R1hpNa/gaxrWvTlCTw=="
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AwAAAAAAAAAAAAAAAAAAAAoAAAAAAAAATAAAAHO/vTMRyAd8WcEWytODvoodlYzGLGnYXcuGxHls6t+GAAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    },
+    {
+      "Signatures": [
+        "NAKg/el476qicrMub2mEUXDqRk+u8oTfCzSV6Lx1hDXKnK6Om3BhK+oMB2p6v/EcZKMH3BH+SYqrEi39sweJ0DuXHTDO7f2IYqrGDY2gcjQ/iInuOfsu9QLyLwT2RmT/H8e4wT0nYn26L4bxu7T4OutgfRqTVnkesp+bcZYNEOYfUCT/3DYjGeo3ZA/LiAtknm9eRpIXehlAyd3RnN4M98BQqfzOV+rB/7yeX/8Bfgv35wONXZLRGC/UYL3vDtNe2zvMWz91eSWAaCA55rRryrReFQlXvwpADQn3H1gZDakYb+DPwy/WOE6QEyqB0/mpp2a/pwKrutEAqDsB1QTHDQ=="
+      ],
+      "OperatorIDs": [
+        2
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AwAAAAAAAAAAAAAAAAAAAAoAAAAAAAAATAAAAHO/vTMRyAd8WcEWytODvoodlYzGLGnYXcuGxHls6t+GAAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    },
+    {
+      "Signatures": [
+        "BruXTwzXsu79ua/SJklhfMin9sxXgL6nORdbUnV4VBwNkaFnBqQcyUDY75w7BShsvP7xquIMS8CjJCbS5J/K7TvkUH+MJnwT9r/posCCnmc5UAwa0aR2lepXYfzePXlcH3B7W0KJPg5BqgOz4wAvwHrnrDORaXuO9/kw/Zyt2MiQEehrvrLKQKoU4ZeOxYf+ljiYyjY/xRvtisjB9F6H8i5b9N82h297+slpYVSdlO/4HISvqtSPR+ilZMYPpzpm2iiuMCuohXmryEa0OtJJEqPmiBf4Z66OCDYCPq9OdEgPYUYWrhOWylVrvjJejGfHCfjThdqcyiQpNHyaaRSXog=="
+      ],
+      "OperatorIDs": [
+        3
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AwAAAAAAAAAAAAAAAAAAAAoAAAAAAAAATAAAAHO/vTMRyAd8WcEWytODvoodlYzGLGnYXcuGxHls6t+GAAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    }
+  ],
+  "PrepareJustifications": [
+    {
+      "Signatures": [
+        "ISa/QoQfj7DeeX0JNNuIrOZvFvaoAClXw7/5wFx5r9nyDw9veV4X85P26Q1LYYePZ0K80QHjws/nLtZ4Ryl8WALPFS4grXZWHOzkuFt62tNATldGu83TdocXXtA6vAgi+VGpF0/1Gxujl0M221pWPljYgjFs998shcvOMSD3RkaxDpuNrqT+X0qTkkitranfvfTz4pYxXaTp0WKIiI8pQijFSq6m4/6ch0QRZuynik0ShecXEIksBnbOfltqp728xWo61RPd/mWlcTzKqpIeu/wKXReMFlG6FBLJKYk2UQyBV8zeIOuMuJuzvzIXvQbKT0vf4MlLaXpTpXNr+5mc1Q=="
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAHO/vTMRyAd8WcEWytODvoodlYzGLGnYXcuGxHls6t+GAAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    },
+    {
+      "Signatures": [
+        "mEl1ZMdla8+EE6rfglyIn0mdDQdsgHb4+wJ84DhrZ3H3waLcDcbgsdpWXfBQV2/uRQFsdtx2au7DUH9emiEXD+f8eDHXFuatPQ9ZkZGuxSPYtz6l02cCriZBlJCC6nmAmwYV7yypAMDCQrPkekO95S66atVOS4xTshx/Q4+Hy7hq5WkA6DzBLnOjQhJnVjKfbcuHvJqQtzlKpcBVDJkVNf8eveFqcycWus6VohjcBtiCOY0KHgJlRkp5PkcpM4x29myKTEWQMH3HvBoAd9ZuvBf1PNt/xDpGZmxOWCyPzDHiPFplQIYlGus5MHWRr2jQsr55O7eJ9WvzDWTJ/kO2Xw=="
+      ],
+      "OperatorIDs": [
+        2
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAHO/vTMRyAd8WcEWytODvoodlYzGLGnYXcuGxHls6t+GAAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    },
+    {
+      "Signatures": [
+        "e41iOWaa+IyPHOQP8ofMFTDnwzrKBo5XtX6A0M7Yg/CBXYx7MotmQUFhjUgAon0QuCcLcZIgj0jZ6Eycz/f53duWS8bKqaO3vaFvugV1Q30IKn2WzbZbcCKAs8e0qr8V80o4+V/nHRNCnzI+nBEw3qMNjXN/MkXwzCztL25gyfO1kDJusUAa1Qxq/M9xIs4fo8SbYbQYwKZXz2zt3yAXDw2V88d747Mcm393mdBm5MTkntKIQTg1v3i73ckSH3fwPf9rINyS8GO4oYiAXaNvKnnj0f9FL02MkIlB6ez+rYq9DA2CKGXCrWF/LE3L8/DCHHl0V94hNllYKd7wdj6/ZQ=="
+      ],
+      "OperatorIDs": [
+        3
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAHO/vTMRyAd8WcEWytODvoodlYzGLGnYXcuGxHls6t+GAAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    }
+  ],
+  "CreateType": "createProposal",
+  "ExpectedRoot": "8a6f83ee8559ed52d469cec0b67894f48afa9e39e7baa054033d3367ed3dfb76",
+  "ExpectedErrorCode": 0
 }

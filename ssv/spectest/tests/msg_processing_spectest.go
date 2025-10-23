@@ -9,23 +9,26 @@ import (
 	"testing"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
-	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
-
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 type MsgProcessingSpecTest struct {
-	Name     string
-	Runner   ssv.Runner
-	Duty     types.Duty
-	Messages []*types.SignedSSVMessage
+	Name          string
+	Type          string `json:"Type,omitempty"`
+	Documentation string
+	Runner        ssv.Runner
+	Duty          types.Duty
+	Messages      []*types.SignedSSVMessage `json:"-"`
 	// DecidedSlashable makes the decided value slashable. Simulates consensus instances running in parallel.
 	DecidedSlashable        bool
 	PostDutyRunnerStateRoot string
@@ -34,7 +37,8 @@ type MsgProcessingSpecTest struct {
 	OutputMessages         []*types.PartialSignatureMessages
 	BeaconBroadcastedRoots []string
 	DontStartDuty          bool // if set to true will not start a duty for the runner
-	ExpectedError          string
+	ExpectedErrorCode      int
+	PrivateKeys            *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {
@@ -44,12 +48,7 @@ func (test *MsgProcessingSpecTest) TestName() string {
 // RunAsPartOfMultiTest runs the test as part of a MultiMsgProcessingSpecTest
 func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	v, c, lastErr := test.runPreTesting()
-
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, lastErr, test.ExpectedError)
-	} else {
-		require.NoError(t, lastErr)
-	}
+	tests.AssertErrorCode(t, test.ExpectedErrorCode, lastErr)
 
 	network := &testingutils.TestingNetwork{}
 	beaconNetwork := &testingutils.TestingBeaconNode{}
@@ -206,7 +205,7 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 
 func (test *MsgProcessingSpecTest) GetPostState() (interface{}, error) {
 	_, _, lastErr := test.runPreTesting()
-	if lastErr != nil && len(test.ExpectedError) == 0 {
+	if lastErr != nil && test.ExpectedErrorCode == 0 { // only unexpected errors should return error
 		return nil, lastErr
 	}
 
@@ -225,7 +224,7 @@ type MsgProcessingSpecTestAlias struct {
 	OutputMessages          []*types.PartialSignatureMessages
 	BeaconBroadcastedRoots  []string
 	DontStartDuty           bool
-	ExpectedError           string
+	ExpectedErrorCode       int
 	ValidatorDuty           *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
 	CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
 }
@@ -241,7 +240,7 @@ func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
 		OutputMessages:          t.OutputMessages,
 		BeaconBroadcastedRoots:  t.BeaconBroadcastedRoots,
 		DontStartDuty:           t.DontStartDuty,
-		ExpectedError:           t.ExpectedError,
+		ExpectedErrorCode:       t.ExpectedErrorCode,
 	}
 
 	if t.Duty != nil {
@@ -275,7 +274,7 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	t.OutputMessages = aux.OutputMessages
 	t.BeaconBroadcastedRoots = aux.BeaconBroadcastedRoots
 	t.DontStartDuty = aux.DontStartDuty
-	t.ExpectedError = aux.ExpectedError
+	t.ExpectedErrorCode = aux.ExpectedErrorCode
 
 	// Determine which type of duty was marshaled
 	if aux.ValidatorDuty != nil {
@@ -285,4 +284,36 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	}
 
 	return nil
+}
+
+func NewMsgProcessingSpecTest(
+	name, documentation string,
+	runner ssv.Runner,
+	duty types.Duty,
+	messages []*types.SignedSSVMessage,
+	decidedSlashable bool,
+	postDutyRunnerStateRoot string,
+	postDutyRunnerState types.Root,
+	outputMessages []*types.PartialSignatureMessages,
+	beaconBroadcastedRoots []string,
+	dontStartDuty bool,
+	expectedErrorCode int,
+	ks *testingutils.TestKeySet,
+) *MsgProcessingSpecTest {
+	return &MsgProcessingSpecTest{
+		Name:                    name,
+		Type:                    testdoc.MsgProcessingSpecTestType,
+		Documentation:           documentation,
+		Runner:                  runner,
+		Duty:                    duty,
+		Messages:                messages,
+		DecidedSlashable:        decidedSlashable,
+		PostDutyRunnerStateRoot: postDutyRunnerStateRoot,
+		PostDutyRunnerState:     postDutyRunnerState,
+		OutputMessages:          outputMessages,
+		BeaconBroadcastedRoots:  beaconBroadcastedRoots,
+		DontStartDuty:           dontStartDuty,
+		ExpectedErrorCode:       expectedErrorCode,
+		PrivateKeys:             testingutils.BuildPrivateKeyInfo(ks),
+	}
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -38,15 +39,12 @@ func PastMessageDutyDoesNotExist() tests.SpecTest {
 		return signed
 	}
 
-	expectedError := "no runner found for message's slot"
+	expectedErrorCode := types.NoRunnerForSlotErrorCode
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "past msg duty does not exist",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+		tests = append(tests, []*committee.CommitteeSpecTest{
 			{
 				Name:      fmt.Sprintf("%v attestation (%s)", numValidators, version.String()),
 				Committee: testingutils.BaseCommittee(ksMap),
@@ -54,8 +52,7 @@ func PastMessageDutyDoesNotExist() tests.SpecTest {
 					testingutils.TestingAttesterDutyForValidators(version, validatorsIndexList),
 					pastProposalMsgF(),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:      fmt.Sprintf("%v sync committee (%s)", numValidators, version.String()),
@@ -64,8 +61,7 @@ func PastMessageDutyDoesNotExist() tests.SpecTest {
 					testingutils.TestingSyncCommitteeDutyForValidators(version, validatorsIndexList),
 					pastProposalMsgF(),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:      fmt.Sprintf("%v attestation %v sync committee (%s)", numValidators, numValidators, version.String()),
@@ -74,11 +70,17 @@ func PastMessageDutyDoesNotExist() tests.SpecTest {
 					testingutils.TestingCommitteeDuty(validatorsIndexList, validatorsIndexList, version),
 					pastProposalMsgF(),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		}...)
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"past msg duty does not exist",
+		testdoc.CommitteePastMsgDutyDoesNotExistDoc,
+		tests,
+		ks,
+	)
 
 	return multiSpecTest
 }

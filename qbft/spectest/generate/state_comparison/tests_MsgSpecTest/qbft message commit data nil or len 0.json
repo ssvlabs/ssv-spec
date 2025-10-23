@@ -1,116 +1,61 @@
 {
-		"Name": "commit data nil or len 0",
-		"Messages": [
-				{
-						"Signatures": [
-								"Mgz+3/i1OdDksD9uukJZZkOJVngs4/fsrrU1BTEwSauwbf8VpZP7zCVNpN7RW+0AhTCeHs/t6uCeEAg0fXU3Ngn7I1zIhFJmwsRV+i59zsEpMYDVVUK6PraH3WF6usIngeiaik0LlkYiJrg4kR1kZeJ7V3yqymCDFBwP4UkE5iehwJxwN7XydMiVjAbcdbAT2CSK0gVcxyJFvS4cTVWzYGpeg3HFSsr3Lq+zDRQNdUyo7hVewN8FC2wYkMt9I8UHlXhpf2ZAolIrl3wb8Lz93IGqsNLRbcAHUDDLw5zfXrQeQ5+5xPQ5fD4xqK+hSBD0QGqmhC82Vju7a0I0llm1FA=="
-						],
-						"OperatorIDs": [
-								1
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AgAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": null
-				}
-		],
-		"EncodedMessages": [
-				"EAAAABQBAAAcAQAA5AEAAAQAAAAyDP7f+LU50OSwP266QllmQ4lWeCzj9+yutTUFMTBJq7Bt/xWlk/vMJU2k3tFb7QCFMJ4ez+3q4J4QCDR9dTc2CfsjXMiEUmbCxFX6Ln3OwSkxgNVVQro+tofdYXq6wieB6JqKTQuWRiImuDiRHWRl4ntXfKrKYIMUHA/hSQTmJ6HAnHA3tfJ0yJWMBtx1sBPYJIrSBVzHIkW9LhxNVbNgal6DccVKyvcur7MNFA11TKjuFV7A3wULbBiQy30jxQeVeGl/ZkCiUiuXfBvwvP3cgaqw0tFtwAdQMMvDnN9etB5Dn7nE9Dl8PjGor6FIEPRAaqaELzZWO7trQjSWWbUUAQAAAAAAAAAAAAAAAAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAIAAAAAAAAAAAAAAAAAAAABAAAAAAAAAEwAAAC+lW+3307zdTFoLViDIAhPyRTD8P7TNSY+W0QGLmwptAAAAAAAAAAAhAAAAIQAAAABAgMEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
-		],
-		"ExpectedRoots": [
-				[
-						24,
-						6,
-						254,
-						208,
-						254,
-						102,
-						122,
-						69,
-						212,
-						244,
-						169,
-						198,
-						195,
-						67,
-						215,
-						140,
-						62,
-						82,
-						176,
-						152,
-						14,
-						179,
-						3,
-						239,
-						25,
-						5,
-						194,
-						5,
-						237,
-						135,
-						43,
-						137
-				]
-		],
-		"ExpectedError": ""
+  "Name": "commit data nil or len 0",
+  "Type": "QBFT message validation: testing message encoding, decoding, and structural integrity",
+  "Documentation": "Test encoding of commit data for QBFT message validation.",
+  "Messages": [
+    {
+      "Signatures": [
+        "s0TxzL3I15J/x7pLgA8NV/ASxVbZQsrfxQAud5Mi2zrqYMO2mjbhba+RrM9DWEhpFBhsmnrOBU7Xx1/Kr3q7WMBNc3PMxbb6XoAsEkw2wcTcyYxOUOdK5LbYqIUCM5Q8O9Po5GuAvJDtMT9nagS7jE7jp4szB1ewfz851aK/VsbSq2AbD2MvqStFGCOEoLLpnuTO9oduZSmA6N2D/A8yAMxgeWxKIlnca0ARx2f7EUdwMwWteLk4kvDMiDkaGZdZUszAuTGi3OXGwcU2PFMar27JI4nMyIwST5iTAnaFQ9eyx7Wa7XB7OefSomWOOEhFd2Me+yqzWQS4zbTqKjB5cg=="
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AgAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAHO/vTMRyAd8WcEWytODvoodlYzGLGnYXcuGxHls6t+GAAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    }
+  ],
+  "EncodedMessages": [
+    "EAAAABQBAAAcAQAA5AEAAAQAAACzRPHMvcjXkn/HukuADw1X8BLFVtlCyt/FAC53kyLbOupgw7aaNuFtr5Gsz0NYSGkUGGyaes4FTtfHX8qvertYwE1zc8zFtvpegCwSTDbBxNzJjE5Q50rkttiohQIzlDw70+jka4C8kO0xP2dqBLuMTuOnizMHV7B/PznVor9WxtKrYBsPYy+pK0UYI4Sgsume5M72h25lKYDo3YP8DzIAzGB5bEoiWdxrQBHHZ/sRR3AzBa14uTiS8MyIORoZl1lSzMC5MaLc5cbBxTY8UxqvbskjiczIjBJPmJMCdoVD17LHtZrtcHs559KiZY44SEV3Yx77KrNZBLjNtOoqMHlyAQAAAAAAAAAAAAAAAAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAIAAAAAAAAAAAAAAAAAAAABAAAAAAAAAEwAAABzv70zEcgHfFnBFsrTg76KHZWMxixp2F3LhsR5bOrfhgAAAAAAAAAAhAAAAIQAAAABAgMEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+  ],
+  "ExpectedRoots": [
+    [
+      182,
+      170,
+      182,
+      246,
+      121,
+      106,
+      255,
+      123,
+      81,
+      244,
+      181,
+      119,
+      140,
+      217,
+      9,
+      104,
+      193,
+      26,
+      124,
+      132,
+      222,
+      68,
+      84,
+      167,
+      228,
+      53,
+      99,
+      222,
+      132,
+      243,
+      139,
+      67
+    ]
+  ],
+  "ExpectedErrorCode": 0
 }

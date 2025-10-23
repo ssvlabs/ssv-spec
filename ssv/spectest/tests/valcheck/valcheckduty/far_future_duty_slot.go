@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -15,7 +16,6 @@ import (
 func FarFutureDutySlot() tests.SpecTest {
 	consensusDataBytsF := func(cd *types.ValidatorConsensusData) []byte {
 		cdCopy := &types.ValidatorConsensusData{}
-
 		b, _ := json.Marshal(cd)
 		if err := json.Unmarshal(b, cdCopy); err != nil {
 			panic(err.Error())
@@ -26,9 +26,11 @@ func FarFutureDutySlot() tests.SpecTest {
 		return ret
 	}
 
-	return &valcheck.MultiSpecTest{
-		Name: "far future duty slot",
-		Tests: []*valcheck.SpecTest{
+	expectedErrCode := types.DutyEpochTooFarFutureErrorCode
+	return valcheck.NewMultiSpecTest(
+		"far future duty slot",
+		testdoc.ValCheckDutyFarFutureDutySlotDoc,
+		[]*valcheck.SpecTest{
 			{
 				Name:                "committee",
 				Network:             types.BeaconTestNetwork,
@@ -39,33 +41,33 @@ func FarFutureDutySlot() tests.SpecTest {
 				// No error since input doesn't contain slot
 			},
 			{
-				Name:          "sync committee aggregator",
-				Network:       types.BeaconTestNetwork,
-				RunnerRole:    types.RoleSyncCommitteeContribution,
-				Input:         consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
-				ExpectedError: "duty invalid: duty epoch is into far future",
+				Name:              "sync committee aggregator",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleSyncCommitteeContribution,
+				Input:             consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
-				Name:          "aggregator phase0",
-				Network:       types.BeaconTestNetwork,
-				RunnerRole:    types.RoleAggregator,
-				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
-				ExpectedError: "duty invalid: duty epoch is into far future",
+				Name:              "aggregator phase0",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleAggregator,
+				Input:             consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
-				Name:          "aggregator electra",
-				Network:       types.BeaconTestNetwork,
-				RunnerRole:    types.RoleAggregator,
-				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionElectra)),
-				ExpectedError: "duty invalid: duty epoch is into far future",
+				Name:              "aggregator electra",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleAggregator,
+				Input:             consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionElectra)),
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
-				Name:          "proposer",
-				Network:       types.BeaconTestNetwork,
-				RunnerRole:    types.RoleProposer,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
-				ExpectedError: "duty invalid: duty epoch is into far future",
+				Name:              "proposer",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleProposer,
+				Input:             consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
+				ExpectedErrorCode: expectedErrCode,
 			},
 		},
-	}
+	)
 }

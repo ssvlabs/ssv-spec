@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,10 +14,7 @@ import (
 // The duties are assigned to different validators
 func ShuffledHappyFlowDutiesWithDifferentValidators() tests.SpecTest {
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "shuffled happy flow duties with different validators",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		// TODO add 500
@@ -26,7 +24,7 @@ func ShuffledHappyFlowDutiesWithDifferentValidators() tests.SpecTest {
 				ksMap := testingutils.KeySetMapForValidators(numValidators)
 				shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
-				multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+				tests = append(tests, []*committee.CommitteeSpecTest{
 					{
 						Name:                   fmt.Sprintf("%v duties %v attestation (%s)", numSequencedDuties, numValidators, version.String()),
 						Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
@@ -52,6 +50,13 @@ func ShuffledHappyFlowDutiesWithDifferentValidators() tests.SpecTest {
 			}
 		}
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"shuffled happy flow duties with different validators",
+		testdoc.CommitteeShuffledHappyFlowDutiesWithDifferentValidatorsDoc,
+		tests,
+		nil,
+	)
 
 	return multiSpecTest
 }

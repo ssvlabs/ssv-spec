@@ -1,12 +1,16 @@
 package duty
 
-import "github.com/ssvlabs/ssv-spec/types"
+import (
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+)
 
 // MapAggregator tests mapping of BNRoleAggregator.
 func MapAggregator() *DutySpecTest {
-	return &DutySpecTest{
-		Name:       "map aggregator role",
-		BeaconRole: types.BNRoleAggregator,
-		RunnerRole: types.RoleAggregator,
-	}
+	return NewDutySpecTest(
+		"map aggregator role",
+		testdoc.MapAggregatorTestDoc,
+		types.BNRoleAggregator,
+		types.RoleAggregator,
+	)
 }

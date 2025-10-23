@@ -1,7 +1,8 @@
 package valcheckattestations
 
 import (
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -11,27 +12,31 @@ import (
 // SourceHigherThanTarget tests AttestationData.Source.Epoch higher than target
 func SourceHigherThanTarget() tests.SpecTest {
 	data := &types.BeaconVote{
-		BlockRoot: spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
-		Source: &spec.Checkpoint{
+		BlockRoot: phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Source: &phase0.Checkpoint{
 			Epoch: 1,
-			Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+			Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 		},
-		Target: &spec.Checkpoint{
+		Target: &phase0.Checkpoint{
 			Epoch: 0,
-			Root:  spec.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+			Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 		},
 	}
 
 	input, _ := data.Encode()
 
-	return &valcheck.SpecTest{
-		Name:                "attestation value check source higher than target",
-		Network:             types.BeaconTestNetwork,
-		RunnerRole:          types.RoleCommittee,
-		DutySlot:            testingutils.TestingDutySlot,
-		Input:               input,
-		ExpectedSourceEpoch: 0,
-		ExpectedTargetEpoch: 1,
-		ExpectedError:       "attestation data source >= target",
-	}
+	return valcheck.NewSpecTest(
+		"attestation value check source higher than target",
+		testdoc.ValCheckAttestationSourceHigherThanTargetDoc,
+		types.BeaconTestNetwork,
+		types.RoleCommittee,
+		testingutils.TestingDutySlot,
+		input,
+		0,
+		1,
+		nil,
+		nil,
+		types.AttestationSourceNotLessThanTargetErrorCode,
+		false,
+	)
 }

@@ -2,21 +2,27 @@ package startinstance
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // EqualHeightNoRunningInstance tests starting an instance for height equal to current without a running instance
 func EqualHeightNoRunningInstance() tests.SpecTest {
 	height := qbft.Height(2)
 
-	return &tests.ControllerSpecTest{
-		Name: "start instance for current height with no running instance",
-		RunInstanceData: []*tests.RunInstanceData{
+	return tests.NewControllerSpecTest(
+		"start instance for current height with no running instance",
+		testdoc.StartInstanceEqualHeightNoRunningInstanceDoc,
+		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				Height:     &height,
 			},
 		},
-		StartHeight: &height,
-	}
+		nil,
+		0,
+		&height,
+		nil,
+	)
 }

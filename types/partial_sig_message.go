@@ -45,14 +45,14 @@ func (msgs PartialSignatureMessages) GetRoot() ([32]byte, error) {
 
 func (msgs PartialSignatureMessages) Validate() error {
 	if len(msgs.Messages) == 0 {
-		return errors.New("no PartialSignatureMessages messages")
+		return NewError(NoPartialSigMessagesErrorCode, "no PartialSignatureMessages messages")
 	}
 
 	signer := msgs.Messages[0].Signer
 
 	for _, m := range msgs.Messages {
 		if signer != m.Signer {
-			return errors.New("inconsistent signers")
+			return NewError(InconsistentSignersErrorCode, "inconsistent signers")
 		}
 		if err := m.Validate(); err != nil {
 			return errors.Wrap(err, "message invalid")
@@ -68,7 +68,7 @@ func (msgs PartialSignatureMessages) ValidateForSigner(signer OperatorID) error 
 		return err
 	}
 	if msgs.Messages[0].Signer != signer {
-		return errors.New("signer from signed message is inconsistent with partial signature signers")
+		return NewError(PartialSigInconsistentSignerErrorCode, "signer from signed message is inconsistent with partial signature signers")
 	}
 	return nil
 }
@@ -97,7 +97,7 @@ func (pcsm *PartialSignatureMessage) GetRoot() ([32]byte, error) {
 
 func (pcsm *PartialSignatureMessage) Validate() error {
 	if pcsm.Signer == 0 {
-		return errors.New("signer ID 0 not allowed")
+		return NewError(ZeroSignerNotAllowedErrorCode, "signer ID 0 not allowed")
 	}
 	return nil
 }

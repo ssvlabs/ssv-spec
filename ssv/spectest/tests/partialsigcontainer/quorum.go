@@ -2,6 +2,8 @@ package partialsigcontainer
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -24,12 +26,17 @@ func Quorum() tests.SpecTest {
 		panic(err.Error())
 	}
 
-	return &PartialSigContainerTest{
-		Name:            "quorum",
-		Quorum:          ks.Threshold,
-		ValidatorPubKey: ks.ValidatorPK.Serialize(),
-		SignatureMsgs:   msgs,
-		ExpectedResult:  expectedSig.Serialize(),
-		ExpectedQuorum:  true,
-	}
+	test := NewPartialSigContainerTest(
+		"quorum",
+		testdoc.PartialSigContainerQuorumDoc,
+		ks.Threshold,
+		ks.ValidatorPK.Serialize(),
+		msgs,
+		0,
+		expectedSig.Serialize(),
+		true,
+		ks,
+	)
+
+	return test
 }

@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,14 +21,24 @@ func WrongData2() tests.SpecTest {
 
 		testingutils.TestingCommitMessageWrongRoot(ks.OperatorKeys[1], 1),
 	}
-	return &tests.MsgProcessingSpecTest{
-		Name:          "commit data != prepared data",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
-			testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
-		},
-		ExpectedError: "invalid signed message: proposed data mismatch",
+
+	outputMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
+		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
+
+	test := tests.NewMsgProcessingSpecTest(
+		"commit data != prepared data",
+		testdoc.CommitTestWrongData2Doc,
+		pre,
+		"",
+		nil,
+		msgs,
+		outputMsgs,
+		types.ProposedDataMismatchErrorCode,
+		nil,
+		ks,
+	)
+
+	return test
 }

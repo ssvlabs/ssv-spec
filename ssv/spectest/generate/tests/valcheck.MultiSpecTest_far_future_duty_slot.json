@@ -1,8 +1,12 @@
 {
   "Name": "far future duty slot",
+  "Type": "Multi value check: multiple value check tests",
+  "Documentation": "Tests duty value check with duty slot too far in the future",
   "Tests": [
     {
       "Name": "committee",
+      "Type": "",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 0,
       "DutySlot": "0",
@@ -10,12 +14,13 @@
       "ExpectedSourceEpoch": "0",
       "ExpectedTargetEpoch": "1",
       "SlashableSlots": null,
-      "omitempty": null,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "AnyError": false
     },
     {
       "Name": "sync committee aggregator",
+      "Type": "",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 3,
       "DutySlot": "0",
@@ -23,12 +28,13 @@
       "ExpectedSourceEpoch": "0",
       "ExpectedTargetEpoch": "0",
       "SlashableSlots": null,
-      "omitempty": null,
-      "ExpectedError": "duty invalid: duty epoch is into far future",
+      "ExpectedErrorCode": 52,
       "AnyError": false
     },
     {
       "Name": "aggregator phase0",
+      "Type": "",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 1,
       "DutySlot": "0",
@@ -36,12 +42,13 @@
       "ExpectedSourceEpoch": "0",
       "ExpectedTargetEpoch": "0",
       "SlashableSlots": null,
-      "omitempty": null,
-      "ExpectedError": "duty invalid: duty epoch is into far future",
+      "ExpectedErrorCode": 52,
       "AnyError": false
     },
     {
       "Name": "aggregator electra",
+      "Type": "",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 1,
       "DutySlot": "0",
@@ -49,12 +56,13 @@
       "ExpectedSourceEpoch": "0",
       "ExpectedTargetEpoch": "0",
       "SlashableSlots": null,
-      "omitempty": null,
-      "ExpectedError": "duty invalid: duty epoch is into far future",
+      "ExpectedErrorCode": 52,
       "AnyError": false
     },
     {
       "Name": "proposer",
+      "Type": "",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 2,
       "DutySlot": "0",
@@ -62,8 +70,7 @@
       "ExpectedSourceEpoch": "0",
       "ExpectedTargetEpoch": "0",
       "SlashableSlots": null,
-      "omitempty": null,
-      "ExpectedError": "duty invalid: duty epoch is into far future",
+      "ExpectedErrorCode": 52,
       "AnyError": false
     }
   ]

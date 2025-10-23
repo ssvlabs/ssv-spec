@@ -7,6 +7,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,9 +18,10 @@ func PostFinish() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus valid post finish",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus valid post finish",
+		testdoc.ConsensusPostFinishDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -50,10 +52,11 @@ func PostFinish() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
 				},
-				ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
+				ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -82,7 +85,7 @@ func PostFinish() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks, version)),
 			},
-			ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
+			ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		},
 		)
 	}
@@ -111,7 +114,7 @@ func PostFinish() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObject(ks, version)),
 				},
-				ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
+				ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -132,7 +135,7 @@ func PostFinish() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks, version)),
 				},
-				ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
+				ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -154,7 +157,7 @@ func PostFinish() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObject(ks, version)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks, version)),
 				},
-				ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
+				ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 			},
 		}...)
 	}
@@ -193,7 +196,7 @@ func PostFinish() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
-			ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
+			ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		}
 	}
 
@@ -227,7 +230,7 @@ func PostFinish() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
 			},
-			ExpectedError: "failed processing consensus message: not processing consensus message since instance is already decided",
+			ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		}
 	}
 

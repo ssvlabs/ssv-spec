@@ -1,41 +1,10 @@
 {
   "Name": "quorum with duplicate",
+  "Type": "Committee member: validation of committee member quorum requirements",
+  "Documentation": "Test that committee member has quorum with 2f+1 unique signers even when duplicates are present should be accepted",
   "CommitteeMember": {
     "OperatorID": 1,
-    "CommitteeID": [
-      207,
-      151,
-      173,
-      238,
-      219,
-      89,
-      224,
-      91,
-      253,
-      115,
-      162,
-      180,
-      194,
-      168,
-      136,
-      87,
-      8,
-      196,
-      244,
-      247,
-      12,
-      132,
-      198,
-      75,
-      39,
-      18,
-      14,
-      114,
-      171,
-      115,
-      59,
-      114
-    ],
+    "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
     "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBeU16MmIrS1pKSXpCelJad3RwYnkKTHYvZzdZNFBGTDhGVGI0Y0Y0cVhzRVh4Smh1MGxHSmhUMFlZWUN4WUNhdk1aZjUwTlFETzRRQ2RlM2xzb0VZQgphdzBlZnRrWE5pMkxYL3h3aWozY044NTZkMkdvMGhZZjJCRVYySkUzb3pkU1NyNWNoaS9hVHYxM2w4YU1ZY2pXCjA4bHlBemxBVXozWGd2UmlkVktteHhoakFQRVRmM1BtcHV3aGFvM1luL3dMOFJSNk9BakNFUjRLN1JjLzV2bksKanZCaDU3bFNRZjdZRk9kV2ZnbEhjTWNYZndVNStldmFFbVJhaW9vYXpTQnkwMUtvMlJEQnBGL3VFNzdzZGYxQwo2NVRRSnZvS3kyRjBKUWJ2ME9RVFNqVzBDUHcwaFMydk96Qk5VK3ZBRUVYNHdxQmp6M1grUER1OUxid0E1NFdtClVRSURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K",
     "FaultyNodes": 1,
     "Committee": [
@@ -56,19 +25,14 @@
         "SSVOperatorPubKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBcVFYenEvNlh0VkVmSlRaL3YxUHcKa3pTa05SWGJwQy80MWE5TFNRdnNra0lDZEcyZEd3K1FhZ2tOVllwdktRc1Izd0F4QmZEb1FxZE1vRXY4R2g5eApCYVphZjZrTFdrbmFWWVlOSmVXbjZiRWlEbVhqVllETXE1ZGhsOW9kOVVoSzRFWVQ4cklmNWFsZnlFYTkrV3M5Cm9lQUxTMjFjVlBwUlBvYlFIeHNYOHhvOXVRQ3JMeE9xYzRFVzgyODVLajV2blFsZnBHRzIxV0ZCZmJIR1I0WGEKK2FtT2ZUS1BsUkxsZVZVTXp3WCs3cGVHSi81SDNqcExGbCtvRmFyMkMvWURIL0VKejArTnE2R0ptNzFpSjdNYwoxK2MwUDZGT2F5NlpxWitaRGo5ZHBKZC9tYnFZenkzcks2YlBvOE52TkVZSFNKZk9SRDRLak5NSXM0UzF5cHhaCkl3SURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K"
       }
     ],
-    "DomainType": [
-      0,
-      0,
-      3,
-      1
-    ]
+    "DomainType": "00000301"
   },
   "Message": {
     "Signatures": [
-      "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"
+      "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"
     ],
     "OperatorIDs": [
       1,
@@ -78,69 +42,12 @@
     ],
     "SSVMessage": {
       "MsgType": 0,
-      "MsgID": [
-        1,
-        2,
-        3,
-        4,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      "Data": "AgAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "Data": "AgAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAHO/vTMRyAd8WcEWytODvoodlYzGLGnYXcuGxHls6t+GAAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
     },
-    "FullData": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+    "FullData": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw=="
   },
   "ExpectedHasQuorum": true,
   "ExpectedFullCommittee": false,
-  "ExpectedError": "non unique signer"
+  "ExpectedErrorCode": 9
 }

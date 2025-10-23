@@ -1,6 +1,7 @@
 package messages
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -12,11 +13,15 @@ func SignedMsgNoSigners() tests.SpecTest {
 	msg := testingutils.TestingCommitMessage(ks.OperatorKeys[1], types.OperatorID(1))
 	msg.OperatorIDs = nil
 
-	return &tests.MsgSpecTest{
-		Name: "no signers",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		ExpectedError: "no signers",
-	}
+	test := tests.NewMsgSpecTest(
+		"no signers",
+		testdoc.MessagesSignedMsgNoSignersDoc,
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		types.NoSignersErrorCode,
+		ks,
+	)
+
+	return test
 }

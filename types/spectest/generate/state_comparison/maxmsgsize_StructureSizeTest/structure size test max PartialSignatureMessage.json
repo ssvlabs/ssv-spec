@@ -1,44 +1,13 @@
 {
-		"Name": "max PartialSignatureMessage",
-		"Object": {
-				"PartialSignature": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-				"SigningRoot": [
-						1,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0
-				],
-				"Signer": 1,
-				"ValidatorIndex": "1"
-		},
-		"ExpectedEncodedLength": 144,
-		"IsMaxSize": true
+  "Name": "max PartialSignatureMessage",
+  "Type": "Structure size: validation of structure size",
+  "Documentation": "Test the maximum size of a single partial signature message",
+  "Object": {
+    "PartialSignature": "010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "Signer": 1,
+    "SigningRoot": "0100000000000000000000000000000000000000000000000000000000000000",
+    "ValidatorIndex": "1"
+  },
+  "ExpectedEncodedLength": 144,
+  "IsMaxSize": true
 }

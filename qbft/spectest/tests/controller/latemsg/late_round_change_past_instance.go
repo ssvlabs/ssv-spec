@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -26,7 +27,7 @@ func LateRoundChangePastInstance() tests.SpecTest {
 	instanceData := func(height qbft.Height) *tests.RunInstanceData {
 		sc := lateRoundChangePastInstanceStateComparison(height, nil)
 		return &tests.RunInstanceData{
-			InputValue:    []byte{1, 2, 3, 4},
+			InputValue:    testingutils.TestingQBFTFullData,
 			InputMessages: msgPerHeight[height],
 			ExpectedDecidedState: tests.DecidedState{
 				BroadcastedDecided: testingutils.TestingCommitMultiSignerMessageWithHeight(
@@ -49,13 +50,14 @@ func LateRoundChangePastInstance() tests.SpecTest {
 	)
 	sc := lateRoundChangePastInstanceStateComparison(2, lateMsg)
 
-	return &tests.ControllerSpecTest{
-		Name: "late round change past instance",
-		RunInstanceData: []*tests.RunInstanceData{
+	test := tests.NewControllerSpecTest(
+		"late round change past instance",
+		testdoc.ControllerLateMsgLateRoundChangePastInstanceDoc,
+		[]*tests.RunInstanceData{
 			instanceData(qbft.FirstHeight),
 			instanceData(1),
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingMultiSignerRoundChangeMessageWithHeight(
 						[]*rsa.PrivateKey{ks.OperatorKeys[4]},
@@ -67,8 +69,13 @@ func LateRoundChangePastInstance() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-		ExpectedError: "not processing consensus message since instance is already decided",
-	}
+		nil,
+		types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
+		nil,
+		ks,
+	)
+
+	return test
 }
 
 // lateRoundChangePastInstanceStateComparison returns a comparable.StateComparison for controller running up to the given height.
@@ -95,7 +102,7 @@ func lateRoundChangePastInstanceStateComparison(height qbft.Height, lateMsg *typ
 		contr.Height = qbft.Height(i)
 
 		instance := &qbft.Instance{
-			StartValue: []byte{1, 2, 3, 4},
+			StartValue: testingutils.TestingQBFTFullData,
 			State: &qbft.State{
 				CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 				ID:              testingutils.TestingIdentifier,

@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -30,20 +31,22 @@ func Slashable() tests.SpecTest {
 	sharePKBytes := keySet.Shares[1].Serialize()
 	shareString := hex.EncodeToString(sharePKBytes)
 
-	return &valcheck.SpecTest{
-		Name:                "attestation value check slashable",
-		Network:             types.BeaconTestNetwork,
-		RunnerRole:          types.RoleCommittee,
-		DutySlot:            testingutils.TestingDutySlot,
-		Input:               input,
-		ExpectedSourceEpoch: 0,
-		ExpectedTargetEpoch: 1,
-		ExpectedError:       "slashable attestation",
-		SlashableSlots: map[string][]phase0.Slot{
+	return valcheck.NewSpecTest(
+		"attestation value check slashable",
+		testdoc.ValCheckAttestationSlashableDoc,
+		types.BeaconTestNetwork,
+		types.RoleCommittee,
+		testingutils.TestingDutySlot,
+		input,
+		0,
+		1,
+		map[string][]phase0.Slot{
 			shareString: {
 				testingutils.TestingDutySlot,
 			},
 		},
-		ShareValidatorsPK: []types.ShareValidatorPK{sharePKBytes},
-	}
+		[]types.ShareValidatorPK{sharePKBytes},
+		types.SlashableAttestationErrorCode,
+		false,
+	)
 }

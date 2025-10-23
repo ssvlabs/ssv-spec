@@ -2,7 +2,9 @@ package validatorconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -18,9 +20,10 @@ func InvalidDuty() *ValidatorConsensusDataTest {
 		DataSSZ: testingutils.TestingAttestationDataBytes(spec.DataVersionCapella),
 	}
 
-	return &ValidatorConsensusDataTest{
-		Name:          "invalid duty",
-		ConsensusData: *cd,
-		ExpectedError: "unknown duty role",
-	}
+	return NewValidatorConsensusDataTest(
+		"invalid duty",
+		testdoc.ValidatorConsensusDataTestInvalidDutyDoc,
+		*cd,
+		types.UnknownDutyRoleDataErrorCode,
+	)
 }

@@ -1,17 +1,19 @@
 {
-		"Name": "nil ssvmessage",
-		"Messages": [
-				{
-						"Signatures": [
-								"AQIDBA=="
-						],
-						"OperatorIDs": [
-								1
-						],
-						"SSVMessage": null,
-						"FullData": null
-				}
-		],
-		"ExpectedError": "nil SSVMessage",
-		"RSAPublicKey": null
+  "Name": "nil ssvmessage",
+  "Type": "Signed SSV message: validation of signed SSV message",
+  "Documentation": "Test validation error for signed SSV message with nil SSVMessage",
+  "Messages": [
+    {
+      "Signatures": [
+        "AQIDBA=="
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": null,
+      "FullData": null
+    }
+  ],
+  "ExpectedErrorCode": 16,
+  "RSAPublicKey": null
 }

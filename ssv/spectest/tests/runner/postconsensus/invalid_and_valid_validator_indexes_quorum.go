@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,10 +17,12 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 
 	validatorsIndex := []phase0.ValidatorIndex{testingutils.TestingWrongValidatorIndex, testingutils.TestingValidatorIndex}
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name:  "post consensus invalid and valid validator index quorum",
-		Tests: []*tests.MsgProcessingSpecTest{},
-	}
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus invalid and valid validator index quorum",
+		testdoc.PostConsensusInvalidAndValidValidatorIndexesQuorumDoc,
+		[]*tests.MsgProcessingSpecTest{},
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
@@ -37,7 +40,6 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForValidatorsIndex(ks.Shares[2], 2, version, validatorsIndex))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForValidatorsIndex(ks.Shares[3], 3, version, validatorsIndex))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObjectForValidatorIndex(ks, version, testingutils.TestingValidatorIndex)),
 				},
@@ -56,7 +58,6 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsgForValidatorsIndex(ks.Shares[2], 2, version, validatorsIndex))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsgForValidatorsIndex(ks.Shares[3], 3, version, validatorsIndex))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRootForValidatorIndex(ks, testingutils.TestingValidatorIndex, version)),
 				},
@@ -75,7 +76,6 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsgForValidatorsIndex(ks.Shares[2], 2, version, validatorsIndex))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsgForValidatorsIndex(ks.Shares[3], 3, version, validatorsIndex))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObjectForValidatorIndex(ks, version, testingutils.TestingValidatorIndex)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRootForValidatorIndex(ks, testingutils.TestingValidatorIndex, version)),

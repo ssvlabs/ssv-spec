@@ -1,187 +1,42 @@
 {
-		"Name": "create round change no justification quorum",
-		"Value": [
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0
-		],
-		"StateValue": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ",
-		"Round": 1,
-		"RoundChangeJustifications": null,
-		"PrepareJustifications": [
-				{
-						"Signatures": [
-								"g0BBLoygeLOHqaIj4pmkzrTfJc+5ChUS5DzxiV4EFVyRkQp7w1x4hGsS++AwQqcUC6Z+j7i/icSFuQnSMdS5W/SUYiyWgzY75xd+fa/IBRFqAZkJICUdtIcBBo4U7DgenowmoSfArGNm/swIP+zlZ8akA9VWWGgh9EoBpEYyumGPSnsbVSbLvD/iSIuv2myboKPuEI8NqQzjUezRQC+ahB/ml1m6S341ymfTjsdGbhVlPBZsWXUlJUHFpn3rl8hDUiSz4yROPgSC4xXH++0CesXLWeUgEisx5e0NRFs8OGLnnH6vBSgdWYYnQy5nfWCEZSQgZdWhlOUwoX/zjoqVzg=="
-						],
-						"OperatorIDs": [
-								1
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": null
-				},
-				{
-						"Signatures": [
-								"dfmNuoBlZZxe8CWQO/iBCeSWtOt+xijMhsyx6xsxR1kpOjXdjZ5GQbYEeClVjRw/tywFtAFAyw1HB2DHmpPeCHsIn+BsLhkT4r8eZYldPXWLjuKlMw8OrqUiBQ11YgngEvLLJpLsk5mZf3ccU6KyM1/xj7Z8Yl6WsotukYMSGB8t3OJyxbD/go0IUtafOqI3Hgkb0A9m3uDybjRfBWICreNrcHgnjKxIowiigIwpNx2pmdCi+j3MLKVcTqfhOIqcMHVDMM5LVMNQi9MXp0ymsqXf3TGT133kcnjvLPj6/2WdAYwuWs9BrrKqQ1dDC627n4Lbje8mnNKcxDTCCi+8TA=="
-						],
-						"OperatorIDs": [
-								2
-						],
-						"SSVMessage": {
-								"MsgType": 0,
-								"MsgID": [
-										1,
-										2,
-										3,
-										4,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0,
-										0
-								],
-								"Data": "AQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAL6Vb7ffTvN1MWgtWIMgCE/JFMPw/tM1Jj5bRAYubCm0AAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						},
-						"FullData": null
-				}
-		],
-		"CreateType": "CreateRoundChange",
-		"ExpectedRoot": "e26cab8b210008e410fbb09077c1310c4604a50f8a7b0e3746ef3cba7d625c39",
-		"ExpectedError": ""
+  "Name": "create round change no justification quorum",
+  "Type": "Message creation: validation of consensus message construction and encoding",
+  "Documentation": "Test creating a round change message that was previously prepared but failed to extract a justification quorum, resulting in an unjustified round change.",
+  "Value": "73bfbd3311c8077c59c116cad383be8a1d958cc62c69d85dcb86c4796ceadf86",
+  "StateValue": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw==",
+  "Round": 1,
+  "RoundChangeJustifications": null,
+  "PrepareJustifications": [
+    {
+      "Signatures": [
+        "ISa/QoQfj7DeeX0JNNuIrOZvFvaoAClXw7/5wFx5r9nyDw9veV4X85P26Q1LYYePZ0K80QHjws/nLtZ4Ryl8WALPFS4grXZWHOzkuFt62tNATldGu83TdocXXtA6vAgi+VGpF0/1Gxujl0M221pWPljYgjFs998shcvOMSD3RkaxDpuNrqT+X0qTkkitranfvfTz4pYxXaTp0WKIiI8pQijFSq6m4/6ch0QRZuynik0ShecXEIksBnbOfltqp728xWo61RPd/mWlcTzKqpIeu/wKXReMFlG6FBLJKYk2UQyBV8zeIOuMuJuzvzIXvQbKT0vf4MlLaXpTpXNr+5mc1Q=="
+      ],
+      "OperatorIDs": [
+        1
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAHO/vTMRyAd8WcEWytODvoodlYzGLGnYXcuGxHls6t+GAAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    },
+    {
+      "Signatures": [
+        "mEl1ZMdla8+EE6rfglyIn0mdDQdsgHb4+wJ84DhrZ3H3waLcDcbgsdpWXfBQV2/uRQFsdtx2au7DUH9emiEXD+f8eDHXFuatPQ9ZkZGuxSPYtz6l02cCriZBlJCC6nmAmwYV7yypAMDCQrPkekO95S66atVOS4xTshx/Q4+Hy7hq5WkA6DzBLnOjQhJnVjKfbcuHvJqQtzlKpcBVDJkVNf8eveFqcycWus6VohjcBtiCOY0KHgJlRkp5PkcpM4x29myKTEWQMH3HvBoAd9ZuvBf1PNt/xDpGZmxOWCyPzDHiPFplQIYlGus5MHWRr2jQsr55O7eJ9WvzDWTJ/kO2Xw=="
+      ],
+      "OperatorIDs": [
+        2
+      ],
+      "SSVMessage": {
+        "MsgType": 0,
+        "MsgID": "0102030400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "Data": "AQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAATAAAAHO/vTMRyAd8WcEWytODvoodlYzGLGnYXcuGxHls6t+GAAAAAAAAAACEAAAAhAAAAAECAwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "FullData": null
+    }
+  ],
+  "CreateType": "CreateRoundChange",
+  "ExpectedRoot": "d393bc19e7c444b0db6b30be1d64244d414c140fb40259db39d0c8d81d12f846",
+  "ExpectedErrorCode": 0
 }

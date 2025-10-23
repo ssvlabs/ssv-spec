@@ -2,6 +2,7 @@ package committee
 
 import (
 	"encoding/hex"
+	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -10,6 +11,9 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/google/go-cmp/cmp"
+
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/stretchr/testify/require"
@@ -21,13 +25,16 @@ import (
 
 type CommitteeSpecTest struct {
 	Name                   string
+	Type                   string `json:"Type,omitempty"`
+	Documentation          string
 	Committee              *ssv.Committee
 	Input                  []interface{} // Can be a types.Duty or a *types.SignedSSVMessage
 	PostDutyCommitteeRoot  string
 	PostDutyCommittee      types.Root `json:"-"` // Field is ignored by encoding/json
 	OutputMessages         []*types.PartialSignatureMessages
 	BeaconBroadcastedRoots []string
-	ExpectedError          string
+	ExpectedErrorCode      int
+	PrivateKeys            *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *CommitteeSpecTest) TestName() string {
@@ -37,12 +44,7 @@ func (test *CommitteeSpecTest) TestName() string {
 // RunAsPartOfMultiTest runs the test as part of a MultiCommitteeSpecTest
 func (test *CommitteeSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	lastErr := test.runPreTesting()
-
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, lastErr, test.ExpectedError)
-	} else {
-		require.NoError(t, lastErr)
-	}
+	tests.AssertErrorCode(t, test.ExpectedErrorCode, lastErr)
 
 	broadcastedMsgs := make([]*types.SignedSSVMessage, 0)
 	broadcastedRoots := make([]phase0.Root, 0)
@@ -118,7 +120,7 @@ func overrideStateComparison(t *testing.T, test *CommitteeSpecTest, name string,
 
 func (test *CommitteeSpecTest) GetPostState() (interface{}, error) {
 	lastErr := test.runPreTesting()
-	if lastErr != nil && len(test.ExpectedError) == 0 {
+	if lastErr != nil && test.ExpectedErrorCode == 0 { // only unexpected errors should return error
 		return nil, lastErr
 	}
 
@@ -126,18 +128,21 @@ func (test *CommitteeSpecTest) GetPostState() (interface{}, error) {
 }
 
 type MultiCommitteeSpecTest struct {
-	Name  string
-	Tests []*CommitteeSpecTest
+	Name          string
+	Type          string
+	Documentation string
+	Tests         []*CommitteeSpecTest
+	PrivateKeys   *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
-func (tests *MultiCommitteeSpecTest) TestName() string {
-	return tests.Name
+func (mTest *MultiCommitteeSpecTest) TestName() string {
+	return mTest.Name
 }
 
-func (tests *MultiCommitteeSpecTest) Run(t *testing.T) {
-	tests.overrideStateComparison(t)
+func (mTest *MultiCommitteeSpecTest) Run(t *testing.T) {
+	mTest.overrideStateComparison(t)
 
-	for _, test := range tests.Tests {
+	for _, test := range mTest.Tests {
 		t.Run(test.TestName(), func(t *testing.T) {
 			test.RunAsPartOfMultiTest(t)
 		})
@@ -145,22 +150,53 @@ func (tests *MultiCommitteeSpecTest) Run(t *testing.T) {
 }
 
 // overrideStateComparison overrides the post state comparison for all tests in the multi test
-func (tests *MultiCommitteeSpecTest) overrideStateComparison(t *testing.T) {
-	testsName := strings.ReplaceAll(tests.TestName(), " ", "_")
-	for _, test := range tests.Tests {
+func (mTest *MultiCommitteeSpecTest) overrideStateComparison(t *testing.T) {
+	testsName := strings.ReplaceAll(mTest.TestName(), " ", "_")
+	for _, test := range mTest.Tests {
 		path := filepath.Join(testsName, test.TestName())
-		overrideStateComparison(t, test, path, reflect.TypeOf(tests).String())
+		overrideStateComparison(t, test, path, reflect.TypeOf(mTest).String())
 	}
 }
 
-func (tests *MultiCommitteeSpecTest) GetPostState() (interface{}, error) {
-	ret := make(map[string]types.Root, len(tests.Tests))
-	for _, test := range tests.Tests {
+func (mTest *MultiCommitteeSpecTest) GetPostState() (interface{}, error) {
+	ret := make(map[string]types.Root, len(mTest.Tests))
+	for _, test := range mTest.Tests {
 		err := test.runPreTesting()
-		if err != nil && test.ExpectedError != err.Error() {
-			return nil, err
+		if err != nil && !tests.MatchesErrorCode(test.ExpectedErrorCode, err) {
+			return nil, fmt.Errorf(
+				"(%s) expected error with code: %d, got error: %s",
+				test.TestName(),
+				test.ExpectedErrorCode,
+				err,
+			)
 		}
 		ret[test.Name] = test.Committee
 	}
 	return ret, nil
+}
+
+func NewMultiCommitteeSpecTest(name, documentation string, tests []*CommitteeSpecTest, ks *testingutils.TestKeySet) *MultiCommitteeSpecTest {
+	return &MultiCommitteeSpecTest{
+		Name:          name,
+		Type:          testdoc.MultiCommitteeSpecTestType,
+		Documentation: documentation,
+		Tests:         tests,
+		PrivateKeys:   testingutils.BuildPrivateKeyInfo(ks),
+	}
+}
+
+func NewCommitteeSpecTest(name, documentation string, committee *ssv.Committee, input []interface{}, postDutyCommitteeRoot string, postDutyCommittee types.Root, outputMessages []*types.PartialSignatureMessages, beaconBroadcastedRoots []string, expectedErrorCode int, ks *testingutils.TestKeySet) *CommitteeSpecTest {
+	return &CommitteeSpecTest{
+		Name:                   name,
+		Type:                   testdoc.CommitteeSpecTestType,
+		Documentation:          documentation,
+		Committee:              committee,
+		Input:                  input,
+		PostDutyCommitteeRoot:  postDutyCommitteeRoot,
+		PostDutyCommittee:      postDutyCommittee,
+		OutputMessages:         outputMessages,
+		BeaconBroadcastedRoots: beaconBroadcastedRoots,
+		ExpectedErrorCode:      expectedErrorCode,
+		PrivateKeys:            testingutils.BuildPrivateKeyInfo(ks),
+	}
 }

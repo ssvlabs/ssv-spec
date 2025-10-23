@@ -2,6 +2,7 @@ package maxmsgsize
 
 import (
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 )
 
 const (
@@ -51,28 +52,31 @@ func maxPartialSignatureMessagesForPreConsensus() *types.PartialSignatureMessage
 }
 
 func MaxPartialSignatureMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "max PartialSignatureMessage",
-		Object:                maxPartialSignatureMessage(),
-		ExpectedEncodedLength: maxSizePartialSignatureMessage,
-		IsMaxSize:             true,
-	}
+	return NewStructureSizeTest(
+		"max PartialSignatureMessage",
+		testdoc.StructureSizeTestMaxPartialSignatureMessageDoc,
+		maxPartialSignatureMessage(),
+		maxSizePartialSignatureMessage,
+		true,
+	)
 }
 
 func MaxPartialSignatureMessages() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "max PartialSignatureMessages",
-		Object:                maxPartialSignatureMessages(),
-		ExpectedEncodedLength: maxSizePartialSignatureMessages,
-		IsMaxSize:             true,
-	}
+	return NewStructureSizeTest(
+		"max PartialSignatureMessages",
+		testdoc.StructureSizeTestMaxPartialSignatureMessagesDoc,
+		maxPartialSignatureMessages(),
+		maxSizePartialSignatureMessages,
+		true,
+	)
 }
 
 func MaxPartialSignatureMessagesForPreConsensus() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "max PartialSignatureMessages for pre-consensus",
-		Object:                maxPartialSignatureMessagesForPreConsensus(),
-		ExpectedEncodedLength: maxSizePartialSignatureMessagesForPreConsensus,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"max PartialSignatureMessages for pre-consensus",
+		testdoc.StructureSizeTestMaxPartialSignatureMessagesForPreConsensusDoc,
+		maxPartialSignatureMessagesForPreConsensus(),
+		maxSizePartialSignatureMessagesForPreConsensus,
+		false,
+	)
 }

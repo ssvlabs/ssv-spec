@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,9 +19,18 @@ func DuplicateMsg() tests.SpecTest {
 		testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "duplicate commit message",
-		Pre:           pre,
-		InputMessages: msgs,
-	}
+	test := tests.NewMsgProcessingSpecTest(
+		"duplicate commit message",
+		testdoc.CommitTestDuplicateMsgDoc,
+		pre,
+		"",
+		nil,
+		msgs,
+		nil,
+		0,
+		nil,
+		ks,
+	)
+
+	return test
 }

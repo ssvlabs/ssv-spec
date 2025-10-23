@@ -1,6 +1,8 @@
 package valcheckattestations
 
 import (
+	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -9,13 +11,18 @@ import (
 
 // Valid tests valid data
 func Valid() tests.SpecTest {
-	return &valcheck.SpecTest{
-		Name:                "attestation value check valid",
-		Network:             types.PraterNetwork,
-		RunnerRole:          types.RoleCommittee,
-		DutySlot:            testingutils.TestingDutySlot,
-		Input:               testingutils.TestBeaconVoteByts,
-		ExpectedSourceEpoch: 0,
-		ExpectedTargetEpoch: 1,
-	}
+	return valcheck.NewSpecTest(
+		"attestation value check valid",
+		testdoc.ValCheckAttestationValidDoc,
+		types.PraterNetwork,
+		types.RoleCommittee,
+		testingutils.TestingDutySlot,
+		testingutils.TestBeaconVoteByts,
+		0,
+		1,
+		map[string][]phase0.Slot{},
+		[]types.ShareValidatorPK{},
+		0,
+		false,
+	)
 }

@@ -8,6 +8,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -15,12 +17,15 @@ import (
 
 type SpecTest struct {
 	Name               string
+	Type               string
+	Documentation      string
 	Pre                *qbft.Instance
 	PostRoot           string
 	PostState          types.Root `json:"-"` // Field is ignored by encoding/json
 	OutputMessages     []*types.SignedSSVMessage
 	ExpectedTimerState *testingutils.TimerState
-	ExpectedError      string
+	ExpectedErrorCode  int
+	PrivateKeys        *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *SpecTest) TestName() string {
@@ -29,12 +34,7 @@ func (test *SpecTest) TestName() string {
 
 func (test *SpecTest) Run(t *testing.T) {
 	err := test.Pre.UponRoundTimeout()
-
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, err, test.ExpectedError)
-	} else {
-		require.NoError(t, err)
-	}
+	tests.AssertErrorCode(t, test.ExpectedErrorCode, err)
 
 	// test calling timeout
 	timer, ok := test.Pre.GetConfig().GetTimer().(*testingutils.TestQBFTTimer)
@@ -68,4 +68,19 @@ func (test *SpecTest) Run(t *testing.T) {
 
 func (test *SpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
+}
+
+func NewSpecTest(name string, documentation string, pre *qbft.Instance, postRoot string, postState types.Root, outputMessages []*types.SignedSSVMessage, expectedTimerState *testingutils.TimerState, expectedErrorCode int, privateKeys *testingutils.TestKeySet) *SpecTest {
+	return &SpecTest{
+		Name:               name,
+		Type:               testdoc.TimeoutSpecTestType,
+		Documentation:      documentation,
+		Pre:                pre,
+		PostRoot:           postRoot,
+		PostState:          postState,
+		OutputMessages:     outputMessages,
+		ExpectedTimerState: expectedTimerState,
+		ExpectedErrorCode:  expectedErrorCode,
+		PrivateKeys:        testingutils.BuildPrivateKeyInfo(privateKeys),
+	}
 }

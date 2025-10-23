@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,7 +14,7 @@ import (
 // NilSSVMessage tests a SignedSSVMessage with a nil SSVMessage
 func NilSSVMessage() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "invalid SignedSSVMessage: nil SSVMessage"
+	expectedErrorCode := types.NilSSVMessageErrorCode
 
 	invalidMsg := &types.SignedSSVMessage{
 		Signatures:  [][]byte{{1, 2, 3, 4}},
@@ -21,9 +22,10 @@ func NilSSVMessage() tests.SpecTest {
 		SSVMessage:  nil,
 	}
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus nil ssvmessage",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus nil ssvmessage",
+		testdoc.PreConsensusNilMsgDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:                    "sync committee aggregator selection proof",
 				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
@@ -33,7 +35,7 @@ func NilSSVMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:                    "randao",
@@ -44,7 +46,7 @@ func NilSSVMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:                    "randao (blinded block)",
@@ -55,10 +57,11 @@ func NilSSVMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -69,7 +72,7 @@ func NilSSVMessage() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		})
 	}
 

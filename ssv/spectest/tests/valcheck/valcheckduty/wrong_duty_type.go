@@ -3,6 +3,7 @@ package valcheckduty
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -16,9 +17,10 @@ func WrongDutyType() tests.SpecTest {
 		return input
 	}
 
-	return &valcheck.MultiSpecTest{
-		Name: "wrong duty type",
-		Tests: []*valcheck.SpecTest{
+	return valcheck.NewMultiSpecTest(
+		"wrong duty type",
+		testdoc.ValCheckDutyWrongDutyTypeDoc,
+		[]*valcheck.SpecTest{
 			{
 				Name:                "committee",
 				Network:             types.BeaconTestNetwork,
@@ -29,26 +31,26 @@ func WrongDutyType() tests.SpecTest {
 				// No error since input doesn't contain duty type
 			},
 			{
-				Name:          "sync committee aggregator",
-				Network:       types.BeaconTestNetwork,
-				RunnerRole:    types.RoleSyncCommitteeContribution,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
-				ExpectedError: "duty invalid: wrong beacon role type",
+				Name:              "sync committee aggregator",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleSyncCommitteeContribution,
+				Input:             consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
+				ExpectedErrorCode: types.WrongBeaconRoleTypeErrorCode,
 			},
 			{
-				Name:          "aggregator",
-				Network:       types.BeaconTestNetwork,
-				RunnerRole:    types.RoleAggregator,
-				Input:         consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
-				ExpectedError: "duty invalid: wrong beacon role type",
+				Name:              "aggregator",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleAggregator,
+				Input:             consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
+				ExpectedErrorCode: types.WrongBeaconRoleTypeErrorCode,
 			},
 			{
-				Name:          "proposer",
-				Network:       types.BeaconTestNetwork,
-				RunnerRole:    types.RoleProposer,
-				Input:         consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
-				ExpectedError: "duty invalid: wrong beacon role type",
+				Name:              "proposer",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleProposer,
+				Input:             consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
+				ExpectedErrorCode: types.WrongBeaconRoleTypeErrorCode,
 			},
 		},
-	}
+	)
 }

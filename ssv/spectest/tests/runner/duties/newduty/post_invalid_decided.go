@@ -8,6 +8,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -55,9 +56,10 @@ func PostInvalidDecided() tests.SpecTest {
 		return r
 	}
 
-	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty post invalid decided",
-		Tests: []*StartNewRunnerDutySpecTest{
+	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
+		"new duty post invalid decided",
+		testdoc.NewDutyPostInvalidDecidedDoc,
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name: "sync committee aggregator",
 				Runner: decideWrong(testingutils.SyncCommitteeContributionRunner(ks),
@@ -82,7 +84,8 @@ func PostInvalidDecided() tests.SpecTest {
 				},
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
@@ -106,7 +109,6 @@ func PostInvalidDecided() tests.SpecTest {
 				Duty:                    testingutils.TestingAttesterDutyNextEpoch(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:                    fmt.Sprintf("sync committee (%s)", version.String()),
@@ -114,7 +116,6 @@ func PostInvalidDecided() tests.SpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:                    fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -122,7 +123,6 @@ func PostInvalidDecided() tests.SpecTest {
 				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 		}...)
 	}

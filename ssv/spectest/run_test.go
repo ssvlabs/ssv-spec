@@ -203,11 +203,13 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 	}
 
 	outputMsgs := make([]*types.PartialSignatureMessages, 0)
-	for _, msg := range m["OutputMessages"].([]interface{}) {
-		byts, _ := json.Marshal(msg)
-		typedMsg := &types.PartialSignatureMessages{}
-		require.NoError(t, json.Unmarshal(byts, typedMsg))
-		outputMsgs = append(outputMsgs, typedMsg)
+	if m["OutputMessages"] != nil {
+		for _, msg := range m["OutputMessages"].([]interface{}) {
+			byts, _ := json.Marshal(msg)
+			typedMsg := &types.PartialSignatureMessages{}
+			require.NoError(t, json.Unmarshal(byts, typedMsg))
+			outputMsgs = append(outputMsgs, typedMsg)
+		}
 	}
 
 	shareInstance := &types.Share{}
@@ -232,7 +234,7 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 		Runner:                  runner,
 		Threshold:               ks.Threshold,
 		PostDutyRunnerStateRoot: m["PostDutyRunnerStateRoot"].(string),
-		ExpectedError:           m["ExpectedError"].(string),
+		ExpectedErrorCode:       int(m["ExpectedErrorCode"].(float64)),
 		OutputMessages:          outputMsgs,
 	}
 }
@@ -277,12 +279,13 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 	}
 
 	outputMsgs := make([]*types.PartialSignatureMessages, 0)
-	require.NotNilf(t, m["OutputMessages"], "OutputMessages can't be nil")
-	for _, msg := range m["OutputMessages"].([]interface{}) {
-		byts, _ := json.Marshal(msg)
-		typedMsg := &types.PartialSignatureMessages{}
-		require.NoError(t, json.Unmarshal(byts, typedMsg))
-		outputMsgs = append(outputMsgs, typedMsg)
+	if m["OutputMessages"] != nil {
+		for _, msg := range m["OutputMessages"].([]interface{}) {
+			byts, _ := json.Marshal(msg)
+			typedMsg := &types.PartialSignatureMessages{}
+			require.NoError(t, json.Unmarshal(byts, typedMsg))
+			outputMsgs = append(outputMsgs, typedMsg)
+		}
 	}
 
 	beaconBroadcastedRoots := make([]string, 0)
@@ -317,7 +320,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		DecidedSlashable:        m["DecidedSlashable"].(bool),
 		PostDutyRunnerStateRoot: m["PostDutyRunnerStateRoot"].(string),
 		DontStartDuty:           m["DontStartDuty"].(bool),
-		ExpectedError:           m["ExpectedError"].(string),
+		ExpectedErrorCode:       int(m["ExpectedErrorCode"].(float64)),
 		OutputMessages:          outputMsgs,
 		BeaconBroadcastedRoots:  beaconBroadcastedRoots,
 	}
@@ -364,12 +367,13 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 	}
 
 	outputMsgs := make([]*types.PartialSignatureMessages, 0)
-	require.NotNilf(t, m["OutputMessages"], "OutputMessages can't be nil")
-	for _, msg := range m["OutputMessages"].([]interface{}) {
-		byts, _ := json.Marshal(msg)
-		typedMsg := &types.PartialSignatureMessages{}
-		require.NoError(t, json.Unmarshal(byts, typedMsg))
-		outputMsgs = append(outputMsgs, typedMsg)
+	if m["OutputMessages"] != nil {
+		for _, msg := range m["OutputMessages"].([]interface{}) {
+			byts, _ := json.Marshal(msg)
+			typedMsg := &types.PartialSignatureMessages{}
+			require.NoError(t, json.Unmarshal(byts, typedMsg))
+			outputMsgs = append(outputMsgs, typedMsg)
+		}
 	}
 
 	beaconBroadcastedRoots := make([]string, 0)
@@ -388,7 +392,7 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 		PostDutyCommitteeRoot:  m["PostDutyCommitteeRoot"].(string),
 		OutputMessages:         outputMsgs,
 		BeaconBroadcastedRoots: beaconBroadcastedRoots,
-		ExpectedError:          m["ExpectedError"].(string),
+		ExpectedErrorCode:      int(m["ExpectedErrorCode"].(float64)),
 	}
 }
 

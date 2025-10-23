@@ -3,6 +3,7 @@ package commit
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -11,11 +12,13 @@ import (
 // SortedDecided tests the creation of the decided message that should have sorted signers
 func SortedDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	return &tests.ControllerSpecTest{
-		Name: "sorted decided",
-		RunInstanceData: []*tests.RunInstanceData{
+
+	test := tests.NewControllerSpecTest(
+		"sorted decided",
+		testdoc.CommitTestSortedDecidedDoc,
+		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1),
 					testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
@@ -34,5 +37,11 @@ func SortedDecided() tests.SpecTest {
 				},
 			},
 		},
-	}
+		nil,
+		0,
+		nil,
+		ks,
+	)
+
+	return test
 }
