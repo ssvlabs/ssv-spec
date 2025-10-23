@@ -44,6 +44,10 @@ func TestAll(t *testing.T) {
 	wait.Wait()
 }
 
+func TestRun(t *testing.T) {
+	partialsigcontainer.OneSignature().Run(t)
+}
+
 func TestJson(t *testing.T) {
 	t.Parallel()
 
