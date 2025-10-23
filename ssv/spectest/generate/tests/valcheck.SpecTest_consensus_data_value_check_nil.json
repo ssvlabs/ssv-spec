@@ -1,0 +1,12 @@
+{
+  "Name": "consensus data value check nil",
+  "Type": "Value check: validations for input of different runner roles",
+  "Documentation": "Tests attestation value check with nil attestation data",
+  "Network": "prater",
+  "RunnerRole": 0,
+  "DutySlot": "12",
+  "Input": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+  "SlashableSlots": null,
+  "ExpectedErrorCode": 28,
+  "AnyError": false
+}
