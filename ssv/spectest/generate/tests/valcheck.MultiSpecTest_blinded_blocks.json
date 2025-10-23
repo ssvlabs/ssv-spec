@@ -1,8 +1,12 @@
 {
   "Name": "blinded blocks",
+  "Type": "Multi value check: multiple value check tests",
+  "Documentation": "Tests proposer value check with blinded block data",
   "Tests": [
     {
       "Name": "blinded blocks accepted",
+      "Type": "",
+      "Documentation": "",
       "Network": "now_test_network",
       "RunnerRole": 2,
       "DutySlot": "0",
@@ -10,8 +14,7 @@
       "ExpectedSourceEpoch": "0",
       "ExpectedTargetEpoch": "0",
       "SlashableSlots": null,
-      "omitempty": null,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "AnyError": false
     }
   ]

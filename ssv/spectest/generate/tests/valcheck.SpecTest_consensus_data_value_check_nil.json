@@ -1,5 +1,7 @@
 {
   "Name": "consensus data value check nil",
+  "Type": "Value check: validations for input of different runner roles",
+  "Documentation": "Tests attestation value check with nil attestation data",
   "Network": "prater",
   "RunnerRole": 0,
   "DutySlot": "12",
@@ -7,7 +9,6 @@
   "ExpectedSourceEpoch": "0",
   "ExpectedTargetEpoch": "1",
   "SlashableSlots": null,
-  "omitempty": null,
-  "ExpectedError": "attestation data source \u003e= target",
+  "ExpectedErrorCode": 28,
   "AnyError": false
 }

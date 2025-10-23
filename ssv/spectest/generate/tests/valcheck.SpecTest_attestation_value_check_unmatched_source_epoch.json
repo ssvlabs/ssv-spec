@@ -1,13 +1,14 @@
 {
   "Name": "attestation value check unmatched source epoch",
+  "Type": "Value check: validations for input of different runner roles",
+  "Documentation": "",
   "Network": "now_test_network",
   "RunnerRole": 0,
   "DutySlot": "12",
   "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAgAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
   "ExpectedSourceEpoch": "0",
   "ExpectedTargetEpoch": "1",
-  "SlashableSlots": null,
-  "omitempty": null,
-  "ExpectedError": "attestation data source/target epoch does not match expected",
+  "SlashableSlots": {},
+  "ExpectedErrorCode": 29,
   "AnyError": false
 }

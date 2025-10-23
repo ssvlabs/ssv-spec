@@ -1,5 +1,7 @@
 {
   "Name": "attestation value check with slashable minority",
+  "Type": "Value check: validations for input of different runner roles",
+  "Documentation": "Tests attestation value check with minority slashable attestation (source and target different from previous)",
   "Network": "now_test_network",
   "RunnerRole": 0,
   "DutySlot": "12",
@@ -11,12 +13,12 @@
       "12"
     ]
   },
-  "omitempty": [
+  "ShareValidatorsPK": [
     "X0cRp5bBEWtRGOw1J5+2TVUdmziBPSk5lU3S31Fg09k=",
     "SOTAo46Q+TUtHQlIlEZEPr0XsZBPTwAC/olMLD9iRXo=",
     "Zdx8F59oNHzxL4bhxR5U6K7u1XnUxxUIK7igOCwagVM=",
     "QkCcsJ+pRfpqFoz4sIYQRdblYvIRpwxKHNvPBBeJh2M="
   ],
-  "ExpectedError": "slashable attestation",
+  "ExpectedErrorCode": 35,
   "AnyError": false
 }

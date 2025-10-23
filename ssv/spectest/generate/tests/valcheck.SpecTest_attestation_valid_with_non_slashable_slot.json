@@ -1,5 +1,7 @@
 {
   "Name": "attestation valid with non slashable slot",
+  "Type": "Value check: validations for input of different runner roles",
+  "Documentation": "Tests attestation value check with valid non-slashable slot",
   "Network": "now_test_network",
   "RunnerRole": 0,
   "DutySlot": "13",
@@ -11,9 +13,9 @@
       "12"
     ]
   },
-  "omitempty": [
+  "ShareValidatorsPK": [
     "X0cRp5bBEWtRGOw1J5+2TVUdmziBPSk5lU3S31Fg09k="
   ],
-  "ExpectedError": "",
+  "ExpectedErrorCode": 0,
   "AnyError": false
 }
