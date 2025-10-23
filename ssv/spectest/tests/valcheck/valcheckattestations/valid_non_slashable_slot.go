@@ -39,8 +39,8 @@ func ValidNonSlashableSlot() tests.SpecTest {
 		types.RoleCommittee,
 		testingutils.TestingDutySlot+1,
 		input,
-		0,
-		1,
+		*data.Source,
+		*data.Target,
 		map[string][]phase0.Slot{
 			shareString: {
 				testingutils.TestingDutySlot,

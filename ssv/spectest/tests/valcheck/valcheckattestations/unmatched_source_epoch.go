@@ -22,6 +22,15 @@ func UnmatchedSourceEpoch() tests.SpecTest {
 		},
 	}
 
+	expectedSourceCheckpoint := phase0.Checkpoint{
+		Epoch: 1, // different from 0 above
+		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	}
+	// target checkpoint with a different epoch
+	expectedTargetCheckpoint := phase0.Checkpoint{
+		Epoch: 2,
+		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	}
 	input, _ := data.Encode()
 
 	return valcheck.NewSpecTest(
@@ -31,11 +40,11 @@ func UnmatchedSourceEpoch() tests.SpecTest {
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,
 		input,
-		0,
-		,
+		expectedSourceCheckpoint,
+		expectedTargetCheckpoint,
 		map[string][]phase0.Slot{},
 		[]types.ShareValidatorPK{},
-		types.AttestationTargetEpochTooFarFutureErrorCode,
+		types.CheckpointMismatch,
 		false,
 	)
 }
