@@ -1,7 +1,7 @@
 {
   "Name": "attestation value check unmatched source epoch",
   "Type": "Value check: validations for input of different runner roles",
-  "Documentation": "",
+  "Documentation": "Tests attestation value check with unmatched expected source epoch from operator's own view (source epoch differs from expected)",
   "Network": "now_test_network",
   "RunnerRole": 0,
   "DutySlot": "12",

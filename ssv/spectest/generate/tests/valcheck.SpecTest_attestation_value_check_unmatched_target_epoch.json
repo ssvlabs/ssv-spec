@@ -1,7 +1,7 @@
 {
   "Name": "attestation value check unmatched target epoch",
   "Type": "Value check: validations for input of different runner roles",
-  "Documentation": "Tests attestation value check with target epoch too far in the future",
+  "Documentation": "Tests attestation value check with unmatched target epoch from operator's own view (target epoch differs from expected)",
   "Network": "now_test_network",
   "RunnerRole": 0,
   "DutySlot": "12",
