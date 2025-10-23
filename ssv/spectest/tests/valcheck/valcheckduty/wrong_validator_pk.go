@@ -36,8 +36,8 @@ func WrongValidatorPK() tests.SpecTest {
 				Network:             types.BeaconTestNetwork,
 				RunnerRole:          types.RoleCommittee,
 				Input:               testingutils.TestBeaconVoteByts,
-				ExpectedSourceEpoch: 0,
-				ExpectedTargetEpoch: 1,
+				ExpectedSource: *testingutils.TestBeaconVote.Source,
+				ExpectedTarget: *testingutils.TestBeaconVote.Target,
 				// No error since input doesn't contain validator public key
 			},
 			{
