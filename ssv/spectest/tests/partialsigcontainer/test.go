@@ -48,10 +48,6 @@ func (test *PartialSigContainerTest) Run(t *testing.T) {
 		result, err := ps.ReconstructSignature(root, test.ValidatorPubKey, validatorIndex)
 		// Check the result and error
 		tests.AssertErrorCode(t, test.ExpectedErrorCode, err)
-		if err != nil {
-			require.Contains(t, err.Error(), test.ExpectedErrorCode)
-			return
-		}
 		require.EqualValues(t, test.ExpectedResult, result)
 	}
 }

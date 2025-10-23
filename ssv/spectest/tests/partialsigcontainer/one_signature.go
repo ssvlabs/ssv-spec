@@ -18,7 +18,7 @@ func OneSignature() tests.SpecTest {
 	msgs := []*types.PartialSignatureMessage{msg.Messages[0]}
 
 	// Verify the reconstructed signature
-	expectedSig, err := types.ReconstructSignatures(map[types.OperatorID][]byte{1: msgs[0].PartialSignature})
+	_, err := types.ReconstructSignatures(map[types.OperatorID][]byte{1: msgs[0].PartialSignature})
 	if err != nil {
 		panic(err.Error())
 	}
@@ -30,7 +30,7 @@ func OneSignature() tests.SpecTest {
 		ks.ValidatorPK.Serialize(),
 		msgs,
 		types.ReconstructSignatureErrorCode,
-		expectedSig.Serialize(),
+		nil,
 		false,
 		ks,
 	)
