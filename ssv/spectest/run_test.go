@@ -43,7 +43,6 @@ func TestAll(t *testing.T) {
 	}
 	wait.Wait()
 }
-
 func TestJson(t *testing.T) {
 	t.Parallel()
 

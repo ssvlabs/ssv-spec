@@ -32,10 +32,12 @@ func WrongValidatorIndex() tests.SpecTest {
 		testdoc.ValCheckDutyWrongValidatorIndexDoc,
 		[]*valcheck.SpecTest{
 			{
-				Name:       "committee",
-				Network:    types.BeaconTestNetwork,
-				RunnerRole: types.RoleCommittee,
-				Input:      testingutils.TestBeaconVoteByts,
+				Name:                "committee",
+				Network:             types.BeaconTestNetwork,
+				RunnerRole:          types.RoleCommittee,
+				Input:               testingutils.TestBeaconVoteByts,
+				ExpectedSource: *testingutils.TestBeaconVote.Source,
+				ExpectedTarget: *testingutils.TestBeaconVote.Target,
 				// No error since input doesn't contain validator index
 			},
 			{

@@ -1,8 +1,6 @@
 package valcheckattestations
 
 import (
-	"encoding/hex"
-
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
@@ -11,42 +9,42 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// Slashable tests a slashable AttestationData
-func Slashable() tests.SpecTest {
-	data := &types.BeaconVote{
+// UnmatchedSourceEpoch tests AttestationData.Source.Epoch unmatched with expected
+func UnmatchedSourceEpoch() tests.SpecTest {
+	data := types.BeaconVote{
 		BlockRoot: phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 		Source: &phase0.Checkpoint{
 			Epoch: 0,
 			Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 		},
 		Target: &phase0.Checkpoint{
-			Epoch: 1,
+			Epoch: 2,
 			Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 		},
 	}
 
+	expectedSourceCheckpoint := phase0.Checkpoint{
+		Epoch: 1, // different from 0 above
+		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	}
+	expectedTargetCheckpoint := phase0.Checkpoint{
+		Epoch: 2,
+		Root:  phase0.Root{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+	}
 	input, _ := data.Encode()
 
-	keySet := testingutils.Testing4SharesSet()
-	sharePKBytes := keySet.Shares[1].Serialize()
-	shareString := hex.EncodeToString(sharePKBytes)
-
 	return valcheck.NewSpecTest(
-		"attestation value check slashable",
-		testdoc.ValCheckAttestationSlashableDoc,
+		"attestation value check unmatched source epoch",
+		testdoc.ValCheckAttestationUnmatchedSourceEpochDoc,
 		types.BeaconTestNetwork,
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,
 		input,
-		*data.Source,
-		*data.Target,
-		map[string][]phase0.Slot{
-			shareString: {
-				testingutils.TestingDutySlot,
-			},
-		},
-		[]types.ShareValidatorPK{sharePKBytes},
-		types.SlashableAttestationErrorCode,
+		expectedSourceCheckpoint,
+		expectedTargetCheckpoint,
+		map[string][]phase0.Slot{},
+		[]types.ShareValidatorPK{},
+		types.CheckpointMismatch,
 		false,
 	)
 }

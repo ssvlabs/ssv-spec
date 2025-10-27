@@ -1,0 +1,20 @@
+{
+  "Name": "attestation value check unmatched source root",
+  "Type": "Value check: validations for input of different runner roles",
+  "Documentation": "Tests attestation value check with unmatched expected source root from operator's own view (source root differs from expected)",
+  "Network": "now_test_network",
+  "RunnerRole": 0,
+  "DutySlot": "12",
+  "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAgAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+  "ExpectedSource": {
+    "epoch": "0",
+    "root": "0x0902030405060708090a0102030405060708090a0102030405060708090a0102"
+  },
+  "ExpectedTarget": {
+    "epoch": "2",
+    "root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+  },
+  "SlashableSlots": {},
+  "ExpectedErrorCode": 29,
+  "AnyError": false
+}

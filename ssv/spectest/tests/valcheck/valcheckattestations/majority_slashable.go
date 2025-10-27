@@ -50,6 +50,8 @@ func MajoritySlashable() tests.SpecTest {
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,
 		input,
+		*data.Source,
+		*data.Target,
 		slashableMap,
 		sharesPKBytes,
 		types.SlashableAttestationErrorCode,

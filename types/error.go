@@ -33,7 +33,7 @@ const (
 	NoBeaconDutiesErrorCode
 	NoValidatorSharesErrorCode
 	AttestationSourceNotLessThanTargetErrorCode
-	AttestationTargetEpochTooFarFutureErrorCode
+	CheckpointMismatch
 	MessageIDCommitteeIDMismatchErrorCode
 	MessageTypeInvalidErrorCode
 	MessageRoundInvalidErrorCode

@@ -6,7 +6,15 @@
   "RunnerRole": 0,
   "DutySlot": "12",
   "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
-  "SlashableSlots": null,
+  "ExpectedSource": {
+    "epoch": "0",
+    "root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+  },
+  "ExpectedTarget": {
+    "epoch": "1",
+    "root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+  },
+  "SlashableSlots": {},
   "ExpectedErrorCode": 0,
   "AnyError": false
 }
