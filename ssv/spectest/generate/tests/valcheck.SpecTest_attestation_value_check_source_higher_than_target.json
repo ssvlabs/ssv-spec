@@ -1,0 +1,20 @@
+{
+  "Name": "attestation value check source higher than target",
+  "Type": "Value check: validations for input of different runner roles",
+  "Documentation": "Tests attestation value check with source epoch higher than target epoch",
+  "Network": "now_test_network",
+  "RunnerRole": 0,
+  "DutySlot": "12",
+  "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIBAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+  "ExpectedSource": {
+    "epoch": "1",
+    "root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+  },
+  "ExpectedTarget": {
+    "epoch": "0",
+    "root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+  },
+  "SlashableSlots": null,
+  "ExpectedErrorCode": 28,
+  "AnyError": false
+}

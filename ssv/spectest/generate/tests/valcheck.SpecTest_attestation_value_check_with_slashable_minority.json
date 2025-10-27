@@ -1,0 +1,30 @@
+{
+  "Name": "attestation value check with slashable minority",
+  "Type": "Value check: validations for input of different runner roles",
+  "Documentation": "Tests attestation value check with minority slashable attestation (source and target different from previous)",
+  "Network": "now_test_network",
+  "RunnerRole": 0,
+  "DutySlot": "12",
+  "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
+  "ExpectedSource": {
+    "epoch": "0",
+    "root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+  },
+  "ExpectedTarget": {
+    "epoch": "1",
+    "root": "0x0102030405060708090a0102030405060708090a0102030405060708090a0102"
+  },
+  "SlashableSlots": {
+    "5f4711a796c1116b5118ec35279fb64d551d9b38813d2939954dd2df5160d3d9": [
+      "12"
+    ]
+  },
+  "ShareValidatorsPK": [
+    "X0cRp5bBEWtRGOw1J5+2TVUdmziBPSk5lU3S31Fg09k=",
+    "SOTAo46Q+TUtHQlIlEZEPr0XsZBPTwAC/olMLD9iRXo=",
+    "Zdx8F59oNHzxL4bhxR5U6K7u1XnUxxUIK7igOCwagVM=",
+    "QkCcsJ+pRfpqFoz4sIYQRdblYvIRpwxKHNvPBBeJh2M="
+  ],
+  "ExpectedErrorCode": 35,
+  "AnyError": false
+}

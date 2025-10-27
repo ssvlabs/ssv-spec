@@ -38,6 +38,8 @@ func Slashable() tests.SpecTest {
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,
 		input,
+		*data.Source,
+		*data.Target,
 		map[string][]phase0.Slot{
 			shareString: {
 				testingutils.TestingDutySlot,

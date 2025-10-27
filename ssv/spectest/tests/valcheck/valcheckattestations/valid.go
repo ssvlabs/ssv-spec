@@ -1,6 +1,7 @@
 package valcheckattestations
 
 import (
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
@@ -17,8 +18,10 @@ func Valid() tests.SpecTest {
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,
 		testingutils.TestBeaconVoteByts,
-		nil,
-		nil,
+		*testingutils.TestBeaconVote.Source,
+		*testingutils.TestBeaconVote.Target,
+		map[string][]phase0.Slot{},
+		[]types.ShareValidatorPK{},
 		0,
 		false,
 	)

@@ -196,13 +196,17 @@ const PreConsensusValidMsgDoc = "Tests pre-consensus message processing across d
 
 // Documentation for valcheckattestation tests
 const ValCheckAttestationBeaconVoteDataNilDoc = "Tests attestation value check with nil attestation data"
-const ValCheckAttestationFarFutureTargetDoc = "Tests attestation value check with target epoch too far in the future"
 const ValCheckAttestationMajoritySlashableDoc = "Tests attestation value check with majority slashable attestation"
 const ValCheckAttestationMinoritySlashableDoc = "Tests attestation value check with minority slashable attestation (source and target different from previous)"
 const ValCheckAttestationSlashableDoc = "Tests attestation value check with slashable attestation"
 const ValCheckAttestationSourceHigherThanTargetDoc = "Tests attestation value check with source epoch higher than target epoch"
 const ValCheckAttestationValidNonSlashableSlotDoc = "Tests attestation value check with valid non-slashable slot"
 const ValCheckAttestationValidDoc = "Tests attestation value check with valid attestation"
+const ValCheckAttestationUnmatchedSourceEpochDoc = "Tests attestation value check with unmatched expected source epoch from operator's own view (source epoch differs from expected)"
+const ValCheckAttestationUnmatchedTargetEpochDoc = "Tests attestation value check with unmatched target epoch from operator's own view (target epoch differs from expected)"
+const ValCheckAttestationUnmatchedSourceRootDoc = "Tests attestation value check with unmatched expected source root from operator's own view (source root differs from expected)"
+const ValCheckAttestationUnmatchedTargetRootDoc = "Tests attestation value check with unmatched target root from operator's own view (target root differs from expected)"
+
 
 // Documentation for valcheckduty tests
 const ValCheckDutyFarFutureDutySlotDoc = "Tests duty value check with duty slot too far in the future"

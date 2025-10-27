@@ -21,6 +21,8 @@ type SpecTest struct {
 	RunnerRole        types.RunnerRole
 	DutySlot          phase0.Slot // DutySlot is used only for the RoleCommittee since the BeaconVoteValueCheckF requires the duty's slot
 	Input             []byte
+	ExpectedSource    phase0.Checkpoint             // Specify expected source epoch for beacon vote value check
+	ExpectedTarget    phase0.Checkpoint             // Specify expected target epoch for beacon vote value check
 	SlashableSlots    map[string][]phase0.Slot // map share pk to a list of slashable slots
 	ShareValidatorsPK []types.ShareValidatorPK `json:"ShareValidatorsPK,omitempty"` // Optional. Specify validators shares for beacon vote value check
 	ExpectedErrorCode int
@@ -61,8 +63,7 @@ func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueChe
 	}
 	switch test.RunnerRole {
 	case types.RoleCommittee:
-		return ssv.BeaconVoteValueCheckF(signer, test.DutySlot, shareValidatorsPK,
-			testingutils.TestingDutyEpoch)
+		return ssv.BeaconVoteValueCheckF(signer, test.DutySlot, shareValidatorsPK, &test.ExpectedSource, &test.ExpectedTarget)
 	case types.RoleProposer:
 		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex, nil)
 	case types.RoleAggregator:
@@ -102,19 +103,34 @@ func (mTest *MultiSpecTest) GetPostState() (interface{}, error) {
 	return nil, nil
 }
 
-func NewSpecTest(name, documentation string, network types.BeaconNetwork, role types.RunnerRole, dutySlot phase0.Slot, input []byte, slashableSlots map[string][]phase0.Slot, shareValidatorsPK []types.ShareValidatorPK, expectedErrorCode int, anyError bool) *SpecTest {
+func NewSpecTest(
+	name string,
+	documentation string,
+	network types.BeaconNetwork,
+	role types.RunnerRole,
+	dutySlot phase0.Slot,
+	input []byte,
+	expectedSource phase0.Checkpoint,
+	expectedTarget phase0.Checkpoint,
+	slashableSlots map[string][]phase0.Slot,
+	shareValidatorsPK []types.ShareValidatorPK,
+	expectedErrorCode int,
+	anyError bool,
+) *SpecTest {
 	return &SpecTest{
-		Name:              name,
-		Type:              "Value check: validations for input of different runner roles",
-		Documentation:     documentation,
-		Network:           network,
-		RunnerRole:        role,
-		DutySlot:          dutySlot,
-		Input:             input,
-		SlashableSlots:    slashableSlots,
-		ShareValidatorsPK: shareValidatorsPK,
-		ExpectedErrorCode: expectedErrorCode,
-		AnyError:          anyError,
+		Name:                name,
+		Type:                "Value check: validations for input of different runner roles",
+		Documentation:       documentation,
+		Network:             network,
+		RunnerRole:          role,
+		DutySlot:            dutySlot,
+		Input:               input,
+		ExpectedSource:		 expectedSource,
+		ExpectedTarget:      expectedTarget,
+		SlashableSlots:      slashableSlots,
+		ShareValidatorsPK:   shareValidatorsPK,
+		ExpectedErrorCode:   expectedErrorCode,
+		AnyError:            anyError,
 	}
 }
 

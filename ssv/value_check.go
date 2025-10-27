@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"math"
+	"reflect"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
@@ -42,7 +43,8 @@ func BeaconVoteValueCheckF(
 	signer types.BeaconSigner,
 	slot phase0.Slot,
 	sharePublicKeys []types.ShareValidatorPK,
-	estimatedCurrentEpoch phase0.Epoch,
+	expectedSource *phase0.Checkpoint,
+	expectedTarget *phase0.Checkpoint,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		bv := types.BeaconVote{}
@@ -50,12 +52,18 @@ func BeaconVoteValueCheckF(
 			return types.WrapError(types.DecodeBeaconVoteErrorCode, fmt.Errorf("failed decoding beacon vote: %w", err))
 		}
 
-		if bv.Target.Epoch > estimatedCurrentEpoch+1 {
-			return types.NewError(types.AttestationTargetEpochTooFarFutureErrorCode, "attestation data target epoch is into far future")
-		}
-
 		if bv.Source.Epoch >= bv.Target.Epoch {
 			return types.NewError(types.AttestationSourceNotLessThanTargetErrorCode, "attestation data source >= target")
+		}
+
+		if !reflect.DeepEqual(bv.Source, expectedSource) {
+			return types.NewError(types.CheckpointMismatch, fmt.Sprintf("attestation data source checkpoint %v does not match expected %v", 
+		bv.Source, expectedSource))
+		}
+		
+		if !reflect.DeepEqual(bv.Target, expectedTarget) {
+			return types.NewError(types.CheckpointMismatch, fmt.Sprintf("attestation data target checkpoint %v does not match expected %v", 
+				bv.Target, expectedTarget))
 		}
 
 		attestationData := &phase0.AttestationData{
