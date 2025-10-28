@@ -183,11 +183,11 @@ var AllTests = []tests.TestF{
 
 	dutyexe.WrongDutyRole,
 	dutyexe.WrongDutyPubKey,
-	// partialsigcontainer.OneSignature,
+	partialsigcontainer.OneSignature,
 	partialsigcontainer.Quorum,
-	// partialsigcontainer.Duplicate,
+	partialsigcontainer.Duplicate,
 	partialsigcontainer.DuplicateQuorum,
-	// partialsigcontainer.Invalid,
+	partialsigcontainer.Invalid,
 
 	runnerconstruction.OneShare,
 	runnerconstruction.NoShares,
