@@ -17,7 +17,7 @@ func PostFutureDecided() tests.SpecTest {
 		testdoc.StartInstancePostFutureDecidedDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingCommitMultiSignerMessageWithHeight(
 						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 2, 3}, 10,
@@ -29,7 +29,7 @@ func PostFutureDecided() tests.SpecTest {
 				},
 			},
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: testingutils.TestingQBFTFullData,
 					DecidedCnt: 0,
@@ -37,7 +37,7 @@ func PostFutureDecided() tests.SpecTest {
 			},
 		},
 		nil,
-		"attempting to start an instance with a past height",
+		types.StartInstanceErrorCode,
 		nil,
 		ks,
 	)

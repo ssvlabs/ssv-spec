@@ -17,14 +17,14 @@ func UnknownSigner() tests.SpecTest {
 		testdoc.ControllerDecidedUnknownSignerDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingCommitMultiSignerMessage([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 2, 5}),
 				},
 			},
 		},
 		nil,
-		"invalid decided msg: invalid decided msg: signer not in committee",
+		types.SignerIsNotInCommitteeErrorCode,
 		nil,
 		ks,
 	)

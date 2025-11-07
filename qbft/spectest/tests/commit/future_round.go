@@ -25,7 +25,7 @@ func FutureRound() tests.SpecTest {
 		nil,
 		msgs,
 		nil,
-		"invalid signed message: wrong msg round",
+		types.WrongMessageRoundErrorCode,
 		nil,
 		ks,
 	)

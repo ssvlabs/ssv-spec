@@ -2,6 +2,7 @@ package validatorconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -12,6 +13,6 @@ func CapellaBlindedBlockValidation() *ValidatorConsensusDataTest {
 		"valid capella blinded block",
 		testdoc.ValidatorConsensusDataTestCapellaBlindedBlockDoc,
 		*testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionCapella),
-		"",
+		0,
 	)
 }

@@ -2,7 +2,9 @@ package ssv
 
 import (
 	"bytes"
+	"fmt"
 	"math"
+	"reflect"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
@@ -19,19 +21,19 @@ func dutyValueCheck(
 	validatorIndex phase0.ValidatorIndex,
 ) error {
 	if network.EstimatedEpochAtSlot(duty.Slot) > network.EstimatedCurrentEpoch()+1 {
-		return errors.New("duty epoch is into far future")
+		return types.NewError(types.DutyEpochTooFarFutureErrorCode, "duty epoch is into far future")
 	}
 
 	if expectedType != duty.Type {
-		return errors.New("wrong beacon role type")
+		return types.NewError(types.WrongBeaconRoleTypeErrorCode, "wrong beacon role type")
 	}
 
 	if !bytes.Equal(validatorPK[:], duty.PubKey[:]) {
-		return errors.New("wrong validator pk")
+		return types.NewError(types.WrongValidatorPubkeyErrorCode, "wrong validator pk")
 	}
 
 	if validatorIndex != duty.ValidatorIndex {
-		return errors.New("wrong validator index")
+		return types.NewError(types.WrongValidatorIndexErrorCode, "wrong validator index")
 	}
 
 	return nil
@@ -41,20 +43,27 @@ func BeaconVoteValueCheckF(
 	signer types.BeaconSigner,
 	slot phase0.Slot,
 	sharePublicKeys []types.ShareValidatorPK,
-	estimatedCurrentEpoch phase0.Epoch,
+	expectedSource *phase0.Checkpoint,
+	expectedTarget *phase0.Checkpoint,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		bv := types.BeaconVote{}
 		if err := bv.Decode(data); err != nil {
-			return errors.Wrap(err, "failed decoding beacon vote")
-		}
-
-		if bv.Target.Epoch > estimatedCurrentEpoch+1 {
-			return errors.New("attestation data target epoch is into far future")
+			return types.WrapError(types.DecodeBeaconVoteErrorCode, fmt.Errorf("failed decoding beacon vote: %w", err))
 		}
 
 		if bv.Source.Epoch >= bv.Target.Epoch {
-			return errors.New("attestation data source >= target")
+			return types.NewError(types.AttestationSourceNotLessThanTargetErrorCode, "attestation data source >= target")
+		}
+
+		if !reflect.DeepEqual(bv.Source, expectedSource) {
+			return types.NewError(types.CheckpointMismatch, fmt.Sprintf("attestation data source checkpoint %v does not match expected %v",
+				bv.Source, expectedSource))
+		}
+
+		if !reflect.DeepEqual(bv.Target, expectedTarget) {
+			return types.NewError(types.CheckpointMismatch, fmt.Sprintf("attestation data target checkpoint %v does not match expected %v",
+				bv.Target, expectedTarget))
 		}
 
 		attestationData := &phase0.AttestationData{
@@ -90,29 +99,23 @@ func ProposerValueCheckF(
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
 		if err := cd.Validate(); err != nil {
-			return errors.Wrap(err, "invalid value")
+			return types.NewError(types.QBFTValueInvalidErrorCode, "invalid value")
 		}
 
 		if err := dutyValueCheck(&cd.Duty, network, types.BNRoleProposer, validatorPK, validatorIndex); err != nil {
 			return errors.Wrap(err, "duty invalid")
 		}
 
-		if blockData, _, err := cd.GetBlindedBlockData(); err == nil {
-			slot, err := blockData.Slot()
-			if err != nil {
-				return errors.Wrap(err, "failed to get slot from blinded block data")
-			}
-			return signer.IsBeaconBlockSlashable(sharePublicKey, slot)
-		}
-		if blockData, _, err := cd.GetBlockData(); err == nil {
-			slot, err := blockData.Slot()
-			if err != nil {
-				return errors.Wrap(err, "failed to get slot from block data")
-			}
-			return signer.IsBeaconBlockSlashable(sharePublicKey, slot)
+		blockData, _, err := cd.GetBlockData()
+		if err != nil {
+			return errors.Wrap(err, "could not get block data")
 		}
 
-		return errors.New("no block data")
+		slot, err := blockData.Slot()
+		if err != nil {
+			return errors.Wrap(err, "failed to get slot from block data")
+		}
+		return signer.IsBeaconBlockSlashable(sharePublicKey, slot)
 	}
 }
 
@@ -128,7 +131,7 @@ func AggregatorValueCheckF(
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
 		if err := cd.Validate(); err != nil {
-			return errors.Wrap(err, "invalid value")
+			return types.NewError(types.QBFTValueInvalidErrorCode, "invalid value")
 		}
 
 		if err := dutyValueCheck(&cd.Duty, network, types.BNRoleAggregator, validatorPK, validatorIndex); err != nil {
@@ -150,7 +153,7 @@ func SyncCommitteeContributionValueCheckF(
 			return errors.Wrap(err, "failed decoding consensus data")
 		}
 		if err := cd.Validate(); err != nil {
-			return errors.Wrap(err, "invalid value")
+			return types.NewError(types.QBFTValueInvalidErrorCode, "invalid value")
 		}
 
 		if err := dutyValueCheck(&cd.Duty, network, types.BNRoleSyncCommitteeContribution, validatorPK, validatorIndex); err != nil {
@@ -185,7 +188,7 @@ func AggregatorCommitteeValueCheckF(
 		// Basic validation - consensus data should have either aggregator or sync committee data
 		hasAggregators := len(cd.Aggregators) > 0
 		hasContributors := len(cd.Contributors) > 0
-		
+
 		if !hasAggregators && !hasContributors {
 			return errors.New("no aggregators or sync committee contributors in consensus data")
 		}

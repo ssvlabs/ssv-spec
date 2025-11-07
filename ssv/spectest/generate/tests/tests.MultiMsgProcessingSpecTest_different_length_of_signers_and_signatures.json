@@ -164,7 +164,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "invalid SignedSSVMessage: number of signatures is different than number of signers",
+      "ExpectedErrorCode": 14,
       "ValidatorDuty": {
         "Type": 4,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -330,7 +330,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "invalid SignedSSVMessage: number of signatures is different than number of signers",
+      "ExpectedErrorCode": 14,
       "ValidatorDuty": {
         "Type": 2,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -492,7 +492,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "invalid SignedSSVMessage: number of signatures is different than number of signers",
+      "ExpectedErrorCode": 14,
       "ValidatorDuty": {
         "Type": 2,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -627,7 +627,7 @@
         "2d85ab5ae407b606a8a5740840d508aa10f58580a4163eb88ad9004656f0f285"
       ],
       "DontStartDuty": false,
-      "ExpectedError": "invalid SignedSSVMessage: number of signatures is different than number of signers",
+      "ExpectedErrorCode": 14,
       "ValidatorDuty": {
         "Type": 5,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -762,7 +762,7 @@
         "c2d0cd2586c5de08d0b1030b8c7974a45ea0b514b630206e78db3456fb5bc091"
       ],
       "DontStartDuty": false,
-      "ExpectedError": "invalid SignedSSVMessage: number of signatures is different than number of signers",
+      "ExpectedErrorCode": 14,
       "ValidatorDuty": {
         "Type": 6,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -924,7 +924,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "invalid SignedSSVMessage: number of signatures is different than number of signers",
+      "ExpectedErrorCode": 14,
       "ValidatorDuty": {
         "Type": 1,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -1086,7 +1086,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "invalid SignedSSVMessage: number of signatures is different than number of signers",
+      "ExpectedErrorCode": 14,
       "ValidatorDuty": {
         "Type": 1,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -1190,10 +1190,10 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "invalid SignedSSVMessage: number of signatures is different than number of signers",
+      "ExpectedErrorCode": 14,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -1302,10 +1302,10 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "invalid SignedSSVMessage: number of signatures is different than number of signers",
+      "ExpectedErrorCode": 14,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -1418,10 +1418,10 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "invalid SignedSSVMessage: number of signatures is different than number of signers",
+      "ExpectedErrorCode": 14,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -1545,10 +1545,10 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "invalid SignedSSVMessage: number of signatures is different than number of signers",
+      "ExpectedErrorCode": 14,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -1657,10 +1657,10 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "invalid SignedSSVMessage: number of signatures is different than number of signers",
+      "ExpectedErrorCode": 14,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -1773,10 +1773,10 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedError": "invalid SignedSSVMessage: number of signatures is different than number of signers",
+      "ExpectedErrorCode": 14,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [

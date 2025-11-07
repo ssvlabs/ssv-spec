@@ -32,9 +32,11 @@ func SourceHigherThanTarget() tests.SpecTest {
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,
 		input,
+		*data.Source,
+		*data.Target,
 		nil,
 		nil,
-		"attestation data source >= target",
+		types.AttestationSourceNotLessThanTargetErrorCode,
 		false,
 	)
 }

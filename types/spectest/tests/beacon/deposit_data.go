@@ -21,6 +21,9 @@ type DepositDataSpecTest struct {
 	WithdrawalCredentials string
 	ForkVersion           types.ForkVersion
 	ExpectedSigningRoot   string
+
+	// consts for DepositDataSpecTest
+	Domain types.DomainType
 }
 
 func (test *DepositDataSpecTest) TestName() string {
@@ -55,6 +58,9 @@ func NewDepositDataSpecTest(name, documentation, validatorPK, withdrawalCredenti
 		WithdrawalCredentials: withdrawalCredentials,
 		ForkVersion:           forkVersion,
 		ExpectedSigningRoot:   expectedSigningRoot,
+
+		// consts for DepositDataSpecTest
+		Domain: types.DomainDeposit,
 	}
 }
 

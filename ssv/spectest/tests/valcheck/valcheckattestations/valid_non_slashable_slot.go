@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
@@ -38,13 +39,15 @@ func ValidNonSlashableSlot() tests.SpecTest {
 		types.RoleCommittee,
 		testingutils.TestingDutySlot+1,
 		input,
+		*data.Source,
+		*data.Target,
 		map[string][]phase0.Slot{
 			shareString: {
 				testingutils.TestingDutySlot,
 			},
 		},
 		[]types.ShareValidatorPK{sharePKBytes},
-		"",
+		0,
 		false,
 	)
 }

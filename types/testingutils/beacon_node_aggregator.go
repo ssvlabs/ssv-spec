@@ -103,6 +103,11 @@ var TestingVersionedSignedAggregateAndProof = func(ks *TestKeySet, version spec.
 			Version: version,
 			Electra: TestingElectraSignedAggregateAndProof(ks, TestingValidatorIndex),
 		}
+	case spec.DataVersionFulu:
+		return &spec.VersionedSignedAggregateAndProof{
+			Version: version,
+			Fulu:    TestingElectraSignedAggregateAndProof(ks, TestingValidatorIndex),
+		}
 	default:
 		panic("unknown data version")
 	}
@@ -112,7 +117,7 @@ var TestingSignedAggregateAndProof = func(ks *TestKeySet, version spec.DataVersi
 	switch version {
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingPhase0SignedAggregateAndProof(ks, TestingValidatorIndex)
-	case spec.DataVersionElectra:
+	case spec.DataVersionElectra, spec.DataVersionFulu:
 		return TestingElectraSignedAggregateAndProof(ks, TestingValidatorIndex)
 	default:
 		panic("unknown data version")

@@ -50,11 +50,11 @@
         "Msgs": {}
       }
     },
-    "StartValue": "AQIDBAUGBwgJAQIDBAUGBwgJAQIDBAUGBwgJ"
+    "StartValue": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw=="
   },
   "PostRoot": "",
   "InputMessages": [],
   "OutputMessages": null,
-  "ExpectedError": "",
+  "ExpectedErrorCode": 0,
   "ExpectedTimerState": null
 }

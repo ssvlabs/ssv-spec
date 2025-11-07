@@ -43,19 +43,18 @@ func FutureDecidedNoInstance() tests.SpecTest {
 		return signedMsg
 	}
 
-	expectedErr := "no runner found for message's slot"
+	expectedErrCode := types.NoRunnerForSlotErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus future decided no running instance",
 		testdoc.ConsensusFutureDecidedNoInstanceDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
-				Name:           "sync committee contribution",
-				Runner:         testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:           &testingutils.TestingSyncCommitteeContributionDuty,
-				DontStartDuty:  true,
-				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleSyncCommitteeContribution, testingutils.TestingDutySlot+1)},
-				OutputMessages: []*types.PartialSignatureMessages{},
+				Name:          "sync committee contribution",
+				Runner:        testingutils.SyncCommitteeContributionRunner(ks),
+				Duty:          &testingutils.TestingSyncCommitteeContributionDuty,
+				DontStartDuty: true,
+				Messages:      []*types.SignedSSVMessage{getDecidedMessage(types.RoleSyncCommitteeContribution, testingutils.TestingDutySlot+1)},
 			},
 		},
 		ks,
@@ -63,12 +62,11 @@ func FutureDecidedNoInstance() tests.SpecTest {
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-			Name:           fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner:         testingutils.AggregatorRunner(ks),
-			Duty:           testingutils.TestingAggregatorDuty(version),
-			DontStartDuty:  true,
-			Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleAggregator, testingutils.TestingDutySlot+1)},
-			OutputMessages: []*types.PartialSignatureMessages{},
+			Name:          fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner:        testingutils.AggregatorRunner(ks),
+			Duty:          testingutils.TestingAggregatorDuty(version),
+			DontStartDuty: true,
+			Messages:      []*types.SignedSSVMessage{getDecidedMessage(types.RoleAggregator, testingutils.TestingDutySlot+1)},
 		},
 		)
 	}
@@ -76,31 +74,28 @@ func FutureDecidedNoInstance() tests.SpecTest {
 	for _, version := range testingutils.SupportedAttestationVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
 			{
-				Name:           fmt.Sprintf("attester (%s)", version.String()),
-				Runner:         testingutils.CommitteeRunner(ks),
-				Duty:           testingutils.TestingAttesterDuty(version),
-				DontStartDuty:  true,
-				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedErr,
+				Name:              fmt.Sprintf("attester (%s)", version.String()),
+				Runner:            testingutils.CommitteeRunner(ks),
+				Duty:              testingutils.TestingAttesterDuty(version),
+				DontStartDuty:     true,
+				Messages:          []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
-				Name:           fmt.Sprintf("sync committee (%s)", version.String()),
-				Runner:         testingutils.CommitteeRunner(ks),
-				Duty:           testingutils.TestingSyncCommitteeDuty(version),
-				DontStartDuty:  true,
-				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedErr,
+				Name:              fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner:            testingutils.CommitteeRunner(ks),
+				Duty:              testingutils.TestingSyncCommitteeDuty(version),
+				DontStartDuty:     true,
+				Messages:          []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
-				Name:           fmt.Sprintf("attester and sync committee (%s)", version.String()),
-				Runner:         testingutils.CommitteeRunner(ks),
-				Duty:           testingutils.TestingAttesterAndSyncCommitteeDuties(version),
-				DontStartDuty:  true,
-				Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedErr,
+				Name:              fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner:            testingutils.CommitteeRunner(ks),
+				Duty:              testingutils.TestingAttesterAndSyncCommitteeDuties(version),
+				DontStartDuty:     true,
+				Messages:          []*types.SignedSSVMessage{getDecidedMessage(types.RoleCommittee, testingutils.TestingDutySlot+1)},
+				ExpectedErrorCode: expectedErrCode,
 			},
 		}...)
 	}
@@ -108,24 +103,22 @@ func FutureDecidedNoInstance() tests.SpecTest {
 	// proposerV creates a test specification for versioned proposer.
 	proposerV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
 		return &tests.MsgProcessingSpecTest{
-			Name:           fmt.Sprintf("proposer (%s)", version.String()),
-			Runner:         testingutils.ProposerRunner(ks),
-			Duty:           testingutils.TestingProposerDutyV(version),
-			DontStartDuty:  true,
-			Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleProposer, qbft.Height(testingutils.TestingDutySlotV(version))+1)},
-			OutputMessages: []*types.PartialSignatureMessages{},
+			Name:          fmt.Sprintf("proposer (%s)", version.String()),
+			Runner:        testingutils.ProposerRunner(ks),
+			Duty:          testingutils.TestingProposerDutyV(version),
+			DontStartDuty: true,
+			Messages:      []*types.SignedSSVMessage{getDecidedMessage(types.RoleProposer, qbft.Height(testingutils.TestingDutySlotV(version))+1)},
 		}
 	}
 
 	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
 	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
 		return &tests.MsgProcessingSpecTest{
-			Name:           fmt.Sprintf("proposer blinded block (%s)", version.String()),
-			Runner:         testingutils.ProposerBlindedBlockRunner(ks),
-			Duty:           testingutils.TestingProposerDutyV(version),
-			DontStartDuty:  true,
-			Messages:       []*types.SignedSSVMessage{getDecidedMessage(types.RoleProposer, qbft.Height(testingutils.TestingDutySlotV(version))+1)},
-			OutputMessages: []*types.PartialSignatureMessages{},
+			Name:          fmt.Sprintf("proposer blinded block (%s)", version.String()),
+			Runner:        testingutils.ProposerBlindedBlockRunner(ks),
+			Duty:          testingutils.TestingProposerDutyV(version),
+			DontStartDuty: true,
+			Messages:      []*types.SignedSSVMessage{getDecidedMessage(types.RoleProposer, qbft.Height(testingutils.TestingDutySlotV(version))+1)},
 		}
 	}
 

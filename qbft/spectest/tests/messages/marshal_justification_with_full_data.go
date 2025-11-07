@@ -40,7 +40,7 @@ func MarshalJustificationsWithFullData() tests.SpecTest {
 		[]*types.SignedSSVMessage{msg},
 		[][]byte{b},
 		[][32]byte{r},
-		"",
+		0,
 		ks,
 	)
 

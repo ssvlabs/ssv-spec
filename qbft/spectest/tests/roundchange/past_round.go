@@ -34,7 +34,7 @@ func PastRound() tests.SpecTest {
 		nil,
 		inputMessages,
 		nil,
-		"invalid signed message: past round",
+		types.PastRoundErrorCode,
 		nil,
 		ks,
 	)

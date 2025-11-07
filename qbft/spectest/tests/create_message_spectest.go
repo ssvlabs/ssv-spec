@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"crypto/rsa"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -8,12 +9,13 @@ import (
 	"testing"
 
 	"github.com/pkg/errors"
+	"github.com/stretchr/testify/require"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
-	"github.com/stretchr/testify/require"
 )
 
 const (
@@ -22,6 +24,11 @@ const (
 	CreateCommit      = "CreateCommit"
 	CreateRoundChange = "CreateRoundChange"
 )
+
+type TestSigner struct {
+	OperatorID types.OperatorID
+	OperatorSK *rsa.PrivateKey
+}
 
 type CreateMsgSpecTest struct {
 	Name          string
@@ -36,8 +43,13 @@ type CreateMsgSpecTest struct {
 	CreateType                                       string
 	ExpectedRoot                                     string
 	ExpectedState                                    types.Root `json:"-"` // Field is ignored by encoding/json"
-	ExpectedError                                    string
+	ExpectedErrorCode                                int
 	PrivateKeys                                      *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+
+	// consts for CreateMsgSpecTest
+	CommitteeMember *types.CommitteeMember `json:"CommitteeMember,omitempty"`
+	Identifier      []byte                 `json:"Identifier,omitempty"`
+	OperatorID      types.OperatorID       `json:"OperatorID,omitempty"`
 }
 
 // UnmarshalJSON implements custom JSON unmarshaling for CreateMsgSpecTest
@@ -75,7 +87,7 @@ func (test *CreateMsgSpecTest) UnmarshalJSON(data []byte) error {
 		RoundChangeJustifications, PrepareJustifications []*types.SignedSSVMessage
 		CreateType                                       string
 		ExpectedState                                    types.Root `json:"-"`
-		ExpectedError                                    string
+		ExpectedErrorCode                                int
 	}
 
 	temp := &CreateMsgSpecTestWithoutExpectedRoot{}
@@ -95,7 +107,7 @@ func (test *CreateMsgSpecTest) UnmarshalJSON(data []byte) error {
 	test.PrepareJustifications = temp.PrepareJustifications
 	test.CreateType = temp.CreateType
 	test.ExpectedState = temp.ExpectedState
-	test.ExpectedError = temp.ExpectedError
+	test.ExpectedErrorCode = temp.ExpectedErrorCode
 
 	// Set ExpectedRoot as string
 	test.ExpectedRoot = expectedRoot
@@ -118,23 +130,20 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 	default:
 		t.Fail()
 	}
-
-	if err != nil && len(test.ExpectedError) != 0 {
-		require.EqualError(t, err, test.ExpectedError)
+	AssertErrorCode(t, test.ExpectedErrorCode, err)
+	if err != nil {
 		return
 	}
-	require.NoError(t, err)
 
 	if test.Round == qbft.NoRound {
 		require.Fail(t, "qbft round is invalid")
 	}
 
 	r, err := msg.GetRoot()
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, err, test.ExpectedError)
+	AssertErrorCode(t, test.ExpectedErrorCode, err)
+	if err != nil {
 		return
 	}
-	require.NoError(t, err)
 
 	if test.ExpectedRoot != hex.EncodeToString(r[:]) {
 		fmt.Printf("expected: %v\n", test.ExpectedRoot)
@@ -154,6 +163,11 @@ func (test *CreateMsgSpecTest) Run(t *testing.T) {
 
 	err = qbftMsg.Validate()
 	require.NoError(t, err)
+
+	// remove consts for state comparison
+	test.CommitteeMember = nil
+	test.Identifier = nil
+	test.OperatorID = 0
 
 	typescomparable.CompareWithJson(t, test, test.TestName(), reflect.TypeOf(test).String())
 }
@@ -191,7 +205,8 @@ func (test *CreateMsgSpecTest) createProposal() (*types.SignedSSVMessage, error)
 	}
 	signer := testingutils.TestingOperatorSigner(ks)
 
-	return qbft.CreateProposal(state, signer, test.Value[:], testingutils.ToProcessingMessages(test.
+	// Use StateValue (full data) instead of Value (which is already a hash)
+	return qbft.CreateProposal(state, signer, test.StateValue, testingutils.ToProcessingMessages(test.
 		RoundChangeJustifications), testingutils.ToProcessingMessages(test.PrepareJustifications))
 }
 
@@ -221,7 +236,8 @@ func (test *CreateMsgSpecTest) createRoundChange() (*types.SignedSSVMessage, err
 		}
 	}
 
-	return qbft.CreateRoundChange(state, signer, qbft.FirstRound, test.Value[:])
+	// Use StateValue (full data) instead of Value (which is already a hash)
+	return qbft.CreateRoundChange(state, signer, qbft.FirstRound, test.StateValue)
 }
 
 func (test *CreateMsgSpecTest) TestName() string {
@@ -229,13 +245,22 @@ func (test *CreateMsgSpecTest) TestName() string {
 }
 
 func (test *CreateMsgSpecTest) GetPostState() (interface{}, error) {
-	// remove private keys
+	test.CommitteeMember = nil
+	test.Identifier = nil
+	test.OperatorID = 0
 	test.PrivateKeys = nil
 
 	return test, nil
 }
 
-func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, stateValue []byte, round qbft.Round, roundChangeJustifications []*types.SignedSSVMessage, prepareJustifications []*types.SignedSSVMessage, createType string, expectedRoot string, expectedState types.Root, expectedError string, ks *testingutils.TestKeySet) *CreateMsgSpecTest {
+func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, stateValue []byte, round qbft.Round, roundChangeJustifications []*types.SignedSSVMessage, prepareJustifications []*types.SignedSSVMessage, createType string, expectedRoot string, expectedState types.Root, expectedErrorCode int, ks *testingutils.TestKeySet) *CreateMsgSpecTest {
+	committeeMember := &types.CommitteeMember{}
+	operatorID := types.OperatorID(0)
+	if ks != nil {
+		committeeMember = testingutils.TestingCommitteeMember(ks)
+		operatorID = testingutils.TestingOperatorSigner(ks).OperatorID
+	}
+
 	return &CreateMsgSpecTest{
 		Name:                      name,
 		Type:                      testdoc.CreateMsgSpecTestType,
@@ -248,7 +273,12 @@ func NewCreateMsgSpecTest(name string, documentation string, value [32]byte, sta
 		CreateType:                createType,
 		ExpectedRoot:              expectedRoot,
 		ExpectedState:             expectedState,
-		ExpectedError:             expectedError,
+		ExpectedErrorCode:         expectedErrorCode,
 		PrivateKeys:               testingutils.BuildPrivateKeyInfo(ks),
+
+		// consts for CreateMsgSpecTest
+		CommitteeMember: committeeMember,
+		Identifier:      testingutils.TestingIdentifier,
+		OperatorID:      operatorID,
 	}
 }

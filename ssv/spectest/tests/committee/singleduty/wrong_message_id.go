@@ -42,7 +42,7 @@ func WrongMessageID() tests.SpecTest {
 		return signedMessage
 	}
 
-	expectedError := "Message invalid: msg ID doesn't match committee ID"
+	expectedErrorCode := types.MessageIDCommitteeIDMismatchErrorCode
 
 	validatorsIndexList := testingutils.ValidatorIndexList(1)
 	ksMap := testingutils.KeySetMapForValidators(1)
@@ -57,8 +57,7 @@ func WrongMessageID() tests.SpecTest {
 					testingutils.TestingSyncCommitteeDutyForValidators(version, validatorsIndexList),
 					decidedMessage(),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:      fmt.Sprintf("attestation (%s)", version.String()),
@@ -67,8 +66,7 @@ func WrongMessageID() tests.SpecTest {
 					testingutils.TestingAttesterDutyForValidators(version, validatorsIndexList),
 					decidedMessage(),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		}...)
 	}

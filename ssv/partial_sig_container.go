@@ -2,10 +2,12 @@ package ssv
 
 import (
 	"encoding/hex"
+	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -49,13 +51,13 @@ func (ps *PartialSigContainer) HasSignature(validatorIndex phase0.ValidatorIndex
 // GetSignature returns the signature for a given root and signer
 func (ps *PartialSigContainer) GetSignature(validatorIndex phase0.ValidatorIndex, signer types.OperatorID, signingRoot [32]byte) (types.Signature, error) {
 	if ps.Signatures[validatorIndex] == nil {
-		return nil, errors.New("Dont have signature for the given validator index")
+		return nil, fmt.Errorf("dont have signature for the given validator index")
 	}
 	if ps.Signatures[validatorIndex][signingRootHex(signingRoot)] == nil {
-		return nil, errors.New("Dont have signature for the given signing root")
+		return nil, fmt.Errorf("dont have signature for the given signing root")
 	}
 	if ps.Signatures[validatorIndex][signingRootHex(signingRoot)][signer] == nil {
-		return nil, errors.New("Dont have signature on signing root for the given signer")
+		return nil, fmt.Errorf("dont have signature on signing root for the given signer")
 	}
 	return ps.Signatures[validatorIndex][signingRootHex(signingRoot)][signer], nil
 }
@@ -85,10 +87,10 @@ func (ps *PartialSigContainer) Remove(validatorIndex phase0.ValidatorIndex, sign
 func (ps *PartialSigContainer) ReconstructSignature(root [32]byte, validatorPubKey []byte, validatorIndex phase0.ValidatorIndex) ([]byte, error) {
 	// Reconstruct signatures
 	if ps.Signatures[validatorIndex] == nil {
-		return nil, errors.New("no signatures for the given validator index")
+		return nil, fmt.Errorf("no signatures for the given validator index")
 	}
 	if ps.Signatures[validatorIndex][signingRootHex(root)] == nil {
-		return nil, errors.New("no signatures for the given signing root")
+		return nil, fmt.Errorf("no signatures for the given signing root")
 	}
 
 	operatorsSignatures := make(map[uint64][]byte)
@@ -104,7 +106,7 @@ func (ps *PartialSigContainer) ReconstructSignature(root [32]byte, validatorPubK
 	validatorPubKeyCopy := make([]byte, len(validatorPubKey))
 	copy(validatorPubKeyCopy, validatorPubKey)
 
-	if err := types.VerifyReconstructedSignature(signature, validatorPubKeyCopy, root); err != nil {
+	if err = types.VerifyReconstructedSignature(signature, validatorPubKeyCopy, root); err != nil {
 		return nil, errors.Wrap(err, "failed to verify reconstruct signature")
 	}
 	return signature.Serialize(), nil

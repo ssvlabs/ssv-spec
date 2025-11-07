@@ -37,8 +37,8 @@ func FutureMessage() tests.SpecTest {
 		return signed
 	}
 
-	expectedError := "failed processing consensus message: future msg from height, could not process"
-	expectedErrorCommittee := "no runner found for message's slot"
+	expectedErrorCode := types.FutureMessageErrorCode
+	expectedErrorCommitteeCode := types.NoRunnerForSlotErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus future message",
@@ -52,9 +52,8 @@ func FutureMessage() tests.SpecTest {
 					futureMsgF(testingutils.TestSyncCommitteeContributionConsensusData, testingutils.SyncCommitteeContributionMsgID),
 				},
 				PostDutyRunnerStateRoot: "68fd25b1cb30902e7b7b3e7ff674c3862ff956954a06fac0df485961b8bb3934",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
-				ExpectedError:           expectedError,
+				ExpectedErrorCode:       expectedErrorCode,
 			},
 			{
 				Name:   "proposer",
@@ -64,9 +63,8 @@ func FutureMessage() tests.SpecTest {
 					futureMsgF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				},
 				PostDutyRunnerStateRoot: "32dd1d1d7a4c34bb7dafc0866f69eb49f6a0a23755b135f83ad14d12e39fff82",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
-				ExpectedError:           expectedError,
+				ExpectedErrorCode:       expectedErrorCode,
 			},
 			{
 				Name:   "proposer (blinded block)",
@@ -77,9 +75,8 @@ func FutureMessage() tests.SpecTest {
 						testingutils.ProposerMsgID),
 				},
 				PostDutyRunnerStateRoot: "58b946451dc5ccbd52fbc9e6bbe0ac888253d1708be018a3ff0b07762dd28891",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
-				ExpectedError:           expectedError,
+				ExpectedErrorCode:       expectedErrorCode,
 			},
 			{
 				Name:   "validator registration",
@@ -94,7 +91,7 @@ func FutureMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "no consensus phase for validator registration",
+				ExpectedErrorCode: types.ValidatorRegistrationNoConsensusPhaseErrorCode,
 			},
 			{
 				Name:   "voluntary exit",
@@ -109,7 +106,7 @@ func FutureMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "no consensus phase for voluntary exit",
+				ExpectedErrorCode: types.ValidatorExitNoConsensusPhaseErrorCode,
 			},
 		},
 		ks,
@@ -124,9 +121,8 @@ func FutureMessage() tests.SpecTest {
 				futureMsgF(testingutils.TestAggregatorConsensusData(version), testingutils.AggregatorMsgID),
 			},
 			PostDutyRunnerStateRoot: "bdc7c2150e0f2d4669e112848f5140b52aba0367b60ff2b594d5a5bef3587834",
-			OutputMessages:          []*types.PartialSignatureMessages{},
 			DontStartDuty:           true,
-			ExpectedError:           expectedError,
+			ExpectedErrorCode:       expectedErrorCode,
 		},
 		)
 	}
@@ -140,9 +136,8 @@ func FutureMessage() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					futureMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				DontStartDuty:  true,
-				ExpectedError:  expectedErrorCommittee,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCommitteeCode,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -151,9 +146,8 @@ func FutureMessage() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					futureMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				DontStartDuty:  true,
-				ExpectedError:  expectedErrorCommittee,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCommitteeCode,
 			},
 			{
 				Name:   fmt.Sprintf("attester sync committee (%s)", version.String()),
@@ -162,9 +156,8 @@ func FutureMessage() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					futureMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				DontStartDuty:  true,
-				ExpectedError:  expectedErrorCommittee,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCommitteeCode,
 			},
 		}...)
 	}

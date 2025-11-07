@@ -28,9 +28,8 @@ func NoRunningDuty() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: noRunningDutySyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     noRunningDutySyncCommitteeContributionSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing sync committee selection proof message: invalid pre-consensus message: no running duty",
+				ExpectedErrorCode:       types.NoRunningDutyErrorCode,
 			},
 			{
 				Name:   "validator registration",
@@ -41,9 +40,8 @@ func NoRunningDuty() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: noRunningDutyValidatorRegistrationSC().Root(),
 				PostDutyRunnerState:     noRunningDutyValidatorRegistrationSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing validator registration message: invalid pre-consensus message: no running duty",
+				ExpectedErrorCode:       types.NoRunningDutyErrorCode,
 			},
 			{
 				Name:   "voluntary exit",
@@ -54,9 +52,8 @@ func NoRunningDuty() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: noRunningDutyVoluntaryExitSC().Root(),
 				PostDutyRunnerState:     noRunningDutyVoluntaryExitSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing voluntary exit message: invalid pre-consensus message: no running duty",
+				ExpectedErrorCode:       types.NoRunningDutyErrorCode,
 			},
 		},
 		ks,
@@ -70,9 +67,8 @@ func NoRunningDuty() tests.SpecTest {
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version))),
 			},
-			OutputMessages: []*types.PartialSignatureMessages{},
-			DontStartDuty:  true,
-			ExpectedError:  "failed processing selection proof message: invalid pre-consensus message: no running duty",
+			DontStartDuty:     true,
+			ExpectedErrorCode: types.NoRunningDutyErrorCode,
 		})
 	}
 
@@ -87,9 +83,8 @@ func NoRunningDuty() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: noRunningDutyProposerSC(version).Root(),
 			PostDutyRunnerState:     noRunningDutyProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.PartialSignatureMessages{},
 			DontStartDuty:           true,
-			ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
+			ExpectedErrorCode:       types.NoRunningDutyErrorCode,
 		}
 	}
 
@@ -104,9 +99,8 @@ func NoRunningDuty() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: noRunningDutyBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     noRunningDutyBlindedProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.PartialSignatureMessages{},
 			DontStartDuty:           true,
-			ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
+			ExpectedErrorCode:       types.NoRunningDutyErrorCode,
 		}
 	}
 

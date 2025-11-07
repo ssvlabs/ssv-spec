@@ -2,12 +2,21 @@
   "Name": "create prepare",
   "Type": "Message creation: validation of consensus message construction and encoding",
   "Documentation": "Test creating a prepare message for QBFT consensus.",
-  "Value": "0102030400000000000000000000000000000000000000000000000000000000",
-  "StateValue": null,
+  "Value": "73bfbd3311c8077c59c116cad383be8a1d958cc62c69d85dcb86c4796ceadf86",
+  "StateValue": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw==",
   "Round": 10,
   "RoundChangeJustifications": null,
   "PrepareJustifications": null,
   "CreateType": "CreatePrepare",
-  "ExpectedRoot": "fe85e25b3cf7168e9e6417a9daaa71567a3c0c689b633d8154e252d8225c113c",
-  "ExpectedError": ""
+  "ExpectedRoot": "edf017cce3ba879ef8c16bda28c30c776ae6c522b41c7d0eb1cb1cf29f719613",
+  "ExpectedErrorCode": 0,
+  "CommitteeMember": {
+    "OperatorID": 0,
+    "CommitteeID": "0000000000000000000000000000000000000000000000000000000000000000",
+    "SSVOperatorPubKey": null,
+    "FaultyNodes": 0,
+    "Committee": null,
+    "DomainType": "00000000"
+  },
+  "Identifier": "AQIDBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 }

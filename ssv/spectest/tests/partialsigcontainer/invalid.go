@@ -20,7 +20,8 @@ func Invalid() tests.SpecTest {
 	msgs := []*types.PartialSignatureMessage{msg1.Messages[0], msg2.Messages[0], msg3.Messages[0]}
 
 	// Verify the reconstructed signature
-	expectedSig, err := types.ReconstructSignatures(map[types.OperatorID][]byte{1: msgs[0].PartialSignature, 2: msgs[1].PartialSignature, 3: msgs[2].PartialSignature})
+	_, err := types.ReconstructSignatures(map[types.OperatorID][]byte{1: msgs[0].PartialSignature,
+		2: msgs[1].PartialSignature, 3: msgs[2].PartialSignature})
 	if err != nil {
 		panic(err.Error())
 	}
@@ -31,8 +32,8 @@ func Invalid() tests.SpecTest {
 		ks.Threshold,
 		ks.ValidatorPK.Serialize(),
 		msgs,
-		"could not reconstruct a valid signature",
-		expectedSig.Serialize(),
+		types.ReconstructSignatureErrorCode,
+		nil,
 		true,
 		ks,
 	)

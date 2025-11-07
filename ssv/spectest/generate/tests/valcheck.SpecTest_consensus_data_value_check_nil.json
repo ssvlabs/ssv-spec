@@ -6,7 +6,15 @@
   "RunnerRole": 0,
   "DutySlot": "12",
   "Input": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+  "ExpectedSource": {
+    "epoch": "0",
+    "root": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "ExpectedTarget": {
+    "epoch": "0",
+    "root": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
   "SlashableSlots": null,
-  "ExpectedError": "attestation data source \u003e= target",
+  "ExpectedErrorCode": 28,
   "AnyError": false
 }

@@ -27,7 +27,7 @@ func LateCommitPastInstance() tests.SpecTest {
 	instanceData := func(height qbft.Height) *tests.RunInstanceData {
 		sc := lateCommitPastInstanceStateComparison(height, nil)
 		return &tests.RunInstanceData{
-			InputValue:    []byte{1, 2, 3, 4},
+			InputValue:    testingutils.TestingQBFTFullData,
 			InputMessages: msgPerHeight[height],
 			ExpectedDecidedState: tests.DecidedState{
 				BroadcastedDecided: testingutils.TestingCommitMultiSignerMessageWithHeight(
@@ -57,7 +57,7 @@ func LateCommitPastInstance() tests.SpecTest {
 			instanceData(qbft.FirstHeight),
 			instanceData(1),
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					lateMsg,
 				},
@@ -66,7 +66,7 @@ func LateCommitPastInstance() tests.SpecTest {
 			},
 		},
 		nil,
-		"not processing consensus message since instance is already decided",
+		types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		nil,
 		ks,
 	)
@@ -98,7 +98,7 @@ func lateCommitPastInstanceStateComparison(height qbft.Height, lateMsg *types.Si
 		contr.Height = qbft.Height(i)
 
 		instance := &qbft.Instance{
-			StartValue: []byte{1, 2, 3, 4},
+			StartValue: testingutils.TestingQBFTFullData,
 			State: &qbft.State{
 				CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 				ID:              testingutils.TestingIdentifier,

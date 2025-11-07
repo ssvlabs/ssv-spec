@@ -35,7 +35,7 @@ func InvalidDecidedValue() tests.SpecTest {
 		return byts
 	}
 
-	expectedErr := "failed processing post consensus message: invalid post-consensus message: no decided value"
+	expectedErrCode := types.NoDecidedValueErrorCode
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus decided invalid value",
 		testdoc.PostConsensusInvalidDecidedValueDoc,
@@ -64,7 +64,7 @@ func InvalidDecidedValue() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: expectedErr,
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
 				Name:   "proposer",
@@ -90,7 +90,7 @@ func InvalidDecidedValue() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(testingutils.Testing4SharesSet().Shares[1], 1, spec.DataVersionDeneb),
 				},
-				ExpectedError: expectedErr,
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
 				Name:   "proposer (blinded block)",
@@ -116,7 +116,7 @@ func InvalidDecidedValue() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(testingutils.Testing4SharesSet().Shares[1], 1, spec.DataVersionDeneb),
 				},
-				ExpectedError: expectedErr,
+				ExpectedErrorCode: expectedErrCode,
 			},
 		},
 		ks,
@@ -147,7 +147,7 @@ func InvalidDecidedValue() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
 			},
-			ExpectedError: expectedErr,
+			ExpectedErrorCode: expectedErrCode,
 		},
 		)
 	}
@@ -170,8 +170,7 @@ func InvalidDecidedValue() tests.SpecTest {
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedErr,
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -189,8 +188,7 @@ func InvalidDecidedValue() tests.SpecTest {
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedErr,
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -208,8 +206,7 @@ func InvalidDecidedValue() tests.SpecTest {
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedErr,
+				ExpectedErrorCode: expectedErrCode,
 			},
 		}...)
 	}

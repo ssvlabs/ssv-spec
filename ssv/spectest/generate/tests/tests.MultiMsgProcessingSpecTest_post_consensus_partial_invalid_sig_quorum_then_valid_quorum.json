@@ -1481,7 +1481,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "8b5a0ab838e9fd5bd5b3a7c0f6d4d8b81b03998145a8f14c94f7ce2cc09f6b97",
         "77b53272348efa895f1d256911e26abdf8681bd81d0bf530432f6da624e17f78",
@@ -1515,7 +1515,7 @@
         "1bffbcd03f1b74f3194bf68a2f7f310263bf7b9f9aaffa526d8dd67254a1cd73"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "got post-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature",
+      "ExpectedErrorCode": 34,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -3450,7 +3450,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "c530a60872f5f22823c40bdf8c2e025206c15a0e9df873d5e6f6547dd604473d",
         "3a6b9d314c7b1eb12338d4d6eb3434ccdf46b6ca5ad8ae4b52e40e4acbbf9ac3",
@@ -3484,7 +3484,7 @@
         "dd967356dfd693c84244ed6858755dd6bae39bd5487120b53459275ee7a29536"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "got post-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature",
+      "ExpectedErrorCode": 34,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -5869,7 +5869,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "8b5a0ab838e9fd5bd5b3a7c0f6d4d8b81b03998145a8f14c94f7ce2cc09f6b97",
         "77b53272348efa895f1d256911e26abdf8681bd81d0bf530432f6da624e17f78",
@@ -5933,7 +5933,7 @@
         "dd967356dfd693c84244ed6858755dd6bae39bd5487120b53459275ee7a29536"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "got post-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature",
+      "ExpectedErrorCode": 34,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -8198,7 +8198,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "92e146679fd7f065a7a1008b87d4e856565f2af6d764947efd109eee6e761a91",
         "d3de5a669546c43ca1021f53c7b4940530f353d26f265518e7073ccda1ca8d09",
@@ -8232,7 +8232,7 @@
         "2c2285404bd67b0b4c83cfb84b304011f3cf9fc54f389dd98db8eacf806bc839"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "got post-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature",
+      "ExpectedErrorCode": 34,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -10167,7 +10167,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "e494a5a522ac996c7dba7290f06e087262d402029804f462f33d97945f5cd803",
         "a0f62642832c7c52957d7b70b3ef1e989eaa4bd7ba19f89f88f585841e231629",
@@ -10201,7 +10201,7 @@
         "86acd2060da946db56ee718a4ede335fe088535f1d8b2e68f005f01f09435864"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "got post-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature",
+      "ExpectedErrorCode": 34,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -12586,7 +12586,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "92e146679fd7f065a7a1008b87d4e856565f2af6d764947efd109eee6e761a91",
         "d3de5a669546c43ca1021f53c7b4940530f353d26f265518e7073ccda1ca8d09",
@@ -12650,7 +12650,7 @@
         "86acd2060da946db56ee718a4ede335fe088535f1d8b2e68f005f01f09435864"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "got post-consensus quorum but it has invalid signatures: could not reconstruct beacon sig: failed to verify reconstruct signature: could not reconstruct a valid signature",
+      "ExpectedErrorCode": 34,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [

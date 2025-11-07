@@ -25,7 +25,7 @@ func MsgTypeUnknown() tests.SpecTest {
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
-		"message type is invalid",
+		types.MessageTypeInvalidErrorCode,
 		ks,
 	)
 

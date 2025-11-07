@@ -17,7 +17,7 @@ func CurrentInstanceFutureRound() tests.SpecTest {
 		testdoc.ControllerDecidedCurrentInstanceFutureRoundDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1),
 					testingutils.TestingPrepareMessage(ks.OperatorKeys[1], 1),
@@ -25,7 +25,7 @@ func CurrentInstanceFutureRound() tests.SpecTest {
 					testingutils.TestingPrepareMessage(ks.OperatorKeys[3], 3),
 					testingutils.TestingCommitMessage(ks.OperatorKeys[1], 1),
 					testingutils.TestingCommitMessage(ks.OperatorKeys[2], 2),
-					testingutils.TestingCommitMultiSignerMessageWithRound([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 2, 3}, 50),
+					testingutils.TestingCommitMultiSignerMessageWithRound([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 2, 3}, 10),
 				},
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt: 1,
@@ -34,7 +34,7 @@ func CurrentInstanceFutureRound() tests.SpecTest {
 			},
 		},
 		nil,
-		"",
+		0,
 		nil,
 		ks,
 	)

@@ -46,7 +46,7 @@ func LateRoundChangePastRound() tests.SpecTest {
 		testdoc.ControllerLateMsgLateRoundChangePastRoundDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue:    []byte{1, 2, 3, 4},
+				InputValue:    testingutils.TestingQBFTFullData,
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: testingutils.TestingQBFTFullData,
@@ -60,7 +60,7 @@ func LateRoundChangePastRound() tests.SpecTest {
 			},
 		},
 		nil,
-		"not processing consensus message since instance is already decided",
+		types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		nil,
 		ks,
 	)

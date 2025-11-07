@@ -16,14 +16,14 @@ func MsgError() tests.SpecTest {
 		testdoc.ControllerProcessMsgErrorDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingProposalMessageWithRound(ks.OperatorKeys[1], 1, 100),
 				},
 			},
 		},
 		nil,
-		"could not process msg: invalid signed message: proposal not justified: change round has no quorum",
+		types.RoundChangeNoQuorumErrorCode,
 		nil,
 		ks,
 	)

@@ -15,7 +15,7 @@ import (
 func InconsistentBeaconSigner() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "SignedSSVMessage has an invalid signature: unknown signer"
+	expectedErrorCode := types.SSVMessageHasInvalidSignatureErrorCode
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus inconsistent beacon signer",
@@ -34,10 +34,8 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: inconsistentBeaconSignerSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     inconsistentBeaconSignerSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-				ExpectedError:           expectedError,
+				ExpectedErrorCode:       expectedErrorCode,
 			},
 		},
 		ks,
@@ -55,10 +53,8 @@ func InconsistentBeaconSigner() tests.SpecTest {
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version))),
 			},
-			OutputMessages:         []*types.PartialSignatureMessages{},
-			BeaconBroadcastedRoots: []string{},
-			DontStartDuty:          true,
-			ExpectedError:          expectedError,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		},
 		)
 	}
@@ -76,10 +72,8 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				DontStartDuty:          true,
-				ExpectedError:          expectedError,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name: fmt.Sprintf("sync committee (%s)", version.String()),
@@ -92,10 +86,8 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				DontStartDuty:          true,
-				ExpectedError:          expectedError,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name: fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -108,10 +100,8 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				DontStartDuty:          true,
-				ExpectedError:          expectedError,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		}...)
 	}
@@ -131,10 +121,8 @@ func InconsistentBeaconSigner() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: inconsistentBeaconSignerProposerSC(version).Root(),
 			PostDutyRunnerState:     inconsistentBeaconSignerProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.PartialSignatureMessages{},
-			BeaconBroadcastedRoots:  []string{},
 			DontStartDuty:           true,
-			ExpectedError:           expectedError,
+			ExpectedErrorCode:       expectedErrorCode,
 		}
 	}
 
@@ -153,10 +141,8 @@ func InconsistentBeaconSigner() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: inconsistentBeaconSignerBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     inconsistentBeaconSignerBlindedProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.PartialSignatureMessages{},
-			BeaconBroadcastedRoots:  []string{},
 			DontStartDuty:           true,
-			ExpectedError:           expectedError,
+			ExpectedErrorCode:       expectedErrorCode,
 		}
 	}
 

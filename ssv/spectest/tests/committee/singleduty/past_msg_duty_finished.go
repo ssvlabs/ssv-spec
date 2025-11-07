@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
@@ -108,7 +109,7 @@ func PastMessageDutyFinished() tests.SpecTest {
 			return signed
 		}
 
-		expectedError := "failed processing consensus message: not processing consensus message since instance is already decided"
+		expectedErrorCode := types.SkipConsensusMessageAsInstanceIsDecidedErrorCode
 
 		attesterDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), validatorsIndexList, nil)
 		syncCommitteeDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), nil, validatorsIndexList)
@@ -124,8 +125,7 @@ func PastMessageDutyFinished() tests.SpecTest {
 					testingutils.TestingAttesterDutyForValidators(version, validatorsIndexList),
 					pastProposalMsgF(),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name: fmt.Sprintf("%v sync committee (%s)", numValidators, version.String()),
@@ -136,8 +136,7 @@ func PastMessageDutyFinished() tests.SpecTest {
 					testingutils.TestingSyncCommitteeDutyForValidators(version, validatorsIndexList),
 					pastProposalMsgF(),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name: fmt.Sprintf("%v attestation %v sync committee (%s)", numValidators, numValidators, version.String()),
@@ -148,8 +147,7 @@ func PastMessageDutyFinished() tests.SpecTest {
 					testingutils.TestingCommitteeDuty(validatorsIndexList, validatorsIndexList, version),
 					pastProposalMsgF(),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		}...)
 	}

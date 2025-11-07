@@ -1318,9 +1318,9 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding beacon vote: incorrect size"
+      "ExpectedErrorCode": 25
     },
     {
       "Name": "30 sync committee (phase0)",
@@ -2757,9 +2757,9 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding beacon vote: incorrect size"
+      "ExpectedErrorCode": 25
     },
     {
       "Name": "30 attestations 30 sync committees (phase0)",
@@ -4526,9 +4526,9 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding beacon vote: incorrect size"
+      "ExpectedErrorCode": 25
     },
     {
       "Name": "30 attestation (electra)",
@@ -5845,9 +5845,9 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding beacon vote: incorrect size"
+      "ExpectedErrorCode": 25
     },
     {
       "Name": "30 sync committee (electra)",
@@ -7284,9 +7284,9 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding beacon vote: incorrect size"
+      "ExpectedErrorCode": 25
     },
     {
       "Name": "30 attestations 30 sync committees (electra)",
@@ -9053,9 +9053,9 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: failed decoding beacon vote: incorrect size"
+      "ExpectedErrorCode": 25
     }
   ],
   "PrivateKeys": {

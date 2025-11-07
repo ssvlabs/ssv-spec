@@ -249,12 +249,12 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "80641c9de207e4fb82cb83ebbd5338437dc08cb6282ce47ff3ca66b406cd00b8"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -522,12 +522,12 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "d65c039becb42839faa125161a2a8feca88d363db1749556de9fe4ea01a9c982"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -810,13 +810,13 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "80641c9de207e4fb82cb83ebbd5338437dc08cb6282ce47ff3ca66b406cd00b8",
         "d65c039becb42839faa125161a2a8feca88d363db1749556de9fe4ea01a9c982"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -1095,12 +1095,12 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "60a8498be325eb6689e8501634726cac902261186ca94f95be92758b5a5fb3a7"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -1368,12 +1368,12 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "9d0869abc61d97929518c0f3b10e9aae344ea03621ca1fe815c47672165ea970"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -1656,13 +1656,13 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "60a8498be325eb6689e8501634726cac902261186ca94f95be92758b5a5fb3a7",
         "9d0869abc61d97929518c0f3b10e9aae344ea03621ca1fe815c47672165ea970"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [

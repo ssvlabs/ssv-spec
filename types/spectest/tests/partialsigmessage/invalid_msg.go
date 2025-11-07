@@ -20,6 +20,6 @@ func InvalidMsg() *MsgSpecTest {
 		[]*types.PartialSignatureMessages{msg},
 		nil,
 		nil,
-		"inconsistent signers",
+		types.InconsistentSignersErrorCode,
 	)
 }

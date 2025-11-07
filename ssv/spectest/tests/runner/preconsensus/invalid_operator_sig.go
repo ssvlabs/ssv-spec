@@ -14,7 +14,7 @@ import (
 // InvalidOperatorSignature tests a SignedSSVMessage with invalid signature
 func InvalidOperatorSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "SignedSSVMessage has an invalid signature: crypto/rsa: verification error"
+	expectedError := types.SSVMessageHasInvalidSignatureErrorCode
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus invalid operator signature",
 		testdoc.PreConsensusInvalidOperatorSignatureDoc,
@@ -30,7 +30,7 @@ func InvalidOperatorSignature() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 			{
 				Name:   "randao",
@@ -43,7 +43,7 @@ func InvalidOperatorSignature() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 			{
 				Name:   "randao (blinded block)",
@@ -56,7 +56,7 @@ func InvalidOperatorSignature() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedError,
 			},
 		},
 		ks,
@@ -73,7 +73,7 @@ func InvalidOperatorSignature() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedError,
 		})
 	}
 

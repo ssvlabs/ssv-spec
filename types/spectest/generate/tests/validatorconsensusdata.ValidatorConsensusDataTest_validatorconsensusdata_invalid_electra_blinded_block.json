@@ -17,5 +17,5 @@
     "Version": "electra",
     "DataSSZ": ""
   },
-  "ExpectedError": "could not unmarshal ssz: incorrect size"
+  "ExpectedErrorCode": 1
 }

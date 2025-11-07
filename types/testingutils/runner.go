@@ -126,7 +126,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 		switch role {
 		case types.RoleCommittee:
 			valCheck = ssv.BeaconVoteValueCheckF(km, TestingDutySlot,
-				sharePubKeys, TestingDutyEpoch)
+				sharePubKeys, TestBeaconVote.Source, TestBeaconVote.Target)
 		case types.RoleProposer:
 			valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
 				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey)
@@ -293,7 +293,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	switch role {
 	case types.RoleCommittee:
 		valCheck = ssv.BeaconVoteValueCheckF(km, TestingDutySlot,
-			[]types.ShareValidatorPK{share.SharePubKey}, TestingDutyEpoch)
+			[]types.ShareValidatorPK{share.SharePubKey}, TestBeaconVote.Source, TestBeaconVote.Target)
 	case types.RoleProposer:
 		valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
 			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, share.SharePubKey)

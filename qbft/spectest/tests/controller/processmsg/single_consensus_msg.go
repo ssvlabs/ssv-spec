@@ -15,14 +15,14 @@ func SingleConsensusMsg() tests.SpecTest {
 		testdoc.ControllerProcessMsgSingleConsensusMsgDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingProposalMessage(ks.OperatorKeys[1], 1),
 				},
 			},
 		},
 		nil,
-		"",
+		0,
 		nil,
 		ks,
 	)

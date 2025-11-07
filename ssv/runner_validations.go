@@ -13,7 +13,7 @@ import (
 
 func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, psigMsgs *types.PartialSignatureMessages) error {
 	if !b.hasRunningDuty() {
-		return errors.New("no running duty")
+		return types.NewError(types.NoRunningDutyErrorCode, "no running duty")
 	}
 
 	switch runner.(type) {
@@ -52,20 +52,20 @@ func (b *BaseRunner) FallBackAndVerifyEachSignature(container *PartialSigContain
 
 func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.PartialSignatureMessages) error {
 	if !b.hasRunningDuty() {
-		return errors.New("no running duty")
+		return types.NewError(types.NoRunningDutyErrorCode, "no running duty")
 	}
 
 	// TODO https://github.com/ssvlabs/ssv-spec/issues/142 need to fix with this issue solution instead.
 	if len(b.State.DecidedValue) == 0 {
-		return errors.New("no decided value")
+		return types.NewError(types.NoDecidedValueErrorCode, "no decided value")
 	}
 
 	if b.State.RunningInstance == nil {
-		return errors.New("no running consensus instance")
+		return types.NewError(types.NoRunningConsensusInstanceErrorCode, "no running consensus instance")
 	}
 	decided, decidedValueBytes := b.State.RunningInstance.IsDecided()
 	if !decided {
-		return errors.New("consensus instance not decided")
+		return types.NewError(types.ConsensusInstanceNotDecidedErrorCode, "consensus instance not decided")
 	}
 
 	switch runner.(type) {
@@ -120,7 +120,7 @@ func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val types.Encod
 
 func (b *BaseRunner) verifyExpectedRoot(runner Runner, psigMsgs *types.PartialSignatureMessages, expectedRootObjs []ssz.HashRoot, domain phase0.DomainType) error {
 	if len(expectedRootObjs) != len(psigMsgs.Messages) {
-		return errors.New("wrong expected roots count")
+		return types.NewError(types.WrongRootsCountErrorCode, "wrong expected roots count")
 	}
 
 	// convert expected roots to map and mark unique roots when verified
@@ -164,7 +164,7 @@ func (b *BaseRunner) verifyExpectedRoot(runner Runner, psigMsgs *types.PartialSi
 	// verify roots
 	for i, r := range sortedRoots {
 		if !bytes.Equal(sortedExpectedRoots[i][:], r[:]) {
-			return errors.New("wrong signing root")
+			return types.NewError(types.WrongSigningRootErrorCode, "wrong signing root")
 		}
 	}
 	return nil

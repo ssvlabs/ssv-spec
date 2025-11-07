@@ -25,7 +25,7 @@ func SignedMsgDuplicateSigners() tests.SpecTest {
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
-		"non unique signer",
+		types.NonUniqueSignerErrorCode,
 		ks,
 	)
 

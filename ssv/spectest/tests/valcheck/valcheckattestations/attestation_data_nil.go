@@ -23,9 +23,11 @@ func BeaconVoteDataNil() tests.SpecTest {
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,
 		input,
+		*consensusData.Source,
+		*consensusData.Target,
 		nil,
 		nil,
-		"attestation data source >= target",
+		types.AttestationSourceNotLessThanTargetErrorCode,
 		false,
 	)
 }

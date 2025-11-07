@@ -1768,9 +1768,9 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: attestation data source \u003e= target"
+      "ExpectedErrorCode": 28
     },
     {
       "Name": "30 attestations 30 sync committees (electra)",
@@ -3537,9 +3537,9 @@
         }
       ],
       "PostDutyCommitteeRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: attestation data source \u003e= target"
+      "ExpectedErrorCode": 28
     }
   ],
   "PrivateKeys": {

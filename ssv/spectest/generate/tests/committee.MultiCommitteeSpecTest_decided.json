@@ -199,7 +199,7 @@
         }
       ],
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 sync committee (phase0)",
@@ -401,7 +401,7 @@
         }
       ],
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 attestations 1 sync committees (phase0)",
@@ -620,7 +620,7 @@
         }
       ],
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "30 attestation (phase0)",
@@ -2210,7 +2210,7 @@
         }
       ],
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "30 sync committee (phase0)",
@@ -3920,7 +3920,7 @@
         }
       ],
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "30 attestations 30 sync committees (phase0)",
@@ -6140,7 +6140,7 @@
         }
       ],
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 attestation (electra)",
@@ -6338,7 +6338,7 @@
         }
       ],
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 sync committee (electra)",
@@ -6540,7 +6540,7 @@
         }
       ],
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 attestations 1 sync committees (electra)",
@@ -6759,7 +6759,7 @@
         }
       ],
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "30 attestation (electra)",
@@ -8349,7 +8349,7 @@
         }
       ],
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "30 sync committee (electra)",
@@ -10059,7 +10059,7 @@
         }
       ],
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "30 attestations 30 sync committees (electra)",
@@ -12279,7 +12279,7 @@
         }
       ],
       "BeaconBroadcastedRoots": null,
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     }
   ],
   "PrivateKeys": {

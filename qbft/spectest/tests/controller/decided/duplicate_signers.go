@@ -21,14 +21,14 @@ func DuplicateSigners() tests.SpecTest {
 		testdoc.ControllerDecidedDuplicateSignersDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					msg,
 				},
 			},
 		},
 		nil,
-		"invalid decided msg: invalid decided msg: signed commit invalid: invalid SignedSSVMessage: non unique signer",
+		types.CommitMessageInvalidErrorCode,
 		nil,
 		ks,
 	)

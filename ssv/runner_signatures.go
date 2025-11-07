@@ -1,6 +1,8 @@
 package ssv
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
@@ -40,13 +42,26 @@ func (b *BaseRunner) signBeaconObject(
 // Validate message content without verifying signatures
 func (b *BaseRunner) validatePartialSigMsgForSlot(
 	psigMsgs *types.PartialSignatureMessages,
-	slot phase0.Slot,
+	expectedSlot phase0.Slot,
 ) error {
 	if err := psigMsgs.Validate(); err != nil {
 		return errors.Wrap(err, "PartialSignatureMessages invalid")
 	}
-	if psigMsgs.Slot != slot {
-		return errors.New("invalid partial sig slot")
+
+	if psigMsgs.Slot < expectedSlot {
+		// This message is targeting a slot that's already passed - our runner cannot process it anymore
+		return types.WrapError(types.PartialSigMessageInvalidSlotErrorCode, fmt.Errorf(
+			"invalid partial sig slot: %d, expected slot: %d",
+			psigMsgs.Slot,
+			expectedSlot,
+		))
+	}
+	if psigMsgs.Slot > expectedSlot {
+		return types.WrapError(types.PartialSigMessageFutureSlotErrorCode, fmt.Errorf(
+			"future partial sig msg: message slot: %d, expected slot: %d",
+			psigMsgs.Slot,
+			expectedSlot,
+		))
 	}
 
 	// Get signer
@@ -59,7 +74,7 @@ func (b *BaseRunner) validatePartialSigMsgForSlot(
 		break
 	}
 	if shareSample == nil {
-		return errors.New("can not get committee because there is no share in runner")
+		return fmt.Errorf("can not get committee because there is no share in runner")
 	}
 	committee := shareSample.Committee
 
@@ -72,7 +87,7 @@ func (b *BaseRunner) validatePartialSigMsgForSlot(
 		}
 	}
 	if !signerInCommittee {
-		return errors.New("unknown signer")
+		return fmt.Errorf("unknown signer")
 	}
 
 	return nil
@@ -86,7 +101,7 @@ func (b *BaseRunner) validateValidatorIndexInPartialSigMsg(
 		// Check if it has the validator index share
 		_, ok := b.Share[msg.ValidatorIndex]
 		if !ok {
-			return errors.New("unknown validator index")
+			return types.NewError(types.UnknownValidatorIndexErrorCode, "unknown validator index")
 		}
 	}
 	return nil

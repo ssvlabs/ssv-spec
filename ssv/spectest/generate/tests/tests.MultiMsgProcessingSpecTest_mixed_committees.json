@@ -1467,7 +1467,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "8b5a0ab838e9fd5bd5b3a7c0f6d4d8b81b03998145a8f14c94f7ce2cc09f6b97",
         "77b53272348efa895f1d256911e26abdf8681bd81d0bf530432f6da624e17f78",
@@ -1501,7 +1501,7 @@
         "f40ba025a9a1efb7cc5f24c153a02e03e784dd0f9be8909fd1576d72a58e471c"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -3422,7 +3422,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "c530a60872f5f22823c40bdf8c2e025206c15a0e9df873d5e6f6547dd604473d",
         "3a6b9d314c7b1eb12338d4d6eb3434ccdf46b6ca5ad8ae4b52e40e4acbbf9ac3",
@@ -3456,7 +3456,7 @@
         "dd967356dfd693c84244ed6858755dd6bae39bd5487120b53459275ee7a29536"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -5827,7 +5827,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "8b5a0ab838e9fd5bd5b3a7c0f6d4d8b81b03998145a8f14c94f7ce2cc09f6b97",
         "77b53272348efa895f1d256911e26abdf8681bd81d0bf530432f6da624e17f78",
@@ -5891,7 +5891,7 @@
         "dd967356dfd693c84244ed6858755dd6bae39bd5487120b53459275ee7a29536"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -8142,7 +8142,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "92e146679fd7f065a7a1008b87d4e856565f2af6d764947efd109eee6e761a91",
         "d3de5a669546c43ca1021f53c7b4940530f353d26f265518e7073ccda1ca8d09",
@@ -8176,7 +8176,7 @@
         "fabd8439ebd75d5fd43ae82437fc6b03b51596270027346abd221027b76e1dd5"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -10097,7 +10097,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "e494a5a522ac996c7dba7290f06e087262d402029804f462f33d97945f5cd803",
         "a0f62642832c7c52957d7b70b3ef1e989eaa4bd7ba19f89f88f585841e231629",
@@ -10131,7 +10131,7 @@
         "86acd2060da946db56ee718a4ede335fe088535f1d8b2e68f005f01f09435864"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -12502,7 +12502,7 @@
       ],
       "DecidedSlashable": false,
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
+      "OutputMessages": null,
       "BeaconBroadcastedRoots": [
         "92e146679fd7f065a7a1008b87d4e856565f2af6d764947efd109eee6e761a91",
         "d3de5a669546c43ca1021f53c7b4940530f353d26f265518e7073ccda1ca8d09",
@@ -12566,7 +12566,7 @@
         "86acd2060da946db56ee718a4ede335fe088535f1d8b2e68f005f01f09435864"
       ],
       "DontStartDuty": true,
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [

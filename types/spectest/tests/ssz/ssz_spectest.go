@@ -11,12 +11,12 @@ import (
 )
 
 type SSZSpecTest struct {
-	Name          string
-	Type          string
-	Documentation string
-	Data          []byte
-	ExpectedRoot  types.ExpectedRoot
-	ExpectedError string
+	Name              string
+	Type              string
+	Documentation     string
+	Data              []byte
+	ExpectedRoot      types.ExpectedRoot
+	ExpectedErrorCode int
 }
 
 func (test *SSZSpecTest) TestName() string {
@@ -43,13 +43,13 @@ func (test *SSZSpecTest) Run(t *testing.T) {
 	require.EqualValues(t, test.ExpectedRoot, root)
 }
 
-func NewSSZSpecTest(name, documentation string, data []byte, expectedRoot [32]byte, expectedError string) *SSZSpecTest {
+func NewSSZSpecTest(name, documentation string, data []byte, expectedRoot [32]byte, expectedErrorCode int) *SSZSpecTest {
 	return &SSZSpecTest{
-		Name:          name,
-		Type:          testdoc.SSZSpecTestType,
-		Documentation: documentation,
-		Data:          data,
-		ExpectedRoot:  expectedRoot,
-		ExpectedError: expectedError,
+		Name:              name,
+		Type:              testdoc.SSZSpecTestType,
+		Documentation:     documentation,
+		Data:              data,
+		ExpectedRoot:      expectedRoot,
+		ExpectedErrorCode: expectedErrorCode,
 	}
 }

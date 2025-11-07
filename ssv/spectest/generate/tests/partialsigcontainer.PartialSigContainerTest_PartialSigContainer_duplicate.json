@@ -24,7 +24,7 @@
       "ValidatorIndex": "1"
     }
   ],
-  "ExpectedError": "could not reconstruct a valid signature",
+  "ExpectedErrorCode": 34,
   "ExpectedResult": null,
   "ExpectedQuorum": false,
   "PrivateKeys": {

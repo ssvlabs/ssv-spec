@@ -29,6 +29,6 @@ func VersionedBlindedBlockConsensusDataNil() *ProposerSpecTest {
 		nil,
 		[32]byte{},
 		[32]byte{},
-		"could not unmarshal ssz: incorrect size",
+		types.UnmarshalSSZErrorCode,
 	)
 }

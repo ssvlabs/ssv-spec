@@ -25,14 +25,14 @@ func Invalid() tests.SpecTest {
 		testdoc.ControllerDecidedInvalidDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					msg,
 				},
 			},
 		},
 		nil,
-		"could not process msg: invalid signed message: invalid SignedSSVMessage: no signers",
+		types.NoSignersErrorCode,
 		nil,
 		ks,
 	)

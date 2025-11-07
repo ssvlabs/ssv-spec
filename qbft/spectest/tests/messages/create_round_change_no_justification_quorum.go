@@ -22,7 +22,7 @@ func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 	test := tests.NewCreateMsgSpecTest(
 		"create round change no justification quorum",
 		testdoc.MessagesCreateRoundChangeNoJustificationQuorumDoc,
-		[32]byte{1, 2, 3, 4},
+		testingutils.TestingQBFTRootData,
 		testingutils.TestingQBFTFullData,
 		qbft.FirstRound,
 		nil,
@@ -30,7 +30,7 @@ func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 		tests.CreateRoundChange,
 		sc.Root(),
 		sc.ExpectedState,
-		"",
+		0,
 		ks,
 	)
 

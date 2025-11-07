@@ -29,8 +29,7 @@ func WrongBeaconVote() tests.SpecTest {
 					ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestWrongBeaconVoteByts,
 					qbft.Height(testingutils.TestingDutySlotV(version))),
 			},
-			OutputMessages: []*types.PartialSignatureMessages{},
-			ExpectedError:  "failed processing consensus message: could not process msg: invalid signed message: proposal not justified: proposal fullData invalid: attestation data source >= target",
+			ExpectedErrorCode: types.AttestationSourceNotLessThanTargetErrorCode,
 		})
 	}
 

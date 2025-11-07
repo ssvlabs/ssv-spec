@@ -3,6 +3,7 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
@@ -62,7 +63,7 @@ func (pcs *State) MarshalJSON() ([]byte, error) {
 		} else if aggregatorCommitteeDuty, ok := pcs.StartingDuty.(*types.AggregatorCommitteeDuty); ok {
 			alias.AggregatorCommitteeDuty = aggregatorCommitteeDuty
 		} else {
-			return nil, errors.New("can't marshal because BaseRunner.State.StartingDuty isn't ValidatorDuty, CommitteeDuty, or AggregatorCommitteeDuty")
+			return nil, fmt.Errorf("can't marshal because BaseRunner.State.StartingDuty isn't ValidatorDuty, CommitteeDuty, or AggregatorCommitteeDuty")
 		}
 	}
 	byts, err := json.Marshal(alias)

@@ -19,7 +19,7 @@ func NoQuorum() tests.SpecTest {
 		testdoc.ControllerDecidedNoQuorumDoc,
 		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					testingutils.TestingCommitMultiSignerMessageWithHeight(
 						[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2]},
@@ -31,7 +31,7 @@ func NoQuorum() tests.SpecTest {
 		},
 		nil,
 		// TODO: before merge ask engineering how often they see such message in production
-		"could not process msg: invalid signed message: did not receive proposal for this round",
+		types.NoProposalForCurrentRoundErrorCode,
 		nil,
 		ks,
 	)

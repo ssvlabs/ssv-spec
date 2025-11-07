@@ -102,7 +102,7 @@
           ]
         }
       ],
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "ValidatorDuty": {
         "Type": 4,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -206,7 +206,7 @@
           ]
         }
       ],
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "ValidatorDuty": {
         "Type": 1,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -306,7 +306,7 @@
           ]
         }
       ],
-      "ExpectedError": "",
+      "ExpectedErrorCode": 0,
       "ValidatorDuty": {
         "Type": 2,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -392,8 +392,8 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
-      "ExpectedError": "",
+      "OutputMessages": null,
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "0",
         "ValidatorDuties": [
@@ -484,8 +484,8 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
-      "ExpectedError": "",
+      "OutputMessages": null,
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "0",
         "ValidatorDuties": [
@@ -580,8 +580,8 @@
         }
       },
       "PostDutyRunnerStateRoot": "",
-      "OutputMessages": [],
-      "ExpectedError": "",
+      "OutputMessages": null,
+      "ExpectedErrorCode": 0,
       "CommitteeDuty": {
         "Slot": "0",
         "ValidatorDuties": [

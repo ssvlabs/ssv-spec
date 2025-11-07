@@ -4,11 +4,13 @@ import (
 	reflect2 "reflect"
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
+
+	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
-	"github.com/stretchr/testify/require"
 )
 
 type CommitteeMemberTest struct {
@@ -19,7 +21,7 @@ type CommitteeMemberTest struct {
 	Message               types.SignedSSVMessage
 	ExpectedHasQuorum     bool
 	ExpectedFullCommittee bool
-	ExpectedError         string
+	ExpectedErrorCode     int
 }
 
 func (test *CommitteeMemberTest) TestName() string {
@@ -38,14 +40,9 @@ func (test *CommitteeMemberTest) GetUniqueMessageSignersCount() int {
 }
 
 func (test *CommitteeMemberTest) Run(t *testing.T) {
-
 	// Validate message
 	err := test.Message.Validate()
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, err, test.ExpectedError)
-	} else {
-		require.NoError(t, err)
-	}
+	tests.AssertErrorCode(t, test.ExpectedErrorCode, err)
 
 	// Get unique signers
 	numSigners := test.GetUniqueMessageSignersCount()
@@ -57,7 +54,7 @@ func (test *CommitteeMemberTest) Run(t *testing.T) {
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
 
-func NewCommitteeMemberTest(name, documentation string, committeeMember types.CommitteeMember, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedError string) *CommitteeMemberTest {
+func NewCommitteeMemberTest(name, documentation string, committeeMember types.CommitteeMember, message types.SignedSSVMessage, expectedHasQuorum bool, expectedFullCommittee bool, expectedErrorCode int) *CommitteeMemberTest {
 	return &CommitteeMemberTest{
 		Name:                  name,
 		Type:                  testdoc.CommitteeMemberTestType,
@@ -66,6 +63,6 @@ func NewCommitteeMemberTest(name, documentation string, committeeMember types.Co
 		Message:               message,
 		ExpectedHasQuorum:     expectedHasQuorum,
 		ExpectedFullCommittee: expectedFullCommittee,
-		ExpectedError:         expectedError,
+		ExpectedErrorCode:     expectedErrorCode,
 	}
 }

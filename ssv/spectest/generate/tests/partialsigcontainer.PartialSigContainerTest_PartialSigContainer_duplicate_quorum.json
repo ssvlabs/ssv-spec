@@ -30,7 +30,7 @@
       "ValidatorIndex": "1"
     }
   ],
-  "ExpectedError": "",
+  "ExpectedErrorCode": 0,
   "ExpectedResult": "riIA7vPqM9iXj6OkcymaiSYcfQVZWzRcNHElhvAiX7U3L2GkV4raAgg2MbszHPnKDyfHEetyYbsWs2qPMgeMN71dcYA8JWWTtK5ap9dQV9m73i/LmoV/4EZfW4dJf4vV",
   "ExpectedQuorum": true,
   "PrivateKeys": {

@@ -297,7 +297,7 @@
       "BeaconBroadcastedRoots": [
         "9443cf977afd954e5b68bcd080e3b9639521b12f46ec66a0b229daba76ab4a52"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "30 aggregator (phase0)",
@@ -2188,7 +2188,7 @@
         "751440a7878f5e18b1a88380551eb5f29f674e78e39181d93fb8bb0fab3f671d",
         "0b5a7953cac74197d9ca28cb17a5198368a99fb6bc0ba22ec4d3e65825408c43"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 aggregator (electra)",
@@ -2484,7 +2484,7 @@
       "BeaconBroadcastedRoots": [
         "8df05695f7ed5370afe3fc62175e99d7525244c70094274ab921cdb2e5bd93ae"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "30 aggregator (electra)",
@@ -4375,7 +4375,7 @@
         "6dc3e7a634ee37073b4fb2109f19416a13c1dd2357fd0f365cdbe281ecae3439",
         "682677a0a486bca5e0ef4abd65af720fd6bcd86ce6860e530044e23a4d620a8e"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 aggregator and sync committee contribution (phase0)",
@@ -4701,7 +4701,7 @@
         "c14fddb62b97759a29ee75787d805edcbfdface13f64d9cacbbdd7a9db3fbfee",
         "975f3f9f02f55057f483e65aace1bc3f76b0d15ab243ddd0305cb168b8836205"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "20 aggregator and sync committee contribution (phase0)",
@@ -6642,7 +6642,7 @@
         "88bec7d2ea1a8472537229636de33de36d610b5e8a846615a4807667b8d76d6b",
         "5fb9bdb98d5241f059691afcfb2b5c98272860862da4e7becbda824719eff642"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "1 sync committee contribution (phase0)",
@@ -6992,7 +6992,7 @@
         "c14fddb62b97759a29ee75787d805edcbfdface13f64d9cacbbdd7a9db3fbfee",
         "975f3f9f02f55057f483e65aace1bc3f76b0d15ab243ddd0305cb168b8836205"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     },
     {
       "Name": "20 sync committee contribution (phase0)",
@@ -9413,7 +9413,7 @@
         "88bec7d2ea1a8472537229636de33de36d610b5e8a846615a4807667b8d76d6b",
         "5fb9bdb98d5241f059691afcfb2b5c98272860862da4e7becbda824719eff642"
       ],
-      "ExpectedError": ""
+      "ExpectedErrorCode": 0
     }
   ],
   "PrivateKeys": {
