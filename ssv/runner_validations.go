@@ -16,20 +16,25 @@ func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, psigMsgs *types.Part
 		return types.NewError(types.NoRunningDutyErrorCode, "no running duty")
 	}
 
-	if err := b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot()); err != nil {
-		return err
-	}
+	switch runner.(type) {
+	case *AggregatorCommitteeRunner:
+		return b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot())
+	default:
+		if err := b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot()); err != nil {
+			return err
+		}
 
-	if err := b.validateValidatorIndexInPartialSigMsg(psigMsgs); err != nil {
-		return err
-	}
+		if err := b.validateValidatorIndexInPartialSigMsg(psigMsgs); err != nil {
+			return err
+		}
 
-	roots, domain, err := runner.expectedPreConsensusRootsAndDomain()
-	if err != nil {
-		return err
-	}
+		roots, domain, err := runner.expectedPreConsensusRootsAndDomain()
+		if err != nil {
+			return err
+		}
 
-	return b.verifyExpectedRoot(runner, psigMsgs, roots, domain)
+		return b.verifyExpectedRoot(runner, psigMsgs, roots, domain)
+	}
 }
 
 // Verify each signature in container removing the invalid ones
@@ -63,12 +68,18 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 		return types.NewError(types.ConsensusInstanceNotDecidedErrorCode, "consensus instance not decided")
 	}
 
-	// TODO maybe nicer to do this without switch
 	switch runner.(type) {
 	case *CommitteeRunner:
 		decidedValue := &types.BeaconVote{}
 		if err := decidedValue.Decode(decidedValueBytes); err != nil {
 			return errors.Wrap(err, "failed to parse decided value to BeaconData")
+		}
+
+		return b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot())
+	case *AggregatorCommitteeRunner:
+		decidedValue := &types.AggregatorCommitteeConsensusData{}
+		if err := decidedValue.Decode(decidedValueBytes); err != nil {
+			return errors.Wrap(err, "failed to parse decided value to AggregatorCommitteeConsensusData")
 		}
 
 		return b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot())

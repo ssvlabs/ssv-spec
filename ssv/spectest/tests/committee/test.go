@@ -84,7 +84,7 @@ func (test *CommitteeSpecTest) runPreTesting() error {
 		var err error
 		switch input := input.(type) {
 		case types.Duty:
-			err = test.Committee.StartDuty(input.(*types.CommitteeDuty))
+			err = test.Committee.StartDuty(input)
 		case *types.SignedSSVMessage:
 			err = test.Committee.ProcessMessage(input)
 		default:

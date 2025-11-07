@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -14,7 +15,7 @@ import (
 var TestAggregatorConsensusData = func(version spec.DataVersion) *types.ValidatorConsensusData {
 	return &types.ValidatorConsensusData{
 		Duty:    *TestingAggregatorDuty(version),
-		DataSSZ: TestingAggregateAndProofBytesV(version),
+		DataSSZ: TestingAggregateAndProofBytesV(version, TestingValidatorIndex),
 		Version: version,
 	}
 }

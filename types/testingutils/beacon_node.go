@@ -238,10 +238,28 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 	return nil
 }
 
+// IsAggregator returns true if the validator is selected as an aggregator
+func (bn *TestingBeaconNode) IsAggregator(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, slotSig []byte) bool {
+	// Simple mock: always return true for testing
+	// In production, this would check the selection proof against the committee modulo
+	return true
+}
+
+// GetAggregateAttestation returns the aggregate attestation for the given slot and committee
+func (bn *TestingBeaconNode) GetAggregateAttestation(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, error) {
+	version := VersionBySlot(slot)
+	if version == spec.DataVersionElectra {
+		return TestingElectraAggregateAndProof(TestingValidatorIndex).Aggregate, nil
+	} else {
+		return TestingPhase0AggregateAndProof(TestingValidatorIndex).Aggregate, nil
+	}
+}
+
 // SubmitAggregateSelectionProof returns an AggregateAndProof object
+// Deprecated: Use IsAggregator and GetAggregateAttestation instead. Kept for backward compatibility.
 func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, index phase0.ValidatorIndex, slotSig []byte) (ssz.Marshaler, spec.DataVersion, error) {
 	version := VersionBySlot(slot)
-	return TestingAggregateAndProofV(version), version, nil
+	return TestingAggregateAndProofV(version, TestingValidatorIndex), version, nil
 }
 
 // SubmitSignedAggregateSelectionProof broadcasts a signed aggregator msg
@@ -286,20 +304,30 @@ func (bn *TestingBeaconNode) SubmitSyncMessages(msgs []*altair.SyncCommitteeMess
 }
 
 // IsSyncCommitteeAggregator returns tru if aggregator
-func (bn *TestingBeaconNode) IsSyncCommitteeAggregator(proof []byte) (bool, error) {
+func (bn *TestingBeaconNode) IsSyncCommitteeAggregator(proof []byte) bool {
 	if len(bn.syncCommitteeAggregatorRoots) != 0 {
 		if val, found := bn.syncCommitteeAggregatorRoots[hex.EncodeToString(proof)]; found {
-			return val, nil
+			return val
 		}
-		return false, nil
+		return false
 	}
-	return true, nil
+	return true
 }
 
 // SyncCommitteeSubnetID returns sync committee subnet ID from subcommittee index
-func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index phase0.CommitteeIndex) (uint64, error) {
-	// each subcommittee index correlates to TestingContributionProofRoots by index
-	return uint64(index), nil
+func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index phase0.CommitteeIndex) uint64 {
+	// Real calculation:
+	// Each subnet has syncCommitteeSize / subnetCount validators
+	// subnetCount is 4 for mainnet
+	// const subnetCount = 4
+	// const syncCommitteeSize = 512
+	// const subnetSize = syncCommitteeSize / subnetCount
+	// return index / subnetSize
+
+	// For testing, we use a simplified approach where subnet ID equals the index
+	// This means validator at index 0 is in subnet 0, index 1 in subnet 1, etc.
+	// In production, multiple validators share the same subnet (128 validators per subnet)
+	return uint64(index)
 }
 
 // GetSyncCommitteeContribution returns

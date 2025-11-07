@@ -57,12 +57,12 @@ func BeaconVoteValueCheckF(
 		}
 
 		if !reflect.DeepEqual(bv.Source, expectedSource) {
-			return types.NewError(types.CheckpointMismatch, fmt.Sprintf("attestation data source checkpoint %v does not match expected %v", 
-		bv.Source, expectedSource))
+			return types.NewError(types.CheckpointMismatch, fmt.Sprintf("attestation data source checkpoint %v does not match expected %v",
+				bv.Source, expectedSource))
 		}
-		
+
 		if !reflect.DeepEqual(bv.Target, expectedTarget) {
-			return types.NewError(types.CheckpointMismatch, fmt.Sprintf("attestation data target checkpoint %v does not match expected %v", 
+			return types.NewError(types.CheckpointMismatch, fmt.Sprintf("attestation data target checkpoint %v does not match expected %v",
 				bv.Target, expectedTarget))
 		}
 
@@ -168,6 +168,31 @@ func SyncCommitteeContributionValueCheckF(
 		//	// TODO check beacon block root somehow? maybe all beacon block roots should be equal?
 		//
 		//}
+		return nil
+	}
+}
+
+func AggregatorCommitteeValueCheckF(
+	signer types.BeaconSigner,
+	network types.BeaconNetwork,
+) qbft.ProposedValueCheckF {
+	return func(data []byte) error {
+		cd := &types.AggregatorCommitteeConsensusData{}
+		if err := cd.Decode(data); err != nil {
+			return errors.Wrap(err, "failed decoding aggregator committee consensus data")
+		}
+		if err := cd.Validate(); err != nil {
+			return errors.Wrap(err, "invalid value")
+		}
+
+		// Basic validation - consensus data should have either aggregator or sync committee data
+		hasAggregators := len(cd.Aggregators) > 0
+		hasContributors := len(cd.Contributors) > 0
+
+		if !hasAggregators && !hasContributors {
+			return errors.New("no aggregators or sync committee contributors in consensus data")
+		}
+
 		return nil
 	}
 }

@@ -26,7 +26,7 @@ func UnmatchedSourceRoot() tests.SpecTest {
 	expectedSourceCheckpoint := phase0.Checkpoint{
 		Epoch: 0,
 		// different from above
-		Root:  phase0.Root{9, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
+		Root: phase0.Root{9, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2},
 	}
 	expectedTargetCheckpoint := phase0.Checkpoint{
 		Epoch: 2,

@@ -207,7 +207,6 @@ const ValCheckAttestationUnmatchedTargetEpochDoc = "Tests attestation value chec
 const ValCheckAttestationUnmatchedSourceRootDoc = "Tests attestation value check with unmatched expected source root from operator's own view (source root differs from expected)"
 const ValCheckAttestationUnmatchedTargetRootDoc = "Tests attestation value check with unmatched target root from operator's own view (target root differs from expected)"
 
-
 // Documentation for valcheckduty tests
 const ValCheckDutyFarFutureDutySlotDoc = "Tests duty value check with duty slot too far in the future"
 const ValCheckDutyWrongDutyTypeDoc = "Tests duty value check with wrong duty type"

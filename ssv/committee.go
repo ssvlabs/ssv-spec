@@ -10,10 +10,10 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-type CreateRunnerFn func(shareMap map[phase0.ValidatorIndex]*types.Share) *CommitteeRunner
+type CreateRunnerFn func(shareMap map[phase0.ValidatorIndex]*types.Share) Runner
 
 type Committee struct {
-	Runners         map[phase0.Slot]*CommitteeRunner
+	Runners         map[phase0.Slot]Runner
 	CommitteeMember types.CommitteeMember
 	CreateRunnerFn  CreateRunnerFn
 	Share           map[phase0.ValidatorIndex]*types.Share
@@ -26,7 +26,7 @@ func NewCommittee(
 	createRunnerFn CreateRunnerFn,
 ) *Committee {
 	c := &Committee{
-		Runners:         make(map[phase0.Slot]*CommitteeRunner),
+		Runners:         make(map[phase0.Slot]Runner),
 		CommitteeMember: committeeMember,
 		CreateRunnerFn:  createRunnerFn,
 		Share:           share,
@@ -35,35 +35,69 @@ func NewCommittee(
 }
 
 // StartDuty starts a new duty for the given slot
-func (c *Committee) StartDuty(duty *types.CommitteeDuty) error {
-	if len(duty.ValidatorDuties) == 0 {
-		return types.NewError(types.NoBeaconDutiesErrorCode, "no beacon duties")
-	}
-	if _, exists := c.Runners[duty.Slot]; exists {
-		return fmt.Errorf("CommitteeRunner for slot %d already exists", duty.Slot)
+func (c *Committee) StartDuty(duty types.Duty) error {
+	slot := duty.DutySlot()
+	if _, exists := c.Runners[slot]; exists {
+		return fmt.Errorf("Runner for slot %d already exists", slot)
 	}
 
-	// Filter duty and create share map according validators that belong to c.Share
-	dutyShares := make(map[phase0.ValidatorIndex]*types.Share)
-	filteredDuty := &types.CommitteeDuty{
-		Slot: duty.Slot,
-	}
-
-	for _, bduty := range duty.ValidatorDuties {
-		if _, exists := c.Share[bduty.ValidatorIndex]; !exists {
-			continue
+	// Handle different duty types
+	switch d := duty.(type) {
+	case *types.CommitteeDuty:
+		if len(d.ValidatorDuties) == 0 {
+			return types.NewError(types.NoBeaconDutiesErrorCode, "no beacon duties")
 		}
-		dutyShares[bduty.ValidatorIndex] = c.Share[bduty.ValidatorIndex]
-		filteredDuty.ValidatorDuties = append(filteredDuty.ValidatorDuties, bduty)
+
+		// Filter duty and create share map according validators that belong to c.Share
+		dutyShares := make(map[phase0.ValidatorIndex]*types.Share)
+		filteredDuty := &types.CommitteeDuty{
+			Slot: d.Slot,
+		}
+
+		for _, bduty := range d.ValidatorDuties {
+			if _, exists := c.Share[bduty.ValidatorIndex]; !exists {
+				continue
+			}
+			dutyShares[bduty.ValidatorIndex] = c.Share[bduty.ValidatorIndex]
+			filteredDuty.ValidatorDuties = append(filteredDuty.ValidatorDuties, bduty)
+		}
+
+		if len(dutyShares) == 0 {
+			return types.NewError(types.NoValidatorSharesErrorCode, "no shares for duty's validators")
+		}
+
+		c.Runners[slot] = c.CreateRunnerFn(dutyShares)
+		return c.Runners[slot].StartNewDuty(filteredDuty, c.CommitteeMember.GetQuorum())
+
+	case *types.AggregatorCommitteeDuty:
+		if len(d.ValidatorDuties) == 0 {
+			return types.NewError(types.NoBeaconDutiesErrorCode, "no beacon duties")
+		}
+
+		// Filter duty and create share map according to validators that belong to c.Share
+		dutyShares := make(map[phase0.ValidatorIndex]*types.Share)
+		filteredDuty := &types.AggregatorCommitteeDuty{
+			Slot: d.Slot,
+		}
+
+		for _, bduty := range d.ValidatorDuties {
+			if _, exists := c.Share[bduty.ValidatorIndex]; !exists {
+				continue
+			}
+			dutyShares[bduty.ValidatorIndex] = c.Share[bduty.ValidatorIndex]
+			filteredDuty.ValidatorDuties = append(filteredDuty.ValidatorDuties, bduty)
+		}
+
+		if len(dutyShares) == 0 {
+			return types.NewError(types.NoValidatorSharesErrorCode, "no shares for duty's validators")
+		}
+
+		c.Runners[slot] = c.CreateRunnerFn(dutyShares)
+		return c.Runners[slot].StartNewDuty(filteredDuty, c.CommitteeMember.GetQuorum())
+
+	default:
+		return errors.Errorf("unsupported duty type: %T", duty)
 	}
-
-	if len(dutyShares) == 0 {
-		return types.NewError(types.NoValidatorSharesErrorCode, "no shares for duty's validators")
-	}
-
-	c.Runners[filteredDuty.Slot] = c.CreateRunnerFn(dutyShares)
-
-	return c.Runners[filteredDuty.Slot].StartNewDuty(filteredDuty, c.CommitteeMember.GetQuorum())
 }
 
 // ProcessMessage processes Network Message of all types
@@ -114,18 +148,23 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 			return errors.Wrap(err, "invalid PartialSignatureMessages")
 		}
 
-		if pSigMessages.Type == types.PostConsensusPartialSig {
-			runner, exists := c.Runners[pSigMessages.Slot]
-			if !exists {
-				return types.NewError(types.NoRunnerForSlotErrorCode, "no runner found for message's slot")
-			}
+		runner, exists := c.Runners[pSigMessages.Slot]
+		if !exists {
+			return types.NewError(types.NoRunnerForSlotErrorCode, "no runner found for message's slot")
+		}
+
+		switch pSigMessages.Type {
+		case types.PostConsensusPartialSig:
 			return runner.ProcessPostConsensus(pSigMessages)
+		case types.SelectionProofPartialSig, types.ContributionProofs, types.AggregatorCommitteePartialSig:
+			// Pre-consensus messages
+			return runner.ProcessPreConsensus(pSigMessages)
+		default:
+			return errors.Errorf("unknown partial signature message type: %v", pSigMessages.Type)
 		}
 	default:
 		return fmt.Errorf("unknown msg")
 	}
-	return nil
-
 }
 
 func (c *Committee) validateMessage(msg *types.SSVMessage) error {

@@ -77,6 +77,10 @@ const (
 	InstanceAlreadyRunningErrorCode
 	StartInstanceErrorCode
 	TimeoutInstanceErrorCode
+	AggCommAggAttCntMismatchErrorCode
+	AggCommAggCommIdxCntMismatchErrorCode
+	AggCommContributorsContributionsCntMismatchErrorCode
+	AggCommSubnetNotInSCSubnetsErrorCode
 )
 
 type Error struct {

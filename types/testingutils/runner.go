@@ -21,6 +21,14 @@ var CommitteeRunnerWithShareMap = func(shareMap map[phase0.ValidatorIndex]*types
 	return baseRunnerWithShareMap(types.RoleCommittee, shareMap)
 }
 
+var AggregatorCommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.RoleAggregatorCommittee, keySet)
+}
+
+var AggregatorCommitteeRunnerWithShareMap = func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+	return baseRunnerWithShareMap(types.RoleAggregatorCommittee, shareMap)
+}
+
 var AttesterRunner7Operators = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleCommittee, keySet)
 }
@@ -93,7 +101,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 
 		// Identifier
 		var ownerID []byte
-		if role == types.RoleCommittee {
+		if role == types.RoleCommittee || role == types.RoleAggregatorCommittee {
 			committee := make([]uint64, 0)
 			for _, op := range keySetInstance.Committee() {
 				committee = append(committee, op.Signer)
@@ -128,6 +136,8 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 		case types.RoleSyncCommitteeContribution:
 			valCheck = ssv.SyncCommitteeContributionValueCheckF(km, types.BeaconTestNetwork,
 				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex)
+		case types.RoleAggregatorCommittee:
+			valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
 		default:
 			valCheck = nil
 		}
@@ -212,6 +222,17 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			km,
 			opSigner,
 		)
+	case types.RoleAggregatorCommittee:
+		runner, err = ssv.NewAggregatorCommitteeRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+			valCheck,
+		)
 	case UnknownDutyType:
 		runner, err = ssv.NewCommitteeRunner(
 			types.BeaconTestNetwork,
@@ -282,6 +303,8 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	case types.RoleSyncCommitteeContribution:
 		valCheck = ssv.SyncCommitteeContributionValueCheckF(km, types.BeaconTestNetwork,
 			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex)
+	case types.RoleAggregatorCommittee:
+		valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
 	default:
 		valCheck = nil
 	}
@@ -368,6 +391,17 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			net,
 			km,
 			opSigner,
+		)
+	case types.RoleAggregatorCommittee:
+		runner, err = ssv.NewAggregatorCommitteeRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+			valCheck,
 		)
 	case UnknownDutyType:
 		runner, err = ssv.NewCommitteeRunner(

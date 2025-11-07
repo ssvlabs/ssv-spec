@@ -251,6 +251,7 @@ func (cd *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, si
 	}
 }
 
+// TODO: Phase 3 - Remove this method when migrating to aggregator committee runner
 func (cd *ValidatorConsensusData) GetAggregateAndProof() (*spec.VersionedAggregateAndProof, ssz.HashRoot, error) {
 	switch cd.Version {
 	case spec.DataVersionPhase0:
@@ -307,6 +308,7 @@ func (cd *ValidatorConsensusData) GetAggregateAndProof() (*spec.VersionedAggrega
 	}
 }
 
+// TODO: Phase 3 - Remove this method when migrating to aggregator committee runner
 func (cd *ValidatorConsensusData) GetSyncCommitteeContributions() (Contributions, error) {
 	ret := Contributions{}
 	if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
@@ -321,4 +323,166 @@ func (cd *ValidatorConsensusData) Encode() ([]byte, error) {
 
 func (cd *ValidatorConsensusData) Decode(data []byte) error {
 	return cd.UnmarshalSSZ(data)
+}
+
+// AssignedAggregator represents a validator that has been assigned as an aggregator or sync committee contributor
+type AssignedAggregator struct {
+	ValidatorIndex phase0.ValidatorIndex
+	SelectionProof phase0.BLSSignature `ssz-size:"96"`
+	CommitteeIndex uint64
+}
+
+// AggregatorCommitteeConsensusData is the consensus data for the aggregator committee runner
+type AggregatorCommitteeConsensusData struct {
+	Version spec.DataVersion
+
+	// Aggregator duties
+	Aggregators                 []AssignedAggregator `ssz-max:"1000"`
+	AggregatorsCommitteeIndexes []uint64             `ssz-max:"1000"`
+	Attestations                [][]byte             `ssz-max:"1000,1048576"`
+
+	// Sync Committee duties
+	Contributors               []AssignedAggregator               `ssz-max:"64"`
+	SyncCommitteeSubnets       []uint64                           `ssz-max:"64"`
+	SyncCommitteeContributions []altair.SyncCommitteeContribution `ssz-max:"64"`
+}
+
+// Validate ensures the consensus data is internally consistent
+func (a *AggregatorCommitteeConsensusData) Validate() error {
+	// Aggregators validation
+	if len(a.Aggregators) != len(a.Attestations) {
+		return NewError(AggCommAggAttCntMismatchErrorCode, "aggregators and attestations count mismatch")
+	}
+	if len(a.Aggregators) != len(a.AggregatorsCommitteeIndexes) {
+		return NewError(AggCommAggCommIdxCntMismatchErrorCode, "aggregators and committee indexes count mismatch")
+	}
+
+	// Sync committee validation
+	if len(a.Contributors) != len(a.SyncCommitteeContributions) {
+		return NewError(AggCommContributorsContributionsCntMismatchErrorCode, "contributors and contributions count mismatch")
+	}
+
+	// Optional: ensure all contributions reference only subnets listed in SyncCommitteeSubnets
+	validSubnets := make(map[uint64]struct{}, len(a.SyncCommitteeSubnets))
+	for _, s := range a.SyncCommitteeSubnets {
+		validSubnets[s] = struct{}{}
+	}
+
+	for _, contrib := range a.SyncCommitteeContributions {
+		if _, ok := validSubnets[contrib.SubcommitteeIndex]; !ok {
+			return WrapError(AggCommSubnetNotInSCSubnetsErrorCode, fmt.Errorf("contribution subnet ID %d not listed in SyncCommitteeSubnets", contrib.SubcommitteeIndex))
+		}
+	}
+
+	return nil
+}
+
+// Encode encodes the consensus data to SSZ
+func (a *AggregatorCommitteeConsensusData) Encode() ([]byte, error) {
+	return a.MarshalSSZ()
+}
+
+// Decode decodes the consensus data from SSZ
+func (a *AggregatorCommitteeConsensusData) Decode(data []byte) error {
+	return a.UnmarshalSSZ(data)
+}
+
+// GetAggregateAndProofs returns all aggregate and proofs for the aggregator duties along with their hash roots
+func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.VersionedAggregateAndProof, []ssz.HashRoot, error) {
+	if len(a.Aggregators) != len(a.Attestations) {
+		return nil, nil, NewError(AggCommAggAttCntMismatchErrorCode, "aggregators and attestations count mismatch")
+	}
+
+	proofs := make([]*spec.VersionedAggregateAndProof, 0, len(a.Aggregators))
+	hashRoots := make([]ssz.HashRoot, 0, len(a.Aggregators))
+
+	for i, aggregator := range a.Aggregators {
+		// Decode attestation based on version
+		var aggregateAndProof *spec.VersionedAggregateAndProof
+
+		switch a.Version {
+		case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
+			agg := &phase0.AggregateAndProof{
+				AggregatorIndex: aggregator.ValidatorIndex,
+				SelectionProof:  aggregator.SelectionProof,
+			}
+			// Unmarshal the attestation
+			att := &phase0.Attestation{}
+			if err := att.UnmarshalSSZ(a.Attestations[i]); err != nil {
+				return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal attestation: %w", err))
+			}
+			agg.Aggregate = att
+
+			aggregateAndProof = &spec.VersionedAggregateAndProof{
+				Version: a.Version,
+			}
+			// Set the appropriate version field and store hash root
+			switch a.Version {
+			case spec.DataVersionPhase0:
+				aggregateAndProof.Phase0 = agg
+				hashRoots = append(hashRoots, agg)
+			case spec.DataVersionAltair:
+				aggregateAndProof.Altair = agg
+				hashRoots = append(hashRoots, agg)
+			case spec.DataVersionBellatrix:
+				aggregateAndProof.Bellatrix = agg
+				hashRoots = append(hashRoots, agg)
+			case spec.DataVersionCapella:
+				aggregateAndProof.Capella = agg
+				hashRoots = append(hashRoots, agg)
+			case spec.DataVersionDeneb:
+				aggregateAndProof.Deneb = agg
+				hashRoots = append(hashRoots, agg)
+			default:
+				panic("unhandled default case")
+			}
+
+		case spec.DataVersionElectra:
+			agg := &electra.AggregateAndProof{
+				AggregatorIndex: aggregator.ValidatorIndex,
+				SelectionProof:  aggregator.SelectionProof,
+			}
+			// Unmarshal the attestation
+			att := &electra.Attestation{}
+			if err := att.UnmarshalSSZ(a.Attestations[i]); err != nil {
+				return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal electra attestation: %w", err))
+			}
+			agg.Aggregate = att
+
+			aggregateAndProof = &spec.VersionedAggregateAndProof{
+				Version: a.Version,
+				Electra: agg,
+			}
+			hashRoots = append(hashRoots, agg)
+
+		default:
+			return nil, nil, WrapError(UnknownBlockVersionErrorCode, fmt.Errorf("unsupported version %s", a.Version.String()))
+		}
+
+		proofs = append(proofs, aggregateAndProof)
+	}
+
+	return proofs, hashRoots, nil
+}
+
+// GetSyncCommitteeContributions returns the sync committee contributions
+func (a *AggregatorCommitteeConsensusData) GetSyncCommitteeContributions() (Contributions, error) {
+	if len(a.Contributors) != len(a.SyncCommitteeContributions) {
+		return nil, NewError(AggCommContributorsContributionsCntMismatchErrorCode, "contributors and contributions count mismatch")
+	}
+
+	contributions := make(Contributions, 0, len(a.SyncCommitteeContributions))
+
+	for i, contribution := range a.SyncCommitteeContributions {
+		var sigBytes [96]byte
+		copy(sigBytes[:], a.Contributors[i].SelectionProof[:])
+
+		contrib := &Contribution{
+			SelectionProofSig: sigBytes,
+			Contribution:      contribution,
+		}
+		contributions = append(contributions, contrib)
+	}
+
+	return contributions, nil
 }

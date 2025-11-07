@@ -44,7 +44,12 @@ type ProposerCalls interface {
 
 // AggregatorCalls interface has all attestation aggregator duty specific calls
 type AggregatorCalls interface {
+	// IsAggregator returns true if the validator is selected as an aggregator
+	IsAggregator(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, slotSig []byte) bool
+	// GetAggregateAttestation returns the aggregate attestation for the given slot and committee
+	GetAggregateAttestation(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, error)
 	// SubmitAggregateSelectionProof returns an AggregateAndProof object
+	// Deprecated: Use IsAggregator and GetAggregateAttestation instead. Kept for backward compatibility.
 	SubmitAggregateSelectionProof(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, index phase0.ValidatorIndex, slotSig []byte) (ssz.Marshaler, spec.DataVersion, error)
 	// SubmitSignedAggregateSelectionProof broadcasts a signed aggregator msg
 	SubmitSignedAggregateSelectionProof(msg *spec.VersionedSignedAggregateAndProof) error
@@ -61,9 +66,9 @@ type SyncCommitteeCalls interface {
 // SyncCommitteeContributionCalls interface has all sync committee contribution duty specific calls
 type SyncCommitteeContributionCalls interface {
 	// IsSyncCommitteeAggregator returns true if aggregator
-	IsSyncCommitteeAggregator(proof []byte) (bool, error)
+	IsSyncCommitteeAggregator(proof []byte) bool
 	// SyncCommitteeSubnetID returns sync committee subnet ID from subcommittee index
-	SyncCommitteeSubnetID(index phase0.CommitteeIndex) (uint64, error)
+	SyncCommitteeSubnetID(index phase0.CommitteeIndex) uint64
 	// GetSyncCommitteeContribution returns a types.Contributions object
 	GetSyncCommitteeContribution(slot phase0.Slot, selectionProofs []phase0.BLSSignature, subnetIDs []uint64) (ssz.Marshaler, spec.DataVersion, error)
 	// SubmitSignedContributionAndProof broadcasts to the network
