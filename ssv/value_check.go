@@ -57,7 +57,7 @@ func BeaconVoteValueCheckF(
 		if bv.Source.Epoch != expectedSource {
 			return types.NewError(types.CheckpointMismatch,
 				fmt.Sprintf("attestation data source checkpoint %d does not match expected %d",
-					bv.Source, expectedSource))
+					bv.Source.Epoch, expectedSource))
 		}
 
 		if bv.Target.Epoch != expectedTarget {
