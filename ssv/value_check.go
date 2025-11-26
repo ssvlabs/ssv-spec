@@ -3,11 +3,9 @@ package ssv
 import (
 	"bytes"
 	"fmt"
-	"math"
-	"reflect"
-
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
+	"math"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -43,8 +41,8 @@ func BeaconVoteValueCheckF(
 	signer types.BeaconSigner,
 	slot phase0.Slot,
 	sharePublicKeys []types.ShareValidatorPK,
-	expectedSource *phase0.Checkpoint,
-	expectedTarget *phase0.Checkpoint,
+	expectedSource phase0.Epoch,
+	expectedTarget phase0.Epoch,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		bv := types.BeaconVote{}
@@ -56,14 +54,16 @@ func BeaconVoteValueCheckF(
 			return types.NewError(types.AttestationSourceNotLessThanTargetErrorCode, "attestation data source >= target")
 		}
 
-		if !reflect.DeepEqual(bv.Source, expectedSource) {
-			return types.NewError(types.CheckpointMismatch, fmt.Sprintf("attestation data source checkpoint %v does not match expected %v", 
-		bv.Source, expectedSource))
+		if bv.Source.Epoch != expectedSource {
+			return types.NewError(types.CheckpointMismatch,
+				fmt.Sprintf("attestation data source checkpoint %d does not match expected %d",
+					bv.Source, expectedSource))
 		}
-		
-		if !reflect.DeepEqual(bv.Target, expectedTarget) {
-			return types.NewError(types.CheckpointMismatch, fmt.Sprintf("attestation data target checkpoint %v does not match expected %v", 
-				bv.Target, expectedTarget))
+
+		if bv.Target.Epoch != expectedTarget {
+			return types.NewError(types.CheckpointMismatch,
+				fmt.Sprintf("attestation data target checkpoint %d does not match expected %d",
+					bv.Target.Epoch, expectedTarget))
 		}
 
 		attestationData := &phase0.AttestationData{
