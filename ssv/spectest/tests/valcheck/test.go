@@ -21,8 +21,8 @@ type SpecTest struct {
 	RunnerRole        types.RunnerRole
 	DutySlot          phase0.Slot // DutySlot is used only for the RoleCommittee since the BeaconVoteValueCheckF requires the duty's slot
 	Input             []byte
-	ExpectedSource    phase0.Checkpoint             // Specify expected source epoch for beacon vote value check
-	ExpectedTarget    phase0.Checkpoint             // Specify expected target epoch for beacon vote value check
+	ExpectedSource    phase0.Checkpoint        // Specify expected source epoch for beacon vote value check
+	ExpectedTarget    phase0.Checkpoint        // Specify expected target epoch for beacon vote value check
 	SlashableSlots    map[string][]phase0.Slot // map share pk to a list of slashable slots
 	ShareValidatorsPK []types.ShareValidatorPK `json:"ShareValidatorsPK,omitempty"` // Optional. Specify validators shares for beacon vote value check
 	ExpectedErrorCode int
@@ -63,7 +63,8 @@ func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueChe
 	}
 	switch test.RunnerRole {
 	case types.RoleCommittee:
-		return ssv.BeaconVoteValueCheckF(signer, test.DutySlot, shareValidatorsPK, &test.ExpectedSource, &test.ExpectedTarget)
+		return ssv.BeaconVoteValueCheckF(signer, test.DutySlot, shareValidatorsPK, test.ExpectedSource.Epoch,
+			test.ExpectedTarget.Epoch)
 	case types.RoleProposer:
 		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex, nil)
 	case types.RoleAggregator:
@@ -118,19 +119,19 @@ func NewSpecTest(
 	anyError bool,
 ) *SpecTest {
 	return &SpecTest{
-		Name:                name,
-		Type:                "Value check: validations for input of different runner roles",
-		Documentation:       documentation,
-		Network:             network,
-		RunnerRole:          role,
-		DutySlot:            dutySlot,
-		Input:               input,
-		ExpectedSource:		 expectedSource,
-		ExpectedTarget:      expectedTarget,
-		SlashableSlots:      slashableSlots,
-		ShareValidatorsPK:   shareValidatorsPK,
-		ExpectedErrorCode:   expectedErrorCode,
-		AnyError:            anyError,
+		Name:              name,
+		Type:              "Value check: validations for input of different runner roles",
+		Documentation:     documentation,
+		Network:           network,
+		RunnerRole:        role,
+		DutySlot:          dutySlot,
+		Input:             input,
+		ExpectedSource:    expectedSource,
+		ExpectedTarget:    expectedTarget,
+		SlashableSlots:    slashableSlots,
+		ShareValidatorsPK: shareValidatorsPK,
+		ExpectedErrorCode: expectedErrorCode,
+		AnyError:          anyError,
 	}
 }
 
