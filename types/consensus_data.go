@@ -437,7 +437,7 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 				panic("unhandled default case")
 			}
 
-		case spec.DataVersionElectra:
+		case spec.DataVersionElectra, spec.DataVersionFulu:
 			agg := &electra.AggregateAndProof{
 				AggregatorIndex: aggregator.ValidatorIndex,
 				SelectionProof:  aggregator.SelectionProof,
