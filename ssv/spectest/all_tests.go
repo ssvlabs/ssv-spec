@@ -174,8 +174,6 @@ var AllTests = []tests.TestF{
 	valcheckattestations.SourceHigherThanTarget,
 	valcheckattestations.UnmatchedTargetEpoch,
 	valcheckattestations.UnmatchedSourceEpoch,
-	valcheckattestations.UnmatchedTargetRoot,
-	valcheckattestations.UnmatchedSourceRoot,
 	valcheckattestations.BeaconVoteDataNil,
 	valcheckattestations.Valid,
 	valcheckattestations.MinoritySlashable,
