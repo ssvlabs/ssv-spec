@@ -451,7 +451,15 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 
 			aggregateAndProof = &spec.VersionedAggregateAndProof{
 				Version: a.Version,
-				Electra: agg,
+			}
+
+			switch a.Version {
+			case spec.DataVersionElectra:
+				aggregateAndProof.Electra = agg
+			case spec.DataVersionFulu:
+				aggregateAndProof.Fulu = agg
+			default:
+				panic("unhandled default case")
 			}
 			hashRoots = append(hashRoots, agg)
 
