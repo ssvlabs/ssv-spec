@@ -35,8 +35,8 @@ func TestAggregatorCommitteeConsensusDataForDuty(duty *types.AggregatorCommittee
 			// Create attestation for this validator based on version
 			var marshaledAtt []byte
 
-			if version == spec.DataVersionElectra {
-				// For Electra, create an electra.Attestation with CommitteeBits
+			if version >= spec.DataVersionElectra {
+				// For Electra and newer versions, create an electra.Attestation with CommitteeBits
 				attestation := &electra.Attestation{
 					AggregationBits: bitfield.NewBitlist(128),
 					Signature:       phase0.BLSSignature{},

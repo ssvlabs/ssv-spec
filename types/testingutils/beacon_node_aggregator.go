@@ -60,11 +60,10 @@ var TestingAggregatorDutyFirstSlot = func() *types.ValidatorDuty {
 // ==================================================
 
 var TestingAggregateAndProofV = func(version spec.DataVersion, aggregatorIndex phase0.ValidatorIndex) ssz.Marshaler {
-	if version == spec.DataVersionElectra {
+	if version >= spec.DataVersionElectra {
 		return TestingElectraAggregateAndProof(aggregatorIndex)
-	} else {
-		return TestingPhase0AggregateAndProof(aggregatorIndex)
 	}
+	return TestingPhase0AggregateAndProof(aggregatorIndex)
 }
 
 var TestingVersionedSignedAggregateAndProof = func(ks *TestKeySet, version spec.DataVersion) *spec.VersionedSignedAggregateAndProof {
@@ -125,19 +124,17 @@ var TestingSignedAggregateAndProof = func(ks *TestKeySet, version spec.DataVersi
 }
 
 var TestingAggregateAndProofBytesV = func(version spec.DataVersion, aggregatorIndex phase0.ValidatorIndex) []byte {
-	if version == spec.DataVersionElectra {
+	if version >= spec.DataVersionElectra {
 		return TestingElectraAggregateAndProofBytes(aggregatorIndex)
-	} else {
-		return TestingPhase0AggregateAndProofBytes(aggregatorIndex)
 	}
+	return TestingPhase0AggregateAndProofBytes(aggregatorIndex)
 }
 
 var TestingWrongAggregateAndProofV = func(version spec.DataVersion, aggregatorIndex phase0.ValidatorIndex) ssz.Marshaler {
-	if version == spec.DataVersionElectra {
+	if version >= spec.DataVersionElectra {
 		return TestingWrongElectraAggregateAndProof(aggregatorIndex)
-	} else {
-		return TestingWrongPhase0AggregateAndProof(aggregatorIndex)
 	}
+	return TestingWrongPhase0AggregateAndProof(aggregatorIndex)
 }
 
 // phase0.AggregateAndProof

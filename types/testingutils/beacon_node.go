@@ -248,11 +248,10 @@ func (bn *TestingBeaconNode) IsAggregator(slot phase0.Slot, committeeIndex phase
 // GetAggregateAttestation returns the aggregate attestation for the given slot and committee
 func (bn *TestingBeaconNode) GetAggregateAttestation(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, error) {
 	version := VersionBySlot(slot)
-	if version == spec.DataVersionElectra {
+	if version >= spec.DataVersionElectra {
 		return TestingElectraAggregateAndProof(TestingValidatorIndex).Aggregate, nil
-	} else {
-		return TestingPhase0AggregateAndProof(TestingValidatorIndex).Aggregate, nil
 	}
+	return TestingPhase0AggregateAndProof(TestingValidatorIndex).Aggregate, nil
 }
 
 // SubmitAggregateSelectionProof returns an AggregateAndProof object

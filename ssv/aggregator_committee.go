@@ -1038,31 +1038,57 @@ func (r *AggregatorCommitteeRunner) HasSubmitted(role types.BeaconRole, validato
 	return submitted
 }
 
-// HasSubmittedForValidator checks if a validator has submitted any duty for a given role
-func (r *AggregatorCommitteeRunner) HasSubmittedForValidator(role types.BeaconRole, validatorIndex phase0.ValidatorIndex) bool {
-	if _, ok := r.submittedDuties[role]; !ok {
-		return false
-	}
-	if _, ok := r.submittedDuties[role][validatorIndex]; !ok {
-		return false
-	}
-	return len(r.submittedDuties[role][validatorIndex]) > 0
-}
-
-// HasSubmittedAllDuties checks if all expected duties have been submitted
+// HasSubmittedAllDuties checks if all expected duties have been submitted.
+// For aggregator role we expect exactly one submission per validator.
+// For sync committee contribution role we expect one submission per expected root
+// (i.e., per subcommittee index assigned to that validator for this slot).
 func (r *AggregatorCommitteeRunner) HasSubmittedAllDuties() bool {
 	duty := r.BaseRunner.State.StartingDuty.(*types.AggregatorCommitteeDuty)
+
+	// Build the expected post-consensus roots per validator/role from the decided data.
+	aggregatorMap, contributionMap, _, err := r.expectedPostConsensusRootsAndBeaconObjects()
+	if err != nil {
+		// If we can't resolve the expected set, do not finish yet.
+		return false
+	}
 
 	for _, vDuty := range duty.ValidatorDuties {
 		if vDuty == nil {
 			continue
 		}
 
+		// Only consider validators this operator actually runs.
 		if _, hasShare := r.BaseRunner.Share[vDuty.ValidatorIndex]; !hasShare {
 			continue
 		}
 
-		if !r.HasSubmittedForValidator(vDuty.Type, vDuty.ValidatorIndex) {
+		switch vDuty.Type {
+		case types.BNRoleAggregator:
+			// Expect exactly one aggregate root for this validator.
+			expectedRoot, ok := aggregatorMap[vDuty.ValidatorIndex]
+			if !ok {
+				// If consensus did not include this validator's aggregate, we haven't finished.
+				return false
+			}
+			if !r.HasSubmitted(types.BNRoleAggregator, vDuty.ValidatorIndex, expectedRoot) {
+				return false
+			}
+
+		case types.BNRoleSyncCommitteeContribution:
+			// Expect a submission for every contribution root assigned to this validator.
+			expectedRoots, ok := contributionMap[vDuty.ValidatorIndex]
+			if !ok || len(expectedRoots) == 0 {
+				// The duty indicates sync committee work but no expected roots were found.
+				return false
+			}
+			for _, root := range expectedRoots {
+				if !r.HasSubmitted(types.BNRoleSyncCommitteeContribution, vDuty.ValidatorIndex, root) {
+					return false
+				}
+			}
+
+		default:
+			// Unknown role type: don't allow finishing.
 			return false
 		}
 	}
