@@ -148,6 +148,8 @@ var TestingSignedAggregatorCommitteeBeaconObjectSSZRoot = func(duty *types.Aggre
 		switch version {
 		case spec.DataVersionElectra:
 			signingRoot = aggregateAndProof.Electra
+		case spec.DataVersionFulu:
+			signingRoot = aggregateAndProof.Fulu
 		default:
 			// Get the appropriate version field
 			switch aggregateAndProof.Version {
@@ -176,6 +178,11 @@ var TestingSignedAggregatorCommitteeBeaconObjectSSZRoot = func(duty *types.Aggre
 		case spec.DataVersionElectra:
 			signedAgg = &electra.SignedAggregateAndProof{
 				Message:   aggregateAndProof.Electra,
+				Signature: blsSig,
+			}
+		case spec.DataVersionFulu:
+			signedAgg = &electra.SignedAggregateAndProof{
+				Message:   aggregateAndProof.Fulu,
 				Signature: blsSig,
 			}
 		default:

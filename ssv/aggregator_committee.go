@@ -1000,6 +1000,15 @@ func (r *AggregatorCommitteeRunner) constructSignedAggregateAndProof(
 			Message:   aggregateAndProof.Electra,
 			Signature: signature,
 		}
+	case spec.DataVersionFulu:
+		if aggregateAndProof.Fulu == nil {
+			return nil, errors.New("nil Fulu aggregate and proof")
+		}
+		ret.Fulu = &electra.SignedAggregateAndProof{
+			Message:   aggregateAndProof.Fulu,
+			Signature: signature,
+		}
+
 	default:
 		return nil, errors.Errorf("unknown version %s", ret.Version.String())
 	}
