@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -67,8 +68,7 @@ func main() {
 		// generate post state comparison
 		post, err := test.GetPostState()
 		if err != nil {
-			err = errors.Wrapf(err, "failed to get post state for test: %s", test.TestName())
-			panic(err.Error())
+			panic(errors.Wrapf(err, "failed to get post state for test: %s", test.TestName()).Error())
 		}
 		writeJsonStateComparison(test.TestName(), reflect.TypeOf(test).String(), post)
 	}

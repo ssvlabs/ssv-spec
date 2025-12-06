@@ -3,6 +3,7 @@ package postconsensus
 import (
 	"fmt"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,10 +19,12 @@ func MixedCommittees() tests.SpecTest {
 	ksMap := testingutils.KeySetMapForValidators(numValidators)
 	shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name:  "mixed committees",
-		Tests: []*tests.MsgProcessingSpecTest{},
-	}
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"mixed committees",
+		testdoc.PostConsensusMixedCommitteesDoc,
+		[]*tests.MsgProcessingSpecTest{},
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 
@@ -44,7 +47,6 @@ func MixedCommittees() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusCommitteeMsgForDuty(attestationCommitteeDuty, ksMap, 2))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusCommitteeMsgForDuty(attestationCommitteeDuty, ksMap, 3))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: testingutils.TestingSignedCommitteeBeaconObjectSSZRoot(attestationCommitteeDuty, ksMap, version),
 				DontStartDuty:          true,
 			},
@@ -61,7 +63,6 @@ func MixedCommittees() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusCommitteeMsgForDuty(syncCommitteeCommitteeDuty, ksMap, 2))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusCommitteeMsgForDuty(syncCommitteeCommitteeDuty, ksMap, 3))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: testingutils.TestingSignedCommitteeBeaconObjectSSZRoot(syncCommitteeCommitteeDuty, ksMap, version),
 				DontStartDuty:          true,
 			},
@@ -78,7 +79,6 @@ func MixedCommittees() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusCommitteeMsgForDuty(attestationAndSyncCommitteeCommitteeDuty, ksMap, 2))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusCommitteeMsgForDuty(attestationAndSyncCommitteeCommitteeDuty, ksMap, 3))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: testingutils.TestingSignedCommitteeBeaconObjectSSZRoot(attestationAndSyncCommitteeCommitteeDuty, ksMap, version),
 				DontStartDuty:          true,
 			},

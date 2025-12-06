@@ -2,6 +2,7 @@ package partialsigcontainer
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -17,18 +18,22 @@ func OneSignature() tests.SpecTest {
 	msgs := []*types.PartialSignatureMessage{msg.Messages[0]}
 
 	// Verify the reconstructed signature
-	expectedSig, err := types.ReconstructSignatures(map[types.OperatorID][]byte{1: msgs[0].PartialSignature})
+	_, err := types.ReconstructSignatures(map[types.OperatorID][]byte{1: msgs[0].PartialSignature})
 	if err != nil {
 		panic(err.Error())
 	}
 
-	return &PartialSigContainerTest{
-		Name:            "one signature",
-		Quorum:          ks.Threshold,
-		ValidatorPubKey: ks.ValidatorPK.Serialize(),
-		SignatureMsgs:   msgs,
-		ExpectedError:   "could not reconstruct a valid signature",
-		ExpectedResult:  expectedSig.Serialize(),
-		ExpectedQuorum:  false,
-	}
+	test := NewPartialSigContainerTest(
+		"one signature",
+		testdoc.PartialSigContainerOneSignatureDoc,
+		ks.Threshold,
+		ks.ValidatorPK.Serialize(),
+		msgs,
+		types.ReconstructSignatureErrorCode,
+		nil,
+		false,
+		ks,
+	)
+
+	return test
 }

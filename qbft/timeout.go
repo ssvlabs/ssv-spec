@@ -4,6 +4,8 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 // At the moment, these variables are useful for the node implementation
@@ -18,7 +20,7 @@ var (
 
 func (i *Instance) UponRoundTimeout() error {
 	if !i.CanProcessMessages() {
-		return errors.New("instance stopped processing timeouts")
+		return types.NewError(types.TimeoutInstanceErrorCode, "instance stopped processing timeouts")
 	}
 
 	newRound := i.State.Round + 1

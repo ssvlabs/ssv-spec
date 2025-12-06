@@ -37,11 +37,9 @@ type AttesterCalls interface {
 // ProposerCalls interface has all block proposer duty specific calls
 type ProposerCalls interface {
 	// GetBeaconBlock returns beacon block by the given slot, graffiti, and randao.
-	GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (ssz.Marshaler, spec.DataVersion, error)
+	GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*api.VersionedProposal, ssz.Marshaler, error)
 	// SubmitBeaconBlock submit the block to the node
 	SubmitBeaconBlock(block *api.VersionedProposal, sig phase0.BLSSignature) error
-	// SubmitBlindedBeaconBlock submit the blinded block to the node
-	SubmitBlindedBeaconBlock(block *api.VersionedBlindedProposal, sig phase0.BLSSignature) error
 }
 
 // AggregatorCalls interface has all attestation aggregator duty specific calls
@@ -56,7 +54,7 @@ type AggregatorCalls interface {
 type SyncCommitteeCalls interface {
 	// GetSyncMessageBlockRoot returns beacon block root for sync committee
 	GetSyncMessageBlockRoot(slot phase0.Slot) (phase0.Root, spec.DataVersion, error)
-	// SubmitSyncMessage submits a signed sync committee msg
+	// SubmitSyncMessages submits a signed sync committee msg
 	SubmitSyncMessages(msgs []*altair.SyncCommitteeMessage) error
 }
 

@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,7 +17,7 @@ func QuorumNotTriggeredTwiceJustificationIgnored() tests.SpecTest {
 	pre := testingutils.BaseInstance()
 	pre.State.ProposalAcceptedForCurrentRound = nil // proposal resets on upon timeout
 	pre.State.Round = 2
-	testData := []byte{1, 2}
+	testData := testingutils.TestingQBFTFullData
 	testDataRoot := sha256.Sum256(testData)
 
 	prepareMsgs := []*types.SignedSSVMessage{
@@ -24,7 +25,7 @@ func QuorumNotTriggeredTwiceJustificationIgnored() tests.SpecTest {
 		testingutils.TestingPrepareMessageWithFullData(ks.OperatorKeys[2], types.OperatorID(2), testData),
 		testingutils.TestingPrepareMessageWithFullData(ks.OperatorKeys[3], types.OperatorID(3), testData),
 	}
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[2], types.OperatorID(2), 2),
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
@@ -32,14 +33,24 @@ func QuorumNotTriggeredTwiceJustificationIgnored() tests.SpecTest {
 			testDataRoot, 1, testingutils.MarshalJustifications(prepareMsgs), testData),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "quorum not triggered twice justification ignored",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
-				testingutils.TestingQBFTRootData, testingutils.MarshalJustifications(msgs[:len(msgs)-1]),
-				[][]byte{}),
-		},
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessageWithParams(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
+			testingutils.TestingQBFTRootData, testingutils.MarshalJustifications(inputMessages[:len(inputMessages)-1]),
+			[][]byte{}),
 	}
+
+	test := tests.NewMsgProcessingSpecTest(
+		"quorum not triggered twice justification ignored",
+		testdoc.RoundChangeQuorumNotTriggeredTwiceJustificationIgnoredDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		0,
+		nil,
+		ks,
+	)
+
+	return test
 }

@@ -5,8 +5,10 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -24,10 +26,7 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 	decidedValue := testingutils.TestBeaconVoteByts
 	msgID := testingutils.CommitteeMsgID(ks)
 
-	multiSpecTest := &committee.MultiCommitteeSpecTest{
-		Name:  "past msg duty not finished",
-		Tests: []*committee.CommitteeSpecTest{},
-	}
+	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 
@@ -81,13 +80,13 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 			return signed
 		}
 
-		expectedError := "failed processing consensus message: not processing consensus message since consensus has already finished"
+		expectedErrorCode := types.SkipConsensusMessageAsConsensusHasFinishedErrorCode
 
 		attesterDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), validatorsIndexList, nil)
 		syncCommitteeDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), nil, validatorsIndexList)
 		attestationAndSyncCommitteeDuty := testingutils.TestingCommitteeDutyForSlot(phase0.Slot(pastHeight), validatorsIndexList, validatorsIndexList)
 
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*committee.CommitteeSpecTest{
+		tests = append(tests, []*committee.CommitteeSpecTest{
 			{
 				Name:      fmt.Sprintf("%v attestation (%s)", numValidators, version.String()),
 				Committee: bumpHeight(testingutils.BaseCommittee(ksMap), attesterDuty),
@@ -95,8 +94,7 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 					testingutils.TestingAttesterDutyForValidators(version, validatorsIndexList),
 					pastProposalMsgF(),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:      fmt.Sprintf("%v sync committee (%s)", numValidators, version.String()),
@@ -105,8 +103,7 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 					testingutils.TestingSyncCommitteeDutyForValidators(version, validatorsIndexList),
 					pastProposalMsgF(),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:      fmt.Sprintf("%v attestation %v sync committee (%s)", numValidators, numValidators, version.String()),
@@ -115,11 +112,17 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 					testingutils.TestingCommitteeDuty(validatorsIndexList, validatorsIndexList, version),
 					pastProposalMsgF(),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		}...)
 	}
+
+	multiSpecTest := committee.NewMultiCommitteeSpecTest(
+		"past msg duty not finished",
+		testdoc.CommitteePastMsgDutyNotFinishedDoc,
+		tests,
+		ks,
+	)
 
 	return multiSpecTest
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -15,10 +16,11 @@ func TooFewRoots() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 
-	err := "invalid PartialSignatureMessages: no PartialSignatureMessages messages"
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus too few roots",
-		Tests: []*tests.MsgProcessingSpecTest{
+	errCode := types.NoPartialSigMessagesErrorCode
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus too few roots",
+		testdoc.PostConsensusTooFewRootsDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -31,10 +33,8 @@ func TooFewRoots() tests.SpecTest {
 					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionTooFewRootsMsg(ks.Shares[1], 1, ks))),
 				},
 				PostDutyRunnerStateRoot: "f58387d4d4051a2de786e4cbf9dc370a8b19a544f52af04f71195feb3863fc5c",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing post consensus message: invalid post-consensus message: wrong expected roots count",
+				ExpectedErrorCode:       types.WrongRootsCountErrorCode,
 			},
 			{
 				Name: "proposer",
@@ -48,10 +48,8 @@ func TooFewRoots() tests.SpecTest {
 					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerTooFewRootsMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
 				},
 				PostDutyRunnerStateRoot: "ff213af6f0bf2350bb37f48021c137dd5552b1c25cb5c6ebd0c1d27debf6080e",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-				ExpectedError:           err,
+				ExpectedErrorCode:       errCode,
 			},
 			{
 				Name: "proposer (blinded block)",
@@ -65,13 +63,12 @@ func TooFewRoots() tests.SpecTest {
 					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerTooFewRootsMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
 				},
 				PostDutyRunnerStateRoot: "9b4524d5100835df4d71d0a1e559acdc33d541c44a746ebda115c5e7f3eaa85a",
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots:  []string{},
 				DontStartDuty:           true,
-				ExpectedError:           err,
+				ExpectedErrorCode:       errCode,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -86,10 +83,8 @@ func TooFewRoots() tests.SpecTest {
 				testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorTooFewRootsMsg(ks.Shares[1], 1, version))),
 			},
 			PostDutyRunnerStateRoot: "1fb182fb19e446d61873abebc0ac85a3a9637b51d139cdbd7d8cb70cf7ffec82",
-			OutputMessages:          []*types.PartialSignatureMessages{},
-			BeaconBroadcastedRoots:  []string{},
 			DontStartDuty:           true,
-			ExpectedError:           err,
+			ExpectedErrorCode:       errCode,
 		},
 		)
 	}
@@ -107,10 +102,8 @@ func TooFewRoots() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationTooFewRootsMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				DontStartDuty:          true,
-				ExpectedError:          err,
+				DontStartDuty:     true,
+				ExpectedErrorCode: errCode,
 			},
 			{
 				Name: fmt.Sprintf("sync committee (%s)", version.String()),
@@ -123,10 +116,8 @@ func TooFewRoots() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeTooFewRootsMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				DontStartDuty:          true,
-				ExpectedError:          err,
+				DontStartDuty:     true,
+				ExpectedErrorCode: errCode,
 			},
 			{
 				Name: fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -139,10 +130,8 @@ func TooFewRoots() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsgTooFewRootsMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				DontStartDuty:          true,
-				ExpectedError:          err,
+				DontStartDuty:     true,
+				ExpectedErrorCode: errCode,
 			},
 		}...)
 	}

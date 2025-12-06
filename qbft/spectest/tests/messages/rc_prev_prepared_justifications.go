@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -20,10 +21,15 @@ func RoundChangePrePreparedJustifications() tests.SpecTest {
 		ks.OperatorKeys[1], types.OperatorID(1), 10, qbft.FirstHeight, testingutils.TestingQBFTRootData,
 		qbft.FirstRound, testingutils.MarshalJustifications(prepareMsgs))
 
-	return &tests.MsgSpecTest{
-		Name: "rc prev prepared justifications",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-	}
+	test := tests.NewMsgSpecTest(
+		"rc prev prepared justifications",
+		testdoc.MessagesRCPrevPreparedJustificationsDoc,
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		0,
+		ks,
+	)
+
+	return test
 }

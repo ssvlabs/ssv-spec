@@ -1,12 +1,16 @@
 package duty
 
-import "github.com/ssvlabs/ssv-spec/types"
+import (
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+)
 
 // MapSyncCommittee tests mapping of BNRoleSyncCommittee.
 func MapSyncCommittee() *DutySpecTest {
-	return &DutySpecTest{
-		Name:       "map sync committee role",
-		BeaconRole: types.BNRoleSyncCommittee,
-		RunnerRole: types.RoleCommittee,
-	}
+	return NewDutySpecTest(
+		"map sync committee role",
+		testdoc.MapSyncCommitteeTestDoc,
+		types.BNRoleSyncCommittee,
+		types.RoleCommittee,
+	)
 }

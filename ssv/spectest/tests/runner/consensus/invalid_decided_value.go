@@ -5,8 +5,10 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -33,14 +35,13 @@ func InvalidDecidedValue() tests.SpecTest {
 		return byts
 	}
 
-	expectedErr := "failed processing consensus message: decided ValidatorConsensusData invalid: decided value is invalid" +
-		": invalid value: unknown duty role"
-	expectedCommitteeErr := "failed processing consensus message: decided ValidatorConsensusData invalid: decided value" +
-		" is invalid: attestation data source >= target"
+	expectedErrCode := types.QBFTValueInvalidErrorCode
+	expectedCommitteeErrCode := types.AttestationSourceNotLessThanTargetErrorCode
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus decided invalid value",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus decided invalid value",
+		testdoc.ConsensusInvalidDecidedValueDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -73,7 +74,7 @@ func InvalidDecidedValue() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: expectedErr,
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
 				Name:   "proposer",
@@ -98,7 +99,7 @@ func InvalidDecidedValue() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
-				ExpectedError: expectedErr,
+				ExpectedErrorCode: expectedErrCode,
 			},
 			{
 				Name:   "proposer (blinded block)",
@@ -123,10 +124,11 @@ func InvalidDecidedValue() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
-				ExpectedError: expectedErr,
+				ExpectedErrorCode: expectedErrCode,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -152,7 +154,7 @@ func InvalidDecidedValue() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
 			},
-			ExpectedError: expectedErr,
+			ExpectedErrorCode: expectedErrCode,
 		},
 		)
 	}
@@ -174,8 +176,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						testingutils.TestWrongBeaconVoteByts,
 					),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedCommitteeErr,
+				ExpectedErrorCode: expectedCommitteeErrCode,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -192,8 +193,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						testingutils.TestWrongBeaconVoteByts,
 					),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedCommitteeErr,
+				ExpectedErrorCode: expectedCommitteeErrCode,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -210,8 +210,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						testingutils.TestWrongBeaconVoteByts,
 					),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  expectedCommitteeErr,
+				ExpectedErrorCode: expectedCommitteeErrCode,
 			},
 		}...)
 	}

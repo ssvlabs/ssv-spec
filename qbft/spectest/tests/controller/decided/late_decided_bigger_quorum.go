@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -29,11 +30,12 @@ func LateDecidedBiggerQuorum() tests.SpecTest {
 			[]types.OperatorID{1, 2, 3, 4},
 		),
 	)
-	return &tests.ControllerSpecTest{
-		Name: "decide late decided bigger quorum",
-		RunInstanceData: []*tests.RunInstanceData{
+	test := tests.NewControllerSpecTest(
+		"decide late decided bigger quorum",
+		testdoc.ControllerDecidedLateDecidedBiggerQuorumDoc,
+		[]*tests.RunInstanceData{
 			{
-				InputValue:    []byte{1, 2, 3, 4},
+				InputValue:    testingutils.TestingQBFTFullData,
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedCnt: 1,
@@ -47,7 +49,13 @@ func LateDecidedBiggerQuorum() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-	}
+		nil,
+		0,
+		nil,
+		ks,
+	)
+
+	return test
 }
 
 func lateDecidedBiggerQuorumStateComparison() *comparable.StateComparison {
@@ -75,7 +83,7 @@ func lateDecidedBiggerQuorumStateComparison() *comparable.StateComparison {
 	)
 
 	instance := &qbft.Instance{
-		StartValue: []byte{1, 2, 3, 4},
+		StartValue: testingutils.TestingQBFTFullData,
 		State: &qbft.State{
 			CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 			ID:              testingutils.TestingIdentifier,

@@ -3,6 +3,7 @@ package messages
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -16,10 +17,15 @@ func SignedMsgMultiSigners() tests.SpecTest {
 		[]types.OperatorID{1, 2, 3},
 	)
 
-	return &tests.MsgSpecTest{
-		Name: "multi signers",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-	}
+	test := tests.NewMsgSpecTest(
+		"multi signers",
+		testdoc.MessagesSignedMsgMultiSignersDoc,
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		0,
+		ks,
+	)
+
+	return test
 }

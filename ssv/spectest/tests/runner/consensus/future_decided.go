@@ -5,8 +5,10 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -32,12 +34,13 @@ func FutureDecided() tests.SpecTest {
 		return ret[:]
 	}
 
-	errStr := "failed processing consensus message: decided wrong instance"
-	errStrCommittee := "no runner found for message's slot"
+	errCode := types.DecidedWrongInstanceErrorCode
+	errStrCommitteeCode := types.NoRunnerForSlotErrorCode
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus future decided",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus future decided",
+		testdoc.ConsensusFutureDecidedDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -58,10 +61,11 @@ func FutureDecided() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: errStr,
+				ExpectedErrorCode: errCode,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -82,7 +86,7 @@ func FutureDecided() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
 			},
-			ExpectedError: errStr,
+			ExpectedErrorCode: errCode,
 		},
 		)
 	}
@@ -101,8 +105,7 @@ func FutureDecided() tests.SpecTest {
 						getID(types.RoleCommittee),
 					),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  errStrCommittee,
+				ExpectedErrorCode: errStrCommitteeCode,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -116,8 +119,7 @@ func FutureDecided() tests.SpecTest {
 						getID(types.RoleCommittee),
 					),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  errStrCommittee,
+				ExpectedErrorCode: errStrCommitteeCode,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -131,8 +133,7 @@ func FutureDecided() tests.SpecTest {
 						getID(types.RoleCommittee),
 					),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				ExpectedError:  errStrCommittee,
+				ExpectedErrorCode: errStrCommitteeCode,
 			},
 		}...)
 	}
@@ -159,7 +160,7 @@ func FutureDecided() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
-			ExpectedError: errStr,
+			ExpectedErrorCode: errCode,
 		}
 	}
 
@@ -185,7 +186,7 @@ func FutureDecided() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
-			ExpectedError: errStr,
+			ExpectedErrorCode: errCode,
 		}
 	}
 

@@ -1,5 +1,7 @@
 {
   "Name": "nil ssvmessage",
+  "Type": "Signed SSV message: validation of signed SSV message",
+  "Documentation": "Test validation error for signed SSV message with nil SSVMessage",
   "Messages": [
     {
       "Signatures": [
@@ -12,6 +14,6 @@
       "FullData": null
     }
   ],
-  "ExpectedError": "nil SSVMessage",
+  "ExpectedErrorCode": 16,
   "RSAPublicKey": null
 }

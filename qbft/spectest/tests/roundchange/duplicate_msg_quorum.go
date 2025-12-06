@@ -2,6 +2,7 @@ package roundchange
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,7 +20,7 @@ func DuplicateMsgQuorum() tests.SpecTest {
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
 	}
-	msgs := []*types.SignedSSVMessage{
+	inputMessages := []*types.SignedSSVMessage{
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[1], types.OperatorID(1), 2),
 		testingutils.TestingRoundChangeMessageWithParamsAndFullData(ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight,
 			testingutils.TestingQBFTRootData, qbft.FirstRound, testingutils.MarshalJustifications(prepareMsgs), testingutils.TestingQBFTFullData),
@@ -33,13 +34,23 @@ func DuplicateMsgQuorum() tests.SpecTest {
 		testingutils.TestingRoundChangeMessageWithRound(ks.OperatorKeys[3], types.OperatorID(3), 2),
 	}
 
-	return &tests.MsgProcessingSpecTest{
-		Name:          "round change duplicate msg quorum",
-		Pre:           pre,
-		InputMessages: msgs,
-		OutputMessages: []*types.SignedSSVMessage{
-			testingutils.TestingProposalMessageWithRoundAndRC(
-				ks.OperatorKeys[1], types.OperatorID(1), 2, testingutils.MarshalJustifications(rcMsgs)),
-		},
+	outputMessages := []*types.SignedSSVMessage{
+		testingutils.TestingProposalMessageWithRoundAndRC(
+			ks.OperatorKeys[1], types.OperatorID(1), 2, testingutils.MarshalJustifications(rcMsgs)),
 	}
+
+	test := tests.NewMsgProcessingSpecTest(
+		"round change duplicate msg quorum",
+		testdoc.RoundChangeDuplicateMsgQuorumDoc,
+		pre,
+		"",
+		nil,
+		inputMessages,
+		outputMessages,
+		0,
+		nil,
+		ks,
+	)
+
+	return test
 }

@@ -3,9 +3,11 @@ package ssv
 import (
 	"crypto/sha256"
 	"encoding/json"
+	"fmt"
 
-	spec "github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -58,7 +60,7 @@ func (pcs *State) MarshalJSON() ([]byte, error) {
 		} else if committeeDuty, ok := pcs.StartingDuty.(*types.CommitteeDuty); ok {
 			alias.CommitteeDuty = committeeDuty
 		} else {
-			return nil, errors.New("can't marshal because BaseRunner.State.StartingDuty isn't ValidatorDuty or CommitteeDuty")
+			return nil, fmt.Errorf("can't marshal because BaseRunner.State.StartingDuty isn't ValidatorDuty or CommitteeDuty")
 		}
 	}
 	byts, err := json.Marshal(alias)
@@ -123,9 +125,9 @@ func (c *Committee) GetRoot() ([32]byte, error) {
 func (c *Committee) MarshalJSON() ([]byte, error) {
 
 	type CommitteeAlias struct {
-		Runners         map[spec.Slot]*CommitteeRunner
+		Runners         map[phase0.Slot]*CommitteeRunner
 		CommitteeMember types.CommitteeMember
-		Share           map[spec.ValidatorIndex]*types.Share
+		Share           map[phase0.ValidatorIndex]*types.Share
 	}
 
 	// Create object and marshal
@@ -143,9 +145,9 @@ func (c *Committee) MarshalJSON() ([]byte, error) {
 func (c *Committee) UnmarshalJSON(data []byte) error {
 
 	type CommitteeAlias struct {
-		Runners         map[spec.Slot]*CommitteeRunner
+		Runners         map[phase0.Slot]*CommitteeRunner
 		CommitteeMember types.CommitteeMember
-		Share           map[spec.ValidatorIndex]*types.Share
+		Share           map[phase0.ValidatorIndex]*types.Share
 	}
 
 	// Unmarshal the JSON data into the auxiliary struct

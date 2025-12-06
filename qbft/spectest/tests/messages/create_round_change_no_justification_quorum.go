@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,19 +14,27 @@ import (
 // The result should be an unjustified round change.
 func CreateRoundChangeNoJustificationQuorum() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	sc := CreateRoundChangeNoJustificationQuorumSC()
-	return &tests.CreateMsgSpecTest{
-		CreateType:    tests.CreateRoundChange,
-		Name:          "create round change no justification quorum",
-		Round:         qbft.FirstRound,
-		StateValue:    testingutils.TestingQBFTFullData,
-		ExpectedState: sc.ExpectedState,
-		PrepareJustifications: []*types.SignedSSVMessage{
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
-			testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
-		},
-		ExpectedRoot: sc.Root(),
+	prepareJustifications := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
 	}
+	sc := CreateRoundChangeNoJustificationQuorumSC()
+	test := tests.NewCreateMsgSpecTest(
+		"create round change no justification quorum",
+		testdoc.MessagesCreateRoundChangeNoJustificationQuorumDoc,
+		testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData,
+		qbft.FirstRound,
+		nil,
+		prepareJustifications,
+		tests.CreateRoundChange,
+		sc.Root(),
+		sc.ExpectedState,
+		0,
+		ks,
+	)
+
+	return test
 }
 
 func CreateRoundChangeNoJustificationQuorumSC() *comparable.StateComparison {

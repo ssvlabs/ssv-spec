@@ -2,12 +2,13 @@ package spectest
 
 import (
 	"encoding/json"
-	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/timeout"
 	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests/timeout"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	tests2 "github.com/ssvlabs/ssv-spec/qbft/spectest/tests"

@@ -3,18 +3,25 @@ package tests
 import (
 	"testing"
 
-	"github.com/ssvlabs/ssv-spec/qbft"
-	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types"
+
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // MsgSpecTest tests encoding and decoding of a msg
 type MsgSpecTest struct {
-	Name            string
-	Messages        []*types.SignedSSVMessage
-	EncodedMessages [][]byte
-	ExpectedRoots   [][32]byte
-	ExpectedError   string
+	Name              string
+	Type              string
+	Documentation     string
+	Messages          []*types.SignedSSVMessage
+	EncodedMessages   [][]byte
+	ExpectedRoots     [][32]byte
+	ExpectedErrorCode int
+	PrivateKeys       *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *MsgSpecTest) Run(t *testing.T) {
@@ -46,12 +53,7 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 		}
 	}
 
-	// check error
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, lastErr, test.ExpectedError)
-	} else {
-		require.NoError(t, lastErr)
-	}
+	AssertErrorCode(t, test.ExpectedErrorCode, lastErr)
 }
 
 func (test *MsgSpecTest) TestName() string {
@@ -59,5 +61,21 @@ func (test *MsgSpecTest) TestName() string {
 }
 
 func (test *MsgSpecTest) GetPostState() (interface{}, error) {
+	// remove private keys
+	test.PrivateKeys = nil
+
 	return test, nil
+}
+
+func NewMsgSpecTest(name string, documentation string, messages []*types.SignedSSVMessage, encodedMessages [][]byte, expectedRoots [][32]byte, expectedErrorCode int, ks *testingutils.TestKeySet) *MsgSpecTest {
+	return &MsgSpecTest{
+		Name:              name,
+		Type:              testdoc.MsgSpecTestType,
+		Documentation:     documentation,
+		Messages:          messages,
+		EncodedMessages:   encodedMessages,
+		ExpectedRoots:     expectedRoots,
+		ExpectedErrorCode: expectedErrorCode,
+		PrivateKeys:       testingutils.BuildPrivateKeyInfo(ks),
+	}
 }

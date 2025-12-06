@@ -1,12 +1,16 @@
 package validatorconsensusdata
 
-import "github.com/ssvlabs/ssv-spec/types/testingutils"
+import (
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+)
 
 // SyncCommitteeContributionValidation tests a valid consensus data with sync committee contrib.
 func SyncCommitteeContributionValidation() *ValidatorConsensusDataTest {
-	return &ValidatorConsensusDataTest{
-		Name:          "sync committee contribution valid",
-		ConsensusData: *testingutils.TestSyncCommitteeContributionConsensusData,
-	}
-
+	return NewValidatorConsensusDataTest(
+		"sync committee contribution valid",
+		testdoc.ValidatorConsensusDataTestSyncCommitteeContributionValidationDoc,
+		*testingutils.TestSyncCommitteeContributionConsensusData,
+		0,
+	)
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -44,11 +45,12 @@ func WrongDutyPubKey() tests.SpecTest {
 		return signedMessage
 	}
 
-	expectedError := "failed processing consensus message: invalid msg: message doesn't belong to Identifier"
+	expectedErrorCode := types.MessageIdentifierInvalidErrorCode
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "wrong duty pubkey",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"wrong duty pubkey",
+		testdoc.DutyExeWrongDutyPubKeyDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:     "sync committee contribution",
 				Runner:   testingutils.SyncCommitteeContributionRunner(ks),
@@ -57,10 +59,11 @@ func WrongDutyPubKey() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -71,7 +74,7 @@ func WrongDutyPubKey() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		})
 	}
 
@@ -85,7 +88,7 @@ func WrongDutyPubKey() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 
@@ -99,7 +102,7 @@ func WrongDutyPubKey() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 

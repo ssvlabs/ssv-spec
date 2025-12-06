@@ -11,8 +11,9 @@ import (
 	spec2 "github.com/attestantio/go-eth2-client/spec"
 	ssz "github.com/ferranbt/fastssz"
 	"github.com/google/go-cmp/cmp"
-	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ssvlabs/ssv-spec/types"
 )
 
 func NoErrorEncoding(obj ssz.Marshaler) []byte {
@@ -41,8 +42,7 @@ func FixIssue178(input *types.ValidatorConsensusData, version spec2.DataVersion)
 }
 
 // UnmarshalStateComparison reads a json derived from 'testName' and unmarshals it into 'targetState'
-func UnmarshalStateComparison[T types.Root](basedir string, testName string, testType string, targetState T) (T,
-	error) {
+func UnmarshalStateComparison[T types.Root](basedir string, testName string, testType string, targetState T) (T, error) {
 	var nilT T
 	basedir = filepath.Join(basedir, "generate")
 	scDir := GetSCDir(basedir, testType)
@@ -113,6 +113,9 @@ func CompareWithJson(t *testing.T, test any, testName string, testType string) {
 
 	expectedTestMap, err := GetExpectedStateFromScFile(testName, testType)
 	require.NoError(t, err)
+
+	// Remove PrivateKeys field from test
+	delete(testMap, "PrivateKeys")
 
 	diff := cmp.Diff(testMap, expectedTestMap)
 	if diff != "" {

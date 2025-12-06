@@ -4,16 +4,19 @@ import (
 	reflect2 "reflect"
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests"
 	comparable2 "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 
 	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/stretchr/testify/require"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 )
 
 type ValidatorConsensusDataTest struct {
-	Name          string
-	ConsensusData types.ValidatorConsensusData
-	ExpectedError string
+	Name              string
+	Type              string
+	Documentation     string
+	ConsensusData     types.ValidatorConsensusData
+	ExpectedErrorCode int
 }
 
 func (test *ValidatorConsensusDataTest) TestName() string {
@@ -23,12 +26,17 @@ func (test *ValidatorConsensusDataTest) TestName() string {
 func (test *ValidatorConsensusDataTest) Run(t *testing.T) {
 
 	err := test.ConsensusData.Validate()
-
-	if len(test.ExpectedError) != 0 {
-		require.EqualError(t, err, test.ExpectedError)
-	} else {
-		require.NoError(t, err)
-	}
+	tests.AssertErrorCode(t, test.ExpectedErrorCode, err)
 
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
+}
+
+func NewValidatorConsensusDataTest(name, documentation string, consensusData types.ValidatorConsensusData, expectedErrorCode int) *ValidatorConsensusDataTest {
+	return &ValidatorConsensusDataTest{
+		Name:              name,
+		Type:              testdoc.ValidatorConsensusDataTestType,
+		Documentation:     documentation,
+		ConsensusData:     consensusData,
+		ExpectedErrorCode: expectedErrorCode,
+	}
 }

@@ -7,13 +7,16 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 )
 
 type SSZSpecTest struct {
-	Name          string
-	Data          []byte
-	ExpectedRoot  [32]byte
-	ExpectedError string
+	Name              string
+	Type              string
+	Documentation     string
+	Data              []byte
+	ExpectedRoot      types.ExpectedRoot
+	ExpectedErrorCode int
 }
 
 func (test *SSZSpecTest) TestName() string {
@@ -38,4 +41,15 @@ func (test *SSZSpecTest) Run(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, root)
 	require.EqualValues(t, test.ExpectedRoot, root)
+}
+
+func NewSSZSpecTest(name, documentation string, data []byte, expectedRoot [32]byte, expectedErrorCode int) *SSZSpecTest {
+	return &SSZSpecTest{
+		Name:              name,
+		Type:              testdoc.SSZSpecTestType,
+		Documentation:     documentation,
+		Data:              data,
+		ExpectedRoot:      expectedRoot,
+		ExpectedErrorCode: expectedErrorCode,
+	}
 }

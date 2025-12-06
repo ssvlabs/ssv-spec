@@ -3,6 +3,7 @@ package maxmsgsize
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 )
 
 const (
@@ -41,10 +42,11 @@ func maxConsensusData() *types.ValidatorConsensusData {
 }
 
 func MaxConsensusData() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "max ValidatorConsensusData",
-		Object:                maxConsensusData(),
-		ExpectedEncodedLength: maxSizeFullConsensusData,
-		IsMaxSize:             true,
-	}
+	return NewStructureSizeTest(
+		"max ValidatorConsensusData",
+		testdoc.StructureSizeTestMaxConsensusDataDoc,
+		maxConsensusData(),
+		maxSizeFullConsensusData,
+		true,
+	)
 }

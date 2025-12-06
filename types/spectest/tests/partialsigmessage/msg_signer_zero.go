@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -16,12 +17,12 @@ func MessageSigner0() *MsgSpecTest {
 	msgPost := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)
 	msgPost.Messages[0].Signer = 0
 
-	return &MsgSpecTest{
-		Name: "message signer 0",
-		Messages: []*types.PartialSignatureMessages{
-			msgPre,
-			msgPost,
-		},
-		ExpectedError: "message invalid: signer ID 0 not allowed",
-	}
+	return NewMsgSpecTest(
+		"message signer 0",
+		testdoc.MsgSpecTestMessageSigner0Doc,
+		[]*types.PartialSignatureMessages{msgPre, msgPost},
+		nil,
+		nil,
+		types.ZeroSignerNotAllowedErrorCode,
+	)
 }

@@ -3,6 +3,7 @@ package maxmsgsize
 import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 )
 
 const (
@@ -27,10 +28,11 @@ func maxBeaconVote() *types.BeaconVote {
 }
 
 func MaxBeaconVote() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "max BeaconVote",
-		Object:                maxBeaconVote(),
-		ExpectedEncodedLength: maxSizeBeaconVote,
-		IsMaxSize:             true,
-	}
+	return NewStructureSizeTest(
+		"max BeaconVote",
+		testdoc.StructureSizeTestMaxBeaconVoteDoc,
+		maxBeaconVote(),
+		maxSizeBeaconVote,
+		true,
+	)
 }

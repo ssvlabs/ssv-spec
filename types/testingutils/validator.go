@@ -5,14 +5,16 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
+var TestingOperatorID = types.OperatorID(1)
+
 var BaseValidator = func(keySet *TestKeySet) *ssv.Validator {
 	return ssv.NewValidator(
-		NewTestingNetwork(1, keySet.OperatorKeys[1]),
+		NewTestingNetwork(TestingOperatorID, keySet.OperatorKeys[TestingOperatorID]),
 		NewTestingBeaconNode(),
 		TestingCommitteeMember(keySet),
 		TestingShare(keySet, TestingValidatorIndex),
 		NewTestingKeyManager(),
-		NewOperatorSigner(keySet, 1),
+		NewOperatorSigner(keySet, TestingOperatorID),
 		map[types.RunnerRole]ssv.Runner{
 			types.RoleCommittee:                 CommitteeRunner(keySet),
 			types.RoleProposer:                  ProposerRunner(keySet),

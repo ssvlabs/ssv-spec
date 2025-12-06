@@ -4,6 +4,7 @@ import (
 	"bytes"
 
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -56,22 +57,22 @@ func isValidProposal(
 		return errors.New("msg type is not proposal")
 	}
 	if msg.QBFTMessage.Height != state.Height {
-		return errors.New("wrong msg height")
+		return types.NewError(types.WrongMessageHeightErrorCode, "wrong msg height")
 	}
 	if len(msg.SignedMessage.OperatorIDs) != 1 {
-		return errors.New("msg allows 1 signer")
+		return types.NewError(types.MessageAllowsOneSignerOnlyErrorCode, "msg allows 1 signer")
 	}
 
 	if !msg.SignedMessage.CheckSignersInCommittee(state.CommitteeMember.Committee) {
-		return errors.New("signer not in committee")
+		return types.NewError(types.SignerIsNotInCommitteeErrorCode, "signer not in committee")
 	}
 
 	if !msg.SignedMessage.MatchedSigners([]types.OperatorID{proposer(state, config, msg.QBFTMessage.Round)}) {
-		return errors.New("proposal leader invalid")
+		return types.NewError(types.ProposalLeaderInvalidErrorCode, "proposal leader invalid")
 	}
 
 	if err := msg.Validate(); err != nil {
-		return errors.Wrap(err, "proposal invalid")
+		return types.NewError(types.ProposalInvalidErrorCode, "proposal invalid")
 	}
 
 	// verify full data integrity
@@ -80,7 +81,7 @@ func isValidProposal(
 		return errors.Wrap(err, "could not hash input data")
 	}
 	if !bytes.Equal(msg.QBFTMessage.Root[:], r[:]) {
-		return errors.New("H(data) != root")
+		return types.NewError(types.RootHashInvalidErrorCode, "H(data) != root")
 	}
 
 	// get justifications
@@ -121,7 +122,7 @@ func isValidProposal(
 		msg.QBFTMessage.Round > state.Round {
 		return nil
 	}
-	return errors.New("proposal is not valid with current state")
+	return types.NewError(types.ProposalInvalidErrorCode, "proposal is not valid with current state")
 }
 
 // isProposalJustification returns nil if the proposal and round change messages are valid and justify a proposal message for the provided round, value and leader
@@ -153,7 +154,7 @@ func isProposalJustification(
 
 		// check there is a quorum
 		if !HasQuorum(state.CommitteeMember, roundChangeMsgs) {
-			return errors.New("change round has no quorum")
+			return types.NewError(types.RoundChangeNoQuorumErrorCode, "change round has no quorum")
 		}
 
 		// previouslyPreparedF returns true if any on the round change messages have a prepared round and fullData
@@ -206,7 +207,7 @@ func isProposalJustification(
 					rcMsg.QBFTMessage.Root,
 					state.CommitteeMember.Committee,
 				); err != nil {
-					return errors.New("signed prepare not valid")
+					return types.NewError(types.PrepareMessageInvalidErrorCode, "signed prepare not valid")
 				}
 			}
 			return nil

@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,11 +15,12 @@ import (
 func PreDecided() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	err := "failed processing post consensus message: invalid post-consensus message: no decided value"
+	errCode := types.NoDecidedValueErrorCode
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus before decided",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus before decided",
+		testdoc.PostConsensusPreDecidedDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -35,11 +37,11 @@ func PreDecided() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
-				BeaconBroadcastedRoots: []string{},
-				ExpectedError:          err,
+				ExpectedErrorCode: errCode,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -56,8 +58,7 @@ func PreDecided() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
 			},
-			BeaconBroadcastedRoots: []string{},
-			ExpectedError:          err,
+			ExpectedErrorCode: errCode,
 		},
 		)
 	}
@@ -71,9 +72,7 @@ func PreDecided() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				ExpectedError:          err,
+				ExpectedErrorCode: errCode,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -82,9 +81,7 @@ func PreDecided() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				ExpectedError:          err,
+				ExpectedErrorCode: errCode,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -93,9 +90,7 @@ func PreDecided() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
-				OutputMessages:         []*types.PartialSignatureMessages{},
-				BeaconBroadcastedRoots: []string{},
-				ExpectedError:          err,
+				ExpectedErrorCode: errCode,
 			},
 		}...)
 	}
@@ -118,8 +113,7 @@ func PreDecided() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
-			BeaconBroadcastedRoots: []string{},
-			ExpectedError:          err,
+			ExpectedErrorCode: errCode,
 		}
 	}
 
@@ -141,8 +135,7 @@ func PreDecided() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			},
-			BeaconBroadcastedRoots: []string{},
-			ExpectedError:          err,
+			ExpectedErrorCode: errCode,
 		}
 	}
 

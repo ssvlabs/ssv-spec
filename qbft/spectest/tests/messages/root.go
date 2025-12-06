@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -21,13 +22,15 @@ func GetRoot() tests.SpecTest {
 
 	r, _ := msg.GetRoot()
 
-	return &tests.MsgSpecTest{
-		Name: "get root",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		ExpectedRoots: [][32]byte{
-			r,
-		},
-	}
+	test := tests.NewMsgSpecTest(
+		"get root",
+		testdoc.MessagesRootDoc,
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		[][32]byte{r},
+		0,
+		ks,
+	)
+
+	return test
 }

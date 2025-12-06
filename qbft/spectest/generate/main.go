@@ -69,6 +69,7 @@ func main() {
 		if err != nil {
 			panic(errors.Wrapf(err, "failed to get post state for test: %s", test.TestName()).Error())
 		}
+
 		writeJsonStateComparison(test.TestName(), reflect.TypeOf(test).String(), post)
 	}
 }
@@ -100,7 +101,7 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 	}
 	log.Printf("writing state comparison json: %s\n", name)
 
-	byts, err := json.MarshalIndent(post, "", "		")
+	byts, err := json.MarshalIndent(post, "", "  ")
 	if err != nil {
 		panic(err.Error())
 	}

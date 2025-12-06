@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -15,9 +16,10 @@ func Quorum7Operators() tests.SpecTest {
 
 	ks := testingutils.Testing7SharesSet()
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "post consensus quorum 7 operators",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"post consensus quorum 7 operators",
+		testdoc.PostConsensusQuorum7OperatorsDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
 				Runner: decideRunner(
@@ -35,7 +37,6 @@ func Quorum7Operators() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: quorum7OperatorsSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     quorum7OperatorsSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
@@ -44,7 +45,8 @@ func Quorum7Operators() tests.SpecTest {
 				DontStartDuty: true,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -62,7 +64,6 @@ func Quorum7Operators() tests.SpecTest {
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[4], 4, version))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[5], 5, version))),
 			},
-			OutputMessages: []*types.PartialSignatureMessages{},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks, version)),
 			},
@@ -88,7 +89,6 @@ func Quorum7Operators() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[4], 4, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[5], 5, version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObject(ks, version)),
 				},
@@ -109,7 +109,6 @@ func Quorum7Operators() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[4], 4, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[5], 5, version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks, version)),
 				},
@@ -130,7 +129,6 @@ func Quorum7Operators() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[4], 4, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[5], 5, version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingAttestationResponseBeaconObject(ks, version)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeBlockRoot(ks, version)),
@@ -159,7 +157,6 @@ func Quorum7Operators() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: quorum7OperatorsProposerSC(version).Root(),
 			PostDutyRunnerState:     quorum7OperatorsProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.PartialSignatureMessages{},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
@@ -186,7 +183,6 @@ func Quorum7Operators() tests.SpecTest {
 			},
 			PostDutyRunnerStateRoot: quorum7OperatorsBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     quorum7OperatorsBlindedProposerSC(version).ExpectedState,
-			OutputMessages:          []*types.PartialSignatureMessages{},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
 			},

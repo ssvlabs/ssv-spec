@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -21,11 +22,12 @@ func LateCommit() tests.SpecTest {
 	)
 	msgs = append(msgs, testingutils.TestingCommitMessage(ks.OperatorKeys[4], types.OperatorID(4)))
 
-	return &tests.ControllerSpecTest{
-		Name: "late commit",
-		RunInstanceData: []*tests.RunInstanceData{
+	test := tests.NewControllerSpecTest(
+		"late commit",
+		testdoc.ControllerLateMsgLateCommitDoc,
+		[]*tests.RunInstanceData{
 			{
-				InputValue:    []byte{1, 2, 3, 4},
+				InputValue:    testingutils.TestingQBFTFullData,
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: testingutils.TestingQBFTFullData,
@@ -39,8 +41,13 @@ func LateCommit() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-		ExpectedError: "not processing consensus message since instance is already decided",
-	}
+		nil,
+		types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
+		nil,
+		ks,
+	)
+
+	return test
 }
 
 // LateCommitStateComparison returns the expected state comparison for LateCommit test.
@@ -65,7 +72,7 @@ func lateCommitStateComparison() *comparable.StateComparison {
 	)
 
 	instance := &qbft.Instance{
-		StartValue: []byte{1, 2, 3, 4},
+		StartValue: testingutils.TestingQBFTFullData,
 		State: &qbft.State{
 			CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 			ID:              testingutils.TestingIdentifier,

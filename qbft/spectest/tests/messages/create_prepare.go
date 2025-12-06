@@ -1,14 +1,25 @@
 package messages
 
-import "github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+import (
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
+	"github.com/ssvlabs/ssv-spec/types/testingutils"
+)
 
 // CreatePrepare tests creating a prepare msg
 func CreatePrepare() tests.SpecTest {
-	return &tests.CreateMsgSpecTest{
-		CreateType:   tests.CreatePrepare,
-		Name:         "create prepare",
-		Value:        [32]byte{1, 2, 3, 4},
-		Round:        10,
-		ExpectedRoot: "fe85e25b3cf7168e9e6417a9daaa71567a3c0c689b633d8154e252d8225c113c",
-	}
+	return tests.NewCreateMsgSpecTest(
+		"create prepare",
+		testdoc.MessagesCreatePrepareDoc,
+		testingutils.TestingQBFTRootData,
+		testingutils.TestingQBFTFullData,
+		10,
+		nil,
+		nil,
+		tests.CreatePrepare,
+		"edf017cce3ba879ef8c16bda28c30c776ae6c522b41c7d0eb1cb1cf29f719613",
+		nil,
+		0,
+		nil,
+	)
 }

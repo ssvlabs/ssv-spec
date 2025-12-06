@@ -1,12 +1,16 @@
 package duty
 
-import "github.com/ssvlabs/ssv-spec/types"
+import (
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
+)
 
 // MapValidatorRegistration tests mapping of BNRoleValidatorRegistration.
 func MapValidatorRegistration() *DutySpecTest {
-	return &DutySpecTest{
-		Name:       "map validator registration role",
-		BeaconRole: types.BNRoleValidatorRegistration,
-		RunnerRole: types.RoleValidatorRegistration,
-	}
+	return NewDutySpecTest(
+		"map validator registration role",
+		testdoc.MapValidatorRegistrationTestDoc,
+		types.BNRoleValidatorRegistration,
+		types.RoleValidatorRegistration,
+	)
 }

@@ -3,6 +3,7 @@ package latemsg
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -40,12 +41,12 @@ func LateRoundChangePastRound() tests.SpecTest {
 		testingutils.TestingRoundChangeMessage(ks.OperatorKeys[4], types.OperatorID(4)),
 	}...)
 
-	return &tests.ControllerSpecTest{
-		Name:          "late round change past round",
-		ExpectedError: "not processing consensus message since instance is already decided",
-		RunInstanceData: []*tests.RunInstanceData{
+	test := tests.NewControllerSpecTest(
+		"late round change past round",
+		testdoc.ControllerLateMsgLateRoundChangePastRoundDoc,
+		[]*tests.RunInstanceData{
 			{
-				InputValue:    []byte{1, 2, 3, 4},
+				InputValue:    testingutils.TestingQBFTFullData,
 				InputMessages: msgs,
 				ExpectedDecidedState: tests.DecidedState{
 					DecidedVal: testingutils.TestingQBFTFullData,
@@ -58,5 +59,11 @@ func LateRoundChangePastRound() tests.SpecTest {
 				},
 			},
 		},
-	}
+		nil,
+		types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
+		nil,
+		ks,
+	)
+
+	return test
 }

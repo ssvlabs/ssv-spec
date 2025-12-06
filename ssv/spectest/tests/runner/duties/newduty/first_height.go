@@ -1,6 +1,7 @@
 package newduty
 
 import (
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -10,9 +11,10 @@ import (
 func FirstHeight() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty first height",
-		Tests: []*StartNewRunnerDutySpecTest{
+	test := NewMultiStartNewRunnerDutySpecTest(
+		"new duty first height",
+		testdoc.NewDutyFirstHeightDoc,
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:      "sync committee aggregator",
 				Runner:    testingutils.SyncCommitteeContributionRunner(ks),
@@ -44,26 +46,26 @@ func FirstHeight() tests.SpecTest {
 				},
 			},
 			{
-				Name:           "attester",
-				Runner:         testingutils.CommitteeRunner(ks),
-				Duty:           testingutils.TestingAttesterDutyFirstSlot(),
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
+				Name:      "attester",
+				Runner:    testingutils.CommitteeRunner(ks),
+				Duty:      testingutils.TestingAttesterDutyFirstSlot(),
+				Threshold: ks.Threshold,
 			},
 			{
-				Name:           "sync committee",
-				Runner:         testingutils.CommitteeRunner(ks),
-				Duty:           testingutils.TestingSyncCommitteeDutyFirstSlot(),
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
+				Name:      "sync committee",
+				Runner:    testingutils.CommitteeRunner(ks),
+				Duty:      testingutils.TestingSyncCommitteeDutyFirstSlot(),
+				Threshold: ks.Threshold,
 			},
 			{
-				Name:           "attester and sync committee",
-				Runner:         testingutils.CommitteeRunner(ks),
-				Duty:           testingutils.TestingSyncCommitteeDutyFirstSlot(),
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
+				Name:      "attester and sync committee",
+				Runner:    testingutils.CommitteeRunner(ks),
+				Duty:      testingutils.TestingSyncCommitteeDutyFirstSlot(),
+				Threshold: ks.Threshold,
 			},
 		},
-	}
+		ks,
+	)
+
+	return test
 }

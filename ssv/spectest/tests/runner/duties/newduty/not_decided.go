@@ -7,6 +7,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -29,9 +30,10 @@ func NotDecided() tests.SpecTest {
 		return r
 	}
 
-	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty not decided",
-		Tests: []*StartNewRunnerDutySpecTest{
+	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
+		"new duty not decided",
+		testdoc.NewDutyNotDecidedDoc,
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
 				Runner:                  startRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
@@ -44,7 +46,8 @@ func NotDecided() tests.SpecTest {
 				},
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
@@ -62,25 +65,22 @@ func NotDecided() tests.SpecTest {
 	for _, version := range testingutils.SupportedAttestationVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{
 			{
-				Name:           fmt.Sprintf("attester (%s)", version.String()),
-				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty(version)),
-				Duty:           testingutils.TestingAttesterDutyNextEpoch(version),
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
+				Name:      fmt.Sprintf("attester (%s)", version.String()),
+				Runner:    startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterDuty(version)),
+				Duty:      testingutils.TestingAttesterDutyNextEpoch(version),
+				Threshold: ks.Threshold,
 			},
 			{
-				Name:           fmt.Sprintf("sync committee (%s)", version.String()),
-				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty(version)),
-				Duty:           testingutils.TestingSyncCommitteeDutyNextEpoch(version),
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
+				Name:      fmt.Sprintf("sync committee (%s)", version.String()),
+				Runner:    startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingSyncCommitteeDuty(version)),
+				Duty:      testingutils.TestingSyncCommitteeDutyNextEpoch(version),
+				Threshold: ks.Threshold,
 			},
 			{
-				Name:           fmt.Sprintf("attester and sync committee (%s)", version.String()),
-				Runner:         startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties(version)),
-				Duty:           testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch(version),
-				Threshold:      ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{},
+				Name:      fmt.Sprintf("attester and sync committee (%s)", version.String()),
+				Runner:    startRunner(testingutils.CommitteeRunner(ks), testingutils.TestingAttesterAndSyncCommitteeDuties(version)),
+				Duty:      testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch(version),
+				Threshold: ks.Threshold,
 			},
 		}...)
 	}

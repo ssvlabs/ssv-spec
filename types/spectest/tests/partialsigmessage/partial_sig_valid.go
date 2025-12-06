@@ -2,7 +2,9 @@ package partialsigmessage
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -12,10 +14,12 @@ func PartialSigValid() *MsgSpecTest {
 
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)
 
-	return &MsgSpecTest{
-		Name: "partial sig valid",
-		Messages: []*types.PartialSignatureMessages{
-			msg,
-		},
-	}
+	return NewMsgSpecTest(
+		"partial sig valid",
+		testdoc.MsgSpecTestPartialSigValidDoc,
+		[]*types.PartialSignatureMessages{msg},
+		nil,
+		nil,
+		0,
+	)
 }

@@ -4,8 +4,10 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/qbft"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -15,9 +17,10 @@ import (
 func ValidMessage() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus valid message",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus valid message",
+		testdoc.ConsensusValidMessageDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -88,7 +91,7 @@ func ValidMessage() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedValidatorRegistration(ks)),
 				},
-				ExpectedError: "no consensus phase for validator registration",
+				ExpectedErrorCode: types.ValidatorRegistrationNoConsensusPhaseErrorCode,
 			},
 			{
 				Name:   "voluntary exit",
@@ -109,10 +112,11 @@ func ValidMessage() tests.SpecTest {
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedVoluntaryExit(ks)),
 				},
-				ExpectedError: "no consensus phase for voluntary exit",
+				ExpectedErrorCode: types.ValidatorExitNoConsensusPhaseErrorCode,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -146,7 +150,6 @@ func ValidMessage() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlotV(version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -157,7 +160,6 @@ func ValidMessage() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlotV(version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -168,7 +170,6 @@ func ValidMessage() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlotV(version))),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
 			},
 		}...)
 	}

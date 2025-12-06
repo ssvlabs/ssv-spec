@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,9 +14,10 @@ import (
 // InconsistentBeaconSigner tests a beacon signer != SignedPartialSignatureMessage.signer
 func InconsistentBeaconSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus inconsistent beacon signer",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus inconsistent beacon signer",
+		testdoc.PreConsensusInconsistentBeaconSignerDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -27,7 +29,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "SignedSSVMessage has an invalid signature: unknown signer",
+				ExpectedErrorCode: types.SSVMessageHasInvalidSignatureErrorCode,
 			},
 			{
 				Name:   "randao",
@@ -40,7 +42,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: "SignedSSVMessage has an invalid signature: unknown signer",
+				ExpectedErrorCode: types.SSVMessageHasInvalidSignatureErrorCode,
 			},
 			{
 				Name:   "randao (blinded block)",
@@ -53,10 +55,11 @@ func InconsistentBeaconSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: "SignedSSVMessage has an invalid signature: unknown signer",
+				ExpectedErrorCode: types.SSVMessageHasInvalidSignatureErrorCode,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -69,7 +72,7 @@ func InconsistentBeaconSigner() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: "SignedSSVMessage has an invalid signature: unknown signer",
+			ExpectedErrorCode: types.SSVMessageHasInvalidSignatureErrorCode,
 		})
 	}
 

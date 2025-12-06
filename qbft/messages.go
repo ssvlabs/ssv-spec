@@ -2,8 +2,10 @@ package qbft
 
 import (
 	"crypto/sha256"
+	"fmt"
 
 	"github.com/pkg/errors"
+
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -91,7 +93,7 @@ func (msg *Message) GetRoot() ([32]byte, error) {
 // Msg validation checks the msg, it's variables for validity.
 func (msg *Message) Validate() error {
 	if len(msg.Identifier) != 56 {
-		return errors.New("message identifier is invalid")
+		return types.NewError(types.MessageIdentifierInvalidErrorCode, "message identifier is invalid")
 	}
 	if _, err := msg.GetRoundChangeJustifications(); err != nil {
 		return err
@@ -100,10 +102,10 @@ func (msg *Message) Validate() error {
 		return err
 	}
 	if msg.MsgType > RoundChangeMsgType {
-		return errors.New("message type is invalid")
+		return types.NewError(types.MessageTypeInvalidErrorCode, "message type is invalid")
 	}
 	if msg.Round == NoRound {
-		return errors.New("message round is invalid")
+		return types.NewError(types.MessageRoundInvalidErrorCode, "message round is invalid")
 	}
 	return nil
 }
@@ -121,7 +123,7 @@ func unmarshalJustifications(data [][]byte) ([]*types.SignedSSVMessage, error) {
 	for i, d := range data {
 		sMsg := &types.SignedSSVMessage{}
 		if err := sMsg.UnmarshalSSZ(d); err != nil {
-			return nil, err
+			return nil, types.WrapError(types.UnmarshalSSZErrorCode, fmt.Errorf("unmarshal justification: %w", err))
 		}
 		ret[i] = sMsg
 	}

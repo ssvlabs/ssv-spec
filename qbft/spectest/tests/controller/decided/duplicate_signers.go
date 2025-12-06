@@ -3,6 +3,7 @@ package decided
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -15,16 +16,22 @@ func DuplicateSigners() tests.SpecTest {
 	msg := testingutils.TestingCommitMultiSignerMessageWithHeight([]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]}, []types.OperatorID{1, 2, 3}, 10)
 	msg.OperatorIDs = []types.OperatorID{1, 2, 2}
 
-	return &tests.ControllerSpecTest{
-		Name: "decide duplicate signer",
-		RunInstanceData: []*tests.RunInstanceData{
+	test := tests.NewControllerSpecTest(
+		"decide duplicate signer",
+		testdoc.ControllerDecidedDuplicateSignersDoc,
+		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					msg,
 				},
 			},
 		},
-		ExpectedError: "invalid decided msg: invalid decided msg: signed commit invalid: invalid SignedSSVMessage: non unique signer",
-	}
+		nil,
+		types.CommitMessageInvalidErrorCode,
+		nil,
+		ks,
+	)
+
+	return test
 }

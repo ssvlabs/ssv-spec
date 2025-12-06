@@ -2,6 +2,7 @@ package encryption
 
 import (
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -19,10 +20,11 @@ func EncryptBLSSK() *EncryptionSpecTest {
 
 	blsSK := ks.Shares[1]
 
-	return &EncryptionSpecTest{
-		Name:      "bls secret key encryption",
-		SKPem:     skPem,
-		PKPem:     pkPem,
-		PlainText: blsSK.Serialize(),
-	}
+	return NewEncryptionSpecTest(
+		"bls secret key encryption",
+		testdoc.EncryptBLSSKTestDoc,
+		skPem,
+		pkPem,
+		blsSK.Serialize(),
+	)
 }

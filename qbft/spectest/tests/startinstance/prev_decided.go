@@ -2,6 +2,7 @@ package startinstance
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -12,11 +13,12 @@ import (
 func PreviousDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	return &tests.ControllerSpecTest{
-		Name: "start instance prev decided",
-		RunInstanceData: []*tests.RunInstanceData{
+	test := tests.NewControllerSpecTest(
+		"start instance prev decided",
+		testdoc.StartInstancePrevDecidedDoc,
+		[]*tests.RunInstanceData{
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: testingutils.DecidingMsgsForHeightWithRoot(
 					testingutils.TestingQBFTRootData,
 					testingutils.TestingQBFTFullData, testingutils.TestingIdentifier, qbft.FirstHeight, ks,
@@ -29,12 +31,18 @@ func PreviousDecided() tests.SpecTest {
 				ControllerPostState: previousDecidedStateComparison(qbft.FirstHeight, true).ExpectedState,
 			},
 			{
-				InputValue:          []byte{1, 2, 3, 4},
+				InputValue:          testingutils.TestingQBFTFullData,
 				ControllerPostRoot:  previousDecidedStateComparison(1, false).Root(),
 				ControllerPostState: previousDecidedStateComparison(1, false).ExpectedState,
 			},
 		},
-	}
+		nil,
+		0,
+		nil,
+		ks,
+	)
+
+	return test
 }
 
 func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comparable.StateComparison {
@@ -58,7 +66,7 @@ func previousDecidedStateComparison(height qbft.Height, decidedState bool) *comp
 		contr.Height = qbft.Height(i)
 
 		instance := &qbft.Instance{
-			StartValue: []byte{1, 2, 3, 4},
+			StartValue: testingutils.TestingQBFTFullData,
 			State: &qbft.State{
 				CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 				ID:              testingutils.TestingIdentifier,

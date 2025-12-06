@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -19,9 +20,10 @@ func ConsensusNotStarted() tests.SpecTest {
 		return r
 	}
 
-	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty consensus not started",
-		Tests: []*StartNewRunnerDutySpecTest{
+	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
+		"new duty consensus not started",
+		testdoc.NewDutyConsensusNotStartedDoc,
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
 				Runner:                  startRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
@@ -65,7 +67,8 @@ func ConsensusNotStarted() tests.SpecTest {
 				},
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
@@ -89,7 +92,6 @@ func ConsensusNotStarted() tests.SpecTest {
 				Duty:                    testingutils.TestingAttesterDutyNextEpoch(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:                    fmt.Sprintf("sync committee (%s)", version.String()),
@@ -97,7 +99,6 @@ func ConsensusNotStarted() tests.SpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeDutyNextEpoch(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:                    fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -105,7 +106,6 @@ func ConsensusNotStarted() tests.SpecTest {
 				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDutiesNextEpoch(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "198b4b184304c99c41b4c161bf33c1427a727f520ef946e29f4880c11646b1a3",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 		}...)
 	}

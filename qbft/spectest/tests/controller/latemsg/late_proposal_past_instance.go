@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -26,7 +27,7 @@ func LateProposalPastInstance() tests.SpecTest {
 	instanceData := func(height qbft.Height) *tests.RunInstanceData {
 		sc := lateProposalPastInstanceStateComparison(height, nil)
 		return &tests.RunInstanceData{
-			InputValue:    []byte{1, 2, 3, 4},
+			InputValue:    testingutils.TestingQBFTFullData,
 			InputMessages: msgPerHeight[height],
 			ExpectedDecidedState: tests.DecidedState{
 				DecidedVal: testingutils.TestingQBFTFullData,
@@ -49,13 +50,14 @@ func LateProposalPastInstance() tests.SpecTest {
 	)
 	sc := lateProposalPastInstanceStateComparison(2, lateMsg)
 
-	return &tests.ControllerSpecTest{
-		Name: "late proposal past instance",
-		RunInstanceData: []*tests.RunInstanceData{
+	test := tests.NewControllerSpecTest(
+		"late proposal past instance",
+		testdoc.ControllerLateMsgLateProposalPastInstanceDoc,
+		[]*tests.RunInstanceData{
 			instanceData(qbft.FirstHeight),
 			instanceData(1),
 			{
-				InputValue: []byte{1, 2, 3, 4},
+				InputValue: testingutils.TestingQBFTFullData,
 				InputMessages: []*types.SignedSSVMessage{
 					lateMsg,
 				},
@@ -63,8 +65,13 @@ func LateProposalPastInstance() tests.SpecTest {
 				ControllerPostState: sc.ExpectedState,
 			},
 		},
-		ExpectedError: "not processing consensus message since instance is already decided",
-	}
+		nil,
+		types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
+		nil,
+		ks,
+	)
+
+	return test
 }
 
 // lateProposalPastInstanceStateComparison returns a comparable.StateComparison for controller running up until the given height.
@@ -92,7 +99,7 @@ func lateProposalPastInstanceStateComparison(height qbft.Height, lateMsg *types.
 		msgs := allMsgs[offset*i : offset*(i+1)]
 
 		instance := &qbft.Instance{
-			StartValue: []byte{1, 2, 3, 4},
+			StartValue: testingutils.TestingQBFTFullData,
 			State: &qbft.State{
 				CommitteeMember: testingutils.TestingCommitteeMember(testingutils.Testing4SharesSet()),
 				ID:              testingutils.TestingIdentifier,

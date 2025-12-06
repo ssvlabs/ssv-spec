@@ -2,6 +2,7 @@ package maxmsgsize
 
 import (
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 )
 
 const (
@@ -36,19 +37,21 @@ func expectedPartialSignatureMessages(numSignatures int) *types.PartialSignature
 }
 
 func ExpectedPartialSignatureMessage() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected PartialSignatureMessage",
-		Object:                expectedPartialSignatureMessage(),
-		ExpectedEncodedLength: expectedSizePartialSignatureMessage,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected PartialSignatureMessage",
+		testdoc.StructureSizeTestExpectedPartialSignatureMessageDoc,
+		expectedPartialSignatureMessage(),
+		expectedSizePartialSignatureMessage,
+		false,
+	)
 }
 
 func ExpectedPartialSignatureMessages() *StructureSizeTest {
-	return &StructureSizeTest{
-		Name:                  "expected PartialSignatureMessages",
-		Object:                expectedPartialSignatureMessages(1),
-		ExpectedEncodedLength: expectedSizePartialSignatureMessages,
-		IsMaxSize:             false,
-	}
+	return NewStructureSizeTest(
+		"expected PartialSignatureMessages",
+		testdoc.StructureSizeTestExpectedPartialSignatureMessagesDoc,
+		expectedPartialSignatureMessages(1),
+		expectedSizePartialSignatureMessages,
+		false,
+	)
 }

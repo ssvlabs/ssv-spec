@@ -2,7 +2,9 @@ package partialsigmessage
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -13,9 +15,12 @@ func NoMsgs() *MsgSpecTest {
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)
 	msg.Messages = []*types.PartialSignatureMessage{}
 
-	return &MsgSpecTest{
-		Name:          "no messages",
-		Messages:      []*types.PartialSignatureMessages{msg},
-		ExpectedError: "no PartialSignatureMessages messages",
-	}
+	return NewMsgSpecTest(
+		"no messages",
+		testdoc.MsgSpecTestNoMsgsDoc,
+		[]*types.PartialSignatureMessages{msg},
+		nil,
+		nil,
+		types.NoPartialSigMessagesErrorCode,
+	)
 }

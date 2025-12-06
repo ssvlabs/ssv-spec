@@ -2,6 +2,7 @@ package runnerconstruction
 
 import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -19,9 +20,10 @@ func NoShares() tests.SpecTest {
 		types.RoleVoluntaryExit:             "must have one share",
 	}
 
-	return &RunnerConstructionSpecTest{
-		Name:      "no shares",
-		Shares:    shares,
-		RoleError: expectedErrors,
-	}
+	return NewRunnerConstructionSpecTest(
+		"no shares",
+		testdoc.RunnerConstructionNoSharesDoc,
+		shares,
+		expectedErrors,
+	)
 }

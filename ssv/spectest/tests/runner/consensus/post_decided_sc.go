@@ -119,7 +119,7 @@ func postDecidedProposerSC(version spec.DataVersion) *comparable.StateComparison
 }
 
 // postDecidedBlindedProposerSC  returns runner with decided instance and an extra commit message.
-// // There are pre-consensus messages in the container but no post-consensus messages.
+// There are pre-consensus messages in the container but no post-consensus messages.
 func postDecidedBlindedProposerSC(version spec.DataVersion) *comparable.StateComparison {
 	ks := testingutils.Testing4SharesSet()
 	cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)

@@ -2,6 +2,7 @@ package messages
 
 import (
 	"github.com/ssvlabs/ssv-spec/qbft"
+	"github.com/ssvlabs/ssv-spec/qbft/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -18,11 +19,15 @@ func MsgTypeUnknown() tests.SpecTest {
 		Root:       testingutils.TestingQBFTRootData,
 	})
 
-	return &tests.MsgSpecTest{
-		Name: "msg type unknown",
-		Messages: []*types.SignedSSVMessage{
-			msg,
-		},
-		ExpectedError: "message type is invalid",
-	}
+	test := tests.NewMsgSpecTest(
+		"msg type unknown",
+		testdoc.MessagesMsgTypeUnknownDoc,
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		types.MessageTypeInvalidErrorCode,
+		ks,
+	)
+
+	return test
 }

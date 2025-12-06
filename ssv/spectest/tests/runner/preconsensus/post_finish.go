@@ -6,6 +6,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -21,9 +22,10 @@ func PostFinish() tests.SpecTest {
 		return runner
 	}
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus post finish",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus post finish",
+		testdoc.PreConsensusPostFinishDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee aggregator selection proof",
 				Runner: finishRunner(
@@ -37,8 +39,7 @@ func PostFinish() tests.SpecTest {
 				PostDutyRunnerStateRoot: postFinishSyncCommitteeContributionSC().Root(),
 				PostDutyRunnerState:     postFinishSyncCommitteeContributionSC().ExpectedState,
 				DontStartDuty:           true,
-				OutputMessages:          []*types.PartialSignatureMessages{},
-				ExpectedError:           "failed processing sync committee selection proof message: invalid pre-consensus message: no running duty",
+				ExpectedErrorCode:       types.NoRunningDutyErrorCode,
 			},
 			{
 				Name: "validator registration",
@@ -52,9 +53,8 @@ func PostFinish() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: postFinishValidatorRegistrationSC().Root(),
 				PostDutyRunnerState:     postFinishValidatorRegistrationSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing validator registration message: invalid pre-consensus message: no running duty",
+				ExpectedErrorCode:       types.NoRunningDutyErrorCode,
 			},
 			{
 				Name: "voluntary exit",
@@ -68,12 +68,12 @@ func PostFinish() tests.SpecTest {
 				},
 				PostDutyRunnerStateRoot: postFinishVoluntaryExitSC().Root(),
 				PostDutyRunnerState:     postFinishVoluntaryExitSC().ExpectedState,
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
-				ExpectedError:           "failed processing voluntary exit message: invalid pre-consensus message: no running duty",
+				ExpectedErrorCode:       types.NoRunningDutyErrorCode,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -86,9 +86,8 @@ func PostFinish() tests.SpecTest {
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4, version))),
 			},
-			DontStartDuty:  true,
-			OutputMessages: []*types.PartialSignatureMessages{},
-			ExpectedError:  "failed processing selection proof message: invalid pre-consensus message: no running duty",
+			DontStartDuty:     true,
+			ExpectedErrorCode: types.NoRunningDutyErrorCode,
 		})
 	}
 
@@ -107,8 +106,7 @@ func PostFinish() tests.SpecTest {
 			PostDutyRunnerStateRoot: postFinishProposerSC(version).Root(),
 			PostDutyRunnerState:     postFinishProposerSC(version).ExpectedState,
 			DontStartDuty:           true,
-			OutputMessages:          []*types.PartialSignatureMessages{},
-			ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
+			ExpectedErrorCode:       types.NoRunningDutyErrorCode,
 		}
 	}
 
@@ -127,8 +125,7 @@ func PostFinish() tests.SpecTest {
 			PostDutyRunnerStateRoot: postFinishBlindedProposerSC(version).Root(),
 			PostDutyRunnerState:     postFinishBlindedProposerSC(version).ExpectedState,
 			DontStartDuty:           true,
-			OutputMessages:          []*types.PartialSignatureMessages{},
-			ExpectedError:           "failed processing randao message: invalid pre-consensus message: no running duty",
+			ExpectedErrorCode:       types.NoRunningDutyErrorCode,
 		}
 	}
 

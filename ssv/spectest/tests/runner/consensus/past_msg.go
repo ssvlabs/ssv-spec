@@ -7,6 +7,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -53,11 +54,12 @@ func PastMessage() tests.SpecTest {
 	// The Committee object (used in CommitteeRunner tests) don't have a runner for the past slot
 	// (this feature can't be implemented with this test spec)
 	// Another "past_msg" test (that is added in the committee package) runs with an existing past runner
-	expectedErrCommittee := "no runner found for message's slot"
+	expectedErrCommitteeCode := types.NoRunnerForSlotErrorCode
 
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "consensus past message",
-		Tests: []*tests.MsgProcessingSpecTest{
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"consensus past message",
+		testdoc.ConsensusPastMessageDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
 				Runner: bumpHeight(testingutils.SyncCommitteeContributionRunner(ks)),
@@ -66,7 +68,6 @@ func PastMessage() tests.SpecTest {
 					pastMsgF(testingutils.TestSyncCommitteeContributionConsensusData, testingutils.SyncCommitteeContributionMsgID),
 				},
 				PostDutyRunnerStateRoot: "d1ba71cab348c80ebb7b4533c9c482eaba407f6a73864ee742aab93e73b94dab",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
 			},
 			{
@@ -77,7 +78,6 @@ func PastMessage() tests.SpecTest {
 					pastMsgF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				},
 				PostDutyRunnerStateRoot: "1c939726a237c02013fab61901e819e34ec99e2ef62dadb6c847e5ad118fc4e7",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
 			},
 			{
@@ -88,7 +88,6 @@ func PastMessage() tests.SpecTest {
 					pastMsgF(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				},
 				PostDutyRunnerStateRoot: "49edaab0d759ba8a35a37ab26416ae04962d77ec088b87c4f1e65f781c1ed96f",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 				DontStartDuty:           true,
 			},
 			{
@@ -104,7 +103,7 @@ func PastMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "no consensus phase for validator registration",
+				ExpectedErrorCode: types.ValidatorRegistrationNoConsensusPhaseErrorCode,
 			},
 			{
 				Name:   "voluntary exit",
@@ -119,10 +118,11 @@ func PastMessage() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: "no consensus phase for voluntary exit",
+				ExpectedErrorCode: types.ValidatorExitNoConsensusPhaseErrorCode,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -133,7 +133,6 @@ func PastMessage() tests.SpecTest {
 				pastMsgF(testingutils.TestAggregatorConsensusData(version), testingutils.AggregatorMsgID),
 			},
 			PostDutyRunnerStateRoot: "5a1a9b9fb21682ea854f919be531a692fe5c3a6c5302214dbf3421faed57cff8",
-			OutputMessages:          []*types.PartialSignatureMessages{},
 			DontStartDuty:           true,
 		},
 		)
@@ -148,9 +147,8 @@ func PastMessage() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				DontStartDuty:  true,
-				ExpectedError:  expectedErrCommittee,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrCommitteeCode,
 			},
 			{
 				Name:   fmt.Sprintf("sync committee (%s)", version.String()),
@@ -159,9 +157,8 @@ func PastMessage() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				DontStartDuty:  true,
-				ExpectedError:  expectedErrCommittee,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrCommitteeCode,
 			},
 			{
 				Name:   fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -170,9 +167,8 @@ func PastMessage() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					pastMsgF(&testingutils.TestBeaconVote, testingutils.CommitteeMsgID(ks)),
 				},
-				OutputMessages: []*types.PartialSignatureMessages{},
-				DontStartDuty:  true,
-				ExpectedError:  expectedErrCommittee,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrCommitteeCode,
 			},
 		}...)
 	}

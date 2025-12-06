@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -14,9 +15,10 @@ import (
 func Valid() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	multiSpecTest := &MultiStartNewRunnerDutySpecTest{
-		Name: "new duty valid",
-		Tests: []*StartNewRunnerDutySpecTest{
+	multiSpecTest := NewMultiStartNewRunnerDutySpecTest(
+		"new duty valid",
+		testdoc.NewDutyValidDoc,
+		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
 				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
@@ -38,7 +40,8 @@ func Valid() tests.SpecTest {
 				},
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{
@@ -48,7 +51,6 @@ func Valid() tests.SpecTest {
 				Duty:                    testingutils.TestingAttesterDuty(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "7f926e54651ed34901256e8c82a40658647afe17cb089f6c1d7406e7350f4c2e",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:                    fmt.Sprintf("sync committee (%s)", version.String()),
@@ -56,7 +58,6 @@ func Valid() tests.SpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeDuty(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 			{
 				Name:                    fmt.Sprintf("attester and sync committee (%s)", version.String()),
@@ -64,7 +65,6 @@ func Valid() tests.SpecTest {
 				Duty:                    testingutils.TestingAttesterAndSyncCommitteeDuties(version),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
-				OutputMessages:          []*types.PartialSignatureMessages{},
 			},
 		}...)
 	}
@@ -80,6 +80,7 @@ func Valid() tests.SpecTest {
 			},
 		})
 	}
+
 	return multiSpecTest
 
 }

@@ -3,6 +3,7 @@ package partialsigmessage
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -13,9 +14,12 @@ func InvalidMsg() *MsgSpecTest {
 	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)
 	msg.Messages = append(msg.Messages, &types.PartialSignatureMessage{})
 
-	return &MsgSpecTest{
-		Name:          "invalid message",
-		Messages:      []*types.PartialSignatureMessages{msg},
-		ExpectedError: "inconsistent signers",
-	}
+	return NewMsgSpecTest(
+		"invalid message",
+		testdoc.MsgSpecTestInvalidMsgDoc,
+		[]*types.PartialSignatureMessages{msg},
+		nil,
+		nil,
+		types.InconsistentSignersErrorCode,
+	)
 }

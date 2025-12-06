@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -13,10 +14,11 @@ import (
 // InconsistentOperatorSigner tests a SignedSSVMessage with inconsistent signer regarding its nested SignedPartialSignatureMessage
 func InconsistentOperatorSigner() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	expectedError := "invalid PartialSignatureMessages: signer from signed message is inconsistent with partial signature signers"
-	multiSpecTest := &tests.MultiMsgProcessingSpecTest{
-		Name: "pre consensus inconsistent operator signer",
-		Tests: []*tests.MsgProcessingSpecTest{
+	expectedErrorCode := types.PartialSigInconsistentSignerErrorCode
+	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
+		"pre consensus inconsistent operator signer",
+		testdoc.PreConsensusInconsistentOperatorSignerDoc,
+		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
 				Runner: testingutils.SyncCommitteeContributionRunner(ks),
@@ -28,7 +30,7 @@ func InconsistentOperatorSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   "randao",
@@ -41,7 +43,7 @@ func InconsistentOperatorSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   "randao (blinded block)",
@@ -54,10 +56,11 @@ func InconsistentOperatorSigner() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
 				},
-				ExpectedError: expectedError,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		},
-	}
+		ks,
+	)
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
@@ -70,7 +73,7 @@ func InconsistentOperatorSigner() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
 			},
-			ExpectedError: expectedError,
+			ExpectedErrorCode: expectedErrorCode,
 		})
 	}
 
