@@ -114,7 +114,7 @@ var contributionProofMsg = func(
 
 	msg := &types.PartialSignatureMessages{
 		Type:     types.ContributionProofs,
-		Slot:     slot,
+		Slot:     TestingDutySlot,
 		Messages: msgs,
 	}
 	return msg
