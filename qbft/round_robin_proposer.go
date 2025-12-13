@@ -11,7 +11,8 @@ func RoundRobinProposer(state *State, round Round) types.OperatorID {
 	if state.Height != FirstHeight {
 		firstRoundIndex += int(state.Height) % len(state.CommitteeMember.Committee)
 	}
+	ethEpoch := int(state.Height) / 32
 
-	index := (firstRoundIndex + int(round) - int(FirstRound)) % len(state.CommitteeMember.Committee)
+	index := (firstRoundIndex + int(round) - int(FirstRound) + ethEpoch) % len(state.CommitteeMember.Committee)
 	return state.CommitteeMember.Committee[index].OperatorID
 }
