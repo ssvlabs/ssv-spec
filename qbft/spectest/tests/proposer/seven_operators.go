@@ -15,7 +15,7 @@ func SevenOperators() tests.SpecTest {
 	rounds := make([]qbft.Round, 0)
 	proposers := make([]types.OperatorID, 0)
 	for h := qbft.FirstHeight; h < 100; h++ {
-		p = types.OperatorID(h%7) + 1
+		p = types.OperatorID((h+h/32)%7) + 1
 		for r := qbft.FirstRound; r < 100; r++ {
 			heights = append(heights, h)
 			rounds = append(rounds, r)
