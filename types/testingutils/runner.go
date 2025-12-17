@@ -41,16 +41,8 @@ var ProposerBlindedBlockRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleProposer, keySet)
 }
 
-var AggregatorRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleAggregator, keySet)
-}
-
 var SyncCommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleCommittee, keySet)
-}
-
-var SyncCommitteeContributionRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleSyncCommitteeContribution, keySet)
 }
 
 var ValidatorRegistrationRunner = func(keySet *TestKeySet) ssv.Runner {
@@ -130,12 +122,6 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 		case types.RoleProposer:
 			valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
 				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey)
-		case types.RoleAggregator:
-			valCheck = ssv.AggregatorValueCheckF(km, types.BeaconTestNetwork,
-				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex)
-		case types.RoleSyncCommitteeContribution:
-			valCheck = ssv.SyncCommitteeContributionValueCheckF(km, types.BeaconTestNetwork,
-				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex)
 		case types.RoleAggregatorCommittee:
 			valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
 		default:
@@ -167,32 +153,8 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			opSigner,
 			valCheck,
 		)
-	case types.RoleAggregator:
-		runner, err = ssv.NewAggregatorRunner(
-			types.BeaconTestNetwork,
-			shareMap,
-			contr,
-			NewTestingBeaconNode(),
-			net,
-			km,
-			opSigner,
-			valCheck,
-			TestingHighestDecidedSlot,
-		)
 	case types.RoleProposer:
 		runner, err = ssv.NewProposerRunner(
-			types.BeaconTestNetwork,
-			shareMap,
-			contr,
-			NewTestingBeaconNode(),
-			net,
-			km,
-			opSigner,
-			valCheck,
-			TestingHighestDecidedSlot,
-		)
-	case types.RoleSyncCommitteeContribution:
-		runner, err = ssv.NewSyncCommitteeAggregatorRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
@@ -297,12 +259,6 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	case types.RoleProposer:
 		valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
 			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, share.SharePubKey)
-	case types.RoleAggregator:
-		valCheck = ssv.AggregatorValueCheckF(km, types.BeaconTestNetwork,
-			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex)
-	case types.RoleSyncCommitteeContribution:
-		valCheck = ssv.SyncCommitteeContributionValueCheckF(km, types.BeaconTestNetwork,
-			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex)
 	case types.RoleAggregatorCommittee:
 		valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
 	default:
@@ -337,32 +293,8 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			opSigner,
 			valCheck,
 		)
-	case types.RoleAggregator:
-		runner, err = ssv.NewAggregatorRunner(
-			types.BeaconTestNetwork,
-			shareMap,
-			contr,
-			NewTestingBeaconNode(),
-			net,
-			km,
-			opSigner,
-			valCheck,
-			TestingHighestDecidedSlot,
-		)
 	case types.RoleProposer:
 		runner, err = ssv.NewProposerRunner(
-			types.BeaconTestNetwork,
-			shareMap,
-			contr,
-			NewTestingBeaconNode(),
-			net,
-			km,
-			opSigner,
-			valCheck,
-			TestingHighestDecidedSlot,
-		)
-	case types.RoleSyncCommitteeContribution:
-		runner, err = ssv.NewSyncCommitteeAggregatorRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,

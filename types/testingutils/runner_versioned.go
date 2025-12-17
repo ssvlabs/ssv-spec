@@ -42,16 +42,6 @@ var SSVDecidingMsgsV = func(consensusData *types.ValidatorConsensusData, ks *Tes
 			base = append(base, signedF(PreConsensusRandaoMsgV(ks.Shares[types.OperatorID(i)], types.OperatorID(i), consensusData.Version)))
 		}
 	}
-	if role == types.RoleAggregator {
-		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, signedF(PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i), consensusData.Version)))
-		}
-	}
-	if role == types.RoleSyncCommitteeContribution {
-		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, signedF(PreConsensusContributionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
-		}
-	}
 
 	// consensus and post consensus
 	qbftMsgs := SSVDecidingMsgsForHeight(consensusData, id[:], qbft.Height(consensusData.Duty.Slot), ks)
@@ -87,16 +77,6 @@ var ExpectedSSVDecidingMsgsV = func(consensusData *types.ValidatorConsensusData,
 	if role == types.RoleProposer {
 		for i := uint64(1); i <= ks.Threshold; i++ {
 			base = append(base, ssvMsgF(PreConsensusRandaoMsgV(ks.Shares[types.OperatorID(i)], types.OperatorID(i), consensusData.Version)))
-		}
-	}
-	if role == types.RoleAggregator {
-		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, ssvMsgF(PreConsensusSelectionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i), consensusData.Version)))
-		}
-	}
-	if role == types.RoleSyncCommitteeContribution {
-		for i := uint64(1); i <= ks.Threshold; i++ {
-			base = append(base, ssvMsgF(PreConsensusContributionProofMsg(ks.Shares[types.OperatorID(i)], ks.Shares[types.OperatorID(i)], types.OperatorID(i), types.OperatorID(i))))
 		}
 	}
 
