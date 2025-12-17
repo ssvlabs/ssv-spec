@@ -8,7 +8,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-var BaseCommittee = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet) *ssv.Committee {
+var BaseAggregatorCommittee = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet) *ssv.Committee {
 
 	var keySetSample *TestKeySet
 	for _, ks := range keySetMap {
@@ -22,7 +22,7 @@ var BaseCommittee = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet) *ssv.C
 	}
 
 	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
-		return CommitteeRunnerWithShareMap(shareMap)
+		return AggregatorCommitteeRunnerWithShareMap(shareMap)
 	}
 	return ssv.NewCommittee(
 		*TestingCommitteeMember(keySetSample),
@@ -31,7 +31,7 @@ var BaseCommittee = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet) *ssv.C
 	)
 }
 
-var BaseCommitteeWithRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, runner ssv.Runner) *ssv.Committee {
+var BaseAggregatorCommitteeWithRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, runner ssv.Runner) *ssv.Committee {
 
 	var keySetSample *TestKeySet
 	for _, ks := range keySetMap {
@@ -55,8 +55,7 @@ var BaseCommitteeWithRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeyS
 	)
 }
 
-var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, runnerSample *ssv.CommitteeRunner) *ssv.Committee {
-
+var BaseAggregatorCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, runnerSample *ssv.AggregatorCommitteeRunner) *ssv.Committee {
 	var keySetSample *TestKeySet
 	for _, ks := range keySetMap {
 		keySetSample = ks
@@ -69,7 +68,7 @@ var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.Validat
 	}
 
 	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
-		runner, err := ssv.NewCommitteeRunner(
+		runner, err := ssv.NewAggregatorCommitteeRunner(
 			runnerSample.BaseRunner.BeaconNetwork,
 			shareMap,
 			qbft.NewController(

@@ -229,7 +229,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 
 	// Identifier
 	var ownerID []byte
-	if role == types.RoleCommittee {
+	if role == types.RoleCommittee || role == types.RoleAggregatorCommittee {
 		committee := make([]uint64, 0)
 		for _, op := range keySet.Committee() {
 			committee = append(committee, op.Signer)

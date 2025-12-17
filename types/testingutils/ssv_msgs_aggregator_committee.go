@@ -14,12 +14,20 @@ import (
 // SSVMessage
 // ==================================================
 
-var SSVMsgAggregatorCommittee = func(keySet *TestKeySet, qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	// For aggregator committee, we use committee ID since it manages multiple validators
-	msgIDBytes := AggregatorCommitteeMsgID(keySet)
+func AggregatorCommitteeMsgIDForKeySet(ks *TestKeySet) types.MessageID {
+	msgIDBytes := AggregatorCommitteeMsgID(ks)
 	var msgID types.MessageID
 	copy(msgID[:], msgIDBytes)
-	return ssvMsg(qbftMsg, partialSigMsg, msgID)
+	return msgID
+}
+
+var TestingAggregatorCommitteeMsgID = func() types.MessageID {
+	return AggregatorCommitteeMsgIDForKeySet(Testing4SharesSet())
+}()
+
+var SSVMsgAggregatorCommittee = func(keySet *TestKeySet, qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
+	// For aggregator committee, we use committee ID since it manages multiple validators
+	return ssvMsg(qbftMsg, partialSigMsg, AggregatorCommitteeMsgIDForKeySet(keySet))
 }
 
 // ==================================================
@@ -81,7 +89,7 @@ var PreConsensusAggregatorCommitteeMixedMsg = func(sk *bls.SecretKey, id types.O
 	selectionProofMsg := PreConsensusSelectionProofMsg(sk, sk, id, id, version)
 
 	// Get sync committee contribution proofs
-	contribProofMsg := PreConsensusContributionProofMsg(sk, sk, id, id)
+	contribProofMsg := PreConsensusContributionProofMsgWithSlot(sk, sk, id, id, TestingDutySlotV(version))
 
 	// Combine into a single AggregatorCommitteePartialSig message
 	return &types.PartialSignatureMessages{
@@ -98,7 +106,7 @@ var PostConsensusAggregatorCommitteeMixedMsg = func(sk *bls.SecretKey, id types.
 	aggMsg := PostConsensusAggregatorMsg(sk, id, version)
 
 	// Get sync committee post-consensus messages
-	syncMsg := PostConsensusSyncCommitteeContributionMsg(sk, id, keySet)
+	syncMsg := PostConsensusSyncCommitteeContributionMsgWithSlot(sk, id, keySet, TestingDutySlotV(version))
 
 	// Combine messages - all with PostConsensusPartialSig type
 	aggMsg.Messages = append(aggMsg.Messages, syncMsg.Messages...)

@@ -16,43 +16,20 @@ var SupportedAggregatorVersions = []spec.DataVersion{spec.DataVersionPhase0, spe
 // Versioned Aggregator Duty
 // ==================================================
 
-var TestingAggregatorDuty = func(version spec.DataVersion) *types.ValidatorDuty {
-	return &types.ValidatorDuty{
-		Type:                    types.BNRoleAggregator,
-		PubKey:                  TestingValidatorPubKey,
-		Slot:                    TestingDutySlotV(version),
-		ValidatorIndex:          TestingValidatorIndex,
-		CommitteeIndex:          22,
-		CommitteesAtSlot:        36,
-		CommitteeLength:         128,
-		ValidatorCommitteeIndex: 11,
-	}
+var TestingAggregatorDuty = func(version spec.DataVersion) *types.AggregatorCommitteeDuty {
+	return TestingAggregatorCommitteeDutyOnlyAggregator(version)
 }
 
-var TestingAggregatorDutyNextEpoch = func(version spec.DataVersion) *types.ValidatorDuty {
-	return &types.ValidatorDuty{
-		Type:                    types.BNRoleAggregator,
-		PubKey:                  TestingValidatorPubKey,
-		Slot:                    TestingDutySlotNextEpochV(version),
-		ValidatorIndex:          TestingValidatorIndex,
-		CommitteeIndex:          22,
-		CommitteesAtSlot:        36,
-		CommitteeLength:         128,
-		ValidatorCommitteeIndex: 11,
-	}
+var TestingAggregatorDutyNextEpoch = func(version spec.DataVersion) *types.AggregatorCommitteeDuty {
+	d := TestingAggregatorCommitteeDutyOnlyAggregator(version)
+	d.Slot = TestingDutySlotNextEpochV(version)
+	return d
 }
 
-var TestingAggregatorDutyFirstSlot = func() *types.ValidatorDuty {
-	return &types.ValidatorDuty{
-		Type:                    types.BNRoleAggregator,
-		PubKey:                  TestingValidatorPubKey,
-		Slot:                    0,
-		ValidatorIndex:          TestingValidatorIndex,
-		CommitteeIndex:          22,
-		CommitteesAtSlot:        36,
-		CommitteeLength:         128,
-		ValidatorCommitteeIndex: 11,
-	}
+var TestingAggregatorDutyFirstSlot = func() *types.AggregatorCommitteeDuty {
+	d := TestingAggregatorCommitteeDutyOnlyAggregator(spec.DataVersionPhase0)
+	d.Slot = 0
+	return d
 }
 
 // ==================================================

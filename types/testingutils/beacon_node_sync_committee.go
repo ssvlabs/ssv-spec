@@ -136,38 +136,16 @@ var TestingSignedSyncCommitteeContributions = func(
 // Sync Committee Contribution Duty
 // ==================================================
 
-var TestingSyncCommitteeContributionDuty = types.ValidatorDuty{
-	Type:                          types.BNRoleSyncCommitteeContribution,
-	PubKey:                        TestingValidatorPubKey,
-	Slot:                          TestingDutySlot,
-	ValidatorIndex:                TestingValidatorIndex,
-	CommitteeIndex:                3,
-	CommitteesAtSlot:              36,
-	CommitteeLength:               128,
-	ValidatorCommitteeIndex:       11,
-	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
-}
+var TestingSyncCommitteeContributionDuty = TestingAggregatorCommitteeDutyOnlySyncCommittee()
 
-var TestingSyncCommitteeContributionDutyFirstSlot = types.ValidatorDuty{
-	Type:                          types.BNRoleSyncCommitteeContribution,
-	PubKey:                        TestingValidatorPubKey,
-	Slot:                          0,
-	ValidatorIndex:                TestingValidatorIndex,
-	CommitteeIndex:                3,
-	CommitteesAtSlot:              36,
-	CommitteeLength:               128,
-	ValidatorCommitteeIndex:       11,
-	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
-}
+var TestingSyncCommitteeContributionDutyFirstSlot = func() *types.AggregatorCommitteeDuty {
+	d := TestingAggregatorCommitteeDutyOnlySyncCommittee()
+	d.Slot = 0
+	return d
+}()
 
-var TestingSyncCommitteeContributionNexEpochDuty = types.ValidatorDuty{
-	Type:                          types.BNRoleSyncCommitteeContribution,
-	PubKey:                        TestingValidatorPubKey,
-	Slot:                          TestingDutySlot2,
-	ValidatorIndex:                TestingValidatorIndex,
-	CommitteeIndex:                3,
-	CommitteesAtSlot:              36,
-	CommitteeLength:               128,
-	ValidatorCommitteeIndex:       11,
-	ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
-}
+var TestingSyncCommitteeContributionNexEpochDuty = func() *types.AggregatorCommitteeDuty {
+	d := TestingAggregatorCommitteeDutyOnlySyncCommittee()
+	d.Slot = TestingDutySlot2
+	return d
+}()
