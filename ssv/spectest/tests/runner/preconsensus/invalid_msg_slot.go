@@ -26,8 +26,8 @@ func InvalidMessageSlot() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee aggregator selection proof",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, invalidateSlot(testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1)))),
 				},
@@ -35,7 +35,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
-				ExpectedErrorCode: types.PartialSigMessageFutureSlotErrorCode,
+				ExpectedErrorCode: types.NoRunnerForSlotErrorCode,
 			},
 			{
 				Name:   "randao",
@@ -91,7 +91,7 @@ func InvalidMessageSlot() tests.SpecTest {
 			},
 			{
 				Name:   fmt.Sprintf("aggregator selection proof (%s)", spec.DataVersionPhase0.String()),
-				Runner: testingutils.AggregatorRunner(ks),
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
 				Duty:   testingutils.TestingAggregatorDuty(spec.DataVersionPhase0),
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, invalidateSlot(testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionPhase0)))),
@@ -99,11 +99,11 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionPhase0), // broadcasts when starting a new duty
 				},
-				ExpectedErrorCode: types.PartialSigMessageFutureSlotErrorCode,
+				ExpectedErrorCode: types.NoRunnerForSlotErrorCode,
 			},
 			{
 				Name:   fmt.Sprintf("aggregator selection proof (%s)", spec.DataVersionElectra.String()),
-				Runner: testingutils.AggregatorRunner(ks),
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
 				Duty:   testingutils.TestingAggregatorDuty(spec.DataVersionElectra),
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, invalidateSlot(testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionElectra)))),
@@ -111,7 +111,7 @@ func InvalidMessageSlot() tests.SpecTest {
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionElectra), // broadcasts when starting a new duty
 				},
-				ExpectedErrorCode: types.PartialSigMessageInvalidSlotErrorCode,
+				ExpectedErrorCode: types.NoRunnerForSlotErrorCode,
 			},
 		},
 		ks,
