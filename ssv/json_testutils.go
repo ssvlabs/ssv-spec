@@ -238,42 +238,6 @@ func (cr CommitteeRunner) GetRoot() ([32]byte, error) {
 	return ret, nil
 }
 
-// AggregatorRunner
-func (r *AggregatorRunner) Encode() ([]byte, error) {
-	return json.Marshal(r)
-}
-
-func (r *AggregatorRunner) Decode(data []byte) error {
-	return json.Unmarshal(data, &r)
-}
-
-func (r *AggregatorRunner) GetRoot() ([32]byte, error) {
-	marshaledRoot, err := r.Encode()
-	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode AggregatorRunner")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret, nil
-}
-
-// SyncCommitteeAggregatorRunner
-func (r *SyncCommitteeAggregatorRunner) Encode() ([]byte, error) {
-	return json.Marshal(r)
-}
-
-func (r *SyncCommitteeAggregatorRunner) Decode(data []byte) error {
-	return json.Unmarshal(data, &r)
-}
-
-func (r *SyncCommitteeAggregatorRunner) GetRoot() ([32]byte, error) {
-	marshaledRoot, err := r.Encode()
-	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode SyncCommitteeAggregatorRunner")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret, nil
-}
-
 // AggregatorCommitteeRunner
 func (r *AggregatorCommitteeRunner) Encode() ([]byte, error) {
 	return json.Marshal(r)

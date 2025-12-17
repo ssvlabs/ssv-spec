@@ -81,6 +81,9 @@ const (
 	AggCommAggCommIdxCntMismatchErrorCode
 	AggCommContributorsContributionsCntMismatchErrorCode
 	AggCommSubnetNotInSCSubnetsErrorCode
+	AggCommConsensusDataNoValidatorErrorCode
+	AggCommConsensusDataDecodeErrorCode
+	ValidatorConsensusDataDecodeErrorCode
 )
 
 type Error struct {

@@ -97,10 +97,10 @@ func ProposerValueCheckF(
 	return func(data []byte) error {
 		cd := &types.ValidatorConsensusData{}
 		if err := cd.Decode(data); err != nil {
-			return errors.Wrap(err, "failed decoding consensus data")
+			return types.WrapError(types.ValidatorConsensusDataDecodeErrorCode, errors.Wrap(err, "failed decoding consensus data"))
 		}
 		if err := cd.Validate(); err != nil {
-			return types.NewError(types.QBFTValueInvalidErrorCode, "invalid value")
+			return types.NewError(types.QBFTValueInvalidErrorCode, fmt.Sprintf("invalid value: %v", err.Error()))
 		}
 
 		if err := dutyValueCheck(&cd.Duty, network, types.BNRoleProposer, validatorPK, validatorIndex); err != nil {
@@ -180,7 +180,7 @@ func AggregatorCommitteeValueCheckF(
 	return func(data []byte) error {
 		cd := &types.AggregatorCommitteeConsensusData{}
 		if err := cd.Decode(data); err != nil {
-			return errors.Wrap(err, "failed decoding aggregator committee consensus data")
+			return types.WrapError(types.AggCommConsensusDataDecodeErrorCode, errors.Wrap(err, "failed decoding aggregator committee consensus data"))
 		}
 		if err := cd.Validate(); err != nil {
 			return errors.Wrap(err, "invalid value")
@@ -191,7 +191,7 @@ func AggregatorCommitteeValueCheckF(
 		hasContributors := len(cd.Contributors) > 0
 
 		if !hasAggregators && !hasContributors {
-			return errors.New("no aggregators or sync committee contributors in consensus data")
+			return types.WrapError(types.AggCommConsensusDataNoValidatorErrorCode, errors.New("no aggregators or sync committee contributors in consensus data"))
 		}
 
 		return nil
