@@ -12,7 +12,8 @@ import (
 
 // WrongDutyType tests duty.Type not attester
 func WrongDutyType() tests.SpecTest {
-	consensusDataBytsF := func(cd *types.ValidatorConsensusData) []byte {
+	consensusDataBytsWithIncorrectTypeF := func(cd *types.ValidatorConsensusData) []byte {
+		cd.Duty.Type = types.BNRoleAggregator
 		input, _ := cd.Encode()
 		return input
 	}
@@ -31,25 +32,25 @@ func WrongDutyType() tests.SpecTest {
 				// No error since input doesn't contain duty type
 			},
 			{
-				Name:              "sync committee aggregator",
-				Network:           types.BeaconTestNetwork,
-				RunnerRole:        types.RoleSyncCommitteeContribution,
-				Input:             consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
-				ExpectedErrorCode: types.WrongBeaconRoleTypeErrorCode,
+				Name:       "aggregator committee phase0",
+				Network:    types.BeaconTestNetwork,
+				RunnerRole: types.RoleAggregatorCommittee,
+				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(spec.DataVersionPhase0), spec.DataVersionPhase0),
+				// No error since input doesn't contain duty type
 			},
 			{
-				Name:              "aggregator",
-				Network:           types.BeaconTestNetwork,
-				RunnerRole:        types.RoleAggregator,
-				Input:             consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
-				ExpectedErrorCode: types.WrongBeaconRoleTypeErrorCode,
+				Name:       "aggregator committee electra",
+				Network:    types.BeaconTestNetwork,
+				RunnerRole: types.RoleAggregatorCommittee,
+				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(spec.DataVersionElectra), spec.DataVersionElectra),
+				// No error since input doesn't contain duty type
 			},
 			{
 				Name:              "proposer",
 				Network:           types.BeaconTestNetwork,
 				RunnerRole:        types.RoleProposer,
-				Input:             consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
-				ExpectedErrorCode: types.WrongBeaconRoleTypeErrorCode,
+				Input:             consensusDataBytsWithIncorrectTypeF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
+				ExpectedErrorCode: types.QBFTValueInvalidErrorCode,
 			},
 		},
 	)
