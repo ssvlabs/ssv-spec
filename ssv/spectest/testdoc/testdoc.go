@@ -215,3 +215,11 @@ const ValCheckDutyWrongValidatorPKDoc = "Tests duty value check with wrong valid
 
 // Documentation for valcheckproposer tests
 const ValCheckProposerBlindedBlockDoc = "Tests proposer value check with blinded block data"
+
+// Documentation for valcheckaggcommittee
+const ValCheckAggCommitteeNoValidatorsDoc = "Tests agg committee value check with no validators"
+const ValCheckAggCommitteeInvalidAttestationLenDoc = "Tests agg committee value check with an invalid attestations length"
+const ValCheckAggCommitteeValidDoc = "Tests agg committee value valid case"
+
+// Documentation for valcheck
+const ValCheckBadDecodingDoc = "Tests value check with bad decoding for role"
