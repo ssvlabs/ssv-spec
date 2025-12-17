@@ -62,9 +62,9 @@ func PostInvalidDecided() tests.SpecTest {
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name: "sync committee aggregator",
-				Runner: decideWrong(testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				Runner: decideWrong(testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty),
+				Duty:                    testingutils.TestingSyncCommitteeContributionNexEpochDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "4112802181d740f78b68b0c67e4220e689af2ac1011a51d0f4c10c4df315fac5",
 				OutputMessages: []*types.PartialSignatureMessages{
@@ -90,7 +90,7 @@ func PostInvalidDecided() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
 			Name:                    fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner:                  decideWrong(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty(version)),
+			Runner:                  decideWrong(testingutils.AggregatorCommitteeRunner(ks), testingutils.TestingAggregatorDuty(version)),
 			Duty:                    testingutils.TestingAggregatorDutyNextEpoch(version),
 			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: "b0ec12e65623dd1a95203d4a0a753bb6758f6bed3141a467bb7955530ae35ded",
