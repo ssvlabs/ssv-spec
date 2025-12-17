@@ -16,24 +16,24 @@ func InvalidExpectedRoot() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 	expectedErrorCode := types.WrongSigningRootErrorCode
+	sccSlot := testingutils.TestingSyncCommitteeContributionDuty.Slot
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid expected roots",
 		testdoc.PostConsensusInvalidExpectedRootDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty,
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusWrongSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusWrongSyncCommitteeContributionMsg(ks.Shares[1], 1, ks, sccSlot))),
 				},
-				PostDutyRunnerStateRoot: "f58387d4d4051a2de786e4cbf9dc370a8b19a544f52af04f71195feb3863fc5c",
-				DontStartDuty:           true,
-				ExpectedErrorCode:       expectedErrorCode,
+				DontStartDuty: true,
+				// No error is expected as AggregatorCommitteeRunner doesn't validate the roots
 			},
 			{
 				Name: "proposer",
@@ -46,9 +46,8 @@ func InvalidExpectedRoot() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusWrongProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
 				},
-				PostDutyRunnerStateRoot: "ff213af6f0bf2350bb37f48021c137dd5552b1c25cb5c6ebd0c1d27debf6080e",
-				DontStartDuty:           true,
-				ExpectedErrorCode:       expectedErrorCode,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name: "proposer (blinded block)",
@@ -61,9 +60,8 @@ func InvalidExpectedRoot() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusWrongProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
 				},
-				PostDutyRunnerStateRoot: "9b4524d5100835df4d71d0a1e559acdc33d541c44a746ebda115c5e7f3eaa85a",
-				DontStartDuty:           true,
-				ExpectedErrorCode:       expectedErrorCode,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 		},
 		ks,
@@ -72,8 +70,8 @@ func InvalidExpectedRoot() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name: fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: decideRunner(
-				testingutils.AggregatorRunner(ks),
+			Runner: decideAggregatorCommitteeRunner(
+				testingutils.AggregatorCommitteeRunner(ks),
 				testingutils.TestingAggregatorDuty(version),
 				testingutils.TestAggregatorConsensusData(version),
 			),
@@ -81,9 +79,8 @@ func InvalidExpectedRoot() tests.SpecTest {
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusWrongAggregatorMsg(ks.Shares[1], 1, version))),
 			},
-			PostDutyRunnerStateRoot: "1fb182fb19e446d61873abebc0ac85a3a9637b51d139cdbd7d8cb70cf7ffec82",
-			DontStartDuty:           true,
-			ExpectedErrorCode:       expectedErrorCode,
+			DontStartDuty: true,
+			// No error is expected as AggregatorCommitteeRunner doesn't validate the roots
 		},
 		)
 	}

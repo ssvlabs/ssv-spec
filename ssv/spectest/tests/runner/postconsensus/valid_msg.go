@@ -19,6 +19,12 @@ func finishRunner(r ssv.Runner, duty types.Duty, decidedValue *types.ValidatorCo
 	return ret
 }
 
+func finishAggregatorCommitteeRunner(r ssv.Runner, duty types.Duty, decidedValue *types.AggregatorCommitteeConsensusData) ssv.Runner {
+	ret := decideAggregatorCommitteeRunner(r, duty, decidedValue)
+	ret.GetBaseRunner().State.Finished = true
+	return ret
+}
+
 func finishCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) ssv.Runner {
 	ret := decideCommitteeRunner(r, duty, bv)
 	ret.GetBaseRunner().State.Finished = true
@@ -34,6 +40,13 @@ func decideCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) 
 }
 
 func decideRunner(r ssv.Runner, duty types.Duty, cd *types.ValidatorConsensusData) ssv.Runner {
+	cdBytes, err := cd.Encode()
+	if err != nil {
+		panic(err)
+	}
+	return decideRunnerForData(r, duty, cdBytes)
+}
+func decideAggregatorCommitteeRunner(r ssv.Runner, duty types.Duty, cd *types.AggregatorCommitteeConsensusData) ssv.Runner {
 	cdBytes, err := cd.Encode()
 	if err != nil {
 		panic(err)
@@ -79,12 +92,12 @@ func ValidMessage() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty,
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
 				},
@@ -164,8 +177,8 @@ func ValidMessage() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name: fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: decideRunner(
-				testingutils.AggregatorRunner(ks),
+			Runner: decideAggregatorCommitteeRunner(
+				testingutils.AggregatorCommitteeRunner(ks),
 				testingutils.TestingAggregatorDuty(version),
 				testingutils.TestAggregatorConsensusData(version),
 			),

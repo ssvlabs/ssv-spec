@@ -28,12 +28,12 @@ func NilSSVMessage() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty,
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
+				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 				Messages:                []*types.SignedSSVMessage{invalidMsg},
 				PostDutyRunnerStateRoot: "f58387d4d4051a2de786e4cbf9dc370a8b19a544f52af04f71195feb3863fc5c",
 				DontStartDuty:           true,
@@ -72,8 +72,8 @@ func NilSSVMessage() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name: fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: decideRunner(
-				testingutils.AggregatorRunner(ks),
+			Runner: decideAggregatorCommitteeRunner(
+				testingutils.AggregatorCommitteeRunner(ks),
 				testingutils.TestingAggregatorDuty(version),
 				testingutils.TestAggregatorConsensusData(version),
 			),

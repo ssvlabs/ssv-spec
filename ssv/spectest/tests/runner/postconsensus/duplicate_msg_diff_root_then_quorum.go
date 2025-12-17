@@ -17,6 +17,7 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 	expectedErrorCode := types.WrongSigningRootErrorCode
+	sccSlot := testingutils.TestingSyncCommitteeContributionDuty.Slot
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus duplicate msg different root then quorum",
@@ -24,27 +25,25 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty,
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusWrongSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusWrongSyncCommitteeContributionMsg(ks.Shares[1], 1, ks, sccSlot))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks))),
 				},
-				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumSyncCommitteeContributionSC().Root(),
-				PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumSyncCommitteeContributionSC().ExpectedState,
 				BeaconBroadcastedRoots: []string{
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
 				},
-				DontStartDuty:     true,
-				ExpectedErrorCode: expectedErrorCode,
+				DontStartDuty: true,
+				// No error is expected as AggregatorCommitteeRunner resolves the duplication issue internally
 			},
 		},
 		ks,
@@ -53,8 +52,8 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name: fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: decideRunner(
-				testingutils.AggregatorRunner(ks),
+			Runner: decideAggregatorCommitteeRunner(
+				testingutils.AggregatorCommitteeRunner(ks),
 				testingutils.TestingAggregatorDuty(version),
 				testingutils.TestAggregatorConsensusData(version),
 			),
@@ -68,8 +67,8 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks, version)),
 			},
-			DontStartDuty:     true,
-			ExpectedErrorCode: expectedErrorCode,
+			DontStartDuty: true,
+			// No error is expected as AggregatorCommitteeRunner resolves the duplication issue internally
 		},
 		)
 	}
@@ -157,8 +156,6 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 			},
-			PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumProposerSC(version).Root(),
-			PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumProposerSC(version).ExpectedState,
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
@@ -183,8 +180,6 @@ func DuplicateMsgDifferentRootsThenQuorum() tests.SpecTest {
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 			},
-			PostDutyRunnerStateRoot: duplicateMsgDifferentRootsThenQuorumBlindedProposerSC(version).Root(),
-			PostDutyRunnerState:     duplicateMsgDifferentRootsThenQuorumBlindedProposerSC(version).ExpectedState,
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
 			},

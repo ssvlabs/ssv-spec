@@ -15,21 +15,21 @@ import (
 func UnorderedExpectedRoots() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
-
+	sccSlot := testingutils.TestingSyncCommitteeContributionDuty.Slot
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus unordered roots",
 		testdoc.PostConsensusUnorderedExpectedRootsDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty,
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionWrongOrderMsg(ks.Shares[1], 1, ks))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionWrongOrderMsg(ks.Shares[1], 1, ks, sccSlot))),
 				},
 				PostDutyRunnerStateRoot: "f1283949bbe8a2cec6e76df6aed1cbfb38e1438ae1ceb55835ba0fa540fa564a",
 				DontStartDuty:           true,
@@ -69,8 +69,8 @@ func UnorderedExpectedRoots() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name: fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: decideRunner(
-				testingutils.AggregatorRunner(ks),
+			Runner: decideAggregatorCommitteeRunner(
+				testingutils.AggregatorCommitteeRunner(ks),
 				testingutils.TestingAggregatorDuty(version),
 				testingutils.TestAggregatorConsensusData(version),
 			),

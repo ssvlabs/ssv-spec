@@ -42,8 +42,8 @@ func InvalidDecidedValue() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),
@@ -55,7 +55,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						},
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.SyncCommitteeContributionMsgID,
+						testingutils.TestingAggregatorCommitteeMsgID[:],
 						consensusDataByts(types.BNRoleSyncCommitteeContribution),
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))), // no qbft msg to mock the missing decided value
@@ -125,7 +125,7 @@ func InvalidDecidedValue() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name:   fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: testingutils.AggregatorRunner(ks),
+			Runner: testingutils.AggregatorCommitteeRunner(ks),
 			Duty:   testingutils.TestingAggregatorDuty(version),
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version))),
@@ -138,7 +138,7 @@ func InvalidDecidedValue() tests.SpecTest {
 					},
 					[]types.OperatorID{1, 2, 3},
 					qbft.Height(testingutils.TestingDutySlot),
-					testingutils.AggregatorMsgID,
+					testingutils.TestingAggregatorCommitteeMsgID[:],
 					consensusDataByts(types.BNRoleAggregator),
 				),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version))),

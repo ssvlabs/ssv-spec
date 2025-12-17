@@ -16,6 +16,7 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 	expectedErrorCode := types.WrongSigningRootErrorCode
+	sccSlot := testingutils.TestingSyncCommitteeContributionDuty.Slot
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus duplicate msg different roots",
@@ -23,20 +24,18 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty,
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusWrongSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusWrongSyncCommitteeContributionMsg(ks.Shares[1], 1, ks, sccSlot))),
 				},
-				PostDutyRunnerStateRoot: duplicateMsgDifferentRootsSyncCommitteeContributionSC().Root(),
-				PostDutyRunnerState:     duplicateMsgDifferentRootsSyncCommitteeContributionSC().ExpectedState,
-				DontStartDuty:           true,
-				ExpectedErrorCode:       expectedErrorCode,
+				DontStartDuty: true,
+				// No error is expected as AggregatorCommitteeRunner resolves the duplication issue internally
 			},
 		},
 		ks,
@@ -45,8 +44,8 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name: fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: decideRunner(
-				testingutils.AggregatorRunner(ks),
+			Runner: decideAggregatorCommitteeRunner(
+				testingutils.AggregatorCommitteeRunner(ks),
 				testingutils.TestingAggregatorDuty(version),
 				testingutils.TestAggregatorConsensusData(version),
 			),
@@ -55,8 +54,8 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusWrongAggregatorMsg(ks.Shares[1], 1, version))),
 			},
-			DontStartDuty:     true,
-			ExpectedErrorCode: expectedErrorCode,
+			DontStartDuty: true,
+			// No error is expected as AggregatorCommitteeRunner resolves the duplication issue internally
 		},
 		)
 	}
@@ -122,10 +121,8 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusWrongProposerMsgV(ks.Shares[1], 1, version))),
 			},
-			PostDutyRunnerStateRoot: duplicateMsgDifferentRootsProposerSC(version).Root(),
-			PostDutyRunnerState:     duplicateMsgDifferentRootsProposerSC(version).ExpectedState,
-			DontStartDuty:           true,
-			ExpectedErrorCode:       expectedErrorCode,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 
@@ -143,10 +140,8 @@ func DuplicateMsgDifferentRoots() tests.SpecTest {
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusWrongProposerMsgV(ks.Shares[1], 1, version))),
 			},
-			PostDutyRunnerStateRoot: duplicateMsgDifferentRootsBlindedProposerSC(version).Root(),
-			PostDutyRunnerState:     duplicateMsgDifferentRootsBlindedProposerSC(version).ExpectedState,
-			DontStartDuty:           true,
-			ExpectedErrorCode:       expectedErrorCode,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 
