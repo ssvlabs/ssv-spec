@@ -48,12 +48,11 @@ const (
 
 	BNRoleValidatorRegistration
 	BNRoleVoluntaryExit
-	BNRoleAggregatorCommittee // Internal SSV role combining Aggregator + SyncCommitteeContribution
 
 	BNRoleUnknown = math.MaxUint64
 )
 
-// String returns name of the role
+// String returns the name of the role
 func (r BeaconRole) String() string {
 	switch r {
 	case BNRoleAttester:
@@ -70,8 +69,6 @@ func (r BeaconRole) String() string {
 		return "VALIDATOR_REGISTRATION"
 	case BNRoleVoluntaryExit:
 		return "VOLUNTARY_EXIT"
-	case BNRoleAggregatorCommittee:
-		return "AGGREGATOR_COMMITTEE"
 	default:
 		return "UNDEFINED"
 	}
@@ -110,16 +107,12 @@ func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
 		return RoleCommittee
 	case BNRoleProposer:
 		return RoleProposer
-	case BNRoleAggregator:
-		return RoleAggregator  // Still use old runner for now
-	case BNRoleSyncCommitteeContribution:
-		return RoleSyncCommitteeContribution  // Still use old runner for now
+	case BNRoleAggregator, BNRoleSyncCommitteeContribution:
+		return RoleAggregatorCommittee // Still use old runner for now
 	case BNRoleValidatorRegistration:
 		return RoleValidatorRegistration
 	case BNRoleVoluntaryExit:
 		return RoleVoluntaryExit
-	case BNRoleAggregatorCommittee:
-		return RoleAggregatorCommittee  // New mapping (but won't be used until Phase 2)
 	}
 	return RoleUnknown
 }
