@@ -1,4 +1,4 @@
-package validatorconsensusdata
+package aggregatorcommitteeconsensusdata
 
 import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
@@ -6,10 +6,10 @@ import (
 )
 
 // SyncCommitteeContributionValidation tests a valid consensus data with sync committee contrib.
-func SyncCommitteeContributionValidation() *ValidatorConsensusDataTest {
+func SyncCommitteeContributionValidation() *AggregatorCommitteeConsensusDataTest {
 	return NewValidatorConsensusDataTest(
 		"sync committee contribution valid",
-		testdoc.ValidatorConsensusDataTestSyncCommitteeContributionValidationDoc,
+		testdoc.AggregatorCommitteeConsensusDataTestSyncCommitteeContributionValidationDoc,
 		*testingutils.TestSyncCommitteeContributionConsensusData,
 		0,
 	)

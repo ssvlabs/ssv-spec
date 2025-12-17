@@ -132,6 +132,23 @@ const SSZSpecTestType = "SSZ: validation of SSZ encoding and decoding"
 // Documentation for SSZSpecTest
 const SSZSpecTestWithdrawalsMarshalingDoc = "Test SSZ marshaling and hash tree root calculation of Capella withdrawals"
 
+// ValAggregatorCommitteeConsensusDataTest
+const AggregatorCommitteeConsensusDataTestType = "Aggregator committee consensus data: validation of aggregator committee consensus data"
+
+// AggregatorCommitteeConsensusDataEncodingTest
+const AggregatorCommitteeConsensusDataEncodingTestType = "Aggregator committee consensus data encoding"
+
+const AggregatorCommitteeConsensusDataTestInvalidAttestationLenDoc = "Test validation error for invalid agg committee consensus data with wrong attestation length"
+const AggregatorCommitteeConsensusDataTestInvalidCommitteeIndexLenDoc = "Test validation error for invalid agg committee consensus data with wrong committee index length"
+const AggregatorCommitteeConsensusDataTestInvalidContributionLenDoc = "Test validation error for invalid agg committee consensus data with wrong contribution length"
+const AggregatorCommitteeConsensusDataTestInvalidSubnetMismatchDoc = "Test validation error for invalid agg committee consensus data with subnet mismatch"
+const AggregatorCommitteeConsensusDataTestPhase0AggregatorNoJustificationsDoc = "Test phase0 aggregator agg committee consensus data with no pre-consensus justifications"
+const AggregatorCommitteeConsensusDataTestElectraAggregatorNoJustificationsDoc = "Test Electra aggregator agg committee consensus data with no pre-consensus justifications"
+const AggregatorCommitteeConsensusDataTestPhase0AggregatorValidationDoc = "Test validation of valid agg committee consensus data with Phase0 AggregateAndProof"
+const AggregatorCommitteeConsensusDataTestElectraAggregatorValidationDoc = "Test validation of valid agg committee consensus data with Electra AggregateAndProof"
+const AggregatorCommitteeConsensusDataTestSyncCommitteeContributionValidationDoc = "Test validation of valid agg committee consensus data with sync committee contribution"
+const AggregatorCommitteeConsensusDataTestSyncCommitteeContributionNoJustificationsDoc = "Test sync committee contribution agg committee consensus data with no sync committee contribution pre-consensus justifications"
+
 // ValidatorConsensusDataTest
 const ValidatorConsensusDataTestType = "Validator consensus data: validation of validator consensus data"
 
@@ -148,21 +165,12 @@ const ValidatorConsensusDataTestDenebBlindedBlockDoc = "Test validation of valid
 const ValidatorConsensusDataTestCapellaBlindedBlockDoc = "Test validation of valid consensus data with Capella blinded block"
 const ValidatorConsensusDataTestCapellaBlockDoc = "Test validation of valid consensus data with Capella block"
 const ValidatorConsensusDataTestElectraBlindedBlockDoc = "Test validation of valid consensus data with Electra blinded block"
-const ValidatorConsensusDataTestPhase0AggregatorNoJustificationsDoc = "Test phase0 aggregator consensus data with no pre-consensus justifications"
-const ValidatorConsensusDataTestElectraAggregatorNoJustificationsDoc = "Test Electra aggregator consensus data with no pre-consensus justifications"
-const ValidatorConsensusDataTestPhase0AggregatorValidationDoc = "Test validation of valid consensus data with Phase0 AggregateAndProof"
-const ValidatorConsensusDataTestElectraAggregatorValidationDoc = "Test validation of valid consensus data with Electra AggregateAndProof"
 const ValidatorConsensusDataTestProposerNoJustificationsDoc = "Test proposer consensus data with no pre-consensus justifications"
-const ValidatorConsensusDataTestSyncCommitteeContributionValidationDoc = "Test validation of valid consensus data with sync committee contribution"
-const ValidatorConsensusDataTestSyncCommitteeContributionNoJustificationsDoc = "Test sync committee contribution consensus data with no sync committee contribution pre-consensus justifications"
 const ValidatorConsensusDataTestVoluntaryExitDoc = "Test validation error for voluntary exit consensus data which has no consensus data"
 const ValidatorConsensusDataTestValidatorRegistrationDoc = "Test validation error for validator registration consensus data which has no consensus data"
 const ValidatorConsensusDataTestDenebBlockDoc = "Test validation of valid consensus data with Deneb block"
 const ValidatorConsensusDataTestElectraBlockDoc = "Test validation of valid consensus data with Electra block"
-const ValidatorConsensusDataTestInvalidPhase0AggregatorDoc = "Test validation error for invalid consensus data with Phase0 AggregateAndProof using incorrect data"
-const ValidatorConsensusDataTestInvalidElectraAggregatorDoc = "Test validation error for invalid consensus data with Electra AggregateAndProof using incorrect data"
 const ValidatorConsensusDataTestInvalidDutyDoc = "Test validation error for consensus data with unknown duty role"
-const ValidatorConsensusDataTestInvalidSyncCommitteeContributionDoc = "Test validation error for invalid consensus data with sync committee contribution using incorrect data"
 
 // ValidatorConsensusDataEncodingTest
 const ValidatorConsensusDataEncodingTestType = "Validator consensus data encoding"
@@ -170,9 +178,11 @@ const ValidatorConsensusDataEncodingTestType = "Validator consensus data encodin
 // Documentation for ValidatorConsensusDataEncodingTest
 const ValidatorConsensusDataEncodingTestProposerDoc = "Test encoding and decoding of proposer consensus data with Capella blinded block"
 const ValidatorConsensusDataEncodingTestBlindedProposerDoc = "Test encoding and decoding of blinded proposer consensus data with Capella blinded block"
-const ValidatorConsensusDataEncodingTestPhase0AggregatorDoc = "Test encoding and decoding of phase0 aggregator consensus data"
-const ValidatorConsensusDataEncodingTestElectraAggregatorDoc = "Test encoding and decoding of Electra aggregator consensus data"
-const ValidatorConsensusDataEncodingTestSyncCommitteeContributionDoc = "Test encoding and decoding of sync committee contribution consensus data"
+
+// AggregatorCommitteeConsensusDataEncodingTest
+const AggregatorCommitteeConsensusDataEncodingTestPhase0AggregatorDoc = "Test encoding and decoding of phase0 aggregator consensus data"
+const AggregatorCommitteeConsensusDataEncodingTestElectraAggregatorDoc = "Test encoding and decoding of Electra aggregator consensus data"
+const AggregatorCommitteeConsensusDataEncodingTestSyncCommitteeContributionDoc = "Test encoding and decoding of sync committee contribution consensus data"
 
 // ShareEncodingTest
 const ShareEncodingTestType = "Share encoding"

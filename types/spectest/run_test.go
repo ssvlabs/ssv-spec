@@ -17,6 +17,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/aggregatorcommitteeconsensusdata"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
@@ -161,6 +162,18 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &maxmsgsize.StructureSizeTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&aggregatorcommitteeconsensusdata.AggregatorCommitteeConsensusDataTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &aggregatorcommitteeconsensusdata.AggregatorCommitteeConsensusDataTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&aggregatorcommitteeconsensusdata.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &aggregatorcommitteeconsensusdata.EncodingTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			default:

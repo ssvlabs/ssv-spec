@@ -1,4 +1,4 @@
-package validatorconsensusdata
+package aggregatorcommitteeconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -8,20 +8,20 @@ import (
 )
 
 // Phase0AggregatorValidation tests a valid consensus data with AggregateAndProof
-func Phase0AggregatorValidation() *ValidatorConsensusDataTest {
+func Phase0AggregatorValidation() *AggregatorCommitteeConsensusDataTest {
 	return NewValidatorConsensusDataTest(
 		"phase0 aggregator valid",
-		testdoc.ValidatorConsensusDataTestPhase0AggregatorValidationDoc,
+		testdoc.AggregatorCommitteeConsensusDataTestPhase0AggregatorValidationDoc,
 		*testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0),
 		0,
 	)
 }
 
 // ElectraAggregatorValidation tests a valid consensus data with AggregateAndProof
-func ElectraAggregatorValidation() *ValidatorConsensusDataTest {
+func ElectraAggregatorValidation() *AggregatorCommitteeConsensusDataTest {
 	return NewValidatorConsensusDataTest(
 		"electra aggregator valid",
-		testdoc.ValidatorConsensusDataTestElectraAggregatorValidationDoc,
+		testdoc.AggregatorCommitteeConsensusDataTestElectraAggregatorValidationDoc,
 		*testingutils.TestAggregatorConsensusData(spec.DataVersionElectra),
 		0,
 	)
