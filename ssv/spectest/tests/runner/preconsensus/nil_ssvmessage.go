@@ -27,17 +27,6 @@ func NilSSVMessage() tests.SpecTest {
 		testdoc.PreConsensusNilMsgDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
-				Name:                    "sync committee aggregator selection proof",
-				Runner:                  testingutils.AggregatorCommitteeRunner(ks),
-				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
-				Messages:                []*types.SignedSSVMessage{invalidMsg},
-				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
-				ExpectedErrorCode: expectedErrorCode,
-			},
-			{
 				Name:                    "randao",
 				Runner:                  testingutils.ProposerRunner(ks),
 				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
@@ -63,17 +52,41 @@ func NilSSVMessage() tests.SpecTest {
 		ks,
 	)
 
+	// Aggregator committee duty
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name:                    "sync committee aggregator selection proof",
+		Runner:                  testingutils.AggregatorCommitteeRunner(ks),
+		Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
+		Messages:                []*types.SignedSSVMessage{invalidMsg},
+		PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
+		OutputMessages: []*types.PartialSignatureMessages{
+			testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
+		},
+		ExpectedErrorCode: expectedErrorCode,
+	})
 	for _, version := range testingutils.SupportedAggregatorVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-			Name:     fmt.Sprintf("aggregator selection proof (%s)", version.String()),
-			Runner:   testingutils.AggregatorCommitteeRunner(ks),
-			Duty:     testingutils.TestingAggregatorDuty(version),
-			Messages: []*types.SignedSSVMessage{invalidMsg},
-			OutputMessages: []*types.PartialSignatureMessages{
-				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+			{
+				Name:     fmt.Sprintf("aggregator selection proof (%s)", version.String()),
+				Runner:   testingutils.AggregatorCommitteeRunner(ks),
+				Duty:     testingutils.TestingAggregatorDuty(version),
+				Messages: []*types.SignedSSVMessage{invalidMsg},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
+				},
+				ExpectedErrorCode: expectedErrorCode,
 			},
-			ExpectedErrorCode: expectedErrorCode,
-		})
+			{
+				Name:     fmt.Sprintf("aggregator committee duty (%s)", version.String()),
+				Runner:   testingutils.AggregatorCommitteeRunner(ks),
+				Duty:     testingutils.TestingAggregatorCommitteeDutyMixed(version),
+				Messages: []*types.SignedSSVMessage{invalidMsg},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusAggregatorCommitteeMixedMsg(ks.Shares[1], 1, version), // broadcasts when starting a new duty
+				},
+				ExpectedErrorCode: expectedErrorCode,
+			},
+		}...)
 	}
 
 	return multiSpecTest

@@ -99,6 +99,80 @@ var PreConsensusAggregatorCommitteeMixedMsg = func(sk *bls.SecretKey, id types.O
 	}
 }
 
+var PreConsensusAggregatorCommitteeMixedMsgTooManyRoots = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	// Get aggregator selection proof
+	selectionProofMsg := PreConsensusSelectionProofTooManyRootsMsg(sk, sk, id, id, version)
+
+	// Get sync committee contribution proofs
+	contribProofMsg := PreConsensusContributionProofTooManyRootsMsg(sk, sk, id, id, TestingDutySlotV(version))
+
+	// Combine into a single AggregatorCommitteePartialSig message
+	return &types.PartialSignatureMessages{
+		Type:     types.AggregatorCommitteePartialSig,
+		Slot:     selectionProofMsg.Slot,
+		Messages: append(selectionProofMsg.Messages, contribProofMsg.Messages...),
+	}
+}
+var PreConsensusAggregatorCommitteeMixedMsgTooFewRoots = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	// Get aggregator selection proof
+	selectionProofMsg := PreConsensusSelectionProofTooFewRootsMsg(sk, sk, id, id, version)
+
+	// Get sync committee contribution proofs
+	contribProofMsg := PreConsensusContributionProofTooFewRootsMsg(sk, sk, id, id, TestingDutySlotV(version))
+
+	// Combine into a single AggregatorCommitteePartialSig message
+	return &types.PartialSignatureMessages{
+		Type:     types.AggregatorCommitteePartialSig,
+		Slot:     selectionProofMsg.Slot,
+		Messages: append(selectionProofMsg.Messages, contribProofMsg.Messages...),
+	}
+}
+
+var PreConsensusAggregatorCommitteeMixedMsgInconsistentBeaconSigners = func(sk *bls.SecretKey, id, id2 types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	// Get aggregator selection proof
+	selectionProofMsg := PreConsensusSelectionProofMsg(sk, sk, id, id, version)
+
+	// Get sync committee contribution proofs
+	contribProofMsg := PreConsensusContributionProofMsgInconsistentBeaconSigners(sk, sk, id, id, id2, TestingDutySlotV(version))
+
+	// Combine into a single AggregatorCommitteePartialSig message
+	return &types.PartialSignatureMessages{
+		Type:     types.AggregatorCommitteePartialSig,
+		Slot:     selectionProofMsg.Slot,
+		Messages: append(selectionProofMsg.Messages, contribProofMsg.Messages...),
+	}
+}
+
+var PreConsensusAggregatorCommitteeMixedMsgWrongRoot = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	// Get aggregator selection proof
+	selectionProofMsg := PreConsensusSelectionProofWrongRootSigMsg(sk, sk, id, id, version)
+
+	// Get sync committee contribution proofs
+	contribProofMsg := PreConsensusContributionProofWrongBeaconRootMsg(sk, sk, id, id, TestingDutySlotV(version))
+
+	// Combine into a single AggregatorCommitteePartialSig message
+	return &types.PartialSignatureMessages{
+		Type:     types.AggregatorCommitteePartialSig,
+		Slot:     selectionProofMsg.Slot,
+		Messages: append(selectionProofMsg.Messages, contribProofMsg.Messages...),
+	}
+}
+
+var PreConsensusAggregatorCommitteeMixedMsgWrongBeaconSig = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	// Get aggregator selection proof
+	selectionProofMsg := PreConsensusSelectionProofWrongBeaconSigMsg(sk, sk, id, id, version)
+
+	// Get sync committee contribution proofs
+	contribProofMsg := PreConsensusContributionProofWrongBeaconSigMsg(sk, sk, id, id, TestingDutySlotV(version))
+
+	// Combine into a single AggregatorCommitteePartialSig message
+	return &types.PartialSignatureMessages{
+		Type:     types.AggregatorCommitteePartialSig,
+		Slot:     selectionProofMsg.Slot,
+		Messages: append(selectionProofMsg.Messages, contribProofMsg.Messages...),
+	}
+}
+
 // PostConsensusAggregatorCommitteeMixedMsg creates post-consensus messages for mixed duties
 // This combines signatures for both aggregator and sync committee roles
 var PostConsensusAggregatorCommitteeMixedMsg = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion, keySet *TestKeySet) *types.PartialSignatureMessages {
