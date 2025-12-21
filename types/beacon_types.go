@@ -157,6 +157,26 @@ func (acd *AggregatorCommitteeDuty) RunnerRole() RunnerRole {
 	return RoleAggregatorCommittee
 }
 
+// Validate checks that:
+// - all slots values are equal
+// - BeaconRole is either BNRoleAggregator or BNRoleSyncCommitteeContribution
+// - Validator indexes exist in the provided map
+func (acd *AggregatorCommitteeDuty) Validate(validatorIndex map[spec.ValidatorIndex]struct{}) error {
+	slot := acd.Slot
+	for _, vd := range acd.ValidatorDuties {
+		if vd.Slot != slot {
+			return NewError(InvalidAggregatorCommitteeDutyErrorCode, "mismatched slot in validator duty")
+		}
+		if vd.Type != BNRoleAggregator && vd.Type != BNRoleSyncCommitteeContribution {
+			return NewError(InvalidAggregatorCommitteeDutyErrorCode, "invalid beacon role in validator duty")
+		}
+		if _, ok := validatorIndex[vd.ValidatorIndex]; !ok {
+			return NewError(InvalidAggregatorCommitteeDutyErrorCode, "validator index not found in duty")
+		}
+	}
+	return nil
+}
+
 //
 
 // Available networks.

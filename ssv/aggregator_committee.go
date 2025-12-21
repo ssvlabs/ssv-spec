@@ -321,6 +321,7 @@ func (r *AggregatorCommitteeRunner) ProcessConsensus(signedMsg *types.SignedSSVM
 		Slot:     r.BaseRunner.State.StartingDuty.DutySlot(),
 		Messages: messages,
 	}
+	postConsensusMsg.Sort()
 
 	return r.broadcastPartialSignatureMessage(postConsensusMsg)
 }
@@ -469,6 +470,15 @@ func (r *AggregatorCommitteeRunner) executeDuty(duty types.Duty) error {
 		return errors.New("invalid duty type for aggregator committee runner")
 	}
 
+	// Validate duty
+	valIdxs := make(map[phase0.ValidatorIndex]struct{})
+	for idx := range r.BaseRunner.Share {
+		valIdxs[idx] = struct{}{}
+	}
+	if err := aggCommitteeDuty.Validate(valIdxs); err != nil {
+		return err
+	}
+
 	msg := &types.PartialSignatureMessages{
 		Type:     types.AggregatorCommitteePartialSig,
 		Slot:     duty.DutySlot(),
@@ -523,6 +533,8 @@ func (r *AggregatorCommitteeRunner) executeDuty(duty types.Duty) error {
 		r.BaseRunner.State.Finished = true
 		return nil
 	}
+
+	msg.Sort()
 
 	// Broadcast the selection proofs
 	return r.broadcastPartialSignatureMessage(msg)

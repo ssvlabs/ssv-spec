@@ -85,6 +85,7 @@ const (
 	AggCommConsensusDataDecodeErrorCode
 	ValidatorConsensusDataDecodeErrorCode
 	PostConsensusQuorumWithInvalidSignatures
+	InvalidAggregatorCommitteeDutyErrorCode
 )
 
 type Error struct {
