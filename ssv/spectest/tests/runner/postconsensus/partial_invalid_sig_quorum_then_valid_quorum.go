@@ -27,6 +27,61 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 		ks,
 	)
 
+	//// Aggregator committee duty
+	//multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+	//	Name: "sync committee contribution",
+	//	Runner: decideAggregatorCommitteeRunner(
+	//		testingutils.AggregatorCommitteeRunner(ks),
+	//		testingutils.TestingSyncCommitteeContributionDuty,
+	//		testingutils.TestSyncCommitteeContributionConsensusData,
+	//	),
+	//	Duty: testingutils.TestingSyncCommitteeContributionDuty,
+	//	Messages: []*types.SignedSSVMessage{
+	//		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusPartiallyWrongSCCMsgForKeySet(ksMap, 1, spec.DataVersionPhase0, false, true))),
+	//		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSCCMsgForKeySet(ksMap, 2, spec.DataVersionPhase0))),
+	//		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSCCMsgForKeySet(ksMap, 3, spec.DataVersionPhase0))),
+	//		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSCCMsgForKeySet(ksMap, 4, spec.DataVersionPhase0))),
+	//	},
+	//	DontStartDuty: true,
+	//})
+	//
+	//for _, version := range testingutils.SupportedAggregatorVersions {
+	//	multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+	//		{
+	//			Name: fmt.Sprintf("aggregator (%s)", version.String()),
+	//			Runner: decideAggregatorCommitteeRunner(
+	//				testingutils.AggregatorCommitteeRunner(ks),
+	//				testingutils.TestingAggregatorDuty(version),
+	//				testingutils.TestAggregatorConsensusData(version),
+	//			),
+	//			Duty: testingutils.TestingAggregatorDuty(version),
+	//			Messages: []*types.SignedSSVMessage{
+	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusPartiallyWrongAggMsgForKeySet(ksMap, 1, version, false, true))),
+	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggMsgForKeySet(ksMap, 2, version))),
+	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggMsgForKeySet(ksMap, 3, version))),
+	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggMsgForKeySet(ksMap, 4, version))),
+	//			},
+	//			DontStartDuty: true,
+	//		},
+	//		{
+	//			Name: fmt.Sprintf("aggregator committee mixed (%s)", version.String()),
+	//			Runner: decideAggregatorCommitteeRunner(
+	//				testingutils.AggregatorCommitteeRunner(ks),
+	//				testingutils.TestingAggregatorCommitteeDutyMixed(version),
+	//				testingutils.TestAggregatorCommitteeConsensusData(version),
+	//			),
+	//			Duty: testingutils.TestingAggregatorCommitteeDutyMixed(version),
+	//			Messages: []*types.SignedSSVMessage{
+	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusPartiallyWrongAggAndSCCMsgForKeySet(ksMap, 1, version, false, true))),
+	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggAndSCCMsgForKeySet(ksMap, 2, version))),
+	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggAndSCCMsgForKeySet(ksMap, 3, version))),
+	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggAndSCCMsgForKeySet(ksMap, 4, version))),
+	//			},
+	//			DontStartDuty: true,
+	//		},
+	//	}...)
+	//}
+
 	for _, version := range testingutils.SupportedAttestationVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
 			{

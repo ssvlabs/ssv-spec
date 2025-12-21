@@ -188,6 +188,84 @@ var PostConsensusAggregatorCommitteeMixedMsg = func(sk *bls.SecretKey, id types.
 	return aggMsg
 }
 
+var PostConsensusAggregatorCommitteeMixedMsgWrongValIdx = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion, keySet *TestKeySet) *types.PartialSignatureMessages {
+	// Get aggregator post-consensus message
+	aggMsg := PostConsensusWrongValidatorIndexAggregatorMsg(sk, id, version)
+
+	// Get sync committee post-consensus messages
+	syncMsg := PostConsensusWrongValidatorIndexSyncCommitteeContributionMsg(sk, id, keySet, TestingDutySlotV(version))
+
+	// Combine messages - all with PostConsensusPartialSig type
+	aggMsg.Messages = append(aggMsg.Messages, syncMsg.Messages...)
+
+	return aggMsg
+}
+
+var PostConsensusAggregatorCommitteeMixedWrongSigMsg = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion, keySet *TestKeySet) *types.PartialSignatureMessages {
+	// Get aggregator post-consensus message
+	aggMsg := PostConsensusWrongSigAggregatorMsg(sk, id, version)
+
+	// Get sync committee post-consensus messages
+	syncMsg := PostConsensusWrongSigSyncCommitteeContributionMsg(sk, id, keySet, TestingDutySlotV(version))
+
+	// Combine messages - all with PostConsensusPartialSig type
+	aggMsg.Messages = append(aggMsg.Messages, syncMsg.Messages...)
+
+	return aggMsg
+}
+
+var PostConsensusAggregatorCommitteeMixedWrongMsg = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion, keySet *TestKeySet) *types.PartialSignatureMessages {
+	// Get aggregator post-consensus message
+	aggMsg := PostConsensusWrongAggregatorMsg(sk, id, version)
+
+	// Get sync committee post-consensus messages
+	syncMsg := PostConsensusWrongSyncCommitteeContributionMsg(sk, id, keySet, TestingDutySlotV(version))
+
+	// Combine messages - all with PostConsensusPartialSig type
+	aggMsg.Messages = append(aggMsg.Messages, syncMsg.Messages...)
+
+	return aggMsg
+}
+
+var PostConsensusAggregatorCommitteeMixedMsgTooFewRoots = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion, keySet *TestKeySet) *types.PartialSignatureMessages {
+	// Get aggregator post-consensus message
+	aggMsg := PostConsensusAggregatorTooFewRootsMsg(sk, id, version)
+
+	// Get sync committee post-consensus messages
+	syncMsg := PostConsensusSyncCommitteeContributionTooFewRootsMsg(sk, id, keySet, TestingDutySlotV(version))
+
+	// Combine messages - all with PostConsensusPartialSig type
+	aggMsg.Messages = append(aggMsg.Messages, syncMsg.Messages...)
+
+	return aggMsg
+}
+
+var PostConsensusAggregatorCommitteeMixedMsgTooManyRoots = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion, keySet *TestKeySet) *types.PartialSignatureMessages {
+	// Get aggregator post-consensus message
+	aggMsg := PostConsensusAggregatorTooManyRootsMsg(sk, id, version)
+
+	// Get sync committee post-consensus messages
+	syncMsg := PostConsensusSyncCommitteeContributionTooManyRootsMsg(sk, id, keySet, TestingDutySlotV(version))
+
+	// Combine messages - all with PostConsensusPartialSig type
+	aggMsg.Messages = append(aggMsg.Messages, syncMsg.Messages...)
+
+	return aggMsg
+}
+
+var PostConsensusAggregatorCommitteeWrongOrderMsg = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion, keySet *TestKeySet) *types.PartialSignatureMessages {
+	// Get aggregator post-consensus message
+	aggMsg := PostConsensusAggregatorMsg(sk, id, version)
+
+	// Get sync committee post-consensus messages
+	syncMsg := PostConsensusSyncCommitteeContributionWrongOrderMsg(sk, id, keySet, TestingDutySlotV(version))
+
+	// Combine messages - all with PostConsensusPartialSig type
+	aggMsg.Messages = append(aggMsg.Messages, syncMsg.Messages...)
+
+	return aggMsg
+}
+
 // PostConsensusAggregatorCommitteeMsgForDuty creates post-consensus messages for all validators in the duty
 var PostConsensusAggregatorCommitteeMsgForDuty = func(duty *types.AggregatorCommitteeDuty, keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
 	var ret *types.PartialSignatureMessages
@@ -265,5 +343,108 @@ var PreConsensusAggregatorCommitteeMsgForDuty = func(duty *types.AggregatorCommi
 		ret.Type = types.AggregatorCommitteePartialSig
 	}
 
+	return ret
+}
+
+var PostConsensusAggMsgForKeySet = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	return PostConsensusAggCommitteeMsgForKeySet(keySetMap, id, version, true, false)
+}
+var PostConsensusSCCMsgForKeySet = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	return PostConsensusAggCommitteeMsgForKeySet(keySetMap, id, version, false, true)
+}
+var PostConsensusAggAndSCCMsgForKeySet = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	return PostConsensusAggCommitteeMsgForKeySet(keySetMap, id, version, true, true)
+}
+
+var PostConsensusAggCommitteeMsgForKeySet = func(
+	keySetMap map[phase0.ValidatorIndex]*TestKeySet,
+	id types.OperatorID,
+	version spec.DataVersion,
+	includeAgg bool,
+	includeSCC bool,
+) *types.PartialSignatureMessages {
+
+	var ret *types.PartialSignatureMessages
+	// Get post consensus for attestations for each validator in shares
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
+
+		if includeAgg {
+			aggMsg := postConsensusAggregatorMsg(ks.Shares[id], id, valIdx, false, false, version)
+			if ret == nil {
+				ret = aggMsg
+			} else {
+				ret.Messages = append(ret.Messages, aggMsg.Messages...)
+			}
+		}
+
+		if includeSCC {
+			sccMsg := postConsensusSyncCommitteeContributionMsg(ks.Shares[id], id, valIdx, TestingDutySlotV(version), ks, false, false, false)
+			if ret == nil {
+				ret = sccMsg
+			} else {
+				ret.Messages = append(ret.Messages, sccMsg.Messages...)
+			}
+		}
+	}
+	return ret
+}
+
+var PostConsensusPartiallyWrongAggMsgForKeySet = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, version spec.DataVersion, wrongRoot bool, wrongBeaconSig bool) *types.PartialSignatureMessages {
+	return PostConsensusPartiallyWrongAggCommmitteeMsgForKeySet(keySetMap, id, version, wrongRoot, wrongBeaconSig, true, false)
+}
+var PostConsensusPartiallyWrongSCCMsgForKeySet = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, version spec.DataVersion, wrongRoot bool, wrongBeaconSig bool) *types.PartialSignatureMessages {
+	return PostConsensusPartiallyWrongAggCommmitteeMsgForKeySet(keySetMap, id, version, wrongRoot, wrongBeaconSig, false, true)
+}
+var PostConsensusPartiallyWrongAggAndSCCMsgForKeySet = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, version spec.DataVersion, wrongRoot bool, wrongBeaconSig bool) *types.PartialSignatureMessages {
+	return PostConsensusPartiallyWrongAggCommmitteeMsgForKeySet(keySetMap, id, version, wrongRoot, wrongBeaconSig, true, true)
+}
+
+var PostConsensusPartiallyWrongAggCommmitteeMsgForKeySet = func(
+	keySetMap map[phase0.ValidatorIndex]*TestKeySet,
+	id types.OperatorID,
+	version spec.DataVersion,
+	wrongRoot bool,
+	wrongBeaconSig bool,
+	includeAgg bool,
+	includeSCC bool,
+) *types.PartialSignatureMessages {
+
+	numValid := len(keySetMap) / 2
+	msgIndex := 0
+
+	var ret *types.PartialSignatureMessages
+
+	for _, valKs := range SortedMapKeys(keySetMap) {
+		ks := valKs.Value
+		valIdx := valKs.Key
+
+		invalidMsgFlag := (msgIndex < numValid)
+
+		wrongRootV := wrongRoot && invalidMsgFlag
+		wrongBeaconSigV := wrongBeaconSig && invalidMsgFlag
+
+		if includeAgg {
+
+			attPSigMsgs := postConsensusAggregatorMsg(ks.Shares[id], id, valIdx, wrongRootV, wrongBeaconSigV, version)
+			if ret == nil {
+				ret = attPSigMsgs
+			} else {
+				ret.Messages = append(ret.Messages, attPSigMsgs.Messages...)
+			}
+		}
+
+		if includeSCC {
+			scPSigMsgs := postConsensusSyncCommitteeContributionMsg(ks.Shares[id], id, valIdx, TestingDutySlotV(version), ks, wrongRootV, wrongBeaconSigV, false)
+			if ret == nil {
+				ret = scPSigMsgs
+			} else {
+				ret.Messages = append(ret.Messages, scPSigMsgs.Messages...)
+			}
+		}
+
+		msgIndex++
+	}
 	return ret
 }

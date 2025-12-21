@@ -83,6 +83,10 @@ var TestSyncCommitteeContributionConsensusDataF = func() *types.AggregatorCommit
 	return TestAggregatorCommitteeConsensusDataForDuty(TestingAggregatorCommitteeDutyOnlySyncCommittee(), spec.DataVersionPhase0)
 }
 
+var TestSyncCommitteeContributionConsensusDataForDuty = func(duty *types.AggregatorCommitteeDuty) *types.AggregatorCommitteeConsensusData {
+	return TestAggregatorCommitteeConsensusDataForDuty(duty, spec.DataVersionPhase0)
+}
+
 var TestSyncCommitteeContributionConsensusData = TestSyncCommitteeContributionConsensusDataF()
 
 var TestSyncCommitteeContributionConsensusDataByts, _ = TestSyncCommitteeContributionConsensusData.Encode()

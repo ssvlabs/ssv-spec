@@ -10,6 +10,10 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
+func TestAggregatorCommitteeConsensusData(version spec.DataVersion) *types.AggregatorCommitteeConsensusData {
+	return TestAggregatorCommitteeConsensusDataForDuty(TestingAggregatorCommitteeDutyMixed(version), version)
+}
+
 // TestAggregatorCommitteeConsensusDataForDuty creates consensus data matching the given duty
 func TestAggregatorCommitteeConsensusDataForDuty(duty *types.AggregatorCommitteeDuty, version spec.DataVersion) *types.AggregatorCommitteeConsensusData {
 	consensusData := &types.AggregatorCommitteeConsensusData{

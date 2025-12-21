@@ -26,6 +26,8 @@ func MixedCommittees() tests.SpecTest {
 		ks,
 	)
 
+	// TODO: add aggregator committee tests
+
 	for _, version := range testingutils.SupportedAttestationVersions {
 
 		attestationCommitteeDuty := testingutils.TestingCommitteeDutyWithMixedCommitteeIndexes(validatorsIndexList, nil, version)
