@@ -141,7 +141,7 @@
           {
             "Type": 4,
             "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
-            "Slot": "12",
+            "Slot": "50",
             "ValidatorIndex": "1",
             "CommitteeIndex": 3,
             "CommitteeLength": 128,
@@ -589,7 +589,7 @@
           {
             "Type": 1,
             "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
-            "Slot": "12",
+            "Slot": "50",
             "ValidatorIndex": "1",
             "CommitteeIndex": 3,
             "CommitteeLength": 128,
@@ -722,7 +722,7 @@
           {
             "Type": 1,
             "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
-            "Slot": "7424012",
+            "Slot": "7424044",
             "ValidatorIndex": "1",
             "CommitteeIndex": 3,
             "CommitteeLength": 128,
