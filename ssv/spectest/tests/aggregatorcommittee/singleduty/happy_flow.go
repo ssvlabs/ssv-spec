@@ -131,7 +131,7 @@ func HappyFlow() tests.SpecTest {
 	}
 
 	// Add aggregator and sync committee contribution test cases
-	for _, version := range []spec.DataVersion{spec.DataVersionPhase0} {
+	for _, version := range testingutils.SupportedAttestationVersions {
 		// Testing with up to 20 validators instead of 30, because each testing duty has 3 subcommittees, and there are at most 64 sync committee contributors per slot
 		for _, numValidators := range []int{1, 20} {
 

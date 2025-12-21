@@ -380,7 +380,6 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 						err = json.Unmarshal(byts, &aggregatorCommitteeDuty)
 						if err == nil {
 							hasAggregatorDuty = true
-							t.Logf("Found AggregatorCommitteeDuty in input at index %d (duty type %v)", len(inputs), int(dutyType))
 							inputs = append(inputs, aggregatorCommitteeDuty)
 							continue
 						}
@@ -433,6 +432,11 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 
 	c := fixCommitteeForRun(t, committeeMap, hasAggregatorDuty)
 
+	strictMessageOrder := false
+	if val, ok := m["StrictMessageOrder"]; ok {
+		strictMessageOrder = val.(bool)
+	}
+
 	return &committee.CommitteeSpecTest{
 		Name:                   m["Name"].(string),
 		Committee:              c,
@@ -441,6 +445,7 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 		OutputMessages:         outputMsgs,
 		BeaconBroadcastedRoots: beaconBroadcastedRoots,
 		ExpectedErrorCode:      int(m["ExpectedErrorCode"].(float64)),
+		StrictMessageOrder:     strictMessageOrder,
 	}
 }
 

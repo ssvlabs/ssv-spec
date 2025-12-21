@@ -448,3 +448,26 @@ var PostConsensusPartiallyWrongAggCommmitteeMsgForKeySet = func(
 	}
 	return ret
 }
+
+// PreConsensusAggregatorCommitteeMsgForDutySorted creates pre-consensus messages for all validators in the duty
+// and sorts them by (validator index, signing root)
+func PreConsensusAggregatorCommitteeMsgForDutySorted(duty *types.AggregatorCommitteeDuty, keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	ret := PreConsensusAggregatorCommitteeMsgForDuty(duty, keySetMap, id, version)
+
+	if ret == nil || len(ret.Messages) == 0 {
+		return ret
+	}
+	ret.Sort()
+	return ret
+}
+
+// PostConsensusAggregatorCommitteeMsgForDutySorted creates post-consensus messages for all validators in the duty
+// and sorts them by (validator index, signing root)
+func PostConsensusAggregatorCommitteeMsgForDutySorted(duty *types.AggregatorCommitteeDuty, keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	ret := PostConsensusAggregatorCommitteeMsgForDuty(duty, keySetMap, id, version)
+	if ret == nil || len(ret.Messages) == 0 {
+		return ret
+	}
+	ret.Sort()
+	return ret
+}

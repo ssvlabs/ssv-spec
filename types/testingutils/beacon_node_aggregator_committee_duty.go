@@ -115,6 +115,12 @@ var TestingAggregatorAndSyncCommitteeContributorDutiesForValidators = func(versi
 	return TestingAggregatorCommitteeDuty(validatorIndexList, validatorIndexList, version)
 }
 
+var TestingAggregatorAndSyncCommitteeContributorDutiesWithDifferentSlot = func(version spec.DataVersion) *types.AggregatorCommitteeDuty {
+	duty := TestingAggregatorCommitteeDuty([]int{TestingValidatorIndex}, []int{TestingValidatorIndex}, version)
+	duty.ValidatorDuties[0].Slot += 1
+	return duty
+}
+
 // ==================================================
 // Beacon Roots for AggregatorCommittee duty
 // ==================================================
