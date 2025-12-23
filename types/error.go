@@ -79,8 +79,13 @@ const (
 	TimeoutInstanceErrorCode
 	AggCommAggAttCntMismatchErrorCode
 	AggCommAggCommIdxCntMismatchErrorCode
+	AggCommCommIdxMismatchErrorCode
+	AggCommUnusedCommIdxErrorCode
+	AggCommDuplicatedCommIdxErrorCode
 	AggCommContributorsContributionsCntMismatchErrorCode
 	AggCommSubnetNotInSCSubnetsErrorCode
+	AggCommSCCSubnetDuplicateErrorCode
+	AggCommUnusedSubnetErrorCode
 	AggCommConsensusDataNoValidatorErrorCode
 	AggCommConsensusDataDecodeErrorCode
 	ValidatorConsensusDataDecodeErrorCode
