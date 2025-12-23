@@ -9,7 +9,7 @@ const (
 	maxSizeSignedSSVMessageFromQBFTWithNoJustification  = 3700
 	maxSizeSignedSSVMessageFromQBFTWith1Justification   = 51852
 	maxSizeSignedSSVMessageFromQBFTWith2Justification   = 9114816
-	maxSizeSignedSSVMessageFromPartialSignatureMessages = 221316
+	maxSizeSignedSSVMessageFromPartialSignatureMessages = 730500
 	maxSizeFullConsensusData                            = 8388836
 )
 
