@@ -197,7 +197,7 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 		}
 	}
 
-	// Early exit if no error and aggregators selected (really no operator is aggregator or sync committee contributor)
+	// Early exit if no error and no aggregators is selected (really no operator is aggregator or sync committee contributor)
 	if !hasAnyAggregator && anyErr == nil {
 		r.BaseRunner.State.Finished = true
 		if anyErr != nil {
@@ -213,7 +213,7 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 		return anyErr
 	}
 
-	// Else, if some aggregators or contributors were selected (even with an error for others), proceed with consensus
+	// Else, if some aggregators or contributors were selected (even with an error for others), proceed to consensus
 	if err := consensusData.Validate(); err != nil {
 		return errors.Wrap(err, "invalid aggregator consensus data")
 	}

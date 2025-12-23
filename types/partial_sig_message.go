@@ -28,9 +28,13 @@ const (
 )
 
 type PartialSignatureMessages struct {
-	Type     PartialSigMsgType
-	Slot     phase0.Slot
-	Messages []*PartialSignatureMessage `ssz-max:"1512"`
+	Type PartialSigMsgType
+	Slot phase0.Slot
+	// 5048 = 3000 + 512 * 4 (worst-case scenario for
+	// a committee with 3000 validators:
+	// every validator has an aggregation duty
+	// every validator is in sync committee and is a contributor to all 4 subnets
+	Messages []*PartialSignatureMessage `ssz-max:"5048"`
 }
 
 // Encode returns a msg encoded bytes or error
