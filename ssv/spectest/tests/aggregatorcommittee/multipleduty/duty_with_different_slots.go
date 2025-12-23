@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
@@ -44,7 +45,7 @@ func DutyWithDifferentSlots() tests.SpecTest {
 
 	multiSpecTest := committee.NewMultiCommitteeSpecTest(
 		"aggregator committee runner duty with different slots",
-		"Testing aggregator committee runner with duties that have different slots",
+		testdoc.AggregatorCommitteeDutyWithDifferentSlotsDoc,
 		testCases,
 		ks,
 	)

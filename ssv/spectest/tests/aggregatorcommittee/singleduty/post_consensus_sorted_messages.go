@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
@@ -78,7 +79,7 @@ func SortedPostConsensusMessages() tests.SpecTest {
 
 	multiSpecTest := committee.NewMultiCommitteeSpecTest(
 		"aggregator committee sorted post-consensus messages",
-		"Testing that aggregator committee runner sorts post-consensus messages by (validator index, signing root)",
+		testdoc.AggregatorCommitteeDutyPostConsensusSortingDoc,
 		testCases,
 		ks,
 	)

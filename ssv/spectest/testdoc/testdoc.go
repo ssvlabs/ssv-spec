@@ -28,6 +28,12 @@ const SyncCommitteeAggregatorProofSpecTestType = "Sync committee aggregator proo
 // Documentation for happy flow tests
 const HappyFlowDoc = "Tests a full runner happy flow"
 
+// Documentation for aggregator committee
+const AggregatorCommitteeDutyHappyFlowDoc = "Testing aggregator committee runner with complete duty flow for both aggregator and sync committee contribution"
+const AggregatorCommitteeDutyWithDifferentSlotsDoc = "Testing aggregator committee runner with duties that have different slots"
+const AggregatorCommitteeDutyPostConsensusSortingDoc = "Testing that aggregator committee runner sorts post-consensus messages by (validator index, signing root)"
+const AggregatorCommitteeDutyPreConsensusSortingDoc = "Testing that aggregator committee runner sorts pre-consensus messages by (validator index, signing root)"
+
 // Documentation for committee/multipleduty tests
 const CommitteeSequencedHappyFlowDutiesDoc = "Tests complete happy flow execution for sequences of duties including consensus and post-consensus phases"
 const CommitteeShuffledDecidedDutiesDoc = "Tests decision phase for sequences of duties with shuffled input messages while preserving order between duty messages"

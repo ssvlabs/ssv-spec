@@ -6,6 +6,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
@@ -186,7 +187,7 @@ func HappyFlow() tests.SpecTest {
 
 	multiSpecTest := committee.NewMultiCommitteeSpecTest(
 		"aggregator committee runner happy flow",
-		"Testing aggregator committee runner with complete duty flow for both aggregator and sync committee contribution",
+		testdoc.AggregatorCommitteeDutyHappyFlowDoc,
 		testCases,
 		ks,
 	)
