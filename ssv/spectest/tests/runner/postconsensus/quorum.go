@@ -4,8 +4,6 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/attestantio/go-eth2-client/spec/phase0"
-
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -15,13 +13,6 @@ import (
 func aggregatorRoot(ks *testingutils.TestKeySet, version spec.DataVersion) []string {
 	return []string{testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks, version))}
 }
-func aggregatorRootForKSMap(ksMap map[phase0.ValidatorIndex]*testingutils.TestKeySet, version spec.DataVersion) []string {
-	ret := make([]string, 0)
-	for _, ks := range ksMap {
-		ret = append(ret, aggregatorRoot(ks, version)...)
-	}
-	return ret
-}
 func syncCommitteeRoots(ks *testingutils.TestKeySet) []string {
 	return []string{
 		testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
@@ -29,23 +20,10 @@ func syncCommitteeRoots(ks *testingutils.TestKeySet) []string {
 		testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
 	}
 }
-func syncCommitteeRootsForKSMap(ksMap map[phase0.ValidatorIndex]*testingutils.TestKeySet) []string {
-	ret := make([]string, 0)
-	for _, ks := range ksMap {
-		ret = append(ret, syncCommitteeRoots(ks)...)
-	}
-	return ret
-}
 func aggregatorAndSyncCommitteeRoots(ks *testingutils.TestKeySet, version spec.DataVersion) []string {
 	return append(
 		aggregatorRoot(ks, version),
 		syncCommitteeRoots(ks)...,
-	)
-}
-func aggregatorAndSyncCommitteeRootsForKSMap(ksMap map[phase0.ValidatorIndex]*testingutils.TestKeySet, version spec.DataVersion) []string {
-	return append(
-		aggregatorRootForKSMap(ksMap, version),
-		syncCommitteeRootsForKSMap(ksMap)...,
 	)
 }
 
