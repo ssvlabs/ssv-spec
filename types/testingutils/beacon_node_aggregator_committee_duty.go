@@ -1,6 +1,8 @@
 package testingutils
 
 import (
+	"sort"
+
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/electra"
@@ -234,6 +236,71 @@ var TestingSignedAggregatorCommitteeBeaconObjectSSZRoot = func(duty *types.Aggre
 		}
 
 		ret = append(ret, GetSSZRootNoError(signedContribution))
+	}
+
+	return ret
+}
+
+// ==================================================
+// Mixed Committees
+// =================================================
+
+func TestingAggCommitteeDutyWithMixedCommitteeIndexes(aggValidatorIds []int, sccValidatorIds []int, version spec.DataVersion) *types.AggregatorCommitteeDuty {
+
+	// Sort the validator indexes
+	sort.Slice(aggValidatorIds, func(i, j int) bool {
+		return aggValidatorIds[i] < aggValidatorIds[j]
+	})
+
+	var ret *types.AggregatorCommitteeDuty
+	for i, valIdx := range aggValidatorIds {
+		var duty *types.AggregatorCommitteeDuty
+		// Assign the first half of the validators to a fixed committee index
+		if i < len(aggValidatorIds)/2 {
+			duty = TestingAggregatorCommitteeDuty([]int{valIdx}, nil, version)
+		} else {
+			// Assign the second half of the validators to a different committee index
+			duty = TestingAggregatorCommitteeDutyWithParams(
+				TestingDutySlotV(version),
+				[]int{valIdx},
+				nil,
+				TestingDifferentCommitteeIndex,
+				TestingCommitteesAtSlot,
+				TestingCommitteeLenght,
+				TestingValidatorCommitteeIndex)
+		}
+		if ret == nil {
+			ret = duty
+		} else {
+			ret.ValidatorDuties = append(ret.ValidatorDuties, duty.ValidatorDuties...)
+		}
+	}
+
+	sort.Slice(sccValidatorIds, func(i, j int) bool {
+		return sccValidatorIds[i] < sccValidatorIds[j]
+	})
+
+	for i, valIdx := range sccValidatorIds {
+		var duty *types.AggregatorCommitteeDuty
+		// Assign the first half of the validators to the a fixed committee index
+		if i < len(sccValidatorIds)/2 {
+			duty = TestingAggregatorCommitteeDuty(nil, []int{valIdx}, version)
+		} else {
+			// Assign the second half of the validators to a different committee index
+			duty = TestingAggregatorCommitteeDutyWithParams(
+				TestingDutySlotV(version),
+				nil,
+				[]int{valIdx},
+				TestingDifferentCommitteeIndex,
+				TestingCommitteesAtSlot,
+				TestingCommitteeLenght,
+				TestingValidatorCommitteeIndex)
+		}
+		if ret == nil {
+			ret = duty
+		} else {
+			ret.ValidatorDuties = append(ret.ValidatorDuties, duty.ValidatorDuties...)
+		}
 	}
 
 	return ret
