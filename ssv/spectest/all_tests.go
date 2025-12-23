@@ -2,7 +2,7 @@ package spectest
 
 import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/aggregatorcommittee/multipleduty"
+	aggregatorcommitteemultipleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/aggregatorcommittee/multipleduty"
 	aggregatorcommitteesingleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/aggregatorcommittee/singleduty"
 	committeemultipleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/multipleduty"
 	committeesingleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/singleduty"
@@ -102,7 +102,7 @@ var AllTests = []tests.TestF{
 	committeemultipleduty.FailedThanSuccessfulDuties,
 
 	aggregatorcommitteesingleduty.HappyFlow,
-	multipleduty.DutyWithDifferentSlots,
+	aggregatorcommitteemultipleduty.DutyWithDifferentSlots,
 	aggregatorcommitteesingleduty.SortedPreConsensusMessages,
 	aggregatorcommitteesingleduty.SortedPostConsensusMessages,
 
@@ -189,7 +189,6 @@ var AllTests = []tests.TestF{
 	valcheckproposer.BlindedBlock,
 
 	valcheckaggcommittee.NoValidator,
-	valcheckaggcommittee.InvalidAttLen,
 	valcheckaggcommittee.Valid,
 
 	valcheck.WrongDecoding,

@@ -138,10 +138,16 @@ const AggregatorCommitteeConsensusDataTestType = "Aggregator committee consensus
 // AggregatorCommitteeConsensusDataEncodingTest
 const AggregatorCommitteeConsensusDataEncodingTestType = "Aggregator committee consensus data encoding"
 
-const AggregatorCommitteeConsensusDataTestInvalidAttestationLenDoc = "Test validation error for invalid agg committee consensus data with wrong attestation length"
+const AggregatorCommitteeConsensusDataTestInvalidNoValidatorsDoc = "Test validation error for invalid agg committee consensus data with no validators"
+const AggregatorCommitteeConsensusDataTestDuplicatedCommitteeIndexDoc = "Test validation error for invalid agg committee consensus data with duplicated committee index"
+const AggregatorCommitteeConsensusDataTestMissingCommitteeIndexDoc = "Test validation error for invalid agg committee consensus data with missing committee index"
+const AggregatorCommitteeConsensusDataTestUnusedCommitteeIndexDoc = "Test validation error for invalid agg committee consensus data with unused committee index"
 const AggregatorCommitteeConsensusDataTestInvalidCommitteeIndexLenDoc = "Test validation error for invalid agg committee consensus data with wrong committee index length"
 const AggregatorCommitteeConsensusDataTestInvalidContributionLenDoc = "Test validation error for invalid agg committee consensus data with wrong contribution length"
+const AggregatorCommitteeConsensusDataTestInvalidDuplicatedSubnetDoc = "Test validation error for invalid agg committee consensus data with duplicated subnet"
 const AggregatorCommitteeConsensusDataTestInvalidSubnetMismatchDoc = "Test validation error for invalid agg committee consensus data with subnet mismatch"
+const AggregatorCommitteeConsensusDataTestMissingSubnetDoc = "Test validation error for invalid agg committee consensus data with missing subnet"
+const AggregatorCommitteeConsensusDataTestUnusedSubnetDoc = "Test validation error for invalid agg committee consensus data with unused subnet"
 const AggregatorCommitteeConsensusDataTestPhase0AggregatorNoJustificationsDoc = "Test phase0 aggregator agg committee consensus data with no pre-consensus justifications"
 const AggregatorCommitteeConsensusDataTestElectraAggregatorNoJustificationsDoc = "Test Electra aggregator agg committee consensus data with no pre-consensus justifications"
 const AggregatorCommitteeConsensusDataTestPhase0AggregatorValidationDoc = "Test validation of valid agg committee consensus data with Phase0 AggregateAndProof"
