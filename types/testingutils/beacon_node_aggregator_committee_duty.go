@@ -245,7 +245,13 @@ var TestingSignedAggregatorCommitteeBeaconObjectSSZRoot = func(duty *types.Aggre
 // Mixed Committees
 // =================================================
 
-func TestingAggCommitteeDutyWithMixedCommitteeIndexes(aggValidatorIds []int, sccValidatorIds []int, version spec.DataVersion) *types.AggregatorCommitteeDuty {
+func TestingAggCommitteeDutyWithMixedCommitteeIndexes(aggValsIds []int, sccValsIds []int, version spec.DataVersion) *types.AggregatorCommitteeDuty {
+
+	aggValidatorIds := make([]int, len(aggValsIds))
+	copy(aggValidatorIds, aggValsIds)
+
+	sccValidatorIds := make([]int, len(sccValsIds))
+	copy(sccValidatorIds, sccValsIds)
 
 	// Sort the validator indexes
 	sort.Slice(aggValidatorIds, func(i, j int) bool {
