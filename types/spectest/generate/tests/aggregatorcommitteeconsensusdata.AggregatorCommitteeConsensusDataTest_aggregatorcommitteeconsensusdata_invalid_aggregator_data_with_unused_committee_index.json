@@ -1,26 +1,26 @@
 {
-  "Name": "invalid aggregator data with wrong attestation length",
+  "Name": "invalid aggregator data with unused committee index",
   "Type": "Aggregator committee consensus data: validation of aggregator committee consensus data",
-  "Documentation": "Test validation error for invalid agg committee consensus data with wrong attestation length",
+  "Documentation": "Test validation error for invalid agg committee consensus data with unused committee index",
   "AggCommConsensusData": {
     "Version": "phase0",
     "Aggregators": [
       {
         "ValidatorIndex": "1",
         "SelectionProof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-        "CommitteeIndex": 3
+        "CommitteeIndex": 4
       }
     ],
     "AggregatorsCommitteeIndexes": [
-      3
+      3,
+      4
     ],
-    "Attestations": [
+    "AggregatedAttestations": [
       "5AAAAAwAAAAAAAAAAwAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgAAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIBAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=",
       "5AAAAAwAAAAAAAAAAwAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgAAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIBAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE="
     ],
     "Contributors": [],
-    "SyncCommitteeSubnets": [],
     "SyncCommitteeContributions": []
   },
-  "ExpectedErrorCode": 73
+  "ExpectedErrorCode": 76
 }

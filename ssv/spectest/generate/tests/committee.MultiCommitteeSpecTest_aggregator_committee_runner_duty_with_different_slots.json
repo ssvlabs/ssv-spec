@@ -103,7 +103,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": [],
       "BeaconBroadcastedRoots": [],
-      "ExpectedErrorCode": 80
+      "ExpectedErrorCode": 86
     },
     {
       "Name": "30 aggregator (phase0) and scc",
@@ -1104,7 +1104,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": [],
       "BeaconBroadcastedRoots": [],
-      "ExpectedErrorCode": 80
+      "ExpectedErrorCode": 86
     },
     {
       "Name": "1 aggregator (electra) and scc",
@@ -1206,7 +1206,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": [],
       "BeaconBroadcastedRoots": [],
-      "ExpectedErrorCode": 80
+      "ExpectedErrorCode": 86
     },
     {
       "Name": "30 aggregator (electra) and scc",
@@ -2207,7 +2207,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": [],
       "BeaconBroadcastedRoots": [],
-      "ExpectedErrorCode": 80
+      "ExpectedErrorCode": 86
     }
   ],
   "PrivateKeys": {

@@ -4,7 +4,7 @@
   "Documentation": "Testing that aggregator committee runner sorts pre-consensus messages by (validator index, signing root)",
   "Tests": [
     {
-      "Name": "pre-consensus sorted (phase0)",
+      "Name": "agg (phase0) and scc",
       "Documentation": "",
       "Committee": {
         "Runners": {},
@@ -249,7 +249,7 @@
       "StrictMessageOrder": true
     },
     {
-      "Name": "pre-consensus sorted (electra)",
+      "Name": "agg (electra) and scc",
       "Documentation": "",
       "Committee": {
         "Runners": {},

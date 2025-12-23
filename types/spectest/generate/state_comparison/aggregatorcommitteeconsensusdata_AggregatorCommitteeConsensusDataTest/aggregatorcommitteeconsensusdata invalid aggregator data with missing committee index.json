@@ -1,0 +1,24 @@
+{
+  "Name": "invalid aggregator data with missing committee index",
+  "Type": "Aggregator committee consensus data: validation of aggregator committee consensus data",
+  "Documentation": "Test validation error for invalid agg committee consensus data with missing committee index",
+  "AggCommConsensusData": {
+    "Version": "phase0",
+    "Aggregators": [
+      {
+        "ValidatorIndex": "1",
+        "SelectionProof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "CommitteeIndex": 4
+      }
+    ],
+    "AggregatorsCommitteeIndexes": [
+      3
+    ],
+    "AggregatedAttestations": [
+      "5AAAAAwAAAAAAAAAAwAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgAAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIBAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE="
+    ],
+    "Contributors": [],
+    "SyncCommitteeContributions": []
+  },
+  "ExpectedErrorCode": 75
+}
