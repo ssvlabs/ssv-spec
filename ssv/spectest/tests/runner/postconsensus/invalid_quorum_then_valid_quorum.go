@@ -16,6 +16,7 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 	expectedErrorCode := types.ReconstructSignatureErrorCode
+	aggCmmErrorCode := types.PostConsensusQuorumWithInvalidSignatures
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid quorum then valid quorum",
@@ -24,69 +25,69 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 		ks,
 	)
 
-	//// Aggregator committee duty
-	//sccSlot := testingutils.TestingSyncCommitteeContributionDuty.Slot
-	//multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-	//	Name: "sync committee contribution",
-	//	Runner: decideAggregatorCommitteeRunner(
-	//		testingutils.AggregatorCommitteeRunner(ks),
-	//		testingutils.TestingSyncCommitteeContributionDuty,
-	//		testingutils.TestSyncCommitteeContributionConsensusData,
-	//	),
-	//	Duty: testingutils.TestingSyncCommitteeContributionDuty,
-	//	Messages: []*types.SignedSSVMessage{
-	//		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusWrongSigSyncCommitteeContributionMsg(ks.Shares[1], 1, ks, sccSlot))),
-	//
-	//		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks))),
-	//		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks))),
-	//		testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[4], 4, ks))),
-	//	},
-	//	BeaconBroadcastedRoots: syncCommitteeRoots(ks),
-	//	DontStartDuty:          true,
-	//	ExpectedErrorCode:      expectedErrorCode,
-	//})
-	//for _, version := range testingutils.SupportedAggregatorVersions {
-	//	multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
-	//		{
-	//			Name: fmt.Sprintf("aggregator (%s)", version.String()),
-	//			Runner: decideAggregatorCommitteeRunner(
-	//				testingutils.AggregatorCommitteeRunner(ks),
-	//				testingutils.TestingAggregatorDuty(version),
-	//				testingutils.TestAggregatorConsensusData(version),
-	//			),
-	//			Duty: testingutils.TestingAggregatorDuty(version),
-	//			Messages: []*types.SignedSSVMessage{
-	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusWrongSigAggregatorMsg(ks.Shares[1], 1, version))),
-	//
-	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2, version))),
-	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3, version))),
-	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[4], 4, version))),
-	//			},
-	//			BeaconBroadcastedRoots: aggregatorRoot(ks, version),
-	//			DontStartDuty:          true,
-	//			ExpectedErrorCode:      expectedErrorCode,
-	//		},
-	//		{
-	//			Name: fmt.Sprintf("aggregator committee mixed (%s)", version.String()),
-	//			Runner: decideAggregatorCommitteeRunner(
-	//				testingutils.AggregatorCommitteeRunner(ks),
-	//				testingutils.TestingAggregatorCommitteeDutyMixed(version),
-	//				testingutils.TestAggregatorCommitteeConsensusData(version),
-	//			),
-	//			Duty: testingutils.TestingAggregatorCommitteeDutyMixed(version),
-	//			Messages: []*types.SignedSSVMessage{
-	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedWrongSigMsg(ks.Shares[1], 1, version, ks))),
-	//
-	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedMsg(ks.Shares[2], 2, version, ks))),
-	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedMsg(ks.Shares[3], 3, version, ks))),
-	//				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedMsg(ks.Shares[4], 4, version, ks))),
-	//			},
-	//			BeaconBroadcastedRoots: aggregatorAndSyncCommitteeRoots(ks, version),
-	//			DontStartDuty:          true,
-	//			ExpectedErrorCode:      expectedErrorCode,
-	//		},
-	//	}...)
-	//}
+	// Aggregator committee duty
+	sccSlot := testingutils.TestingSyncCommitteeContributionDuty.Slot
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name: "sync committee contribution",
+		Runner: decideAggregatorCommitteeRunner(
+			testingutils.AggregatorCommitteeRunner(ks),
+			testingutils.TestingSyncCommitteeContributionDuty,
+			testingutils.TestSyncCommitteeContributionConsensusData,
+		),
+		Duty: testingutils.TestingSyncCommitteeContributionDuty,
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusWrongSigSyncCommitteeContributionMsg(ks.Shares[1], 1, ks, sccSlot))),
+
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[4], 4, ks))),
+		},
+		BeaconBroadcastedRoots: syncCommitteeRoots(ks),
+		DontStartDuty:          true,
+		ExpectedErrorCode:      aggCmmErrorCode,
+	})
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+			{
+				Name: fmt.Sprintf("aggregator (%s)", version.String()),
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingAggregatorDuty(version),
+					testingutils.TestAggregatorConsensusData(version),
+				),
+				Duty: testingutils.TestingAggregatorDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusWrongSigAggregatorMsg(ks.Shares[1], 1, version))),
+
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[4], 4, version))),
+				},
+				BeaconBroadcastedRoots: aggregatorRoot(ks, version),
+				DontStartDuty:          true,
+				ExpectedErrorCode:      aggCmmErrorCode,
+			},
+			{
+				Name: fmt.Sprintf("aggregator committee mixed (%s)", version.String()),
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingAggregatorCommitteeDutyMixed(version),
+					testingutils.TestAggregatorCommitteeConsensusData(version),
+				),
+				Duty: testingutils.TestingAggregatorCommitteeDutyMixed(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedWrongSigMsg(ks.Shares[1], 1, version, ks))),
+
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedMsg(ks.Shares[2], 2, version, ks))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedMsg(ks.Shares[3], 3, version, ks))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedMsg(ks.Shares[4], 4, version, ks))),
+				},
+				BeaconBroadcastedRoots: aggregatorAndSyncCommitteeRoots(ks, version),
+				DontStartDuty:          true,
+				ExpectedErrorCode:      aggCmmErrorCode,
+			},
+		}...)
+	}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
