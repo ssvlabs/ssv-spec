@@ -108,7 +108,7 @@ func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
 	case BNRoleProposer:
 		return RoleProposer
 	case BNRoleAggregator, BNRoleSyncCommitteeContribution:
-		return RoleAggregatorCommittee // Still use old runner for now
+		return RoleAggregatorCommittee
 	case BNRoleValidatorRegistration:
 		return RoleValidatorRegistration
 	case BNRoleVoluntaryExit:
