@@ -86,6 +86,11 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 		correctType = &types.ValidatorConsensusData{}
 	case objMap["BlockRoot"] != nil && objMap["Source"] != nil && objMap["Target"] != nil:
 		correctType = &types.BeaconVote{}
+	case (objMap["Version"] != nil &&
+		objMap["Aggregators"] != nil && objMap["AggregatorsCommitteeIndexes"] != nil && objMap["AggregatorsCommitteeIndexes"] != nil &&
+		objMap["Contributors"] != nil && objMap["SyncCommitteeContributions"] != nil):
+		correctType = &types.AggregatorCommitteeConsensusData{}
+
 	default:
 		return fmt.Errorf("could not determine object type from JSON")
 	}
