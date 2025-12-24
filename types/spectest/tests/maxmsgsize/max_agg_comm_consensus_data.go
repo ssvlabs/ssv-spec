@@ -82,11 +82,11 @@ type Phase0AttestationWrapper struct {
 }
 
 func (w *Phase0AttestationWrapper) Encode() ([]byte, error) {
-	return w.Attestation.MarshalSSZ()
+	return w.MarshalSSZ()
 }
 
 func (w *Phase0AttestationWrapper) Decode(data []byte) error {
-	return w.Attestation.UnmarshalSSZ(data)
+	return w.UnmarshalSSZ(data)
 }
 
 type ElectraAttestationWrapper struct {
@@ -94,11 +94,11 @@ type ElectraAttestationWrapper struct {
 }
 
 func (w *ElectraAttestationWrapper) Encode() ([]byte, error) {
-	return w.Attestation.MarshalSSZ()
+	return w.MarshalSSZ()
 }
 
 func (w *ElectraAttestationWrapper) Decode(data []byte) error {
-	return w.Attestation.UnmarshalSSZ(data)
+	return w.UnmarshalSSZ(data)
 }
 
 func maxPhase0Attestation() *Phase0AttestationWrapper {

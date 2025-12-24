@@ -89,7 +89,7 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 	case objMap["BlockRoot"] != nil && objMap["Source"] != nil && objMap["Target"] != nil:
 		correctType = &types.BeaconVote{}
 	case (objMap["Version"] != nil &&
-		objMap["Aggregators"] != nil && objMap["AggregatorsCommitteeIndexes"] != nil && objMap["AggregatorsCommitteeIndexes"] != nil &&
+		objMap["Aggregators"] != nil && objMap["AggregatorsCommitteeIndexes"] != nil && objMap["AggregatedAttestations"] != nil &&
 		objMap["Contributors"] != nil && objMap["SyncCommitteeContributions"] != nil):
 		correctType = &types.AggregatorCommitteeConsensusData{}
 	case (objMap["aggregation_bits"] != nil && objMap["data"] != nil && objMap["signature"] != nil && objMap["committee_bits"] == nil):
