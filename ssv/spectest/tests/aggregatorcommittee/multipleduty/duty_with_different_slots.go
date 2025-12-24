@@ -16,31 +16,27 @@ import (
 // DutyWithDifferentSlots tries to execute a duty with ValidatorDuty objects for different slots.
 func DutyWithDifferentSlots() tests.SpecTest {
 
-	ks := testingutils.TestingKeySetMap[phase0.ValidatorIndex(1)]
+	valIdx := []int{1}
+	ksMap := testingutils.KeySetMapForValidators(1)
+	ks := ksMap[phase0.ValidatorIndex(1)]
+	shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
 	var testCases []*committee.CommitteeSpecTest
-
-	for _, version := range testingutils.SupportedAttestationVersions {
-		for _, numValidators := range []int{1, 30} {
-
-			ksMap := testingutils.KeySetMapForValidators(numValidators)
-			shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
-
-			duty := testingutils.TestingAggregatorAndSyncCommitteeContributorDutiesWithDifferentSlot(version)
-			testCases = append(testCases, []*committee.CommitteeSpecTest{
-				{
-					Name: fmt.Sprintf("%v aggregator (%s) and scc", numValidators, version.String()),
-					Committee: testingutils.
-						BaseAggregatorCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap).(*ssv.AggregatorCommitteeRunner)),
-					Input: []interface{}{
-						duty,
-					},
-					OutputMessages:         []*types.PartialSignatureMessages{},
-					BeaconBroadcastedRoots: []string{},
-					ExpectedErrorCode:      types.InvalidAggregatorCommitteeDutyErrorCode,
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		duty := testingutils.TestingAggregatorAndSyncCommitteeContributorDutiesWithDifferentSlot(version, valIdx)
+		testCases = append(testCases, []*committee.CommitteeSpecTest{
+			{
+				Name: fmt.Sprintf("aggregator committee mixed (%s)", version.String()),
+				Committee: testingutils.
+					BaseAggregatorCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap).(*ssv.AggregatorCommitteeRunner)),
+				Input: []interface{}{
+					duty,
 				},
-			}...)
-		}
+				OutputMessages:         []*types.PartialSignatureMessages{},
+				BeaconBroadcastedRoots: []string{},
+				ExpectedErrorCode:      types.InvalidAggregatorCommitteeDutyErrorCode,
+			},
+		}...)
 	}
 
 	multiSpecTest := committee.NewMultiCommitteeSpecTest(

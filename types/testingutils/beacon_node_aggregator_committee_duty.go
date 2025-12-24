@@ -117,8 +117,8 @@ var TestingAggregatorAndSyncCommitteeContributorDutiesForValidators = func(versi
 	return TestingAggregatorCommitteeDuty(validatorIndexList, validatorIndexList, version)
 }
 
-var TestingAggregatorAndSyncCommitteeContributorDutiesWithDifferentSlot = func(version spec.DataVersion) *types.AggregatorCommitteeDuty {
-	duty := TestingAggregatorCommitteeDuty([]int{TestingValidatorIndex}, []int{TestingValidatorIndex}, version)
+var TestingAggregatorAndSyncCommitteeContributorDutiesWithDifferentSlot = func(version spec.DataVersion, validatorIndexList []int) *types.AggregatorCommitteeDuty {
+	duty := TestingAggregatorCommitteeDuty(validatorIndexList, validatorIndexList, version)
 	duty.ValidatorDuties[0].Slot += 1
 	return duty
 }
