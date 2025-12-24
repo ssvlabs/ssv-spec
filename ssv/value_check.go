@@ -120,59 +120,6 @@ func ProposerValueCheckF(
 	}
 }
 
-func AggregatorValueCheckF(
-	signer types.BeaconSigner,
-	network types.BeaconNetwork,
-	validatorPK types.ValidatorPK,
-	validatorIndex phase0.ValidatorIndex,
-) qbft.ProposedValueCheckF {
-	return func(data []byte) error {
-		cd := &types.ValidatorConsensusData{}
-		if err := cd.Decode(data); err != nil {
-			return errors.Wrap(err, "failed decoding consensus data")
-		}
-		if err := cd.Validate(); err != nil {
-			return types.NewError(types.QBFTValueInvalidErrorCode, "invalid value")
-		}
-
-		if err := dutyValueCheck(&cd.Duty, network, types.BNRoleAggregator, validatorPK, validatorIndex); err != nil {
-			return errors.Wrap(err, "duty invalid")
-		}
-		return nil
-	}
-}
-
-func SyncCommitteeContributionValueCheckF(
-	signer types.BeaconSigner,
-	network types.BeaconNetwork,
-	validatorPK types.ValidatorPK,
-	validatorIndex phase0.ValidatorIndex,
-) qbft.ProposedValueCheckF {
-	return func(data []byte) error {
-		cd := &types.ValidatorConsensusData{}
-		if err := cd.Decode(data); err != nil {
-			return errors.Wrap(err, "failed decoding consensus data")
-		}
-		if err := cd.Validate(); err != nil {
-			return types.NewError(types.QBFTValueInvalidErrorCode, "invalid value")
-		}
-
-		if err := dutyValueCheck(&cd.Duty, network, types.BNRoleSyncCommitteeContribution, validatorPK, validatorIndex); err != nil {
-			return errors.Wrap(err, "duty invalid")
-		}
-
-		//contributions, _ := cd.GetSyncCommitteeContributions()
-		//
-		//for _, c := range contributions {
-		//	// TODO check we have selection proof for contribution
-		//	// TODO check slot == duty slot
-		//	// TODO check beacon block root somehow? maybe all beacon block roots should be equal?
-		//
-		//}
-		return nil
-	}
-}
-
 func AggregatorCommitteeValueCheckF(
 	signer types.BeaconSigner,
 	network types.BeaconNetwork,
