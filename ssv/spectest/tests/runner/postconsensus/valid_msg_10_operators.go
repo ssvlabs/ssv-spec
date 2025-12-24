@@ -21,20 +21,6 @@ func ValidMessage10Operators() tests.SpecTest {
 		testdoc.PostConsensusValidMsg10OperatorsDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
-				Name: "sync committee contribution",
-				Runner: decideAggregatorCommitteeRunner(
-					testingutils.AggregatorCommitteeRunner(ks),
-					testingutils.TestingSyncCommitteeContributionDuty,
-					testingutils.TestSyncCommitteeContributionConsensusData,
-				),
-				Duty: testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContributionForKS(ks, nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
-				},
-				PostDutyRunnerStateRoot: "cdabe16107830ce0bc19e63adb9c6745e25d356f511ce25f98e4793f45525f8a",
-				DontStartDuty:           true,
-			},
-			{
 				Name: "proposer",
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
@@ -45,8 +31,7 @@ func ValidMessage10Operators() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
 				},
-				PostDutyRunnerStateRoot: "1d487b9d803f4f1f6af3f60414f20c64e8e3cea7719cf4172dd2d3740d758059",
-				DontStartDuty:           true,
+				DontStartDuty: true,
 			},
 			{
 				Name: "proposer (blinded block)",
@@ -59,29 +44,55 @@ func ValidMessage10Operators() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
 				},
-				PostDutyRunnerStateRoot: "98e395ad462f197894b048d6261cddb6b7ddc99c07d2e0a57ddcc4ca0ee55f28",
-				DontStartDuty:           true,
+				DontStartDuty: true,
 			},
 		},
 		ks,
 	)
 
-	for _, version := range testingutils.SupportedAggregatorVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-			Name: fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: decideAggregatorCommitteeRunner(
-				testingutils.AggregatorCommitteeRunner(ks),
-				testingutils.TestingAggregatorDuty(version),
-				testingutils.TestAggregatorConsensusData(version),
-			),
-			Duty: testingutils.TestingAggregatorDuty(version),
-			Messages: []*types.SignedSSVMessage{
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorForKS(ks, nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version))),
-			},
-			PostDutyRunnerStateRoot: "c751400ae0c64ec01fa6e7c97fa327d13083212e279c3cff22b49d5fbab60370",
-			DontStartDuty:           true,
+	// Aggregator committee duty
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name: "sync committee contribution",
+		Runner: decideAggregatorCommitteeRunner(
+			testingutils.AggregatorCommitteeRunner(ks),
+			testingutils.TestingSyncCommitteeContributionDuty,
+			testingutils.TestSyncCommitteeContributionConsensusData,
+		),
+		Duty: testingutils.TestingSyncCommitteeContributionDuty,
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContributionForKS(ks, nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
 		},
-		)
+		DontStartDuty: true,
+	})
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+			{
+				Name: fmt.Sprintf("aggregator (%s)", version.String()),
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingAggregatorDuty(version),
+					testingutils.TestAggregatorConsensusData(version),
+				),
+				Duty: testingutils.TestingAggregatorDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorForKS(ks, nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version))),
+				},
+				DontStartDuty: true,
+			},
+			{
+				Name: fmt.Sprintf("aggregator committee mixed (%s)", version.String()),
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingAggregatorCommitteeDutyMixed(version),
+					testingutils.TestAggregatorCommitteeConsensusData(version),
+				),
+				Duty: testingutils.TestingAggregatorCommitteeDutyMixed(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedMsg(ks.Shares[1], 1, version, ks))),
+				},
+				DontStartDuty: true,
+			},
+		}...)
 	}
 
 	for _, version := range testingutils.SupportedAttestationVersions {

@@ -396,7 +396,7 @@ func (r *AggregatorCommitteeRunner) ProcessPostConsensus(signedMsg *types.Partia
 						validator,
 					)
 				}
-				anyErr = errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
+				anyErr = types.WrapError(types.PostConsensusQuorumWithInvalidSignatures, errors.Wrap(err, "got post-consensus quorum but it has invalid signatures"))
 				continue
 			}
 

@@ -17,26 +17,10 @@ func TooFewRoots() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	errCode := types.NoPartialSigMessagesErrorCode
-	sccSlot := testingutils.TestingSyncCommitteeContributionDuty.Slot
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus too few roots",
 		testdoc.PostConsensusTooFewRootsDoc,
 		[]*tests.MsgProcessingSpecTest{
-			{
-				Name: "sync committee contribution",
-				Runner: decideAggregatorCommitteeRunner(
-					testingutils.AggregatorCommitteeRunner(ks),
-					testingutils.TestingSyncCommitteeContributionDuty,
-					testingutils.TestSyncCommitteeContributionConsensusData,
-				),
-				Duty: testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionTooFewRootsMsg(ks.Shares[1], 1, ks, sccSlot))),
-				},
-				PostDutyRunnerStateRoot: "f58387d4d4051a2de786e4cbf9dc370a8b19a544f52af04f71195feb3863fc5c",
-				DontStartDuty:           true,
-				// No error is expected as AggregatorCommitteeRunner doesn't validate the precise number of roots
-			},
 			{
 				Name: "proposer",
 				Runner: decideRunner(
@@ -48,9 +32,8 @@ func TooFewRoots() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerTooFewRootsMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
 				},
-				PostDutyRunnerStateRoot: "ff213af6f0bf2350bb37f48021c137dd5552b1c25cb5c6ebd0c1d27debf6080e",
-				DontStartDuty:           true,
-				ExpectedErrorCode:       errCode,
+				DontStartDuty:     true,
+				ExpectedErrorCode: errCode,
 			},
 			{
 				Name: "proposer (blinded block)",
@@ -63,31 +46,60 @@ func TooFewRoots() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerTooFewRootsMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
 				},
-				PostDutyRunnerStateRoot: "9b4524d5100835df4d71d0a1e559acdc33d541c44a746ebda115c5e7f3eaa85a",
-				DontStartDuty:           true,
-				ExpectedErrorCode:       errCode,
+				DontStartDuty:     true,
+				ExpectedErrorCode: errCode,
 			},
 		},
 		ks,
 	)
 
-	for _, version := range testingutils.SupportedAggregatorVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-			Name: fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: decideAggregatorCommitteeRunner(
-				testingutils.AggregatorCommitteeRunner(ks),
-				testingutils.TestingAggregatorDuty(version),
-				testingutils.TestAggregatorConsensusData(version),
-			),
-			Duty: testingutils.TestingAggregatorDuty(version),
-			Messages: []*types.SignedSSVMessage{
-				testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorTooFewRootsMsg(ks.Shares[1], 1, version))),
-			},
-			PostDutyRunnerStateRoot: "1fb182fb19e446d61873abebc0ac85a3a9637b51d139cdbd7d8cb70cf7ffec82",
-			DontStartDuty:           true,
-			ExpectedErrorCode:       errCode,
+	// Aggregator committee duty
+	sccSlot := testingutils.TestingSyncCommitteeContributionDuty.Slot
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name: "sync committee contribution",
+		Runner: decideAggregatorCommitteeRunner(
+			testingutils.AggregatorCommitteeRunner(ks),
+			testingutils.TestingSyncCommitteeContributionDuty,
+			testingutils.TestSyncCommitteeContributionConsensusData,
+		),
+		Duty: testingutils.TestingSyncCommitteeContributionDuty,
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionTooFewRootsMsg(ks.Shares[1], 1, ks, sccSlot))),
 		},
-		)
+		DontStartDuty: true,
+		// No error is expected as AggregatorCommitteeRunner doesn't validate the precise number of roots
+	})
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+			{
+				Name: fmt.Sprintf("aggregator (%s)", version.String()),
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingAggregatorDuty(version),
+					testingutils.TestAggregatorConsensusData(version),
+				),
+				Duty: testingutils.TestingAggregatorDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorTooFewRootsMsg(ks.Shares[1], 1, version))),
+				},
+				DontStartDuty:     true,
+				ExpectedErrorCode: errCode,
+			},
+			{
+				Name: fmt.Sprintf("aggregator committee mixed (%s)", version.String()),
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingAggregatorCommitteeDutyMixed(version),
+					testingutils.TestAggregatorCommitteeConsensusData(version),
+				),
+				Duty: testingutils.TestingAggregatorCommitteeDutyMixed(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedMsgTooFewRoots(ks.Shares[1], 1, version, ks))),
+				},
+				DontStartDuty: true,
+				// No error is expected as AggregatorCommitteeRunner doesn't validate the precise number of roots
+			},
+		}...)
 	}
 
 	for _, version := range testingutils.SupportedAttestationVersions {

@@ -24,6 +24,13 @@ func TestingAggregatorCommitteeDutyMixed(version spec.DataVersion) *types.Aggreg
 	return TestingAggregatorAndSyncCommitteeContributorDuties(version)
 }
 
+func TestingAggregatorCommitteeDutyForValidators(aggValidators []int, sccValidators []int, version spec.DataVersion) *types.AggregatorCommitteeDuty {
+	sccDuty := TestingSyncCommitteeContributorDutyForValidators(version, sccValidators)
+	aggDuty := TestingAggregatorDutyForValidators(version, aggValidators)
+	aggDuty.ValidatorDuties = append(aggDuty.ValidatorDuties, sccDuty.ValidatorDuties...)
+	return aggDuty
+}
+
 // TestingAggregatorCommitteeDutyMultipleAggregators creates a duty with multiple aggregator validators
 func TestingAggregatorCommitteeDutyMultipleAggregators(version spec.DataVersion) *types.AggregatorCommitteeDuty {
 	return TestingAggregatorDutyForValidators(version, []int{1, 2})

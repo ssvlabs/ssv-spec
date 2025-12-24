@@ -61,48 +61,69 @@ func PostDecided() tests.SpecTest {
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus post decided",
 		testdoc.PreConsensusPostDecidedDoc,
-		[]*tests.MsgProcessingSpecTest{
-			{
-				Name: "sync committee aggregator selection proof",
-				Runner: decideAggCommRunner(
-					testingutils.AggregatorCommitteeRunner(ks),
-					testingutils.TestingSyncCommitteeContributionDuty,
-					testingutils.TestSyncCommitteeContributionConsensusData,
-					[]*types.PartialSignatureMessages{
-						testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-						testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2),
-						testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3),
-					},
-				),
-				Duty: testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4))),
-				},
-				DontStartDuty: true,
-			},
-		},
+		[]*tests.MsgProcessingSpecTest{},
 		ks,
 	)
 
-	for _, version := range testingutils.SupportedAggregatorVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-			Name: fmt.Sprintf("aggregator selection proof (%s)", version.String()),
-			Runner: decideAggCommRunner(
-				testingutils.AggregatorCommitteeRunner(ks),
-				testingutils.TestingAggregatorDuty(version),
-				testingutils.TestAggregatorConsensusData(version),
-				[]*types.PartialSignatureMessages{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2, version),
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3, version),
-				},
-			),
-			Duty: testingutils.TestingAggregatorDuty(version),
-			Messages: []*types.SignedSSVMessage{
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4, version))),
+	// Aggregator committee duty
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name: "sync committee aggregator selection proof",
+		Runner: decideAggCommRunner(
+			testingutils.AggregatorCommitteeRunner(ks),
+			testingutils.TestingSyncCommitteeContributionDuty,
+			testingutils.TestSyncCommitteeContributionConsensusData,
+			[]*types.PartialSignatureMessages{
+				testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
+				testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2),
+				testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3),
 			},
-			DontStartDuty: true,
-		})
+		),
+		Duty: testingutils.TestingSyncCommitteeContributionDuty,
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4))),
+		},
+		DontStartDuty: true,
+	})
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		mixedDuty := testingutils.TestingAggregatorCommitteeDutyMixed(version)
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+			{
+				Name: fmt.Sprintf("aggregator selection proof (%s)", version.String()),
+				Runner: decideAggCommRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingAggregatorDuty(version),
+					testingutils.TestAggregatorConsensusData(version),
+					[]*types.PartialSignatureMessages{
+						testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
+						testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2, version),
+						testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3, version),
+					},
+				),
+				Duty: testingutils.TestingAggregatorDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4, version))),
+				},
+				DontStartDuty: true,
+			},
+			{
+				Name: fmt.Sprintf("aggregator committee duty (%s)", version.String()),
+				Runner: decideAggCommRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					mixedDuty,
+					testingutils.TestAggregatorCommitteeConsensusDataForDuty(mixedDuty, version),
+					[]*types.PartialSignatureMessages{
+						testingutils.PreConsensusAggregatorCommitteeMixedMsg(ks.Shares[1], 1, version),
+						testingutils.PreConsensusAggregatorCommitteeMixedMsg(ks.Shares[2], 2, version),
+						testingutils.PreConsensusAggregatorCommitteeMixedMsg(ks.Shares[3], 3, version),
+					},
+				),
+				Duty: mixedDuty,
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusAggregatorCommitteeMixedMsg(ks.Shares[4], 4, version))),
+				},
+				DontStartDuty: true,
+			},
+		}...)
 	}
 
 	// proposerV creates a test specification for versioned proposer.

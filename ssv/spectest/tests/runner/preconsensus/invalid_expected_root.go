@@ -14,23 +14,10 @@ import (
 // InvalidExpectedRoot tests 1 expected root which doesn't match the signed root
 func InvalidExpectedRoot() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
-	sccSlot := testingutils.TestingSyncCommitteeContributionDuty.Slot
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus invalid expected roots",
 		testdoc.PreConsensusInvalidExpectedRootDoc,
 		[]*tests.MsgProcessingSpecTest{
-			{
-				Name:   "sync committee aggregator selection proof",
-				Runner: testingutils.AggregatorCommitteeRunner(ks),
-				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofWrongBeaconRootMsg(ks.Shares[1], ks.Shares[1], 1, 1, sccSlot))),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusContributionProofMsgWithSlot(ks.Shares[1], ks.Shares[1], 1, 1, sccSlot), // broadcasts when starting a new duty
-				},
-				// No error as AggregatorCommitteeRunner does not validate the expected root
-			},
 			{
 				Name:   "randao",
 				Runner: testingutils.ProposerRunner(ks),
@@ -83,19 +70,47 @@ func InvalidExpectedRoot() tests.SpecTest {
 		ks,
 	)
 
+	// Aggregator Committee duty
+	sccSlot := testingutils.TestingSyncCommitteeContributionDuty.Slot
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name:   "sync committee aggregator selection proof",
+		Runner: testingutils.AggregatorCommitteeRunner(ks),
+		Duty:   testingutils.TestingSyncCommitteeContributionDuty,
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofWrongBeaconRootMsg(ks.Shares[1], ks.Shares[1], 1, 1, sccSlot))),
+		},
+		OutputMessages: []*types.PartialSignatureMessages{
+			testingutils.PreConsensusContributionProofMsgWithSlot(ks.Shares[1], ks.Shares[1], 1, 1, sccSlot), // broadcasts when starting a new duty
+		},
+		// No error as AggregatorCommitteeRunner does not validate the expected root
+	})
 	for _, version := range testingutils.SupportedAggregatorVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-			Name:   fmt.Sprintf("aggregator selection proof (%s)", version.String()),
-			Runner: testingutils.AggregatorCommitteeRunner(ks),
-			Duty:   testingutils.TestingAggregatorDuty(version),
-			Messages: []*types.SignedSSVMessage{
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofWrongRootSigMsg(ks.Shares[1], ks.Shares[1], 1, 1, version))),
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+			{
+				Name:   fmt.Sprintf("aggregator selection proof (%s)", version.String()),
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingAggregatorDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofWrongRootSigMsg(ks.Shares[1], ks.Shares[1], 1, 1, version))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
+				},
+				// No error as AggregatorCommitteeRunner does not validate the expected root
 			},
-			OutputMessages: []*types.PartialSignatureMessages{
-				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
+			{
+				Name:   fmt.Sprintf("aggregator committee mixed (%s)", version.String()),
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingAggregatorCommitteeDutyMixed(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMixedMsgWrongRoot(ks.Shares[1], 1, version))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusAggregatorCommitteeMixedMsg(ks.Shares[1], 1, version), // broadcasts when starting a new duty
+				},
+				// No error as AggregatorCommitteeRunner does not validate the expected root
 			},
-			// No error as AggregatorCommitteeRunner does not validate the expected root
-		})
+		}...)
 	}
 
 	return multiSpecTest

@@ -265,14 +265,14 @@ type AggregatorCommitteeConsensusData struct {
 	Version spec.DataVersion
 
 	// Aggregator duties
-	Aggregators                 []AssignedAggregator `ssz-max:"1000"`
-	AggregatorsCommitteeIndexes []uint64             `ssz-max:"1000"`
-	Attestations                [][]byte             `ssz-max:"1000,1048576"`
+	Aggregators                 []AssignedAggregator `ssz-max:"3000"`
+	AggregatorsCommitteeIndexes []uint64             `ssz-max:"3000"`
+	Attestations                [][]byte             `ssz-max:"3000,1048576"`
 
 	// Sync Committee duties
-	Contributors               []AssignedAggregator               `ssz-max:"64"`
-	SyncCommitteeSubnets       []uint64                           `ssz-max:"64"`
-	SyncCommitteeContributions []altair.SyncCommitteeContribution `ssz-max:"64"`
+	Contributors               []AssignedAggregator               `ssz-max:"256"`
+	SyncCommitteeSubnets       []uint64                           `ssz-max:"256"`
+	SyncCommitteeContributions []altair.SyncCommitteeContribution `ssz-max:"256"`
 }
 
 // Validate ensures the consensus data is internally consistent
