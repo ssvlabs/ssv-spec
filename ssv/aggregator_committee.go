@@ -197,13 +197,20 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 		}
 	}
 
-	// Early exit if no aggregators selected
-	if !hasAnyAggregator {
+	// Early exit if no aggregators selected (conditioned to no error)
+	if !hasAnyAggregator && anyErr == nil {
 		r.BaseRunner.State.Finished = true
 		if anyErr != nil {
 			return anyErr
 		}
 		return nil
+	}
+
+	// If there was an error, and no aggregators or contributors were selected, return the error
+	if len(aggregatorData.Aggregators) == 0 &&
+		len(aggregatorData.Contributors) == 0 &&
+		anyErr != nil {
+		return anyErr
 	}
 
 	if err := aggregatorData.Validate(); err != nil {

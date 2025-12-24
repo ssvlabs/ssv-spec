@@ -11,16 +11,17 @@ import (
 	"testing"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
+	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	tests2 "github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
+
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
-	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -602,17 +603,9 @@ func baseRunnerForRole(role types.RunnerRole, base *ssv.BaseRunner, ks *testingu
 		ret := testingutils.CommitteeRunner(ks)
 		ret.(*ssv.CommitteeRunner).BaseRunner = base
 		return ret
-	case types.RoleAggregator:
-		ret := testingutils.AggregatorRunner(ks)
-		ret.(*ssv.AggregatorRunner).BaseRunner = base
-		return ret
 	case types.RoleProposer:
 		ret := testingutils.ProposerRunner(ks)
 		ret.(*ssv.ProposerRunner).BaseRunner = base
-		return ret
-	case types.RoleSyncCommitteeContribution:
-		ret := testingutils.SyncCommitteeContributionRunner(ks)
-		ret.(*ssv.SyncCommitteeAggregatorRunner).BaseRunner = base
 		return ret
 	case types.RoleAggregatorCommittee:
 		ret := testingutils.AggregatorCommitteeRunner(ks)

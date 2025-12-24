@@ -26,24 +26,24 @@ func InvalidMessageSlot() tests.SpecTest {
 		return msg
 	}
 
+	sccSlot := testingutils.TestingSyncCommitteeContributionDuty.Slot
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus invalid msg slot",
 		testdoc.PostConsensusInvalidMsgSlotDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee contribution",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty,
 					testingutils.TestSyncCommitteeContributionConsensusData,
 				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, invalidateSlot(testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks)))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, invalidateSlot(testingutils.PostConsensusSyncCommitteeContributionMsgWithSlot(ks.Shares[1], 1, ks, sccSlot)))),
 				},
-				PostDutyRunnerStateRoot: "f58387d4d4051a2de786e4cbf9dc370a8b19a544f52af04f71195feb3863fc5c",
-				DontStartDuty:           true,
-				ExpectedErrorCode:       types.PartialSigMessageFutureSlotErrorCode,
+				DontStartDuty:     true,
+				ExpectedErrorCode: types.NoRunnerForSlotErrorCode,
 			},
 			{
 				Name: "proposer",
@@ -56,9 +56,8 @@ func InvalidMessageSlot() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, invalidateSlotV(testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), spec.DataVersionDeneb))),
 				},
-				PostDutyRunnerStateRoot: "ff213af6f0bf2350bb37f48021c137dd5552b1c25cb5c6ebd0c1d27debf6080e",
-				DontStartDuty:           true,
-				ExpectedErrorCode:       types.PartialSigMessageFutureSlotErrorCode,
+				DontStartDuty:     true,
+				ExpectedErrorCode: types.PartialSigMessageFutureSlotErrorCode,
 			},
 			{
 				Name: "proposer (blinded block)",
@@ -71,9 +70,8 @@ func InvalidMessageSlot() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, invalidateSlotV(testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), spec.DataVersionDeneb))),
 				},
-				PostDutyRunnerStateRoot: "9b4524d5100835df4d71d0a1e559acdc33d541c44a746ebda115c5e7f3eaa85a",
-				DontStartDuty:           true,
-				ExpectedErrorCode:       types.PartialSigMessageFutureSlotErrorCode,
+				DontStartDuty:     true,
+				ExpectedErrorCode: types.PartialSigMessageFutureSlotErrorCode,
 			},
 			{
 				Name:   "validator registration",
@@ -85,7 +83,6 @@ func InvalidMessageSlot() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, invalidateSlot(testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)))),
 				},
-				PostDutyRunnerStateRoot: "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
@@ -104,7 +101,6 @@ func InvalidMessageSlot() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[3], 3))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgVoluntaryExit(nil, invalidateSlot(testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)))),
 				},
-				PostDutyRunnerStateRoot: "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
@@ -115,8 +111,8 @@ func InvalidMessageSlot() tests.SpecTest {
 			},
 			{
 				Name: fmt.Sprintf("aggregator (%s)", spec.DataVersionPhase0.String()),
-				Runner: decideRunner(
-					testingutils.AggregatorRunner(ks),
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
 					testingutils.TestingAggregatorDuty(spec.DataVersionPhase0),
 					testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0),
 				),
@@ -124,14 +120,13 @@ func InvalidMessageSlot() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, invalidateSlot(testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, spec.DataVersionPhase0)))),
 				},
-				PostDutyRunnerStateRoot: "1fb182fb19e446d61873abebc0ac85a3a9637b51d139cdbd7d8cb70cf7ffec82",
-				DontStartDuty:           true,
-				ExpectedErrorCode:       types.PartialSigMessageFutureSlotErrorCode,
+				DontStartDuty:     true,
+				ExpectedErrorCode: types.NoRunnerForSlotErrorCode,
 			},
 			{
 				Name: fmt.Sprintf("aggregator (%s)", spec.DataVersionElectra.String()),
-				Runner: decideRunner(
-					testingutils.AggregatorRunner(ks),
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
 					testingutils.TestingAggregatorDuty(spec.DataVersionElectra),
 					testingutils.TestAggregatorConsensusData(spec.DataVersionElectra),
 				),
@@ -139,9 +134,8 @@ func InvalidMessageSlot() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, invalidateSlot(testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, spec.DataVersionElectra)))),
 				},
-				PostDutyRunnerStateRoot: "1fb182fb19e446d61873abebc0ac85a3a9637b51d139cdbd7d8cb70cf7ffec82",
-				DontStartDuty:           true,
-				ExpectedErrorCode:       types.PartialSigMessageInvalidSlotErrorCode,
+				DontStartDuty:     true,
+				ExpectedErrorCode: types.NoRunnerForSlotErrorCode,
 			},
 		},
 		ks,

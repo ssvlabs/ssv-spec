@@ -123,6 +123,8 @@ func (b *BeaconVote) Decode(data []byte) error {
 }
 
 // ValidatorConsensusData holds all relevant duty and data Decided on by consensus
+// It's only used for the Proposer role.
+// TODO: rename it to associate with Proposer role
 type ValidatorConsensusData struct {
 	// Duty max size is
 	// 			8 + 48 + 6*8 + 13*8 + 1 = 209
@@ -165,16 +167,8 @@ type ValidatorConsensusData struct {
 
 func (cd *ValidatorConsensusData) Validate() error {
 	switch cd.Duty.Type {
-	case BNRoleAggregator:
-		if _, _, err := cd.GetAggregateAndProof(); err != nil {
-			return err
-		}
 	case BNRoleProposer:
 		if _, _, err := cd.GetBlockData(); err != nil {
-			return err
-		}
-	case BNRoleSyncCommitteeContribution:
-		if _, err := cd.GetSyncCommitteeContributions(); err != nil {
 			return err
 		}
 	case BNRoleValidatorRegistration:
@@ -249,72 +243,6 @@ func (cd *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, si
 	default:
 		return nil, nil, WrapError(UnknownBlockVersionErrorCode, fmt.Errorf("unknown block version %d", cd.Version))
 	}
-}
-
-// TODO: Phase 3 - Remove this method when migrating to aggregator committee runner
-func (cd *ValidatorConsensusData) GetAggregateAndProof() (*spec.VersionedAggregateAndProof, ssz.HashRoot, error) {
-	switch cd.Version {
-	case spec.DataVersionPhase0:
-		ret := &phase0.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-		}
-
-		return &spec.VersionedAggregateAndProof{Version: cd.Version, Phase0: ret}, ret, nil
-	case spec.DataVersionAltair:
-		ret := &phase0.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-		}
-
-		return &spec.VersionedAggregateAndProof{Version: cd.Version, Altair: ret}, ret, nil
-	case spec.DataVersionBellatrix:
-		ret := &phase0.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-		}
-
-		return &spec.VersionedAggregateAndProof{Version: cd.Version, Bellatrix: ret}, ret, nil
-	case spec.DataVersionCapella:
-		ret := &phase0.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-		}
-
-		return &spec.VersionedAggregateAndProof{Version: cd.Version, Capella: ret}, ret, nil
-	case spec.DataVersionDeneb:
-		ret := &phase0.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-		}
-
-		return &spec.VersionedAggregateAndProof{Version: cd.Version, Deneb: ret}, ret, nil
-	case spec.DataVersionElectra:
-		ret := &electra.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-		}
-
-		return &spec.VersionedAggregateAndProof{Version: cd.Version, Electra: ret}, ret, nil
-	case spec.DataVersionFulu:
-		ret := &electra.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-		}
-
-		return &spec.VersionedAggregateAndProof{Version: cd.Version, Fulu: ret}, ret, nil
-	default:
-		return nil, nil, fmt.Errorf("unknown aggregate and proof version %d", cd.Version)
-	}
-}
-
-// TODO: Phase 3 - Remove this method when migrating to aggregator committee runner
-func (cd *ValidatorConsensusData) GetSyncCommitteeContributions() (Contributions, error) {
-	ret := Contributions{}
-	if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-		return nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-	}
-	return ret, nil
 }
 
 func (cd *ValidatorConsensusData) Encode() ([]byte, error) {

@@ -3,5 +3,5 @@
   "Type": "Duty: validation of beacon role to runner role conversion",
   "Documentation": "Test mapping of BNRoleVoluntaryExit",
   "BeaconRole": 6,
-  "RunnerRole": 5
+  "RunnerRole": 4
 }

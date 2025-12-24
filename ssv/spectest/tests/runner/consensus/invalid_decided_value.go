@@ -34,30 +34,37 @@ func InvalidDecidedValue() tests.SpecTest {
 		byts, _ := cd.Encode()
 		return byts
 	}
+	aggregatorCommmitteeConsensusDataByts := func() []byte {
+		cd := &types.AggregatorCommitteeConsensusData{}
+		byts, _ := cd.Encode()
+		return byts
+	}
 
 	expectedErrCode := types.QBFTValueInvalidErrorCode
 	expectedCommitteeErrCode := types.AttestationSourceNotLessThanTargetErrorCode
+	expectedAggCommitteeErrCode := types.AggCommConsensusDataNoValidatorErrorCode
 
+	sccSlot := testingutils.TestingSyncCommitteeContributionDuty.Slot
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus decided invalid value",
 		testdoc.ConsensusInvalidDecidedValueDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(
 						nil,
-						testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
+						testingutils.PreConsensusContributionProofMsgWithSlot(ks.Shares[1], ks.Shares[1], 1, 1, sccSlot),
 					)),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(
 						nil,
-						testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2),
+						testingutils.PreConsensusContributionProofMsgWithSlot(ks.Shares[2], ks.Shares[2], 2, 2, sccSlot),
 					)),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(
 						nil,
-						testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3),
+						testingutils.PreConsensusContributionProofMsgWithSlot(ks.Shares[3], ks.Shares[3], 3, 3, sccSlot),
 					)),
 
 					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
@@ -65,16 +72,15 @@ func InvalidDecidedValue() tests.SpecTest {
 							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 						},
 						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.SyncCommitteeContributionMsgID,
-						consensusDataByts(),
+						qbft.Height(sccSlot),
+						testingutils.TestingAggregatorCommitteeMsgID[:],
+						aggregatorCommmitteeConsensusDataByts(),
 					),
 				},
-				PostDutyRunnerStateRoot: "aff4af0dbbead81d6cb9dd4ff734d4660712a8b5ab8e9016a3f86e2c2ead7549",
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
+					testingutils.PreConsensusContributionProofMsgWithSlot(ks.Shares[1], ks.Shares[1], 1, 1, sccSlot),
 				},
-				ExpectedErrorCode: expectedErrCode,
+				ExpectedErrorCode: expectedAggCommitteeErrCode,
 			},
 			{
 				Name:   "proposer",
@@ -95,7 +101,6 @@ func InvalidDecidedValue() tests.SpecTest {
 						consensusDataByts(),
 					),
 				},
-				PostDutyRunnerStateRoot: "0c965c41a9318297ad03c27e79ca2d2d0fee357fff21995c014182ce5e2970b3",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
@@ -120,7 +125,6 @@ func InvalidDecidedValue() tests.SpecTest {
 						consensusDataByts(),
 					),
 				},
-				PostDutyRunnerStateRoot: "d03cef76867bcb4540191a8e93a735b460ce5844271f718508a3821c404331a2",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
 				},
@@ -133,7 +137,7 @@ func InvalidDecidedValue() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name:   fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: testingutils.AggregatorRunner(ks),
+			Runner: testingutils.AggregatorCommitteeRunner(ks),
 			Duty:   testingutils.TestingAggregatorDuty(version),
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version))),
@@ -146,15 +150,14 @@ func InvalidDecidedValue() tests.SpecTest {
 					},
 					[]types.OperatorID{1, 2, 3},
 					qbft.Height(testingutils.TestingDutySlotV(version)),
-					testingutils.AggregatorMsgID,
-					consensusDataByts(),
+					testingutils.TestingAggregatorCommitteeMsgID[:],
+					aggregatorCommmitteeConsensusDataByts(),
 				),
 			},
-			PostDutyRunnerStateRoot: "a93047858c5597f2b1de078a566e6b0227a217e10758a741ff7a2ed9e0a87d96",
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
 			},
-			ExpectedErrorCode: expectedErrCode,
+			ExpectedErrorCode: expectedAggCommitteeErrCode,
 		},
 		)
 	}

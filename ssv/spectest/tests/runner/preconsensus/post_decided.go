@@ -37,6 +37,26 @@ func PostDecided() tests.SpecTest {
 		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
 		return r
 	}
+	decideAggCommRunner := func(r ssv.Runner, duty *types.AggregatorCommitteeDuty, decidedValue *types.AggregatorCommitteeConsensusData, preMsgs []*types.PartialSignatureMessages) ssv.Runner {
+		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
+		for _, msg := range preMsgs {
+			err := r.ProcessPreConsensus(msg)
+			if err != nil {
+				panic(err.Error())
+			}
+		}
+		r.GetBaseRunner().State.RunningInstance = qbft.NewInstance(
+			r.GetBaseRunner().QBFTController.GetConfig(),
+			r.GetBaseRunner().QBFTController.CommitteeMember,
+			r.GetBaseRunner().QBFTController.Identifier,
+			qbft.FirstHeight,
+			r.GetBaseRunner().QBFTController.OperatorSigner)
+		r.GetBaseRunner().State.RunningInstance.State.Decided = true
+		r.GetBaseRunner().State.DecidedValue = testingutils.EncodeAggregatorCommitteeConsensusDataTest(decidedValue)
+		r.GetBaseRunner().QBFTController.StoredInstances[0] = r.GetBaseRunner().State.RunningInstance
+		r.GetBaseRunner().QBFTController.Height = qbft.FirstHeight
+		return r
+	}
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus post decided",
@@ -44,9 +64,9 @@ func PostDecided() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name: "sync committee aggregator selection proof",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: decideAggCommRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty,
 					testingutils.TestSyncCommitteeContributionConsensusData,
 					[]*types.PartialSignatureMessages{
 						testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
@@ -54,13 +74,11 @@ func PostDecided() tests.SpecTest {
 						testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3),
 					},
 				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
+				Duty: testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4))),
 				},
-				PostDutyRunnerStateRoot: postDecidedSyncCommitteeContributionSC().Root(),
-				PostDutyRunnerState:     postDecidedSyncCommitteeContributionSC().ExpectedState,
-				DontStartDuty:           true,
+				DontStartDuty: true,
 			},
 		},
 		ks,
@@ -69,8 +87,8 @@ func PostDecided() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name: fmt.Sprintf("aggregator selection proof (%s)", version.String()),
-			Runner: decideRunner(
-				testingutils.AggregatorRunner(ks),
+			Runner: decideAggCommRunner(
+				testingutils.AggregatorCommitteeRunner(ks),
 				testingutils.TestingAggregatorDuty(version),
 				testingutils.TestAggregatorConsensusData(version),
 				[]*types.PartialSignatureMessages{
@@ -105,9 +123,7 @@ func PostDecided() tests.SpecTest {
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version))),
 			},
-			PostDutyRunnerStateRoot: postDecidedProposerSC(version).Root(),
-			PostDutyRunnerState:     postDecidedProposerSC(version).ExpectedState,
-			DontStartDuty:           true,
+			DontStartDuty: true,
 		}
 	}
 
@@ -129,9 +145,7 @@ func PostDecided() tests.SpecTest {
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version))),
 			},
-			PostDutyRunnerStateRoot: postDecidedBlindedProposerSC(version).Root(),
-			PostDutyRunnerState:     postDecidedBlindedProposerSC(version).ExpectedState,
-			DontStartDuty:           true,
+			DontStartDuty: true,
 		}
 	}
 

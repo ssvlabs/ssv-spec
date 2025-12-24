@@ -1,8 +1,6 @@
 package testingutils
 
 import (
-	"crypto/sha256"
-
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/types"
@@ -12,12 +10,8 @@ import (
 // Aggregator
 // ==================================================
 
-var TestAggregatorConsensusData = func(version spec.DataVersion) *types.ValidatorConsensusData {
-	return &types.ValidatorConsensusData{
-		Duty:    *TestingAggregatorDuty(version),
-		DataSSZ: TestingAggregateAndProofBytesV(version, TestingValidatorIndex),
-		Version: version,
-	}
+var TestAggregatorConsensusData = func(version spec.DataVersion) *types.AggregatorCommitteeConsensusData {
+	return TestAggregatorCommitteeConsensusDataForDuty(TestingAggregatorCommitteeDutyOnlyAggregator(version), version)
 }
 var TestAggregatorConsensusDataByts = func(version spec.DataVersion) []byte {
 	byts, _ := TestAggregatorConsensusData(version).Encode()
@@ -85,12 +79,10 @@ var TestProposerBlindedBlockConsensusDataBytsV = func(version spec.DataVersion) 
 // Sync Committee Contribution
 // ==================================================
 
-var TestSyncCommitteeContributionConsensusData = &types.ValidatorConsensusData{
-	Duty:    TestingSyncCommitteeContributionDuty,
-	DataSSZ: TestingContributionsDataBytes,
-	Version: spec.DataVersionPhase0,
+var TestSyncCommitteeContributionConsensusDataF = func() *types.AggregatorCommitteeConsensusData {
+	return TestAggregatorCommitteeConsensusDataForDuty(TestingAggregatorCommitteeDutyOnlySyncCommittee(), spec.DataVersionPhase0)
 }
+
+var TestSyncCommitteeContributionConsensusData = TestSyncCommitteeContributionConsensusDataF()
+
 var TestSyncCommitteeContributionConsensusDataByts, _ = TestSyncCommitteeContributionConsensusData.Encode()
-var TestSyncCommitteeContributionConsensusDataRoot = func() [32]byte {
-	return sha256.Sum256(TestSyncCommitteeContributionConsensusDataByts)
-}()

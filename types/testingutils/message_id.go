@@ -2,11 +2,6 @@ package testingutils
 
 import "github.com/ssvlabs/ssv-spec/types"
 
-var AggregatorMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleAggregator)
-	return ret[:]
-}()
-
 var CommitteeMsgID = func(keySet *TestKeySet) []byte {
 	// Identifier
 	committee := make([]uint64, 0)
@@ -33,11 +28,6 @@ var AggregatorCommitteeMsgID = func(keySet *TestKeySet) []byte {
 
 var ProposerMsgID = func() []byte {
 	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleProposer)
-	return ret[:]
-}()
-
-var SyncCommitteeContributionMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleSyncCommitteeContribution)
 	return ret[:]
 }()
 

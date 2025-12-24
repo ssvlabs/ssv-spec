@@ -14,7 +14,11 @@ import (
 // ==================================================
 
 var SSVMsgAggregator = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleAggregator))
+	return ssvMsg(qbftMsg, partialSigMsg, TestingAggregatorCommitteeMsgID)
+}
+
+var SSVMsgAggregatorForKS = func(ks *TestKeySet, qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
+	return ssvMsg(qbftMsg, partialSigMsg, AggregatorCommitteeMsgIDForKeySet(ks))
 }
 
 // ==================================================
@@ -94,7 +98,7 @@ var selectionProofMsg = func(
 	}
 
 	msgs := types.PartialSignatureMessages{
-		Type:     types.SelectionProofPartialSig,
+		Type:     types.AggregatorCommitteePartialSig,
 		Slot:     slot,
 		Messages: _msgs,
 	}

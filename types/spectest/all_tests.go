@@ -3,6 +3,7 @@ package spectest
 import (
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/aggregatorcommitteeconsensusdata"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
@@ -70,22 +71,24 @@ var AllTests = []SpecTest{
 	validatorconsensusdata.InvalidFuluBlockValidation(),
 	validatorconsensusdata.InvalidFuluBlindedBlockValidation(),
 
-	validatorconsensusdata.Phase0AggregatorConsensusDataEncoding(),
-	validatorconsensusdata.Phase0AggregatorValidation(),
-	validatorconsensusdata.Phase0AggregatorNoJustifications(),
-	validatorconsensusdata.Phase0InvalidAggregatorValidation(),
-	validatorconsensusdata.ElectraAggregatorConsensusDataEncoding(),
-	validatorconsensusdata.ElectraAggregatorValidation(),
-	validatorconsensusdata.ElectraAggregatorNoJustifications(),
-	validatorconsensusdata.ElectraInvalidAggregatorValidation(),
-
-	validatorconsensusdata.SyncCommitteeContributionConsensusDataEncoding(),
-	validatorconsensusdata.SyncCommitteeContributionValidation(),
-	validatorconsensusdata.SyncCommitteeContributionNoJustifications(),
-	validatorconsensusdata.InvalidSyncCommitteeContributionValidation(),
-
 	validatorconsensusdata.ValidatorRegistration(),
 	validatorconsensusdata.VoluntaryExit(),
+
+	aggregatorcommitteeconsensusdata.Phase0AggregatorConsensusDataEncoding(),
+	aggregatorcommitteeconsensusdata.ElectraAggregatorConsensusDataEncoding(),
+	aggregatorcommitteeconsensusdata.SyncCommitteeContributionConsensusDataEncoding(),
+
+	aggregatorcommitteeconsensusdata.Phase0AggregatorValidation(),
+	aggregatorcommitteeconsensusdata.Phase0AggregatorNoJustifications(),
+	aggregatorcommitteeconsensusdata.ElectraAggregatorValidation(),
+	aggregatorcommitteeconsensusdata.ElectraAggregatorNoJustifications(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationAttestationLength(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationCommitteeIndexesLength(),
+
+	aggregatorcommitteeconsensusdata.SyncCommitteeContributionValidation(),
+	aggregatorcommitteeconsensusdata.SyncCommitteeContributionNoJustifications(),
+	aggregatorcommitteeconsensusdata.InvalidSyncCommitteeContributionLength(),
+	aggregatorcommitteeconsensusdata.InvalidSyncCommitteeContributionSubnet(),
 
 	consensusdataproposer.VersionedBlockValidation(),
 	consensusdataproposer.VersionedBlindedBlockValidation(),

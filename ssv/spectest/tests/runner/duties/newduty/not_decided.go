@@ -35,12 +35,10 @@ func NotDecided() tests.SpecTest {
 		testdoc.NewDutyNotDecidedDoc,
 		[]*StartNewRunnerDutySpecTest{
 			{
-				Name:                    "sync committee aggregator",
-				Runner:                  startRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
-				Threshold:               ks.Threshold,
-				PostDutyRunnerStateRoot: notDecidedSyncCommitteeContributionSC().Root(),
-				PostDutyRunnerState:     notDecidedSyncCommitteeContributionSC().ExpectedState,
+				Name:      "sync committee aggregator",
+				Runner:    startRunner(testingutils.AggregatorCommitteeRunner(ks), testingutils.TestingSyncCommitteeContributionDuty),
+				Duty:      testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				Threshold: ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
 				},
@@ -52,7 +50,7 @@ func NotDecided() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
 			Name:      fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner:    startRunner(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty(version)),
+			Runner:    startRunner(testingutils.AggregatorCommitteeRunner(ks), testingutils.TestingAggregatorDuty(version)),
 			Duty:      testingutils.TestingAggregatorDutyNextEpoch(version),
 			Threshold: ks.Threshold,
 			OutputMessages: []*types.PartialSignatureMessages{
@@ -88,12 +86,10 @@ func NotDecided() tests.SpecTest {
 	// proposerV creates a test specification for versioned proposer.
 	proposerV := func(version spec.DataVersion) *StartNewRunnerDutySpecTest {
 		return &StartNewRunnerDutySpecTest{
-			Name:                    fmt.Sprintf("proposer (%s)", version.String()),
-			Runner:                  startRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(version)),
-			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
-			Threshold:               ks.Threshold,
-			PostDutyRunnerStateRoot: notDecidedProposerSC(version).Root(),
-			PostDutyRunnerState:     notDecidedProposerSC(version).ExpectedState,
+			Name:      fmt.Sprintf("proposer (%s)", version.String()),
+			Runner:    startRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(version)),
+			Duty:      testingutils.TestingProposerDutyNextEpochV(version),
+			Threshold: ks.Threshold,
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},
@@ -103,12 +99,10 @@ func NotDecided() tests.SpecTest {
 	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
 	proposerBlindedV := func(version spec.DataVersion) *StartNewRunnerDutySpecTest {
 		return &StartNewRunnerDutySpecTest{
-			Name:                    fmt.Sprintf("proposer blinded block (%s)", version.String()),
-			Runner:                  startRunner(testingutils.ProposerBlindedBlockRunner(ks), testingutils.TestingProposerDutyV(version)),
-			Duty:                    testingutils.TestingProposerDutyNextEpochV(version),
-			Threshold:               ks.Threshold,
-			PostDutyRunnerStateRoot: notDecidedBlindedProposerSC(version).Root(),
-			PostDutyRunnerState:     notDecidedBlindedProposerSC(version).ExpectedState,
+			Name:      fmt.Sprintf("proposer blinded block (%s)", version.String()),
+			Runner:    startRunner(testingutils.ProposerBlindedBlockRunner(ks), testingutils.TestingProposerDutyV(version)),
+			Duty:      testingutils.TestingProposerDutyNextEpochV(version),
+			Threshold: ks.Threshold,
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
 			},

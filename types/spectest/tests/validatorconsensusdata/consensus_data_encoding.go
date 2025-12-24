@@ -41,24 +41,3 @@ func BlindedProposerConsensusDataEncoding() *EncodingTest {
 		testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionCapella),
 	)
 }
-func Phase0AggregatorConsensusDataEncoding() *EncodingTest {
-	return ConsensusDataEncoding(
-		"phase0 aggregation encoding",
-		testdoc.ValidatorConsensusDataEncodingTestPhase0AggregatorDoc,
-		testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0),
-	)
-}
-func ElectraAggregatorConsensusDataEncoding() *EncodingTest {
-	return ConsensusDataEncoding(
-		"electra aggregation encoding",
-		testdoc.ValidatorConsensusDataEncodingTestElectraAggregatorDoc,
-		testingutils.TestAggregatorConsensusData(spec.DataVersionElectra),
-	)
-}
-func SyncCommitteeContributionConsensusDataEncoding() *EncodingTest {
-	return ConsensusDataEncoding(
-		"sync committee contribution encoding",
-		testdoc.ValidatorConsensusDataEncodingTestSyncCommitteeContributionDoc,
-		testingutils.TestSyncCommitteeContributionConsensusData,
-	)
-}

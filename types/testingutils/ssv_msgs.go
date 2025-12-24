@@ -22,6 +22,11 @@ var EncodeConsensusDataTest = func(cd *types.ValidatorConsensusData) []byte {
 	return encodedCD
 }
 
+var EncodeAggregatorCommitteeConsensusDataTest = func(cd *types.AggregatorCommitteeConsensusData) []byte {
+	encodedCD, _ := cd.Encode()
+	return encodedCD
+}
+
 var TestConsensusUnkownDutyTypeData = &types.ValidatorConsensusData{
 	Duty:    TestingUnknownDutyType,
 	DataSSZ: TestingAttestationDataBytes(spec.DataVersionPhase0),

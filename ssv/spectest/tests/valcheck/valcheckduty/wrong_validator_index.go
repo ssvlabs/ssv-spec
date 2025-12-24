@@ -26,6 +26,41 @@ func WrongValidatorIndex() tests.SpecTest {
 		return ret
 	}
 
+	accdAggDataBytesF := func(cd *types.AggregatorCommitteeConsensusData) []byte {
+		cdCopy := types.AggregatorCommitteeConsensusData{}
+		b, _ := json.Marshal(cd)
+		if err := json.Unmarshal(b, &cdCopy); err != nil {
+			panic(err.Error())
+		}
+		cdCopy.Aggregators[0].ValidatorIndex = testingutils.TestingWrongValidatorIndex
+
+		ret, _ := cdCopy.Encode()
+		return ret
+	}
+	accdSCCDataBytesF := func(cd *types.AggregatorCommitteeConsensusData) []byte {
+		cdCopy := types.AggregatorCommitteeConsensusData{}
+		b, _ := json.Marshal(cd)
+		if err := json.Unmarshal(b, &cdCopy); err != nil {
+			panic(err.Error())
+		}
+		cdCopy.Contributors[0].ValidatorIndex = testingutils.TestingWrongValidatorIndex
+
+		ret, _ := cdCopy.Encode()
+		return ret
+	}
+	accdMixedDataBytesF := func(cd *types.AggregatorCommitteeConsensusData) []byte {
+		cdCopy := types.AggregatorCommitteeConsensusData{}
+		b, _ := json.Marshal(cd)
+		if err := json.Unmarshal(b, &cdCopy); err != nil {
+			panic(err.Error())
+		}
+		cdCopy.Aggregators[0].ValidatorIndex = testingutils.TestingWrongValidatorIndex
+		cdCopy.Contributors[0].ValidatorIndex = testingutils.TestingWrongValidatorIndex
+
+		ret, _ := cdCopy.Encode()
+		return ret
+	}
+
 	expectedErrCode := types.WrongValidatorIndexErrorCode
 	return valcheck.NewMultiSpecTest(
 		"wrong validator index",
@@ -41,25 +76,25 @@ func WrongValidatorIndex() tests.SpecTest {
 				// No error since input doesn't contain validator index
 			},
 			{
-				Name:              "sync committee aggregator",
-				Network:           types.BeaconTestNetwork,
-				RunnerRole:        types.RoleSyncCommitteeContribution,
-				Input:             consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
-				ExpectedErrorCode: expectedErrCode,
+				Name:       "aggregator committee scc",
+				Network:    types.BeaconTestNetwork,
+				RunnerRole: types.RoleAggregatorCommittee,
+				Input:      accdSCCDataBytesF(testingutils.TestSyncCommitteeContributionConsensusData),
+				// No error since input doesn't contain validator index
 			},
 			{
-				Name:              "aggregator phase0",
-				Network:           types.BeaconTestNetwork,
-				RunnerRole:        types.RoleAggregator,
-				Input:             consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
-				ExpectedErrorCode: expectedErrCode,
+				Name:       "aggregator committee agg",
+				Network:    types.BeaconTestNetwork,
+				RunnerRole: types.RoleAggregatorCommittee,
+				Input:      accdAggDataBytesF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
+				// No error since input doesn't contain validator index
 			},
 			{
-				Name:              "aggregator electra",
-				Network:           types.BeaconTestNetwork,
-				RunnerRole:        types.RoleAggregator,
-				Input:             consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionElectra)),
-				ExpectedErrorCode: expectedErrCode,
+				Name:       "aggregator committee mixed",
+				Network:    types.BeaconTestNetwork,
+				RunnerRole: types.RoleAggregatorCommittee,
+				Input:      accdMixedDataBytesF(testingutils.TestAggregatorCommitteeConsensusDataForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(spec.DataVersionElectra), spec.DataVersionElectra)),
+				// No error since input doesn't contain validator index
 			},
 			{
 				Name:              "proposer",
