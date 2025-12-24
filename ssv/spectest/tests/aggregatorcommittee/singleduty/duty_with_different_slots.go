@@ -1,4 +1,4 @@
-package multipleduty
+package singleduty
 
 import (
 	"fmt"

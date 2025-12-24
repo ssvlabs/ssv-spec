@@ -23,7 +23,7 @@ func SortedPostConsensusMessages() tests.SpecTest {
 
 	var testCases []*committee.CommitteeSpecTest
 
-	for _, version := range testingutils.SupportedAttestationVersions {
+	for _, version := range testingutils.SupportedAggregatorVersions {
 		// Test with unsorted validator indices: 5, 2, 8, 1
 		// After sorting, should be: 1, 2, 5, 8
 		unsortedValidatorIndices := []int{5, 2, 8, 1}

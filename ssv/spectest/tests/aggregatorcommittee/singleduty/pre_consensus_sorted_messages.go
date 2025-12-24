@@ -20,7 +20,7 @@ func SortedPreConsensusMessages() tests.SpecTest {
 
 	var testCases []*committee.CommitteeSpecTest
 
-	for _, version := range testingutils.SupportedAttestationVersions {
+	for _, version := range testingutils.SupportedAggregatorVersions {
 		unsortedValidatorIndices := []int{5, 2, 8, 1}
 
 		ksMap := testingutils.KeySetMapForValidators(len(unsortedValidatorIndices))
