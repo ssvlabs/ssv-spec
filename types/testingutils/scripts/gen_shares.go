@@ -27,7 +27,6 @@ func main() {
 		fmt.Printf("Failed to create output file: %v\n", err)
 		os.Exit(1)
 	}
-	defer output.Close()
 
 	// Generate the key sets
 	for i := 1; i <= count; i++ {
@@ -37,6 +36,12 @@ func main() {
 			fmt.Printf("Failed to write to output file: %v\n", err)
 			os.Exit(1)
 		}
+	}
+
+	err = output.Close()
+	if err != nil {
+		fmt.Printf("Failed to close output file: %v\n", err)
+		os.Exit(1)
 	}
 }
 
