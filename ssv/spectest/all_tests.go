@@ -104,6 +104,7 @@ var AllTests = []tests.TestF{
 	aggregatorcommitteesingleduty.DutyWithDifferentSlots,
 	aggregatorcommitteesingleduty.SortedPreConsensusMessages,
 	aggregatorcommitteesingleduty.SortedPostConsensusMessages,
+	aggregatorcommitteesingleduty.MaxValidators,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,

@@ -26,6 +26,7 @@ const HappyFlowDoc = "Tests a full runner happy flow"
 
 // Documentation for aggregator committee
 const AggregatorCommitteeDutyHappyFlowDoc = "Testing aggregator committee runner with complete duty flow for both aggregator and sync committee contribution"
+const AggregatorCommitteeDutyMaxValidatorsDoc = "Testing aggregator committee runner with complete duty flow for both aggregator and sync committee contribution and the maximum number of validators"
 const AggregatorCommitteeDutyWithDifferentSlotsDoc = "Testing aggregator committee runner with duties that have different slots"
 const AggregatorCommitteeDutyPostConsensusSortingDoc = "Testing that aggregator committee runner sorts post-consensus messages by (validator index, signing root)"
 const AggregatorCommitteeDutyPreConsensusSortingDoc = "Testing that aggregator committee runner sorts pre-consensus messages by (validator index, signing root)"
