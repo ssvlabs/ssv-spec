@@ -269,7 +269,7 @@ type AggregatorCommitteeConsensusData struct {
 	// AggregatorsCommitteeIndexes is a list of committee indexes used by the above aggregators
 	AggregatorsCommitteeIndexes []uint64 `ssz-max:"64"`
 	// AggregatedAttestations is a list of aggregated attestations (SSZ bytes), one for each committee above
-	AggregatedAttestations [][]byte `ssz-max:"64,1048576"`
+	AggregatedAttestations [][]byte `ssz-max:"64,131308"`
 
 	// Sync Committee duties
 	Contributors []AssignedAggregator `ssz-max:"2048"` // 512 * 4

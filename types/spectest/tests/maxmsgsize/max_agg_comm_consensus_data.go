@@ -3,6 +3,7 @@ package maxmsgsize
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
+	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/prysmaticlabs/go-bitfield"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -10,10 +11,12 @@ import (
 )
 
 const (
-	maxSizeAggregatorCommitteeConsensusData = 67675676
+	maxSizeAggregatorCommitteeConsensusData = 8970524
+	maxSizePhase0Attestation                = 2276
+	maxSizeElectraAttestation               = 131308
 )
 
-func maxAggregatorCommitteeConsenssuData() *types.AggregatorCommitteeConsensusData {
+func maxAggregatorCommitteeConsensusData() *types.AggregatorCommitteeConsensusData {
 
 	maxVals := 3000
 
@@ -33,7 +36,7 @@ func maxAggregatorCommitteeConsenssuData() *types.AggregatorCommitteeConsensusDa
 	}
 	aggAtt := make([][]byte, 0)
 	for i := 0; i < maxCommIdxs; i++ {
-		att := [1048576]byte{1}
+		att := [131308]byte{1}
 		aggAtt = append(aggAtt, att[:])
 	}
 
@@ -73,12 +76,104 @@ func maxAggregatorCommitteeConsenssuData() *types.AggregatorCommitteeConsensusDa
 	}
 }
 
+// Wrapper types to allow defining Encode/Decode methods on external types
+type Phase0AttestationWrapper struct {
+	*phase0.Attestation
+}
+
+func (w *Phase0AttestationWrapper) Encode() ([]byte, error) {
+	return w.Attestation.MarshalSSZ()
+}
+
+func (w *Phase0AttestationWrapper) Decode(data []byte) error {
+	return w.Attestation.UnmarshalSSZ(data)
+}
+
+type ElectraAttestationWrapper struct {
+	*electra.Attestation
+}
+
+func (w *ElectraAttestationWrapper) Encode() ([]byte, error) {
+	return w.Attestation.MarshalSSZ()
+}
+
+func (w *ElectraAttestationWrapper) Decode(data []byte) error {
+	return w.Attestation.UnmarshalSSZ(data)
+}
+
+func maxPhase0Attestation() *Phase0AttestationWrapper {
+	aggbits := [2048]byte{1}
+	return &Phase0AttestationWrapper{
+		Attestation: &phase0.Attestation{
+			AggregationBits: bitfield.Bitlist(aggbits[:]),
+			Data: &phase0.AttestationData{
+				Slot:            1,
+				Index:           0,
+				BeaconBlockRoot: [32]byte{1},
+				Source: &phase0.Checkpoint{
+					Epoch: 1,
+					Root:  [32]byte{1},
+				},
+				Target: &phase0.Checkpoint{
+					Epoch: 1,
+					Root:  [32]byte{1},
+				},
+			},
+			Signature: phase0.BLSSignature([96]byte{1}),
+		},
+	}
+}
+
+func maxElectraAttestation() *ElectraAttestationWrapper {
+	aggbits := [131072]byte{1}
+	return &ElectraAttestationWrapper{
+		Attestation: &electra.Attestation{
+			AggregationBits: bitfield.Bitlist(aggbits[:]),
+			Data: &phase0.AttestationData{
+				Slot:            1,
+				Index:           0,
+				BeaconBlockRoot: [32]byte{1},
+				Source: &phase0.Checkpoint{
+					Epoch: 1,
+					Root:  [32]byte{1},
+				},
+				Target: &phase0.Checkpoint{
+					Epoch: 1,
+					Root:  [32]byte{1},
+				},
+			},
+			Signature:     phase0.BLSSignature([96]byte{1}),
+			CommitteeBits: bitfield.NewBitvector64(),
+		},
+	}
+}
+
 func MaxAggregatorCommitteeConsensusData() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"max AggregatorCommitteeConsensusData",
 		testdoc.StructureSizeTestMaxAggregatorCommitteeConsensusDataDoc,
-		maxAggregatorCommitteeConsenssuData(),
+		maxAggregatorCommitteeConsensusData(),
 		maxSizeAggregatorCommitteeConsensusData,
+		true,
+	)
+}
+
+func MaxPhase0Attestation() *StructureSizeTest {
+	return NewStructureSizeTest(
+		"max Phase0Attestation",
+		testdoc.StructureSizeTestMaxPhase0AttestationDoc,
+		maxPhase0Attestation(),
+		maxSizePhase0Attestation,
+		true,
+	)
+}
+
+func MaxElectraAttestation() *StructureSizeTest {
+	return NewStructureSizeTest(
+		"max ElectraAttestation",
+		testdoc.StructureSizeTestMaxElectraAttestationDoc,
+		maxElectraAttestation(),
+		maxSizeElectraAttestation,
 		true,
 	)
 }
