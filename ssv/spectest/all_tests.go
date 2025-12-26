@@ -140,6 +140,7 @@ var AllTests = []tests.TestF{
 	preconsensus.TooManyRoots,
 	preconsensus.UnorderedExpectedRoots,
 	preconsensus.InvalidSignedMessage,
+	preconsensus.InvalidQuorum,
 	preconsensus.InvalidOperatorSignature,
 	preconsensus.InvalidExpectedRoot,
 	preconsensus.DuplicateMsg,

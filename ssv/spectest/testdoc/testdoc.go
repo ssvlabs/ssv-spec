@@ -174,6 +174,7 @@ const PreConsensusInvalidSignedMessageNoSignatureDoc = "Tests pre-consensus mess
 const PreConsensusInvalidSignedMessageNoSignersDoc = "Tests pre-consensus message processing with invalid signed message (no signers)"
 const PreConsensusInvalidSignedMessageDoc = "Tests pre-consensus message processing with invalid signed message, expecting error"
 const PreConsensusInvalidThenQuorumDoc = "Tests pre-consensus message processing with an invalid message then a valid quorum, expecting error then successful termination"
+const PreConsensusInvalidQuorumDoc = "Tests pre-consensus message processing with a quorum that has as invalid message, and ensures that it does not start consensus"
 const PreConsensusNilMsgDoc = "Tests pre-consensus message processing with nil SignedSSVMessage, expecting error"
 const PreConsensusNoRunningDutyDoc = "Tests pre-consensus message processing when there is no running duty, expecting error"
 const PreConsensusPostDecidedDoc = "Tests pre-consensus message processing after duty is decided"
