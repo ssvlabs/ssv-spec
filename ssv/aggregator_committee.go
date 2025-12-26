@@ -122,7 +122,6 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 			continue
 		}
 
-		// TODO(Aleg) why this sort? why not root sort?
 		sort.Slice(metadataList, func(i, j int) bool {
 			return metadataList[i].ValidatorIndex < metadataList[j].ValidatorIndex
 		})
@@ -636,8 +635,6 @@ func (r *AggregatorCommitteeRunner) processAggregatorSelectionProof(
 		// Not selected as aggregator
 		return false, nil
 	}
-
-	// TODO: waitToSlotTwoThirds(vDuty.Slot)
 
 	attestation, err := r.beacon.GetAggregateAttestation(vDuty.Slot, vDuty.CommitteeIndex)
 	if err != nil {
