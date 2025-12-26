@@ -128,7 +128,7 @@ var TestingSignedAggregatorCommitteeBeaconObjectSSZRoot = func(duty *types.Aggre
 	consensusData := TestAggregatorCommitteeConsensusDataForDuty(duty, version)
 
 	// Get aggregate and proofs from consensus data
-	aggregateAndProofs, _, err := consensusData.GetAggregateAndProofs()
+	aggregateAndProofs, err := consensusData.GetAggregateAndProofs()
 	if err != nil {
 		panic(err)
 	}

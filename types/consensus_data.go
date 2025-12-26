@@ -315,14 +315,34 @@ func (a *AggregatorCommitteeConsensusData) Decode(data []byte) error {
 	return a.UnmarshalSSZ(data)
 }
 
+func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (ssz.HashRoot, error) {
+	switch aggProof.Version {
+	case spec.DataVersionPhase0:
+		return aggProof.Phase0, nil
+	case spec.DataVersionAltair:
+		return aggProof.Altair, nil
+	case spec.DataVersionBellatrix:
+		return aggProof.Bellatrix, nil
+	case spec.DataVersionCapella:
+		return aggProof.Capella, nil
+	case spec.DataVersionDeneb:
+		return aggProof.Deneb, nil
+	case spec.DataVersionElectra:
+		return aggProof.Electra, nil
+	case spec.DataVersionFulu:
+		return aggProof.Fulu, nil
+	default:
+		return nil, WrapError(UnknownVersionErrorCode, fmt.Errorf("unknown version %d", aggProof.Version))
+	}
+}
+
 // GetAggregateAndProofs returns all aggregate and proofs for the aggregator duties along with their hash roots
-func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.VersionedAggregateAndProof, []ssz.HashRoot, error) {
+func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.VersionedAggregateAndProof, error) {
 	if len(a.Aggregators) != len(a.Attestations) {
-		return nil, nil, NewError(AggCommAggAttCntMismatchErrorCode, "aggregators and attestations count mismatch")
+		return nil, NewError(AggCommAggAttCntMismatchErrorCode, "aggregators and attestations count mismatch")
 	}
 
 	proofs := make([]*spec.VersionedAggregateAndProof, 0, len(a.Aggregators))
-	hashRoots := make([]ssz.HashRoot, 0, len(a.Aggregators))
 
 	for i, aggregator := range a.Aggregators {
 		// Decode attestation based on version
@@ -337,7 +357,7 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 			// Unmarshal the attestation
 			att := &phase0.Attestation{}
 			if err := att.UnmarshalSSZ(a.Attestations[i]); err != nil {
-				return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal attestation: %w", err))
+				return nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal attestation: %w", err))
 			}
 			agg.Aggregate = att
 
@@ -348,19 +368,14 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 			switch a.Version {
 			case spec.DataVersionPhase0:
 				aggregateAndProof.Phase0 = agg
-				hashRoots = append(hashRoots, agg)
 			case spec.DataVersionAltair:
 				aggregateAndProof.Altair = agg
-				hashRoots = append(hashRoots, agg)
 			case spec.DataVersionBellatrix:
 				aggregateAndProof.Bellatrix = agg
-				hashRoots = append(hashRoots, agg)
 			case spec.DataVersionCapella:
 				aggregateAndProof.Capella = agg
-				hashRoots = append(hashRoots, agg)
 			case spec.DataVersionDeneb:
 				aggregateAndProof.Deneb = agg
-				hashRoots = append(hashRoots, agg)
 			default:
 				panic("unhandled default case")
 			}
@@ -373,7 +388,7 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 			// Unmarshal the attestation
 			att := &electra.Attestation{}
 			if err := att.UnmarshalSSZ(a.Attestations[i]); err != nil {
-				return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal electra attestation: %w", err))
+				return nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal electra attestation: %w", err))
 			}
 			agg.Aggregate = att
 
@@ -389,16 +404,15 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 			default:
 				panic("unhandled default case")
 			}
-			hashRoots = append(hashRoots, agg)
 
 		default:
-			return nil, nil, WrapError(UnknownBlockVersionErrorCode, fmt.Errorf("unsupported version %s", a.Version.String()))
+			return nil, WrapError(UnknownBlockVersionErrorCode, fmt.Errorf("unsupported version %s", a.Version.String()))
 		}
 
 		proofs = append(proofs, aggregateAndProof)
 	}
 
-	return proofs, hashRoots, nil
+	return proofs, nil
 }
 
 // GetSyncCommitteeContributions returns the sync committee contributions
