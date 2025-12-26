@@ -100,7 +100,7 @@
         "root": "0x0000000000000000000000000000000000000000000000000000000000000000"
       },
       "SlashableSlots": null,
-      "ExpectedErrorCode": 54,
+      "ExpectedErrorCode": 52,
       "AnyError": false
     }
   ]

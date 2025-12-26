@@ -100,7 +100,7 @@
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": true,
-      "ExpectedErrorCode": 22,
+      "ExpectedErrorCode": 20,
       "AggregatorCommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -219,7 +219,7 @@
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": true,
-      "ExpectedErrorCode": 22,
+      "ExpectedErrorCode": 20,
       "AggregatorCommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -334,7 +334,7 @@
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": true,
-      "ExpectedErrorCode": 22,
+      "ExpectedErrorCode": 20,
       "AggregatorCommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -449,7 +449,7 @@
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": true,
-      "ExpectedErrorCode": 22,
+      "ExpectedErrorCode": 20,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -564,7 +564,7 @@
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": true,
-      "ExpectedErrorCode": 22,
+      "ExpectedErrorCode": 20,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -683,7 +683,7 @@
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": true,
-      "ExpectedErrorCode": 22,
+      "ExpectedErrorCode": 20,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -813,7 +813,7 @@
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": true,
-      "ExpectedErrorCode": 22,
+      "ExpectedErrorCode": 20,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -928,7 +928,7 @@
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": true,
-      "ExpectedErrorCode": 22,
+      "ExpectedErrorCode": 20,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -1047,7 +1047,7 @@
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": true,
-      "ExpectedErrorCode": 22,
+      "ExpectedErrorCode": 20,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [

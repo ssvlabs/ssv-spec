@@ -1320,7 +1320,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedErrorCode": 22
+      "ExpectedErrorCode": 20
     },
     {
       "Name": "30 sync committee (phase0)",
@@ -2759,7 +2759,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedErrorCode": 22
+      "ExpectedErrorCode": 20
     },
     {
       "Name": "30 attestation 30 sync committee (phase0)",
@@ -4528,7 +4528,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedErrorCode": 22
+      "ExpectedErrorCode": 20
     },
     {
       "Name": "30 attestation (electra)",
@@ -5847,7 +5847,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedErrorCode": 22
+      "ExpectedErrorCode": 20
     },
     {
       "Name": "30 sync committee (electra)",
@@ -7286,7 +7286,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedErrorCode": 22
+      "ExpectedErrorCode": 20
     },
     {
       "Name": "30 attestation 30 sync committee (electra)",
@@ -9055,7 +9055,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedErrorCode": 22
+      "ExpectedErrorCode": 20
     }
   ],
   "PrivateKeys": {
