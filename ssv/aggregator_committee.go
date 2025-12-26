@@ -200,9 +200,6 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 	// Early exit if no error and no aggregators is selected (really no operator is aggregator or sync committee contributor)
 	if !hasAnyAggregator && anyErr == nil {
 		r.BaseRunner.State.Finished = true
-		if anyErr != nil {
-			return anyErr
-		}
 		return nil
 	}
 
@@ -245,12 +242,12 @@ func (r *AggregatorCommitteeRunner) ProcessConsensus(signedMsg *types.SignedSSVM
 
 	var messages []*types.PartialSignatureMessage
 
-	_, hashRoots, err := consensusData.GetAggregateAndProofs()
+	aggProofs, err := consensusData.GetAggregateAndProofs()
 	if err != nil {
 		return errors.Wrap(err, "failed to get aggregate and proofs")
 	}
 
-	for i, hashRoot := range hashRoots {
+	for i, aggProof := range aggProofs {
 		validatorIndex := consensusData.Aggregators[i].ValidatorIndex
 
 		_, exists := r.BaseRunner.Share[validatorIndex]
@@ -264,6 +261,10 @@ func (r *AggregatorCommitteeRunner) ProcessConsensus(signedMsg *types.SignedSSVM
 		}
 
 		// Sign the aggregate and proof
+		hashRoot, err := types.GetAggregateAndProofHashRoot(aggProof)
+		if err != nil {
+			return errors.Wrap(err, "failed to get aggregate and proof hash root")
+		}
 		msg, err := r.BaseRunner.signBeaconObject(
 			r, vDuty, hashRoot,
 			r.BaseRunner.State.StartingDuty.DutySlot(),
@@ -850,14 +851,17 @@ func (r *AggregatorCommitteeRunner) expectedPostConsensusRootsAndBeaconObjects()
 
 	epoch := r.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.DutySlot())
 
-	aggregateAndProofs, hashRoots, err := consensusData.GetAggregateAndProofs()
+	aggregateAndProofs, err := consensusData.GetAggregateAndProofs()
 	if err != nil {
 		return nil, nil, nil, errors.Wrap(err, "could not get aggregate and proofs")
 	}
 
 	for i, aggregateAndProof := range aggregateAndProofs {
 		validatorIndex := consensusData.Aggregators[i].ValidatorIndex
-		hashRoot := hashRoots[i]
+		hashRoot, err := types.GetAggregateAndProofHashRoot(aggregateAndProof)
+		if err != nil {
+			continue
+		}
 
 		// Calculate signing root for aggregate and proof
 		domain, err := r.beacon.DomainData(epoch, types.DomainAggregateAndProof)
