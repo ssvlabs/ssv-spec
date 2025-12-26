@@ -274,7 +274,7 @@
         "6afbfc096eb378a4639cb91edce27d53c819bb88d768e1fc33c08156bf6b6176"
       ],
       "DontStartDuty": true,
-      "ExpectedErrorCode": 85,
+      "ExpectedErrorCode": 83,
       "AggregatorCommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -561,7 +561,7 @@
         "f70f0d66eef58758b860051f98aa2d2bad666540ef817884c2b5526cf477dbf8"
       ],
       "DontStartDuty": true,
-      "ExpectedErrorCode": 85,
+      "ExpectedErrorCode": 83,
       "AggregatorCommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -862,7 +862,7 @@
         "6afbfc096eb378a4639cb91edce27d53c819bb88d768e1fc33c08156bf6b6176"
       ],
       "DontStartDuty": true,
-      "ExpectedErrorCode": 85,
+      "ExpectedErrorCode": 83,
       "AggregatorCommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -1160,7 +1160,7 @@
         "fce842dbd96b15fb1a8a6d1bfa2c9ce47dc88e74531abdb69d666c043d908abc"
       ],
       "DontStartDuty": true,
-      "ExpectedErrorCode": 85,
+      "ExpectedErrorCode": 83,
       "AggregatorCommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -1461,7 +1461,7 @@
         "6afbfc096eb378a4639cb91edce27d53c819bb88d768e1fc33c08156bf6b6176"
       ],
       "DontStartDuty": true,
-      "ExpectedErrorCode": 85,
+      "ExpectedErrorCode": 83,
       "AggregatorCommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [

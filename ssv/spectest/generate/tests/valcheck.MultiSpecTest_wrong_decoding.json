@@ -40,7 +40,7 @@
         "root": "0x0000000000000000000000000000000000000000000000000000000000000000"
       },
       "SlashableSlots": null,
-      "ExpectedErrorCode": 83,
+      "ExpectedErrorCode": 81,
       "AnyError": false
     },
     {
@@ -60,7 +60,7 @@
         "root": "0x0000000000000000000000000000000000000000000000000000000000000000"
       },
       "SlashableSlots": null,
-      "ExpectedErrorCode": 83,
+      "ExpectedErrorCode": 81,
       "AnyError": false
     },
     {
@@ -80,7 +80,7 @@
         "root": "0x0000000000000000000000000000000000000000000000000000000000000000"
       },
       "SlashableSlots": null,
-      "ExpectedErrorCode": 84,
+      "ExpectedErrorCode": 82,
       "AnyError": false
     }
   ]
