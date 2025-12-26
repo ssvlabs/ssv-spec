@@ -74,6 +74,10 @@ func (r BeaconRole) String() string {
 	}
 }
 
+// ValidatorSyncCommitteeIndex is the index of the validator in the list of sync committee participants.
+// The SubnetID (or SubcommitteeIndex) can be computed as ValidatorSyncCommitteeIndex // (SYNC_COMMITTEE_SIZE/ SYNC_COMMITTEE_SUBNET_COUNT)
+type ValidatorSyncCommitteeIndex = uint64
+
 type Duty interface {
 	DutySlot() spec.Slot
 	RunnerRole() RunnerRole
@@ -98,7 +102,7 @@ type ValidatorDuty struct {
 	// ValidatorCommitteeIndex is the index of the validator in the list of validators in the committee.
 	ValidatorCommitteeIndex uint64
 	// ValidatorSyncCommitteeIndices is the index of the validator in the list of validators in the committee.
-	ValidatorSyncCommitteeIndices []uint64 `ssz-max:"13"`
+	ValidatorSyncCommitteeIndices []ValidatorSyncCommitteeIndex `ssz-max:"13"`
 }
 
 func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {

@@ -180,7 +180,7 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 			case types.BNRoleSyncCommitteeContribution:
 				vDuty := r.findValidatorDuty(validatorIndex, types.BNRoleSyncCommitteeContribution)
 				if vDuty != nil {
-					isAggregator, err := r.processSyncCommitteeSelectionProof(blsSig, metadata.SyncCommitteeIndex, vDuty, consensusData)
+					isAggregator, err := r.processSyncCommitteeSelectionProof(blsSig, metadata.ValidatorSyncCommitteeIndex, vDuty, consensusData)
 					if err == nil {
 						if isAggregator {
 							hasAnyAggregator = true
@@ -688,11 +688,11 @@ func (r *AggregatorCommitteeRunner) processAggregatorSelectionProof(
 // processSyncCommitteeSelectionProof handles sync committee selection proofs with known index
 func (r *AggregatorCommitteeRunner) processSyncCommitteeSelectionProof(
 	selectionProof phase0.BLSSignature,
-	syncCommitteeIndex uint64,
+	validatorSyncCommitteeIndex types.ValidatorSyncCommitteeIndex,
 	vDuty *types.ValidatorDuty,
 	aggregatorData *types.AggregatorCommitteeConsensusData,
 ) (bool, error) {
-	subnetID := r.beacon.SyncCommitteeSubnetID(phase0.CommitteeIndex(syncCommitteeIndex))
+	subnetID := r.beacon.SyncCommitteeSubnetID(phase0.CommitteeIndex(validatorSyncCommitteeIndex))
 
 	isAggregator := r.beacon.IsSyncCommitteeAggregator(selectionProof[:])
 
@@ -767,9 +767,9 @@ func (r *AggregatorCommitteeRunner) expectedAggregatorSelectionRoot(
 func (r *AggregatorCommitteeRunner) expectedSyncCommitteeSelectionRoot(
 	_ *types.ValidatorDuty,
 	slot phase0.Slot,
-	syncCommitteeIndex uint64,
+	validatorSyncCommitteeIndex types.ValidatorSyncCommitteeIndex,
 ) ([32]byte, error) {
-	subnet := r.beacon.SyncCommitteeSubnetID(phase0.CommitteeIndex(syncCommitteeIndex))
+	subnet := r.beacon.SyncCommitteeSubnetID(phase0.CommitteeIndex(validatorSyncCommitteeIndex))
 
 	data := &altair.SyncAggregatorSelectionData{
 		Slot:              slot,
@@ -789,11 +789,11 @@ func (r *AggregatorCommitteeRunner) expectedSyncCommitteeSelectionRoot(
 // It returns the aggregator and sync committee validator to root maps.
 func (r *AggregatorCommitteeRunner) expectedPreConsensusRoots() (
 	aggregatorMap map[phase0.ValidatorIndex][32]byte,
-	contributionMap map[phase0.ValidatorIndex]map[uint64][32]byte,
+	contributionMap map[phase0.ValidatorIndex]map[types.ValidatorSyncCommitteeIndex][32]byte,
 	error error,
 ) {
 	aggregatorMap = make(map[phase0.ValidatorIndex][32]byte)
-	contributionMap = make(map[phase0.ValidatorIndex]map[uint64][32]byte)
+	contributionMap = make(map[phase0.ValidatorIndex]map[types.ValidatorSyncCommitteeIndex][32]byte)
 
 	duty := r.BaseRunner.State.StartingDuty.(*types.AggregatorCommitteeDuty)
 
@@ -923,16 +923,16 @@ func (r *AggregatorCommitteeRunner) expectedPostConsensusRootsAndBeaconObjects()
 // - findValidatorsForPreConsensusRoot: Returns detailed metadata including sync committee indices (pre-consensus)
 // - findValidatorsForPostConsensusRoot: Returns just the role and validator list (post-consensus)
 type preConsensusMetadata struct {
-	ValidatorIndex     phase0.ValidatorIndex
-	Role               types.BeaconRole
-	SyncCommitteeIndex uint64 // only for sync committee role
+	ValidatorIndex              phase0.ValidatorIndex
+	Role                        types.BeaconRole
+	ValidatorSyncCommitteeIndex types.ValidatorSyncCommitteeIndex // only for sync committee role
 }
 
 // findValidatorsForPreConsensusRoot finds all validators that have the given root in pre-consensus
 func findValidatorsForPreConsensusRoot(
 	expectedRoot [32]byte,
 	aggregatorMap map[phase0.ValidatorIndex][32]byte,
-	contributionMap map[phase0.ValidatorIndex]map[uint64][32]byte,
+	contributionMap map[phase0.ValidatorIndex]map[types.ValidatorSyncCommitteeIndex][32]byte,
 ) ([]preConsensusMetadata, bool) {
 	var metadata []preConsensusMetadata
 
@@ -951,9 +951,9 @@ func findValidatorsForPreConsensusRoot(
 		for index, root := range indexMap {
 			if root == expectedRoot {
 				metadata = append(metadata, preConsensusMetadata{
-					ValidatorIndex:     validator,
-					Role:               types.BNRoleSyncCommitteeContribution,
-					SyncCommitteeIndex: index,
+					ValidatorIndex:              validator,
+					Role:                        types.BNRoleSyncCommitteeContribution,
+					ValidatorSyncCommitteeIndex: index,
 				})
 			}
 		}
