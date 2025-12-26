@@ -77,12 +77,10 @@ const (
 	InstanceAlreadyRunningErrorCode
 	StartInstanceErrorCode
 	TimeoutInstanceErrorCode
-	AggCommAggAttCntMismatchErrorCode
 	AggCommAggCommIdxCntMismatchErrorCode
 	AggCommCommIdxMismatchErrorCode
 	AggCommUnusedCommIdxErrorCode
 	AggCommDuplicatedCommIdxErrorCode
-	AggCommContributorsContributionsCntMismatchErrorCode
 	AggCommSubnetNotInSCSubnetsErrorCode
 	AggCommSCCSubnetDuplicateErrorCode
 	AggCommUnusedSubnetErrorCode

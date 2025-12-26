@@ -1,9 +1,6 @@
 package types
 
 import (
-	"bytes"
-	"sort"
-
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 )
@@ -50,16 +47,6 @@ func (msgs *PartialSignatureMessages) Decode(data []byte) error {
 // GetRoot returns the root used for signing and verification
 func (msgs PartialSignatureMessages) GetRoot() ([32]byte, error) {
 	return msgs.HashTreeRoot()
-}
-
-// Sort list of PartialSignatureMessage by (ValidatorIndex, SigningRoot)
-func (msgs PartialSignatureMessages) Sort() {
-	sort.Slice(msgs.Messages, func(i, j int) bool {
-		if msgs.Messages[i].ValidatorIndex == msgs.Messages[j].ValidatorIndex {
-			return bytes.Compare(msgs.Messages[i].SigningRoot[:], msgs.Messages[j].SigningRoot[:]) < 0
-		}
-		return msgs.Messages[i].ValidatorIndex < msgs.Messages[j].ValidatorIndex
-	})
 }
 
 func (msgs PartialSignatureMessages) Validate() error {

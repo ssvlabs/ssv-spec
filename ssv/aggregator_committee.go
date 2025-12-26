@@ -323,7 +323,6 @@ func (r *AggregatorCommitteeRunner) ProcessConsensus(signedMsg *types.SignedSSVM
 		Slot:     r.BaseRunner.State.StartingDuty.DutySlot(),
 		Messages: messages,
 	}
-	postConsensusMsg.Sort()
 
 	return r.broadcastPartialSignatureMessage(postConsensusMsg)
 }
@@ -536,8 +535,6 @@ func (r *AggregatorCommitteeRunner) executeDuty(duty types.Duty) error {
 		return nil
 	}
 
-	msg.Sort()
-
 	// Broadcast the selection proofs
 	return r.broadcastPartialSignatureMessage(msg)
 }
@@ -710,7 +707,7 @@ func (r *AggregatorCommitteeRunner) processSyncCommitteeSelectionProof(
 			aggregatorData.Contributors = append(aggregatorData.Contributors, types.AssignedAggregator{
 				ValidatorIndex: vDuty.ValidatorIndex,
 				SelectionProof: selectionProof,
-				CommitteeIndex: syncCommitteeIndex,
+				CommitteeIndex: subnetID,
 			})
 			return true, nil
 		}

@@ -36,7 +36,7 @@ func maxAggregatorCommitteeConsensusData() *types.AggregatorCommitteeConsensusDa
 	}
 	aggAtt := make([][]byte, 0)
 	for i := 0; i < maxCommIdxs; i++ {
-		att := [131308]byte{1}
+		att := [maxSizeElectraAttestation]byte{1}
 		aggAtt = append(aggAtt, att[:])
 	}
 
