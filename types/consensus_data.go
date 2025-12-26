@@ -122,10 +122,8 @@ func (b *BeaconVote) Decode(data []byte) error {
 	return b.UnmarshalSSZ(data)
 }
 
-// ValidatorConsensusData holds all relevant duty and data Decided on by consensus
-// It's only used for the Proposer role.
-// TODO: rename it to associate with Proposer role
-type ValidatorConsensusData struct {
+// ProposerConsensusData holds all relevant data about proposer duty for consensus
+type ProposerConsensusData struct {
 	// Duty max size is
 	// 			8 + 48 + 6*8 + 13*8 + 1 = 209
 	Duty    ValidatorDuty
@@ -165,24 +163,17 @@ type ValidatorConsensusData struct {
 	DataSSZ []byte `ssz-max:"8388608"` // 2^23 to account for potential gas limit increases
 }
 
-func (cd *ValidatorConsensusData) Validate() error {
-	switch cd.Duty.Type {
-	case BNRoleProposer:
-		if _, _, err := cd.GetBlockData(); err != nil {
-			return err
-		}
-	case BNRoleValidatorRegistration:
-		return NewError(ValidatorRegistrationNoConsensusDataErrorCode, "validator registration has no consensus data")
-	case BNRoleVoluntaryExit:
-		return NewError(ValidatorExitNoConsensusDataErrorCode, "voluntary exit has no consensus data")
-	default:
+func (cd *ProposerConsensusData) Validate() error {
+	if cd.Duty.Type != BNRoleProposer {
+
 		return NewError(UnknownDutyRoleDataErrorCode, "unknown duty role")
 	}
-	return nil
+	_, _, err := cd.GetBlockData()
+	return err
 }
 
 // GetBlockData returns block data for both blinded and regular blocks
-func (cd *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot ssz.HashRoot, err error) {
+func (cd *ProposerConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot ssz.HashRoot, err error) {
 	switch cd.Version {
 	case spec.DataVersionCapella:
 		blindedBlock := &apiv1capella.BlindedBeaconBlock{}
@@ -245,11 +236,11 @@ func (cd *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, si
 	}
 }
 
-func (cd *ValidatorConsensusData) Encode() ([]byte, error) {
+func (cd *ProposerConsensusData) Encode() ([]byte, error) {
 	return cd.MarshalSSZ()
 }
 
-func (cd *ValidatorConsensusData) Decode(data []byte) error {
+func (cd *ProposerConsensusData) Decode(data []byte) error {
 	return cd.UnmarshalSSZ(data)
 }
 

@@ -128,7 +128,7 @@ type SignedSSVMessage struct {
 	Signatures  [][]byte     `ssz-max:"13,256"` // Created by the operators' key
 	OperatorIDs []OperatorID `ssz-max:"13"`
 	SSVMessage  *SSVMessage
-	// Full data max value is the max value between ValidatorConsensusData and BeaconVote
+	// Full data max value is the max value between ProposerConsensusData, AggregatorCommitteeConsensusData, and BeaconVote
 	FullData []byte `ssz-max:"8388836"`
 }
 

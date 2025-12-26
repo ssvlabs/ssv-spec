@@ -14,8 +14,6 @@ const (
 	WrongMessageHeightErrorCode
 	SignerIsNotInCommitteeErrorCode
 	NonUniqueSignerErrorCode
-	ValidatorRegistrationNoConsensusDataErrorCode
-	ValidatorExitNoConsensusDataErrorCode
 	UnknownDutyRoleDataErrorCode
 	UnknownBlockVersionErrorCode
 	IncorrectNumberOfSignaturesErrorCode
@@ -86,7 +84,7 @@ const (
 	AggCommUnusedSubnetErrorCode
 	AggCommConsensusDataNoValidatorErrorCode
 	AggCommConsensusDataDecodeErrorCode
-	ValidatorConsensusDataDecodeErrorCode
+	ProposerConsensusDataDecodeErrorCode
 	PostConsensusQuorumWithInvalidSignatures
 	InvalidAggregatorCommitteeDutyErrorCode
 	UnknownVersionErrorCode
