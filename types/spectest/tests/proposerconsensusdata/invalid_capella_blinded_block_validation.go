@@ -1,4 +1,4 @@
-package validatorconsensusdata
+package proposerconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -8,19 +8,18 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// InvalidCapellaBlockValidation tests an invalid consensus data with capella block
-func InvalidCapellaBlockValidation() *ValidatorConsensusDataTest {
-
+// InvalidCapellaBlindedBlockValidation tests an invalid consensus data with capella blinded block
+func InvalidCapellaBlindedBlockValidation() *ProposerConsensusDataTest {
 	version := spec.DataVersionCapella
 
-	cd := &types.ValidatorConsensusData{
+	cd := &types.ProposerConsensusData{
 		Duty:    *testingutils.TestingProposerDutyV(version),
 		Version: version,
 		DataSSZ: []byte{},
 	}
-	return NewValidatorConsensusDataTest(
-		"invalid capella block",
-		testdoc.ValidatorConsensusDataTestInvalidCapellaBlockDoc,
+	return NewProposerConsensusDataTest(
+		"invalid capella blinded block",
+		testdoc.ProposerConsensusDataTestInvalidCapellaBlindedBlockDoc,
 		*cd,
 		types.UnmarshalSSZErrorCode,
 	)

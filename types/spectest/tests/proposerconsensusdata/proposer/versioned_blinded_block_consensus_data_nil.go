@@ -8,9 +8,9 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// VersionedBlockConsensusDataNil tests an invalid consensus data with Deneb block
-func VersionedBlockConsensusDataNil() *ProposerSpecTest {
-	cd := &types.ValidatorConsensusData{
+// VersionedBlindedBlockConsensusDataNil tests an invalid consensus data with deneb block
+func VersionedBlindedBlockConsensusDataNil() *ProposerSpecTest {
+	cd := &types.ProposerConsensusData{
 		Duty:    *testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 		Version: spec.DataVersionDeneb,
 		DataSSZ: nil,
@@ -22,8 +22,8 @@ func VersionedBlockConsensusDataNil() *ProposerSpecTest {
 	}
 
 	return NewProposerSpecTest(
-		"consensus data versioned block corrupted consensus data",
-		testdoc.ProposerSpecTestVersionedBlockConsensusDataNilDoc,
+		"consensus data versioned blinded block corrupted consensus data",
+		testdoc.ProposerSpecTestVersionedBlindedBlockConsensusDataNilDoc,
 		false,
 		cdSSZ,
 		nil,

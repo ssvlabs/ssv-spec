@@ -356,7 +356,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 }
 
 // //////////////////////////////// For SSV Tests ////////////////////////////////////////////////////////////////
-var SSVDecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var SSVDecidingMsgsForHeight = func(consensusData *types.ProposerConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()
@@ -377,7 +377,7 @@ var SSVDecidingMsgsForHeightAndBeaconVote = func(beaconVote *types.BeaconVote, m
 	return SSVDecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
 }
 
-var SSVExpectedDecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var SSVExpectedDecidingMsgsForHeight = func(consensusData *types.ProposerConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()
@@ -460,7 +460,7 @@ var SSVExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msg
 }
 
 // //////////////////// For QBFT TESTS /////////////////////////////////////////////////////////////////////////
-var DecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var DecidingMsgsForHeight = func(consensusData *types.ProposerConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()
@@ -468,7 +468,7 @@ var DecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, ms
 	return DecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
 }
 
-var ExpectedDecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var ExpectedDecidingMsgsForHeight = func(consensusData *types.ProposerConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()

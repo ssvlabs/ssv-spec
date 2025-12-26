@@ -8,25 +8,25 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// VersionedBlockUnknownVersion tests a valid consensus data with unknown block
-func VersionedBlockUnknownVersion() *ProposerSpecTest {
+// VersionedBlindedBlockUnknownVersion tests a valid consensus data with unknown block version
+func VersionedBlindedBlockUnknownVersion() *ProposerSpecTest {
 	unknownDataVersion := spec.DataVersion(100)
-	cd := &types.ValidatorConsensusData{
+	cd := &types.ProposerConsensusData{
 		Duty:    *testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
 		Version: unknownDataVersion,
 		DataSSZ: testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
 	}
 
-	cdSSZ, err := cd.MarshalSSZ()
+	dataCd, err := cd.MarshalSSZ()
 	if err != nil {
 		panic(err.Error())
 	}
 
 	return NewProposerSpecTest(
-		"consensus data versioned block unknown version",
-		testdoc.ProposerSpecTestVersionedBlockUnknownVersionDoc,
+		"consensus data versioned blinded block unknown version",
+		testdoc.ProposerSpecTestVersionedBlindedBlockUnknownVersionDoc,
 		false,
-		cdSSZ,
+		dataCd,
 		nil,
 		[32]byte{},
 		[32]byte{},

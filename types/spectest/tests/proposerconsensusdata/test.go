@@ -1,4 +1,4 @@
-package validatorconsensusdata
+package proposerconsensusdata
 
 import (
 	reflect2 "reflect"
@@ -11,19 +11,19 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 )
 
-type ValidatorConsensusDataTest struct {
+type ProposerConsensusDataTest struct {
 	Name              string
 	Type              string
 	Documentation     string
-	ConsensusData     types.ValidatorConsensusData
+	ConsensusData     types.ProposerConsensusData
 	ExpectedErrorCode int
 }
 
-func (test *ValidatorConsensusDataTest) TestName() string {
-	return "validatorconsensusdata " + test.Name
+func (test *ProposerConsensusDataTest) TestName() string {
+	return "proposerconsensusdata " + test.Name
 }
 
-func (test *ValidatorConsensusDataTest) Run(t *testing.T) {
+func (test *ProposerConsensusDataTest) Run(t *testing.T) {
 
 	err := test.ConsensusData.Validate()
 	tests.AssertErrorCode(t, test.ExpectedErrorCode, err)
@@ -31,10 +31,10 @@ func (test *ValidatorConsensusDataTest) Run(t *testing.T) {
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
 
-func NewValidatorConsensusDataTest(name, documentation string, consensusData types.ValidatorConsensusData, expectedErrorCode int) *ValidatorConsensusDataTest {
-	return &ValidatorConsensusDataTest{
+func NewProposerConsensusDataTest(name, documentation string, consensusData types.ProposerConsensusData, expectedErrorCode int) *ProposerConsensusDataTest {
+	return &ProposerConsensusDataTest{
 		Name:              name,
-		Type:              testdoc.ValidatorConsensusDataTestType,
+		Type:              testdoc.ProposerConsensusDataTestType,
 		Documentation:     documentation,
 		ConsensusData:     consensusData,
 		ExpectedErrorCode: expectedErrorCode,

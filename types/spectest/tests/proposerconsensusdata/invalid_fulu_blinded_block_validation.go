@@ -1,4 +1,4 @@
-package validatorconsensusdata
+package proposerconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -9,17 +9,17 @@ import (
 )
 
 // InvalidFuluBlindedBlockValidation tests an invalid consensus data with fulu blinded block
-func InvalidFuluBlindedBlockValidation() *ValidatorConsensusDataTest {
+func InvalidFuluBlindedBlockValidation() *ProposerConsensusDataTest {
 	version := spec.DataVersionFulu
 
-	cd := &types.ValidatorConsensusData{
+	cd := &types.ProposerConsensusData{
 		Duty:    *testingutils.TestingProposerDutyV(version),
 		Version: version,
 		DataSSZ: []byte{},
 	}
-	return NewValidatorConsensusDataTest(
+	return NewProposerConsensusDataTest(
 		"invalid fulu blinded block",
-		testdoc.ValidatorConsensusDataTestInvalidFuluBlindedBlockDoc,
+		testdoc.ProposerConsensusDataTestInvalidFuluBlindedBlockDoc,
 		*cd,
 		types.UnmarshalSSZErrorCode,
 	)

@@ -1,4 +1,4 @@
-package validatorconsensusdata
+package proposerconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -8,17 +8,18 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// InvalidDenebBlockValidation tests an invalid consensus data with deneb block
-func InvalidDenebBlockValidation() *ValidatorConsensusDataTest {
+// InvalidDenebBlindedBlockValidation tests an invalid consensus data with deneb blinded block
+func InvalidDenebBlindedBlockValidation() *ProposerConsensusDataTest {
 	version := spec.DataVersionDeneb
-	cd := &types.ValidatorConsensusData{
+
+	cd := &types.ProposerConsensusData{
 		Duty:    *testingutils.TestingProposerDutyV(version),
 		Version: version,
 		DataSSZ: []byte{},
 	}
-	return NewValidatorConsensusDataTest(
-		"invalid deneb block",
-		testdoc.ValidatorConsensusDataTestInvalidDenebBlockDoc,
+	return NewProposerConsensusDataTest(
+		"invalid deneb blinded block",
+		testdoc.ProposerConsensusDataTestInvalidDenebBlindedBlockDoc,
 		*cd,
 		types.UnmarshalSSZErrorCode,
 	)

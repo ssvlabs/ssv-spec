@@ -1,4 +1,4 @@
-package validatorconsensusdata
+package proposerconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -8,10 +8,10 @@ import (
 )
 
 // CapellaBlockValidation tests a valid consensus data with capella block
-func CapellaBlockValidation() *ValidatorConsensusDataTest {
-	return NewValidatorConsensusDataTest(
+func CapellaBlockValidation() *ProposerConsensusDataTest {
+	return NewProposerConsensusDataTest(
 		"valid capella block",
-		testdoc.ValidatorConsensusDataTestCapellaBlockDoc,
+		testdoc.ProposerConsensusDataTestCapellaBlockDoc,
 		*testingutils.TestProposerConsensusDataV(spec.DataVersionCapella),
 		0,
 	)

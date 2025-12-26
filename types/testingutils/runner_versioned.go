@@ -87,7 +87,7 @@ var QBFTMsgsForAggregatorCommitteeRunner = func(duty *types.AggregatorCommitteeD
 	return SSVDecidingMsgsForHeightWithRoot(r, fullData, id[:], height, ks)
 }
 
-var SSVDecidingMsgsV = func(consensusData *types.ValidatorConsensusData, ks *TestKeySet, role types.RunnerRole) []*types.SignedSSVMessage {
+var SSVDecidingMsgsV = func(consensusData *types.ProposerConsensusData, ks *TestKeySet, role types.RunnerRole) []*types.SignedSSVMessage {
 	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
 
 	signedF := func(partialSigMsg *types.PartialSignatureMessages) *types.SignedSSVMessage {
@@ -123,7 +123,7 @@ var SSVDecidingMsgsV = func(consensusData *types.ValidatorConsensusData, ks *Tes
 	return base
 }
 
-var ExpectedSSVDecidingMsgsV = func(consensusData *types.ValidatorConsensusData, ks *TestKeySet, role types.RunnerRole) []*types.SignedSSVMessage {
+var ExpectedSSVDecidingMsgsV = func(consensusData *types.ProposerConsensusData, ks *TestKeySet, role types.RunnerRole) []*types.SignedSSVMessage {
 	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
 
 	ssvMsgF := func(partialSigMsg *types.PartialSignatureMessages) *types.SignedSSVMessage {

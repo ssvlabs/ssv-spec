@@ -24,7 +24,7 @@ func (test *SSZSpecTest) TestName() string {
 }
 
 func (test *SSZSpecTest) Run(t *testing.T) {
-	cd := &types.ValidatorConsensusData{}
+	cd := &types.ProposerConsensusData{}
 	require.NoError(t, cd.Decode(test.Data))
 
 	vBlk, _, err := cd.GetBlockData()

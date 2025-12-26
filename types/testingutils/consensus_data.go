@@ -23,7 +23,7 @@ var TestAggregatorConsensusDataByts = func(version spec.DataVersion) []byte {
 // ==================================================
 
 // Used only as invalid test case
-var TestAttesterConsensusData = &types.ValidatorConsensusData{
+var TestAttesterConsensusData = &types.ProposerConsensusData{
 	Duty:    *TestingAttesterDuty(spec.DataVersionPhase0).ValidatorDuties[0],
 	DataSSZ: TestingAttestationDataBytes(spec.DataVersionPhase0),
 	Version: spec.DataVersionPhase0,
@@ -35,7 +35,7 @@ var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.Encode()
 // ==================================================
 
 // Used only as invalid test case
-var TestSyncCommitteeConsensusData = &types.ValidatorConsensusData{
+var TestSyncCommitteeConsensusData = &types.ProposerConsensusData{
 	Duty:    *TestingSyncCommitteeDuty(spec.DataVersionPhase0).ValidatorDuties[0],
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
 	Version: spec.DataVersionPhase0,
@@ -46,9 +46,9 @@ var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encod
 // Proposer
 // ==================================================
 
-var TestProposerConsensusDataV = func(version spec.DataVersion) *types.ValidatorConsensusData {
+var TestProposerConsensusDataV = func(version spec.DataVersion) *types.ProposerConsensusData {
 	duty := TestingProposerDutyV(version)
-	return &types.ValidatorConsensusData{
+	return &types.ProposerConsensusData{
 		Duty:    *duty,
 		Version: version,
 		DataSSZ: TestingBeaconBlockBytesV(version),
@@ -61,8 +61,8 @@ var TestProposerConsensusDataBytsV = func(version spec.DataVersion) []byte {
 	return byts
 }
 
-var TestProposerBlindedBlockConsensusDataV = func(version spec.DataVersion) *types.ValidatorConsensusData {
-	return &types.ValidatorConsensusData{
+var TestProposerBlindedBlockConsensusDataV = func(version spec.DataVersion) *types.ProposerConsensusData {
+	return &types.ProposerConsensusData{
 		Duty:    *TestingProposerDutyV(version),
 		Version: version,
 		DataSSZ: TestingBlindedBeaconBlockBytesV(version),

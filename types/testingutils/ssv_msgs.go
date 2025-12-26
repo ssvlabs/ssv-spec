@@ -17,7 +17,7 @@ var TestingForkData = types.ForkData{Epoch: TestingDutyEpoch, Domain: TestingSSV
 // Consensus Data - Invalid Types
 // ==================================================
 
-var EncodeConsensusDataTest = func(cd *types.ValidatorConsensusData) []byte {
+var EncodeConsensusDataTest = func(cd *types.ProposerConsensusData) []byte {
 	encodedCD, _ := cd.Encode()
 	return encodedCD
 }
@@ -27,14 +27,14 @@ var EncodeAggregatorCommitteeConsensusDataTest = func(cd *types.AggregatorCommit
 	return encodedCD
 }
 
-var TestConsensusUnkownDutyTypeData = &types.ValidatorConsensusData{
+var TestConsensusUnkownDutyTypeData = &types.ProposerConsensusData{
 	Duty:    TestingUnknownDutyType,
 	DataSSZ: TestingAttestationDataBytes(spec.DataVersionPhase0),
 	Version: spec.DataVersionPhase0,
 }
 var TestConsensusUnkownDutyTypeDataByts, _ = TestConsensusUnkownDutyTypeData.Encode()
 
-var TestConsensusWrongDutyPKData = &types.ValidatorConsensusData{
+var TestConsensusWrongDutyPKData = &types.ProposerConsensusData{
 	Duty:    TestingWrongDutyPK,
 	DataSSZ: TestingAttestationDataBytes(spec.DataVersionPhase0),
 	Version: spec.DataVersionPhase0,

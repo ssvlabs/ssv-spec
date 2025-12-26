@@ -1,4 +1,4 @@
-package validatorconsensusdata
+package proposerconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -9,9 +9,9 @@ import (
 )
 
 // InvalidDuty tests an invalid consensus data with invalid duty
-func InvalidDuty() *ValidatorConsensusDataTest {
+func InvalidDuty() *ProposerConsensusDataTest {
 
-	cd := &types.ValidatorConsensusData{
+	cd := &types.ProposerConsensusData{
 		Duty: types.ValidatorDuty{
 			Type:   types.BeaconRole(100),
 			PubKey: testingutils.TestingValidatorPubKey,
@@ -20,9 +20,9 @@ func InvalidDuty() *ValidatorConsensusDataTest {
 		DataSSZ: testingutils.TestingAttestationDataBytes(spec.DataVersionCapella),
 	}
 
-	return NewValidatorConsensusDataTest(
+	return NewProposerConsensusDataTest(
 		"invalid duty",
-		testdoc.ValidatorConsensusDataTestInvalidDutyDoc,
+		testdoc.ProposerConsensusDataTestInvalidDutyDoc,
 		*cd,
 		types.UnknownDutyRoleDataErrorCode,
 	)

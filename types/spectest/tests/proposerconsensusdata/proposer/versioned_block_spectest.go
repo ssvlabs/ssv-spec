@@ -33,7 +33,7 @@ func (test *ProposerSpecTest) TestName() string {
 
 func (test *ProposerSpecTest) Run(t *testing.T) {
 	// decode cd
-	cd := &types.ValidatorConsensusData{}
+	cd := &types.ProposerConsensusData{}
 	require.NoError(t, cd.Decode(test.DataCd))
 
 	// blk data - GetBlockData now handles both blinded and regular blocks

@@ -1,4 +1,4 @@
-package validatorconsensusdata
+package proposerconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -7,8 +7,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// ConsensusDataEncoding tests encoding and decoding ValidatorConsensusData for all duties
-func ConsensusDataEncoding(name, documentation string, cd *types.ValidatorConsensusData) *EncodingTest {
+// ConsensusDataEncoding tests encoding and decoding ProposerConsensusData for all duties
+func ConsensusDataEncoding(name, documentation string, cd *types.ProposerConsensusData) *EncodingTest {
 
 	byts, err := cd.Encode()
 	if err != nil {
@@ -30,14 +30,14 @@ func ConsensusDataEncoding(name, documentation string, cd *types.ValidatorConsen
 func ProposerConsensusDataEncoding() *EncodingTest {
 	return ConsensusDataEncoding(
 		"proposer encoding",
-		testdoc.ValidatorConsensusDataEncodingTestProposerDoc,
+		testdoc.ProposerConsensusDataEncodingTestProposerDoc,
 		testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionCapella),
 	)
 }
 func BlindedProposerConsensusDataEncoding() *EncodingTest {
 	return ConsensusDataEncoding(
 		"blinded proposer encoding",
-		testdoc.ValidatorConsensusDataEncodingTestBlindedProposerDoc,
+		testdoc.ProposerConsensusDataEncodingTestBlindedProposerDoc,
 		testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionCapella),
 	)
 }

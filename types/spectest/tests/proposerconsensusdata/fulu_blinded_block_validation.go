@@ -1,4 +1,4 @@
-package validatorconsensusdata
+package proposerconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -8,10 +8,10 @@ import (
 )
 
 // FuluBlindedBlockValidation tests a valid consensus data with fulu blinded block
-func FuluBlindedBlockValidation() *ValidatorConsensusDataTest {
-	return NewValidatorConsensusDataTest(
+func FuluBlindedBlockValidation() *ProposerConsensusDataTest {
+	return NewProposerConsensusDataTest(
 		"valid fulu blinded block",
-		testdoc.ValidatorConsensusDataTestElectraBlindedBlockDoc,
+		testdoc.ProposerConsensusDataTestElectraBlindedBlockDoc,
 		*testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionFulu),
 		0,
 	)

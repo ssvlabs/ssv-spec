@@ -1,4 +1,4 @@
-package validatorconsensusdata
+package proposerconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -9,18 +9,18 @@ import (
 )
 
 // InvalidElectraBlockValidation tests an invalid consensus data with electra block
-func InvalidElectraBlockValidation() *ValidatorConsensusDataTest {
+func InvalidElectraBlockValidation() *ProposerConsensusDataTest {
 
 	version := spec.DataVersionElectra
 
-	cd := &types.ValidatorConsensusData{
+	cd := &types.ProposerConsensusData{
 		Duty:    *testingutils.TestingProposerDutyV(version),
 		Version: version,
 		DataSSZ: []byte{},
 	}
-	return NewValidatorConsensusDataTest(
+	return NewProposerConsensusDataTest(
 		"invalid electra block",
-		testdoc.ValidatorConsensusDataTestInvalidElectraBlockDoc,
+		testdoc.ProposerConsensusDataTestInvalidElectraBlockDoc,
 		*cd,
 		types.UnmarshalSSZErrorCode,
 	)

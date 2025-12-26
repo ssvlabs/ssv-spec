@@ -1,4 +1,4 @@
-package validatorconsensusdata
+package proposerconsensusdata
 
 import (
 	reflect2 "reflect"
@@ -24,7 +24,7 @@ func (test *EncodingTest) TestName() string {
 
 func (test *EncodingTest) Run(t *testing.T) {
 	// decode
-	decoded := &types.ValidatorConsensusData{}
+	decoded := &types.ProposerConsensusData{}
 	require.NoError(t, decoded.Decode(test.Data))
 
 	// encode
@@ -43,7 +43,7 @@ func (test *EncodingTest) Run(t *testing.T) {
 func NewEncodingTest(name, documentation string, data []byte, expectedRoot [32]byte) *EncodingTest {
 	return &EncodingTest{
 		Name:          name,
-		Type:          testdoc.ValidatorConsensusDataEncodingTestType,
+		Type:          testdoc.ProposerConsensusDataEncodingTestType,
 		Documentation: documentation,
 		Data:          data,
 		ExpectedRoot:  expectedRoot,

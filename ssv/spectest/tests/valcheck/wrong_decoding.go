@@ -44,7 +44,7 @@ func WrongDecoding() tests.SpecTest {
 				Network:           types.BeaconTestNetwork,
 				RunnerRole:        types.RoleProposer,
 				Input:             testingutils.TestBeaconVoteByts,
-				ExpectedErrorCode: types.ValidatorConsensusDataDecodeErrorCode,
+				ExpectedErrorCode: types.ProposerConsensusDataDecodeErrorCode,
 			},
 		},
 	)

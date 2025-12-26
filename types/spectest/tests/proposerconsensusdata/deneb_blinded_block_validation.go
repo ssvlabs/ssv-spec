@@ -1,4 +1,4 @@
-package validatorconsensusdata
+package proposerconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -8,10 +8,10 @@ import (
 )
 
 // DenebBlindedBlockValidation tests a valid consensus data with deneb blinded block
-func DenebBlindedBlockValidation() *ValidatorConsensusDataTest {
-	return NewValidatorConsensusDataTest(
+func DenebBlindedBlockValidation() *ProposerConsensusDataTest {
+	return NewProposerConsensusDataTest(
 		"valid deneb blinded block",
-		testdoc.ValidatorConsensusDataTestDenebBlindedBlockDoc,
+		testdoc.ProposerConsensusDataTestDenebBlindedBlockDoc,
 		*testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb),
 		0,
 	)

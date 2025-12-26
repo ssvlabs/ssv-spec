@@ -7,7 +7,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// ConsensusDataEncoding tests encoding and decoding ValidatorConsensusData for all duties
+// ConsensusDataEncoding tests encoding and decoding ProposerConsensusData for all duties
 func ConsensusDataEncoding(name, documentation string, cd *types.AggregatorCommitteeConsensusData) *EncodingTest {
 
 	byts, err := cd.Encode()

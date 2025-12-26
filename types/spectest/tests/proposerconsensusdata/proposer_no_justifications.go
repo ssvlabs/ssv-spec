@@ -1,4 +1,4 @@
-package validatorconsensusdata
+package proposerconsensusdata
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -8,15 +8,15 @@ import (
 )
 
 // ProposerNoJustifications tests an invalid consensus data with no proposer justifications
-func ProposerNoJustifications() *ValidatorConsensusDataTest {
+func ProposerNoJustifications() *ProposerConsensusDataTest {
 
 	// To-do: add error when pre-consensus justification check is added.
 
 	cd := testingutils.TestProposerConsensusDataV(spec.DataVersionCapella)
 
-	return NewValidatorConsensusDataTest(
+	return NewProposerConsensusDataTest(
 		"proposer no justification",
-		testdoc.ValidatorConsensusDataTestProposerNoJustificationsDoc,
+		testdoc.ProposerConsensusDataTestProposerNoJustificationsDoc,
 		*cd,
 		0,
 	)
