@@ -67,6 +67,6 @@
     },
     "QBFTController": null,
     "BeaconNetwork": "now_test_network",
-    "RunnerRoleType": 4
+    "RunnerRoleType": 5
   }
 }

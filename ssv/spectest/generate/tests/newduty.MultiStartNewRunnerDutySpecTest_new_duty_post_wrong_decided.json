@@ -43,7 +43,7 @@
                   ],
                   "DomainType": "00000301"
                 },
-                "ID": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
+                "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                 "Round": 1,
                 "Height": 0,
                 "LastPreparedRound": 0,
@@ -123,7 +123,7 @@
             }
           },
           "QBFTController": {
-            "Identifier": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
+            "Identifier": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
             "Height": 50,
             "StoredInstances": [
               {
@@ -153,7 +153,7 @@
                     ],
                     "DomainType": "00000301"
                   },
-                  "ID": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
+                  "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                   "Round": 1,
                   "Height": 50,
                   "LastPreparedRound": 0,
@@ -203,7 +203,7 @@
                     ],
                     "DomainType": "00000301"
                   },
-                  "ID": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
+                  "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                   "Round": 1,
                   "Height": 0,
                   "LastPreparedRound": 0,
@@ -254,7 +254,7 @@
             }
           },
           "BeaconNetwork": "now_test_network",
-          "RunnerRoleType": 2
+          "RunnerRoleType": 6
         }
       },
       "PostDutyRunnerStateRoot": "4fce8afe24a8f812c9daccfb54c8247771c88b48d161b06901669d1e23ce7a0d",
@@ -346,7 +346,7 @@
                   ],
                   "DomainType": "00000301"
                 },
-                "ID": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                "ID": "AAADAQIAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
                 "Round": 1,
                 "Height": 0,
                 "LastPreparedRound": 0,
@@ -417,7 +417,7 @@
             }
           },
           "QBFTController": {
-            "Identifier": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+            "Identifier": "AAADAQIAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
             "Height": 7413810,
             "StoredInstances": [
               {
@@ -447,7 +447,7 @@
                     ],
                     "DomainType": "00000301"
                   },
-                  "ID": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                  "ID": "AAADAQIAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
                   "Round": 1,
                   "Height": 7413810,
                   "LastPreparedRound": 0,
@@ -497,7 +497,7 @@
                     ],
                     "DomainType": "00000301"
                   },
-                  "ID": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                  "ID": "AAADAQIAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
                   "Round": 1,
                   "Height": 0,
                   "LastPreparedRound": 0,
@@ -548,7 +548,7 @@
             }
           },
           "BeaconNetwork": "now_test_network",
-          "RunnerRoleType": 1
+          "RunnerRoleType": 2
         }
       },
       "PostDutyRunnerStateRoot": "fd8de7873c9cf83ec9366f856f4b8d81d77c215f935185d90cea8be8dcb44089",
@@ -619,7 +619,7 @@
                   ],
                   "DomainType": "00000301"
                 },
-                "ID": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
+                "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                 "Round": 1,
                 "Height": 0,
                 "LastPreparedRound": 0,
@@ -695,7 +695,7 @@
             }
           },
           "QBFTController": {
-            "Identifier": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
+            "Identifier": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
             "Height": 62,
             "StoredInstances": [
               {
@@ -725,7 +725,7 @@
                     ],
                     "DomainType": "00000301"
                   },
-                  "ID": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
+                  "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                   "Round": 1,
                   "Height": 62,
                   "LastPreparedRound": 0,
@@ -775,7 +775,7 @@
                     ],
                     "DomainType": "00000301"
                   },
-                  "ID": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
+                  "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                   "Round": 1,
                   "Height": 0,
                   "LastPreparedRound": 0,
@@ -826,7 +826,7 @@
             }
           },
           "BeaconNetwork": "now_test_network",
-          "RunnerRoleType": 2
+          "RunnerRoleType": 6
         }
       },
       "PostDutyRunnerStateRoot": "533fa28f89164dc4a26bdd4e2cd55cca8c17375d3e88251f2480ae727ced1ee1",
@@ -902,7 +902,7 @@
                   ],
                   "DomainType": "00000301"
                 },
-                "ID": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
+                "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                 "Round": 1,
                 "Height": 0,
                 "LastPreparedRound": 0,
@@ -978,7 +978,7 @@
             }
           },
           "QBFTController": {
-            "Identifier": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
+            "Identifier": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
             "Height": 7424062,
             "StoredInstances": [
               {
@@ -1008,7 +1008,7 @@
                     ],
                     "DomainType": "00000301"
                   },
-                  "ID": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
+                  "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                   "Round": 1,
                   "Height": 7424062,
                   "LastPreparedRound": 0,
@@ -1058,7 +1058,7 @@
                     ],
                     "DomainType": "00000301"
                   },
-                  "ID": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
+                  "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                   "Round": 1,
                   "Height": 0,
                   "LastPreparedRound": 0,
@@ -1109,7 +1109,7 @@
             }
           },
           "BeaconNetwork": "now_test_network",
-          "RunnerRoleType": 2
+          "RunnerRoleType": 6
         }
       },
       "PostDutyRunnerStateRoot": "533fa28f89164dc4a26bdd4e2cd55cca8c17375d3e88251f2480ae727ced1ee1",
