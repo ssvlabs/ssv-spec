@@ -5,9 +5,9 @@ type RunnerRole int32
 
 const (
 	RoleCommittee  RunnerRole = iota // Combines attestation and sync committee duties
-	RoleAggregator                   // RoleAggregator will be unused after the Boole fork
+	RoleAggregator                   // DEPRECATED: RoleAggregator will be unused after the Boole fork
 	RoleProposer
-	RoleSyncCommitteeContribution // RoleSyncCommitteeContribution will be unused after the Boole fork
+	RoleSyncCommitteeContribution // DEPRECATED: RoleSyncCommitteeContribution will be unused after the Boole fork
 	RoleValidatorRegistration
 	RoleVoluntaryExit
 	RoleAggregatorCommittee // Combines aggregator and sync committee contribution duties
