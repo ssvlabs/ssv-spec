@@ -5,13 +5,16 @@ import "github.com/ssvlabs/ssv-spec/types"
 // RoundRobinProposer returns the proposer for the round.
 // Each new height starts with the first proposer and increments by 1 with each following round.
 // Each new height has a different first round proposer which is +1 from the previous height.
+// Also, the current Ethereum epoch is taken into account to introduce variability through epochs
+// (mostly for committees with 4 operators, as 32%4 = 0 as the epochs would "repeat" otherwise).
 // First height starts with index 0
 func RoundRobinProposer(state *State, round Round) types.OperatorID {
 	firstRoundIndex := 0
 	if state.Height != FirstHeight {
 		firstRoundIndex += int(state.Height) % len(state.CommitteeMember.Committee)
 	}
+	ethEpoch := int(state.Height) / 32
 
-	index := (firstRoundIndex + int(round) - int(FirstRound)) % len(state.CommitteeMember.Committee)
+	index := (firstRoundIndex + int(round) - int(FirstRound) + ethEpoch) % len(state.CommitteeMember.Committee)
 	return state.CommitteeMember.Committee[index].OperatorID
 }
