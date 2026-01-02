@@ -52,6 +52,9 @@ const CommitteePastMsgDutyDoesNotExistDoc = "Tests committee behavior when proce
 const CommitteePastMsgDutyFinishedDoc = "Tests committee behavior when processing past messages for a duty that has finished"
 const CommitteeDecidedDoc = "Tests committee runner decision phase for attestations and sync committees without completing post-consensus"
 
+// Documentation for committee mixed duties tests
+const CommitteeMixedDutiesDoc = "Tests happy flow execution for a committee that has both a committee duty and an aggregator committee duty on the same slot"
+
 // Documentation for dutyexe tests
 const DutyExeWrongDutyPubKeyDoc = "Tests decided value with duty validator pubkey != the duty runner's pubkey"
 const DutyExeWrongDutyRoleDoc = "Tests behavior when processing decided value duty with wrong duty role (!= duty runner role)"

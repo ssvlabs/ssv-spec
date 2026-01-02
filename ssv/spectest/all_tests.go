@@ -3,6 +3,7 @@ package spectest
 import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	aggregatorcommitteesingleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/aggregatorcommittee/singleduty"
+	committeemixedduties "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/mixedduties"
 	committeemultipleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/multipleduty"
 	committeesingleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/singleduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/dutyexe"
@@ -103,6 +104,8 @@ var AllTests = []tests.TestF{
 	aggregatorcommitteesingleduty.HappyFlow,
 	aggregatorcommitteesingleduty.DutyWithDifferentSlots,
 	aggregatorcommitteesingleduty.MaxValidators,
+
+	committeemixedduties.SameSlot,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
