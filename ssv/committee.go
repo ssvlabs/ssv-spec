@@ -156,8 +156,7 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 		switch pSigMessages.Type {
 		case types.PostConsensusPartialSig:
 			return runner.ProcessPostConsensus(pSigMessages)
-		case types.SelectionProofPartialSig, types.ContributionProofs, types.AggregatorCommitteePartialSig:
-			// Pre-consensus messages
+		case types.AggregatorCommitteePartialSig:
 			return runner.ProcessPreConsensus(pSigMessages)
 		default:
 			return errors.Errorf("unknown partial signature message type: %v", pSigMessages.Type)

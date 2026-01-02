@@ -36,7 +36,6 @@ var AllTests = []SpecTest{
 	partialsigmessage.SigValid(),
 	partialsigmessage.PartialSigValid(),
 	partialsigmessage.PartialRootValid(),
-	partialsigmessage.ValidContributionProofMetaData(),
 	partialsigmessage.InconsistentSignedMessage(),
 
 	share.Encoding(),
@@ -87,6 +86,8 @@ var AllTests = []SpecTest{
 	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationDuplicateCommitteeIndex(),
 	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationMissingCommitteeIndex(),
 	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationUnusedCommitteeIndex(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationPhase0AttestationDecoding(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationElectraAttestationDecoding(),
 
 	aggregatorcommitteeconsensusdata.SyncCommitteeContributionValidation(),
 	aggregatorcommitteeconsensusdata.SyncCommitteeContributionNoJustifications(),

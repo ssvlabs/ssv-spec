@@ -13,7 +13,7 @@ func InvalidAggregatorValidationNoValidators() *AggregatorCommitteeConsensusData
 	cd := types.AggregatorCommitteeConsensusData{
 		Version: spec.DataVersionPhase0,
 	}
-	return NewProposerConsensusDataTest(
+	return NewAggregatorCommitteeConsensusDataTest(
 		"invalid aggregator data with no validators",
 		testdoc.AggregatorCommitteeConsensusDataTestInvalidNoValidatorsDoc,
 		cd,
@@ -28,7 +28,7 @@ func InvalidAggregatorValidationCommitteeIndexesLength() *AggregatorCommitteeCon
 
 	cd.AggregatorsCommitteeIndexes = append(cd.AggregatorsCommitteeIndexes, cd.AggregatorsCommitteeIndexes...)
 
-	return NewProposerConsensusDataTest(
+	return NewAggregatorCommitteeConsensusDataTest(
 		"invalid aggregator data with wrong committee indexes length",
 		testdoc.AggregatorCommitteeConsensusDataTestInvalidCommitteeIndexLenDoc,
 		*cd,
@@ -44,7 +44,7 @@ func InvalidAggregatorValidationDuplicateCommitteeIndex() *AggregatorCommitteeCo
 	cd.AggregatorsCommitteeIndexes = append(cd.AggregatorsCommitteeIndexes, cd.AggregatorsCommitteeIndexes[0])
 	cd.AggregatedAttestations = append(cd.AggregatedAttestations, cd.AggregatedAttestations[0])
 
-	return NewProposerConsensusDataTest(
+	return NewAggregatorCommitteeConsensusDataTest(
 		"invalid aggregator data with duplicated committee index",
 		testdoc.AggregatorCommitteeConsensusDataTestDuplicatedCommitteeIndexDoc,
 		*cd,
@@ -65,7 +65,7 @@ func InvalidAggregatorValidationMissingCommitteeIndex() *AggregatorCommitteeCons
 	}
 	cd.Aggregators[0].CommitteeIndex = maxCommIndex + 1
 
-	return NewProposerConsensusDataTest(
+	return NewAggregatorCommitteeConsensusDataTest(
 		"invalid aggregator data with missing committee index",
 		testdoc.AggregatorCommitteeConsensusDataTestMissingCommitteeIndexDoc,
 		*cd,
@@ -88,11 +88,41 @@ func InvalidAggregatorValidationUnusedCommitteeIndex() *AggregatorCommitteeConse
 	cd.AggregatorsCommitteeIndexes = append(cd.AggregatorsCommitteeIndexes, maxCommIndex+1)
 	cd.AggregatedAttestations = append(cd.AggregatedAttestations, cd.AggregatedAttestations[0])
 
-	return NewProposerConsensusDataTest(
+	return NewAggregatorCommitteeConsensusDataTest(
 		"invalid aggregator data with unused committee index",
 		testdoc.AggregatorCommitteeConsensusDataTestUnusedCommitteeIndexDoc,
 		*cd,
 		types.AggCommUnusedCommIdxErrorCode,
+	)
+}
+
+// InvalidAggregatorValidationPhase0AttestationDecoding tests an invalid consensus data in which an attestation fails to decode
+func InvalidAggregatorValidationPhase0AttestationDecoding() *AggregatorCommitteeConsensusDataTest {
+
+	cd := testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)
+
+	cd.AggregatedAttestations[0] = []byte{0x01, 0x02, 0x03} // invalid attestation bytes
+
+	return NewAggregatorCommitteeConsensusDataTest(
+		"invalid aggregator data with phase0 attestation decoding error",
+		testdoc.AggregatorCommitteeConsensusDataTestInvalidPhase0AttestationDecodingDoc,
+		*cd,
+		types.AggCommAttestationDecodingErrorCode,
+	)
+}
+
+// InvalidAggregatorValidationPhase0AttestationDecoding tests an invalid consensus data in which an attestation fails to decode
+func InvalidAggregatorValidationElectraAttestationDecoding() *AggregatorCommitteeConsensusDataTest {
+
+	cd := testingutils.TestAggregatorConsensusData(spec.DataVersionElectra)
+
+	cd.AggregatedAttestations[0] = []byte{0x01, 0x02, 0x03} // invalid attestation bytes
+
+	return NewAggregatorCommitteeConsensusDataTest(
+		"invalid aggregator data with electra attestation decoding error",
+		testdoc.AggregatorCommitteeConsensusDataTestInvalidElectraAttestationDecodingDoc,
+		*cd,
+		types.AggCommAttestationDecodingErrorCode,
 	)
 }
 
@@ -103,7 +133,7 @@ func InvalidSyncCommitteeContributionDuplicatedSubnet() *AggregatorCommitteeCons
 
 	cd.SyncCommitteeContributions = append(cd.SyncCommitteeContributions, cd.SyncCommitteeContributions[0])
 
-	return NewProposerConsensusDataTest(
+	return NewAggregatorCommitteeConsensusDataTest(
 		"invalid sync committee contribution with duplicated subnet",
 		testdoc.AggregatorCommitteeConsensusDataTestInvalidDuplicatedSubnetDoc,
 		*cd,
@@ -118,7 +148,7 @@ func InvalidSyncCommitteeContributionMissingSubnet() *AggregatorCommitteeConsens
 
 	cd.Contributors[0].CommitteeIndex = 100
 
-	return NewProposerConsensusDataTest(
+	return NewAggregatorCommitteeConsensusDataTest(
 		"invalid sync committee contribution with missing subnet",
 		testdoc.AggregatorCommitteeConsensusDataTestMissingSubnetDoc,
 		*cd,
@@ -135,7 +165,7 @@ func InvalidSyncCommitteeContributionUnusedSubnet() *AggregatorCommitteeConsensu
 	unused.SubcommitteeIndex = 100
 	cd.SyncCommitteeContributions = append(cd.SyncCommitteeContributions, unused)
 
-	return NewProposerConsensusDataTest(
+	return NewAggregatorCommitteeConsensusDataTest(
 		"invalid sync committee contribution with unused subnet",
 		testdoc.AggregatorCommitteeConsensusDataTestUnusedSubnetDoc,
 		*cd,

@@ -306,6 +306,21 @@ func (a *AggregatorCommitteeConsensusData) Validate() error {
 		return NewError(AggCommUnusedCommIdxErrorCode, "leftover aggregator committee index not usedAggCommittees by any aggregator")
 	}
 
+	// Ensure attestation objects are decoded correctly
+	for _, attBytes := range a.AggregatedAttestations {
+		if a.Version >= spec.DataVersionElectra {
+			att := &electra.Attestation{}
+			if err := att.UnmarshalSSZ(attBytes); err != nil {
+				return NewError(AggCommAttestationDecodingErrorCode, "failed to unmarshal attestation")
+			}
+		} else {
+			att := &phase0.Attestation{}
+			if err := att.UnmarshalSSZ(attBytes); err != nil {
+				return NewError(AggCommAttestationDecodingErrorCode, "failed to unmarshal attestation")
+			}
+		}
+	}
+
 	// Sync committee contributors validation
 
 	// Validate equal set (Contributors.CommitteeIndex vs. SyncCommitteeContributions.SubcommitteeIndex)

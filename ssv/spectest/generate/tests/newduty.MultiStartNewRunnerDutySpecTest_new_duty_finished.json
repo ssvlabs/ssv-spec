@@ -210,7 +210,7 @@
       "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
-          "Type": 6,
+          "Type": 4,
           "Slot": "50",
           "Messages": [
             {
@@ -548,7 +548,7 @@
       "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
-          "Type": 5,
+          "Type": 3,
           "Slot": "50",
           "Messages": [
             {
@@ -642,7 +642,7 @@
       "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
-          "Type": 4,
+          "Type": 2,
           "Slot": "50",
           "Messages": [
             {
@@ -870,7 +870,7 @@
       "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
-          "Type": 6,
+          "Type": 4,
           "Slot": "50",
           "Messages": [
             {
@@ -1103,7 +1103,7 @@
       "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
-          "Type": 6,
+          "Type": 4,
           "Slot": "7424044",
           "Messages": [
             {

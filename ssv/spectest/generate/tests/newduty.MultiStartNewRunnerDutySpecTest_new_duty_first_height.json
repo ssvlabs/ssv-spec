@@ -78,7 +78,7 @@
       "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
-          "Type": 6,
+          "Type": 4,
           "Slot": "0",
           "Messages": [
             {
@@ -199,7 +199,7 @@
       "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
-          "Type": 6,
+          "Type": 4,
           "Slot": "0",
           "Messages": [
             {

@@ -16,10 +16,13 @@ func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, psigMsgs *types.Part
 		return types.NewError(types.NoRunningDutyErrorCode, "no running duty")
 	}
 
-	switch runner.(type) {
-	case *AggregatorCommitteeRunner:
+	if _, ok := runner.(*AggregatorCommitteeRunner); ok {
+		// For aggregator committee runner, a special validation is applied
+		// since committee views may differ between operators.
 		return b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot())
-	default:
+	} else {
+		// For other runner types, the pre-consensus is for a single validator,
+		// and more strict validation can be applied.
 		if err := b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot()); err != nil {
 			return err
 		}
