@@ -8,7 +8,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
-	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -19,7 +18,6 @@ import (
 func MaxValidators() tests.SpecTest {
 
 	ksMap := testingutils.KeySetMapForValidators(3000)
-	shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 	validatorsIndexList := testingutils.ValidatorIndexList(3000)
 	ks := testingutils.TestingKeySetMap[phase0.ValidatorIndex(validatorsIndexList[0])]
 	msgID := testingutils.AggregatorCommitteeMsgID(ks)
@@ -39,7 +37,7 @@ func MaxValidators() tests.SpecTest {
 			{
 				Name: fmt.Sprintf("aggregator and sync committee contribution (%s)", version.String()),
 				Committee: testingutils.
-					BaseAggregatorCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap).(*ssv.AggregatorCommitteeRunner)),
+					BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 				Input: []interface{}{
 					duty,
 

@@ -9,7 +9,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
-	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -30,7 +29,6 @@ func HappyFlow() tests.SpecTest {
 
 			validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 			ksMap := testingutils.KeySetMapForValidators(numValidators)
-			shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
 			duty := testingutils.TestingAggregatorDutyForValidators(version, validatorsIndexList)
 			slot := testingutils.TestingDutySlotV(version)
@@ -42,7 +40,7 @@ func HappyFlow() tests.SpecTest {
 				{
 					Name: fmt.Sprintf("%v aggregator (%s)", numValidators, version.String()),
 					Committee: testingutils.
-						BaseAggregatorCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap).(*ssv.AggregatorCommitteeRunner)),
+						BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 					Input: []interface{}{
 						duty,
 
@@ -84,8 +82,6 @@ func HappyFlow() tests.SpecTest {
 
 			validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 			ksMap := testingutils.KeySetMapForValidators(numValidators)
-			shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
-
 			duty := testingutils.TestingSyncCommitteeContributorDutyForValidators(version, validatorsIndexList)
 			slot := testingutils.TestingDutySlotV(version)
 			height := qbft.Height(slot)
@@ -96,7 +92,7 @@ func HappyFlow() tests.SpecTest {
 				{
 					Name: fmt.Sprintf("%v sync committee contribution (%s)", numValidators, version.String()),
 					Committee: testingutils.
-						BaseAggregatorCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap).(*ssv.AggregatorCommitteeRunner)),
+						BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 					Input: []interface{}{
 						duty,
 
@@ -138,7 +134,6 @@ func HappyFlow() tests.SpecTest {
 
 			validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 			ksMap := testingutils.KeySetMapForValidators(numValidators)
-			shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
 			duty := testingutils.TestingAggregatorAndSyncCommitteeContributorDutiesForValidators(version, validatorsIndexList)
 			slot := testingutils.TestingDutySlotV(version)
@@ -150,7 +145,7 @@ func HappyFlow() tests.SpecTest {
 				{
 					Name: fmt.Sprintf("%v aggregator and sync committee contribution (%s)", numValidators, version.String()),
 					Committee: testingutils.
-						BaseAggregatorCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap).(*ssv.AggregatorCommitteeRunner)),
+						BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 					Input: []interface{}{
 						duty,
 

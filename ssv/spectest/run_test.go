@@ -352,7 +352,6 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 	committeeMap := m["Committee"].(map[string]interface{})
 
 	inputs := make([]interface{}, 0)
-	hasAggregatorDuty := false
 	for _, input := range m["Input"].([]interface{}) {
 		byts, err := json.Marshal(input)
 		if err != nil {
@@ -374,12 +373,11 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 				firstDuty := validatorDuties[0].(map[string]interface{})
 				if dutyType, ok := firstDuty["Type"].(float64); ok {
 					// Type 1 is BNRoleAggregator, Type 4 is BNRoleSyncCommitteeContribution
-					if int(dutyType) == 1 || int(dutyType) == 4 {
+					if int(dutyType) == int(types.BNRoleAggregator) || int(dutyType) == int(types.BNRoleSyncCommitteeContribution) {
 						// This is an aggregator committee duty
 						aggregatorCommitteeDuty := &types.AggregatorCommitteeDuty{}
 						err = json.Unmarshal(byts, &aggregatorCommitteeDuty)
 						if err == nil {
-							hasAggregatorDuty = true
 							inputs = append(inputs, aggregatorCommitteeDuty)
 							continue
 						}
@@ -430,7 +428,7 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 		}
 	}
 
-	c := fixCommitteeForRun(t, committeeMap, hasAggregatorDuty)
+	c := fixCommitteeForRun(t, committeeMap)
 
 	strictMessageOrder := false
 	if val, ok := m["StrictMessageOrder"]; ok {
@@ -449,79 +447,50 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 	}
 }
 
-func fixCommitteeForRun(t *testing.T, committeeMap map[string]interface{}, hasAggregatorDuty bool) *ssv.Committee {
+func fixCommitteeForRun(t *testing.T, committeeMap map[string]interface{}) *ssv.Committee {
 
 	byts, _ := json.Marshal(committeeMap)
 	c := &ssv.Committee{}
 	require.NoError(t, json.Unmarshal(byts, c))
 
-	// Determine the runner type based on existing runners or duty type
-	var runnerType string
-
-	// First check if we have an aggregator duty in the input
-	if hasAggregatorDuty {
-		runnerType = "aggregator_committee"
-		t.Logf("Found AggregatorCommitteeDuty in input - using AggregatorCommitteeRunner")
-	} else {
-		// Otherwise, check existing runners
-		t.Logf("Fixing committee with %d runners", len(c.Runners))
-		for slot, runner := range c.Runners {
-			switch r := runner.(type) {
-			case *ssv.AggregatorCommitteeRunner:
-				runnerType = "aggregator_committee"
-				t.Logf("Found AggregatorCommitteeRunner at slot %v", slot)
-			case *ssv.CommitteeRunner:
-				t.Logf("Found CommitteeRunner at slot %v", slot)
-				runnerType = "committee"
-			default:
-				t.Logf("Found unknown runner type %T at slot %v", r, slot)
-				runnerType = "committee"
-			}
-			if runnerType != "" {
-				break
-			}
-		}
-		// Default to committee runner if no runners exist
-		if runnerType == "" {
-			runnerType = "committee"
-		}
+	c.CreateAggregatorCommitteeRunnerFn = func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+		return testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap)
+	}
+	c.CreateCommitteeRunnerFn = func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+		return testingutils.CommitteeRunnerWithShareMap(shareMap)
 	}
 
-	// Set the appropriate CreateRunnerFn based on runner type
-	if runnerType == "aggregator_committee" {
-		c.CreateRunnerFn = func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
-			return testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap)
-		}
-	} else {
-		c.CreateRunnerFn = func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
-			return testingutils.CommitteeRunnerWithShareMap(shareMap)
-		}
-	}
-
-	for slot := range c.Runners {
-		runner := c.Runners[slot]
+	for slot := range c.CommitteeRunners {
+		runner := c.CommitteeRunners[slot]
 
 		var shareInstance *types.Share
-		// Need to type assert to access BaseRunner
-		switch r := runner.(type) {
-		case *ssv.CommitteeRunner:
-			for _, share := range r.BaseRunner.Share {
-				shareInstance = share
-				break
-			}
-		case *ssv.AggregatorCommitteeRunner:
-			for _, share := range r.BaseRunner.Share {
-				shareInstance = share
-				break
-			}
+		for _, share := range runner.(*ssv.CommitteeRunner).BaseRunner.Share {
+			shareInstance = share
+			break
 		}
 
 		fixedRunner := fixRunnerForRun(
 			t,
-			committeeMap["Runners"].(map[string]interface{})[fmt.Sprintf("%v", slot)].(map[string]interface{}),
+			committeeMap["CommitteeRunners"].(map[string]interface{})[fmt.Sprintf("%v", slot)].(map[string]interface{}),
 			testingutils.KeySetForShare(shareInstance),
 		)
-		c.Runners[slot] = fixedRunner
+		c.CommitteeRunners[slot] = fixedRunner
+	}
+	for slot := range c.AggregatorCommitteeRunners {
+		runner := c.AggregatorCommitteeRunners[slot]
+
+		var shareInstance *types.Share
+		for _, share := range runner.(*ssv.AggregatorCommitteeRunner).BaseRunner.Share {
+			shareInstance = share
+			break
+		}
+
+		fixedRunner := fixRunnerForRun(
+			t,
+			committeeMap["AggregatorCommitteeRunners"].(map[string]interface{})[fmt.Sprintf("%v", slot)].(map[string]interface{}),
+			testingutils.KeySetForShare(shareInstance),
+		)
+		c.AggregatorCommitteeRunners[slot] = fixedRunner
 	}
 
 	return c
