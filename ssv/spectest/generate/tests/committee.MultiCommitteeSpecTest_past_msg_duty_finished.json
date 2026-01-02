@@ -7,7 +7,7 @@
       "Name": "30 attestation (phase0)",
       "Documentation": "",
       "Committee": {
-        "Runners": {
+        "CommitteeRunners": {
           "10": {
             "BaseRunner": {
               "State": {
@@ -2068,6 +2068,7 @@
             }
           }
         },
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -3386,7 +3387,7 @@
       "Name": "30 sync committee (phase0)",
       "Documentation": "",
       "Committee": {
-        "Runners": {
+        "CommitteeRunners": {
           "10": {
             "BaseRunner": {
               "State": {
@@ -5567,6 +5568,7 @@
             }
           }
         },
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -7005,7 +7007,7 @@
       "Name": "30 attestation 30 sync committee (phase0)",
       "Documentation": "",
       "Committee": {
-        "Runners": {
+        "CommitteeRunners": {
           "10": {
             "BaseRunner": {
               "State": {
@@ -9666,6 +9668,7 @@
             }
           }
         },
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -11434,7 +11437,7 @@
       "Name": "30 attestation (electra)",
       "Documentation": "",
       "Committee": {
-        "Runners": {
+        "CommitteeRunners": {
           "7424010": {
             "BaseRunner": {
               "State": {
@@ -13495,6 +13498,7 @@
             }
           }
         },
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -14813,7 +14817,7 @@
       "Name": "30 sync committee (electra)",
       "Documentation": "",
       "Committee": {
-        "Runners": {
+        "CommitteeRunners": {
           "7424010": {
             "BaseRunner": {
               "State": {
@@ -16994,6 +16998,7 @@
             }
           }
         },
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -18432,7 +18437,7 @@
       "Name": "30 attestation 30 sync committee (electra)",
       "Documentation": "",
       "Committee": {
-        "Runners": {
+        "CommitteeRunners": {
           "7424010": {
             "BaseRunner": {
               "State": {
@@ -21093,6 +21098,7 @@
             }
           }
         },
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",

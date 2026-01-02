@@ -7,7 +7,8 @@
       "Name": "sync committees (phase0)",
       "Documentation": "",
       "Committee": {
-        "Runners": {},
+        "CommitteeRunners": {},
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -116,7 +117,8 @@
       "Name": "attestation (phase0)",
       "Documentation": "",
       "Committee": {
-        "Runners": {},
+        "CommitteeRunners": {},
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -221,7 +223,8 @@
       "Name": "sync committees (electra)",
       "Documentation": "",
       "Committee": {
-        "Runners": {},
+        "CommitteeRunners": {},
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -330,7 +333,8 @@
       "Name": "attestation (electra)",
       "Documentation": "",
       "Committee": {
-        "Runners": {},
+        "CommitteeRunners": {},
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
