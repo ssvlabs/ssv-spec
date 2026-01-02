@@ -29,6 +29,7 @@ type DomainType [4]byte
 var (
 	GenesisMainnet = DomainType{0x0, 0x0, MainnetNetworkID.Byte(), 0x0}
 	AlanMainnet    = DomainType{0x0, 0x0, MainnetNetworkID.Byte(), 0x1}
+	BooleMainnet   = DomainType{0x0, 0x0, MainnetNetworkID.Byte(), 0x2}
 
 	PrimusTestnet   = DomainType{0x0, 0x0, PrimusNetworkID.Byte(), 0x0}
 	ShifuTestnet    = DomainType{0x0, 0x0, ShifuNetworkID.Byte(), 0x0}
@@ -100,6 +101,11 @@ func mainnetForks() []*ForkData {
 			// TODO: Update this when the mainnet fork is known
 			Epoch:  0,
 			Domain: AlanMainnet,
+		},
+		{
+			// TODO: Update this when the mainnet fork is known
+			Epoch:  0,
+			Domain: BooleMainnet,
 		},
 	}
 }
