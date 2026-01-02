@@ -72,7 +72,7 @@ var PreConsensusWrongOrderContributionProofMsg = func(msgSK, beaconSK *bls.Secre
 var PreConsensusContributionProofTooManyRootsMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
 	ret := contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, slot, false, false, false)
 	msg := &types.PartialSignatureMessages{
-		Type:     types.ContributionProofs,
+		Type:     types.AggregatorCommitteePartialSig,
 		Slot:     slot,
 		Messages: append(ret.Messages, ret.Messages[0]),
 	}
@@ -82,7 +82,7 @@ var PreConsensusContributionProofTooManyRootsMsg = func(msgSK, beaconSK *bls.Sec
 var PreConsensusContributionProofTooFewRootsMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
 	ret := contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, slot, false, false, false)
 	msg := &types.PartialSignatureMessages{
-		Type:     types.ContributionProofs,
+		Type:     types.AggregatorCommitteePartialSig,
 		Slot:     TestingDutySlot,
 		Messages: ret.Messages[0:2],
 	}

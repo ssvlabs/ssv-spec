@@ -12,10 +12,6 @@ const (
 	PostConsensusPartialSig PartialSigMsgType = iota
 	// RandaoPartialSig is a partial signature over randao reveal
 	RandaoPartialSig
-	// SelectionProofPartialSig is a partial signature for aggregator selection proof
-	SelectionProofPartialSig
-	// ContributionProofs is the partial selection proofs for sync committee contributions (it's an array of sigs)
-	ContributionProofs
 	// ValidatorRegistrationPartialSig is a partial signature over a ValidatorRegistration object
 	ValidatorRegistrationPartialSig
 	// VoluntaryExitPartialSig is a partial signature over a VoluntaryExit object
