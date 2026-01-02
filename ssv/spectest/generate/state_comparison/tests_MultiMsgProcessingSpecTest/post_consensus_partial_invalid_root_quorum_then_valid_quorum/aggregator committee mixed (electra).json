@@ -937,7 +937,7 @@
             ],
             "DomainType": "00000301"
           },
-          "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
+          "ID": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
           "Round": 1,
           "Height": 7424012,
           "LastPreparedRound": 0,
@@ -2681,7 +2681,7 @@
       }
     },
     "QBFTController": {
-      "Identifier": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
+      "Identifier": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
       "Height": 7424012,
       "StoredInstances": [
         {
@@ -2711,7 +2711,7 @@
               ],
               "DomainType": "00000301"
             },
-            "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
+            "ID": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
             "Round": 1,
             "Height": 7424012,
             "LastPreparedRound": 0,
@@ -2762,6 +2762,6 @@
       }
     },
     "BeaconNetwork": "now_test_network",
-    "RunnerRoleType": 6
+    "RunnerRoleType": 2
   }
 }

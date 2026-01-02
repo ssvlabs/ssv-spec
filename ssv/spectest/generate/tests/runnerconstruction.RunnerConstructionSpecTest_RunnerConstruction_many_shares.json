@@ -316,9 +316,9 @@
   },
   "RoleError": {
     "0": "",
-    "2": "must have one share",
-    "4": "must have one share",
-    "5": "must have one share",
-    "6": ""
+    "1": "must have one share",
+    "2": "",
+    "3": "must have one share",
+    "4": "must have one share"
   }
 }

@@ -112,7 +112,7 @@
       }
     },
     "QBFTController": {
-      "Identifier": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAA326ltZ8ObAPzkK1f6gu8GZ7DUkwKaCkTFI/Qca8YmOw=",
+      "Identifier": "AAADAQIAAAAAAAAAAAAAAAAAAAAAAAAA326ltZ8ObAPzkK1f6gu8GZ7DUkwKaCkTFI/Qca8YmOw=",
       "Height": 0,
       "StoredInstances": [],
       "CommitteeMember": {
@@ -178,6 +178,6 @@
       }
     },
     "BeaconNetwork": "now_test_network",
-    "RunnerRoleType": 6
+    "RunnerRoleType": 2
   }
 }

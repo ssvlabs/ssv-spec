@@ -28,7 +28,7 @@
       "Type": "",
       "Documentation": "",
       "Network": "now_test_network",
-      "RunnerRole": 6,
+      "RunnerRole": 2,
       "DutySlot": "0",
       "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
       "ExpectedSource": {
@@ -48,7 +48,7 @@
       "Type": "",
       "Documentation": "",
       "Network": "now_test_network",
-      "RunnerRole": 6,
+      "RunnerRole": 2,
       "DutySlot": "0",
       "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
       "ExpectedSource": {
@@ -68,7 +68,7 @@
       "Type": "",
       "Documentation": "",
       "Network": "now_test_network",
-      "RunnerRole": 2,
+      "RunnerRole": 1,
       "DutySlot": "0",
       "Input": "AQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIAAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAQAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAg==",
       "ExpectedSource": {
