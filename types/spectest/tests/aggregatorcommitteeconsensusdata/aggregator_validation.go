@@ -9,7 +9,7 @@ import (
 
 // Phase0AggregatorValidation tests a valid consensus data with AggregateAndProof
 func Phase0AggregatorValidation() *AggregatorCommitteeConsensusDataTest {
-	return NewProposerConsensusDataTest(
+	return NewAggregatorCommitteeConsensusDataTest(
 		"phase0 aggregator valid",
 		testdoc.AggregatorCommitteeConsensusDataTestPhase0AggregatorValidationDoc,
 		*testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0),
@@ -19,7 +19,7 @@ func Phase0AggregatorValidation() *AggregatorCommitteeConsensusDataTest {
 
 // ElectraAggregatorValidation tests a valid consensus data with AggregateAndProof
 func ElectraAggregatorValidation() *AggregatorCommitteeConsensusDataTest {
-	return NewProposerConsensusDataTest(
+	return NewAggregatorCommitteeConsensusDataTest(
 		"electra aggregator valid",
 		testdoc.AggregatorCommitteeConsensusDataTestElectraAggregatorValidationDoc,
 		*testingutils.TestAggregatorConsensusData(spec.DataVersionElectra),
