@@ -56,7 +56,14 @@ func TestingAggregatorCommitteeDutyWithParams(
 		})
 	}
 
-	for _, valIdx := range syncCommitteeValidatorIds {
+	syncCommitteeVals := make([]int, 0)
+	if len(syncCommitteeValidatorIds) > 2048 {
+		copy(syncCommitteeVals, syncCommitteeValidatorIds[:2048])
+	} else {
+		syncCommitteeVals = syncCommitteeValidatorIds
+	}
+
+	for _, valIdx := range syncCommitteeVals {
 		pk := getValPubKeyByValIdx(valIdx)
 		duties = append(duties, &types.ValidatorDuty{
 			Type:                          types.BNRoleSyncCommitteeContribution,
@@ -69,6 +76,58 @@ func TestingAggregatorCommitteeDutyWithParams(
 			ValidatorCommitteeIndex:       validatorCommitteeIndex,
 			ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
 		})
+	}
+
+	return &types.AggregatorCommitteeDuty{
+		Slot:            slot,
+		ValidatorDuties: duties,
+	}
+}
+
+func TestingMaximumAggregatorCommitteeDutyWithParams(
+	slot phase0.Slot,
+	aggregatorValidatorIds []int,
+	syncCommitteeValidatorIds []int,
+) *types.AggregatorCommitteeDuty {
+
+	duties := make([]*types.ValidatorDuty, 0)
+
+	for _, valIdx := range aggregatorValidatorIds {
+		pk := getValPubKeyByValIdx(valIdx)
+		duties = append(duties, &types.ValidatorDuty{
+			Type:                    types.BNRoleAggregator,
+			PubKey:                  pk,
+			Slot:                    slot,
+			ValidatorIndex:          phase0.ValidatorIndex(valIdx),
+			CommitteeIndex:          TestingCommitteeIndex,
+			CommitteesAtSlot:        TestingCommitteesAtSlot,
+			CommitteeLength:         TestingCommitteeLenght,
+			ValidatorCommitteeIndex: TestingValidatorCommitteeIndex,
+		})
+	}
+
+	syncCommitteeVals := make([]int, 0)
+	if len(syncCommitteeValidatorIds) > 512 {
+		copy(syncCommitteeVals, syncCommitteeValidatorIds[:512])
+	} else {
+		syncCommitteeVals = syncCommitteeValidatorIds
+	}
+
+	for _, valIdx := range syncCommitteeVals {
+		for _, commIndex := range []int{0, 1, 2, 3} {
+			pk := getValPubKeyByValIdx(valIdx)
+			duties = append(duties, &types.ValidatorDuty{
+				Type:                          types.BNRoleSyncCommitteeContribution,
+				PubKey:                        pk,
+				Slot:                          slot,
+				ValidatorIndex:                phase0.ValidatorIndex(valIdx),
+				CommitteeIndex:                phase0.CommitteeIndex(commIndex),
+				CommitteesAtSlot:              TestingCommitteesAtSlot,
+				CommitteeLength:               TestingCommitteeLenght,
+				ValidatorCommitteeIndex:       TestingValidatorCommitteeIndex,
+				ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
+			})
+		}
 	}
 
 	return &types.AggregatorCommitteeDuty{
@@ -115,6 +174,12 @@ var TestingAggregatorAndSyncCommitteeContributorDuties = func(version spec.DataV
 
 var TestingAggregatorAndSyncCommitteeContributorDutiesForValidators = func(version spec.DataVersion, validatorIndexList []int) *types.AggregatorCommitteeDuty {
 	return TestingAggregatorCommitteeDuty(validatorIndexList, validatorIndexList, version)
+}
+
+var TestingAggregatorAndSyncCommitteeContributorDutiesWithDifferentSlot = func(version spec.DataVersion, validatorIndexList []int) *types.AggregatorCommitteeDuty {
+	duty := TestingAggregatorCommitteeDuty(validatorIndexList, validatorIndexList, version)
+	duty.ValidatorDuties[0].Slot += 1
+	return duty
 }
 
 // ==================================================

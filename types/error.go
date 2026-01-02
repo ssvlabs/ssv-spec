@@ -77,14 +77,18 @@ const (
 	InstanceAlreadyRunningErrorCode
 	StartInstanceErrorCode
 	TimeoutInstanceErrorCode
-	AggCommAggAttCntMismatchErrorCode
 	AggCommAggCommIdxCntMismatchErrorCode
-	AggCommContributorsContributionsCntMismatchErrorCode
+	AggCommCommIdxMismatchErrorCode
+	AggCommUnusedCommIdxErrorCode
+	AggCommDuplicatedCommIdxErrorCode
 	AggCommSubnetNotInSCSubnetsErrorCode
+	AggCommSCCSubnetDuplicateErrorCode
+	AggCommUnusedSubnetErrorCode
 	AggCommConsensusDataNoValidatorErrorCode
 	AggCommConsensusDataDecodeErrorCode
 	ValidatorConsensusDataDecodeErrorCode
 	PostConsensusQuorumWithInvalidSignatures
+	InvalidAggregatorCommitteeDutyErrorCode
 	UnknownVersionErrorCode
 )
 

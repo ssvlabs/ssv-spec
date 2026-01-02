@@ -321,12 +321,8 @@ func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index phase0.CommitteeIndex) 
 	// const subnetCount = 4
 	// const syncCommitteeSize = 512
 	// const subnetSize = syncCommitteeSize / subnetCount
-	// return index / subnetSize
-
-	// For testing, we use a simplified approach where subnet ID equals the index
-	// This means validator at index 0 is in subnet 0, index 1 in subnet 1, etc.
-	// In production, multiple validators share the same subnet (128 validators per subnet)
-	return uint64(index)
+	// Outputs index / subnetSize
+	return uint64(index) / (512 / 4)
 }
 
 // GetSyncCommitteeContribution returns

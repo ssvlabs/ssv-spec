@@ -99,3 +99,9 @@ var SignedSSVMessageWithSigner = func(operatorID types.OperatorID, rsaSK *rsa.Pr
 		SSVMessage:  ssvMessage,
 	}
 }
+
+var SignedSSVMessageWithSignerAndFullData = func(operatorID types.OperatorID, rsaSK *rsa.PrivateKey, ssvMessage *types.SSVMessage, fullData []byte) *types.SignedSSVMessage {
+	msg := SignedSSVMessageWithSigner(operatorID, rsaSK, ssvMessage)
+	msg.FullData = fullData
+	return msg
+}

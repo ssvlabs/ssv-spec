@@ -43,6 +43,28 @@ func ComparePartialSignatureOutputMessages(t *testing.T, expectedMessages []*typ
 	}
 }
 
+// ComparePartialSignatureOutputMessagesStrictOrder compares output messages with strict ordering
+// Both the order of messages and the order of partial signatures within each message must match
+func ComparePartialSignatureOutputMessagesStrictOrder(t *testing.T, expectedMessages []*types.PartialSignatureMessages, broadcastedSignedMsgs []*types.SignedSSVMessage, committee []*types.Operator) {
+
+	require.NoError(t, VerifyListOfSignedSSVMessages(broadcastedSignedMsgs, committee))
+
+	broadcastedMsgs := ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
+	broadcastedMsgs = filterPartialSigs(broadcastedMsgs)
+
+	require.Len(t, broadcastedMsgs, len(expectedMessages))
+
+	for index, msg := range broadcastedMsgs {
+		msg1 := &types.PartialSignatureMessages{}
+		require.NoError(t, msg1.Decode(msg.Data))
+
+		msg2 := expectedMessages[index]
+
+		err := ComparePartialSignatureMessagesStrict(msg1, msg2)
+		require.NoError(t, err, "message %d comparison failed", index)
+	}
+}
+
 // Compare partial sig output messages without assuming any order between messages (asynchonous)
 func ComparePartialSignatureOutputMessagesInAsynchronousOrder(t *testing.T, expectedMessages []*types.PartialSignatureMessages, broadcastedSignedMsgs []*types.SignedSSVMessage, committee []*types.Operator) {
 
@@ -107,29 +129,66 @@ func RootCountMapForPartialSignatureMessages(msg *types.PartialSignatureMessages
 }
 
 func ComparePartialSignatureMessages(msg1 *types.PartialSignatureMessages, msg2 *types.PartialSignatureMessages) error {
+	return ComparePartialSignatureMessagesWithOptions(msg1, msg2, false)
+}
+
+// ComparePartialSignatureMessagesStrict compares two PartialSignatureMessages with strict ordering
+func ComparePartialSignatureMessagesStrict(msg1 *types.PartialSignatureMessages, msg2 *types.PartialSignatureMessages) error {
+	return ComparePartialSignatureMessagesWithOptions(msg1, msg2, true)
+}
+
+// ComparePartialSignatureMessagesWithOptions compares two PartialSignatureMessages with optional strict ordering
+func ComparePartialSignatureMessagesWithOptions(msg1 *types.PartialSignatureMessages, msg2 *types.PartialSignatureMessages, strictOrder bool) error {
 
 	if len(msg1.Messages) != len(msg2.Messages) {
 		return errors.New("different messages length")
 	}
 
-	// messages are not guaranteed to be in order so we map their roots and then test all roots to match and have the same multiplicity
-	roots1 := RootCountMapForPartialSignatureMessages(msg1)
-	roots2 := RootCountMapForPartialSignatureMessages(msg2)
+	if strictOrder {
+		// Compare messages in order - each message must match exactly at the same index
+		for i := range msg1.Messages {
+			m1 := msg1.Messages[i]
+			m2 := msg2.Messages[i]
 
-	// Compare roots and their multiplicity
-	if len(roots1) != len(roots2) {
-		return errors.New("messages have different sets of roots")
-	}
-	for r1, r1Count := range roots1 {
-		foundSameRootAndSameCount := false
-		for r2, r2Count := range roots2 {
-			if r1 == r2 {
-				foundSameRootAndSameCount = (r1Count == r2Count)
-				break
+			if m1.ValidatorIndex != m2.ValidatorIndex {
+				return errors.Errorf("message %d: validator index mismatch: got %d, expected %d", i, m1.ValidatorIndex, m2.ValidatorIndex)
+			}
+			if m1.SigningRoot != m2.SigningRoot {
+				return errors.Errorf("message %d: signing root mismatch", i)
+			}
+			// Compare partial signature
+			r1, err := m1.GetRoot()
+			if err != nil {
+				return errors.Wrap(err, "failed to get root for message 1")
+			}
+			r2, err := m2.GetRoot()
+			if err != nil {
+				return errors.Wrap(err, "failed to get root for message 2")
+			}
+			if r1 != r2 {
+				return errors.Errorf("message %d: root mismatch", i)
 			}
 		}
-		if !foundSameRootAndSameCount {
-			return errors.New("missing output msg")
+	} else {
+		// messages are not guaranteed to be in order so we map their roots and then test all roots to match and have the same multiplicity
+		roots1 := RootCountMapForPartialSignatureMessages(msg1)
+		roots2 := RootCountMapForPartialSignatureMessages(msg2)
+
+		// Compare roots and their multiplicity
+		if len(roots1) != len(roots2) {
+			return errors.New("messages have different sets of roots")
+		}
+		for r1, r1Count := range roots1 {
+			foundSameRootAndSameCount := false
+			for r2, r2Count := range roots2 {
+				if r1 == r2 {
+					foundSameRootAndSameCount = (r1Count == r2Count)
+					break
+				}
+			}
+			if !foundSameRootAndSameCount {
+				return errors.New("missing output msg")
+			}
 		}
 	}
 

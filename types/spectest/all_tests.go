@@ -36,7 +36,6 @@ var AllTests = []SpecTest{
 	partialsigmessage.SigValid(),
 	partialsigmessage.PartialSigValid(),
 	partialsigmessage.PartialRootValid(),
-	partialsigmessage.ValidContributionProofMetaData(),
 	partialsigmessage.InconsistentSignedMessage(),
 
 	share.Encoding(),
@@ -82,13 +81,17 @@ var AllTests = []SpecTest{
 	aggregatorcommitteeconsensusdata.Phase0AggregatorNoJustifications(),
 	aggregatorcommitteeconsensusdata.ElectraAggregatorValidation(),
 	aggregatorcommitteeconsensusdata.ElectraAggregatorNoJustifications(),
-	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationAttestationLength(),
 	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationCommitteeIndexesLength(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationNoValidators(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationDuplicateCommitteeIndex(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationMissingCommitteeIndex(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationUnusedCommitteeIndex(),
 
 	aggregatorcommitteeconsensusdata.SyncCommitteeContributionValidation(),
 	aggregatorcommitteeconsensusdata.SyncCommitteeContributionNoJustifications(),
-	aggregatorcommitteeconsensusdata.InvalidSyncCommitteeContributionLength(),
-	aggregatorcommitteeconsensusdata.InvalidSyncCommitteeContributionSubnet(),
+	aggregatorcommitteeconsensusdata.InvalidSyncCommitteeContributionDuplicatedSubnet(),
+	aggregatorcommitteeconsensusdata.InvalidSyncCommitteeContributionMissingSubnet(),
+	aggregatorcommitteeconsensusdata.InvalidSyncCommitteeContributionUnusedSubnet(),
 
 	consensusdataproposer.VersionedBlockValidation(),
 	consensusdataproposer.VersionedBlindedBlockValidation(),
@@ -124,6 +127,9 @@ var AllTests = []SpecTest{
 
 	maxmsgsize.MaxConsensusData(),
 	maxmsgsize.MaxBeaconVote(),
+	maxmsgsize.MaxAggregatorCommitteeConsensusData(),
+	maxmsgsize.MaxPhase0Attestation(),
+	maxmsgsize.MaxElectraAttestation(),
 	maxmsgsize.MaxQBFTMessageWithNoJustification(),
 	maxmsgsize.MaxQBFTMessageWith1Justification(),
 	maxmsgsize.MaxQBFTMessageWith2Justification(),

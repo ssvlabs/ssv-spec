@@ -23,12 +23,18 @@ var TestingAggregatorDuty = func(version spec.DataVersion) *types.AggregatorComm
 var TestingAggregatorDutyNextEpoch = func(version spec.DataVersion) *types.AggregatorCommitteeDuty {
 	d := TestingAggregatorCommitteeDutyOnlyAggregator(version)
 	d.Slot = TestingDutySlotNextEpochV(version)
+	for i := range d.ValidatorDuties {
+		d.ValidatorDuties[i].Slot = TestingDutySlotNextEpochV(version)
+	}
 	return d
 }
 
 var TestingAggregatorDutyFirstSlot = func() *types.AggregatorCommitteeDuty {
 	d := TestingAggregatorCommitteeDutyOnlyAggregator(spec.DataVersionPhase0)
 	d.Slot = 0
+	for i := range d.ValidatorDuties {
+		d.ValidatorDuties[i].Slot = 0
+	}
 	return d
 }
 

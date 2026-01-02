@@ -265,41 +265,79 @@ type AggregatorCommitteeConsensusData struct {
 	Version spec.DataVersion
 
 	// Aggregator duties
-	Aggregators                 []AssignedAggregator `ssz-max:"3000"`
-	AggregatorsCommitteeIndexes []uint64             `ssz-max:"3000"`
-	Attestations                [][]byte             `ssz-max:"3000,1048576"`
+	Aggregators []AssignedAggregator `ssz-max:"3000"` // For a maximum of 3k validators per committee
+	// AggregatorsCommitteeIndexes is a list of committee indexes used by the above aggregators
+	AggregatorsCommitteeIndexes []uint64 `ssz-max:"64"`
+	// AggregatedAttestations is a list of aggregated attestations (SSZ bytes), one for each committee above
+	AggregatedAttestations [][]byte `ssz-max:"64,131308"`
 
 	// Sync Committee duties
-	Contributors               []AssignedAggregator               `ssz-max:"256"`
-	SyncCommitteeSubnets       []uint64                           `ssz-max:"256"`
-	SyncCommitteeContributions []altair.SyncCommitteeContribution `ssz-max:"256"`
+	Contributors []AssignedAggregator `ssz-max:"2048"` // 512 * 4
+	// SyncCommitteeContributions is a list of contributions, one for each subcommittee
+	SyncCommitteeContributions []altair.SyncCommitteeContribution `ssz-max:"4"`
 }
 
 // Validate ensures the consensus data is internally consistent
 func (a *AggregatorCommitteeConsensusData) Validate() error {
+
+	// Ensure at least one validator
+	if len(a.Aggregators) == 0 && len(a.Contributors) == 0 {
+		return NewError(AggCommConsensusDataNoValidatorErrorCode, "no validators assigned to aggregator committee or sync committee")
+	}
+
 	// Aggregators validation
-	if len(a.Aggregators) != len(a.Attestations) {
-		return NewError(AggCommAggAttCntMismatchErrorCode, "aggregators and attestations count mismatch")
-	}
-	if len(a.Aggregators) != len(a.AggregatorsCommitteeIndexes) {
-		return NewError(AggCommAggCommIdxCntMismatchErrorCode, "aggregators and committee indexes count mismatch")
+
+	// Ensure there is exactly one aggregated attestation per committee index
+	if len(a.AggregatorsCommitteeIndexes) != len(a.AggregatedAttestations) {
+		return NewError(AggCommAggCommIdxCntMismatchErrorCode, "committee indexes and attestations count mismatch")
 	}
 
-	// Sync committee validation
-	if len(a.Contributors) != len(a.SyncCommitteeContributions) {
-		return NewError(AggCommContributorsContributionsCntMismatchErrorCode, "contributors and contributions count mismatch")
-	}
-
-	// Optional: ensure all contributions reference only subnets listed in SyncCommitteeSubnets
-	validSubnets := make(map[uint64]struct{}, len(a.SyncCommitteeSubnets))
-	for _, s := range a.SyncCommitteeSubnets {
-		validSubnets[s] = struct{}{}
-	}
-
-	for _, contrib := range a.SyncCommitteeContributions {
-		if _, ok := validSubnets[contrib.SubcommitteeIndex]; !ok {
-			return WrapError(AggCommSubnetNotInSCSubnetsErrorCode, fmt.Errorf("contribution subnet ID %d not listed in SyncCommitteeSubnets", contrib.SubcommitteeIndex))
+	// Validate equal set (AggregatorsCommitteeIndexes vs. Aggregators.CommitteeIndex)
+	allowedAggCommittees := make(map[uint64]struct{}, len(a.AggregatorsCommitteeIndexes))
+	for _, idx := range a.AggregatorsCommitteeIndexes {
+		// Duplicates are not allowed
+		if _, dup := allowedAggCommittees[idx]; dup {
+			return NewError(AggCommDuplicatedCommIdxErrorCode, "duplicate index in AggregatorsCommitteeIndexes")
 		}
+		allowedAggCommittees[idx] = struct{}{}
+	}
+	usedAggCommittees := make(map[uint64]struct{}, len(a.AggregatorsCommitteeIndexes))
+	for _, agg := range a.Aggregators {
+		// Check it exists in allowed
+		if _, ok := allowedAggCommittees[agg.CommitteeIndex]; !ok {
+			return NewError(AggCommCommIdxMismatchErrorCode, "aggregator committee index not listed in AggregatorsCommitteeIndexes")
+		}
+		// Mark as used
+		usedAggCommittees[agg.CommitteeIndex] = struct{}{}
+	}
+	// Ensure no committee index was left unused (no more than necessary)
+	if len(usedAggCommittees) != len(allowedAggCommittees) {
+		return NewError(AggCommUnusedCommIdxErrorCode, "leftover aggregator committee index not usedAggCommittees by any aggregator")
+	}
+
+	// Sync committee contributors validation
+
+	// Validate equal set (Contributors.CommitteeIndex vs. SyncCommitteeContributions.SubcommitteeIndex)
+	allowedSCSubnets := make(map[uint64]struct{}, len(a.SyncCommitteeContributions))
+	for _, contrib := range a.SyncCommitteeContributions {
+		// Duplicates are not allowed
+		if _, dup := allowedSCSubnets[contrib.SubcommitteeIndex]; dup {
+			return NewError(AggCommSCCSubnetDuplicateErrorCode, "duplicate subcommittee index in SyncCommitteeContributions")
+		}
+		allowedSCSubnets[contrib.SubcommitteeIndex] = struct{}{}
+	}
+	usedSCSubnets := make(map[uint64]struct{}, len(a.SyncCommitteeContributions))
+	for _, contributor := range a.Contributors {
+		// Check it exists in allowed
+		if _, ok := allowedSCSubnets[contributor.CommitteeIndex]; !ok {
+			return NewError(AggCommSubnetNotInSCSubnetsErrorCode, "sync committee contributor subnet not listed in SyncCommitteeContributions")
+		}
+		// Mark as used
+		usedSCSubnets[contributor.CommitteeIndex] = struct{}{}
+	}
+	// Ensure no subcommittee index was left unused (no more than necessary)
+	if len(usedSCSubnets) != len(allowedSCSubnets) {
+		return NewError(AggCommUnusedSubnetErrorCode, "leftover sync committee contributor subnet not used in SyncCommitteeContributions")
 	}
 
 	return nil
@@ -338,15 +376,24 @@ func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (ss
 
 // GetAggregateAndProofs returns all aggregate and proofs for the aggregator duties along with their hash roots
 func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.VersionedAggregateAndProof, error) {
-	if len(a.Aggregators) != len(a.Attestations) {
-		return nil, NewError(AggCommAggAttCntMismatchErrorCode, "aggregators and attestations count mismatch")
-	}
 
 	proofs := make([]*spec.VersionedAggregateAndProof, 0, len(a.Aggregators))
 
-	for i, aggregator := range a.Aggregators {
+	for _, aggregator := range a.Aggregators {
 		// Decode attestation based on version
 		var aggregateAndProof *spec.VersionedAggregateAndProof
+
+		// Get index for validator in a.AggregatedAttestations
+		foundIndex := -1
+		for idx, committeeIndex := range a.AggregatorsCommitteeIndexes {
+			if committeeIndex == aggregator.CommitteeIndex {
+				foundIndex = idx
+				break
+			}
+		}
+		if foundIndex == -1 || foundIndex >= len(a.AggregatedAttestations) {
+			return nil, NewError(AggCommCommIdxMismatchErrorCode, "aggregator committee index not found for attestation")
+		}
 
 		switch a.Version {
 		case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
@@ -356,7 +403,7 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 			}
 			// Unmarshal the attestation
 			att := &phase0.Attestation{}
-			if err := att.UnmarshalSSZ(a.Attestations[i]); err != nil {
+			if err := att.UnmarshalSSZ(a.AggregatedAttestations[foundIndex]); err != nil {
 				return nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal attestation: %w", err))
 			}
 			agg.Aggregate = att
@@ -387,7 +434,7 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 			}
 			// Unmarshal the attestation
 			att := &electra.Attestation{}
-			if err := att.UnmarshalSSZ(a.Attestations[i]); err != nil {
+			if err := att.UnmarshalSSZ(a.AggregatedAttestations[foundIndex]); err != nil {
 				return nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal electra attestation: %w", err))
 			}
 			agg.Aggregate = att
@@ -417,21 +464,29 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 
 // GetSyncCommitteeContributions returns the sync committee contributions
 func (a *AggregatorCommitteeConsensusData) GetSyncCommitteeContributions() (Contributions, error) {
-	if len(a.Contributors) != len(a.SyncCommitteeContributions) {
-		return nil, NewError(AggCommContributorsContributionsCntMismatchErrorCode, "contributors and contributions count mismatch")
-	}
 
-	contributions := make(Contributions, 0, len(a.SyncCommitteeContributions))
+	contributions := make(Contributions, 0, len(a.Contributors))
 
-	for i, contribution := range a.SyncCommitteeContributions {
-		var sigBytes [96]byte
-		copy(sigBytes[:], a.Contributors[i].SelectionProof[:])
+	for _, contributor := range a.Contributors {
 
-		contrib := &Contribution{
-			SelectionProofSig: sigBytes,
-			Contribution:      contribution,
+		// Find associated object in a.SyncCommitteeContributions
+		foundIndex := -1
+		for idx, contrib := range a.SyncCommitteeContributions {
+			if contrib.SubcommitteeIndex == contributor.CommitteeIndex {
+				foundIndex = idx
+				break
+			}
 		}
-		contributions = append(contributions, contrib)
+		if foundIndex == -1 {
+			return nil, NewError(AggCommSubnetNotInSCSubnetsErrorCode, "sync committee contributor subnet not found in SyncCommitteeContributions")
+		}
+
+		var sigBytes [96]byte
+		copy(sigBytes[:], contributor.SelectionProof[:])
+		contributions = append(contributions, &Contribution{
+			SelectionProofSig: sigBytes,
+			Contribution:      a.SyncCommitteeContributions[foundIndex],
+		})
 	}
 
 	return contributions, nil

@@ -141,11 +141,17 @@ var TestingSyncCommitteeContributionDuty = TestingAggregatorCommitteeDutyOnlySyn
 var TestingSyncCommitteeContributionDutyFirstSlot = func() *types.AggregatorCommitteeDuty {
 	d := TestingAggregatorCommitteeDutyOnlySyncCommittee()
 	d.Slot = 0
+	for i := range d.ValidatorDuties {
+		d.ValidatorDuties[i].Slot = 0
+	}
 	return d
 }()
 
 var TestingSyncCommitteeContributionNexEpochDuty = func() *types.AggregatorCommitteeDuty {
 	d := TestingAggregatorCommitteeDutyOnlySyncCommittee()
 	d.Slot = TestingDutySlot2
+	for i := range d.ValidatorDuties {
+		d.ValidatorDuties[i].Slot = TestingDutySlot2
+	}
 	return d
 }()

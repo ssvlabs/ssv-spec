@@ -22,9 +22,8 @@ func TestAggregatorCommitteeConsensusDataForDuty(duty *types.AggregatorCommittee
 		// Initialize empty slices
 		Aggregators:                 []types.AssignedAggregator{},
 		AggregatorsCommitteeIndexes: []uint64{},
-		Attestations:                [][]byte{},
+		AggregatedAttestations:      [][]byte{},
 		Contributors:                []types.AssignedAggregator{},
-		SyncCommitteeSubnets:        []uint64{},
 		SyncCommitteeContributions:  []altair.SyncCommitteeContribution{},
 	}
 
@@ -66,8 +65,18 @@ func TestAggregatorCommitteeConsensusDataForDuty(duty *types.AggregatorCommittee
 				ValidatorIndex: validatorDuty.ValidatorIndex,
 				CommitteeIndex: uint64(validatorDuty.CommitteeIndex),
 			})
-			consensusData.AggregatorsCommitteeIndexes = append(consensusData.AggregatorsCommitteeIndexes, uint64(validatorDuty.CommitteeIndex))
-			consensusData.Attestations = append(consensusData.Attestations, marshaledAtt)
+
+			commIndexAlreadyExists := false
+			for _, commIndex := range consensusData.AggregatorsCommitteeIndexes {
+				if commIndex == uint64(validatorDuty.CommitteeIndex) {
+					commIndexAlreadyExists = true
+					break
+				}
+			}
+			if !commIndexAlreadyExists {
+				consensusData.AggregatorsCommitteeIndexes = append(consensusData.AggregatorsCommitteeIndexes, uint64(validatorDuty.CommitteeIndex))
+				consensusData.AggregatedAttestations = append(consensusData.AggregatedAttestations, marshaledAtt)
+			}
 
 		case types.BNRoleSyncCommitteeContribution:
 			for i, contribution := range TestingSyncCommitteeContributions {
@@ -75,13 +84,19 @@ func TestAggregatorCommitteeConsensusDataForDuty(duty *types.AggregatorCommittee
 				consensusData.Contributors = append(consensusData.Contributors, types.AssignedAggregator{
 					ValidatorIndex: validatorDuty.ValidatorIndex,
 					SelectionProof: TestingContributionProofsSigned[i],
+					CommitteeIndex: contribution.SubcommitteeIndex,
 				})
 
-				// Add sync committee contribution
-				consensusData.SyncCommitteeContributions = append(consensusData.SyncCommitteeContributions, *contribution)
-
-				// Append correct SubcommitteeIndex
-				consensusData.SyncCommitteeSubnets = append(consensusData.SyncCommitteeSubnets, uint64(contribution.SubcommitteeIndex))
+				commIndexAlreadyExists := false
+				for _, commIndex := range consensusData.SyncCommitteeContributions {
+					if commIndex.SubcommitteeIndex == contribution.SubcommitteeIndex {
+						commIndexAlreadyExists = true
+						break
+					}
+				}
+				if !commIndexAlreadyExists {
+					consensusData.SyncCommitteeContributions = append(consensusData.SyncCommitteeContributions, *contribution)
+				}
 			}
 		}
 	}

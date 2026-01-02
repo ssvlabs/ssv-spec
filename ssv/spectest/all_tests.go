@@ -101,6 +101,8 @@ var AllTests = []tests.TestF{
 	committeemultipleduty.FailedThanSuccessfulDuties,
 
 	aggregatorcommitteesingleduty.HappyFlow,
+	aggregatorcommitteesingleduty.DutyWithDifferentSlots,
+	aggregatorcommitteesingleduty.MaxValidators,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
@@ -138,6 +140,7 @@ var AllTests = []tests.TestF{
 	preconsensus.TooManyRoots,
 	preconsensus.UnorderedExpectedRoots,
 	preconsensus.InvalidSignedMessage,
+	preconsensus.InvalidQuorum,
 	preconsensus.InvalidOperatorSignature,
 	preconsensus.InvalidExpectedRoot,
 	preconsensus.DuplicateMsg,
@@ -185,7 +188,6 @@ var AllTests = []tests.TestF{
 	valcheckproposer.BlindedBlock,
 
 	valcheckaggcommittee.NoValidator,
-	valcheckaggcommittee.InvalidAttLen,
 	valcheckaggcommittee.Valid,
 
 	valcheck.WrongDecoding,

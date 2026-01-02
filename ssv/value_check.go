@@ -133,14 +133,6 @@ func AggregatorCommitteeValueCheckF(
 			return errors.Wrap(err, "invalid value")
 		}
 
-		// Basic validation - consensus data should have either aggregator or sync committee data
-		hasAggregators := len(cd.Aggregators) > 0
-		hasContributors := len(cd.Contributors) > 0
-
-		if !hasAggregators && !hasContributors {
-			return types.WrapError(types.AggCommConsensusDataNoValidatorErrorCode, errors.New("no aggregators or sync committee contributors in consensus data"))
-		}
-
 		return nil
 	}
 }

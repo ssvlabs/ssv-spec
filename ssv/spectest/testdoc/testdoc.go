@@ -11,10 +11,6 @@ const MultiCommitteeSpecTestType = "Multi committee: multiple committee tests"
 // Test type strings for ssv/spectest/tests/partialsigcontainer
 const PartialSigContainerTestType = "Partial signature container: validation of signature aggregation and quorum verification"
 
-// Test type strings for ssv/spectest/tests/valcheck
-const ValCheckSpecTestType = "Value check: validations for input of different runner roles"
-const MultiValCheckSpecTestType = "Multi value check: multiple value check tests"
-
 // Test type strings for ssv/spectest/tests/runner/construction
 const RunnerConstructionSpecTestType = "Runner construction: validation of runner construction"
 
@@ -27,6 +23,11 @@ const SyncCommitteeAggregatorProofSpecTestType = "Sync committee aggregator proo
 
 // Documentation for happy flow tests
 const HappyFlowDoc = "Tests a full runner happy flow"
+
+// Documentation for aggregator committee
+const AggregatorCommitteeDutyHappyFlowDoc = "Testing aggregator committee runner with complete duty flow for both aggregator and sync committee contribution"
+const AggregatorCommitteeDutyMaxValidatorsDoc = "Testing aggregator committee runner with complete duty flow for both aggregator and sync committee contribution and the maximum number of validators"
+const AggregatorCommitteeDutyWithDifferentSlotsDoc = "Testing aggregator committee runner with duties that have different slots"
 
 // Documentation for committee/multipleduty tests
 const CommitteeSequencedHappyFlowDutiesDoc = "Tests complete happy flow execution for sequences of duties including consensus and post-consensus phases"
@@ -121,8 +122,6 @@ const PostConsensusInvalidMsgDoc = "Tests post-consensus message processing with
 const PostConsensusDuplicateMsgDoc = "Tests post-consensus message processing with duplicate SignedPartialSignatureMessages from the same signer, expecting correct handling of duplicates"
 const PostConsensusInvalidMsgSigDoc = "Tests post-consensus message processing with invalid message signature. No error is generated since the SignedPartialSignatureMessage.Signature is no longer checked"
 const PostConsensusInvalidMsgSlotDoc = "Tests post-consensus message processing with invalid message slot, expecting error"
-const PostConsensusInvalidSignedMsgDiffLengthDoc = "Tests post-consensus message processing with invalid signed message (different signature lengths)"
-const PostConsensusInvalidSignedMsgEmptySignatureDoc = "Tests post-consensus message processing with invalid signed message (empty signature)"
 const PostConsensusInvalidSignedMsgNoSignatureDoc = "Tests post-consensus message processing with invalid signed message (no signatures)"
 const PostConsensusInvalidSignedMsgNoSignersDoc = "Tests post-consensus message processing with invalid signed message (no signers)"
 const PostConsensusInvalidThenQuorumDoc = "Tests post-consensus quorum formation with an invalid message followed by a valid quorum, expecting error then successful termination"
@@ -160,7 +159,6 @@ const PostConsensusPreDecidedDoc = "Tests post-consensus message processing befo
 const PostConsensusUnknownSignerDoc = "Tests post-consensus message processing with unknown signer, expecting error"
 
 // Documentation for runner/preconsensus tests
-const PreConsensusDuplicateMsgDifferentRootsDoc = "Tests pre-consensus message processing with duplicate messages having different roots, expecting error"
 const PreConsensusDuplicateMsgDoc = "Tests pre-consensus message processing with duplicate messages"
 const PreConsensusInconsistentBeaconSignerDoc = "Tests pre-consensus message processing with inconsistent beacon signer, expecting error"
 const PreConsensusInconsistentOperatorSignerDoc = "Tests pre-consensus message processing with inconsistent operator signer, expecting error"
@@ -176,6 +174,7 @@ const PreConsensusInvalidSignedMessageNoSignatureDoc = "Tests pre-consensus mess
 const PreConsensusInvalidSignedMessageNoSignersDoc = "Tests pre-consensus message processing with invalid signed message (no signers)"
 const PreConsensusInvalidSignedMessageDoc = "Tests pre-consensus message processing with invalid signed message, expecting error"
 const PreConsensusInvalidThenQuorumDoc = "Tests pre-consensus message processing with an invalid message then a valid quorum, expecting error then successful termination"
+const PreConsensusInvalidQuorumDoc = "Tests pre-consensus message processing with a quorum that has as invalid message, and ensures that it does not start consensus"
 const PreConsensusNilMsgDoc = "Tests pre-consensus message processing with nil SignedSSVMessage, expecting error"
 const PreConsensusNoRunningDutyDoc = "Tests pre-consensus message processing when there is no running duty, expecting error"
 const PreConsensusPostDecidedDoc = "Tests pre-consensus message processing after duty is decided"
@@ -204,8 +203,6 @@ const ValCheckAttestationValidNonSlashableSlotDoc = "Tests attestation value che
 const ValCheckAttestationValidDoc = "Tests attestation value check with valid attestation"
 const ValCheckAttestationUnmatchedSourceEpochDoc = "Tests attestation value check with unmatched expected source epoch from operator's own view (source epoch differs from expected)"
 const ValCheckAttestationUnmatchedTargetEpochDoc = "Tests attestation value check with unmatched target epoch from operator's own view (target epoch differs from expected)"
-const ValCheckAttestationUnmatchedSourceRootDoc = "Tests attestation value check with unmatched expected source root from operator's own view (source root differs from expected)"
-const ValCheckAttestationUnmatchedTargetRootDoc = "Tests attestation value check with unmatched target root from operator's own view (target root differs from expected)"
 
 // Documentation for valcheckduty tests
 const ValCheckDutyFarFutureDutySlotDoc = "Tests duty value check with duty slot too far in the future"
@@ -218,7 +215,6 @@ const ValCheckProposerBlindedBlockDoc = "Tests proposer value check with blinded
 
 // Documentation for valcheckaggcommittee
 const ValCheckAggCommitteeNoValidatorsDoc = "Tests agg committee value check with no validators"
-const ValCheckAggCommitteeInvalidAttestationLenDoc = "Tests agg committee value check with an invalid attestations length"
 const ValCheckAggCommitteeValidDoc = "Tests agg committee value valid case"
 
 // Documentation for valcheck

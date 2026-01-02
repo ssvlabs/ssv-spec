@@ -210,7 +210,7 @@
       "PostDutyRunnerStateRoot": "c8ce3cec33a9e557f52c1392f96b613ed2d37b24b54a1c9429a7dbff91f212eb",
       "OutputMessages": [
         {
-          "Type": 6,
+          "Type": 4,
           "Slot": "50",
           "Messages": [
             {
@@ -220,15 +220,15 @@
               "ValidatorIndex": "1"
             },
             {
-              "PartialSignature": "8efe4c90368e40d592e8cd2ca7264ceab43a8dc52cd5ac6c137072fe4836f6f6bcb88b91ecc9d3cf8543a1660552640e0c29583dbab9df48d92adac82fefc0b2c6d7f660b81c023e2af3e6c6909badac680f133466394a4d0cb3540d00ca12fb",
+              "PartialSignature": "b1dd2aa2afecc08d4f297f0d5c0a5fa054007db56603cc5cf9b98d66af4658d986c9cf509ec2771ef5af74504c46eadb03709e1096c11bc09e2d93200578dbf0f82af644b8b59572fcc942699121f2f94d0f7565022f5e86a63c9dc142fa4118",
               "Signer": 1,
-              "SigningRoot": "a811a2483ee9f3e173e091448080e8a7480fb5b0e0e875ae734eb76beb5e05c1",
+              "SigningRoot": "9492b2cb33a6ea997d234e66cb52288acc8c43a315e7a5185c38eae03eebf70c",
               "ValidatorIndex": "1"
             },
             {
-              "PartialSignature": "b69b4ec01136e950b7ab421670e82a7092a80ec3f5fea916e0b6159936892f31feea320e3c539b8efbd602a723fa99d711fd9ade23c36c10e2b05a61bff5b29e6b68bb2c1ed61fda6dab504ca0bc011faa66b47a4ae9e4e69d7d0c7f45297182",
+              "PartialSignature": "b1dd2aa2afecc08d4f297f0d5c0a5fa054007db56603cc5cf9b98d66af4658d986c9cf509ec2771ef5af74504c46eadb03709e1096c11bc09e2d93200578dbf0f82af644b8b59572fcc942699121f2f94d0f7565022f5e86a63c9dc142fa4118",
               "Signer": 1,
-              "SigningRoot": "2c141cf56ca4327e52e4ef61cc6529749d50c57aa1adc2ceba06a3c13fa87404",
+              "SigningRoot": "9492b2cb33a6ea997d234e66cb52288acc8c43a315e7a5185c38eae03eebf70c",
               "ValidatorIndex": "1"
             }
           ]
@@ -844,7 +844,7 @@
       "PostDutyRunnerStateRoot": "3674c8986f519e022f76377d00c5d27ef2e53faaf6bffce4eb692bf5d387d6b2",
       "OutputMessages": [
         {
-          "Type": 6,
+          "Type": 4,
           "Slot": "50",
           "Messages": [
             {
@@ -1077,7 +1077,7 @@
       "PostDutyRunnerStateRoot": "3674c8986f519e022f76377d00c5d27ef2e53faaf6bffce4eb692bf5d387d6b2",
       "OutputMessages": [
         {
-          "Type": 6,
+          "Type": 4,
           "Slot": "7424044",
           "Messages": [
             {
