@@ -128,9 +128,3 @@ var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.Validat
 		createAggCommRunnerF,
 	)
 }
-
-func setIdentifierRole(msgIDBytes []byte, role types.RunnerRole) []byte {
-	msgID := types.MessageID(msgIDBytes)
-	newMsgID := types.NewMsgID(types.DomainType(msgID.GetDomain()), msgID.GetDutyExecutorID(), role)
-	return newMsgID[:]
-}
