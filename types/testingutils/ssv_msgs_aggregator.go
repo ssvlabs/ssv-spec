@@ -53,8 +53,8 @@ var PreConsensusCustomSlotSelectionProofMsg = func(msgSK, beaconSK *bls.SecretKe
 	return selectionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, slot, 1, false, false)
 }
 
-var PreConsensusSelectionProofMsgWithValidatorIndex = func(msgSK, beaconSK *bls.SecretKey, validatorIndex phase0.ValidatorIndex, msgID, beaconID types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	return PreConsensusCustomSlotSelectionProofMsgWithValidatorIndex(msgSK, beaconSK, validatorIndex, msgID, beaconID, TestingDutySlotV(version))
+var PreConsensusSelectionProofMsgWithValidatorIndex = func(msgSK, beaconSK *bls.SecretKey, validatorIndex phase0.ValidatorIndex, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
+	return PreConsensusCustomSlotSelectionProofMsgWithValidatorIndex(msgSK, beaconSK, validatorIndex, msgID, beaconID, slot)
 }
 
 var PreConsensusCustomSlotSelectionProofMsgWithValidatorIndex = func(msgSK, beaconSK *bls.SecretKey, validatorIndex phase0.ValidatorIndex, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
@@ -110,11 +110,11 @@ var selectionProofMsg = func(
 // ==================================================
 
 var PostConsensusAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	return postConsensusAggregatorMsg(sk, id, TestingValidatorIndex, false, false, version)
+	return postConsensusAggregatorMsg(sk, id, TestingValidatorIndex, false, false, version, TestingDutySlotV(version))
 }
 
 var PostConsensusAggregatorTooManyRootsMsg = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	ret := postConsensusAggregatorMsg(sk, id, TestingValidatorIndex, false, false, version)
+	ret := postConsensusAggregatorMsg(sk, id, TestingValidatorIndex, false, false, version, TestingDutySlotV(version))
 	ret.Messages = append(ret.Messages, ret.Messages[0])
 
 	msg := &types.PartialSignatureMessages{
@@ -135,11 +135,11 @@ var PostConsensusAggregatorTooFewRootsMsg = func(sk *bls.SecretKey, id types.Ope
 }
 
 var PostConsensusWrongAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	return postConsensusAggregatorMsg(sk, id, TestingValidatorIndex, true, false, version)
+	return postConsensusAggregatorMsg(sk, id, TestingValidatorIndex, true, false, version, TestingDutySlotV(version))
 }
 
 var PostConsensusWrongValidatorIndexAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	msg := postConsensusAggregatorMsg(sk, id, TestingValidatorIndex, true, false, version)
+	msg := postConsensusAggregatorMsg(sk, id, TestingValidatorIndex, true, false, version, TestingDutySlotV(version))
 	for _, m := range msg.Messages {
 		m.ValidatorIndex = TestingWrongValidatorIndex
 	}
@@ -147,11 +147,11 @@ var PostConsensusWrongValidatorIndexAggregatorMsg = func(sk *bls.SecretKey, id t
 }
 
 var PostConsensusWrongSigAggregatorMsg = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
-	return postConsensusAggregatorMsg(sk, id, TestingValidatorIndex, false, true, version)
+	return postConsensusAggregatorMsg(sk, id, TestingValidatorIndex, false, true, version, TestingDutySlotV(version))
 }
 
-var PostConsensusAggregatorMsgWithValidatorIndex = func(sk *bls.SecretKey, id types.OperatorID, validatorIndex phase0.ValidatorIndex, version spec.DataVersion) *types.PartialSignatureMessages {
-	return postConsensusAggregatorMsg(sk, id, validatorIndex, false, false, version)
+var PostConsensusAggregatorMsgWithValidatorIndex = func(sk *bls.SecretKey, id types.OperatorID, validatorIndex phase0.ValidatorIndex, version spec.DataVersion, slot phase0.Slot) *types.PartialSignatureMessages {
+	return postConsensusAggregatorMsg(sk, id, validatorIndex, false, false, version, slot)
 }
 
 var postConsensusAggregatorMsg = func(
@@ -161,6 +161,7 @@ var postConsensusAggregatorMsg = func(
 	wrongRoot bool,
 	wrongBeaconSig bool,
 	version spec.DataVersion,
+	slot phase0.Slot,
 ) *types.PartialSignatureMessages {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
@@ -178,7 +179,7 @@ var postConsensusAggregatorMsg = func(
 
 	msgs := types.PartialSignatureMessages{
 		Type: types.PostConsensusPartialSig,
-		Slot: TestingDutySlotV(version),
+		Slot: slot,
 		Messages: []*types.PartialSignatureMessage{
 			{
 				PartialSignature: signed,

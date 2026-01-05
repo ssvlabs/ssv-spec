@@ -283,7 +283,7 @@ var PostConsensusAggregatorCommitteeMsgForDuty = func(duty *types.AggregatorComm
 
 		switch validatorDuty.Type {
 		case types.BNRoleAggregator:
-			pSigMsgs := PostConsensusAggregatorMsgWithValidatorIndex(ks.Shares[id], id, validatorDuty.ValidatorIndex, version)
+			pSigMsgs := PostConsensusAggregatorMsgWithValidatorIndex(ks.Shares[id], id, validatorDuty.ValidatorIndex, version, duty.Slot)
 			if ret == nil {
 				ret = pSigMsgs
 			} else {
@@ -318,7 +318,7 @@ var PreConsensusAggregatorCommitteeMsgForDuty = func(duty *types.AggregatorCommi
 		switch validatorDuty.Type {
 		case types.BNRoleAggregator:
 			// Add aggregator selection proof with SelectionProofPartialSig type
-			selectionProofMsg := PreConsensusSelectionProofMsgWithValidatorIndex(ks.Shares[id], ks.Shares[id], validatorDuty.ValidatorIndex, id, id, version)
+			selectionProofMsg := PreConsensusSelectionProofMsgWithValidatorIndex(ks.Shares[id], ks.Shares[id], validatorDuty.ValidatorIndex, id, id, duty.Slot)
 			if ret == nil {
 				ret = selectionProofMsg
 			} else {
@@ -371,7 +371,7 @@ var PostConsensusAggCommitteeMsgForKeySet = func(
 		valIdx := valKs.Key
 
 		if includeAgg {
-			aggMsg := postConsensusAggregatorMsg(ks.Shares[id], id, valIdx, false, false, version)
+			aggMsg := postConsensusAggregatorMsg(ks.Shares[id], id, valIdx, false, false, version, TestingDutySlotV(version))
 			if ret == nil {
 				ret = aggMsg
 			} else {
@@ -427,7 +427,7 @@ var PostConsensusPartiallyWrongAggCommmitteeMsgForKeySet = func(
 
 		if includeAgg {
 
-			attPSigMsgs := postConsensusAggregatorMsg(ks.Shares[id], id, valIdx, wrongRootV, wrongBeaconSigV, version)
+			attPSigMsgs := postConsensusAggregatorMsg(ks.Shares[id], id, valIdx, wrongRootV, wrongBeaconSigV, version, TestingDutySlotV(version))
 			if ret == nil {
 				ret = attPSigMsgs
 			} else {

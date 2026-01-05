@@ -111,6 +111,7 @@ var AllTests = []tests.TestF{
 	aggregatorcommitteesingleduty.MaxValidators,
 
 	committeemixedduties.SameSlot,
+	committeemixedduties.MixedMultipleSlots,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,

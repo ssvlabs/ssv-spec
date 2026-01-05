@@ -58,6 +58,7 @@ const CommitteeWrongRoleDoc = "Tests that the processing of a message with a wro
 
 // Documentation for committee mixed duties tests
 const CommitteeMixedDutiesDoc = "Tests happy flow execution for a committee that has both a committee duty and an aggregator committee duty on the same slot"
+const CommitteeMixedDutiesMultipleSlotsDoc = "Tests happy flow execution for a committee that has both a committee duty and an aggregator committee duty on the same slot, through multiple slots"
 
 // Documentation for dutyexe tests
 const DutyExeWrongDutyPubKeyDoc = "Tests decided value with duty validator pubkey != the duty runner's pubkey"
