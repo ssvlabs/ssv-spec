@@ -91,6 +91,7 @@ const (
 	InvalidAggregatorCommitteeDutyErrorCode
 	UnknownVersionErrorCode
 	AggCommAttestationDecodingErrorCode
+	CommitteeWrongRoleErrorCode
 )
 
 type Error struct {

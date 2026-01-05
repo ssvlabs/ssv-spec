@@ -131,7 +131,7 @@ func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 	case types.RoleAggregatorCommittee:
 		runnerMap = &c.AggregatorCommitteeRunners
 	default:
-		return fmt.Errorf("unknown role type: %v", role)
+		return types.NewError(types.CommitteeWrongRoleErrorCode, "msg role is invalid")
 	}
 
 	switch msg.GetType() {
@@ -193,7 +193,7 @@ func (c *Committee) validateMessage(msg *types.SSVMessage) error {
 
 	role := msg.GetID().GetRoleType()
 	if role != types.RoleCommittee && role != types.RoleAggregatorCommittee {
-		return fmt.Errorf("msg role is invalid")
+		return types.NewError(types.CommitteeWrongRoleErrorCode, "msg role is invalid")
 	}
 
 	if len(msg.GetData()) == 0 {
