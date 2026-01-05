@@ -261,8 +261,8 @@ func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot phase0.Slot, com
 	return TestingAggregateAndProofV(version, TestingValidatorIndex), version, nil
 }
 
-// SubmitSignedAggregateSelectionProof broadcasts a signed aggregator msg
-func (bn *TestingBeaconNode) SubmitSignedAggregateSelectionProof(msg *spec.VersionedSignedAggregateAndProof) error {
+// SubmitSignedAggregateAndProof broadcasts a signed aggregator msg
+func (bn *TestingBeaconNode) SubmitSignedAggregateAndProof(msg *spec.VersionedSignedAggregateAndProof) error {
 	var root [32]byte
 
 	switch msg.Version {
@@ -285,6 +285,16 @@ func (bn *TestingBeaconNode) SubmitSignedAggregateSelectionProof(msg *spec.Versi
 	}
 
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, root)
+	return nil
+}
+
+// SubmitMultipleSignedAggregateAndProof broadcasts multiple signed aggregator msgs
+func (bn *TestingBeaconNode) SubmitMultipleSignedAggregateAndProof(msg []*spec.VersionedSignedAggregateAndProof) error {
+	for _, m := range msg {
+		if err := bn.SubmitSignedAggregateAndProof(m); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

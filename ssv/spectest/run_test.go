@@ -430,11 +430,6 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 
 	c := fixCommitteeForRun(t, committeeMap)
 
-	strictMessageOrder := false
-	if val, ok := m["StrictMessageOrder"]; ok {
-		strictMessageOrder = val.(bool)
-	}
-
 	return &committee.CommitteeSpecTest{
 		Name:                   m["Name"].(string),
 		Committee:              c,
@@ -443,7 +438,6 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 		OutputMessages:         outputMsgs,
 		BeaconBroadcastedRoots: beaconBroadcastedRoots,
 		ExpectedErrorCode:      int(m["ExpectedErrorCode"].(float64)),
-		StrictMessageOrder:     strictMessageOrder,
 	}
 }
 

@@ -96,6 +96,36 @@ func InvalidAggregatorValidationUnusedCommitteeIndex() *AggregatorCommitteeConse
 	)
 }
 
+// InvalidAggregatorValidationPhase0AttestationDecoding tests an invalid consensus data in which an attestation fails to decode
+func InvalidAggregatorValidationPhase0AttestationDecoding() *AggregatorCommitteeConsensusDataTest {
+
+	cd := testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)
+
+	cd.AggregatedAttestations[0] = []byte{0x01, 0x02, 0x03} // invalid attestation bytes
+
+	return NewValidatorConsensusDataTest(
+		"invalid aggregator data with phase0 attestation decoding error",
+		testdoc.AggregatorCommitteeConsensusDataTestInvalidPhase0AttestationDecodingDoc,
+		*cd,
+		types.AggCommAttestationDecodingErrorCode,
+	)
+}
+
+// InvalidAggregatorValidationPhase0AttestationDecoding tests an invalid consensus data in which an attestation fails to decode
+func InvalidAggregatorValidationElectraAttestationDecoding() *AggregatorCommitteeConsensusDataTest {
+
+	cd := testingutils.TestAggregatorConsensusData(spec.DataVersionElectra)
+
+	cd.AggregatedAttestations[0] = []byte{0x01, 0x02, 0x03} // invalid attestation bytes
+
+	return NewValidatorConsensusDataTest(
+		"invalid aggregator data with electra attestation decoding error",
+		testdoc.AggregatorCommitteeConsensusDataTestInvalidElectraAttestationDecodingDoc,
+		*cd,
+		types.AggCommAttestationDecodingErrorCode,
+	)
+}
+
 // InvalidSyncCommitteeContributionSubnet tests an invalid consensus data with a duplicated subnet
 func InvalidSyncCommitteeContributionDuplicatedSubnet() *AggregatorCommitteeConsensusDataTest {
 

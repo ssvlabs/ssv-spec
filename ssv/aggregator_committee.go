@@ -357,6 +357,17 @@ func (r *AggregatorCommitteeRunner) ProcessPostConsensus(signedMsg *types.Partia
 
 	var anyErr error
 
+	type AggregationSubmission struct {
+		spec.VersionedSignedAggregateAndProof
+		root [32]byte
+	}
+	type ContributionSubmission struct {
+		*altair.SignedContributionAndProof
+		root [32]byte
+	}
+	aggregationsToSubmit := make(map[phase0.ValidatorIndex]*AggregationSubmission)
+	syncCommitteeContributionsToSubmit := make(map[phase0.ValidatorIndex][]*ContributionSubmission)
+
 	// For each root that got at least one quorum, find the duties and try to submit
 	for _, root := range sortedRoots {
 		// Get validators related to the given root
@@ -426,12 +437,11 @@ func (r *AggregatorCommitteeRunner) ProcessPostConsensus(signedMsg *types.Partia
 					continue
 				}
 
-				if err := r.beacon.SubmitSignedAggregateSelectionProof(signedAgg); err != nil {
-					anyErr = errors.Wrap(err, "failed to submit signed aggregate and proof")
-					continue
+				// Store for later submission
+				aggregationsToSubmit[validator] = &AggregationSubmission{
+					VersionedSignedAggregateAndProof: *signedAgg,
+					root:                             root,
 				}
-
-				r.RecordSubmission(types.BNRoleAggregator, validator, root)
 
 			case types.BNRoleSyncCommitteeContribution:
 				contribAndProof := beaconObj.(*altair.ContributionAndProof)
@@ -440,16 +450,35 @@ func (r *AggregatorCommitteeRunner) ProcessPostConsensus(signedMsg *types.Partia
 					Signature: blsSig,
 				}
 
-				if err := r.beacon.SubmitSignedContributionAndProof(signedContrib); err != nil {
-					anyErr = errors.Wrap(err, "failed to submit signed contribution and proof")
-					continue
+				// Store for later submission
+				if _, ok := syncCommitteeContributionsToSubmit[validator]; !ok {
+					syncCommitteeContributionsToSubmit[validator] = make([]*ContributionSubmission, 0)
 				}
-
-				r.RecordSubmission(types.BNRoleSyncCommitteeContribution, validator, root)
-
+				syncCommitteeContributionsToSubmit[validator] = append(syncCommitteeContributionsToSubmit[validator], &ContributionSubmission{
+					SignedContributionAndProof: signedContrib,
+					root:                       root,
+				})
 			default:
 				return errors.Errorf("unexpected role type in post-consensus: %v", role)
 			}
+		}
+	}
+
+	// Submit aggregates and contributions
+	for validator, aggSubmission := range aggregationsToSubmit {
+		if err := r.beacon.SubmitSignedAggregateAndProof(&aggSubmission.VersionedSignedAggregateAndProof); err != nil {
+			anyErr = errors.Wrap(err, "failed to submit signed aggregate and proof")
+			continue
+		}
+		r.RecordSubmission(types.BNRoleAggregator, validator, aggSubmission.root)
+	}
+	for validator, contribSubmissions := range syncCommitteeContributionsToSubmit {
+		for _, contribSubmission := range contribSubmissions {
+			if err := r.beacon.SubmitSignedContributionAndProof(contribSubmission.SignedContributionAndProof); err != nil {
+				anyErr = errors.Wrap(err, "failed to submit signed contribution and proof")
+				continue
+			}
+			r.RecordSubmission(types.BNRoleSyncCommitteeContribution, validator, contribSubmission.root)
 		}
 	}
 

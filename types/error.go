@@ -90,6 +90,7 @@ const (
 	PostConsensusQuorumWithInvalidSignatures
 	InvalidAggregatorCommitteeDutyErrorCode
 	UnknownVersionErrorCode
+	AggCommAttestationDecodingErrorCode
 )
 
 type Error struct {

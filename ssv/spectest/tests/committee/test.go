@@ -35,9 +35,6 @@ type CommitteeSpecTest struct {
 	BeaconBroadcastedRoots []string
 	ExpectedErrorCode      int
 	PrivateKeys            *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
-	// StrictMessageOrder, when true, compares output messages with strict ordering
-	// (both message order and partial signature order within each message must match exactly)
-	StrictMessageOrder bool `json:"StrictMessageOrder,omitempty"`
 }
 
 func (test *CommitteeSpecTest) TestName() string {
@@ -65,11 +62,7 @@ func (test *CommitteeSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	}
 
 	// test output message
-	if test.StrictMessageOrder {
-		testingutils.ComparePartialSignatureOutputMessagesStrictOrder(t, test.OutputMessages, broadcastedMsgs, test.Committee.CommitteeMember.Committee)
-	} else {
-		testingutils.ComparePartialSignatureOutputMessagesInAsynchronousOrder(t, test.OutputMessages, broadcastedMsgs, test.Committee.CommitteeMember.Committee)
-	}
+	testingutils.ComparePartialSignatureOutputMessagesInAsynchronousOrder(t, test.OutputMessages, broadcastedMsgs, test.Committee.CommitteeMember.Committee)
 
 	// test beacon broadcasted msgs
 	testingutils.CompareBroadcastedBeaconMsgs(t, test.BeaconBroadcastedRoots, broadcastedRoots)
