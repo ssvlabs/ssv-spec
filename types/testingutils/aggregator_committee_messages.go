@@ -33,9 +33,9 @@ func AggregatorCommitteeInputForDuty(duty *types.AggregatorCommitteeDuty, ksMap 
 
 	msgs := []*types.SignedSSVMessage{
 		// Pre-consensus messages
-		SignPartialSigSSVMessage(ks, SSVMsgAggregatorCommittee(ks, nil, PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version))),
-		SignPartialSigSSVMessage(ks, SSVMsgAggregatorCommittee(ks, nil, PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 2, version))),
-		SignPartialSigSSVMessage(ks, SSVMsgAggregatorCommittee(ks, nil, PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 3, version))),
+		SignPartialSigSSVMessage(ks, SSVMsgAggregatorCommittee(ks, nil, PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1))),
+		SignPartialSigSSVMessage(ks, SSVMsgAggregatorCommittee(ks, nil, PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 2))),
+		SignPartialSigSSVMessage(ks, SSVMsgAggregatorCommittee(ks, nil, PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 3))),
 
 		// Consensus messages
 		TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1), msgID[:], consensusDataBytes, height),

@@ -42,9 +42,9 @@ func MaxValidators() tests.SpecTest {
 					duty,
 
 					// Pre-consensus messages
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 2, version))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 3, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 2))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 3))),
 
 					// Consensus messages
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1), msgID, consensusDataBytes, height),
@@ -62,7 +62,7 @@ func MaxValidators() tests.SpecTest {
 				},
 				OutputMessages: []*types.PartialSignatureMessages{
 					// Pre-consensus message broadcasted when starting duty
-					testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version),
+					testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1),
 					// Post-consensus message broadcasted after consensus
 					testingutils.PostConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version),
 				},

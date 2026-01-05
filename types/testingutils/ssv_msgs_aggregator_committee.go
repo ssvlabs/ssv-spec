@@ -306,7 +306,7 @@ var PostConsensusAggregatorCommitteeMsgForDuty = func(duty *types.AggregatorComm
 
 // PreConsensusAggregatorCommitteeMsgForDuty creates pre-consensus messages for all validators in the duty
 // This handles selection proofs for both aggregator and sync committee roles
-var PreConsensusAggregatorCommitteeMsgForDuty = func(duty *types.AggregatorCommitteeDuty, keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+var PreConsensusAggregatorCommitteeMsgForDuty = func(duty *types.AggregatorCommitteeDuty, keySetMap map[phase0.ValidatorIndex]*TestKeySet, id types.OperatorID) *types.PartialSignatureMessages {
 	var ret *types.PartialSignatureMessages
 
 	for _, validatorDuty := range duty.ValidatorDuties {

@@ -93,10 +93,10 @@ func WrongRole() tests.SpecTest {
 			Input: []interface{}{
 				aggDuty,
 
-				invalidateRunnerRole(testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 1, version)))),
+				invalidateRunnerRole(testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 1)))),
 			},
 			OutputMessages: []*types.PartialSignatureMessages{
-				testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 1, version),
+				testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 1),
 			},
 			ExpectedErrorCode: expectedError,
 		},
@@ -105,10 +105,10 @@ func WrongRole() tests.SpecTest {
 			Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 			Input: []interface{}{
 				sccDuty,
-				invalidateRunnerRole(testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(sccDuty, ksMap, 1, version)))),
+				invalidateRunnerRole(testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(sccDuty, ksMap, 1)))),
 			},
 			OutputMessages: []*types.PartialSignatureMessages{
-				testingutils.PreConsensusAggregatorCommitteeMsgForDuty(sccDuty, ksMap, 1, version),
+				testingutils.PreConsensusAggregatorCommitteeMsgForDuty(sccDuty, ksMap, 1),
 			},
 			ExpectedErrorCode: expectedError,
 		},
@@ -117,10 +117,10 @@ func WrongRole() tests.SpecTest {
 			Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 			Input: []interface{}{
 				aggAndSccDuty,
-				invalidateRunnerRole(testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggAndSccDuty, ksMap, 1, version)))),
+				invalidateRunnerRole(testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggAndSccDuty, ksMap, 1)))),
 			},
 			OutputMessages: []*types.PartialSignatureMessages{
-				testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggAndSccDuty, ksMap, 1, version),
+				testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggAndSccDuty, ksMap, 1),
 			},
 			ExpectedErrorCode: expectedError,
 		},

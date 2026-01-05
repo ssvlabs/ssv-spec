@@ -37,7 +37,7 @@ func SameSlot() tests.SpecTest {
 		// Comm
 		testingutils.PostConsensusCommitteeMsgForDuty(commDuty, ksMap, 1),
 		// Agg Comm
-		testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 1, version),
+		testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 1),
 		testingutils.PostConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 1, version),
 	}
 
