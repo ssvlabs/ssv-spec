@@ -4,12 +4,12 @@ package types
 type RunnerRole int32
 
 const (
-	RoleCommittee RunnerRole = iota // Combines attestation and sync committee duties
-	RoleProposer
-	RoleAggregatorCommittee // Combines aggregator and sync committee contribution duties
-	RoleValidatorRegistration
-	RoleVoluntaryExit
-	RoleUnknown = -1
+	RoleCommittee             = RunnerRole(0) // Combines attestation and sync committee duties
+	RoleProposer              = RunnerRole(2)
+	RoleValidatorRegistration = RunnerRole(4)
+	RoleVoluntaryExit         = RunnerRole(5)
+	RoleAggregatorCommittee   = RunnerRole(6) // Combines aggregator and sync committee contribution duties
+	RoleUnknown               = RunnerRole(-1)
 )
 
 // String returns the name of the runner role
