@@ -3,7 +3,7 @@
   "Type": "Value check: validations for input of different runner roles",
   "Documentation": "Tests agg committee value check with no validators",
   "Network": "prater",
-  "RunnerRole": 2,
+  "RunnerRole": 6,
   "DutySlot": "12",
   "Input": "AAAAAAAAAAAcAAAAHAAAABwAAAAcAAAAHAAAAA==",
   "ExpectedSource": {
