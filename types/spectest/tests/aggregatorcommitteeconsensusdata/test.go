@@ -31,7 +31,7 @@ func (test *AggregatorCommitteeConsensusDataTest) Run(t *testing.T) {
 	comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
 }
 
-func NewValidatorConsensusDataTest(name, documentation string, cd types.AggregatorCommitteeConsensusData, expectedErrorCode int) *AggregatorCommitteeConsensusDataTest {
+func NewAggregatorCommitteeConsensusDataTest(name, documentation string, cd types.AggregatorCommitteeConsensusData, expectedErrorCode int) *AggregatorCommitteeConsensusDataTest {
 	return &AggregatorCommitteeConsensusDataTest{
 		Name:                 name,
 		Type:                 testdoc.AggregatorCommitteeConsensusDataTestType,

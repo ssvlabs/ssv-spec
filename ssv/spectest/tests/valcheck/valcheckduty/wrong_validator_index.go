@@ -14,8 +14,8 @@ import (
 
 // WrongValidatorIndex tests duty.ValidatorIndex wrong
 func WrongValidatorIndex() tests.SpecTest {
-	consensusDataBytsF := func(cd *types.ValidatorConsensusData) []byte {
-		cdCopy := types.ValidatorConsensusData{}
+	consensusDataBytsF := func(cd *types.ProposerConsensusData) []byte {
+		cdCopy := types.ProposerConsensusData{}
 		b, _ := json.Marshal(cd)
 		if err := json.Unmarshal(b, &cdCopy); err != nil {
 			panic(err.Error())

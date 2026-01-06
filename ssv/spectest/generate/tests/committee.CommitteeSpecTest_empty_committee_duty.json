@@ -72,5 +72,5 @@
   "PostDutyCommitteeRoot": "",
   "OutputMessages": null,
   "BeaconBroadcastedRoots": null,
-  "ExpectedErrorCode": 26
+  "ExpectedErrorCode": 24
 }

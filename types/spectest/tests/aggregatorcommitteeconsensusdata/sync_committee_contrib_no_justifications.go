@@ -10,7 +10,7 @@ func SyncCommitteeContributionNoJustifications() *AggregatorCommitteeConsensusDa
 
 	// To-do: add error when pre-consensus justification check is added.
 
-	return NewValidatorConsensusDataTest(
+	return NewAggregatorCommitteeConsensusDataTest(
 		"sync committee contribution with no pre-consensus justification",
 		testdoc.AggregatorCommitteeConsensusDataTestSyncCommitteeContributionNoJustificationsDoc,
 		*testingutils.TestSyncCommitteeContributionConsensusData,

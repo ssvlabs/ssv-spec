@@ -110,7 +110,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedErrorCode": 30
+      "ExpectedErrorCode": 28
     },
     {
       "Name": "attestation (phase0)",
@@ -215,7 +215,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedErrorCode": 30
+      "ExpectedErrorCode": 28
     },
     {
       "Name": "sync committees (electra)",
@@ -324,7 +324,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedErrorCode": 30
+      "ExpectedErrorCode": 28
     },
     {
       "Name": "attestation (electra)",
@@ -429,7 +429,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": null,
       "BeaconBroadcastedRoots": null,
-      "ExpectedErrorCode": 30
+      "ExpectedErrorCode": 28
     }
   ],
   "PrivateKeys": {

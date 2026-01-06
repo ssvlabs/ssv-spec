@@ -7,7 +7,7 @@ import (
 
 // SyncCommitteeContributionValidation tests a valid consensus data with sync committee contrib.
 func SyncCommitteeContributionValidation() *AggregatorCommitteeConsensusDataTest {
-	return NewValidatorConsensusDataTest(
+	return NewAggregatorCommitteeConsensusDataTest(
 		"sync committee contribution valid",
 		testdoc.AggregatorCommitteeConsensusDataTestSyncCommitteeContributionValidationDoc,
 		*testingutils.TestSyncCommitteeContributionConsensusData,

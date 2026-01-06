@@ -85,7 +85,7 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 	case objMap["Round"] != nil && objMap["Height"] != nil:
 		correctType = &qbft.Message{}
 	case objMap["Duty"] != nil && objMap["DataSSZ"] != nil:
-		correctType = &types.ValidatorConsensusData{}
+		correctType = &types.ProposerConsensusData{}
 	case objMap["BlockRoot"] != nil && objMap["Source"] != nil && objMap["Target"] != nil:
 		correctType = &types.BeaconVote{}
 	case (objMap["Version"] != nil &&

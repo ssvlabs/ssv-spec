@@ -32,9 +32,9 @@ func maxDataSSZ() []byte {
 	return dataSSZ[:]
 }
 
-func maxConsensusData() *types.ValidatorConsensusData {
+func maxConsensusData() *types.ProposerConsensusData {
 
-	return &types.ValidatorConsensusData{
+	return &types.ProposerConsensusData{
 		Duty:    maxValidatorDuty(),
 		Version: spec.DataVersionAltair,
 		DataSSZ: maxDataSSZ(),
@@ -43,7 +43,7 @@ func maxConsensusData() *types.ValidatorConsensusData {
 
 func MaxConsensusData() *StructureSizeTest {
 	return NewStructureSizeTest(
-		"max ValidatorConsensusData",
+		"max ProposerConsensusData",
 		testdoc.StructureSizeTestMaxConsensusDataDoc,
 		maxConsensusData(),
 		maxSizeFullConsensusData,

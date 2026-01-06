@@ -103,7 +103,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": [],
       "BeaconBroadcastedRoots": [],
-      "ExpectedErrorCode": 84
+      "ExpectedErrorCode": 82
     },
     {
       "Name": "aggregator committee mixed (electra)",
@@ -205,7 +205,7 @@
       "PostDutyCommitteeRoot": "",
       "OutputMessages": [],
       "BeaconBroadcastedRoots": [],
-      "ExpectedErrorCode": 84
+      "ExpectedErrorCode": 82
     }
   ],
   "PrivateKeys": {

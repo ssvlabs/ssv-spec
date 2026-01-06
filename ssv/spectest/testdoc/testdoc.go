@@ -42,7 +42,7 @@ const CommitteeValidBeaconVoteDoc = "Tests committee behavior when processing pr
 const CommitteeWrongBeaconVoteDoc = "Tests committee behavior when processing proposal messages with invalid beacon vote data (source >= target)"
 const CommitteeWrongMessageIDDoc = "Tests committee behavior when processing messages with incorrect message IDs that don't match the committee ID"
 const CommitteePastMsgDutyNotFinishedDoc = "Tests committee behavior when processing past proposal messages for a duty that has not finished (consensus already finished)"
-const CommitteeProposalWithConsensusDataDoc = "Tests committee behavior when processing proposal messages with ValidatorConsensusData instead of BeaconVote objects"
+const CommitteeProposalWithConsensusDataDoc = "Tests committee behavior when processing proposal messages with other consensus data instead of BeaconVote objects"
 const CommitteeStartDutyDoc = "Tests basic duty starting for attestations and sync committees without consensus messages"
 const CommitteeStartNoDutyDoc = "Tests committee behavior when starting with an empty duty (no attestation or sync committee duties)"
 const CommitteeStartWithNoSharesForDutyDoc = "Tests committee behavior when starting a duty for validators that the committee doesn't have shares for"

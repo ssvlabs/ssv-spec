@@ -12,7 +12,7 @@ import (
 
 // WrongDutyType tests duty.Type not attester
 func WrongDutyType() tests.SpecTest {
-	consensusDataBytsWithIncorrectTypeF := func(cd *types.ValidatorConsensusData) []byte {
+	consensusDataBytsWithIncorrectTypeF := func(cd *types.ProposerConsensusData) []byte {
 		cd.Duty.Type = types.BNRoleAggregator
 		input, _ := cd.Encode()
 		return input

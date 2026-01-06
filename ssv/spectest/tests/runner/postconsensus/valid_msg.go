@@ -13,7 +13,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-func finishRunner(r ssv.Runner, duty types.Duty, decidedValue *types.ValidatorConsensusData) ssv.Runner {
+func finishRunner(r ssv.Runner, duty types.Duty, decidedValue *types.ProposerConsensusData) ssv.Runner {
 	ret := decideRunner(r, duty, decidedValue)
 	ret.GetBaseRunner().State.Finished = true
 	return ret
@@ -39,7 +39,7 @@ func decideCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) 
 	return decideRunnerForData(r, duty, bvBytes)
 }
 
-func decideRunner(r ssv.Runner, duty types.Duty, cd *types.ValidatorConsensusData) ssv.Runner {
+func decideRunner(r ssv.Runner, duty types.Duty, cd *types.ProposerConsensusData) ssv.Runner {
 	cdBytes, err := cd.Encode()
 	if err != nil {
 		panic(err)

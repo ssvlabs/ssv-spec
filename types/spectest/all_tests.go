@@ -11,12 +11,12 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/maxmsgsize"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerconsensusdata"
+	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerconsensusdata/proposer"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/share"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssz"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/validatorconsensusdata"
-	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/validatorconsensusdata/proposer"
 )
 
 type SpecTest interface {
@@ -48,30 +48,30 @@ var AllTests = []SpecTest{
 	encryption.SimpleEncrypt(),
 	encryption.EncryptBLSSK(),
 
-	validatorconsensusdata.InvalidDuty(),
+	proposerconsensusdata.InvalidDuty(),
 
-	validatorconsensusdata.ProposerConsensusDataEncoding(),
-	validatorconsensusdata.BlindedProposerConsensusDataEncoding(),
-	validatorconsensusdata.CapellaBlockValidation(),
-	validatorconsensusdata.CapellaBlindedBlockValidation(),
-	validatorconsensusdata.ProposerNoJustifications(),
-	validatorconsensusdata.InvalidCapellaBlindedBlockValidation(),
-	validatorconsensusdata.InvalidCapellaBlockValidation(),
-	validatorconsensusdata.DenebBlockValidation(),
-	validatorconsensusdata.DenebBlindedBlockValidation(),
-	validatorconsensusdata.InvalidDenebBlockValidation(),
-	validatorconsensusdata.InvalidDenebBlindedBlockValidation(),
-	validatorconsensusdata.ElectraBlockValidation(),
-	validatorconsensusdata.ElectraBlindedBlockValidation(),
-	validatorconsensusdata.InvalidElectraBlockValidation(),
-	validatorconsensusdata.InvalidElectraBlindedBlockValidation(),
-	validatorconsensusdata.FuluBlockValidation(),
-	validatorconsensusdata.FuluBlindedBlockValidation(),
-	validatorconsensusdata.InvalidFuluBlockValidation(),
-	validatorconsensusdata.InvalidFuluBlindedBlockValidation(),
+	proposerconsensusdata.ProposerConsensusDataEncoding(),
+	proposerconsensusdata.BlindedProposerConsensusDataEncoding(),
+	proposerconsensusdata.CapellaBlockValidation(),
+	proposerconsensusdata.CapellaBlindedBlockValidation(),
+	proposerconsensusdata.ProposerNoJustifications(),
+	proposerconsensusdata.InvalidCapellaBlindedBlockValidation(),
+	proposerconsensusdata.InvalidCapellaBlockValidation(),
+	proposerconsensusdata.DenebBlockValidation(),
+	proposerconsensusdata.DenebBlindedBlockValidation(),
+	proposerconsensusdata.InvalidDenebBlockValidation(),
+	proposerconsensusdata.InvalidDenebBlindedBlockValidation(),
+	proposerconsensusdata.ElectraBlockValidation(),
+	proposerconsensusdata.ElectraBlindedBlockValidation(),
+	proposerconsensusdata.InvalidElectraBlockValidation(),
+	proposerconsensusdata.InvalidElectraBlindedBlockValidation(),
+	proposerconsensusdata.FuluBlockValidation(),
+	proposerconsensusdata.FuluBlindedBlockValidation(),
+	proposerconsensusdata.InvalidFuluBlockValidation(),
+	proposerconsensusdata.InvalidFuluBlindedBlockValidation(),
 
-	validatorconsensusdata.ValidatorRegistration(),
-	validatorconsensusdata.VoluntaryExit(),
+	proposerconsensusdata.WrongDutyTypeValidatorRegistration(),
+	proposerconsensusdata.WrongDutyTypeVoluntaryExit(),
 
 	aggregatorcommitteeconsensusdata.Phase0AggregatorConsensusDataEncoding(),
 	aggregatorcommitteeconsensusdata.ElectraAggregatorConsensusDataEncoding(),

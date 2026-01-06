@@ -18,7 +18,7 @@ func InvalidDecidedValue() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
 	consensusDataByts := func() []byte {
-		cd := &types.ValidatorConsensusData{
+		cd := &types.ProposerConsensusData{
 			Duty: types.ValidatorDuty{
 				Type:                    100,
 				PubKey:                  testingutils.TestingValidatorPubKey,

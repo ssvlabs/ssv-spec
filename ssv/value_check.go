@@ -95,9 +95,9 @@ func ProposerValueCheckF(
 	sharePublicKey []byte,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
-		cd := &types.ValidatorConsensusData{}
+		cd := &types.ProposerConsensusData{}
 		if err := cd.Decode(data); err != nil {
-			return types.WrapError(types.ValidatorConsensusDataDecodeErrorCode, errors.Wrap(err, "failed decoding consensus data"))
+			return types.WrapError(types.ProposerConsensusDataDecodeErrorCode, errors.Wrap(err, "failed decoding consensus data"))
 		}
 		if err := cd.Validate(); err != nil {
 			return types.NewError(types.QBFTValueInvalidErrorCode, fmt.Sprintf("invalid value: %v", err.Error()))
