@@ -21,13 +21,19 @@ var BaseCommittee = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet) *ssv.C
 		shareMap[valIdx] = TestingShare(ks, valIdx)
 	}
 
-	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+	createCommitteeRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
 		return CommitteeRunnerWithShareMap(shareMap)
 	}
+
+	createAggregatorRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+		return AggregatorCommitteeRunnerWithShareMap(shareMap)
+	}
+
 	return ssv.NewCommittee(
 		*TestingCommitteeMember(keySetSample),
 		shareMap,
-		createRunnerF,
+		createCommitteeRunnerF,
+		createAggregatorRunnerF,
 	)
 }
 
@@ -52,10 +58,11 @@ var BaseCommitteeWithRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeyS
 		*TestingCommitteeMember(keySetSample),
 		shareMap,
 		createRunnerF,
+		nil,
 	)
 }
 
-var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet, runnerSample *ssv.CommitteeRunner) *ssv.Committee {
+var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.ValidatorIndex]*TestKeySet) *ssv.Committee {
 
 	var keySetSample *TestKeySet
 	for _, ks := range keySetMap {
@@ -68,21 +75,45 @@ var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.Validat
 		shareMap[valIdx] = TestingShare(ks, valIdx)
 	}
 
-	createRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+	commRunnerSample := CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)
+	createCommitteeRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
 		runner, err := ssv.NewCommitteeRunner(
-			runnerSample.BaseRunner.BeaconNetwork,
+			commRunnerSample.BaseRunner.BeaconNetwork,
 			shareMap,
 			qbft.NewController(
-				runnerSample.BaseRunner.QBFTController.Identifier,
-				runnerSample.BaseRunner.QBFTController.CommitteeMember,
-				runnerSample.BaseRunner.QBFTController.GetConfig(),
+				commRunnerSample.BaseRunner.QBFTController.Identifier,
+				commRunnerSample.BaseRunner.QBFTController.CommitteeMember,
+				commRunnerSample.BaseRunner.QBFTController.GetConfig(),
 				TestingOperatorSigner(keySetSample),
 			),
 			NewTestingBeaconNode(),
 			NewTestingNetwork(1, keySetSample.OperatorKeys[1]),
-			runnerSample.GetSigner(),
-			runnerSample.GetOperatorSigner(),
-			runnerSample.GetValCheckF(),
+			commRunnerSample.GetSigner(),
+			commRunnerSample.GetOperatorSigner(),
+			commRunnerSample.GetValCheckF(),
+		)
+		if err != nil {
+			panic(err)
+		}
+		return runner
+	}
+
+	aggRunnerSample := AggregatorCommitteeRunnerWithShareMap(shareMap).(*ssv.AggregatorCommitteeRunner)
+	createAggCommRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+		runner, err := ssv.NewAggregatorCommitteeRunner(
+			aggRunnerSample.BaseRunner.BeaconNetwork,
+			shareMap,
+			qbft.NewController(
+				aggRunnerSample.BaseRunner.QBFTController.Identifier,
+				aggRunnerSample.BaseRunner.QBFTController.CommitteeMember,
+				aggRunnerSample.BaseRunner.QBFTController.GetConfig(),
+				TestingOperatorSigner(keySetSample),
+			),
+			NewTestingBeaconNode(),
+			NewTestingNetwork(1, keySetSample.OperatorKeys[1]),
+			aggRunnerSample.GetSigner(),
+			aggRunnerSample.GetOperatorSigner(),
+			aggRunnerSample.GetValCheckF(),
 		)
 		if err != nil {
 			panic(err)
@@ -93,6 +124,7 @@ var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.Validat
 	return ssv.NewCommittee(
 		*TestingCommitteeMember(keySetSample),
 		shareMap,
-		createRunnerF,
+		createCommitteeRunnerF,
+		createAggCommRunnerF,
 	)
 }

@@ -9,7 +9,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
-	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -30,7 +29,6 @@ func HappyFlow() tests.SpecTest {
 
 			validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 			ksMap := testingutils.KeySetMapForValidators(numValidators)
-			shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
 			duty := testingutils.TestingAggregatorDutyForValidators(version, validatorsIndexList)
 			slot := testingutils.TestingDutySlotV(version)
@@ -42,14 +40,14 @@ func HappyFlow() tests.SpecTest {
 				{
 					Name: fmt.Sprintf("%v aggregator (%s)", numValidators, version.String()),
 					Committee: testingutils.
-						BaseAggregatorCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap).(*ssv.AggregatorCommitteeRunner)),
+						BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 					Input: []interface{}{
 						duty,
 
 						// Pre-consensus messages
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 2, version))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 3, version))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 2))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 3))),
 
 						// Consensus messages
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1), msgID, consensusDataBytes, height),
@@ -67,7 +65,7 @@ func HappyFlow() tests.SpecTest {
 					},
 					OutputMessages: []*types.PartialSignatureMessages{
 						// Pre-consensus message broadcasted when starting duty
-						testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version),
+						testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1),
 						// Post-consensus message broadcasted after consensus
 						testingutils.PostConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version),
 					},
@@ -84,8 +82,6 @@ func HappyFlow() tests.SpecTest {
 
 			validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 			ksMap := testingutils.KeySetMapForValidators(numValidators)
-			shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
-
 			duty := testingutils.TestingSyncCommitteeContributorDutyForValidators(version, validatorsIndexList)
 			slot := testingutils.TestingDutySlotV(version)
 			height := qbft.Height(slot)
@@ -96,14 +92,14 @@ func HappyFlow() tests.SpecTest {
 				{
 					Name: fmt.Sprintf("%v sync committee contribution (%s)", numValidators, version.String()),
 					Committee: testingutils.
-						BaseAggregatorCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap).(*ssv.AggregatorCommitteeRunner)),
+						BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 					Input: []interface{}{
 						duty,
 
 						// Pre-consensus messages
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 2, version))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 3, version))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 2))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 3))),
 
 						// Consensus messages
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1), msgID, consensusDataBytes, height),
@@ -121,7 +117,7 @@ func HappyFlow() tests.SpecTest {
 					},
 					OutputMessages: []*types.PartialSignatureMessages{
 						// Pre-consensus message broadcasted when starting duty
-						testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version),
+						testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1),
 						// Post-consensus message broadcasted after consensus
 						testingutils.PostConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version),
 					},
@@ -138,7 +134,6 @@ func HappyFlow() tests.SpecTest {
 
 			validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 			ksMap := testingutils.KeySetMapForValidators(numValidators)
-			shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
 			duty := testingutils.TestingAggregatorAndSyncCommitteeContributorDutiesForValidators(version, validatorsIndexList)
 			slot := testingutils.TestingDutySlotV(version)
@@ -150,14 +145,14 @@ func HappyFlow() tests.SpecTest {
 				{
 					Name: fmt.Sprintf("%v aggregator and sync committee contribution (%s)", numValidators, version.String()),
 					Committee: testingutils.
-						BaseAggregatorCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap).(*ssv.AggregatorCommitteeRunner)),
+						BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 					Input: []interface{}{
 						duty,
 
 						// Pre-consensus messages
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 2, version))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 3, version))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 2))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 3))),
 
 						// Consensus messages
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1), msgID, consensusDataBytes, height),
@@ -175,7 +170,7 @@ func HappyFlow() tests.SpecTest {
 					},
 					OutputMessages: []*types.PartialSignatureMessages{
 						// Pre-consensus message broadcasted when starting duty
-						testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version),
+						testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1),
 						// Post-consensus message broadcasted after consensus
 						testingutils.PostConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version),
 					},

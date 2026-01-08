@@ -54,9 +54,18 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	beaconNetwork := &testingutils.TestingBeaconNode{}
 	var committee []*types.Operator
 	switch test.Runner.(type) {
-	case *ssv.CommitteeRunner, *ssv.AggregatorCommitteeRunner:
+	case *ssv.CommitteeRunner:
 		var runnerInstance ssv.Runner
-		for _, runner := range c.Runners {
+		for _, runner := range c.CommitteeRunners {
+			runnerInstance = runner
+			break
+		}
+		network = runnerInstance.GetNetwork().(*testingutils.TestingNetwork)
+		beaconNetwork = runnerInstance.GetBeaconNode().(*testingutils.TestingBeaconNode)
+		committee = c.CommitteeMember.Committee
+	case *ssv.AggregatorCommitteeRunner:
+		var runnerInstance ssv.Runner
+		for _, runner := range c.AggregatorCommitteeRunners {
 			runnerInstance = runner
 			break
 		}
@@ -114,7 +123,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 		if !test.DontStartDuty {
 			lastErr = c.StartDuty(test.Duty.(*types.CommitteeDuty))
 		} else {
-			c.Runners[test.Duty.DutySlot()] = test.Runner.(*ssv.CommitteeRunner)
+			c.CommitteeRunners[test.Duty.DutySlot()] = test.Runner.(*ssv.CommitteeRunner)
 		}
 
 		for _, msg := range test.Messages {
@@ -141,7 +150,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 		if !test.DontStartDuty {
 			lastErr = c.StartDuty(test.Duty.(*types.AggregatorCommitteeDuty))
 		} else {
-			c.Runners[test.Duty.DutySlot()] = test.Runner.(*ssv.AggregatorCommitteeRunner)
+			c.AggregatorCommitteeRunners[test.Duty.DutySlot()] = test.Runner.(*ssv.AggregatorCommitteeRunner)
 		}
 
 		for _, msg := range test.Messages {

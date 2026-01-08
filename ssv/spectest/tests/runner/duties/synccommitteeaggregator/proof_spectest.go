@@ -56,10 +56,10 @@ func (test *SyncCommitteeAggregatorProofSpecTest) runPreTesting() (ssv.Runner, e
 	ks := testingutils.Testing4SharesSet()
 	ksMap := make(map[phase0.ValidatorIndex]*testingutils.TestKeySet)
 	ksMap[testingutils.TestingValidatorIndex] = ks
-	c := testingutils.BaseAggregatorCommittee(ksMap)
+	c := testingutils.BaseCommittee(ksMap)
 	duty := testingutils.TestingSyncCommitteeContributionDuty
 	lastErr := c.StartDuty(duty)
-	r := c.Runners[duty.Slot]
+	r := c.AggregatorCommitteeRunners[duty.Slot]
 	r.GetBeaconNode().(*testingutils.TestingBeaconNode).SetSyncCommitteeAggregatorRootHexes(test.ProofRootsMap)
 	//r.(*ssv.AggregatorCommitteeRunner).beacon = r.GetBeaconNode()
 

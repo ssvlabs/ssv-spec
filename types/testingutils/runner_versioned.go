@@ -53,7 +53,7 @@ var SSVDecidingMsgsForAggregatorCommitteeRunner = func(duty *types.AggregatorCom
 	// pre consensus msgs
 	base := make([]*types.SignedSSVMessage, 0)
 	for i := uint64(1); i <= ks.Threshold; i++ {
-		base = append(base, signedF(PreConsensusAggregatorCommitteeMsgForDuty(duty, keySetMap, i, version)))
+		base = append(base, signedF(PreConsensusAggregatorCommitteeMsgForDuty(duty, keySetMap, i)))
 	}
 
 	// consensus

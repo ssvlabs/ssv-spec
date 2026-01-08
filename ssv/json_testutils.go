@@ -131,16 +131,18 @@ func (c *Committee) GetRoot() ([32]byte, error) {
 func (c *Committee) MarshalJSON() ([]byte, error) {
 
 	type CommitteeAlias struct {
-		Runners         map[phase0.Slot]Runner
-		CommitteeMember types.CommitteeMember
-		Share           map[phase0.ValidatorIndex]*types.Share
+		CommitteeRunners           map[phase0.Slot]Runner
+		AggregatorCommitteeRunners map[phase0.Slot]Runner
+		CommitteeMember            types.CommitteeMember
+		Share                      map[phase0.ValidatorIndex]*types.Share
 	}
 
 	// Create object and marshal
 	alias := &CommitteeAlias{
-		Runners:         c.Runners,
-		CommitteeMember: c.CommitteeMember,
-		Share:           c.Share,
+		CommitteeRunners:           c.CommitteeRunners,
+		AggregatorCommitteeRunners: c.AggregatorCommitteeRunners,
+		CommitteeMember:            c.CommitteeMember,
+		Share:                      c.Share,
 	}
 
 	byts, err := json.Marshal(alias)
@@ -151,9 +153,10 @@ func (c *Committee) MarshalJSON() ([]byte, error) {
 func (c *Committee) UnmarshalJSON(data []byte) error {
 	// First, unmarshal to get the raw JSON for runners
 	type CommitteeRaw struct {
-		Runners         map[phase0.Slot]json.RawMessage
-		CommitteeMember types.CommitteeMember
-		Share           map[phase0.ValidatorIndex]*types.Share
+		CommitteeRunners           map[phase0.Slot]json.RawMessage
+		AggregatorCommitteeRunners map[phase0.Slot]json.RawMessage
+		CommitteeMember            types.CommitteeMember
+		Share                      map[phase0.ValidatorIndex]*types.Share
 	}
 
 	raw := &CommitteeRaw{}
@@ -162,39 +165,24 @@ func (c *Committee) UnmarshalJSON(data []byte) error {
 	}
 
 	// Initialize the committee
-	c.Runners = make(map[phase0.Slot]Runner)
+	c.CommitteeRunners = make(map[phase0.Slot]Runner)
+	c.AggregatorCommitteeRunners = make(map[phase0.Slot]Runner)
 	c.CommitteeMember = raw.CommitteeMember
 	c.Share = raw.Share
 
-	// For each runner, detect its type and unmarshal accordingly
-	for slot, runnerData := range raw.Runners {
-		// Try to detect the runner type by looking for type-specific fields
-		var typeDetector struct {
-			BaseRunner struct {
-				RunnerRoleType types.RunnerRole `json:"RunnerRoleType"`
-			} `json:"BaseRunner"`
-		}
-
-		if err := json.Unmarshal(runnerData, &typeDetector); err != nil {
+	for slot, runnerData := range raw.CommitteeRunners {
+		var runner CommitteeRunner
+		if err := json.Unmarshal(runnerData, &runner); err != nil {
 			return err
 		}
-
-		switch typeDetector.BaseRunner.RunnerRoleType {
-		case types.RoleCommittee:
-			var runner CommitteeRunner
-			if err := json.Unmarshal(runnerData, &runner); err != nil {
-				return err
-			}
-			c.Runners[slot] = &runner
-		case types.RoleAggregatorCommittee:
-			var runner AggregatorCommitteeRunner
-			if err := json.Unmarshal(runnerData, &runner); err != nil {
-				return err
-			}
-			c.Runners[slot] = &runner
-		default:
-			return errors.Errorf("unknown runner type for slot %d: RunnerRoleType=%v", slot, typeDetector.BaseRunner.RunnerRoleType)
+		c.CommitteeRunners[slot] = &runner
+	}
+	for slot, runnerData := range raw.AggregatorCommitteeRunners {
+		var runner AggregatorCommitteeRunner
+		if err := json.Unmarshal(runnerData, &runner); err != nil {
+			return err
 		}
+		c.AggregatorCommitteeRunners[slot] = &runner
 	}
 
 	return nil

@@ -52,6 +52,14 @@ const CommitteePastMsgDutyDoesNotExistDoc = "Tests committee behavior when proce
 const CommitteePastMsgDutyFinishedDoc = "Tests committee behavior when processing past messages for a duty that has finished"
 const CommitteeDecidedDoc = "Tests committee runner decision phase for attestations and sync committees without completing post-consensus"
 
+const CommitteeInvalidSigDoc = "Tests that the processing of a message with an invalid signature raises an error"
+const CommitteeMismatchCommitteeIDDoc = "Tests that the processing of a message with a different committee ID raises an error"
+const CommitteeWrongRoleDoc = "Tests that the processing of a message with a wrong runner role raises an error"
+
+// Documentation for committee mixed duties tests
+const CommitteeMixedDutiesDoc = "Tests happy flow execution for a committee that has both a committee duty and an aggregator committee duty on the same slot"
+const CommitteeMixedDutiesMultipleSlotsDoc = "Tests happy flow execution for a committee that has both a committee duty and an aggregator committee duty on the same slot, through multiple slots"
+
 // Documentation for dutyexe tests
 const DutyExeWrongDutyPubKeyDoc = "Tests decided value with duty validator pubkey != the duty runner's pubkey"
 const DutyExeWrongDutyRoleDoc = "Tests behavior when processing decided value duty with wrong duty role (!= duty runner role)"

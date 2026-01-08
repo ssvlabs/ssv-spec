@@ -7,7 +7,8 @@
       "Name": "1 aggregator (phase0)",
       "Documentation": "",
       "Committee": {
-        "Runners": {},
+        "CommitteeRunners": {},
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -303,7 +304,8 @@
       "Name": "30 aggregator (phase0)",
       "Documentation": "",
       "Committee": {
-        "Runners": {},
+        "CommitteeRunners": {},
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -2194,7 +2196,8 @@
       "Name": "1 aggregator (electra)",
       "Documentation": "",
       "Committee": {
-        "Runners": {},
+        "CommitteeRunners": {},
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -2490,7 +2493,8 @@
       "Name": "30 aggregator (electra)",
       "Documentation": "",
       "Committee": {
-        "Runners": {},
+        "CommitteeRunners": {},
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -4381,7 +4385,8 @@
       "Name": "1 sync committee contribution (phase0)",
       "Documentation": "",
       "Committee": {
-        "Runners": {},
+        "CommitteeRunners": {},
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -4707,7 +4712,8 @@
       "Name": "20 sync committee contribution (phase0)",
       "Documentation": "",
       "Committee": {
-        "Runners": {},
+        "CommitteeRunners": {},
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -6648,7 +6654,8 @@
       "Name": "1 aggregator and sync committee contribution (phase0)",
       "Documentation": "",
       "Committee": {
-        "Runners": {},
+        "CommitteeRunners": {},
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -6998,7 +7005,8 @@
       "Name": "20 aggregator and sync committee contribution (phase0)",
       "Documentation": "",
       "Committee": {
-        "Runners": {},
+        "CommitteeRunners": {},
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -9419,7 +9427,8 @@
       "Name": "1 aggregator and sync committee contribution (electra)",
       "Documentation": "",
       "Committee": {
-        "Runners": {},
+        "CommitteeRunners": {},
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",
@@ -9769,7 +9778,8 @@
       "Name": "20 aggregator and sync committee contribution (electra)",
       "Documentation": "",
       "Committee": {
-        "Runners": {},
+        "CommitteeRunners": {},
+        "AggregatorCommitteeRunners": {},
         "CommitteeMember": {
           "OperatorID": 1,
           "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",

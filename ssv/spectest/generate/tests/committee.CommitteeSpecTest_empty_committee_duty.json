@@ -3,7 +3,8 @@
   "Type": "Committee: validation of committee member selection and quorum requirements",
   "Documentation": "Tests committee behavior when starting with an empty duty (no attestation or sync committee duties)",
   "Committee": {
-    "Runners": {},
+    "CommitteeRunners": {},
+    "AggregatorCommitteeRunners": {},
     "CommitteeMember": {
       "OperatorID": 1,
       "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",

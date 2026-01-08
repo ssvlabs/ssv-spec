@@ -6,7 +6,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 
-	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -19,8 +18,6 @@ func DutyWithDifferentSlots() tests.SpecTest {
 	valIdx := []int{1}
 	ksMap := testingutils.KeySetMapForValidators(1)
 	ks := ksMap[phase0.ValidatorIndex(1)]
-	shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
-
 	var testCases []*committee.CommitteeSpecTest
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		duty := testingutils.TestingAggregatorAndSyncCommitteeContributorDutiesWithDifferentSlot(version, valIdx)
@@ -28,7 +25,7 @@ func DutyWithDifferentSlots() tests.SpecTest {
 			{
 				Name: fmt.Sprintf("aggregator committee mixed (%s)", version.String()),
 				Committee: testingutils.
-					BaseAggregatorCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap).(*ssv.AggregatorCommitteeRunner)),
+					BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 				Input: []interface{}{
 					duty,
 				},

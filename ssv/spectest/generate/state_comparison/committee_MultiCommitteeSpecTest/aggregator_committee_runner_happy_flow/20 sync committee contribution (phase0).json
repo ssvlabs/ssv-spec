@@ -1,5 +1,6 @@
 {
-  "Runners": {
+  "CommitteeRunners": {},
+  "AggregatorCommitteeRunners": {
     "12": {
       "BaseRunner": {
         "State": {

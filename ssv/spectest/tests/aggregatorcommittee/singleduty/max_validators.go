@@ -8,7 +8,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
-	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -19,7 +18,6 @@ import (
 func MaxValidators() tests.SpecTest {
 
 	ksMap := testingutils.KeySetMapForValidators(3000)
-	shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 	validatorsIndexList := testingutils.ValidatorIndexList(3000)
 	ks := testingutils.TestingKeySetMap[phase0.ValidatorIndex(validatorsIndexList[0])]
 	msgID := testingutils.AggregatorCommitteeMsgID(ks)
@@ -39,14 +37,14 @@ func MaxValidators() tests.SpecTest {
 			{
 				Name: fmt.Sprintf("aggregator and sync committee contribution (%s)", version.String()),
 				Committee: testingutils.
-					BaseAggregatorCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap).(*ssv.AggregatorCommitteeRunner)),
+					BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 				Input: []interface{}{
 					duty,
 
 					// Pre-consensus messages
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 2, version))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 3, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 2))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 3))),
 
 					// Consensus messages
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1), msgID, consensusDataBytes, height),
@@ -64,7 +62,7 @@ func MaxValidators() tests.SpecTest {
 				},
 				OutputMessages: []*types.PartialSignatureMessages{
 					// Pre-consensus message broadcasted when starting duty
-					testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version),
+					testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1),
 					// Post-consensus message broadcasted after consensus
 					testingutils.PostConsensusAggregatorCommitteeMsgForDuty(duty, ksMap, 1, version),
 				},
