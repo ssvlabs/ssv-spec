@@ -9,15 +9,15 @@ type PartialSigMsgType uint64
 
 const (
 	// PostConsensusPartialSig is a partial signature over a decided duty (attestation data, block, etc)
-	PostConsensusPartialSig PartialSigMsgType = iota
+	PostConsensusPartialSig = PartialSigMsgType(0)
 	// RandaoPartialSig is a partial signature over randao reveal
-	RandaoPartialSig
+	RandaoPartialSig = PartialSigMsgType(1)
 	// ValidatorRegistrationPartialSig is a partial signature over a ValidatorRegistration object
-	ValidatorRegistrationPartialSig
+	ValidatorRegistrationPartialSig = PartialSigMsgType(4)
 	// VoluntaryExitPartialSig is a partial signature over a VoluntaryExit object
-	VoluntaryExitPartialSig
+	VoluntaryExitPartialSig = PartialSigMsgType(5)
 	// AggregatorCommitteePartialSig is a partial signature for combined aggregator and sync committee selection proofs
-	AggregatorCommitteePartialSig
+	AggregatorCommitteePartialSig = PartialSigMsgType(6)
 )
 
 type PartialSignatureMessages struct {
