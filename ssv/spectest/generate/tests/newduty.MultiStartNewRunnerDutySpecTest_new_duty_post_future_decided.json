@@ -260,7 +260,7 @@
       "PostDutyRunnerStateRoot": "0c2bf5b2570aad7da85cfe5aa81361524a727265c22b41e72e7e9ff2f9b2c215",
       "OutputMessages": [
         {
-          "Type": 4,
+          "Type": 6,
           "Slot": "50",
           "Messages": [
             {
@@ -832,7 +832,7 @@
       "PostDutyRunnerStateRoot": "892d0c2842a81d163c59e53302085f7bb2753cc4fcb46593bfeb569ec39e8928",
       "OutputMessages": [
         {
-          "Type": 4,
+          "Type": 6,
           "Slot": "50",
           "Messages": [
             {
@@ -1115,7 +1115,7 @@
       "PostDutyRunnerStateRoot": "892d0c2842a81d163c59e53302085f7bb2753cc4fcb46593bfeb569ec39e8928",
       "OutputMessages": [
         {
-          "Type": 4,
+          "Type": 6,
           "Slot": "7424044",
           "Messages": [
             {
