@@ -6,9 +6,9 @@ import (
 )
 
 const (
-	maxSizePartialSignatureMessage                 = 144
-	maxSizePartialSignatureMessages                = 726932
-	maxSizePartialSignatureMessagesForPreConsensus = 1892
+	MaxSizePartialSignatureMessage                 = 144
+	MaxSizePartialSignatureMessages                = 726932
+	MaxSizePartialSignatureMessagesForPreConsensus = 1892
 )
 
 func maxPartialSignatureMessage() *types.PartialSignatureMessage {
@@ -56,7 +56,7 @@ func MaxPartialSignatureMessage() *StructureSizeTest {
 		"max PartialSignatureMessage",
 		testdoc.StructureSizeTestMaxPartialSignatureMessageDoc,
 		maxPartialSignatureMessage(),
-		maxSizePartialSignatureMessage,
+		MaxSizePartialSignatureMessage,
 		true,
 	)
 }
@@ -66,7 +66,7 @@ func MaxPartialSignatureMessages() *StructureSizeTest {
 		"max PartialSignatureMessages",
 		testdoc.StructureSizeTestMaxPartialSignatureMessagesDoc,
 		maxPartialSignatureMessages(),
-		maxSizePartialSignatureMessages,
+		MaxSizePartialSignatureMessages,
 		true,
 	)
 }
@@ -76,7 +76,7 @@ func MaxPartialSignatureMessagesForPreConsensus() *StructureSizeTest {
 		"max PartialSignatureMessages for pre-consensus",
 		testdoc.StructureSizeTestMaxPartialSignatureMessagesForPreConsensusDoc,
 		maxPartialSignatureMessagesForPreConsensus(),
-		maxSizePartialSignatureMessagesForPreConsensus,
+		MaxSizePartialSignatureMessagesForPreConsensus,
 		false,
 	)
 }

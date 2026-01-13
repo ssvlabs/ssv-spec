@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	maxSizeBeaconVote = 112
+	MaxSizeBeaconVote = 112
 )
 
 func maxBeaconVote() *types.BeaconVote {
@@ -32,7 +32,7 @@ func MaxBeaconVote() *StructureSizeTest {
 		"max BeaconVote",
 		testdoc.StructureSizeTestMaxBeaconVoteDoc,
 		maxBeaconVote(),
-		maxSizeBeaconVote,
+		MaxSizeBeaconVote,
 		true,
 	)
 }

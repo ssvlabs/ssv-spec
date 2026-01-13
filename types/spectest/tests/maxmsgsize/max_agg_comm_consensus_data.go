@@ -11,9 +11,9 @@ import (
 )
 
 const (
-	maxSizeAggregatorCommitteeConsensusData = 8970524
-	maxSizePhase0Attestation                = 2276
-	maxSizeElectraAttestation               = 131308
+	MaxSizeAggregatorCommitteeConsensusData = 8970524
+	MaxSizePhase0Attestation                = 2276
+	MaxSizeElectraAttestation               = 131308
 )
 
 func maxAggregatorCommitteeConsensusData() *types.AggregatorCommitteeConsensusData {
@@ -36,7 +36,7 @@ func maxAggregatorCommitteeConsensusData() *types.AggregatorCommitteeConsensusDa
 	}
 	aggAtt := make([][]byte, 0)
 	for i := 0; i < maxCommIdxs; i++ {
-		att := [maxSizeElectraAttestation]byte{1}
+		att := [MaxSizeElectraAttestation]byte{1}
 		aggAtt = append(aggAtt, att[:])
 	}
 
@@ -153,7 +153,7 @@ func MaxAggregatorCommitteeConsensusData() *StructureSizeTest {
 		"max AggregatorCommitteeConsensusData",
 		testdoc.StructureSizeTestMaxAggregatorCommitteeConsensusDataDoc,
 		maxAggregatorCommitteeConsensusData(),
-		maxSizeAggregatorCommitteeConsensusData,
+		MaxSizeAggregatorCommitteeConsensusData,
 		true,
 	)
 }
@@ -163,7 +163,7 @@ func MaxPhase0Attestation() *StructureSizeTest {
 		"max Phase0Attestation",
 		testdoc.StructureSizeTestMaxPhase0AttestationDoc,
 		maxPhase0Attestation(),
-		maxSizePhase0Attestation,
+		MaxSizePhase0Attestation,
 		true,
 	)
 }
@@ -173,7 +173,7 @@ func MaxElectraAttestation() *StructureSizeTest {
 		"max ElectraAttestation",
 		testdoc.StructureSizeTestMaxElectraAttestationDoc,
 		maxElectraAttestation(),
-		maxSizeElectraAttestation,
+		MaxSizeElectraAttestation,
 		true,
 	)
 }
