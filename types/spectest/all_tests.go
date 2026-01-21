@@ -129,7 +129,6 @@ var AllTests = []SpecTest{
 
 	maxmsgsize.MaxConsensusData(),
 	maxmsgsize.MaxBeaconVote(),
-	maxmsgsize.MaxPhase0Attestation(),
 	maxmsgsize.MaxElectraAttestation(),
 	maxmsgsize.MaxQBFTMessageWithNoJustification(),
 	maxmsgsize.MaxQBFTMessageWith1Justification(),

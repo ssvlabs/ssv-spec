@@ -37,29 +37,6 @@ func (w *ElectraAttestationWrapper) Decode(data []byte) error {
 	return w.UnmarshalSSZ(data)
 }
 
-func maxPhase0Attestation() *Phase0AttestationWrapper {
-	aggbits := [2048]byte{1}
-	return &Phase0AttestationWrapper{
-		Attestation: &phase0.Attestation{
-			AggregationBits: bitfield.Bitlist(aggbits[:]),
-			Data: &phase0.AttestationData{
-				Slot:            1,
-				Index:           0,
-				BeaconBlockRoot: [32]byte{1},
-				Source: &phase0.Checkpoint{
-					Epoch: 1,
-					Root:  [32]byte{1},
-				},
-				Target: &phase0.Checkpoint{
-					Epoch: 1,
-					Root:  [32]byte{1},
-				},
-			},
-			Signature: phase0.BLSSignature([96]byte{1}),
-		},
-	}
-}
-
 func maxElectraAttestation() *ElectraAttestationWrapper {
 	aggbits := [131072]byte{1}
 	return &ElectraAttestationWrapper{
@@ -82,16 +59,6 @@ func maxElectraAttestation() *ElectraAttestationWrapper {
 			CommitteeBits: bitfield.NewBitvector64(),
 		},
 	}
-}
-
-func MaxPhase0Attestation() *StructureSizeTest {
-	return NewStructureSizeTest(
-		"max Phase0Attestation",
-		testdoc.StructureSizeTestMaxPhase0AttestationDoc,
-		maxPhase0Attestation(),
-		MaxSizePhase0Attestation,
-		true,
-	)
 }
 
 func MaxElectraAttestation() *StructureSizeTest {
