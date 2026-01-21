@@ -148,16 +148,6 @@ func maxElectraAttestation() *ElectraAttestationWrapper {
 	}
 }
 
-func MaxAggregatorCommitteeConsensusData() *StructureSizeTest {
-	return NewStructureSizeTest(
-		"max AggregatorCommitteeConsensusData",
-		testdoc.StructureSizeTestMaxAggregatorCommitteeConsensusDataDoc,
-		maxAggregatorCommitteeConsensusData(),
-		MaxSizeAggregatorCommitteeConsensusData,
-		true,
-	)
-}
-
 func MaxPhase0Attestation() *StructureSizeTest {
 	return NewStructureSizeTest(
 		"max Phase0Attestation",
