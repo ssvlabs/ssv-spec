@@ -3,6 +3,7 @@ package types
 import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
+	"math"
 )
 
 // NetworkID are intended to separate different SSV networks. A network can have many forks in it.
@@ -103,7 +104,7 @@ func mainnetForks() []*ForkData {
 		},
 		{
 			// TODO: Update this when the mainnet fork is known
-			Epoch:  0,
+			Epoch:  math.MaxUint64,
 			Domain: BooleMainnet,
 		},
 	}
