@@ -3,7 +3,6 @@ package committeemultipleduty
 import (
 	"fmt"
 
-	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
@@ -21,26 +20,25 @@ func SequencedHappyFlowDuties() tests.SpecTest {
 			for _, numValidators := range []int{1, 30} {
 
 				ksMap := testingutils.KeySetMapForValidators(numValidators)
-				shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
 				tests = append(tests, []*committee.CommitteeSpecTest{
 					{
 						Name:                   fmt.Sprintf("%v duties %v attestation (%s)", numSequencedDuties, numValidators, version.String()),
-						Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+						Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 						Input:                  testingutils.CommitteeInputForDuties(numSequencedDuties, numValidators, 0, true, version),
 						OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, numValidators, 0, version),
 						BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDuties(numSequencedDuties, numValidators, 0, version),
 					},
 					{
 						Name:                   fmt.Sprintf("%v duties %v sync committee (%s)", numSequencedDuties, numValidators, version.String()),
-						Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+						Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 						Input:                  testingutils.CommitteeInputForDuties(numSequencedDuties, 0, numValidators, true, version),
 						OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, 0, numValidators, version),
 						BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDuties(numSequencedDuties, 0, numValidators, version),
 					},
 					{
 						Name:                   fmt.Sprintf("%v duties %v attestations %v sync committees (%s)", numSequencedDuties, numValidators, numValidators, version.String()),
-						Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+						Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 						Input:                  testingutils.CommitteeInputForDuties(numSequencedDuties, numValidators, numValidators, true, version),
 						OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numSequencedDuties, numValidators, numValidators, version),
 						BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDuties(numSequencedDuties, numValidators, numValidators, version),

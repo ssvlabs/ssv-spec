@@ -2,13 +2,7 @@ package testingutils
 
 import "github.com/ssvlabs/ssv-spec/types"
 
-var AggregatorMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleAggregator)
-	return ret[:]
-}()
-
 var CommitteeMsgID = func(keySet *TestKeySet) []byte {
-
 	// Identifier
 	committee := make([]uint64, 0)
 	for _, op := range keySet.Committee() {
@@ -20,13 +14,20 @@ var CommitteeMsgID = func(keySet *TestKeySet) []byte {
 	return ret[:]
 }
 
+var AggregatorCommitteeMsgID = func(keySet *TestKeySet) []byte {
+	// Identifier
+	committee := make([]uint64, 0)
+	for _, op := range keySet.Committee() {
+		committee = append(committee, op.Signer)
+	}
+	committeeID := types.GetCommitteeID(committee)
+
+	ret := types.NewMsgID(TestingSSVDomainType, committeeID[:], types.RoleAggregatorCommittee)
+	return ret[:]
+}
+
 var ProposerMsgID = func() []byte {
 	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleProposer)
-	return ret[:]
-}()
-
-var SyncCommitteeContributionMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleSyncCommitteeContribution)
 	return ret[:]
 }()
 

@@ -46,14 +46,13 @@ func FutureMessage() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
-					futureMsgF(testingutils.TestSyncCommitteeContributionConsensusData, testingutils.SyncCommitteeContributionMsgID),
+					futureMsgF(testingutils.TestSyncCommitteeContributionConsensusData, testingutils.TestingAggregatorCommitteeMsgID[:]),
 				},
-				PostDutyRunnerStateRoot: "68fd25b1cb30902e7b7b3e7ff674c3862ff956954a06fac0df485961b8bb3934",
-				DontStartDuty:           true,
-				ExpectedErrorCode:       expectedErrorCode,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCommitteeCode,
 			},
 			{
 				Name:   "proposer",
@@ -62,9 +61,8 @@ func FutureMessage() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					futureMsgF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				},
-				PostDutyRunnerStateRoot: "32dd1d1d7a4c34bb7dafc0866f69eb49f6a0a23755b135f83ad14d12e39fff82",
-				DontStartDuty:           true,
-				ExpectedErrorCode:       expectedErrorCode,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   "proposer (blinded block)",
@@ -74,9 +72,8 @@ func FutureMessage() tests.SpecTest {
 					futureMsgF(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb),
 						testingutils.ProposerMsgID),
 				},
-				PostDutyRunnerStateRoot: "58b946451dc5ccbd52fbc9e6bbe0ac888253d1708be018a3ff0b07762dd28891",
-				DontStartDuty:           true,
-				ExpectedErrorCode:       expectedErrorCode,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
 				Name:   "validator registration",
@@ -87,7 +84,6 @@ func FutureMessage() tests.SpecTest {
 						testingutils.ValidatorRegistrationMsgID, testingutils.TestAttesterConsensusDataByts,
 						qbft.Height(testingutils.TestingDutySlot)),
 				},
-				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
@@ -102,7 +98,6 @@ func FutureMessage() tests.SpecTest {
 						testingutils.VoluntaryExitMsgID, testingutils.TestAttesterConsensusDataByts,
 						qbft.Height(testingutils.TestingDutySlot)),
 				},
-				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
@@ -115,14 +110,13 @@ func FutureMessage() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name:   fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: testingutils.AggregatorRunner(ks),
+			Runner: testingutils.AggregatorCommitteeRunner(ks),
 			Duty:   testingutils.TestingAggregatorDuty(version),
 			Messages: []*types.SignedSSVMessage{
-				futureMsgF(testingutils.TestAggregatorConsensusData(version), testingutils.AggregatorMsgID),
+				futureMsgF(testingutils.TestAggregatorConsensusData(version), testingutils.TestingAggregatorCommitteeMsgID[:]),
 			},
-			PostDutyRunnerStateRoot: "bdc7c2150e0f2d4669e112848f5140b52aba0367b60ff2b594d5a5bef3587834",
-			DontStartDuty:           true,
-			ExpectedErrorCode:       expectedErrorCode,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCommitteeCode,
 		},
 		)
 	}

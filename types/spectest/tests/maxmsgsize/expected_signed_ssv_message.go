@@ -6,12 +6,12 @@ import (
 )
 
 const (
-	expectedSizePrepareSignedSSVMessage                  = 484
-	expectedSizeCommitSignedSSVMessage                   = 484
-	expectedSizeDecidedSignedSSVMessage                  = 1020
-	expectedSizeRoundChangeSignedSSVMessage              = 1948
-	expectedSizeProposalSignedSSVMessage                 = 7916
-	expectedSizePartialSignatureMessagesSignedSSVMessage = 628
+	ExpectedSizePrepareSignedSSVMessage                  = 484
+	ExpectedSizeCommitSignedSSVMessage                   = 484
+	ExpectedSizeDecidedSignedSSVMessage                  = 1020
+	ExpectedSizeRoundChangeSignedSSVMessage              = 1948
+	ExpectedSizeProposalSignedSSVMessage                 = 7916
+	ExpectedSizePartialSignatureMessagesSignedSSVMessage = 628
 )
 
 func expectedFullData() []byte {
@@ -61,7 +61,7 @@ func ExpectedPrepareSignedSSVMessage() *StructureSizeTest {
 		"expected prepare SignedSSVMessage",
 		testdoc.StructureSizeTestExpectedPrepareSignedSSVMessageDoc,
 		expectedSignedSSVMessageFromObject(expectedPrepare(), 1),
-		expectedSizePrepareSignedSSVMessage,
+		ExpectedSizePrepareSignedSSVMessage,
 		false,
 	)
 }
@@ -71,7 +71,7 @@ func ExpectedCommitSignedSSVMessage() *StructureSizeTest {
 		"expected commit SignedSSVMessage",
 		testdoc.StructureSizeTestExpectedCommitSignedSSVMessageDoc,
 		expectedSignedSSVMessageFromObject(expectedCommit(), 1),
-		expectedSizeCommitSignedSSVMessage,
+		ExpectedSizeCommitSignedSSVMessage,
 		false,
 	)
 }
@@ -81,7 +81,7 @@ func ExpectedDecidedSignedSSVMessage() *StructureSizeTest {
 		"expected decided SignedSSVMessage",
 		testdoc.StructureSizeTestExpectedDecidedSignedSSVMessageDoc,
 		expectedSignedSSVMessageFromObject(expectedCommit(), 3),
-		expectedSizeDecidedSignedSSVMessage,
+		ExpectedSizeDecidedSignedSSVMessage,
 		false,
 	)
 }
@@ -91,7 +91,7 @@ func ExpectedRoundChangeSignedSSVMessage() *StructureSizeTest {
 		"expected round change SignedSSVMessage",
 		testdoc.StructureSizeTestExpectedRoundChangeSignedSSVMessageDoc,
 		expectedSignedSSVMessageFromObject(expectedRoundChange(3), 1),
-		expectedSizeRoundChangeSignedSSVMessage,
+		ExpectedSizeRoundChangeSignedSSVMessage,
 		false,
 	)
 }
@@ -101,7 +101,7 @@ func ExpectedProposalSignedSSVMessage() *StructureSizeTest {
 		"expected proposal SignedSSVMessage",
 		testdoc.StructureSizeTestExpectedProposalSignedSSVMessageDoc,
 		expectedSignedSSVMessageWithFullDataFromObject(expectedProposal(3), 1),
-		expectedSizeProposalSignedSSVMessage,
+		ExpectedSizeProposalSignedSSVMessage,
 		false,
 	)
 }
@@ -111,7 +111,7 @@ func ExpectedPartialSignatureSignedSSVMessage() *StructureSizeTest {
 		"expected partial signature SignedSSVMessage",
 		testdoc.StructureSizeTestExpectedPartialSignatureSignedSSVMessageDoc,
 		expectedSignedSSVMessageWithFullDataFromObject(expectedPartialSignatureMessages(1), 1),
-		expectedSizePartialSignatureMessagesSignedSSVMessage,
+		ExpectedSizePartialSignatureMessagesSignedSSVMessage,
 		false,
 	)
 }

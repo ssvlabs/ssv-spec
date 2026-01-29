@@ -62,13 +62,13 @@ func PastMessage() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
-				Runner: bumpHeight(testingutils.SyncCommitteeContributionRunner(ks)),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: bumpHeight(testingutils.AggregatorCommitteeRunner(ks)),
+				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
-					pastMsgF(testingutils.TestSyncCommitteeContributionConsensusData, testingutils.SyncCommitteeContributionMsgID),
+					pastMsgF(testingutils.TestSyncCommitteeContributionConsensusData, testingutils.TestingAggregatorCommitteeMsgID[:]),
 				},
-				PostDutyRunnerStateRoot: "d1ba71cab348c80ebb7b4533c9c482eaba407f6a73864ee742aab93e73b94dab",
-				DontStartDuty:           true,
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrCommitteeCode,
 			},
 			{
 				Name:   "proposer",
@@ -77,8 +77,7 @@ func PastMessage() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					pastMsgF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				},
-				PostDutyRunnerStateRoot: "1c939726a237c02013fab61901e819e34ec99e2ef62dadb6c847e5ad118fc4e7",
-				DontStartDuty:           true,
+				DontStartDuty: true,
 			},
 			{
 				Name:   "proposer (blinded block)",
@@ -87,8 +86,7 @@ func PastMessage() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					pastMsgF(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb), testingutils.ProposerMsgID),
 				},
-				PostDutyRunnerStateRoot: "49edaab0d759ba8a35a37ab26416ae04962d77ec088b87c4f1e65f781c1ed96f",
-				DontStartDuty:           true,
+				DontStartDuty: true,
 			},
 			{
 				Name:   "validator registration",
@@ -99,7 +97,6 @@ func PastMessage() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.ValidatorRegistrationMsgID,
 						testingutils.TestAttesterConsensusDataByts, qbft.Height(testingutils.TestingDutySlot)),
 				},
-				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
@@ -114,7 +111,6 @@ func PastMessage() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), testingutils.VoluntaryExitMsgID,
 						testingutils.TestAttesterConsensusDataByts, qbft.Height(testingutils.TestingDutySlot)),
 				},
-				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
@@ -127,13 +123,13 @@ func PastMessage() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name:   fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: bumpHeight(testingutils.AggregatorRunner(ks)),
+			Runner: bumpHeight(testingutils.AggregatorCommitteeRunner(ks)),
 			Duty:   testingutils.TestingAggregatorDuty(version),
 			Messages: []*types.SignedSSVMessage{
-				pastMsgF(testingutils.TestAggregatorConsensusData(version), testingutils.AggregatorMsgID),
+				pastMsgF(testingutils.TestAggregatorConsensusData(version), testingutils.TestingAggregatorCommitteeMsgID[:]),
 			},
-			PostDutyRunnerStateRoot: "5a1a9b9fb21682ea854f919be531a692fe5c3a6c5302214dbf3421faed57cff8",
-			DontStartDuty:           true,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrCommitteeCode,
 		},
 		)
 	}

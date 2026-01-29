@@ -6,11 +6,11 @@ import (
 )
 
 const (
-	maxSizeSignedSSVMessageFromQBFTWithNoJustification  = 3700
-	maxSizeSignedSSVMessageFromQBFTWith1Justification   = 51852
-	maxSizeSignedSSVMessageFromQBFTWith2Justification   = 9114816
-	maxSizeSignedSSVMessageFromPartialSignatureMessages = 221316
-	maxSizeFullConsensusData                            = 8388836
+	MaxSizeSignedSSVMessageFromQBFTWithNoJustification  = 3700
+	MaxSizeSignedSSVMessageFromQBFTWith1Justification   = 51852
+	MaxSizeSignedSSVMessageFromQBFTWith2Justification   = 9114816
+	MaxSizeSignedSSVMessageFromPartialSignatureMessages = 730500
+	MaxSizeFullConsensusData                            = 8388836
 )
 
 func maxSignedSSVMessageFromObject(obj types.Encoder) *types.SignedSSVMessage {
@@ -49,7 +49,7 @@ func MaxSignedSSVMessageFromQBFTMessageWithNoJustification() *StructureSizeTest 
 		"max SignedSSVMessage from qbftMessage with no justification",
 		testdoc.StructureSizeTestMaxSignedSSVMessageFromQBFTWithNoJustificationDoc,
 		maxSignedSSVMessageFromObject(maxQbftMessageNoJustification()),
-		maxSizeSignedSSVMessageFromQBFTWithNoJustification,
+		MaxSizeSignedSSVMessageFromQBFTWithNoJustification,
 		false,
 	)
 }
@@ -59,7 +59,7 @@ func MaxSignedSSVMessageFromQBFTMessageWith1Justification() *StructureSizeTest {
 		"max SignedSSVMessage from qbftMessage with 1 justification",
 		testdoc.StructureSizeTestMaxSignedSSVMessageFromQBFTWith1JustificationDoc,
 		maxSignedSSVMessageFromObject(maxQbftMessageWith1Justification()),
-		maxSizeSignedSSVMessageFromQBFTWith1Justification,
+		MaxSizeSignedSSVMessageFromQBFTWith1Justification,
 		false,
 	)
 }
@@ -69,7 +69,7 @@ func MaxSignedSSVMessageFromQBFTMessageWith2Justification() *StructureSizeTest {
 		"max SignedSSVMessage from qbftMessage with 2 justifications",
 		testdoc.StructureSizeTestMaxSignedSSVMessageFromQBFTWith2JustificationDoc,
 		maxSignedSSVMessageWithFullDataFromObject(maxQbftMessageWith2Justification()),
-		maxSizeSignedSSVMessageFromQBFTWith2Justification,
+		MaxSizeSignedSSVMessageFromQBFTWith2Justification,
 		true,
 	)
 }
@@ -79,7 +79,7 @@ func MaxSignedSSVMessageFromPartialSignatureMessages() *StructureSizeTest {
 		"max SignedSSVMessage from PartialSignatureMessages",
 		testdoc.StructureSizeTestMaxSignedSSVMessageFromPartialSignatureMessagesDoc,
 		maxSignedSSVMessageFromObject(maxPartialSignatureMessages()),
-		maxSizeSignedSSVMessageFromPartialSignatureMessages,
+		MaxSizeSignedSSVMessageFromPartialSignatureMessages,
 		false,
 	)
 }

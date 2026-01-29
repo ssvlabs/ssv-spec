@@ -11,6 +11,6 @@ func MapAggregator() *DutySpecTest {
 		"map aggregator role",
 		testdoc.MapAggregatorTestDoc,
 		types.BNRoleAggregator,
-		types.RoleAggregator,
+		types.RoleAggregatorCommittee,
 	)
 }

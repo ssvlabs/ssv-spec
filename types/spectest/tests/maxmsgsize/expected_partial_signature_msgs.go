@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	expectedSizePartialSignatureMessage  = 144
-	expectedSizePartialSignatureMessages = 164
+	ExpectedSizePartialSignatureMessage  = 144
+	ExpectedSizePartialSignatureMessages = 164
 )
 
 func expectedPartialSignatureMessage() *types.PartialSignatureMessage {
@@ -41,7 +41,7 @@ func ExpectedPartialSignatureMessage() *StructureSizeTest {
 		"expected PartialSignatureMessage",
 		testdoc.StructureSizeTestExpectedPartialSignatureMessageDoc,
 		expectedPartialSignatureMessage(),
-		expectedSizePartialSignatureMessage,
+		ExpectedSizePartialSignatureMessage,
 		false,
 	)
 }
@@ -51,7 +51,7 @@ func ExpectedPartialSignatureMessages() *StructureSizeTest {
 		"expected PartialSignatureMessages",
 		testdoc.StructureSizeTestExpectedPartialSignatureMessagesDoc,
 		expectedPartialSignatureMessages(1),
-		expectedSizePartialSignatureMessages,
+		ExpectedSizePartialSignatureMessages,
 		false,
 	)
 }

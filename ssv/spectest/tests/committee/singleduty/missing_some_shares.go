@@ -6,7 +6,6 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/qbft"
-	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
@@ -25,7 +24,6 @@ func MissingSomeShares() tests.SpecTest {
 	committeeShareValidators := []int{1, 3, 5, 7, 9}
 	// KeySet and Share map for Committee
 	committeeShareKSMap := testingutils.KeySetMapForValidatorIndexList(committeeShareValidators)
-	committeeShareMap := testingutils.ShareMapFromKeySetMap(committeeShareKSMap)
 
 	// Duty's validator indexes
 	dutyValidators := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
@@ -41,7 +39,7 @@ func MissingSomeShares() tests.SpecTest {
 
 			{
 				Name:      fmt.Sprintf("attestation (%s)", version.String()),
-				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(committeeShareKSMap, testingutils.CommitteeRunnerWithShareMap(committeeShareMap).(*ssv.CommitteeRunner)),
+				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(committeeShareKSMap),
 				Input: []interface{}{
 					// Duty for more validators
 					testingutils.TestingAttesterDutyForValidators(version, dutyValidators),
@@ -68,7 +66,7 @@ func MissingSomeShares() tests.SpecTest {
 			},
 			{
 				Name:      fmt.Sprintf("sync committee (%s)", version.String()),
-				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(committeeShareKSMap, testingutils.CommitteeRunnerWithShareMap(committeeShareMap).(*ssv.CommitteeRunner)),
+				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(committeeShareKSMap),
 				Input: []interface{}{
 					// Duty for more validators
 					testingutils.TestingSyncCommitteeDutyForValidators(version, dutyValidators),
@@ -95,7 +93,7 @@ func MissingSomeShares() tests.SpecTest {
 			},
 			{
 				Name:      fmt.Sprintf("attestations sync committees (%s)", version.String()),
-				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(committeeShareKSMap, testingutils.CommitteeRunnerWithShareMap(committeeShareMap).(*ssv.CommitteeRunner)),
+				Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(committeeShareKSMap),
 				Input: []interface{}{
 					// Duty for more validators
 					testingutils.TestingCommitteeDuty(dutyValidators, dutyValidators, version),
