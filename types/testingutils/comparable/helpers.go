@@ -112,7 +112,7 @@ func SpecTestsDirFrom(basedir string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(root, "spec-tests", module), nil
+	return filepath.Join(root, "..", "spec-tests", module), nil
 }
 
 func moduleRootFrom(start string) (string, string, error) {

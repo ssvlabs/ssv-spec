@@ -18,7 +18,7 @@ import (
 
 //go:generate go run main.go
 
-var specTestsDir = filepath.Join("..", "..", "..", "spec-tests", "qbft")
+var specTestsDir = filepath.Join("..", "..", "..", "..", "spec-tests", "qbft")
 var testsDir = filepath.Join(specTestsDir, "tests")
 var stateComparisonDir = filepath.Join(specTestsDir, "state_comparison")
 
@@ -80,7 +80,7 @@ func clearStateComparisonFolder() {
 		panic(err.Error())
 	}
 
-	if err := os.Mkdir(stateComparisonDir, 0700); err != nil {
+	if err := os.MkdirAll(stateComparisonDir, 0700); err != nil {
 		panic(err.Error())
 	}
 }
@@ -90,7 +90,7 @@ func clearTestsFolder() {
 		panic(err.Error())
 	}
 
-	if err := os.Mkdir(testsDir, 0700); err != nil {
+	if err := os.MkdirAll(testsDir, 0700); err != nil {
 		panic(err.Error())
 	}
 }
