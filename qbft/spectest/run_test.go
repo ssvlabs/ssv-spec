@@ -13,6 +13,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/qbft"
 	tests2 "github.com/ssvlabs/ssv-spec/qbft/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	typescomparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 	"github.com/stretchr/testify/require"
 )
 
@@ -28,7 +29,11 @@ func TestAll(t *testing.T) {
 
 func TestJson(t *testing.T) {
 	basedir, _ := os.Getwd()
-	path := filepath.Join(basedir, "generate", "tests.json")
+	specTestsDir, err := typescomparable.SpecTestsDirFrom(basedir)
+	if err != nil {
+		panic(err.Error())
+	}
+	path := filepath.Join(specTestsDir, "tests.json")
 	untypedTests := map[string]interface{}{}
 	byteValue, err := os.ReadFile(path)
 	if err != nil {

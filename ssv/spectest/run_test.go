@@ -24,6 +24,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
+	comparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 func TestAll(t *testing.T) {
@@ -51,7 +52,11 @@ func TestJson(t *testing.T) {
 		t.Fatalf("Failed to get working directory: %v", err)
 	}
 
-	path := filepath.Join(basedir, "generate", "tests.json")
+	specTestsDir, err := comparable.SpecTestsDirFrom(basedir)
+	if err != nil {
+		t.Fatalf("Failed to resolve spec-tests dir: %v", err)
+	}
+	path := filepath.Join(specTestsDir, "tests.json")
 	untypedTests := map[string]interface{}{}
 	byteValue, err := os.ReadFile(path)
 	if err != nil {

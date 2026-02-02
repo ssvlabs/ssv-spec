@@ -20,8 +20,9 @@ import (
 
 //go:generate go run main.go
 
-var testsDir = "tests"
-var stateComparisonDir = "state_comparison"
+var specTestsDir = filepath.Join("..", "..", "..", "spec-tests", "ssv")
+var testsDir = filepath.Join(specTestsDir, "tests")
+var stateComparisonDir = filepath.Join(specTestsDir, "state_comparison")
 
 func main() {
 	clearStateComparisonFolder()
@@ -132,7 +133,7 @@ func writeSingleSCJson(path string, testType string, post interface{}) {
 }
 
 func scDir(testType string) string {
-	return comparable2.GetSCDir(".", testType)
+	return comparable2.GetSCDir(specTestsDir, testType)
 }
 
 func writeJson(name string, data []byte) {

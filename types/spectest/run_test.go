@@ -26,6 +26,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssz"
 	validatorconsensusdata "github.com/ssvlabs/ssv-spec/types/spectest/tests/validatorconsensusdata"
 	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/validatorconsensusdata/proposer"
+	comparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
 func TestAll(t *testing.T) {
@@ -38,7 +39,11 @@ func TestAll(t *testing.T) {
 
 func TestJson(t *testing.T) {
 	basedir, _ := os.Getwd()
-	path := filepath.Join(basedir, "generate", "tests.json")
+	specTestsDir, err := comparable.SpecTestsDirFrom(basedir)
+	if err != nil {
+		panic(err.Error())
+	}
+	path := filepath.Join(specTestsDir, "tests.json")
 	untypedTests := map[string]interface{}{}
 	byteValue, err := os.ReadFile(path)
 	if err != nil {

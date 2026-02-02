@@ -44,8 +44,11 @@ func FixIssue178(input *types.ValidatorConsensusData, version spec2.DataVersion)
 // UnmarshalStateComparison reads a json derived from 'testName' and unmarshals it into 'targetState'
 func UnmarshalStateComparison[T types.Root](basedir string, testName string, testType string, targetState T) (T, error) {
 	var nilT T
-	basedir = filepath.Join(basedir, "generate")
-	scDir := GetSCDir(basedir, testType)
+	specTestsDir, err := SpecTestsDirFrom(basedir)
+	if err != nil {
+		return nilT, err
+	}
+	scDir := GetSCDir(specTestsDir, testType)
 	path := filepath.Join(scDir, fmt.Sprintf("%s.json", testName))
 
 	byteValue, err := os.ReadFile(filepath.Clean(path))
@@ -63,8 +66,11 @@ func UnmarshalStateComparison[T types.Root](basedir string, testName string, tes
 
 // readStateComparison reads a json derived from 'testName' and unmarshals it into a json object
 func readStateComparison(basedir string, testName string, testType string) (map[string]interface{}, error) {
-	basedir = filepath.Join(basedir, "generate")
-	scDir := GetSCDir(basedir, testType)
+	specTestsDir, err := SpecTestsDirFrom(basedir)
+	if err != nil {
+		return nil, err
+	}
+	scDir := GetSCDir(specTestsDir, testType)
 	path := filepath.Join(scDir, fmt.Sprintf("%s.json", testName))
 	byteValue, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
@@ -99,6 +105,30 @@ func GetSCDir(basedir string, testType string) string {
 		".", "_").
 		Replace(testType)
 	return filepath.Join(basedir, "state_comparison", testType)
+}
+
+func SpecTestsDirFrom(basedir string) (string, error) {
+	module, root, err := moduleRootFrom(basedir)
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(root, "spec-tests", module), nil
+}
+
+func moduleRootFrom(start string) (string, string, error) {
+	dir := filepath.Clean(start)
+	for {
+		base := filepath.Base(dir)
+		if base == "qbft" || base == "ssv" || base == "types" {
+			return base, filepath.Dir(dir), nil
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			break
+		}
+		dir = parent
+	}
+	return "", "", fmt.Errorf("failed to locate module root from %s", start)
 }
 
 // CompareWithJson compares the given test with the expected state from the state comparison folder
