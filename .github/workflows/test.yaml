@@ -10,6 +10,13 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      SPEC_TESTS_REPO: ${{ vars.SPEC_TESTS_REPO }}
+      SPEC_TESTS_BRANCH: main
+      SPEC_TESTS_DIR: ../spec-tests
     steps:
       - uses: actions/checkout@v4
 
@@ -17,6 +24,14 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: 1.22.x
+
+      - name: Clone spec-tests repo
+        run: |
+          if [ -z "${SPEC_TESTS_REPO}" ]; then
+            echo "SPEC_TESTS_REPO is not set (use repo variable SPEC_TESTS_REPO, e.g. ssvlabs/spec-tests)" >&2
+            exit 1
+          fi
+          git clone "https://x-access-token:${{ secrets.SPEC_TESTS_TOKEN }}@github.com/${SPEC_TESTS_REPO}.git" "${SPEC_TESTS_DIR}"
 
       - name: Get Dependencies
         run: go get -v -t -d ./...
@@ -26,3 +41,55 @@ jobs:
 
       - name: Test
         run: make test
+
+      - name: Sync spec-tests (PR)
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.SPEC_TESTS_TOKEN }}
+        run: |
+          set -euo pipefail
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          HEAD_REF="${{ github.head_ref }}"
+          BRANCH_NAME="sync/pr-${PR_NUMBER}-${HEAD_REF}"
+          cd "${SPEC_TESTS_DIR}"
+          git config user.email "actions@github.com"
+          git config user.name "github-actions"
+          git checkout -B "${BRANCH_NAME}"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to sync"
+            exit 0
+          fi
+          git commit -m "sync: ssv-spec PR #${PR_NUMBER}"
+          git push -u origin "${BRANCH_NAME}"
+          if gh pr view --repo "${SPEC_TESTS_REPO}" "${BRANCH_NAME}" >/dev/null 2>&1; then
+            gh pr edit --repo "${SPEC_TESTS_REPO}" "${BRANCH_NAME}" --title "sync: ${PR_TITLE}" --body "Auto-generated from ssv-spec PR #${PR_NUMBER}"
+          else
+            gh pr create --repo "${SPEC_TESTS_REPO}" --head "${BRANCH_NAME}" --base "${SPEC_TESTS_BRANCH}" --title "sync: ${PR_TITLE}" --body "Auto-generated from ssv-spec PR #${PR_NUMBER}"
+          fi
+
+      - name: Sync spec-tests (main)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ secrets.SPEC_TESTS_TOKEN }}
+        run: |
+          set -euo pipefail
+          cd "${SPEC_TESTS_DIR}"
+          git config user.email "actions@github.com"
+          git config user.name "github-actions"
+          git checkout "${SPEC_TESTS_BRANCH}"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to sync"
+          else
+            git commit -m "sync: ssv-spec ${GITHUB_SHA}"
+            git push origin "${SPEC_TESTS_BRANCH}"
+          fi
+          PR_NUMBER="$(gh pr list --repo "${{ github.repository }}" --search "${GITHUB_SHA}" --json number --jq '.[0].number' || true)"
+          if [ -n "${PR_NUMBER}" ]; then
+            PR_TO_MERGE="$(gh pr list --repo "${SPEC_TESTS_REPO}" --search "sync/pr-${PR_NUMBER}-" --json number,headRefName --jq '.[0].number' || true)"
+            if [ -n "${PR_TO_MERGE}" ]; then
+              gh pr merge --repo "${SPEC_TESTS_REPO}" "${PR_TO_MERGE}" --merge --delete-branch || true
+            fi
+          fi
