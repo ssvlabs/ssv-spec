@@ -51,10 +51,19 @@ jobs:
           PR_NUMBER="${{ github.event.pull_request.number }}"
           PR_TITLE="${{ github.event.pull_request.title }}"
           HEAD_REF="${{ github.head_ref }}"
+          BASE_REF="${{ github.base_ref }}"
+          if [ -z "${BASE_REF}" ]; then
+            BASE_REF="${SPEC_TESTS_BRANCH}"
+          fi
           BRANCH_NAME="sync/pr-${PR_NUMBER}-${HEAD_REF}"
           cd "${SPEC_TESTS_DIR}"
           git config user.email "actions@github.com"
           git config user.name "github-actions"
+          git fetch origin
+          if ! git show-ref --verify --quiet "refs/remotes/origin/${BASE_REF}"; then
+            git checkout -B "${BASE_REF}" "origin/${SPEC_TESTS_BRANCH}"
+            git push -u origin "${BASE_REF}"
+          fi
           git checkout -B "${BRANCH_NAME}"
           git add -A
           if git diff --cached --quiet; then
@@ -66,7 +75,7 @@ jobs:
           if gh pr view --repo "${SPEC_TESTS_REPO}" "${BRANCH_NAME}" >/dev/null 2>&1; then
             gh pr edit --repo "${SPEC_TESTS_REPO}" "${BRANCH_NAME}" --title "sync: ${PR_TITLE}" --body "Auto-generated from ssv-spec PR #${PR_NUMBER}"
           else
-            gh pr create --repo "${SPEC_TESTS_REPO}" --head "${BRANCH_NAME}" --base "${SPEC_TESTS_BRANCH}" --title "sync: ${PR_TITLE}" --body "Auto-generated from ssv-spec PR #${PR_NUMBER}"
+            gh pr create --repo "${SPEC_TESTS_REPO}" --head "${BRANCH_NAME}" --base "${BASE_REF}" --title "sync: ${PR_TITLE}" --body "Auto-generated from ssv-spec PR #${PR_NUMBER}"
           fi
 
       - name: Sync spec-tests (main)
@@ -78,6 +87,11 @@ jobs:
           cd "${SPEC_TESTS_DIR}"
           git config user.email "actions@github.com"
           git config user.name "github-actions"
+          git fetch origin
+          if ! git show-ref --verify --quiet "refs/remotes/origin/${SPEC_TESTS_BRANCH}"; then
+            git checkout -B "${SPEC_TESTS_BRANCH}"
+            git push -u origin "${SPEC_TESTS_BRANCH}"
+          fi
           git checkout "${SPEC_TESTS_BRANCH}"
           git add -A
           if git diff --cached --quiet; then
