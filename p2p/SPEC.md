@@ -289,22 +289,68 @@ Consensus messages are being sent in the network over a pubsub topic.
 A subnet of peers consists of
 operators that are responsible for multiple committees,
 reusing the same topic to communicate on behalf of multiple validators. \
-Operator nodes will validate and store highest decided messages and last change round messages
-of all the committees in the subnets they participate.
 
-`Decided` topic is used for propagation of decided messages across all the nodes in the network,
-that should store the last decided message of each committee in the network.
-Having such redundancy of decided messages helps to maintain the multiple states (per validator) across the network.
+**Committee Topic Assignment**
 
-**Committee Mapping**
+Committees are assigned to topics following the MinHash approach.
+That is, the topic is determined by the lowest hash value computed for each operator in the committee.
+This increases the probability of two similar committees (that have many operators in common) being assigned to the same topic.
+The matching mainly occurs if one of the common operators holds the minimum hash of both sets, approximating the Jaccard similarity
 
-The committee ID is a hash of the operators IDs.
-This helps to distribute committees across subnets in a balanced, distributed way:
+$$P(min(\pi(A)) = min(\pi(B))) = \frac{|A \cap B|}{|A \cup B|} = J(A,B)$$
 
-`committee_id % num_of_subnets`
+where $\pi$ is the permutation associated with the hash function.
 
-Deterministic mapping is ensured as long as the number of subnets doesn't change,
-therefore it's a fixed number.
+Concretely, consider two committees $C_1$ and $C_2$ of equal size $k$ that differ by one operator.
+They may be assigned to the same topic either if their minimum hash is equal or if the different minimum hashes end up in the same topic:
+$$P(t(C_1) = t(C_2)) = J(C_1,C_2) + (1-J(C_1,C_2))\times \frac{1}{128}$$
+
+| Committee Size ($k$) | Probability ($P(t(C_1) = t(C_2))$) |
+|:---------------------|:-----------------------------------|
+| 4                    | 60.31%                             |
+| 7                    | 75.20%                             |
+| 10                   | 81.96%                             |
+| 13                   | 85.82%                             |
+
+> [!NOTE]
+> Alternative [Locality Sensitive Hashing (LSH)](https://en.wikipedia.org/wiki/Locality-sensitive_hashing) functions were tested but proved unsuitable for our context:
+> - **SimHash (Charikar's Hash)**:
+    > While SimHash theoretically approximates Cosine Similarity,
+    > which offers a higher collision probability than MinHash (e.g. ~77% vs. 60% for 4-element sets),
+    > it failed in practice because it produces a "fingerprint" for the entire set rather than selecting a common element in a small discrete set.
+    > Even though similar committees produce similar fingerprints, a single bit difference, caused by changing one operator, results in a completely different integer value
+    > (and thus resulting topic).
+> - **Consensus MinHash (Voting) and Multi-Hash Minimum**: We attempted to boost stability by (i) computing k independent MinHashes and taking a majority vote,
+    > and (ii) by taking the global minimum of the $k$ hashes.
+    > However, this offered no improvement and only incurred more computation overhead.
+
+
+**Algorithm Pseudocode**
+```text
+CONSTANTS:
+NUM_TOPICS = 128
+MAX_UINT256 = (2^256) - 1
+
+FUNCTION AssignCommitteeToTopic(committee: list[uint64]):
+	min_int = MAX_UINT256
+	
+	FOR each operator_id IN committee:
+		# 1. Serialize the uint64 Operator ID to 8 bytes (Little-Endian)
+		input_bytes = serialize_uint64_little_endian(operator_id)
+		
+		# 2. Compute the SHA-256 hash, resulting in 32 bytes
+		hash_bytes = SHA256(input_bytes)
+		
+		# 3. Convert to uint256 (Big-Endian)
+		current_int = uint256_from_bytes_big_endian(hash_bytes)
+		
+		# 4. Get minimum
+		IF current_int < min_int:
+			min_int = current_int
+	
+	# 5. Modulo for topic ID
+	RETURN min_int MOD NUM_TOPICS
+```
 
 <br />
 
