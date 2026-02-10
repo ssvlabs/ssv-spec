@@ -535,8 +535,14 @@ func (r *AggregatorCommitteeRunner) executeDuty(duty types.Duty) error {
 
 		case types.BNRoleSyncCommitteeContribution:
 			// Sign sync committee selection proofs for each subcommittee
+			seenSubnets := make(map[uint64]struct{})
 			for _, index := range vDuty.ValidatorSyncCommitteeIndices {
 				subnet := r.GetBeaconNode().SyncCommitteeSubnetID(phase0.CommitteeIndex(index))
+
+				if _, seen := seenSubnets[subnet]; seen {
+					continue
+				}
+				seenSubnets[subnet] = struct{}{}
 
 				data := &altair.SyncAggregatorSelectionData{
 					Slot:              duty.DutySlot(),
