@@ -38,19 +38,19 @@ var PreConsensusContributionProofMsgInconsistentBeaconSigners = func(msgSK, beac
 }
 
 var PreConsensusContributionProofWrongBeaconSigMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
-	return contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, slot, false, true, false)
+	return contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, slot, false, true, false, TestingContributionProofIndexes)
 }
 
 var PreConsensusContributionProofWrongBeaconRootMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
-	return contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, slot, false, false, true)
+	return contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, slot, false, false, true, TestingContributionProofIndexes)
 }
 
 var PreConsensusContributionProofNextEpochMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *types.PartialSignatureMessages {
-	return contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, TestingDutySlot2, false, false, false)
+	return contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, TestingDutySlot2, false, false, false, TestingContributionProofIndexes)
 }
 
 var PreConsensusCustomSlotContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
-	return contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, slot, false, false, false)
+	return contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, slot, false, false, false, TestingContributionProofIndexes)
 }
 
 var PreConsensusContributionProofMsgWithValidatorIndex = func(msgSK, beaconSK *bls.SecretKey, validatorIndex phase0.ValidatorIndex, msgID, beaconID types.OperatorID) *types.PartialSignatureMessages {
@@ -58,19 +58,19 @@ var PreConsensusContributionProofMsgWithValidatorIndex = func(msgSK, beaconSK *b
 }
 
 var PreConsensusCustomSlotContributionProofMsgWithValidatorIndex = func(msgSK, beaconSK *bls.SecretKey, validatorIndex phase0.ValidatorIndex, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
-	return contributionProofMsg(msgSK, beaconSK, validatorIndex, msgID, beaconID, slot, false, false, false)
+	return contributionProofMsg(msgSK, beaconSK, validatorIndex, msgID, beaconID, slot, false, false, false, TestingContributionProofIndexes)
 }
 
 var PreConsensusWrongMsgSlotContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *types.PartialSignatureMessages {
-	return contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, TestingDutySlot, false, false, false)
+	return contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, TestingDutySlot, false, false, false, TestingContributionProofIndexes)
 }
 
 var PreConsensusWrongOrderContributionProofMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID) *types.PartialSignatureMessages {
-	return contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, TestingDutySlot, true, false, false)
+	return contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, TestingDutySlot, true, false, false, TestingContributionProofIndexes)
 }
 
 var PreConsensusContributionProofTooManyRootsMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
-	ret := contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, slot, false, false, false)
+	ret := contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, slot, false, false, false, TestingContributionProofIndexes)
 	msg := &types.PartialSignatureMessages{
 		Type:     types.AggregatorCommitteePartialSig,
 		Slot:     slot,
@@ -80,13 +80,17 @@ var PreConsensusContributionProofTooManyRootsMsg = func(msgSK, beaconSK *bls.Sec
 }
 
 var PreConsensusContributionProofTooFewRootsMsg = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
-	ret := contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, slot, false, false, false)
+	ret := contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, slot, false, false, false, TestingContributionProofIndexes)
 	msg := &types.PartialSignatureMessages{
 		Type:     types.AggregatorCommitteePartialSig,
 		Slot:     TestingDutySlot,
 		Messages: ret.Messages[0:2],
 	}
 	return msg
+}
+
+var PreConsensusContributionProofWithValidatorSyncCommitteeIndices = func(msgSK, beaconSK *bls.SecretKey, msgID, beaconID types.OperatorID, validatorSyncCommitteeIndices []types.ValidatorSyncCommitteeIndex) *types.PartialSignatureMessages {
+	return contributionProofMsg(msgSK, beaconSK, TestingValidatorIndex, msgID, beaconID, TestingDutySlot, false, false, false, validatorSyncCommitteeIndices)
 }
 
 var contributionProofMsg = func(
@@ -97,14 +101,23 @@ var contributionProofMsg = func(
 	wrongMsgOrder bool,
 	wrongBeaconSig bool,
 	wrongBeaconRoot bool,
+	validatorSyncCommitteeIndices []types.ValidatorSyncCommitteeIndex,
 ) *types.PartialSignatureMessages {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
 	d, _ := beacon.DomainData(1, types.DomainSyncCommitteeSelectionProof)
 
 	msgs := make([]*types.PartialSignatureMessage, 0)
-	for index := range TestingContributionProofIndexes {
+	// Deduplicate by subnet to match runner behavior (one selection proof per subnet)
+	seenSubnets := make(map[uint64]struct{})
+	for _, index := range validatorSyncCommitteeIndices {
 		subnet := beacon.SyncCommitteeSubnetID(phase0.CommitteeIndex(index))
+
+		if _, seen := seenSubnets[subnet]; seen {
+			continue
+		}
+		seenSubnets[subnet] = struct{}{}
+
 		data := &altair.SyncAggregatorSelectionData{
 			Slot:              slot,
 			SubcommitteeIndex: subnet,

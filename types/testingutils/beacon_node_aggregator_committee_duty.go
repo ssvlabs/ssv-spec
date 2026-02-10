@@ -24,7 +24,8 @@ func TestingAggregatorCommitteeDutyForSlot(slot phase0.Slot, aggregatorValidator
 		TestingCommitteeIndex,
 		TestingCommitteesAtSlot,
 		TestingCommitteeLenght,
-		TestingValidatorCommitteeIndex)
+		TestingValidatorCommitteeIndex,
+		TestingContributionProofIndexes)
 }
 
 func TestingAggregatorCommitteeDuty(aggregatorValidatorIds []int, syncCommitteeValidatorIds []int, version spec.DataVersion) *types.AggregatorCommitteeDuty {
@@ -38,7 +39,8 @@ func TestingAggregatorCommitteeDutyWithParams(
 	committeeIndex phase0.CommitteeIndex,
 	committeesAtSlot uint64,
 	committeeLenght uint64,
-	validatorCommitteeIndex uint64) *types.AggregatorCommitteeDuty {
+	validatorCommitteeIndex uint64,
+	validatorSyncCommitteeIndices []types.ValidatorSyncCommitteeIndex) *types.AggregatorCommitteeDuty {
 
 	duties := make([]*types.ValidatorDuty, 0)
 
@@ -74,7 +76,7 @@ func TestingAggregatorCommitteeDutyWithParams(
 			CommitteesAtSlot:              committeesAtSlot,
 			CommitteeLength:               committeeLenght,
 			ValidatorCommitteeIndex:       validatorCommitteeIndex,
-			ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
+			ValidatorSyncCommitteeIndices: validatorSyncCommitteeIndices,
 		})
 	}
 
@@ -338,7 +340,8 @@ func TestingAggCommitteeDutyWithMixedCommitteeIndexes(aggValsIds []int, sccValsI
 				TestingDifferentCommitteeIndex,
 				TestingCommitteesAtSlot,
 				TestingCommitteeLenght,
-				TestingValidatorCommitteeIndex)
+				TestingValidatorCommitteeIndex,
+				TestingContributionProofIndexes)
 		}
 		if ret == nil {
 			ret = duty
@@ -365,7 +368,8 @@ func TestingAggCommitteeDutyWithMixedCommitteeIndexes(aggValsIds []int, sccValsI
 				TestingDifferentCommitteeIndex,
 				TestingCommitteesAtSlot,
 				TestingCommitteeLenght,
-				TestingValidatorCommitteeIndex)
+				TestingValidatorCommitteeIndex,
+				TestingContributionProofIndexes)
 		}
 		if ret == nil {
 			ret = duty

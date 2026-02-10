@@ -55,7 +55,7 @@ var TestingSignedSyncCommitteeBlockRootSSZRootForKeyMap = func(ksMap map[phase0.
 // Sync Committee Contribution Objects
 // ==================================================
 
-var TestingContributionProofIndexes = []uint64{0, 1, 2}
+var TestingContributionProofIndexes = []uint64{0, 129, 257}
 var TestingContributionProofsSigned = func() []phase0.BLSSignature {
 	// signed with 3515c7d08e5affd729e9579f7588d30f2342ee6f6a9334acf006345262162c6f
 	byts1, _ := hex.DecodeString("b18833bb7549ec33e8ac414ba002fd45bb094ca300bd24596f04a434a89beea462401da7c6b92fb3991bd17163eb603604a40e8dd6781266c990023446776ff42a9313df26a0a34184a590e57fa4003d610c2fa214db4e7dec468592010298bc")
@@ -155,3 +155,15 @@ var TestingSyncCommitteeContributionNexEpochDuty = func() *types.AggregatorCommi
 	}
 	return d
 }()
+
+var TestingSyncCommitteeContributionDutyWithValidatorContributionIndices = func(contributionIndices []types.ValidatorSyncCommitteeIndex) *types.AggregatorCommitteeDuty {
+	return TestingAggregatorCommitteeDutyWithParams(
+		TestingDutySlotV(spec.DataVersionPhase0),
+		[]int{},
+		[]int{TestingValidatorIndex},
+		TestingCommitteeIndex,
+		TestingCommitteesAtSlot,
+		TestingCommitteeLenght,
+		TestingValidatorCommitteeIndex,
+		contributionIndices)
+}
