@@ -88,15 +88,15 @@
               "ValidatorIndex": "1"
             },
             {
-              "PartialSignature": "b1d47521750f15f6770b9e4ce8f403ec1431d302424c62eaaf52599b6dca1f4c8d01215d9ac74a9df670cdf00a327cec02349008c07fdc8d5fe466b5252d565a516451d9ebd93ce45acbaf40e13eb474303deba9a1bc447dcb8a111aebbd0dfd",
+              "PartialSignature": "8effe9895cfb8a40d5d11f80695bbf859f5b39f0a28f7c45418f4b15c3156f2491b969f764fbcf3f9b35ceca2c598a84051e9fd963161c9f3a9a97ca51f0366da9de2beb628fb1575accd7f8d2ba093aff7d40ae08fa931a409d4c945fd7ba78",
               "Signer": 1,
-              "SigningRoot": "9a80a279698a7ceaeeb56bd77d1d8bd3f480eead092d960e4e11de147763a96e",
+              "SigningRoot": "0b68ed952fd73e213cb2d93c46c903b58f66494a2249a61ad368de2d541df8e0",
               "ValidatorIndex": "1"
             },
             {
-              "PartialSignature": "b1d47521750f15f6770b9e4ce8f403ec1431d302424c62eaaf52599b6dca1f4c8d01215d9ac74a9df670cdf00a327cec02349008c07fdc8d5fe466b5252d565a516451d9ebd93ce45acbaf40e13eb474303deba9a1bc447dcb8a111aebbd0dfd",
+              "PartialSignature": "b8c5d7229e612f122eb831d832ee750f944446f813c9a730dc1e1d2a20c0e1762c4e272cb1b11e43b7dd87ec87909c550bb99497bea99d945c97126c491a13756ae014aa1ecd5889f2ea38b56977355e0ade8c94cb9eef1d9ec8b77c7460cdf9",
               "Signer": 1,
-              "SigningRoot": "9a80a279698a7ceaeeb56bd77d1d8bd3f480eead092d960e4e11de147763a96e",
+              "SigningRoot": "debdd59a03f706592cb1858a525c773de3d516c226ce4720f45f5e2ffe43aa43",
               "ValidatorIndex": "1"
             }
           ]
@@ -117,8 +117,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]
@@ -510,8 +510,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]
@@ -606,8 +606,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]

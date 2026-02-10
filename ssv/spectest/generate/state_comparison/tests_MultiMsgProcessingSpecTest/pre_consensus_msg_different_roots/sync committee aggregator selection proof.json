@@ -9,6 +9,12 @@
             },
             "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53": {
               "1": "gxuEN8qxE4nRnfmtt3v4r8M9nxWy2pFTOx8mXGrTxK5EDSuWQ0SkUhGs1uP1NhvED+OXWBzt4sA/lCKhfUFILLQYcnYvHA+3VMOVzThFpQQn6PoO3kuMQJEq9XzajS5n"
+            },
+            "df151701902e77f91fa9f8851e36debd13f8d56245c4e2f8a071f22f60b9f795": {
+              "1": "qXwrK1EG2kge6Z8qfeaoWYXTabNQwXcF/t9gLbsRm14mHHiIJuZ2H1B2ULz1kjZ4DkR08DC0oT/h5DkycOw//aihrLWiGQFFMf/UrWr9M+5renp6qxPS6AvAZsxTjTNw"
+            },
+            "f0f373fcb0097430b0915b34dc000a1ff0a2e993bc1c4bf90f0086749f3d269f": {
+              "1": "tCc27SYK3Lfv7HuJdjuOJbtZI5wm7d+Ogqq4W5ulSgaJlR2+sDx5oSnb/Zs24GFeGYhhQFxeBvLFPc/R/oyjV5lFLAY2j+tzpMXD0tGjdTS/c0ZW2k2N6jGUOKbGEgxb"
             }
           }
         },
@@ -35,8 +41,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]
