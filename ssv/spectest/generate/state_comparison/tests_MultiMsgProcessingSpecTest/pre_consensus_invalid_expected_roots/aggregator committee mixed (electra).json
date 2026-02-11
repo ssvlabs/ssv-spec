@@ -7,8 +7,14 @@
             "c4475999a5dd7ff273b13a61360ea839453b286c2286b263b67256e1c5f916ed": {
               "1": "l8xdvDZt+U7T3c72qn1Mr46+aHcAIIEMjGxsridNb/RLAYqlZAxthd0IeDP5OZmdC2VLkMciIbP0mS278pDMg3hlleb/8uJhitM1GUtNFIaZ+TG1FSWvEynV9cJABB6t"
             },
+            "d14646acf8bd2c43406ef8b00db33496abef53deef63a59f97f8940e100ce626": {
+              "1": "lwe4hHoHcDit6RFzpTxSVZoIxtGM8D+R61DYzj1sYvPYGHTyg4C5jcDjpaUjfjWAAGWxrZ2GGKJGEMBrbUJgA8nJp/8W9nq0ZMMcOUQnNd23ogNbKP7J/fBI+HdvbpfY"
+            },
             "e82ed32828596935cb06cd61a0b7d1512f230ec827b2696e02cc8a06766d36e8": {
               "1": "qU5obP/hYp9Ig22mm23CvSF0e93oGiKPgk/cK+N0e/wqL+14Y6c4n9HRYWGcqW7zAQkRCY/S6po/VML4rIFOm5uPCFe/2QlX7iN6WfI3gi9ll3JEt3cqa2m3w6164710"
+            },
+            "fc774901fd0cd1a1a6ae90accf26e4985d6e4718555afa2d44e5a72da0200215": {
+              "1": "hwiMzjy5mIZt+eqU7TdhE0U1jUhiMGa6xX6aL9akCuoCVBW7vJKuwRbsbIS2VN5ZD9ojIFe7rSpzP74XDUDMFVpZqdcC1e7OTeCwWg8faOmRs03m2WfxOgPooogS+Cyt"
             }
           }
         },
@@ -46,8 +52,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]
