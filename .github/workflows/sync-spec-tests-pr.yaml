@@ -1,0 +1,95 @@
+name: Sync Spec Tests (PR)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      SPEC_TESTS_REPO: ${{ vars.SPEC_TESTS_REPO }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate spec tests
+        uses: ./.github/actions/generate-spec-tests
+
+      - name: Get GitHub App token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.SPEC_TESTS_APP_ID }}
+          private-key: ${{ secrets.SPEC_TESTS_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Sync to spec-tests PR branch
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SPEC_TESTS_REPO}" ]; then
+            echo "SPEC_TESTS_REPO variable is not set (e.g. ssvlabs/spec-tests)" >&2
+            exit 1
+          fi
+
+          BRANCH_NAME="${HEAD_REF}"
+          GENERATED_DIR="${GITHUB_WORKSPACE}/../spec-tests"
+          CLONE_DIR=$(mktemp -d)
+
+          # Validate generated output exists
+          if [ -z "$(ls -A "${GENERATED_DIR}" 2>/dev/null)" ]; then
+            echo "Generated spec-tests directory is empty, aborting sync" >&2
+            exit 1
+          fi
+
+          git clone "https://x-access-token:${GH_TOKEN}@github.com/${SPEC_TESTS_REPO}.git" "${CLONE_DIR}"
+          cd "${CLONE_DIR}"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git fetch origin
+
+          # Determine base branch in spec-tests (fallback to main)
+          RESOLVED_BASE="${BASE_REF:-main}"
+          if ! git show-ref --verify --quiet "refs/remotes/origin/${RESOLVED_BASE}"; then
+            RESOLVED_BASE="main"
+          fi
+
+          # Reset sync branch to base, then replace only the generated paths.
+          # Other files/folders in spec-tests are left untouched.
+          git checkout -B "${BRANCH_NAME}" "origin/${RESOLVED_BASE}"
+          while IFS= read -r -d '' entry; do
+            git rm -rf "$(basename "${entry}")" 2>/dev/null || true
+          done < <(find "${GENERATED_DIR}" -maxdepth 1 -mindepth 1 -print0)
+          cp -r "${GENERATED_DIR}/." .
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No changes to sync"
+            exit 0
+          fi
+
+          git commit -m "sync: ssv-spec PR #${PR_NUMBER}"
+          # Force push to overwrite previous syncs for this PR
+          git push --force origin "${BRANCH_NAME}"
+
+          # Create PR if missing, otherwise update title/body
+          if gh pr view --repo "${SPEC_TESTS_REPO}" "${BRANCH_NAME}" >/dev/null 2>&1; then
+            gh pr edit --repo "${SPEC_TESTS_REPO}" "${BRANCH_NAME}" \
+              --title "sync: ${PR_TITLE}" \
+              --body "Auto-generated from ssv-spec PR #${PR_NUMBER}"
+          else
+            gh pr create --repo "${SPEC_TESTS_REPO}" \
+              --head "${BRANCH_NAME}" \
+              --base "${RESOLVED_BASE}" \
+              --title "sync: ${PR_TITLE}" \
+              --body "Auto-generated from ssv-spec PR #${PR_NUMBER}"
+          fi
