@@ -77,13 +77,14 @@ func PostDecided() tests.SpecTest {
 			testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(scConsensusData)),
 			testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(scConsensusData)),
 
-			// Extra pre-consensus message after consensus decided should be ignored but not cause error
+			// Extra pre-consensus message after consensus decided should be ignored
 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(scDuty, ksMap, 4))),
 		},
 		OutputMessages: []*types.PartialSignatureMessages{
 			testingutils.PreConsensusAggregatorCommitteeMsgForDuty(scDuty, ksMap, 1),
 			testingutils.PostConsensusAggregatorCommitteeMsgForDuty(scDuty, ksMap, 1, spec.DataVersionAltair),
 		},
+		ExpectedErrorCode: types.AggCommPreConsensusIgnoredSinceAlreadyStartedConsensusErrorCode,
 	})
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		// Aggregator duty
@@ -116,13 +117,14 @@ func PostDecided() tests.SpecTest {
 					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, aggHeight, msgID, sha256.Sum256(aggConsensusData)),
 					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, aggHeight, msgID, sha256.Sum256(aggConsensusData)),
 
-					// Extra pre-consensus message after consensus decided should be ignored but not cause error
+					// Extra pre-consensus message after consensus decided should be ignored
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 4))),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 1),
 					testingutils.PostConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 1, version),
 				},
+				ExpectedErrorCode: types.AggCommPreConsensusIgnoredSinceAlreadyStartedConsensusErrorCode,
 			},
 			{
 				Name:   fmt.Sprintf("aggregator committee duty (%s)", version.String()),
@@ -143,13 +145,14 @@ func PostDecided() tests.SpecTest {
 					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, mixedHeight, msgID, sha256.Sum256(mixedConsensusData)),
 					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, mixedHeight, msgID, sha256.Sum256(mixedConsensusData)),
 
-					// Extra pre-consensus message after consensus decided should be ignored but not cause error
+					// Extra pre-consensus message after consensus decided should be ignored
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(mixedDuty, ksMap, 4))),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusAggregatorCommitteeMsgForDuty(mixedDuty, ksMap, 1),
 					testingutils.PostConsensusAggregatorCommitteeMsgForDuty(mixedDuty, ksMap, 1, version),
 				},
+				ExpectedErrorCode: types.AggCommPreConsensusIgnoredSinceAlreadyStartedConsensusErrorCode,
 			},
 		}...)
 	}

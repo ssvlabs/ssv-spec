@@ -90,6 +90,7 @@ const (
 	UnknownVersionErrorCode
 	AggCommAttestationDecodingErrorCode
 	CommitteeWrongRoleErrorCode
+	AggCommPreConsensusIgnoredSinceAlreadyStartedConsensusErrorCode
 )
 
 type Error struct {
