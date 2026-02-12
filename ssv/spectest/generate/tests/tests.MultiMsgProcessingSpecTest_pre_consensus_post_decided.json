@@ -285,7 +285,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedErrorCode": 0,
+      "ExpectedErrorCode": 86,
       "AggregatorCommitteeDuty": {
         "Slot": "2375680",
         "ValidatorDuties": [
@@ -565,7 +565,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedErrorCode": 0,
+      "ExpectedErrorCode": 86,
       "AggregatorCommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -877,7 +877,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedErrorCode": 0,
+      "ExpectedErrorCode": 86,
       "AggregatorCommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -1168,7 +1168,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedErrorCode": 0,
+      "ExpectedErrorCode": 86,
       "AggregatorCommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -1480,7 +1480,7 @@
       ],
       "BeaconBroadcastedRoots": null,
       "DontStartDuty": false,
-      "ExpectedErrorCode": 0,
+      "ExpectedErrorCode": 86,
       "AggregatorCommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
