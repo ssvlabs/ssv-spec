@@ -612,15 +612,15 @@
               "ValidatorIndex": "1"
             },
             {
-              "PartialSignature": "ab956402cb39df3fa275294347c5ea876b8e7716b60a94d48fdf77ab6f63496eb17e647b3789779c79c1caa8f75c53080f58e9b604923141fa0405c1b7d17b9c67ac2bfff73b07ab7d3996200ce6cca560c63d7dd3b2a000529e51d6eb6b07e8",
+              "PartialSignature": "b65b81f5540ff3d1ffaa694fbda1fadfd13895a2a416700f42aa49d842b2aaf2c56ab667dbaf85110fe1d34339433716003bb8b0da024362b7b8c41c20e4ae664bb0d492d89d8eb56c92cb802f30c4eb7104a81ce69858e7cf25c9f05e04f1cb",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "9989d3ab6c75aa22aef5d56898a930c3f67de00e241103071ecf84523c73fc1c",
               "ValidatorIndex": "1"
             },
             {
-              "PartialSignature": "ab956402cb39df3fa275294347c5ea876b8e7716b60a94d48fdf77ab6f63496eb17e647b3789779c79c1caa8f75c53080f58e9b604923141fa0405c1b7d17b9c67ac2bfff73b07ab7d3996200ce6cca560c63d7dd3b2a000529e51d6eb6b07e8",
+              "PartialSignature": "b6b5cdd75d944ec40412848c9bf658f8906b6a0966fa8b4edff76674d5044613e681790759bdbdd4b744a0e5ce8185a5057d77d0056340c8ba21d3c519d323595f357d7494b3b4f4f56d0126001f151c5c22cb3729964d5d083efad975a22548",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "f0f373fcb0097430b0915b34dc000a1ff0a2e993bc1c4bf90f0086749f3d269f",
               "ValidatorIndex": "1"
             },
             {
@@ -630,15 +630,15 @@
               "ValidatorIndex": "2"
             },
             {
-              "PartialSignature": "b52c481c1169e6e9dde6e922c815825f8499e039fa27e7201e2e7688fbe34d7e2ed66a03f78c4ef3b288edb1eb50e6cd0e9fa4265c2bb1e06b4f0f5b60d589c55c1bd736552075b79a29c1f12b065ee005af43b3914db1c8b1a42fa70362bb07",
+              "PartialSignature": "aabb57aedfa5b7e66b4633982124e543ceb9da1c9db7a72b8cd35807e8aab967a433a5ca7e21893788470786dede86720c4f33eff7fc1304cff0f18a378f6f495706bdb7b6917eef8ee9802ab3a88eda604d53be5a55dfed2729504baef15e0b",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "9989d3ab6c75aa22aef5d56898a930c3f67de00e241103071ecf84523c73fc1c",
               "ValidatorIndex": "2"
             },
             {
-              "PartialSignature": "b52c481c1169e6e9dde6e922c815825f8499e039fa27e7201e2e7688fbe34d7e2ed66a03f78c4ef3b288edb1eb50e6cd0e9fa4265c2bb1e06b4f0f5b60d589c55c1bd736552075b79a29c1f12b065ee005af43b3914db1c8b1a42fa70362bb07",
+              "PartialSignature": "8d8a6e2a2c465b6653d12abfd2026e1c2cc4a15888eb2a8949dfba76c2b4edd99f8d25dc3b8b2da9e1366a2ac8560f8a150e08f760b1022874b0cc9cd87469fa9ac72feca7464bc9d219852c161f31021949c9329d344df36f2746e7be95fd6c",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "f0f373fcb0097430b0915b34dc000a1ff0a2e993bc1c4bf90f0086749f3d269f",
               "ValidatorIndex": "2"
             },
             {
@@ -648,15 +648,15 @@
               "ValidatorIndex": "3"
             },
             {
-              "PartialSignature": "b3c4c18a8dd76b3f98b086accfec91d6ff6c4c01f599b70ab6b606ad4d8f60b725ef06147e07c233788332a5cff9d9d512ee3e3dc96b25f702eb589592865edfcecd5b459a21cb8a21fd1fd7f1abde7cf40699ecdf2148bf734f810bdbdc979e",
+              "PartialSignature": "900f2aa20b98245b853cedb547e5e7e16da3eeedb5a63308bc512c935ba7eda04ed428c02e8588ee9339de74bf502072012ba1edda07066dbce8601987ba2f3b22b907b2bb307273323522326964846553e7d15bca8b495bb2efdf082d2fc1c3",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "9989d3ab6c75aa22aef5d56898a930c3f67de00e241103071ecf84523c73fc1c",
               "ValidatorIndex": "3"
             },
             {
-              "PartialSignature": "b3c4c18a8dd76b3f98b086accfec91d6ff6c4c01f599b70ab6b606ad4d8f60b725ef06147e07c233788332a5cff9d9d512ee3e3dc96b25f702eb589592865edfcecd5b459a21cb8a21fd1fd7f1abde7cf40699ecdf2148bf734f810bdbdc979e",
+              "PartialSignature": "b2977a4a038e5b1e368cb299bde8b9feb005f89f4988d597852927fb0d9f5d3e8f5928ef6f02554615fa4cb6174cbb5514218616cacdd5db138b63dfe0fac631584c900f97ec928ea5274393f7d010cd527b737025bedf833a6a402d40889853",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "f0f373fcb0097430b0915b34dc000a1ff0a2e993bc1c4bf90f0086749f3d269f",
               "ValidatorIndex": "3"
             },
             {
@@ -666,15 +666,15 @@
               "ValidatorIndex": "4"
             },
             {
-              "PartialSignature": "8f18b1a3d5762ae7cbb2fb9a2a2f9e50e493e707233ca7e9248bb864332f5e3afc4a769a81239d7ae6e8e6810637e4c70962b1603f671e1bfef5a1e69d5b3c017daec2f1b36749cb3a30aa1e43013c28cac25f37709130a37abcdbd946c418b3",
+              "PartialSignature": "ac6fc0dd4056023918fa071683a14f092bd643ac60a7327a96a8d6566880fb79cff937fa9f2ca6c1243aaf6ef7ab89cb0d953bcd6e20d7aedb52d2d4ea9c7cfadc1fd1489ac1b09c7a19b8f4e355ef0302c445924911d09d294bcc998591f377",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "9989d3ab6c75aa22aef5d56898a930c3f67de00e241103071ecf84523c73fc1c",
               "ValidatorIndex": "4"
             },
             {
-              "PartialSignature": "8f18b1a3d5762ae7cbb2fb9a2a2f9e50e493e707233ca7e9248bb864332f5e3afc4a769a81239d7ae6e8e6810637e4c70962b1603f671e1bfef5a1e69d5b3c017daec2f1b36749cb3a30aa1e43013c28cac25f37709130a37abcdbd946c418b3",
+              "PartialSignature": "8aaadd4a8ddeb19366e9555fdd3713cd1713b86eeb6238fa0e22dc921e1a0303cd77fa7a67db537f785b3c272af35dd6132f33c97e4994bf9c1e88a54aae11fdd1b61d7bf40133ef04e873c8dd8bc4d4c146fb4a1da8dd70c5bffdd4aa9af8a8",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "f0f373fcb0097430b0915b34dc000a1ff0a2e993bc1c4bf90f0086749f3d269f",
               "ValidatorIndex": "4"
             },
             {
@@ -684,15 +684,15 @@
               "ValidatorIndex": "5"
             },
             {
-              "PartialSignature": "b539238aa22bd6b4a4995f999dc1e58cb5dfd7c85561748ef45c7216b19d72cb4b09932ab3a7f6ddb5deb4ee65837c1503546e84e8b1401d3a2b9da5f74f8feb7f76e0d021faf5eeb7b7af07b62a2bb401249d21ee024f396f22a42594cf7ba6",
+              "PartialSignature": "b06850ac048cfbfb7ee31245283145644193105accbfa72c860d89238dafd6c278c50ba8498159faf43a27646b937b5413bcad386648acbd76f12132cc570958ab0899ad1530074933a9703688ac4ea401e1fdc1ab1a64703816a6164d9ed9c3",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "9989d3ab6c75aa22aef5d56898a930c3f67de00e241103071ecf84523c73fc1c",
               "ValidatorIndex": "5"
             },
             {
-              "PartialSignature": "b539238aa22bd6b4a4995f999dc1e58cb5dfd7c85561748ef45c7216b19d72cb4b09932ab3a7f6ddb5deb4ee65837c1503546e84e8b1401d3a2b9da5f74f8feb7f76e0d021faf5eeb7b7af07b62a2bb401249d21ee024f396f22a42594cf7ba6",
+              "PartialSignature": "b808bfb2bb0e6625f29f6c953f1c0bba59bd9a843df1092265f5e0e8fe2841a65fa3964c62d8633d82153fdf5bf0d2b71166fe9e07e81d8671c0f491954f7e58583637fce8da197df563b2575ce3cd2961523743bfe6c72a0569e8249a44f12b",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "f0f373fcb0097430b0915b34dc000a1ff0a2e993bc1c4bf90f0086749f3d269f",
               "ValidatorIndex": "5"
             },
             {
@@ -702,15 +702,15 @@
               "ValidatorIndex": "6"
             },
             {
-              "PartialSignature": "901b4bd530526d391a89952ab73e240a65784c2bb7e9a8ae2cb5b49a037a1724942c8ae9af9858a6c981a1c6407488ab12615b7748cd576a2da9ee348f98baae40cbc73e25886cec42cd6ae6c72be47ad709caf716766690b86107acbc8ea32f",
+              "PartialSignature": "a6ff4d55f5bac95c44952310bbde57accb025b2112cf64339cbf3b3a422e6ccd5dcd84fee79d2c3ca26cc3cff1c994c504c844c887767ba361e90eaf232007757652fc4bd3592cbff3a6a176880ef6f80822a77e580e7095e69bae1262443d4f",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "9989d3ab6c75aa22aef5d56898a930c3f67de00e241103071ecf84523c73fc1c",
               "ValidatorIndex": "6"
             },
             {
-              "PartialSignature": "901b4bd530526d391a89952ab73e240a65784c2bb7e9a8ae2cb5b49a037a1724942c8ae9af9858a6c981a1c6407488ab12615b7748cd576a2da9ee348f98baae40cbc73e25886cec42cd6ae6c72be47ad709caf716766690b86107acbc8ea32f",
+              "PartialSignature": "a471f970a9e604785b1e3c9a2ea4a13f79b4b0b9827c12a3055f81e994e91c16e3ee2c63e1dc93025cf429b6b3b5f572134a47dbe652171e274e0ca8f1f58428a6f01b9f0c3a889e6897c909eeda0f8c83f84002c538ef1e9d52928023de9c77",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "f0f373fcb0097430b0915b34dc000a1ff0a2e993bc1c4bf90f0086749f3d269f",
               "ValidatorIndex": "6"
             },
             {
@@ -720,15 +720,15 @@
               "ValidatorIndex": "7"
             },
             {
-              "PartialSignature": "9971ab818ef9a7ea48b8de7ac6773279e7fb187f032557694ba2ba4d4406b180c44cdc972f45cefaf8d58fdd60b4ab0f1349e765063ac285ed6e31729f611125ed0cf349b025ff30d979cb532c323576c4d457f1ec6413d5f1e553b443b42ef0",
+              "PartialSignature": "80545f8bbfc94c1809facf3b98a16ca080e49500765c1cfa837bd109e03e2980e588bf9895bd6afae02ae84074026ac801b41629156d58b60ccb06ea8ecbf54a49202b6e603e7563f28a1b82e4846aedb4d460378eb279a3f343c7f17b8cb5ad",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "9989d3ab6c75aa22aef5d56898a930c3f67de00e241103071ecf84523c73fc1c",
               "ValidatorIndex": "7"
             },
             {
-              "PartialSignature": "9971ab818ef9a7ea48b8de7ac6773279e7fb187f032557694ba2ba4d4406b180c44cdc972f45cefaf8d58fdd60b4ab0f1349e765063ac285ed6e31729f611125ed0cf349b025ff30d979cb532c323576c4d457f1ec6413d5f1e553b443b42ef0",
+              "PartialSignature": "a7a52c3f1a2f5785528f51ebd3080e7dea79724c4e04b652fcb50b8c38a1d2511a832cbf38af0351c4d6635395372d2105227a8c83af9df081f6af4014aeb30acd792ebfbd6b5d4b97de480c1cd959006e453811d280c605089ddb1d2df018a3",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "f0f373fcb0097430b0915b34dc000a1ff0a2e993bc1c4bf90f0086749f3d269f",
               "ValidatorIndex": "7"
             },
             {
@@ -738,15 +738,15 @@
               "ValidatorIndex": "8"
             },
             {
-              "PartialSignature": "b33562179d90a4a36fceb5b41d48c88a6e26330fa928f3085bd32598337cd15ea21088c0be68c3f6b3c7983e9a54659114425b9d661134008fae67c538de48b3172a2d1402c943ab08b202bedc2dc353b89d71945c1fc946ebb9faee21792955",
+              "PartialSignature": "a802abbf3b6e95ae15e3de4ba8baca47d9a713226999cbe84321d734ddf0ca74dbf4c9aac3bfdefe8247fdcaff339426103ec6a7511503c69cb37463b4a678d926368967085ad9c3a050ae061f303b88a5a94a72b3544dd2483302accee2b27f",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "9989d3ab6c75aa22aef5d56898a930c3f67de00e241103071ecf84523c73fc1c",
               "ValidatorIndex": "8"
             },
             {
-              "PartialSignature": "b33562179d90a4a36fceb5b41d48c88a6e26330fa928f3085bd32598337cd15ea21088c0be68c3f6b3c7983e9a54659114425b9d661134008fae67c538de48b3172a2d1402c943ab08b202bedc2dc353b89d71945c1fc946ebb9faee21792955",
+              "PartialSignature": "b8def6cc66b40a4a49a57d2d113e45e2442f9db11d23104502abd99e927c87d2c1f3c55a7833e166f34a50afb71de8ce100820e8a4f4a265c876b1ac5c270c35d2e98d49a4bb19810a3a26e64b35fefa67d945420da6bc997227ccfa732f3ace",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "f0f373fcb0097430b0915b34dc000a1ff0a2e993bc1c4bf90f0086749f3d269f",
               "ValidatorIndex": "8"
             },
             {
@@ -756,15 +756,15 @@
               "ValidatorIndex": "9"
             },
             {
-              "PartialSignature": "b010227556f236e6d9006e3ebc6c731ea0aa8bda12f351fc53064e39b8a1642460d90c655d4aa72f26c641e3524776ef0a02270c817a08db946e2de64c11794ac277633582c25906e2e3981378f4c1b77130ec68677c520198a7d3d7abd32ef6",
+              "PartialSignature": "a4ba7a32bb92ac089b3d9399b1c47122e46c084607fbc70446a2fbbbdc0fbeda199760dbf67fb2b902f58ee2f20ee0f8177de995e45c39daf1812641cdcd7494af0d2b4da17ae7c16485addaf2b8cb7f7090c243223fc7e8ce9298ed6134e5dd",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "9989d3ab6c75aa22aef5d56898a930c3f67de00e241103071ecf84523c73fc1c",
               "ValidatorIndex": "9"
             },
             {
-              "PartialSignature": "b010227556f236e6d9006e3ebc6c731ea0aa8bda12f351fc53064e39b8a1642460d90c655d4aa72f26c641e3524776ef0a02270c817a08db946e2de64c11794ac277633582c25906e2e3981378f4c1b77130ec68677c520198a7d3d7abd32ef6",
+              "PartialSignature": "a471c9118882d6f87408edd95590005ac4cecdac3e01c995fab3ed6f721a7718fe262fbc2ae2aa1b109e618e86a07074129e6a4a563539d800f0c5e0e8d09415b996cfa5c8f0381007169d78948d81b9e0b383ff1fcf6697c773a6a5f2152769",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "f0f373fcb0097430b0915b34dc000a1ff0a2e993bc1c4bf90f0086749f3d269f",
               "ValidatorIndex": "9"
             },
             {
@@ -774,15 +774,15 @@
               "ValidatorIndex": "10"
             },
             {
-              "PartialSignature": "acb708ada6b6d8bb58d96e7fad4be66b5167111440e3c15e901f0b40b83d00981acf76fed55e40e7a5f0827f0440776b0f60ddb8ad64952421bf830dcb7f3bc86133d1cd0558b6457fbd901e79a82c5c98e47eefef74125733e7abf3b81eb2c2",
+              "PartialSignature": "8e295d80af7d64abc32f32ef7eb5690d0b664f3f909d8194db23ce1b0df195a4d1394916b1954b9456dece8fbf0b349c04ba094e206c0b0783e29d8d17b58082317b8b8bc395c70555e39da1aae7c75aca4af027573497f4fb568f44c2f2747a",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "9989d3ab6c75aa22aef5d56898a930c3f67de00e241103071ecf84523c73fc1c",
               "ValidatorIndex": "10"
             },
             {
-              "PartialSignature": "acb708ada6b6d8bb58d96e7fad4be66b5167111440e3c15e901f0b40b83d00981acf76fed55e40e7a5f0827f0440776b0f60ddb8ad64952421bf830dcb7f3bc86133d1cd0558b6457fbd901e79a82c5c98e47eefef74125733e7abf3b81eb2c2",
+              "PartialSignature": "abd61983ad905b7af5f1086fb1023ba91deda50c2b6c964c0771189f02bbb062a843f79281398325cc63711b5943f058120d0173ffc2d263c235355aedc46949d380c3a2e18e4f39c4b655ce3ac41a42a22897c19ef6c0f2457e4e0d46dca595",
               "Signer": 1,
-              "SigningRoot": "a96747766942745b4a6447e3f414fcba5fede9727ee021a9576c9a670a986e53",
+              "SigningRoot": "f0f373fcb0097430b0915b34dc000a1ff0a2e993bc1c4bf90f0086749f3d269f",
               "ValidatorIndex": "10"
             }
           ]
@@ -929,8 +929,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -944,8 +944,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -959,8 +959,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -974,8 +974,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -989,8 +989,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -1004,8 +1004,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -1019,8 +1019,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -1034,8 +1034,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -1049,8 +1049,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -1064,8 +1064,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]
@@ -1680,15 +1680,15 @@
               "ValidatorIndex": "1"
             },
             {
-              "PartialSignature": "97ccc52e2c0e43571265c6c95fed1c677960b8189c49911100e4eaad207cae9b52a00091f0d89fc2d7e98343ecc09d6813440b1af0151cd5ba40ca6224d99dccd0339e57100d1de53440e6b5e4da6ee0441fa4a7089823eaf6355cc79ddd830d",
+              "PartialSignature": "982945b373d43f93c47e6a6de99258b196f5fda3bbd3a909883c47580c7b967f21914d741be1e97e3f55fa88e192f1d8161781d6e5dc9fa46304c2d50d00edb6e46f8c2e87a8df10b8723f5e8fc1aef3eabc05783b8ba71f60a0719d3ee71407",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "e82ed32828596935cb06cd61a0b7d1512f230ec827b2696e02cc8a06766d36e8",
               "ValidatorIndex": "1"
             },
             {
-              "PartialSignature": "97ccc52e2c0e43571265c6c95fed1c677960b8189c49911100e4eaad207cae9b52a00091f0d89fc2d7e98343ecc09d6813440b1af0151cd5ba40ca6224d99dccd0339e57100d1de53440e6b5e4da6ee0441fa4a7089823eaf6355cc79ddd830d",
+              "PartialSignature": "820a8a71550c9af7829bb702c85708011e84484ba2806738fc52066d9b9ef9acbdfc9ec3cae43ee443b160e1cfc2f07f0c209648b62fd8b1191067f344a3895ccb9581a7ffecd7d99d1d89031339d002a652fa33d57e92b37a0fad295e90ca88",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "fc774901fd0cd1a1a6ae90accf26e4985d6e4718555afa2d44e5a72da0200215",
               "ValidatorIndex": "1"
             },
             {
@@ -1698,15 +1698,15 @@
               "ValidatorIndex": "2"
             },
             {
-              "PartialSignature": "b6d6958087a3bc1da77403152500ffa9f71f6c3b6d4dc51bb2601aa1f328c1843f5cf976c7553de6d571deaab583bb210361464fda3303532df849f26acf0900698a72e510689f773488f9155a30706e2d99eea66f1ac189ebe21b009d69c9d0",
+              "PartialSignature": "b5bad9fa7c47f10f05031fff7265f76b6e967859213f6e3c6b99d08ae8bb61d5724c121bcc88ee6bd770679195cf5ea808ece502b0a37a90487f2264959402ccaba9797ec7ce3cef251753346c6108e0184df5491e9e260728b23f2da2cb52d2",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "e82ed32828596935cb06cd61a0b7d1512f230ec827b2696e02cc8a06766d36e8",
               "ValidatorIndex": "2"
             },
             {
-              "PartialSignature": "b6d6958087a3bc1da77403152500ffa9f71f6c3b6d4dc51bb2601aa1f328c1843f5cf976c7553de6d571deaab583bb210361464fda3303532df849f26acf0900698a72e510689f773488f9155a30706e2d99eea66f1ac189ebe21b009d69c9d0",
+              "PartialSignature": "93757cb51cdb3dc7d445bbd718fea925dee8ab508f2f1ad2ecdeb9d53c22b367ba3e3043853834e9044fe3295d2df374026b61f3b8bbdcd7c797fd942e16052b00438a7f76cfc2aaa8ba8a59d88acf81394fcb3948de519249092d0f436ed7cc",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "fc774901fd0cd1a1a6ae90accf26e4985d6e4718555afa2d44e5a72da0200215",
               "ValidatorIndex": "2"
             },
             {
@@ -1716,15 +1716,15 @@
               "ValidatorIndex": "3"
             },
             {
-              "PartialSignature": "b91b490272eeffabe7687d04f00d950d1ae70974768bc432b94271c0a265fa234551f4ef2e01c1015d963576b044185011cb9f48cbc5b5ecd59ba77b4461cb96f904bf36ade83e74301706db90212f8f67eecd1d573f9d06b566185db429558c",
+              "PartialSignature": "a185995a6930a0e5734abc5c3d89523d3954dd4997b5d35dbcdccc553e0facbc049ad90a9d0656a2cc602bfccc4cf99711733dd22cceb0e775cc22bc926485d8a314524527a3e1a33b94a81dfdbd89230560a38d85a5b7da0986af174efd7841",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "e82ed32828596935cb06cd61a0b7d1512f230ec827b2696e02cc8a06766d36e8",
               "ValidatorIndex": "3"
             },
             {
-              "PartialSignature": "b91b490272eeffabe7687d04f00d950d1ae70974768bc432b94271c0a265fa234551f4ef2e01c1015d963576b044185011cb9f48cbc5b5ecd59ba77b4461cb96f904bf36ade83e74301706db90212f8f67eecd1d573f9d06b566185db429558c",
+              "PartialSignature": "845264bd9a6151bcbf2c40f93c0180cb7e21d3a207781fc0f0387628f5a1f18e710cd18c077461da02ac0c982a4f8fbc04afd6fab3a8e3e1f834b3a002bd805089b90712622c5415d16b825fcd4a7ae744e717f7010fd385f28631b51893ee43",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "fc774901fd0cd1a1a6ae90accf26e4985d6e4718555afa2d44e5a72da0200215",
               "ValidatorIndex": "3"
             },
             {
@@ -1734,15 +1734,15 @@
               "ValidatorIndex": "4"
             },
             {
-              "PartialSignature": "842671a5d29df141c93500132b48ecd3ce09dcc0cd8ddf0392c5a90e78d506aa565f2e9da724156086a021eff2e7c7a216580a56690e1df0fa9cc7ce186bbca9e3bb0a983d2286fc85a4455b0230a0affb75a78340350f73f66b227bc06b2391",
+              "PartialSignature": "a8d01a02ef3dbb20b6ce2da44ca4d4965d9699aa3cc7ad262b80e1660ecd60dfbe2733a375dccd0f4200f65ee7fd428203ac6d590a6efbf8fabbdff13607c2dba3b80c1a599f5fc842cae15e249ad0134e631ee150902f6e2499afd046ca48d2",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "e82ed32828596935cb06cd61a0b7d1512f230ec827b2696e02cc8a06766d36e8",
               "ValidatorIndex": "4"
             },
             {
-              "PartialSignature": "842671a5d29df141c93500132b48ecd3ce09dcc0cd8ddf0392c5a90e78d506aa565f2e9da724156086a021eff2e7c7a216580a56690e1df0fa9cc7ce186bbca9e3bb0a983d2286fc85a4455b0230a0affb75a78340350f73f66b227bc06b2391",
+              "PartialSignature": "a5fad29ea65abd64232b7a50139593b07f64ddee31d60744b03967dd9f5ea88100e8931730a05a36ba2f30bfb02dc75d152b94c557ce4d1b58cc3f0f7f2d214b0397fd31e82b47f25bb2f0a60287ece458a393ab799441736ea5ef948ec61647",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "fc774901fd0cd1a1a6ae90accf26e4985d6e4718555afa2d44e5a72da0200215",
               "ValidatorIndex": "4"
             },
             {
@@ -1752,15 +1752,15 @@
               "ValidatorIndex": "5"
             },
             {
-              "PartialSignature": "80c5c25ccc3fcc1d50aabd35baa3f4a9c7532be742996878df673ff1c8267dba80a2512c58c634b75afb60f82c611ecf1433082c634732ee1a6948a764c737110d19ce72520348c6fafff00287fdaff4c36f97bec6a4877154dfe2fc2554159a",
+              "PartialSignature": "8b8c3a876d1dc646e45783e2a94928a07adcb62a04fe385f42bdf27a1dc1189e4c6a299f6d1e2ce6336e62d60b816cf418f79e12fa8f2e0364c213cf50d81df4f274a70623a5957a972cd875f6033398939d2da6f1496bc375f1d98aaf4bb3be",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "e82ed32828596935cb06cd61a0b7d1512f230ec827b2696e02cc8a06766d36e8",
               "ValidatorIndex": "5"
             },
             {
-              "PartialSignature": "80c5c25ccc3fcc1d50aabd35baa3f4a9c7532be742996878df673ff1c8267dba80a2512c58c634b75afb60f82c611ecf1433082c634732ee1a6948a764c737110d19ce72520348c6fafff00287fdaff4c36f97bec6a4877154dfe2fc2554159a",
+              "PartialSignature": "8720173acd2cff68c7e16816fed55d8f7f267655e37f6e72f2f4d0f0d463c04320a76f40e8914e257a451b35908229800cd3d04f0d8fd099a6f30fac8186e9b1ff3ba85d4dee387b01ad87881b48081d8a243d8a9b882e251490c83f2e836c9e",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "fc774901fd0cd1a1a6ae90accf26e4985d6e4718555afa2d44e5a72da0200215",
               "ValidatorIndex": "5"
             },
             {
@@ -1770,15 +1770,15 @@
               "ValidatorIndex": "6"
             },
             {
-              "PartialSignature": "806df9432b8b7339aa4f7773166d25bab08baa1593dde2c7abebecbafa211963b59d5c3c092748f25bafdd608a8291b9036df09317e872e6ffeeb6609d95d5bf87df5974e5da68e8c831740dd5ae8b1ed6287e2117ed1b60df446944997c6d56",
+              "PartialSignature": "8da250f27e6d60bfee24b30fe5ab02b59b3ece18d6e2db2f1628376102f97bcf041e88a08b8ed866a58efe2ecf51aa5e117b02f064ac13122d343429d1b70dc89fc67f05b29412f9d08dfe8d34b1283e76e1d5c31b3a19540ace912d143df068",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "e82ed32828596935cb06cd61a0b7d1512f230ec827b2696e02cc8a06766d36e8",
               "ValidatorIndex": "6"
             },
             {
-              "PartialSignature": "806df9432b8b7339aa4f7773166d25bab08baa1593dde2c7abebecbafa211963b59d5c3c092748f25bafdd608a8291b9036df09317e872e6ffeeb6609d95d5bf87df5974e5da68e8c831740dd5ae8b1ed6287e2117ed1b60df446944997c6d56",
+              "PartialSignature": "a77d3d23cc7096371e36db9b2479022a5655511cdfbb030315de78fcd6962477a04e0a726c949608870b5bc4067af70a06a5c2b150c6b757b5cbeb8e76bb504ca7550a5f6e277913ad02a2408f5c80329322a94b6bc2c3a92af683a29a669038",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "fc774901fd0cd1a1a6ae90accf26e4985d6e4718555afa2d44e5a72da0200215",
               "ValidatorIndex": "6"
             },
             {
@@ -1788,15 +1788,15 @@
               "ValidatorIndex": "7"
             },
             {
-              "PartialSignature": "ab6b87827963abed88514cb109163e86dbdb08baab69c95a5ef2613c54dbf1719cdd5a76cf0cdd5838c0cc087ace80400578ecf11392fd328a9e846413d50c1715ed9a563ed8193a47f1bcd7cf55a5d13a71bb8462872a8984b209aa227e056f",
+              "PartialSignature": "a468501f4acf4b1d6788126df5f3a8d1e18ec08a4cee7e15f57dccce037e71cf3afc3de23e8150ecd9af8d6bdb19f4020f568c89a7aea2e184ef3af3f7e114fe83c8628d68fb31253e45bc957adc2db7ba4f3b84fba253b6a7a15706d7fa2b00",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "e82ed32828596935cb06cd61a0b7d1512f230ec827b2696e02cc8a06766d36e8",
               "ValidatorIndex": "7"
             },
             {
-              "PartialSignature": "ab6b87827963abed88514cb109163e86dbdb08baab69c95a5ef2613c54dbf1719cdd5a76cf0cdd5838c0cc087ace80400578ecf11392fd328a9e846413d50c1715ed9a563ed8193a47f1bcd7cf55a5d13a71bb8462872a8984b209aa227e056f",
+              "PartialSignature": "b4aaeeed7fd928138cc28b8c1afd1d3c73f55c8f994eb006dbaaf0a3d582676975bfe955ae4f20aa3df3730aa38fd5d009b76ad4019654de99f8ff3a33063eba9f2922a18e47b0d3daa1153504182322b9360708ae235f290409eee1d6051777",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "fc774901fd0cd1a1a6ae90accf26e4985d6e4718555afa2d44e5a72da0200215",
               "ValidatorIndex": "7"
             },
             {
@@ -1806,15 +1806,15 @@
               "ValidatorIndex": "8"
             },
             {
-              "PartialSignature": "94c0ce79e74d6335db8f008bd55db4f1f9070018897f1ebf88a7cc503af3c3f0afadb8ae8c606a692ec8d005b6bb1e2f18fe61f3ed2dbf41d9e2d8285129c9ad0e6d1346eccde22dafdb78a20270877a78cf805e88c5fa513f0a91dcda5f4b4d",
+              "PartialSignature": "8ec220807931bc2b84dbef31ea176b790923bb5e70cfd430e3052c17827234cbdc6763c431ca68ec89a5fc58c6295fc90ee6ab9939f3c86cf96c0d84387fa7239aee7e96dc498138c47e831b0976538173a7566c15deac3289ee22768e191be0",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "e82ed32828596935cb06cd61a0b7d1512f230ec827b2696e02cc8a06766d36e8",
               "ValidatorIndex": "8"
             },
             {
-              "PartialSignature": "94c0ce79e74d6335db8f008bd55db4f1f9070018897f1ebf88a7cc503af3c3f0afadb8ae8c606a692ec8d005b6bb1e2f18fe61f3ed2dbf41d9e2d8285129c9ad0e6d1346eccde22dafdb78a20270877a78cf805e88c5fa513f0a91dcda5f4b4d",
+              "PartialSignature": "a3afb0102b9f1efe6b6afa4bb2c433963c3e653349751b25bae9f5e2c23559aef0c5422d9b61d06aa446ade5608839ea0f44d88bee4e534ccdaba3f8e75b52acbc8f69849860c29fcc96c4864bad48e87035ab243930b05c6f69681aec6e9f1f",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "fc774901fd0cd1a1a6ae90accf26e4985d6e4718555afa2d44e5a72da0200215",
               "ValidatorIndex": "8"
             },
             {
@@ -1824,15 +1824,15 @@
               "ValidatorIndex": "9"
             },
             {
-              "PartialSignature": "8dd52691bb16d0a98fce7c0a90c374a6f1da4f6e17ad8ac094be4335a36533bef3a9bcb4123a9d9410eb3c0b34f8b5ba0af7c5d0a957786771419bc2bd0d8b6f31328166331ba822f6916d3e3415b29e2d49191267053d94e94107c1c296216c",
+              "PartialSignature": "ada0c2d060ce339b9ba72aeefb13a6a226aa5d9d5c43cb3f3847ef3db7b0547431fcdbb6c97d2259afef41e6db72cfe507a8d38d7265a9bda2dd1a3f4cae94e790aafc90919afd0bbd0d208c1a0eb0ba58b83407c63fed391312a8c9effe7221",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "e82ed32828596935cb06cd61a0b7d1512f230ec827b2696e02cc8a06766d36e8",
               "ValidatorIndex": "9"
             },
             {
-              "PartialSignature": "8dd52691bb16d0a98fce7c0a90c374a6f1da4f6e17ad8ac094be4335a36533bef3a9bcb4123a9d9410eb3c0b34f8b5ba0af7c5d0a957786771419bc2bd0d8b6f31328166331ba822f6916d3e3415b29e2d49191267053d94e94107c1c296216c",
+              "PartialSignature": "98caa7a99af55f42644e3ad6a1ca19a95faad4e7af84720b7b6e75c64800084c6edc50e1b8606887e57e58e3e2c1924a188b95404c7956d05898f16cb78c48209630f9becbd36cbe3db56a49df23c0fd7358c770dedfd569847d8258885fdc4a",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "fc774901fd0cd1a1a6ae90accf26e4985d6e4718555afa2d44e5a72da0200215",
               "ValidatorIndex": "9"
             },
             {
@@ -1842,15 +1842,15 @@
               "ValidatorIndex": "10"
             },
             {
-              "PartialSignature": "ae6aaebcff042a2f3d5ae36ca7237631345e7871b32fe490320e1990205068544b991110f2876a582b7774fdd34230b102da5a0b4dabb160baab7713a38fbccac2e2704a0e4e416fd015161d9d1a3af2620d46494e9d72d0041d5578862c5939",
+              "PartialSignature": "a271c62b18ba36bb8684e4c00ee642199248e644f19f1d612d450527214bf64c5d3c2bbc5f71440dab8655230d5d7021088c2a025d3e66a4017341e8784936ad9f30915ee4af7dd88f9527678cacf00e301a224d00ae2dd76267d7bd232686cb",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "e82ed32828596935cb06cd61a0b7d1512f230ec827b2696e02cc8a06766d36e8",
               "ValidatorIndex": "10"
             },
             {
-              "PartialSignature": "ae6aaebcff042a2f3d5ae36ca7237631345e7871b32fe490320e1990205068544b991110f2876a582b7774fdd34230b102da5a0b4dabb160baab7713a38fbccac2e2704a0e4e416fd015161d9d1a3af2620d46494e9d72d0041d5578862c5939",
+              "PartialSignature": "8953f3d9584ea32b8e72f44c51edc0cb47257e691162ed7563cc60bb3a57d205b852ffe4a523f18ae1e7bb0c89d4b70119b5be5fb36e4bcda6b55986f124069e5a6b85cb44b36660b1a6bf60b8346a3fc36eaa8d4bf203577b92b33341b20fea",
               "Signer": 1,
-              "SigningRoot": "ace7928eb87c1febdacb7968a0e51c94e2d2b383c274c7ad00f6ffb639e8c9f8",
+              "SigningRoot": "fc774901fd0cd1a1a6ae90accf26e4985d6e4718555afa2d44e5a72da0200215",
               "ValidatorIndex": "10"
             }
           ]
@@ -1997,8 +1997,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -2012,8 +2012,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -2027,8 +2027,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -2042,8 +2042,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -2057,8 +2057,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -2072,8 +2072,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -2087,8 +2087,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -2102,8 +2102,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -2117,8 +2117,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           },
           {
@@ -2132,8 +2132,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]

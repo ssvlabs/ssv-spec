@@ -168,6 +168,7 @@ const PostConsensusUnknownSignerDoc = "Tests post-consensus message processing w
 
 // Documentation for runner/preconsensus tests
 const PreConsensusDuplicateMsgDoc = "Tests pre-consensus message processing with duplicate messages"
+const PreConsensusDuplicatedContributionSubnetDoc = "Tests pre-consensus message creation for sync committee contribution for a duty with sync committee indices that produce duplicate subnets; the final message should only have one selection proof per subnet."
 const PreConsensusInconsistentBeaconSignerDoc = "Tests pre-consensus message processing with inconsistent beacon signer, expecting error"
 const PreConsensusInconsistentOperatorSignerDoc = "Tests pre-consensus message processing with inconsistent operator signer, expecting error"
 const PreConsensusInvalidBeaconSignatureInQuorumDoc = "Tests pre-consensus message processing with invalid beacon signature in quorum, expecting error"

@@ -154,6 +154,7 @@ var AllTests = []tests.TestF{
 	preconsensus.InvalidExpectedRoot,
 	preconsensus.DuplicateMsg,
 	preconsensus.DuplicateMsgDifferentRoots,
+	preconsensus.DuplicateMsgSameSubnet,
 	preconsensus.PostFinish,
 	preconsensus.PostDecided,
 	preconsensus.PostQuorum,
