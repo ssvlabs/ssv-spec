@@ -182,6 +182,7 @@ var AllTests = []tests.TestF{
 	preconsensus.SingleValidatorNotSelected,
 	preconsensus.SingleValidatorSelected,
 	preconsensus.TerminatesWhenAllSignersSeen,
+	preconsensus.TerminatesWhenAllSelectionsChecked,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,

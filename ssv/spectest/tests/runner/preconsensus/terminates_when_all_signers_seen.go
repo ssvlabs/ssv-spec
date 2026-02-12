@@ -73,10 +73,10 @@ func TerminatesWhenAllSignersSeen() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusAggregatorCommitteeMsgForDuty(mixedDuty, ksMap, 1),
 			},
-			// Future message error is expected since runner should not have started consensus and thus QBFT controller hasn't been updated to such height
 			BeaconAggregators:       []phase0.CommitteeIndex{firstAggregatorDuty.CommitteeIndex},
 			BeaconAggregatorsValues: []bool{false},
-			ExpectedErrorCode:       types.NoRunningDutyErrorCode,
+			// Post-consensus message raises no running duty error since runner should have terminated after seeing messages from all signers
+			ExpectedErrorCode: types.NoRunningDutyErrorCode,
 		})
 	}
 
