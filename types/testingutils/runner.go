@@ -66,6 +66,10 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.Val
 }
 
 var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.ValidatorIndex]*types.Share) (ssv.Runner, error) {
+	return ConstructBaseRunnerWithShareMapAndBeaconNode(role, shareMap, NewTestingBeaconNode())
+}
+
+var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, shareMap map[phase0.ValidatorIndex]*types.Share, beacon ssv.BeaconNode) (ssv.Runner, error) {
 
 	var identifier types.MessageID
 	var net *TestingNetwork
@@ -147,7 +151,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
-			NewTestingBeaconNode(),
+			beacon,
 			net,
 			km,
 			opSigner,
@@ -158,7 +162,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
-			NewTestingBeaconNode(),
+			beacon,
 			net,
 			km,
 			opSigner,
@@ -169,7 +173,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 		runner, err = ssv.NewValidatorRegistrationRunner(
 			types.BeaconTestNetwork,
 			shareMap,
-			NewTestingBeaconNode(),
+			beacon,
 			net,
 			km,
 			opSigner,
@@ -179,7 +183,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 		runner, err = ssv.NewVoluntaryExitRunner(
 			types.BeaconTestNetwork,
 			shareMap,
-			NewTestingBeaconNode(),
+			beacon,
 			net,
 			km,
 			opSigner,
@@ -189,7 +193,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
-			NewTestingBeaconNode(),
+			beacon,
 			net,
 			km,
 			opSigner,
@@ -200,7 +204,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
-			NewTestingBeaconNode(),
+			beacon,
 			net,
 			km,
 			opSigner,

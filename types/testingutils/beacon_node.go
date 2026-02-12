@@ -26,18 +26,26 @@ import (
 
 type TestingBeaconNode struct {
 	BroadcastedRoots             []phase0.Root
-	syncCommitteeAggregatorRoots map[string]bool
+	SyncCommitteeAggregatorRoots map[string]bool
+	CommitteeIndexAggregators    map[phase0.CommitteeIndex]bool
 }
 
 func NewTestingBeaconNode() *TestingBeaconNode {
 	return &TestingBeaconNode{
-		BroadcastedRoots: []phase0.Root{},
+		BroadcastedRoots:             []phase0.Root{},
+		SyncCommitteeAggregatorRoots: make(map[string]bool),
+		CommitteeIndexAggregators:    make(map[phase0.CommitteeIndex]bool),
 	}
 }
 
 // SetSyncCommitteeAggregatorRootHexes FOR TESTING ONLY!! sets which sync committee aggregator roots will return true for aggregator
 func (bn *TestingBeaconNode) SetSyncCommitteeAggregatorRootHexes(roots map[string]bool) {
-	bn.syncCommitteeAggregatorRoots = roots
+	bn.SyncCommitteeAggregatorRoots = roots
+}
+
+// SetAggregators FOR TESTING ONLY!! sets committee indices values for IsAggregator
+func (bn *TestingBeaconNode) SetAggregators(committeeIndices map[phase0.CommitteeIndex]bool) {
+	bn.CommitteeIndexAggregators = committeeIndices
 }
 
 // GetBeaconNetwork returns the beacon network the node is on
@@ -240,8 +248,14 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 
 // IsAggregator returns true if the validator is selected as an aggregator
 func (bn *TestingBeaconNode) IsAggregator(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, slotSig []byte) bool {
-	// Simple mock: always return true for testing
 	// In production, this would check the selection proof against the committee modulo
+
+	// Check if committee index is set
+	if val, found := bn.CommitteeIndexAggregators[committeeIndex]; found {
+		return val
+	}
+
+	// Always return true for testing, for committees not set
 	return true
 }
 
@@ -314,8 +328,8 @@ func (bn *TestingBeaconNode) SubmitSyncMessages(msgs []*altair.SyncCommitteeMess
 
 // IsSyncCommitteeAggregator returns tru if aggregator
 func (bn *TestingBeaconNode) IsSyncCommitteeAggregator(proof []byte) bool {
-	if len(bn.syncCommitteeAggregatorRoots) != 0 {
-		if val, found := bn.syncCommitteeAggregatorRoots[hex.EncodeToString(proof)]; found {
+	if len(bn.SyncCommitteeAggregatorRoots) != 0 {
+		if val, found := bn.SyncCommitteeAggregatorRoots[hex.EncodeToString(proof)]; found {
 			return val
 		}
 		return false

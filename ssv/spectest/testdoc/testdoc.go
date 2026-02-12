@@ -200,6 +200,9 @@ const PreConsensusValidMsg7OperatorsDoc = "Tests pre-consensus message processin
 const PreConsensusValidMsg10OperatorsDoc = "Tests pre-consensus message processing with 10 operators"
 const PreConsensusValidMsg13OperatorsDoc = "Tests pre-consensus message processing with 13 operators"
 const PreConsensusValidMsgDoc = "Tests pre-consensus message processing across different runner types"
+const PreConsensusAggregatorCommitteeSingleValidatorNotSelectedDoc = "Tests pre-consensus message processing for the aggregator committee runner that achieves a single-validator quorum that is not selected. Ensure runner does not start consensus and does not terminate the duty."
+const PreConsensusAggregatorCommitteeSingleValidatorSelectedDoc = "Tests pre-consensus message processing for the aggregator committee runner that achieves a single-validator quorum that is selected. Ensure runner starts consensus."
+const PreConsensusAggregatorCommitteeAllMessagesReceivedAndNoAggregatorsDoc = "Tests pre-consensus message processing for the aggregator committee runner that receives messages from all committee members but no validator is selected as aggregator. Ensure terminates the duty."
 
 // Documentation for valcheckattestation tests
 const ValCheckAttestationBeaconVoteDataNilDoc = "Tests attestation value check with nil attestation data"

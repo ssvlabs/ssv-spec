@@ -178,6 +178,9 @@ var AllTests = []tests.TestF{
 	preconsensus.InvalidSignedMessageNoSignatures,
 	preconsensus.InvalidSignedMessageEmptySignature,
 	preconsensus.InvalidSignedMessageDifferentLength,
+	preconsensus.SingleValidatorNotSelected,
+	preconsensus.SingleValidatorSelected,
+	preconsensus.TerminatesWhenAllSignersSeen,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,
