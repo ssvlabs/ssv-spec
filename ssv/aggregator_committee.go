@@ -31,7 +31,7 @@ type AggregatorCommitteeRunner struct {
 	// - seen signers.
 	preConsensusSeenSigners map[types.OperatorID]struct{}
 	// - (validator index, beacon root) tuples that got checked for aggregation/scc selection with the beacon node.
-	preConsensusSelectionsTested map[phase0.ValidatorIndex]map[[32]byte]struct{}
+	preConsensusDutiesCheckedForSelection map[phase0.ValidatorIndex]map[[32]byte]struct{}
 }
 
 // NewAggregatorCommitteeRunner creates a new aggregator committee runner
@@ -57,14 +57,14 @@ func NewAggregatorCommitteeRunner(
 			QBFTController: qbftController,
 		},
 
-		beacon:                       beacon,
-		network:                      network,
-		signer:                       signer,
-		operatorSigner:               operatorSigner,
-		valCheck:                     valCheck,
-		submittedDuties:              make(map[types.BeaconRole]map[phase0.ValidatorIndex]map[[32]byte]struct{}),
-		preConsensusSeenSigners:      make(map[types.OperatorID]struct{}),
-		preConsensusSelectionsTested: make(map[phase0.ValidatorIndex]map[[32]byte]struct{}),
+		beacon:                                beacon,
+		network:                               network,
+		signer:                                signer,
+		operatorSigner:                        operatorSigner,
+		valCheck:                              valCheck,
+		submittedDuties:                       make(map[types.BeaconRole]map[phase0.ValidatorIndex]map[[32]byte]struct{}),
+		preConsensusSeenSigners:               make(map[types.OperatorID]struct{}),
+		preConsensusDutiesCheckedForSelection: make(map[phase0.ValidatorIndex]map[[32]byte]struct{}),
 	}, nil
 }
 
@@ -78,6 +78,9 @@ func (r *AggregatorCommitteeRunner) StartNewDuty(duty types.Duty, quorum uint64)
 	r.submittedDuties[types.BNRoleAggregator] = make(map[phase0.ValidatorIndex]map[[32]byte]struct{})
 	r.submittedDuties[types.BNRoleSyncCommitteeContribution] = make(map[phase0.ValidatorIndex]map[[32]byte]struct{})
 
+	r.preConsensusSeenSigners = make(map[types.OperatorID]struct{})
+	r.preConsensusDutiesCheckedForSelection = make(map[phase0.ValidatorIndex]map[[32]byte]struct{})
+
 	return nil
 }
 
@@ -89,12 +92,12 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 	// Mark signer as seen
 	r.MarkPreConsensusSignerAsSeen(signedMsg)
 
-	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
+	hasNewQuorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing pre-consensus message")
 	}
 
-	if !quorum {
+	if !hasNewQuorum {
 		// If didn't get any new quorum, didn't yet start QBFT, and has received the last message, then terminate.
 		if r.HasSeenAllPreConsensusSigners() {
 			if r.BaseRunner.QBFTController.InstanceForHeight(qbft.Height(r.BaseRunner.State.StartingDuty.DutySlot())) == nil {
@@ -114,7 +117,7 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 	consensusData := &types.AggregatorCommitteeConsensusData{
 		Version: r.beacon.DataVersion(epoch),
 	}
-	hasAnyAggregator := false
+	hasAnyAggregatorForNewQuorum := false
 
 	rootSet := make(map[[32]byte]struct{})
 	for _, root := range roots {
@@ -185,9 +188,9 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 				if vDuty != nil {
 					isAggregator, err := r.processAggregatorSelectionProof(blsSig, vDuty, consensusData)
 					if err == nil {
-						r.MarkSelectionChecked(validatorIndex, root)
+						r.MarkDutyAsCheckedForSelection(validatorIndex, root)
 						if isAggregator {
-							hasAnyAggregator = true
+							hasAnyAggregatorForNewQuorum = true
 						}
 					} else {
 						anyErr = errors.Wrap(err, "failed to process aggregator selection proof")
@@ -199,9 +202,9 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 				if vDuty != nil {
 					isAggregator, err := r.processSyncCommitteeSelectionProof(blsSig, metadata.ValidatorSyncCommitteeIndex, vDuty, consensusData)
 					if err == nil {
-						r.MarkSelectionChecked(validatorIndex, root)
+						r.MarkDutyAsCheckedForSelection(validatorIndex, root)
 						if isAggregator {
-							hasAnyAggregator = true
+							hasAnyAggregatorForNewQuorum = true
 						}
 					} else {
 						anyErr = errors.Wrap(err, "failed to process sync committee selection proof")
@@ -216,9 +219,9 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 	}
 
 	// No aggregators selected: decide whether to finish or wait for more messages
-	if !hasAnyAggregator {
+	if !hasAnyAggregatorForNewQuorum {
 		// If all duties have been tested for selection or all messages (from all operators) have been seen, terminate.
-		if r.AllSelectionsChecked(aggregatorMap, contributionMap) || r.HasSeenAllPreConsensusSigners() {
+		if r.HaveCheckedAllDutiesForSelection(aggregatorMap, contributionMap) || r.HasSeenAllPreConsensusSigners() {
 			r.BaseRunner.State.Finished = true
 			return nil
 		}
@@ -1191,16 +1194,6 @@ func (r *AggregatorCommitteeRunner) HasSubmittedAllDuties() bool {
 	return true
 }
 
-// HasSeenSignerInPreConsensus checks if we've already seen a pre-consensus message from such signer
-func (r *AggregatorCommitteeRunner) HasSeenSignerInPreConsensus(signedMsg *types.PartialSignatureMessages) bool {
-	for _, m := range signedMsg.Messages {
-		if _, seen := r.preConsensusSeenSigners[m.Signer]; seen {
-			return true
-		}
-	}
-	return false
-}
-
 // MarkPreConsensusSignerAsSeen marks the signer of the given pre-consensus message as seen
 func (r *AggregatorCommitteeRunner) MarkPreConsensusSignerAsSeen(signedMsg *types.PartialSignatureMessages) {
 	for _, m := range signedMsg.Messages {
@@ -1215,16 +1208,16 @@ func (r *AggregatorCommitteeRunner) HasSeenAllPreConsensusSigners() bool {
 	return len(r.preConsensusSeenSigners) >= committeeSize
 }
 
-// MarkSelectionChecked marks a given (validator index, root) selection as checked in pre-consensus
-func (r *AggregatorCommitteeRunner) MarkSelectionChecked(validatorIndex phase0.ValidatorIndex, root [32]byte) {
-	if _, ok := r.preConsensusSelectionsTested[validatorIndex]; !ok {
-		r.preConsensusSelectionsTested[validatorIndex] = make(map[[32]byte]struct{})
+// MarkDutyAsCheckedForSelection marks a given (validator index, root) selection as checked in pre-consensus
+func (r *AggregatorCommitteeRunner) MarkDutyAsCheckedForSelection(validatorIndex phase0.ValidatorIndex, root [32]byte) {
+	if _, ok := r.preConsensusDutiesCheckedForSelection[validatorIndex]; !ok {
+		r.preConsensusDutiesCheckedForSelection[validatorIndex] = make(map[[32]byte]struct{})
 	}
-	r.preConsensusSelectionsTested[validatorIndex][root] = struct{}{}
+	r.preConsensusDutiesCheckedForSelection[validatorIndex][root] = struct{}{}
 }
 
-// AllSelectionsChecked checks if we have tested all possible (validator index, root) selections
-func (r *AggregatorCommitteeRunner) AllSelectionsChecked(
+// HaveCheckedAllDutiesForSelection checks if we have tested all possible (validator index, root) selections
+func (r *AggregatorCommitteeRunner) HaveCheckedAllDutiesForSelection(
 	aggregatorMap map[phase0.ValidatorIndex][32]byte,
 	contributionMap map[phase0.ValidatorIndex]map[types.ValidatorSyncCommitteeIndex][32]byte,
 ) bool {
@@ -1232,10 +1225,10 @@ func (r *AggregatorCommitteeRunner) AllSelectionsChecked(
 		if _, hasShare := r.BaseRunner.Share[validatorIndex]; !hasShare {
 			continue
 		}
-		if _, ok := r.preConsensusSelectionsTested[validatorIndex]; !ok {
+		if _, ok := r.preConsensusDutiesCheckedForSelection[validatorIndex]; !ok {
 			return false
 		}
-		if _, ok := r.preConsensusSelectionsTested[validatorIndex][root]; !ok {
+		if _, ok := r.preConsensusDutiesCheckedForSelection[validatorIndex][root]; !ok {
 			return false
 		}
 	}
@@ -1243,11 +1236,11 @@ func (r *AggregatorCommitteeRunner) AllSelectionsChecked(
 		if _, hasShare := r.BaseRunner.Share[validatorIndex]; !hasShare {
 			continue
 		}
-		if _, ok := r.preConsensusSelectionsTested[validatorIndex]; !ok {
+		if _, ok := r.preConsensusDutiesCheckedForSelection[validatorIndex]; !ok {
 			return false
 		}
 		for _, root := range syncCommitteeRoots {
-			if _, ok := r.preConsensusSelectionsTested[validatorIndex][root]; !ok {
+			if _, ok := r.preConsensusDutiesCheckedForSelection[validatorIndex][root]; !ok {
 				return false
 			}
 		}
