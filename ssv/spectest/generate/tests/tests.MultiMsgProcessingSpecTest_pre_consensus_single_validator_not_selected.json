@@ -4,7 +4,7 @@
   "Documentation": "Tests pre-consensus message processing for the aggregator committee runner that achieves a single-validator quorum that is not selected. Ensure runner does not start consensus and does not terminate the duty.",
   "Tests": [
     {
-      "Name": "single validator quorum not selected doesn't start consensus (phase0)",
+      "Name": "single validator quorum not selected does not start consensus (phase0)",
       "Runner": {
         "BaseRunner": {
           "State": null,
@@ -938,7 +938,7 @@
       ]
     },
     {
-      "Name": "single validator quorum not selected doesn't start consensus (electra)",
+      "Name": "single validator quorum not selected does not start consensus (electra)",
       "Runner": {
         "BaseRunner": {
           "State": null,

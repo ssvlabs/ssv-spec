@@ -63,7 +63,7 @@ func SingleValidatorNotSelected() tests.SpecTest {
 		}
 
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-			Name:   fmt.Sprintf("single validator quorum not selected doesn't start consensus (%s)", version.String()),
+			Name:   fmt.Sprintf("single validator quorum not selected does not start consensus (%s)", version.String()),
 			Runner: runner,
 			Duty:   mixedDuty, // Send full duty to runner
 			Messages: []*types.SignedSSVMessage{
