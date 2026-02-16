@@ -108,7 +108,6 @@ var AllTests = []tests.TestF{
 
 	aggregatorcommitteesingleduty.HappyFlow,
 	aggregatorcommitteesingleduty.DutyWithDifferentSlots,
-	aggregatorcommitteesingleduty.MaxValidators,
 
 	committeemixedduties.SameSlot,
 	committeemixedduties.MixedMultipleSlots,

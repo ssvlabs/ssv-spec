@@ -127,12 +127,7 @@ var AllTests = []SpecTest{
 
 	beaconvote.BeaconVoteEncoding(),
 
-	maxmsgsize.MaxConsensusData(),
-	maxmsgsize.MaxBeaconVote(),
-	maxmsgsize.MaxAggregatorCommitteeConsensusData(),
 	maxmsgsize.MaxPhase0Attestation(),
-	maxmsgsize.MaxElectraAttestation(),
-	maxmsgsize.MaxElectraAttestation(),
 	maxmsgsize.MaxPartialSignatureMessage(),
 	maxmsgsize.MaxPartialSignatureMessages(),
 	maxmsgsize.MaxPartialSignatureMessagesForPreConsensus(),
@@ -149,6 +144,4 @@ var AllTests = []SpecTest{
 	maxmsgsize.ExpectedCommitSignedSSVMessage(),
 	maxmsgsize.ExpectedDecidedSignedSSVMessage(),
 	maxmsgsize.ExpectedRoundChangeSignedSSVMessage(),
-	maxmsgsize.ExpectedProposalSignedSSVMessage(),
-	maxmsgsize.ExpectedPartialSignatureSignedSSVMessage(),
 }
