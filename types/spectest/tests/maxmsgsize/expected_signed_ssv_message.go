@@ -6,22 +6,11 @@ import (
 )
 
 const (
-	ExpectedSizePrepareSignedSSVMessage                  = 484
-	ExpectedSizeCommitSignedSSVMessage                   = 484
-	ExpectedSizeDecidedSignedSSVMessage                  = 1020
-	ExpectedSizeRoundChangeSignedSSVMessage              = 1948
-	ExpectedSizeProposalSignedSSVMessage                 = 7916
-	ExpectedSizePartialSignatureMessagesSignedSSVMessage = 628
+	ExpectedSizePrepareSignedSSVMessage     = 484
+	ExpectedSizeCommitSignedSSVMessage      = 484
+	ExpectedSizeDecidedSignedSSVMessage     = 1020
+	ExpectedSizeRoundChangeSignedSSVMessage = 1948
 )
-
-func expectedFullData() []byte {
-	bv := maxBeaconVote()
-	bvBytes, err := bv.Encode()
-	if err != nil {
-		panic(err)
-	}
-	return bvBytes
-}
 
 func expectedSignedSSVMessageFromObject(obj types.Encoder, numSigners int) *types.SignedSSVMessage {
 
@@ -48,12 +37,6 @@ func expectedSignedSSVMessageFromObject(obj types.Encoder, numSigners int) *type
 			Data:    objBytes,
 		},
 	}
-}
-
-func expectedSignedSSVMessageWithFullDataFromObject(obj types.Encoder, numSigners int) *types.SignedSSVMessage {
-	msg := expectedSignedSSVMessageFromObject(obj, numSigners)
-	msg.FullData = expectedFullData()
-	return msg
 }
 
 func ExpectedPrepareSignedSSVMessage() *StructureSizeTest {
@@ -92,26 +75,6 @@ func ExpectedRoundChangeSignedSSVMessage() *StructureSizeTest {
 		testdoc.StructureSizeTestExpectedRoundChangeSignedSSVMessageDoc,
 		expectedSignedSSVMessageFromObject(expectedRoundChange(3), 1),
 		ExpectedSizeRoundChangeSignedSSVMessage,
-		false,
-	)
-}
-
-func ExpectedProposalSignedSSVMessage() *StructureSizeTest {
-	return NewStructureSizeTest(
-		"expected proposal SignedSSVMessage",
-		testdoc.StructureSizeTestExpectedProposalSignedSSVMessageDoc,
-		expectedSignedSSVMessageWithFullDataFromObject(expectedProposal(3), 1),
-		ExpectedSizeProposalSignedSSVMessage,
-		false,
-	)
-}
-
-func ExpectedPartialSignatureSignedSSVMessage() *StructureSizeTest {
-	return NewStructureSizeTest(
-		"expected partial signature SignedSSVMessage",
-		testdoc.StructureSizeTestExpectedPartialSignatureSignedSSVMessageDoc,
-		expectedSignedSSVMessageWithFullDataFromObject(expectedPartialSignatureMessages(1), 1),
-		ExpectedSizePartialSignatureMessagesSignedSSVMessage,
 		false,
 	)
 }

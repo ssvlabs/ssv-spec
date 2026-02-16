@@ -67,7 +67,6 @@ const StructureSizeTestExpectedDecidedSignedSSVMessageDoc = "Test the expected s
 const StructureSizeTestExpectedRoundChangeSignedSSVMessageDoc = "Test the expected size of a SignedSSVMessage containing a round change QBFT message with 3 justifications"
 const StructureSizeTestExpectedProposalSignedSSVMessageDoc = "Test the expected size of a SignedSSVMessage containing a proposal QBFT message with 3 justifications and full data"
 const StructureSizeTestExpectedPartialSignatureSignedSSVMessageDoc = "Test the expected size of a SignedSSVMessage containing partial signature messages with full data"
-const StructureSizeTestMaxBeaconVoteDoc = "Test the maximum size of a beacon vote with source and target checkpoints"
 const StructureSizeTestMaxConsensusDataDoc = "Test the maximum size of a validator consensus data with maximum SSZ data"
 const StructureSizeTestMaxAggregatorCommitteeConsensusDataDoc = "Test the maximum size of an aggregator committee consensus data with maximum SSZ data"
 const StructureSizeTestMaxPhase0AttestationDoc = "Test the maximum size of a phase0 attestation with maximum SSZ data"
