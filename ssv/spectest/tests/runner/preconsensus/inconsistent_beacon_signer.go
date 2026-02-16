@@ -19,19 +19,6 @@ func InconsistentBeaconSigner() tests.SpecTest {
 		testdoc.PreConsensusInconsistentBeaconSignerDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
-				Name:   "sync committee aggregator selection proof",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 5))),
-				},
-				PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
-				ExpectedErrorCode: types.SSVMessageHasInvalidSignatureErrorCode,
-			},
-			{
 				Name:   "randao",
 				Runner: testingutils.ProposerRunner(ks),
 				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
@@ -61,19 +48,47 @@ func InconsistentBeaconSigner() tests.SpecTest {
 		ks,
 	)
 
+	// Aggregator committee duty
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name:   "sync committee aggregator selection proof",
+		Runner: testingutils.AggregatorCommitteeRunner(ks),
+		Duty:   testingutils.TestingSyncCommitteeContributionDuty,
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsgInconsistentBeaconSigners(ks.Shares[1], ks.Shares[1], 1, 1, 2, testingutils.TestingDutySlotV(spec.DataVersionPhase0)))),
+		},
+		PostDutyRunnerStateRoot: "29862cc6054edc8547efcb5ae753290971d664b9c39768503b4d66e1b52ecb06",
+		OutputMessages: []*types.PartialSignatureMessages{
+			testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
+		},
+		ExpectedErrorCode: types.SSVMessageHasInvalidSignatureErrorCode,
+	})
 	for _, version := range testingutils.SupportedAggregatorVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-			Name:   fmt.Sprintf("aggregator selection proof (%s)", version.String()),
-			Runner: testingutils.AggregatorRunner(ks),
-			Duty:   testingutils.TestingAggregatorDuty(version),
-			Messages: []*types.SignedSSVMessage{
-				testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 5, version))),
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+			{
+				Name:   fmt.Sprintf("aggregator selection proof (%s)", version.String()),
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingAggregatorDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
+				},
+				ExpectedErrorCode: types.SSVMessageHasInvalidSignatureErrorCode,
 			},
-			OutputMessages: []*types.PartialSignatureMessages{
-				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
+			{
+				Name:   fmt.Sprintf("aggregator committee mixed (%s)", version.String()),
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingAggregatorCommitteeDutyMixed(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMixedMsgInconsistentBeaconSigners(ks.Shares[1], 1, 2, version))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusAggregatorCommitteeMixedMsg(ks.Shares[1], 1, version), // broadcasts when starting a new duty
+				},
+				ExpectedErrorCode: types.SSVMessageHasInvalidSignatureErrorCode,
 			},
-			ExpectedErrorCode: types.SSVMessageHasInvalidSignatureErrorCode,
-		})
+		}...)
 	}
 
 	return multiSpecTest

@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
@@ -22,28 +21,27 @@ func FailedThanSuccessfulDuties() tests.SpecTest {
 			for _, numFailedDuties := range []int{1, 2} {
 				for _, numSuccessfulDuties := range []int{1, 2} {
 					ksMap := testingutils.KeySetMapForValidators(numValidators)
-					shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
 					slot := testingutils.TestingDutySlotV(version) + phase0.Slot(numFailedDuties)
 
 					tests = append(tests, []*committee.CommitteeSpecTest{
 						{
 							Name:                   fmt.Sprintf("%v fails %v successful for %v attestation (%s)", numFailedDuties, numSuccessfulDuties, numValidators, version.String()),
-							Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+							Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 							Input:                  testingutils.CommitteeInputForDutiesWithFailuresThanSuccess(numValidators, 0, numFailedDuties, numSuccessfulDuties, version),
 							OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numFailedDuties+numSuccessfulDuties, numValidators, 0, version),
 							BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDutiesWithStartingSlot(numSuccessfulDuties, numValidators, 0, slot, version),
 						},
 						{
 							Name:                   fmt.Sprintf("%v fails %v successful for %v sync committee (%s)", numFailedDuties, numSuccessfulDuties, numValidators, version.String()),
-							Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+							Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 							Input:                  testingutils.CommitteeInputForDutiesWithFailuresThanSuccess(0, numValidators, numFailedDuties, numSuccessfulDuties, version),
 							OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numFailedDuties+numSuccessfulDuties, 0, numValidators, version),
 							BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDutiesWithStartingSlot(numSuccessfulDuties, 0, numValidators, slot, version),
 						},
 						{
 							Name:                   fmt.Sprintf("%v fails %v successful for %v attestations %v sync committees (%s)", numFailedDuties, numSuccessfulDuties, numValidators, numValidators, version.String()),
-							Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+							Committee:              testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 							Input:                  testingutils.CommitteeInputForDutiesWithFailuresThanSuccess(numValidators, numValidators, numFailedDuties, numSuccessfulDuties, version),
 							OutputMessages:         testingutils.CommitteeOutputMessagesForDuties(numFailedDuties+numSuccessfulDuties, numValidators, numValidators, version),
 							BeaconBroadcastedRoots: testingutils.CommitteeBeaconBroadcastedRootsForDutiesWithStartingSlot(numSuccessfulDuties, numValidators, numValidators, slot, version),

@@ -3,5 +3,5 @@
   "Type": "Duty: validation of beacon role to runner role conversion",
   "Documentation": "Test mapping of BNRoleAggregator",
   "BeaconRole": 1,
-  "RunnerRole": 1
+  "RunnerRole": 6
 }

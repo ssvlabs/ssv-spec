@@ -95,8 +95,8 @@ type SSVMessage struct {
 	MsgType MsgType
 	MsgID   MessageID `ssz-size:"56"`
 	// Data max size is the max between max(qbft.SignedMessage) and max(PartialSignatureMessages)
-	// i.e., = max(722412, 144020) = 722412
-	Data []byte `ssz-max:"722412"`
+	// i.e., = max(722412, 726932) = 726932
+	Data []byte `ssz-max:"726932"`
 }
 
 func (msg *SSVMessage) GetType() MsgType {
@@ -128,7 +128,7 @@ type SignedSSVMessage struct {
 	Signatures  [][]byte     `ssz-max:"13,256"` // Created by the operators' key
 	OperatorIDs []OperatorID `ssz-max:"13"`
 	SSVMessage  *SSVMessage
-	// Full data max value is the max value between ValidatorConsensusData and BeaconVote
+	// Full data max value is the max value between ProposerConsensusData, AggregatorCommitteeConsensusData, and BeaconVote
 	FullData []byte `ssz-max:"8388836"`
 }
 

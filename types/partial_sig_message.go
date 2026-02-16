@@ -9,23 +9,25 @@ type PartialSigMsgType uint64
 
 const (
 	// PostConsensusPartialSig is a partial signature over a decided duty (attestation data, block, etc)
-	PostConsensusPartialSig PartialSigMsgType = iota
+	PostConsensusPartialSig = PartialSigMsgType(0)
 	// RandaoPartialSig is a partial signature over randao reveal
-	RandaoPartialSig
-	// SelectionProofPartialSig is a partial signature for aggregator selection proof
-	SelectionProofPartialSig
-	// ContributionProofs is the partial selection proofs for sync committee contributions (it's an array of sigs)
-	ContributionProofs
+	RandaoPartialSig = PartialSigMsgType(1)
 	// ValidatorRegistrationPartialSig is a partial signature over a ValidatorRegistration object
-	ValidatorRegistrationPartialSig
+	ValidatorRegistrationPartialSig = PartialSigMsgType(4)
 	// VoluntaryExitPartialSig is a partial signature over a VoluntaryExit object
-	VoluntaryExitPartialSig
+	VoluntaryExitPartialSig = PartialSigMsgType(5)
+	// AggregatorCommitteePartialSig is a partial signature for combined aggregator and sync committee selection proofs
+	AggregatorCommitteePartialSig = PartialSigMsgType(6)
 )
 
 type PartialSignatureMessages struct {
-	Type     PartialSigMsgType
-	Slot     phase0.Slot
-	Messages []*PartialSignatureMessage `ssz-max:"1512"`
+	Type PartialSigMsgType
+	Slot phase0.Slot
+	// 5048 = 3000 + 512 * 4 (worst-case scenario for
+	// a committee with 3000 validators:
+	// every validator has an aggregation duty
+	// every validator is in sync committee and is a contributor to all 4 subnets
+	Messages []*PartialSignatureMessage `ssz-max:"5048"`
 }
 
 // Encode returns a msg encoded bytes or error

@@ -1,6 +1,7 @@
 package preconsensus
 
 import (
+	"crypto/sha256"
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
@@ -16,8 +17,12 @@ import (
 // PostDecided tests a msg received post consensus decided (and post receiving a quorum for pre consensus)
 func PostDecided() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
+	numValidators := 1
+	validators := testingutils.ValidatorIndexList(numValidators)
+	ksMap := testingutils.KeySetMapForValidators(numValidators)
+	shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
-	decideRunner := func(r ssv.Runner, duty *types.ValidatorDuty, decidedValue *types.ValidatorConsensusData, preMsgs []*types.PartialSignatureMessages) ssv.Runner {
+	decideRunner := func(r ssv.Runner, duty *types.ValidatorDuty, decidedValue *types.ProposerConsensusData, preMsgs []*types.PartialSignatureMessages) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		for _, msg := range preMsgs {
 			err := r.ProcessPreConsensus(msg)
@@ -41,50 +46,115 @@ func PostDecided() tests.SpecTest {
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus post decided",
 		testdoc.PreConsensusPostDecidedDoc,
-		[]*tests.MsgProcessingSpecTest{
-			{
-				Name: "sync committee aggregator selection proof",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
-					testingutils.TestSyncCommitteeContributionConsensusData,
-					[]*types.PartialSignatureMessages{
-						testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-						testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2),
-						testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3),
-					},
-				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4))),
-				},
-				PostDutyRunnerStateRoot: postDecidedSyncCommitteeContributionSC().Root(),
-				PostDutyRunnerState:     postDecidedSyncCommitteeContributionSC().ExpectedState,
-				DontStartDuty:           true,
-			},
-		},
+		[]*tests.MsgProcessingSpecTest{},
 		ks,
 	)
 
+	// Aggregator committee duty
+
+	// SC Duty
+	scDuty := testingutils.TestingAggregatorCommitteeDuty([]int{}, validators, spec.DataVersionAltair)
+	height := qbft.Height(scDuty.Slot)
+	msgID := testingutils.AggregatorCommitteeMsgID(ks)
+	scConsensusData := testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(scDuty, spec.DataVersionAltair)
+
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name:   "sync committee aggregator selection proof",
+		Runner: testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap),
+		Duty:   scDuty,
+		Messages: []*types.SignedSSVMessage{
+			// Normal pre-consensus messages
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(scDuty, ksMap, 1))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(scDuty, ksMap, 2))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(scDuty, ksMap, 3))),
+
+			// Consensus messages
+			testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1), msgID, scConsensusData, height),
+			testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(scConsensusData)),
+			testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(scConsensusData)),
+			testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(scConsensusData)),
+			testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(scConsensusData)),
+			testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(scConsensusData)),
+			testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(scConsensusData)),
+
+			// Extra pre-consensus message after consensus decided should be ignored
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(scDuty, ksMap, 4))),
+		},
+		OutputMessages: []*types.PartialSignatureMessages{
+			testingutils.PreConsensusAggregatorCommitteeMsgForDuty(scDuty, ksMap, 1),
+			testingutils.PostConsensusAggregatorCommitteeMsgForDuty(scDuty, ksMap, 1, spec.DataVersionAltair),
+		},
+		ExpectedErrorCode: types.AggCommPreConsensusIgnoredSinceAlreadyStartedConsensusErrorCode,
+	})
 	for _, version := range testingutils.SupportedAggregatorVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-			Name: fmt.Sprintf("aggregator selection proof (%s)", version.String()),
-			Runner: decideRunner(
-				testingutils.AggregatorRunner(ks),
-				testingutils.TestingAggregatorDuty(version),
-				testingutils.TestAggregatorConsensusData(version),
-				[]*types.PartialSignatureMessages{
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2, version),
-					testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3, version),
+		// Aggregator duty
+		aggDuty := testingutils.TestingAggregatorCommitteeDuty(validators, []int{}, version)
+		aggHeight := qbft.Height(aggDuty.Slot)
+		aggConsensusData := testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(aggDuty, version)
+
+		// Mixed duty
+		mixedDuty := testingutils.TestingAggregatorCommitteeDutyMixed(version)
+		mixedConsensusData := testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(mixedDuty, version)
+		mixedHeight := qbft.Height(mixedDuty.Slot)
+
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+			{
+				Name:   fmt.Sprintf("aggregator selection proof (%s)", version.String()),
+				Runner: testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap),
+				Duty:   aggDuty,
+				Messages: []*types.SignedSSVMessage{
+					// Normal pre-consensus messages
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 1))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 2))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 3))),
+
+					// Consensus messages
+					testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1), msgID, aggConsensusData, aggHeight),
+					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, 1, aggHeight, msgID, sha256.Sum256(aggConsensusData)),
+					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, 1, aggHeight, msgID, sha256.Sum256(aggConsensusData)),
+					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, 1, aggHeight, msgID, sha256.Sum256(aggConsensusData)),
+					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, aggHeight, msgID, sha256.Sum256(aggConsensusData)),
+					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, aggHeight, msgID, sha256.Sum256(aggConsensusData)),
+					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, aggHeight, msgID, sha256.Sum256(aggConsensusData)),
+
+					// Extra pre-consensus message after consensus decided should be ignored
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 4))),
 				},
-			),
-			Duty: testingutils.TestingAggregatorDuty(version),
-			Messages: []*types.SignedSSVMessage{
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4, version))),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 1),
+					testingutils.PostConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 1, version),
+				},
+				ExpectedErrorCode: types.AggCommPreConsensusIgnoredSinceAlreadyStartedConsensusErrorCode,
 			},
-			DontStartDuty: true,
-		})
+			{
+				Name:   fmt.Sprintf("aggregator committee duty (%s)", version.String()),
+				Runner: testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap),
+				Duty:   mixedDuty,
+				Messages: []*types.SignedSSVMessage{
+					// Normal pre-consensus messages
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(mixedDuty, ksMap, 1))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(mixedDuty, ksMap, 2))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(mixedDuty, ksMap, 3))),
+
+					// Consensus messages
+					testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1), msgID, mixedConsensusData, mixedHeight),
+					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, 1, mixedHeight, msgID, sha256.Sum256(mixedConsensusData)),
+					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, 1, mixedHeight, msgID, sha256.Sum256(mixedConsensusData)),
+					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, 1, mixedHeight, msgID, sha256.Sum256(mixedConsensusData)),
+					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, mixedHeight, msgID, sha256.Sum256(mixedConsensusData)),
+					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, mixedHeight, msgID, sha256.Sum256(mixedConsensusData)),
+					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, mixedHeight, msgID, sha256.Sum256(mixedConsensusData)),
+
+					// Extra pre-consensus message after consensus decided should be ignored
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(mixedDuty, ksMap, 4))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusAggregatorCommitteeMsgForDuty(mixedDuty, ksMap, 1),
+					testingutils.PostConsensusAggregatorCommitteeMsgForDuty(mixedDuty, ksMap, 1, version),
+				},
+				ExpectedErrorCode: types.AggCommPreConsensusIgnoredSinceAlreadyStartedConsensusErrorCode,
+			},
+		}...)
 	}
 
 	// proposerV creates a test specification for versioned proposer.
@@ -105,9 +175,7 @@ func PostDecided() tests.SpecTest {
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version))),
 			},
-			PostDutyRunnerStateRoot: postDecidedProposerSC(version).Root(),
-			PostDutyRunnerState:     postDecidedProposerSC(version).ExpectedState,
-			DontStartDuty:           true,
+			DontStartDuty: true,
 		}
 	}
 
@@ -129,9 +197,7 @@ func PostDecided() tests.SpecTest {
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version))),
 			},
-			PostDutyRunnerStateRoot: postDecidedBlindedProposerSC(version).Root(),
-			PostDutyRunnerState:     postDecidedBlindedProposerSC(version).ExpectedState,
-			DontStartDuty:           true,
+			DontStartDuty: true,
 		}
 	}
 

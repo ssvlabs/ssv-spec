@@ -24,6 +24,8 @@ func InvalidAndValidValidatorIndexesQuorum() tests.SpecTest {
 		ks,
 	)
 
+	// TODO: add aggregator committee tests
+
 	for _, version := range testingutils.SupportedAttestationVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
 

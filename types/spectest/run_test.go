@@ -17,15 +17,16 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/aggregatorcommitteeconsensusdata"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerconsensusdata"
+	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerconsensusdata/proposer"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/share"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssz"
-	validatorconsensusdata "github.com/ssvlabs/ssv-spec/types/spectest/tests/validatorconsensusdata"
-	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/validatorconsensusdata/proposer"
 )
 
 func TestAll(t *testing.T) {
@@ -67,10 +68,10 @@ func TestJson(t *testing.T) {
 				typedTest := &consensusdataproposer.ProposerSpecTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
-			case reflect.TypeOf(&validatorconsensusdata.EncodingTest{}).String():
+			case reflect.TypeOf(&proposerconsensusdata.EncodingTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
-				typedTest := &validatorconsensusdata.EncodingTest{}
+				typedTest := &proposerconsensusdata.EncodingTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			case reflect.TypeOf(&partialsigmessage.EncodingTest{}).String():
@@ -115,10 +116,10 @@ func TestJson(t *testing.T) {
 				typedTest := &signedssvmsg.SignedSSVMessageTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
-			case reflect.TypeOf(&validatorconsensusdata.ValidatorConsensusDataTest{}).String():
+			case reflect.TypeOf(&proposerconsensusdata.ProposerConsensusDataTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
-				typedTest := &validatorconsensusdata.ValidatorConsensusDataTest{}
+				typedTest := &proposerconsensusdata.ProposerConsensusDataTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			case reflect.TypeOf(&partialsigmessage.MsgSpecTest{}).String():
@@ -161,6 +162,18 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &maxmsgsize.StructureSizeTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&aggregatorcommitteeconsensusdata.AggregatorCommitteeConsensusDataTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &aggregatorcommitteeconsensusdata.AggregatorCommitteeConsensusDataTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&aggregatorcommitteeconsensusdata.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &aggregatorcommitteeconsensusdata.EncodingTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			default:

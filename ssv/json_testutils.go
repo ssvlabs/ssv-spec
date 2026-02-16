@@ -37,13 +37,14 @@ func (pcs *State) MarshalJSON() ([]byte, error) {
 
 	// Create alias without duty
 	type StateAlias struct {
-		PreConsensusContainer  *PartialSigContainer
-		PostConsensusContainer *PartialSigContainer
-		RunningInstance        *qbft.Instance
-		DecidedValue           []byte
-		Finished               bool
-		ValidatorDuty          *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
-		CommitteeDuty          *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+		PreConsensusContainer   *PartialSigContainer
+		PostConsensusContainer  *PartialSigContainer
+		RunningInstance         *qbft.Instance
+		DecidedValue            []byte
+		Finished                bool
+		ValidatorDuty           *types.ValidatorDuty           `json:"ValidatorDuty,omitempty"`
+		CommitteeDuty           *types.CommitteeDuty           `json:"CommitteeDuty,omitempty"`
+		AggregatorCommitteeDuty *types.AggregatorCommitteeDuty `json:"AggregatorCommitteeDuty,omitempty"`
 	}
 
 	alias := &StateAlias{
@@ -59,8 +60,10 @@ func (pcs *State) MarshalJSON() ([]byte, error) {
 			alias.ValidatorDuty = validatorDuty
 		} else if committeeDuty, ok := pcs.StartingDuty.(*types.CommitteeDuty); ok {
 			alias.CommitteeDuty = committeeDuty
+		} else if aggregatorCommitteeDuty, ok := pcs.StartingDuty.(*types.AggregatorCommitteeDuty); ok {
+			alias.AggregatorCommitteeDuty = aggregatorCommitteeDuty
 		} else {
-			return nil, fmt.Errorf("can't marshal because BaseRunner.State.StartingDuty isn't ValidatorDuty or CommitteeDuty")
+			return nil, fmt.Errorf("can't marshal because BaseRunner.State.StartingDuty isn't ValidatorDuty, CommitteeDuty, or AggregatorCommitteeDuty")
 		}
 	}
 	byts, err := json.Marshal(alias)
@@ -72,13 +75,14 @@ func (pcs *State) UnmarshalJSON(data []byte) error {
 
 	// Create alias without duty
 	type StateAlias struct {
-		PreConsensusContainer  *PartialSigContainer
-		PostConsensusContainer *PartialSigContainer
-		RunningInstance        *qbft.Instance
-		DecidedValue           []byte
-		Finished               bool
-		ValidatorDuty          *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
-		CommitteeDuty          *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+		PreConsensusContainer   *PartialSigContainer
+		PostConsensusContainer  *PartialSigContainer
+		RunningInstance         *qbft.Instance
+		DecidedValue            []byte
+		Finished                bool
+		ValidatorDuty           *types.ValidatorDuty           `json:"ValidatorDuty,omitempty"`
+		CommitteeDuty           *types.CommitteeDuty           `json:"CommitteeDuty,omitempty"`
+		AggregatorCommitteeDuty *types.AggregatorCommitteeDuty `json:"AggregatorCommitteeDuty,omitempty"`
 	}
 
 	aux := &StateAlias{}
@@ -99,6 +103,8 @@ func (pcs *State) UnmarshalJSON(data []byte) error {
 		pcs.StartingDuty = aux.ValidatorDuty
 	} else if aux.CommitteeDuty != nil {
 		pcs.StartingDuty = aux.CommitteeDuty
+	} else if aux.AggregatorCommitteeDuty != nil {
+		pcs.StartingDuty = aux.AggregatorCommitteeDuty
 	}
 
 	return nil
@@ -125,16 +131,18 @@ func (c *Committee) GetRoot() ([32]byte, error) {
 func (c *Committee) MarshalJSON() ([]byte, error) {
 
 	type CommitteeAlias struct {
-		Runners         map[phase0.Slot]*CommitteeRunner
-		CommitteeMember types.CommitteeMember
-		Share           map[phase0.ValidatorIndex]*types.Share
+		CommitteeRunners           map[phase0.Slot]Runner
+		AggregatorCommitteeRunners map[phase0.Slot]Runner
+		CommitteeMember            types.CommitteeMember
+		Share                      map[phase0.ValidatorIndex]*types.Share
 	}
 
 	// Create object and marshal
 	alias := &CommitteeAlias{
-		Runners:         c.Runners,
-		CommitteeMember: c.CommitteeMember,
-		Share:           c.Share,
+		CommitteeRunners:           c.CommitteeRunners,
+		AggregatorCommitteeRunners: c.AggregatorCommitteeRunners,
+		CommitteeMember:            c.CommitteeMember,
+		Share:                      c.Share,
 	}
 
 	byts, err := json.Marshal(alias)
@@ -143,23 +151,39 @@ func (c *Committee) MarshalJSON() ([]byte, error) {
 }
 
 func (c *Committee) UnmarshalJSON(data []byte) error {
-
-	type CommitteeAlias struct {
-		Runners         map[phase0.Slot]*CommitteeRunner
-		CommitteeMember types.CommitteeMember
-		Share           map[phase0.ValidatorIndex]*types.Share
+	// First, unmarshal to get the raw JSON for runners
+	type CommitteeRaw struct {
+		CommitteeRunners           map[phase0.Slot]json.RawMessage
+		AggregatorCommitteeRunners map[phase0.Slot]json.RawMessage
+		CommitteeMember            types.CommitteeMember
+		Share                      map[phase0.ValidatorIndex]*types.Share
 	}
 
-	// Unmarshal the JSON data into the auxiliary struct
-	aux := &CommitteeAlias{}
-	if err := json.Unmarshal(data, &aux); err != nil {
+	raw := &CommitteeRaw{}
+	if err := json.Unmarshal(data, &raw); err != nil {
 		return err
 	}
 
-	// Assign fields
-	c.Runners = aux.Runners
-	c.CommitteeMember = aux.CommitteeMember
-	c.Share = aux.Share
+	// Initialize the committee
+	c.CommitteeRunners = make(map[phase0.Slot]Runner)
+	c.AggregatorCommitteeRunners = make(map[phase0.Slot]Runner)
+	c.CommitteeMember = raw.CommitteeMember
+	c.Share = raw.Share
+
+	for slot, runnerData := range raw.CommitteeRunners {
+		var runner CommitteeRunner
+		if err := json.Unmarshal(runnerData, &runner); err != nil {
+			return err
+		}
+		c.CommitteeRunners[slot] = &runner
+	}
+	for slot, runnerData := range raw.AggregatorCommitteeRunners {
+		var runner AggregatorCommitteeRunner
+		if err := json.Unmarshal(runnerData, &runner); err != nil {
+			return err
+		}
+		c.AggregatorCommitteeRunners[slot] = &runner
+	}
 
 	return nil
 }
@@ -202,37 +226,19 @@ func (cr CommitteeRunner) GetRoot() ([32]byte, error) {
 	return ret, nil
 }
 
-// AggregatorRunner
-func (r *AggregatorRunner) Encode() ([]byte, error) {
+// AggregatorCommitteeRunner
+func (r *AggregatorCommitteeRunner) Encode() ([]byte, error) {
 	return json.Marshal(r)
 }
 
-func (r *AggregatorRunner) Decode(data []byte) error {
+func (r *AggregatorCommitteeRunner) Decode(data []byte) error {
 	return json.Unmarshal(data, &r)
 }
 
-func (r *AggregatorRunner) GetRoot() ([32]byte, error) {
+func (r *AggregatorCommitteeRunner) GetRoot() ([32]byte, error) {
 	marshaledRoot, err := r.Encode()
 	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode AggregatorRunner")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret, nil
-}
-
-// SyncCommitteeAggregatorRunner
-func (r *SyncCommitteeAggregatorRunner) Encode() ([]byte, error) {
-	return json.Marshal(r)
-}
-
-func (r *SyncCommitteeAggregatorRunner) Decode(data []byte) error {
-	return json.Unmarshal(data, &r)
-}
-
-func (r *SyncCommitteeAggregatorRunner) GetRoot() ([32]byte, error) {
-	marshaledRoot, err := r.Encode()
-	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode SyncCommitteeAggregatorRunner")
+		return [32]byte{}, errors.Wrap(err, "could not encode AggregatorCommitteeRunner")
 	}
 	ret := sha256.Sum256(marshaledRoot)
 	return ret, nil

@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	maxSizeDataSSZ = 8388608
+	MaxSizeDataSSZ = 8388608
 )
 
 func maxValidatorDuty() types.ValidatorDuty {
@@ -28,13 +28,13 @@ func maxValidatorDuty() types.ValidatorDuty {
 }
 
 func maxDataSSZ() []byte {
-	dataSSZ := [maxSizeDataSSZ]byte{1}
+	dataSSZ := [MaxSizeDataSSZ]byte{1}
 	return dataSSZ[:]
 }
 
-func maxConsensusData() *types.ValidatorConsensusData {
+func maxConsensusData() *types.ProposerConsensusData {
 
-	return &types.ValidatorConsensusData{
+	return &types.ProposerConsensusData{
 		Duty:    maxValidatorDuty(),
 		Version: spec.DataVersionAltair,
 		DataSSZ: maxDataSSZ(),
@@ -43,10 +43,10 @@ func maxConsensusData() *types.ValidatorConsensusData {
 
 func MaxConsensusData() *StructureSizeTest {
 	return NewStructureSizeTest(
-		"max ValidatorConsensusData",
+		"max ProposerConsensusData",
 		testdoc.StructureSizeTestMaxConsensusDataDoc,
 		maxConsensusData(),
-		maxSizeFullConsensusData,
+		MaxSizeFullConsensusData,
 		true,
 	)
 }

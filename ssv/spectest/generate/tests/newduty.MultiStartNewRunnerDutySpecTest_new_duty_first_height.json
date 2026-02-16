@@ -42,7 +42,7 @@
             }
           },
           "QBFTController": {
-            "Identifier": "AAADAQMAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+            "Identifier": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
             "Height": 0,
             "StoredInstances": [],
             "CommitteeMember": {
@@ -72,14 +72,14 @@
             }
           },
           "BeaconNetwork": "now_test_network",
-          "RunnerRoleType": 3
+          "RunnerRoleType": 6
         }
       },
       "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
-          "Type": 3,
-          "Slot": "12",
+          "Type": 6,
+          "Slot": "0",
           "Messages": [
             {
               "PartialSignature": "b1d47521750f15f6770b9e4ce8f403ec1431d302424c62eaaf52599b6dca1f4c8d01215d9ac74a9df670cdf00a327cec02349008c07fdc8d5fe466b5252d565a516451d9ebd93ce45acbaf40e13eb474303deba9a1bc447dcb8a111aebbd0dfd",
@@ -103,19 +103,24 @@
         }
       ],
       "ExpectedErrorCode": 0,
-      "ValidatorDuty": {
-        "Type": 4,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+      "AggregatorCommitteeDuty": {
         "Slot": "0",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 3,
-        "CommitteeLength": 128,
-        "CommitteesAtSlot": 36,
-        "ValidatorCommitteeIndex": 11,
-        "ValidatorSyncCommitteeIndices": [
-          0,
-          1,
-          2
+        "ValidatorDuties": [
+          {
+            "Type": 4,
+            "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+            "Slot": "0",
+            "ValidatorIndex": "1",
+            "CommitteeIndex": 3,
+            "CommitteeLength": 128,
+            "CommitteesAtSlot": 36,
+            "ValidatorCommitteeIndex": 11,
+            "ValidatorSyncCommitteeIndices": [
+              0,
+              129,
+              257
+            ]
+          }
         ]
       }
     },
@@ -158,7 +163,7 @@
             }
           },
           "QBFTController": {
-            "Identifier": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+            "Identifier": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
             "Height": 0,
             "StoredInstances": [],
             "CommitteeMember": {
@@ -188,13 +193,13 @@
             }
           },
           "BeaconNetwork": "now_test_network",
-          "RunnerRoleType": 1
+          "RunnerRoleType": 6
         }
       },
       "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
-          "Type": 2,
+          "Type": 6,
           "Slot": "0",
           "Messages": [
             {
@@ -207,16 +212,21 @@
         }
       ],
       "ExpectedErrorCode": 0,
-      "ValidatorDuty": {
-        "Type": 1,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+      "AggregatorCommitteeDuty": {
         "Slot": "0",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 22,
-        "CommitteeLength": 128,
-        "CommitteesAtSlot": 36,
-        "ValidatorCommitteeIndex": 11,
-        "ValidatorSyncCommitteeIndices": null
+        "ValidatorDuties": [
+          {
+            "Type": 1,
+            "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+            "Slot": "0",
+            "ValidatorIndex": "1",
+            "CommitteeIndex": 3,
+            "CommitteeLength": 128,
+            "CommitteesAtSlot": 36,
+            "ValidatorCommitteeIndex": 11,
+            "ValidatorSyncCommitteeIndices": null
+          }
+        ]
       }
     },
     {
@@ -500,8 +510,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]
@@ -596,8 +606,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]

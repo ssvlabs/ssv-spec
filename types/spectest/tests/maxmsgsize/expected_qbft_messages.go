@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	expectedSizePrepareQBFTMessage     = 132
-	expectedSizeCommitQBFTMessage      = 132
-	expectedSizeRoundChangeQBFTMessage = 1596
-	expectedSizeProposalQBFTMessage    = 7452
+	ExpectedSizePrepareQBFTMessage     = 132
+	ExpectedSizeCommitQBFTMessage      = 132
+	ExpectedSizeRoundChangeQBFTMessage = 1596
+	ExpectedSizeProposalQBFTMessage    = 7452
 )
 
 func expectedPrepare() *qbft.Message {
@@ -112,7 +112,7 @@ func ExpectedPrepareQBFTMessage() *StructureSizeTest {
 		"expected prepare qbftMessage",
 		testdoc.StructureSizeTestExpectedPrepareQBFTMessageDoc,
 		expectedPrepare(),
-		expectedSizePrepareQBFTMessage,
+		ExpectedSizePrepareQBFTMessage,
 		false,
 	)
 }
@@ -122,7 +122,7 @@ func ExpectedCommitQBFTMessage() *StructureSizeTest {
 		"expected commit qbftMessage",
 		testdoc.StructureSizeTestExpectedCommitQBFTMessageDoc,
 		expectedCommit(),
-		expectedSizeCommitQBFTMessage,
+		ExpectedSizeCommitQBFTMessage,
 		false,
 	)
 }
@@ -132,7 +132,7 @@ func ExpectedRoundChangeQBFTMessage() *StructureSizeTest {
 		"expected round change qbftMessage",
 		testdoc.StructureSizeTestExpectedRoundChangeQBFTMessageDoc,
 		expectedRoundChange(3),
-		expectedSizeRoundChangeQBFTMessage,
+		ExpectedSizeRoundChangeQBFTMessage,
 		false,
 	)
 }
@@ -142,7 +142,7 @@ func ExpectedProposalQBFTMessage() *StructureSizeTest {
 		"expected proposal qbftMessage",
 		testdoc.StructureSizeTestExpectedProposalQBFTMessageDoc,
 		expectedProposal(3),
-		expectedSizeProposalQBFTMessage,
+		ExpectedSizeProposalQBFTMessage,
 		false,
 	)
 }

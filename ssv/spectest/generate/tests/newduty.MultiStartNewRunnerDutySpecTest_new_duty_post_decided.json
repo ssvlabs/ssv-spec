@@ -43,7 +43,7 @@
                   ],
                   "DomainType": "00000301"
                 },
-                "ID": "AAADAQMAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                 "Round": 1,
                 "Height": 12,
                 "LastPreparedRound": 0,
@@ -68,19 +68,24 @@
             },
             "DecidedValue": null,
             "Finished": false,
-            "ValidatorDuty": {
-              "Type": 4,
-              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "AggregatorCommitteeDuty": {
               "Slot": "12",
-              "ValidatorIndex": "1",
-              "CommitteeIndex": 3,
-              "CommitteeLength": 128,
-              "CommitteesAtSlot": 36,
-              "ValidatorCommitteeIndex": 11,
-              "ValidatorSyncCommitteeIndices": [
-                0,
-                1,
-                2
+              "ValidatorDuties": [
+                {
+                  "Type": 4,
+                  "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+                  "Slot": "12",
+                  "ValidatorIndex": "1",
+                  "CommitteeIndex": 3,
+                  "CommitteeLength": 128,
+                  "CommitteesAtSlot": 36,
+                  "ValidatorCommitteeIndex": 11,
+                  "ValidatorSyncCommitteeIndices": [
+                    0,
+                    129,
+                    257
+                  ]
+                }
               ]
             }
           },
@@ -118,7 +123,7 @@
             }
           },
           "QBFTController": {
-            "Identifier": "AAADAQMAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+            "Identifier": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
             "Height": 12,
             "StoredInstances": [
               {
@@ -148,7 +153,7 @@
                     ],
                     "DomainType": "00000301"
                   },
-                  "ID": "AAADAQMAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                  "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                   "Round": 1,
                   "Height": 12,
                   "LastPreparedRound": 0,
@@ -199,14 +204,14 @@
             }
           },
           "BeaconNetwork": "now_test_network",
-          "RunnerRoleType": 3
+          "RunnerRoleType": 6
         }
       },
-      "PostDutyRunnerStateRoot": "0c1a0258a84814b3570db8c1f9ae2f3912ced82a94ac6c02c5dd4d7da30f9e8e",
+      "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
-          "Type": 3,
-          "Slot": "12",
+          "Type": 6,
+          "Slot": "50",
           "Messages": [
             {
               "PartialSignature": "b1dd2aa2afecc08d4f297f0d5c0a5fa054007db56603cc5cf9b98d66af4658d986c9cf509ec2771ef5af74504c46eadb03709e1096c11bc09e2d93200578dbf0f82af644b8b59572fcc942699121f2f94d0f7565022f5e86a63c9dc142fa4118",
@@ -230,19 +235,24 @@
         }
       ],
       "ExpectedErrorCode": 0,
-      "ValidatorDuty": {
-        "Type": 4,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+      "AggregatorCommitteeDuty": {
         "Slot": "50",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 3,
-        "CommitteeLength": 128,
-        "CommitteesAtSlot": 36,
-        "ValidatorCommitteeIndex": 11,
-        "ValidatorSyncCommitteeIndices": [
-          0,
-          1,
-          2
+        "ValidatorDuties": [
+          {
+            "Type": 4,
+            "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+            "Slot": "50",
+            "ValidatorIndex": "1",
+            "CommitteeIndex": 3,
+            "CommitteeLength": 128,
+            "CommitteesAtSlot": 36,
+            "ValidatorCommitteeIndex": 11,
+            "ValidatorSyncCommitteeIndices": [
+              0,
+              129,
+              257
+            ]
+          }
         ]
       }
     },
@@ -286,7 +296,7 @@
                   ],
                   "DomainType": "00000301"
                 },
-                "ID": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                 "Round": 1,
                 "Height": 12,
                 "LastPreparedRound": 0,
@@ -311,16 +321,21 @@
             },
             "DecidedValue": null,
             "Finished": false,
-            "ValidatorDuty": {
-              "Type": 1,
-              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "AggregatorCommitteeDuty": {
               "Slot": "12",
-              "ValidatorIndex": "1",
-              "CommitteeIndex": 22,
-              "CommitteeLength": 128,
-              "CommitteesAtSlot": 36,
-              "ValidatorCommitteeIndex": 11,
-              "ValidatorSyncCommitteeIndices": null
+              "ValidatorDuties": [
+                {
+                  "Type": 1,
+                  "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+                  "Slot": "12",
+                  "ValidatorIndex": "1",
+                  "CommitteeIndex": 3,
+                  "CommitteeLength": 128,
+                  "CommitteesAtSlot": 36,
+                  "ValidatorCommitteeIndex": 11,
+                  "ValidatorSyncCommitteeIndices": null
+                }
+              ]
             }
           },
           "Share": {
@@ -357,7 +372,7 @@
             }
           },
           "QBFTController": {
-            "Identifier": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+            "Identifier": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
             "Height": 12,
             "StoredInstances": [
               {
@@ -387,7 +402,7 @@
                     ],
                     "DomainType": "00000301"
                   },
-                  "ID": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                  "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                   "Round": 1,
                   "Height": 12,
                   "LastPreparedRound": 0,
@@ -438,13 +453,13 @@
             }
           },
           "BeaconNetwork": "now_test_network",
-          "RunnerRoleType": 1
+          "RunnerRoleType": 6
         }
       },
       "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
-          "Type": 2,
+          "Type": 6,
           "Slot": "50",
           "Messages": [
             {
@@ -457,16 +472,21 @@
         }
       ],
       "ExpectedErrorCode": 0,
-      "ValidatorDuty": {
-        "Type": 1,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+      "AggregatorCommitteeDuty": {
         "Slot": "50",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 22,
-        "CommitteeLength": 128,
-        "CommitteesAtSlot": 36,
-        "ValidatorCommitteeIndex": 11,
-        "ValidatorSyncCommitteeIndices": null
+        "ValidatorDuties": [
+          {
+            "Type": 1,
+            "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+            "Slot": "50",
+            "ValidatorIndex": "1",
+            "CommitteeIndex": 3,
+            "CommitteeLength": 128,
+            "CommitteesAtSlot": 36,
+            "ValidatorCommitteeIndex": 11,
+            "ValidatorSyncCommitteeIndices": null
+          }
+        ]
       }
     },
     {
@@ -509,7 +529,7 @@
                   ],
                   "DomainType": "00000301"
                 },
-                "ID": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                 "Round": 1,
                 "Height": 7424012,
                 "LastPreparedRound": 0,
@@ -534,16 +554,21 @@
             },
             "DecidedValue": null,
             "Finished": false,
-            "ValidatorDuty": {
-              "Type": 1,
-              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "AggregatorCommitteeDuty": {
               "Slot": "7424012",
-              "ValidatorIndex": "1",
-              "CommitteeIndex": 22,
-              "CommitteeLength": 128,
-              "CommitteesAtSlot": 36,
-              "ValidatorCommitteeIndex": 11,
-              "ValidatorSyncCommitteeIndices": null
+              "ValidatorDuties": [
+                {
+                  "Type": 1,
+                  "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+                  "Slot": "7424012",
+                  "ValidatorIndex": "1",
+                  "CommitteeIndex": 3,
+                  "CommitteeLength": 128,
+                  "CommitteesAtSlot": 36,
+                  "ValidatorCommitteeIndex": 11,
+                  "ValidatorSyncCommitteeIndices": null
+                }
+              ]
             }
           },
           "Share": {
@@ -580,7 +605,7 @@
             }
           },
           "QBFTController": {
-            "Identifier": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+            "Identifier": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
             "Height": 7424012,
             "StoredInstances": [
               {
@@ -610,7 +635,7 @@
                     ],
                     "DomainType": "00000301"
                   },
-                  "ID": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                  "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                   "Round": 1,
                   "Height": 7424012,
                   "LastPreparedRound": 0,
@@ -661,13 +686,13 @@
             }
           },
           "BeaconNetwork": "now_test_network",
-          "RunnerRoleType": 1
+          "RunnerRoleType": 6
         }
       },
       "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
-          "Type": 2,
+          "Type": 6,
           "Slot": "7424044",
           "Messages": [
             {
@@ -680,16 +705,21 @@
         }
       ],
       "ExpectedErrorCode": 0,
-      "ValidatorDuty": {
-        "Type": 1,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+      "AggregatorCommitteeDuty": {
         "Slot": "7424044",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 22,
-        "CommitteeLength": 128,
-        "CommitteesAtSlot": 36,
-        "ValidatorCommitteeIndex": 11,
-        "ValidatorSyncCommitteeIndices": null
+        "ValidatorDuties": [
+          {
+            "Type": 1,
+            "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+            "Slot": "7424044",
+            "ValidatorIndex": "1",
+            "CommitteeIndex": 3,
+            "CommitteeLength": 128,
+            "CommitteesAtSlot": 36,
+            "ValidatorCommitteeIndex": 11,
+            "ValidatorSyncCommitteeIndices": null
+          }
+        ]
       }
     },
     {
@@ -991,8 +1021,8 @@
                   "ValidatorCommitteeIndex": 11,
                   "ValidatorSyncCommitteeIndices": [
                     0,
-                    1,
-                    2
+                    129,
+                    257
                   ]
                 }
               ]
@@ -1133,8 +1163,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]
@@ -1230,8 +1260,8 @@
                   "ValidatorCommitteeIndex": 11,
                   "ValidatorSyncCommitteeIndices": [
                     0,
-                    1,
-                    2
+                    129,
+                    257
                   ]
                 }
               ]
@@ -1383,8 +1413,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]
@@ -1689,8 +1719,8 @@
                   "ValidatorCommitteeIndex": 11,
                   "ValidatorSyncCommitteeIndices": [
                     0,
-                    1,
-                    2
+                    129,
+                    257
                   ]
                 }
               ]
@@ -1831,8 +1861,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]
@@ -1928,8 +1958,8 @@
                   "ValidatorCommitteeIndex": 11,
                   "ValidatorSyncCommitteeIndices": [
                     0,
-                    1,
-                    2
+                    129,
+                    257
                   ]
                 }
               ]
@@ -2081,8 +2111,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]
@@ -2283,7 +2313,7 @@
           "RunnerRoleType": 2
         }
       },
-      "PostDutyRunnerStateRoot": "76bdc979c11a776c4c7db84f51b74bedeaaa9cf4fac222d9553bbc84a710809b",
+      "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
           "Type": 1,
@@ -2506,7 +2536,7 @@
           "RunnerRoleType": 2
         }
       },
-      "PostDutyRunnerStateRoot": "76bdc979c11a776c4c7db84f51b74bedeaaa9cf4fac222d9553bbc84a710809b",
+      "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
           "Type": 1,
@@ -2729,7 +2759,7 @@
           "RunnerRoleType": 2
         }
       },
-      "PostDutyRunnerStateRoot": "d9c1da8bcb9a17fa92b1955802aa8984d684cc9a72616fb46873022d9360181c",
+      "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
           "Type": 1,
@@ -2952,7 +2982,7 @@
           "RunnerRoleType": 2
         }
       },
-      "PostDutyRunnerStateRoot": "d9c1da8bcb9a17fa92b1955802aa8984d684cc9a72616fb46873022d9360181c",
+      "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
           "Type": 1,
@@ -3175,7 +3205,7 @@
           "RunnerRoleType": 2
         }
       },
-      "PostDutyRunnerStateRoot": "388c9b105222c74dad1f452203d78ecd7eb4e351cd9fb0f36bf1032331e5bf46",
+      "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
           "Type": 1,
@@ -3398,7 +3428,7 @@
           "RunnerRoleType": 2
         }
       },
-      "PostDutyRunnerStateRoot": "388c9b105222c74dad1f452203d78ecd7eb4e351cd9fb0f36bf1032331e5bf46",
+      "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
           "Type": 1,
@@ -3621,7 +3651,7 @@
           "RunnerRoleType": 2
         }
       },
-      "PostDutyRunnerStateRoot": "cd8cd0d0a06ab53ce083f216fb814f0f6710b7dd9728564026274e48b8705721",
+      "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
           "Type": 1,
@@ -3844,7 +3874,7 @@
           "RunnerRoleType": 2
         }
       },
-      "PostDutyRunnerStateRoot": "cd8cd0d0a06ab53ce083f216fb814f0f6710b7dd9728564026274e48b8705721",
+      "PostDutyRunnerStateRoot": "",
       "OutputMessages": [
         {
           "Type": 1,

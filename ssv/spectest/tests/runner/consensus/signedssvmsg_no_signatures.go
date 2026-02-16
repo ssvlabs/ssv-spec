@@ -30,14 +30,14 @@ func NoSignatures() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3))),
 					noSignatures(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.SyncCommitteeContributionMsgID, testingutils.TestSyncCommitteeContributionConsensusDataByts,
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.TestingAggregatorCommitteeMsgID[:], testingutils.TestSyncCommitteeContributionConsensusDataByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
 				PostDutyRunnerStateRoot: "3430b48cc4265a27d9f99e03355810b09c129b9e3c6cc83b4e7916777d595b2f",
@@ -131,14 +131,14 @@ func NoSignatures() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name:   fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: testingutils.AggregatorRunner(ks),
+			Runner: testingutils.AggregatorCommitteeRunner(ks),
 			Duty:   testingutils.TestingAggregatorDuty(version),
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[2], ks.Shares[2], 2, 2, version))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3, version))),
 				noSignatures(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-					ks.OperatorKeys[1], types.OperatorID(1), testingutils.AggregatorMsgID, testingutils.TestAggregatorConsensusDataByts(version),
+					ks.OperatorKeys[1], types.OperatorID(1), testingutils.TestingAggregatorCommitteeMsgID[:], testingutils.TestAggregatorConsensusDataByts(version),
 					qbft.Height(testingutils.TestingDutySlot))),
 			},
 			PostDutyRunnerStateRoot: "7134f3bfe0c675263254aadb1f73e452454418290f411b891090b2c76c5ae428",
