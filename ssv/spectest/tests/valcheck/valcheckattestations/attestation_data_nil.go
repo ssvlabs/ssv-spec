@@ -23,7 +23,7 @@ func BeaconVoteDataNil() tests.SpecTest {
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,
 		input,
-	    *consensusData.Source,
+		*consensusData.Source,
 		*consensusData.Target,
 		nil,
 		nil,

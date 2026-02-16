@@ -1,0 +1,382 @@
+package testingutils
+
+import (
+	"sort"
+
+	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/attestantio/go-eth2-client/spec/altair"
+	"github.com/attestantio/go-eth2-client/spec/electra"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
+	ssz "github.com/ferranbt/fastssz"
+
+	"github.com/ssvlabs/ssv-spec/types"
+)
+
+// ==================================================
+// Versioned AggregatorCommitteeDuty
+// ==================================================
+
+func TestingAggregatorCommitteeDutyForSlot(slot phase0.Slot, aggregatorValidatorIds []int, syncCommitteeValidatorIds []int) *types.AggregatorCommitteeDuty {
+	return TestingAggregatorCommitteeDutyWithParams(
+		slot,
+		aggregatorValidatorIds,
+		syncCommitteeValidatorIds,
+		TestingCommitteeIndex,
+		TestingCommitteesAtSlot,
+		TestingCommitteeLenght,
+		TestingValidatorCommitteeIndex,
+		TestingContributionProofIndexes)
+}
+
+func TestingAggregatorCommitteeDuty(aggregatorValidatorIds []int, syncCommitteeValidatorIds []int, version spec.DataVersion) *types.AggregatorCommitteeDuty {
+	return TestingAggregatorCommitteeDutyForSlot(TestingDutySlotV(version), aggregatorValidatorIds, syncCommitteeValidatorIds)
+}
+
+func TestingAggregatorCommitteeDutyWithParams(
+	slot phase0.Slot,
+	aggregatorValidatorIds []int,
+	syncCommitteeValidatorIds []int,
+	committeeIndex phase0.CommitteeIndex,
+	committeesAtSlot uint64,
+	committeeLenght uint64,
+	validatorCommitteeIndex uint64,
+	validatorSyncCommitteeIndices []types.ValidatorSyncCommitteeIndex) *types.AggregatorCommitteeDuty {
+
+	duties := make([]*types.ValidatorDuty, 0)
+
+	for _, valIdx := range aggregatorValidatorIds {
+		pk := getValPubKeyByValIdx(valIdx)
+		duties = append(duties, &types.ValidatorDuty{
+			Type:                    types.BNRoleAggregator,
+			PubKey:                  pk,
+			Slot:                    slot,
+			ValidatorIndex:          phase0.ValidatorIndex(valIdx),
+			CommitteeIndex:          committeeIndex,
+			CommitteesAtSlot:        committeesAtSlot,
+			CommitteeLength:         committeeLenght,
+			ValidatorCommitteeIndex: validatorCommitteeIndex,
+		})
+	}
+
+	syncCommitteeVals := make([]int, 0)
+	if len(syncCommitteeValidatorIds) > 2048 {
+		copy(syncCommitteeVals, syncCommitteeValidatorIds[:2048])
+	} else {
+		syncCommitteeVals = syncCommitteeValidatorIds
+	}
+
+	for _, valIdx := range syncCommitteeVals {
+		pk := getValPubKeyByValIdx(valIdx)
+		duties = append(duties, &types.ValidatorDuty{
+			Type:                          types.BNRoleSyncCommitteeContribution,
+			PubKey:                        pk,
+			Slot:                          slot,
+			ValidatorIndex:                phase0.ValidatorIndex(valIdx),
+			CommitteeIndex:                3,
+			CommitteesAtSlot:              committeesAtSlot,
+			CommitteeLength:               committeeLenght,
+			ValidatorCommitteeIndex:       validatorCommitteeIndex,
+			ValidatorSyncCommitteeIndices: validatorSyncCommitteeIndices,
+		})
+	}
+
+	return &types.AggregatorCommitteeDuty{
+		Slot:            slot,
+		ValidatorDuties: duties,
+	}
+}
+
+func TestingMaximumAggregatorCommitteeDutyWithParams(
+	slot phase0.Slot,
+	aggregatorValidatorIds []int,
+	syncCommitteeValidatorIds []int,
+) *types.AggregatorCommitteeDuty {
+
+	duties := make([]*types.ValidatorDuty, 0)
+
+	for _, valIdx := range aggregatorValidatorIds {
+		pk := getValPubKeyByValIdx(valIdx)
+		duties = append(duties, &types.ValidatorDuty{
+			Type:                    types.BNRoleAggregator,
+			PubKey:                  pk,
+			Slot:                    slot,
+			ValidatorIndex:          phase0.ValidatorIndex(valIdx),
+			CommitteeIndex:          TestingCommitteeIndex,
+			CommitteesAtSlot:        TestingCommitteesAtSlot,
+			CommitteeLength:         TestingCommitteeLenght,
+			ValidatorCommitteeIndex: TestingValidatorCommitteeIndex,
+		})
+	}
+
+	syncCommitteeVals := make([]int, 0)
+	if len(syncCommitteeValidatorIds) > 512 {
+		copy(syncCommitteeVals, syncCommitteeValidatorIds[:512])
+	} else {
+		syncCommitteeVals = syncCommitteeValidatorIds
+	}
+
+	for _, valIdx := range syncCommitteeVals {
+		for _, commIndex := range []int{0, 1, 2, 3} {
+			pk := getValPubKeyByValIdx(valIdx)
+			duties = append(duties, &types.ValidatorDuty{
+				Type:                          types.BNRoleSyncCommitteeContribution,
+				PubKey:                        pk,
+				Slot:                          slot,
+				ValidatorIndex:                phase0.ValidatorIndex(valIdx),
+				CommitteeIndex:                phase0.CommitteeIndex(commIndex),
+				CommitteesAtSlot:              TestingCommitteesAtSlot,
+				CommitteeLength:               TestingCommitteeLenght,
+				ValidatorCommitteeIndex:       TestingValidatorCommitteeIndex,
+				ValidatorSyncCommitteeIndices: TestingContributionProofIndexes,
+			})
+		}
+	}
+
+	return &types.AggregatorCommitteeDuty{
+		Slot:            slot,
+		ValidatorDuties: duties,
+	}
+}
+
+// ==================================================
+// AggregatorCommitteeDuty - Aggregator only
+// ==================================================
+
+var TestingAggregatorCommitteeDutySingle = func(version spec.DataVersion) *types.AggregatorCommitteeDuty {
+	return TestingAggregatorCommitteeDuty([]int{TestingValidatorIndex}, nil, version)
+}
+
+var TestingAggregatorDutyForValidator = func(version spec.DataVersion, validatorIndex phase0.ValidatorIndex) *types.AggregatorCommitteeDuty {
+	return TestingAggregatorCommitteeDuty([]int{int(validatorIndex)}, nil, version)
+}
+
+var TestingAggregatorDutyForValidators = func(version spec.DataVersion, validatorIndexLst []int) *types.AggregatorCommitteeDuty {
+	return TestingAggregatorCommitteeDuty(validatorIndexLst, nil, version)
+}
+
+// ==================================================
+// AggregatorCommitteeDuty - SyncCommittee Contributor only
+// ==================================================
+
+var TestingSyncCommitteeContributorDuty = func(version spec.DataVersion) *types.AggregatorCommitteeDuty {
+	return TestingAggregatorCommitteeDuty(nil, []int{TestingValidatorIndex}, version)
+}
+
+var TestingSyncCommitteeContributorDutyForValidators = func(version spec.DataVersion, validatorIndexList []int) *types.AggregatorCommitteeDuty {
+	return TestingAggregatorCommitteeDuty(nil, validatorIndexList, version)
+}
+
+// ==================================================
+// AggregatorCommitteeDuty - Aggregator and SyncCommittee Contributor
+// ==================================================
+
+var TestingAggregatorAndSyncCommitteeContributorDuties = func(version spec.DataVersion) *types.AggregatorCommitteeDuty {
+	return TestingAggregatorCommitteeDuty([]int{TestingValidatorIndex}, []int{TestingValidatorIndex}, version)
+}
+
+var TestingAggregatorAndSyncCommitteeContributorDutiesForValidators = func(version spec.DataVersion, validatorIndexList []int) *types.AggregatorCommitteeDuty {
+	return TestingAggregatorCommitteeDuty(validatorIndexList, validatorIndexList, version)
+}
+
+var TestingAggregatorAndSyncCommitteeContributorDutiesWithDifferentSlot = func(version spec.DataVersion, validatorIndexList []int) *types.AggregatorCommitteeDuty {
+	duty := TestingAggregatorCommitteeDuty(validatorIndexList, validatorIndexList, version)
+	duty.ValidatorDuties[0].Slot += 1
+	return duty
+}
+
+// ==================================================
+// Beacon Roots for AggregatorCommittee duty
+// ==================================================
+
+var TestingSignedAggregatorCommitteeBeaconObjectSSZRoot = func(duty *types.AggregatorCommitteeDuty, ksMap map[phase0.ValidatorIndex]*TestKeySet, version spec.DataVersion) []string {
+	ret := make([]string, 0)
+
+	// Create consensus data that matches what the runner will use
+	consensusData := TestAggregatorCommitteeConsensusDataForDuty(duty, version)
+
+	// Get aggregate and proofs from consensus data
+	aggregateAndProofs, err := consensusData.GetAggregateAndProofs()
+	if err != nil {
+		panic(err)
+	}
+
+	for i, aggregateAndProof := range aggregateAndProofs {
+		validatorIndex := consensusData.Aggregators[i].ValidatorIndex
+		ks := ksMap[validatorIndex]
+		if ks == nil {
+			continue
+		}
+
+		// Sign the aggregate and proof
+		signer := NewTestingKeyManager()
+		beacon := NewTestingBeaconNode()
+		d, _ := beacon.DomainData(1, types.DomainAggregateAndProof)
+
+		// Get the appropriate aggregate and proof object
+		var signingRoot ssz.HashRoot
+		switch version {
+		case spec.DataVersionElectra:
+			signingRoot = aggregateAndProof.Electra
+		case spec.DataVersionFulu:
+			signingRoot = aggregateAndProof.Fulu
+		default:
+			// Get the appropriate version field
+			switch aggregateAndProof.Version {
+			case spec.DataVersionPhase0:
+				signingRoot = aggregateAndProof.Phase0
+			case spec.DataVersionAltair:
+				signingRoot = aggregateAndProof.Altair
+			case spec.DataVersionBellatrix:
+				signingRoot = aggregateAndProof.Bellatrix
+			case spec.DataVersionCapella:
+				signingRoot = aggregateAndProof.Capella
+			case spec.DataVersionDeneb:
+				signingRoot = aggregateAndProof.Deneb
+			}
+		}
+
+		sig, _, _ := signer.SignBeaconObject(signingRoot, d, ks.ValidatorPK.Serialize(), types.DomainAggregateAndProof)
+
+		// Convert signature to BLSSignature
+		var blsSig phase0.BLSSignature
+		copy(blsSig[:], sig)
+
+		// Create signed aggregate and proof
+		var signedAgg ssz.HashRoot
+		switch version {
+		case spec.DataVersionElectra:
+			signedAgg = &electra.SignedAggregateAndProof{
+				Message:   aggregateAndProof.Electra,
+				Signature: blsSig,
+			}
+		case spec.DataVersionFulu:
+			signedAgg = &electra.SignedAggregateAndProof{
+				Message:   aggregateAndProof.Fulu,
+				Signature: blsSig,
+			}
+		default:
+			// For pre-electra versions, use phase0
+			signedAgg = &phase0.SignedAggregateAndProof{
+				Message:   aggregateAndProof.Phase0,
+				Signature: blsSig,
+			}
+		}
+
+		ret = append(ret, GetSSZRootNoError(signedAgg))
+	}
+
+	// Handle sync committee contributions
+	contributions, err := consensusData.GetSyncCommitteeContributions()
+	if err != nil {
+		panic(err)
+	}
+
+	for i, contrib := range contributions {
+		validatorIndex := consensusData.Contributors[i].ValidatorIndex
+		ks := ksMap[validatorIndex]
+		if ks == nil {
+			continue
+		}
+
+		// Create ContributionAndProof
+		contributionAndProof := &altair.ContributionAndProof{
+			AggregatorIndex: validatorIndex,
+			Contribution:    &contrib.Contribution,
+			SelectionProof:  phase0.BLSSignature(contrib.SelectionProofSig),
+		}
+
+		// Sign the contribution and proof
+		signer := NewTestingKeyManager()
+		beacon := NewTestingBeaconNode()
+		d, _ := beacon.DomainData(1, types.DomainContributionAndProof)
+
+		sig, _, _ := signer.SignBeaconObject(contributionAndProof, d, ks.ValidatorPK.Serialize(), types.DomainContributionAndProof)
+
+		// Convert signature to BLSSignature
+		var blsSig phase0.BLSSignature
+		copy(blsSig[:], sig)
+
+		// Create signed contribution and proof
+		signedContribution := &altair.SignedContributionAndProof{
+			Message:   contributionAndProof,
+			Signature: blsSig,
+		}
+
+		ret = append(ret, GetSSZRootNoError(signedContribution))
+	}
+
+	return ret
+}
+
+// ==================================================
+// Mixed Committees
+// =================================================
+
+func TestingAggCommitteeDutyWithMixedCommitteeIndexes(aggValsIds []int, sccValsIds []int, version spec.DataVersion) *types.AggregatorCommitteeDuty {
+
+	aggValidatorIds := make([]int, len(aggValsIds))
+	copy(aggValidatorIds, aggValsIds)
+
+	sccValidatorIds := make([]int, len(sccValsIds))
+	copy(sccValidatorIds, sccValsIds)
+
+	// Sort the validator indexes
+	sort.Slice(aggValidatorIds, func(i, j int) bool {
+		return aggValidatorIds[i] < aggValidatorIds[j]
+	})
+
+	var ret *types.AggregatorCommitteeDuty
+	for i, valIdx := range aggValidatorIds {
+		var duty *types.AggregatorCommitteeDuty
+		// Assign the first half of the validators to a fixed committee index
+		if i < len(aggValidatorIds)/2 {
+			duty = TestingAggregatorCommitteeDuty([]int{valIdx}, nil, version)
+		} else {
+			// Assign the second half of the validators to a different committee index
+			duty = TestingAggregatorCommitteeDutyWithParams(
+				TestingDutySlotV(version),
+				[]int{valIdx},
+				nil,
+				TestingDifferentCommitteeIndex,
+				TestingCommitteesAtSlot,
+				TestingCommitteeLenght,
+				TestingValidatorCommitteeIndex,
+				TestingContributionProofIndexes)
+		}
+		if ret == nil {
+			ret = duty
+		} else {
+			ret.ValidatorDuties = append(ret.ValidatorDuties, duty.ValidatorDuties...)
+		}
+	}
+
+	sort.Slice(sccValidatorIds, func(i, j int) bool {
+		return sccValidatorIds[i] < sccValidatorIds[j]
+	})
+
+	for i, valIdx := range sccValidatorIds {
+		var duty *types.AggregatorCommitteeDuty
+		// Assign the first half of the validators to the a fixed committee index
+		if i < len(sccValidatorIds)/2 {
+			duty = TestingAggregatorCommitteeDuty(nil, []int{valIdx}, version)
+		} else {
+			// Assign the second half of the validators to a different committee index
+			duty = TestingAggregatorCommitteeDutyWithParams(
+				TestingDutySlotV(version),
+				nil,
+				[]int{valIdx},
+				TestingDifferentCommitteeIndex,
+				TestingCommitteesAtSlot,
+				TestingCommitteeLenght,
+				TestingValidatorCommitteeIndex,
+				TestingContributionProofIndexes)
+		}
+		if ret == nil {
+			ret = duty
+		} else {
+			ret.ValidatorDuties = append(ret.ValidatorDuties, duty.ValidatorDuties...)
+		}
+	}
+
+	return ret
+}

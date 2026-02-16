@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
@@ -53,15 +54,17 @@ func (test *SyncCommitteeAggregatorProofSpecTest) Run(t *testing.T) {
 
 func (test *SyncCommitteeAggregatorProofSpecTest) runPreTesting() (ssv.Runner, error) {
 	ks := testingutils.Testing4SharesSet()
-	committeeMember := testingutils.TestingCommitteeMember(ks)
-	v := testingutils.BaseValidator(testingutils.KeySetForCommitteeMember(committeeMember))
-	r := v.DutyRunners[types.RoleSyncCommitteeContribution]
+	ksMap := make(map[phase0.ValidatorIndex]*testingutils.TestKeySet)
+	ksMap[testingutils.TestingValidatorIndex] = ks
+	c := testingutils.BaseCommittee(ksMap)
+	duty := testingutils.TestingSyncCommitteeContributionDuty
+	lastErr := c.StartDuty(duty)
+	r := c.AggregatorCommitteeRunners[duty.Slot]
 	r.GetBeaconNode().(*testingutils.TestingBeaconNode).SetSyncCommitteeAggregatorRootHexes(test.ProofRootsMap)
-	v.Beacon = r.GetBeaconNode()
+	//r.(*ssv.AggregatorCommitteeRunner).beacon = r.GetBeaconNode()
 
-	lastErr := v.StartDuty(&testingutils.TestingSyncCommitteeContributionDuty)
 	for _, msg := range test.Messages {
-		err := v.ProcessMessage(msg)
+		err := c.ProcessMessage(msg)
 		if err != nil {
 			lastErr = err
 		}

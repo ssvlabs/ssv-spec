@@ -1,0 +1,24 @@
+{
+  "Name": "electra aggregator without justification",
+  "Type": "Aggregator committee consensus data: validation of aggregator committee consensus data",
+  "Documentation": "Test Electra aggregator agg committee consensus data with no pre-consensus justifications",
+  "AggCommConsensusData": {
+    "Version": "electra",
+    "Aggregators": [
+      {
+        "ValidatorIndex": "1",
+        "SelectionProof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "CommitteeIndex": 3
+      }
+    ],
+    "AggregatorsCommitteeIndexes": [
+      3
+    ],
+    "AggregatedAttestations": [
+      "7AAAAAxIcQAAAAAAAAAAAAAAAAABAgMEBQYHCAkKAQIDBAUGBwgJCgECAwQFBgcICQoBAgAAAAAAAAAAAQIDBAUGBwgJCgECAwQFBgcICQoBAgMEBQYHCAkKAQIBAAAAAAAAAAECAwQFBgcICQoBAgMEBQYHCAkKAQIDBAUGBwgJCgECAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=="
+    ],
+    "Contributors": [],
+    "SyncCommitteeContributions": []
+  },
+  "ExpectedErrorCode": 0
+}

@@ -22,6 +22,6 @@
   "ShareValidatorsPK": [
     "X0cRp5bBEWtRGOw1J5+2TVUdmziBPSk5lU3S31Fg09k="
   ],
-  "ExpectedErrorCode": 35,
+  "ExpectedErrorCode": 33,
   "AnyError": false
 }

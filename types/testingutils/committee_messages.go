@@ -108,11 +108,15 @@ func CommitteeInputForSlotInSequencedDuties(numAttestingValidators int, numSyncC
 	// Validators assigned to the duties
 	attValidatorsForDuty, scValidatorsForDuty := selectValidatorsForDuties(numAttestingValidators, numSyncCommitteeValidators, numSequencedDuties, slotIncrement, diffValidatorsForDuties)
 
+	return CommitteeInputForSlot(currentSlot, attValidatorsForDuty, scValidatorsForDuty, ksMap, addPostConsensus)
+}
+
+func CommitteeInputForSlot(slot phase0.Slot, attVals []int, scVals []int, ksMap map[phase0.ValidatorIndex]*TestKeySet, addPostConsensus bool) (*types.CommitteeDuty, []*types.SignedSSVMessage) {
 	// Duty
-	duty := TestingCommitteeDutyForSlot(phase0.Slot(currentSlot), attValidatorsForDuty, scValidatorsForDuty)
+	duty := TestingCommitteeDutyForSlot(slot, attVals, scVals)
 
 	// QBFT and Post-Consensus
-	msgs := CommitteeInputForDuty(duty, phase0.Slot(currentSlot), ksMap, addPostConsensus)
+	msgs := CommitteeInputForDuty(duty, slot, ksMap, addPostConsensus)
 
 	return duty, msgs
 }

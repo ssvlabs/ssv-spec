@@ -11,16 +11,17 @@ import (
 	"testing"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
+	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	tests2 "github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
+
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
-	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -197,6 +198,17 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 			panic("cant unmarshal beacon duty")
 		}
 		testDuty = duty
+	} else if _, ok := m["AggregatorCommitteeDuty"]; ok {
+		byts, err := json.Marshal(m["AggregatorCommitteeDuty"])
+		if err != nil {
+			panic("cant marshal aggregator committee duty")
+		}
+		duty := &types.AggregatorCommitteeDuty{}
+		err = json.Unmarshal(byts, duty)
+		if err != nil {
+			panic("cant unmarshal aggregator committee duty")
+		}
+		testDuty = duty
 	} else {
 		panic("no beacon or committee duty")
 	}
@@ -263,6 +275,17 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		err = json.Unmarshal(byts, duty)
 		if err != nil {
 			panic("cant unmarshal beacon duty")
+		}
+		testDuty = duty
+	} else if _, ok := m["AggregatorCommitteeDuty"]; ok {
+		byts, err := json.Marshal(m["AggregatorCommitteeDuty"])
+		if err != nil {
+			panic("cant marshal aggregator committee duty")
+		}
+		duty := &types.AggregatorCommitteeDuty{}
+		err = json.Unmarshal(byts, duty)
+		if err != nil {
+			panic("cant unmarshal aggregator committee duty")
 		}
 		testDuty = duty
 	} else {
@@ -341,6 +364,29 @@ func committeeSpecTestFromMap(t *testing.T, m map[string]interface{}) *committee
 			return decoder
 		}
 
+		// Try to decode as generic map first to check duty type
+		var dutyCheck map[string]interface{}
+		err = json.Unmarshal(byts, &dutyCheck)
+		if err == nil {
+			if validatorDuties, ok := dutyCheck["ValidatorDuties"].([]interface{}); ok && len(validatorDuties) > 0 {
+				// Check the type of the first validator duty
+				firstDuty := validatorDuties[0].(map[string]interface{})
+				if dutyType, ok := firstDuty["Type"].(float64); ok {
+					// Type 1 is BNRoleAggregator, Type 4 is BNRoleSyncCommitteeContribution
+					if int(dutyType) == int(types.BNRoleAggregator) || int(dutyType) == int(types.BNRoleSyncCommitteeContribution) {
+						// This is an aggregator committee duty
+						aggregatorCommitteeDuty := &types.AggregatorCommitteeDuty{}
+						err = json.Unmarshal(byts, &aggregatorCommitteeDuty)
+						if err == nil {
+							inputs = append(inputs, aggregatorCommitteeDuty)
+							continue
+						}
+					}
+				}
+			}
+		}
+
+		// Try regular committee duty
 		committeeDuty := &types.CommitteeDuty{}
 		err = getDecoder().Decode(&committeeDuty)
 		if err == nil {
@@ -401,24 +447,44 @@ func fixCommitteeForRun(t *testing.T, committeeMap map[string]interface{}) *ssv.
 	c := &ssv.Committee{}
 	require.NoError(t, json.Unmarshal(byts, c))
 
-	c.CreateRunnerFn = func(shareMap map[phase0.ValidatorIndex]*types.Share) *ssv.CommitteeRunner {
-		return testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)
+	c.CreateAggregatorCommitteeRunnerFn = func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+		return testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap)
+	}
+	c.CreateCommitteeRunnerFn = func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+		return testingutils.CommitteeRunnerWithShareMap(shareMap)
 	}
 
-	for slot := range c.Runners {
+	for slot := range c.CommitteeRunners {
+		runner := c.CommitteeRunners[slot]
 
 		var shareInstance *types.Share
-		for _, share := range c.Runners[slot].BaseRunner.Share {
+		for _, share := range runner.(*ssv.CommitteeRunner).BaseRunner.Share {
 			shareInstance = share
 			break
 		}
 
 		fixedRunner := fixRunnerForRun(
 			t,
-			committeeMap["Runners"].(map[string]interface{})[fmt.Sprintf("%v", slot)].(map[string]interface{}),
+			committeeMap["CommitteeRunners"].(map[string]interface{})[fmt.Sprintf("%v", slot)].(map[string]interface{}),
 			testingutils.KeySetForShare(shareInstance),
 		)
-		c.Runners[slot] = fixedRunner.(*ssv.CommitteeRunner)
+		c.CommitteeRunners[slot] = fixedRunner
+	}
+	for slot := range c.AggregatorCommitteeRunners {
+		runner := c.AggregatorCommitteeRunners[slot]
+
+		var shareInstance *types.Share
+		for _, share := range runner.(*ssv.AggregatorCommitteeRunner).BaseRunner.Share {
+			shareInstance = share
+			break
+		}
+
+		fixedRunner := fixRunnerForRun(
+			t,
+			committeeMap["AggregatorCommitteeRunners"].(map[string]interface{})[fmt.Sprintf("%v", slot)].(map[string]interface{}),
+			testingutils.KeySetForShare(shareInstance),
+		)
+		c.AggregatorCommitteeRunners[slot] = fixedRunner
 	}
 
 	return c
@@ -505,17 +571,13 @@ func baseRunnerForRole(role types.RunnerRole, base *ssv.BaseRunner, ks *testingu
 		ret := testingutils.CommitteeRunner(ks)
 		ret.(*ssv.CommitteeRunner).BaseRunner = base
 		return ret
-	case types.RoleAggregator:
-		ret := testingutils.AggregatorRunner(ks)
-		ret.(*ssv.AggregatorRunner).BaseRunner = base
-		return ret
 	case types.RoleProposer:
 		ret := testingutils.ProposerRunner(ks)
 		ret.(*ssv.ProposerRunner).BaseRunner = base
 		return ret
-	case types.RoleSyncCommitteeContribution:
-		ret := testingutils.SyncCommitteeContributionRunner(ks)
-		ret.(*ssv.SyncCommitteeAggregatorRunner).BaseRunner = base
+	case types.RoleAggregatorCommittee:
+		ret := testingutils.AggregatorCommitteeRunner(ks)
+		ret.(*ssv.AggregatorCommitteeRunner).BaseRunner = base
 		return ret
 	case types.RoleValidatorRegistration:
 		ret := testingutils.ValidatorRegistrationRunner(ks)

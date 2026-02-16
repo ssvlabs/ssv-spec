@@ -50,33 +50,9 @@ func WrongDutyPubKey() tests.SpecTest {
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"wrong duty pubkey",
 		testdoc.DutyExeWrongDutyPubKeyDoc,
-		[]*tests.MsgProcessingSpecTest{
-			{
-				Name:     "sync committee contribution",
-				Runner:   testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:     &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleSyncCommitteeContribution)},
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-				},
-				ExpectedErrorCode: expectedErrorCode,
-			},
-		},
+		[]*tests.MsgProcessingSpecTest{},
 		ks,
 	)
-
-	for _, version := range testingutils.SupportedAggregatorVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-			Name:     fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner:   testingutils.AggregatorRunner(ks),
-			Duty:     testingutils.TestingAggregatorDuty(version),
-			Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleAggregator)},
-			OutputMessages: []*types.PartialSignatureMessages{
-				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
-			},
-			ExpectedErrorCode: expectedErrorCode,
-		})
-	}
 
 	// proposerV creates a test specification for versioned proposer.
 	proposerV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {

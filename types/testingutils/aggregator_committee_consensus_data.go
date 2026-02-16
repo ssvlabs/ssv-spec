@@ -1,0 +1,112 @@
+package testingutils
+
+import (
+	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/attestantio/go-eth2-client/spec/altair"
+	"github.com/attestantio/go-eth2-client/spec/electra"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/prysmaticlabs/go-bitfield"
+
+	"github.com/ssvlabs/ssv-spec/types"
+)
+
+func TestAggregatorCommitteeConsensusData(version spec.DataVersion) *types.AggregatorCommitteeConsensusData {
+	return TestAggregatorCommitteeConsensusDataForDuty(TestingAggregatorCommitteeDutyMixed(version), version)
+}
+
+// TestAggregatorCommitteeConsensusDataForDuty creates consensus data matching the given duty
+func TestAggregatorCommitteeConsensusDataForDuty(duty *types.AggregatorCommitteeDuty, version spec.DataVersion) *types.AggregatorCommitteeConsensusData {
+	consensusData := &types.AggregatorCommitteeConsensusData{
+		Version: version,
+
+		// Initialize empty slices
+		Aggregators:                 []types.AssignedAggregator{},
+		AggregatorsCommitteeIndexes: []uint64{},
+		AggregatedAttestations:      [][]byte{},
+		Contributors:                []types.AssignedAggregator{},
+		SyncCommitteeContributions:  []altair.SyncCommitteeContribution{},
+	}
+
+	// Process each validator duty
+	for _, validatorDuty := range duty.ValidatorDuties {
+		if validatorDuty == nil {
+			continue
+		}
+
+		switch validatorDuty.Type {
+		case types.BNRoleAggregator:
+			// Create attestation for this validator based on version
+			var marshaledAtt []byte
+
+			if version >= spec.DataVersionElectra {
+				// For Electra and newer versions, create an electra.Attestation with CommitteeBits
+				attestation := &electra.Attestation{
+					AggregationBits: bitfield.NewBitlist(128),
+					Signature:       phase0.BLSSignature{},
+					Data:            TestingAttestationData(version),
+					CommitteeBits:   bitfield.NewBitvector64(),
+				}
+				// Leave AggregationBits empty for testing
+				// Leave CommitteeBits empty for testing - in reality they would be set
+				marshaledAtt, _ = attestation.MarshalSSZ()
+			} else {
+				// For pre-Electra, create a phase0.Attestation
+				attestation := &phase0.Attestation{
+					AggregationBits: bitfield.NewBitlist(128),
+					Signature:       phase0.BLSSignature{},
+					Data:            TestingAttestationData(version),
+				}
+				// Leave AggregationBits empty for testing
+				marshaledAtt, _ = attestation.MarshalSSZ()
+			}
+
+			// Add aggregator data
+			consensusData.Aggregators = append(consensusData.Aggregators, types.AssignedAggregator{
+				ValidatorIndex: validatorDuty.ValidatorIndex,
+				CommitteeIndex: uint64(validatorDuty.CommitteeIndex),
+			})
+
+			commIndexAlreadyExists := false
+			for _, commIndex := range consensusData.AggregatorsCommitteeIndexes {
+				if commIndex == uint64(validatorDuty.CommitteeIndex) {
+					commIndexAlreadyExists = true
+					break
+				}
+			}
+			if !commIndexAlreadyExists {
+				consensusData.AggregatorsCommitteeIndexes = append(consensusData.AggregatorsCommitteeIndexes, uint64(validatorDuty.CommitteeIndex))
+				consensusData.AggregatedAttestations = append(consensusData.AggregatedAttestations, marshaledAtt)
+			}
+
+		case types.BNRoleSyncCommitteeContribution:
+			for i, contribution := range TestingSyncCommitteeContributions {
+				// Add sync committee contributor data
+				consensusData.Contributors = append(consensusData.Contributors, types.AssignedAggregator{
+					ValidatorIndex: validatorDuty.ValidatorIndex,
+					SelectionProof: TestingContributionProofsSigned[i],
+					CommitteeIndex: contribution.SubcommitteeIndex,
+				})
+
+				commIndexAlreadyExists := false
+				for _, commIndex := range consensusData.SyncCommitteeContributions {
+					if commIndex.SubcommitteeIndex == contribution.SubcommitteeIndex {
+						commIndexAlreadyExists = true
+						break
+					}
+				}
+				if !commIndexAlreadyExists {
+					consensusData.SyncCommitteeContributions = append(consensusData.SyncCommitteeContributions, *contribution)
+				}
+			}
+		}
+	}
+
+	return consensusData
+}
+
+// TestAggregatorCommitteeConsensusDataBytesForDuty encodes the consensus data for the given duty
+func TestAggregatorCommitteeConsensusDataBytesForDuty(duty *types.AggregatorCommitteeDuty, version spec.DataVersion) []byte {
+	consensusData := TestAggregatorCommitteeConsensusDataForDuty(duty, version)
+	bytes, _ := consensusData.Encode()
+	return bytes
+}

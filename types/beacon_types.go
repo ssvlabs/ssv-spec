@@ -52,7 +52,7 @@ const (
 	BNRoleUnknown = math.MaxUint64
 )
 
-// String returns name of the role
+// String returns the name of the role
 func (r BeaconRole) String() string {
 	switch r {
 	case BNRoleAttester:
@@ -73,6 +73,10 @@ func (r BeaconRole) String() string {
 		return "UNDEFINED"
 	}
 }
+
+// ValidatorSyncCommitteeIndex is the index of the validator in the list of sync committee participants.
+// The SubnetID (or SubcommitteeIndex) can be computed as ValidatorSyncCommitteeIndex // (SYNC_COMMITTEE_SIZE/ SYNC_COMMITTEE_SUBNET_COUNT)
+type ValidatorSyncCommitteeIndex = uint64
 
 type Duty interface {
 	DutySlot() spec.Slot
@@ -98,7 +102,7 @@ type ValidatorDuty struct {
 	// ValidatorCommitteeIndex is the index of the validator in the list of validators in the committee.
 	ValidatorCommitteeIndex uint64
 	// ValidatorSyncCommitteeIndices is the index of the validator in the list of validators in the committee.
-	ValidatorSyncCommitteeIndices []uint64 `ssz-max:"13"`
+	ValidatorSyncCommitteeIndices []ValidatorSyncCommitteeIndex `ssz-max:"13"`
 }
 
 func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
@@ -107,10 +111,8 @@ func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
 		return RoleCommittee
 	case BNRoleProposer:
 		return RoleProposer
-	case BNRoleAggregator:
-		return RoleAggregator
-	case BNRoleSyncCommitteeContribution:
-		return RoleSyncCommitteeContribution
+	case BNRoleAggregator, BNRoleSyncCommitteeContribution:
+		return RoleAggregatorCommittee
 	case BNRoleValidatorRegistration:
 		return RoleValidatorRegistration
 	case BNRoleVoluntaryExit:
@@ -143,6 +145,40 @@ func (cd *CommitteeDuty) DutySlot() spec.Slot {
 
 func (cd *CommitteeDuty) RunnerRole() RunnerRole {
 	return RoleCommittee
+}
+
+// AggregatorCommitteeDuty represents combined aggregator and sync committee contribution duties
+type AggregatorCommitteeDuty struct {
+	Slot            spec.Slot
+	ValidatorDuties []*ValidatorDuty
+}
+
+func (acd *AggregatorCommitteeDuty) DutySlot() spec.Slot {
+	return acd.Slot
+}
+
+func (acd *AggregatorCommitteeDuty) RunnerRole() RunnerRole {
+	return RoleAggregatorCommittee
+}
+
+// Validate checks that:
+// - all slots values are equal
+// - BeaconRole is either BNRoleAggregator or BNRoleSyncCommitteeContribution
+// - Validator indexes exist in the provided map
+func (acd *AggregatorCommitteeDuty) Validate(validatorIndex map[spec.ValidatorIndex]struct{}) error {
+	slot := acd.Slot
+	for _, vd := range acd.ValidatorDuties {
+		if vd.Slot != slot {
+			return NewError(InvalidAggregatorCommitteeDutyErrorCode, "mismatched slot in validator duty")
+		}
+		if vd.Type != BNRoleAggregator && vd.Type != BNRoleSyncCommitteeContribution {
+			return NewError(InvalidAggregatorCommitteeDutyErrorCode, "invalid beacon role in validator duty")
+		}
+		if _, ok := validatorIndex[vd.ValidatorIndex]; !ok {
+			return NewError(InvalidAggregatorCommitteeDutyErrorCode, "validator index not found in duty")
+		}
+	}
+	return nil
 }
 
 //

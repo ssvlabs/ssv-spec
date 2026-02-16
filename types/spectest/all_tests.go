@@ -3,6 +3,7 @@ package spectest
 import (
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/aggregatorcommitteeconsensusdata"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
@@ -10,12 +11,12 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/maxmsgsize"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerconsensusdata"
+	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerconsensusdata/proposer"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/share"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssz"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/validatorconsensusdata"
-	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/validatorconsensusdata/proposer"
 )
 
 type SpecTest interface {
@@ -35,7 +36,6 @@ var AllTests = []SpecTest{
 	partialsigmessage.SigValid(),
 	partialsigmessage.PartialSigValid(),
 	partialsigmessage.PartialRootValid(),
-	partialsigmessage.ValidContributionProofMetaData(),
 	partialsigmessage.InconsistentSignedMessage(),
 
 	share.Encoding(),
@@ -48,44 +48,52 @@ var AllTests = []SpecTest{
 	encryption.SimpleEncrypt(),
 	encryption.EncryptBLSSK(),
 
-	validatorconsensusdata.InvalidDuty(),
+	proposerconsensusdata.InvalidDuty(),
 
-	validatorconsensusdata.ProposerConsensusDataEncoding(),
-	validatorconsensusdata.BlindedProposerConsensusDataEncoding(),
-	validatorconsensusdata.CapellaBlockValidation(),
-	validatorconsensusdata.CapellaBlindedBlockValidation(),
-	validatorconsensusdata.ProposerNoJustifications(),
-	validatorconsensusdata.InvalidCapellaBlindedBlockValidation(),
-	validatorconsensusdata.InvalidCapellaBlockValidation(),
-	validatorconsensusdata.DenebBlockValidation(),
-	validatorconsensusdata.DenebBlindedBlockValidation(),
-	validatorconsensusdata.InvalidDenebBlockValidation(),
-	validatorconsensusdata.InvalidDenebBlindedBlockValidation(),
-	validatorconsensusdata.ElectraBlockValidation(),
-	validatorconsensusdata.ElectraBlindedBlockValidation(),
-	validatorconsensusdata.InvalidElectraBlockValidation(),
-	validatorconsensusdata.InvalidElectraBlindedBlockValidation(),
-	validatorconsensusdata.FuluBlockValidation(),
-	validatorconsensusdata.FuluBlindedBlockValidation(),
-	validatorconsensusdata.InvalidFuluBlockValidation(),
-	validatorconsensusdata.InvalidFuluBlindedBlockValidation(),
+	proposerconsensusdata.ProposerConsensusDataEncoding(),
+	proposerconsensusdata.BlindedProposerConsensusDataEncoding(),
+	proposerconsensusdata.CapellaBlockValidation(),
+	proposerconsensusdata.CapellaBlindedBlockValidation(),
+	proposerconsensusdata.ProposerNoJustifications(),
+	proposerconsensusdata.InvalidCapellaBlindedBlockValidation(),
+	proposerconsensusdata.InvalidCapellaBlockValidation(),
+	proposerconsensusdata.DenebBlockValidation(),
+	proposerconsensusdata.DenebBlindedBlockValidation(),
+	proposerconsensusdata.InvalidDenebBlockValidation(),
+	proposerconsensusdata.InvalidDenebBlindedBlockValidation(),
+	proposerconsensusdata.ElectraBlockValidation(),
+	proposerconsensusdata.ElectraBlindedBlockValidation(),
+	proposerconsensusdata.InvalidElectraBlockValidation(),
+	proposerconsensusdata.InvalidElectraBlindedBlockValidation(),
+	proposerconsensusdata.FuluBlockValidation(),
+	proposerconsensusdata.FuluBlindedBlockValidation(),
+	proposerconsensusdata.InvalidFuluBlockValidation(),
+	proposerconsensusdata.InvalidFuluBlindedBlockValidation(),
 
-	validatorconsensusdata.Phase0AggregatorConsensusDataEncoding(),
-	validatorconsensusdata.Phase0AggregatorValidation(),
-	validatorconsensusdata.Phase0AggregatorNoJustifications(),
-	validatorconsensusdata.Phase0InvalidAggregatorValidation(),
-	validatorconsensusdata.ElectraAggregatorConsensusDataEncoding(),
-	validatorconsensusdata.ElectraAggregatorValidation(),
-	validatorconsensusdata.ElectraAggregatorNoJustifications(),
-	validatorconsensusdata.ElectraInvalidAggregatorValidation(),
+	proposerconsensusdata.WrongDutyTypeValidatorRegistration(),
+	proposerconsensusdata.WrongDutyTypeVoluntaryExit(),
 
-	validatorconsensusdata.SyncCommitteeContributionConsensusDataEncoding(),
-	validatorconsensusdata.SyncCommitteeContributionValidation(),
-	validatorconsensusdata.SyncCommitteeContributionNoJustifications(),
-	validatorconsensusdata.InvalidSyncCommitteeContributionValidation(),
+	aggregatorcommitteeconsensusdata.Phase0AggregatorConsensusDataEncoding(),
+	aggregatorcommitteeconsensusdata.ElectraAggregatorConsensusDataEncoding(),
+	aggregatorcommitteeconsensusdata.SyncCommitteeContributionConsensusDataEncoding(),
 
-	validatorconsensusdata.ValidatorRegistration(),
-	validatorconsensusdata.VoluntaryExit(),
+	aggregatorcommitteeconsensusdata.Phase0AggregatorValidation(),
+	aggregatorcommitteeconsensusdata.Phase0AggregatorNoJustifications(),
+	aggregatorcommitteeconsensusdata.ElectraAggregatorValidation(),
+	aggregatorcommitteeconsensusdata.ElectraAggregatorNoJustifications(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationCommitteeIndexesLength(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationNoValidators(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationDuplicateCommitteeIndex(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationMissingCommitteeIndex(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationUnusedCommitteeIndex(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationPhase0AttestationDecoding(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationElectraAttestationDecoding(),
+
+	aggregatorcommitteeconsensusdata.SyncCommitteeContributionValidation(),
+	aggregatorcommitteeconsensusdata.SyncCommitteeContributionNoJustifications(),
+	aggregatorcommitteeconsensusdata.InvalidSyncCommitteeContributionDuplicatedSubnet(),
+	aggregatorcommitteeconsensusdata.InvalidSyncCommitteeContributionMissingSubnet(),
+	aggregatorcommitteeconsensusdata.InvalidSyncCommitteeContributionUnusedSubnet(),
 
 	consensusdataproposer.VersionedBlockValidation(),
 	consensusdataproposer.VersionedBlindedBlockValidation(),
@@ -121,6 +129,9 @@ var AllTests = []SpecTest{
 
 	maxmsgsize.MaxConsensusData(),
 	maxmsgsize.MaxBeaconVote(),
+	maxmsgsize.MaxAggregatorCommitteeConsensusData(),
+	maxmsgsize.MaxPhase0Attestation(),
+	maxmsgsize.MaxElectraAttestation(),
 	maxmsgsize.MaxElectraAttestation(),
 	maxmsgsize.MaxPartialSignatureMessage(),
 	maxmsgsize.MaxPartialSignatureMessages(),

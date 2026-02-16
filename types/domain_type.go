@@ -3,6 +3,7 @@ package types
 import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
+	"math"
 )
 
 // NetworkID are intended to separate different SSV networks. A network can have many forks in it.
@@ -29,6 +30,7 @@ type DomainType [4]byte
 var (
 	GenesisMainnet = DomainType{0x0, 0x0, MainnetNetworkID.Byte(), 0x0}
 	AlanMainnet    = DomainType{0x0, 0x0, MainnetNetworkID.Byte(), 0x1}
+	BooleMainnet   = DomainType{0x0, 0x0, MainnetNetworkID.Byte(), 0x2}
 
 	PrimusTestnet   = DomainType{0x0, 0x0, PrimusNetworkID.Byte(), 0x0}
 	ShifuTestnet    = DomainType{0x0, 0x0, ShifuNetworkID.Byte(), 0x0}
@@ -97,9 +99,13 @@ func mainnetForks() []*ForkData {
 			Domain: GenesisMainnet,
 		},
 		{
-			// TODO: Update this when the mainnet fork is known
-			Epoch:  0,
+			Epoch:  327_375,
 			Domain: AlanMainnet,
+		},
+		{
+			// TODO: Update this when the mainnet fork is known
+			Epoch:  math.MaxUint64,
+			Domain: BooleMainnet,
 		},
 	}
 }
