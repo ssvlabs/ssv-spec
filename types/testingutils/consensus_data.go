@@ -11,7 +11,7 @@ import (
 // ==================================================
 
 var TestAggregatorConsensusData = func(version spec.DataVersion) *types.AggregatorCommitteeConsensusData {
-	return TestAggregatorCommitteeConsensusDataForDuty(TestingAggregatorCommitteeDutyOnlyAggregator(version), version)
+	return TestAggregatorCommitteeConsensusDataForDuty(TestingAggregatorCommitteeDutyOnlyAggregator(version), version, nil)
 }
 var TestAggregatorConsensusDataByts = func(version spec.DataVersion) []byte {
 	byts, _ := TestAggregatorConsensusData(version).Encode()
@@ -80,11 +80,11 @@ var TestProposerBlindedBlockConsensusDataBytsV = func(version spec.DataVersion) 
 // ==================================================
 
 var TestSyncCommitteeContributionConsensusDataF = func() *types.AggregatorCommitteeConsensusData {
-	return TestAggregatorCommitteeConsensusDataForDuty(TestingAggregatorCommitteeDutyOnlySyncCommittee(), spec.DataVersionPhase0)
+	return TestAggregatorCommitteeConsensusDataForDuty(TestingAggregatorCommitteeDutyOnlySyncCommittee(), spec.DataVersionPhase0, nil)
 }
 
 var TestSyncCommitteeContributionConsensusDataForDuty = func(duty *types.AggregatorCommitteeDuty) *types.AggregatorCommitteeConsensusData {
-	return TestAggregatorCommitteeConsensusDataForDuty(duty, spec.DataVersionPhase0)
+	return TestAggregatorCommitteeConsensusDataForDuty(duty, spec.DataVersionPhase0, nil)
 }
 
 var TestSyncCommitteeContributionConsensusData = TestSyncCommitteeContributionConsensusDataF()

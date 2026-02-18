@@ -55,7 +55,7 @@ func PartialInvalidRootQuorumThenValidQuorum() tests.SpecTest {
 				Runner: decideAggregatorCommitteeRunner(
 					testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap),
 					aggDuty,
-					testingutils.TestAggregatorCommitteeConsensusDataForDuty(aggDuty, version),
+					testingutils.TestAggregatorCommitteeConsensusDataForDuty(aggDuty, version, nil),
 				),
 				Duty: aggDuty,
 				Messages: []*types.SignedSSVMessage{
@@ -72,7 +72,7 @@ func PartialInvalidRootQuorumThenValidQuorum() tests.SpecTest {
 				Runner: decideAggregatorCommitteeRunner(
 					testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap),
 					aggSccDuty,
-					testingutils.TestAggregatorCommitteeConsensusDataForDuty(aggSccDuty, version),
+					testingutils.TestAggregatorCommitteeConsensusDataForDuty(aggSccDuty, version, nil),
 				),
 				Duty: aggSccDuty,
 				Messages: []*types.SignedSSVMessage{

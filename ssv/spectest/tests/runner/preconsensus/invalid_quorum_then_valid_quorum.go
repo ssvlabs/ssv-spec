@@ -65,7 +65,7 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 	sccDuty := testingutils.TestingSyncCommitteeContributionDuty
 	sccSlot := sccDuty.Slot
 	msgID := testingutils.TestingAggregatorCommitteeMsgID
-	sccConsensusData := testingutils.TestAggregatorCommitteeConsensusDataForDuty(sccDuty, spec.DataVersionPhase0)
+	sccConsensusData := testingutils.TestAggregatorCommitteeConsensusDataForDuty(sccDuty, spec.DataVersionPhase0, nil)
 	sccCDBytes, err := sccConsensusData.Encode()
 	if err != nil {
 		panic(err)
@@ -91,7 +91,7 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 		// Agg
 		aggDuty := testingutils.TestingAggregatorDuty(version)
 		aggSlot := aggDuty.Slot
-		aggConsensusData := testingutils.TestAggregatorCommitteeConsensusDataForDuty(aggDuty, version)
+		aggConsensusData := testingutils.TestAggregatorCommitteeConsensusDataForDuty(aggDuty, version, nil)
 		aggCDBytes, err := aggConsensusData.Encode()
 		if err != nil {
 			panic(err)
@@ -99,7 +99,7 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 		// Mixed
 		mixedDuty := testingutils.TestingAggregatorCommitteeDutyMixed(version)
 		mixedSlot := mixedDuty.Slot
-		mixedConsensusData := testingutils.TestAggregatorCommitteeConsensusDataForDuty(mixedDuty, version)
+		mixedConsensusData := testingutils.TestAggregatorCommitteeConsensusDataForDuty(mixedDuty, version, nil)
 		mixedCDBytes, err := mixedConsensusData.Encode()
 		if err != nil {
 			panic(err)

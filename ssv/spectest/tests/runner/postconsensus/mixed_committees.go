@@ -92,7 +92,7 @@ func MixedCommittees() tests.SpecTest {
 		Runner: decideAggregatorCommitteeRunner(
 			testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap),
 			sccCommitteeDuty,
-			testingutils.TestAggregatorCommitteeConsensusDataForDuty(sccCommitteeDuty, spec.DataVersionPhase0),
+			testingutils.TestAggregatorCommitteeConsensusDataForDuty(sccCommitteeDuty, spec.DataVersionPhase0, nil),
 		),
 		Duty: sccCommitteeDuty,
 		Messages: []*types.SignedSSVMessage{
@@ -113,7 +113,7 @@ func MixedCommittees() tests.SpecTest {
 				Runner: decideAggregatorCommitteeRunner(
 					testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap),
 					aggCommitteeDuty,
-					testingutils.TestAggregatorCommitteeConsensusDataForDuty(aggCommitteeDuty, version),
+					testingutils.TestAggregatorCommitteeConsensusDataForDuty(aggCommitteeDuty, version, nil),
 				),
 				Duty: aggCommitteeDuty,
 				Messages: []*types.SignedSSVMessage{
@@ -129,7 +129,7 @@ func MixedCommittees() tests.SpecTest {
 				Runner: decideAggregatorCommitteeRunner(
 					testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap),
 					mixedAggCommitteeDuty,
-					testingutils.TestAggregatorCommitteeConsensusDataForDuty(mixedAggCommitteeDuty, version),
+					testingutils.TestAggregatorCommitteeConsensusDataForDuty(mixedAggCommitteeDuty, version, nil),
 				),
 				Duty: mixedAggCommitteeDuty,
 				Messages: []*types.SignedSSVMessage{
