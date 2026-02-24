@@ -105,11 +105,9 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 	}
 
 	if !hasNewQuorum {
-		// If didn't get any new quorum, didn't yet start QBFT, and has received the last message, then terminate.
+		// If didn't get any new quorum, didn't yet start QBFT (checked above), and has received the last message, then terminate.
 		if r.HasSeenAllPreConsensusSigners() {
-			if !r.HasStartedConsensus() {
-				r.BaseRunner.State.Finished = true
-			}
+			r.BaseRunner.State.Finished = true
 		}
 		return nil
 	}
@@ -1203,16 +1201,10 @@ func (r *AggregatorCommitteeRunner) HasSubmittedAllDuties() bool {
 
 // HasStartedConsensus checks if consensus has already started by verifying if we have a QBFT instance for the duty's slot.
 func (r *AggregatorCommitteeRunner) HasStartedConsensus() bool {
-	if r.BaseRunner.QBFTController == nil {
-		return false
-	}
 	if r.BaseRunner.State == nil {
 		return false
 	}
-	if r.BaseRunner.State.StartingDuty == nil {
-		return false
-	}
-	return r.BaseRunner.QBFTController.InstanceForHeight(qbft.Height(r.BaseRunner.State.StartingDuty.DutySlot())) != nil
+	return r.BaseRunner.State.RunningInstance != nil || r.BaseRunner.State.DecidedValue != nil
 }
 
 // MarkPreConsensusSignerAsSeen marks the signer of the given pre-consensus message as seen

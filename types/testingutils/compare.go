@@ -281,6 +281,8 @@ func compareConsensusDataSample(t *testing.T, expectedData []byte, actualData []
 		compareAggregatorCommitteeConsensusData(t, expectedAggCommData, actualAggCommData)
 		return
 	}
+
+	require.Fail(t, "could not decode consensus data as any known type")
 }
 
 // Compare beacon votes
