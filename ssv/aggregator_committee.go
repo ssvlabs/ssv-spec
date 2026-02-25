@@ -228,7 +228,7 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 		// If all duties have been tested for selection or all messages (from all operators) have been seen, terminate.
 		if r.HaveCheckedAllDutiesForSelection(aggregatorMap, contributionMap) || r.HasSeenAllPreConsensusSigners() {
 			r.BaseRunner.State.Finished = true
-			return nil
+			return anyErr
 		}
 
 		// If no validator was selected, but there are more possible messages (and thus selections), keep waiting for more messages.
