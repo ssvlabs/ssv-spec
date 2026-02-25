@@ -93,7 +93,7 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 	// If already started consensus, ignore pre-consensus messages.
 	// This is important because it avoids redundant processing and prevents the pre-consensus termination checks from being made.
 	if r.HasStartedConsensus() {
-		return types.NewError(types.AggCommPreConsensusIgnoredSinceAlreadyStartedConsensusErrorCode, "ignoring pre-consensus message since consensus already started")
+		return nil
 	}
 
 	// Mark signer as seen
