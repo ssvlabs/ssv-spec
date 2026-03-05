@@ -329,6 +329,15 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		}
 	}
 
+	beaconAggregators := make([]phase0.CommitteeIndex, 0)
+	beaconAggregatorsValues := make([]bool, 0)
+	if m["BeaconAggregators"] != nil && m["BeaconAggregatorsValues"] != nil {
+		for i, idx := range m["BeaconAggregators"].([]interface{}) {
+			beaconAggregators = append(beaconAggregators, phase0.CommitteeIndex(idx.(float64)))
+			beaconAggregatorsValues = append(beaconAggregatorsValues, m["BeaconAggregatorsValues"].([]interface{})[i].(bool))
+		}
+	}
+
 	ks := testingutils.KeySetForShare(shareInstance)
 
 	// runner
@@ -345,6 +354,8 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		ExpectedErrorCode:       int(m["ExpectedErrorCode"].(float64)),
 		OutputMessages:          outputMsgs,
 		BeaconBroadcastedRoots:  beaconBroadcastedRoots,
+		BeaconAggregators:       beaconAggregators,
+		BeaconAggregatorsValues: beaconAggregatorsValues,
 	}
 }
 

@@ -201,6 +201,12 @@ const PreConsensusValidMsg7OperatorsDoc = "Tests pre-consensus message processin
 const PreConsensusValidMsg10OperatorsDoc = "Tests pre-consensus message processing with 10 operators"
 const PreConsensusValidMsg13OperatorsDoc = "Tests pre-consensus message processing with 13 operators"
 const PreConsensusValidMsgDoc = "Tests pre-consensus message processing across different runner types"
+const PreConsensusAggregatorCommitteeSingleValidatorNotSelectedDoc = "Tests pre-consensus message processing for the aggregator committee runner that achieves a single-validator quorum that is not selected. Ensure runner does not start consensus and does not terminate the duty."
+const PreConsensusAggregatorCommitteeAggregatorSingleValidatorSelectedDoc = "Tests pre-consensus message processing for the aggregator committee runner that achieves a single-validator quorum (of aggregator duty) that is selected. Ensure runner starts consensus."
+const PreConsensusAggregatorCommitteeContributorSingleValidatorSelectedDoc = "Tests pre-consensus message processing for the aggregator committee runner that achieves a single-validator quorum (of contributor duty) that is selected. Ensure runner starts consensus."
+const PreConsensusAggregatorCommitteeAllMessagesReceivedAndNoAggregatorsDoc = "Tests pre-consensus message processing for the aggregator committee runner that receives messages from all committee members but no validator is selected as aggregator. Ensure terminates the duty."
+const PreConsensusAggregatorCommitteeAllSelectionsCheckedAndNoAggregatorsDoc = "Tests pre-consensus message processing for the aggregator committee runner that received a quorum of messages and checks all possible duties for selection, but no validator is selected as aggregator. Ensure terminates the duty."
+const PreConsensusAggregatorCommitteeIgnoreIfAlreadyStartedConsensusDoc = "Tests pre-consensus message processing for the aggregator committee runner that receives a quorum of pre-consensus messages (starting consensus), and then receives the last pre-consensus message that could add more aggregators, but should be dropped because consensus already started."
 
 // Documentation for valcheckattestation tests
 const ValCheckAttestationBeaconVoteDataNilDoc = "Tests attestation value check with nil attestation data"

@@ -3,6 +3,7 @@ package testingutils
 import (
 	"crypto/rsa"
 
+	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -29,6 +30,33 @@ func ConvertBroadcastedMessagesToSSVMessages(signedMessages []*types.SignedSSVMe
 	ret := make([]*types.SSVMessage, 0)
 	for _, msg := range signedMessages {
 		ret = append(ret, msg.SSVMessage)
+	}
+	return ret
+}
+
+func (net *TestingNetwork) ExtractProposalMessages() []*types.SignedSSVMessage {
+	ret := make([]*types.SignedSSVMessage, 0)
+	for _, msg := range net.BroadcastedMsgs {
+		if msg.SSVMessage.MsgType == types.SSVConsensusMsgType {
+			qbftMsg := &qbft.Message{}
+			if err := qbftMsg.Decode(msg.SSVMessage.Data); err == nil {
+				if qbftMsg.MsgType == qbft.ProposalMsgType {
+					ret = append(ret, msg)
+				}
+			}
+		}
+	}
+	return ret
+}
+
+func (net *TestingNetwork) GetFullDataFromBroadcastedMessages() [][]byte {
+	return GetFullDataFromMessages(net.ExtractProposalMessages())
+}
+
+func GetFullDataFromMessages(msgs []*types.SignedSSVMessage) [][]byte {
+	ret := make([][]byte, 0)
+	for _, msg := range msgs {
+		ret = append(ret, msg.FullData)
 	}
 	return ret
 }

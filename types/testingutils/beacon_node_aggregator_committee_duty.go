@@ -192,7 +192,7 @@ var TestingSignedAggregatorCommitteeBeaconObjectSSZRoot = func(duty *types.Aggre
 	ret := make([]string, 0)
 
 	// Create consensus data that matches what the runner will use
-	consensusData := TestAggregatorCommitteeConsensusDataForDuty(duty, version)
+	consensusData := TestAggregatorCommitteeConsensusDataForDuty(duty, version, nil)
 
 	// Get aggregate and proofs from consensus data
 	aggregateAndProofs, err := consensusData.GetAggregateAndProofs()
