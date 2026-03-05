@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/stretchr/testify/require"
@@ -242,4 +244,155 @@ func CompareBroadcastedBeaconMsgs(t *testing.T, expectedRoots []string, broadcas
 		}
 		require.Truef(t, found, "broadcasted beacon root not found")
 	}
+}
+
+func CompareConsensusData(t *testing.T, expectedData [][]byte, actualData [][]byte) {
+	require.Len(t, actualData, len(expectedData))
+	// expectedData should be compared to actualData in order
+	for i := range expectedData {
+		compareConsensusDataSample(t, expectedData[i], actualData[i])
+	}
+}
+
+// compareConsensusDataSample compares two consensus data samples.
+// It tries decoding into ProposerConsensusData, AggregatorCommitteeConsensusData, or BeaconVote
+// and compare each type accordingly.
+func compareConsensusDataSample(t *testing.T, expectedData []byte, actualData []byte) {
+	expectedBeaconVote := &types.BeaconVote{}
+	if err := expectedBeaconVote.Decode(expectedData); err == nil {
+		actualBeaconVote := &types.BeaconVote{}
+		require.NoError(t, actualBeaconVote.Decode(actualData))
+		compareBeaconVotes(t, expectedBeaconVote, actualBeaconVote)
+		return
+	}
+
+	expectedProposerData := &types.ProposerConsensusData{}
+	if err := expectedProposerData.Decode(expectedData); err == nil {
+		actualProposerData := &types.ProposerConsensusData{}
+		require.NoError(t, actualProposerData.Decode(actualData))
+		compareProposerConsensusData(t, expectedProposerData, actualProposerData)
+		return
+	}
+
+	expectedAggCommData := &types.AggregatorCommitteeConsensusData{}
+	if err := expectedAggCommData.Decode(expectedData); err == nil {
+		actualAggCommData := &types.AggregatorCommitteeConsensusData{}
+		require.NoError(t, actualAggCommData.Decode(actualData))
+		compareAggregatorCommitteeConsensusData(t, expectedAggCommData, actualAggCommData)
+		return
+	}
+
+	require.Fail(t, "could not decode consensus data as any known type")
+}
+
+// Compare beacon votes
+func compareBeaconVotes(t *testing.T, expectedVotes *types.BeaconVote, actualVotes *types.BeaconVote) {
+	require.Equal(t, expectedVotes.BlockRoot, actualVotes.BlockRoot, "beacon vote block root mismatch")
+	require.Equal(t, expectedVotes.Source.Epoch, actualVotes.Source.Epoch, "beacon vote source epoch mismatch")
+	require.Equal(t, expectedVotes.Source.Root, actualVotes.Source.Root, "beacon vote source root mismatch")
+	require.Equal(t, expectedVotes.Target.Epoch, actualVotes.Target.Epoch, "beacon vote target epoch mismatch")
+	require.Equal(t, expectedVotes.Target.Root, actualVotes.Target.Root, "beacon vote target root mismatch")
+}
+
+// Compare proposer consensus data
+func compareProposerConsensusData(t *testing.T, expectedData *types.ProposerConsensusData, actualData *types.ProposerConsensusData) {
+	require.Equal(t, expectedData.DataSSZ, actualData.DataSSZ, "proposer consensus data mismatch")
+	require.Equal(t, expectedData.Version, actualData.Version, "proposer consensus data version mismatch")
+	compareValidatorDuty(t, &expectedData.Duty, &actualData.Duty)
+}
+
+// Compare duty
+func compareValidatorDuty(t *testing.T, expectedDuty *types.ValidatorDuty, actualDuty *types.ValidatorDuty) {
+	require.Equal(t, expectedDuty.Type, actualDuty.Type, "validator duty type mismatch")
+	require.Equal(t, expectedDuty.PubKey, actualDuty.PubKey, "validator duty pubkey mismatch")
+	require.Equal(t, expectedDuty.Slot, actualDuty.Slot, "validator duty slot mismatch")
+	require.Equal(t, expectedDuty.ValidatorIndex, actualDuty.ValidatorIndex, "validator duty validator index mismatch")
+	require.Equal(t, expectedDuty.CommitteeIndex, actualDuty.CommitteeIndex, "validator duty committee index mismatch")
+	require.Equal(t, expectedDuty.CommitteeLength, actualDuty.CommitteeLength, "validator duty committee length mismatch")
+	require.Equal(t, expectedDuty.CommitteesAtSlot, actualDuty.CommitteesAtSlot, "validator duty committees at slot mismatch")
+	require.Equal(t, expectedDuty.ValidatorCommitteeIndex, actualDuty.ValidatorCommitteeIndex, "validator duty validator committee index mismatch")
+	require.Equal(t, expectedDuty.ValidatorSyncCommitteeIndices, actualDuty.ValidatorSyncCommitteeIndices, "validator duty validator sync committee indices mismatch")
+}
+
+// Compare aggregator committee consensus data
+func compareAggregatorCommitteeConsensusData(t *testing.T, expectedData *types.AggregatorCommitteeConsensusData, actualData *types.AggregatorCommitteeConsensusData) {
+	// Compare version
+	require.Equal(t, expectedData.Version, actualData.Version, "aggregator committee consensus data version mismatch")
+
+	// Compare lengths
+	require.Equal(t, len(expectedData.Aggregators), len(actualData.Aggregators), "aggregator committee consensus data aggregators length mismatch")
+	require.Equal(t, len(expectedData.AggregatorsCommitteeIndexes), len(actualData.AggregatorsCommitteeIndexes), "aggregator committee consensus data aggregators committee indexes length mismatch")
+	require.Equal(t, len(expectedData.AggregatedAttestations), len(actualData.AggregatedAttestations), "aggregator committee consensus data aggregated attestations length mismatch")
+	require.Equal(t, len(expectedData.Contributors), len(actualData.Contributors), "aggregator committee consensus data contributors length mismatch")
+	require.Equal(t, len(expectedData.SyncCommitteeContributions), len(actualData.SyncCommitteeContributions), "aggregator committee consensus data sync committee contributions length mismatch")
+
+	// Compare each Aggregator, without requiring the same order
+	for _, expectedAgg := range expectedData.Aggregators {
+		found := false
+		for _, actualAgg := range actualData.Aggregators {
+			if isEqualAssignedAggregator(&expectedAgg, &actualAgg) {
+				found = true
+				break
+			}
+		}
+		require.Truef(t, found, "aggregator not found in actual consensus data: validator index %d, committee index %d", expectedAgg.ValidatorIndex, expectedAgg.CommitteeIndex)
+	}
+
+	// Compare each AggregatedAttestation, without requiring the same order
+	for _, expectedAtt := range expectedData.AggregatedAttestations {
+		found := false
+		for _, actualAtt := range actualData.AggregatedAttestations {
+			if isEqualAggregatedAttestation(expectedAtt, actualAtt) {
+				found = true
+				break
+			}
+		}
+		require.Truef(t, found, "aggregated attestation not found in actual consensus data: %s", hex.EncodeToString(expectedAtt))
+	}
+
+	// Compare each SyncCommitteeContribution, without requiring the same order
+	for _, expectedSCC := range expectedData.SyncCommitteeContributions {
+		found := false
+		for _, actualSCC := range actualData.SyncCommitteeContributions {
+			if isEqualSyncCommitteeContribution(&expectedSCC, &actualSCC) {
+				found = true
+				break
+			}
+
+		}
+		require.Truef(t, found, "sync committee contribution not found in actual consensus data: subcommittee index %d", expectedSCC.SubcommitteeIndex)
+	}
+
+	// Compare each Contributor, without requiring the same order
+	for _, expectedContributor := range expectedData.Contributors {
+		found := false
+		for _, actualContributor := range actualData.Contributors {
+			if isEqualAssignedAggregator(&expectedContributor, &actualContributor) {
+				found = true
+				break
+			}
+		}
+		require.Truef(t, found, "contributor not found in actual consensus data: validator index %d, committee index %d", expectedContributor.ValidatorIndex, expectedContributor.CommitteeIndex)
+	}
+}
+
+// Is equal assigned aggregator
+func isEqualAssignedAggregator(expected *types.AssignedAggregator, actual *types.AssignedAggregator) bool {
+	return expected.ValidatorIndex == actual.ValidatorIndex &&
+		expected.CommitteeIndex == actual.CommitteeIndex &&
+		cmp.Equal(expected.SelectionProof, actual.SelectionProof)
+}
+
+// Is equal sync committee contribution
+func isEqualSyncCommitteeContribution(expected *altair.SyncCommitteeContribution, actual *altair.SyncCommitteeContribution) bool {
+	return expected.Slot == actual.Slot &&
+		cmp.Equal(expected.BeaconBlockRoot, actual.BeaconBlockRoot) &&
+		expected.SubcommitteeIndex == actual.SubcommitteeIndex &&
+		cmp.Equal(expected.AggregationBits, actual.AggregationBits) &&
+		cmp.Equal(expected.Signature, actual.Signature)
+}
+
+// Is equal aggregated attestation
+func isEqualAggregatedAttestation(expected []byte, actual []byte) bool {
+	return string(expected) == string(actual)
 }

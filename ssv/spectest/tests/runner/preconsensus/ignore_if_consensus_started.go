@@ -47,7 +47,7 @@ func IgnoreIfAlreadyStartedConsensus() tests.SpecTest {
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusAggregatorCommitteeMsgForDuty(mixedDuty, ksMap, 1),
 			},
-			ExpectedErrorCode: types.AggCommPreConsensusIgnoredSinceAlreadyStartedConsensusErrorCode,
+			// No errors should be returned, as the last message should be ignored
 		})
 	}
 

@@ -39,6 +39,7 @@ type MsgProcessingSpecTest struct {
 	DontStartDuty          bool // if set to true will not start a duty for the runner
 	ExpectedErrorCode      int
 	PrivateKeys            *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+	QBFTProposals          [][]byte                     `json:"QBFTProposals,omitempty"` // optional consensus data (full data) of QBFT proposal messages expected to be sent.
 	// Beacon node extra data
 	BeaconAggregators       []phase0.CommitteeIndex `json:"BeaconAggregators,omitempty"`
 	BeaconAggregatorsValues []bool                  `json:"BeaconAggregatorsValues,omitempty"`
@@ -86,6 +87,12 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 
 	// test beacon broadcasted msgs
 	testingutils.CompareBroadcastedBeaconMsgs(t, test.BeaconBroadcastedRoots, beaconNetwork.BroadcastedRoots)
+
+	// If len(test.QBFTProposals) > 0, check for proposals matching
+	if len(test.QBFTProposals) > 0 {
+		broadcastedFullData := network.GetFullDataFromBroadcastedMessages()
+		testingutils.CompareConsensusData(t, test.QBFTProposals, broadcastedFullData)
+	}
 
 	// post root
 	postRoot, err := test.Runner.GetRoot()

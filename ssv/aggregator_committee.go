@@ -93,7 +93,7 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 	// If already started consensus, ignore pre-consensus messages.
 	// This is important because it avoids redundant processing and prevents the pre-consensus termination checks from being made.
 	if r.HasStartedConsensus() {
-		return types.NewError(types.AggCommPreConsensusIgnoredSinceAlreadyStartedConsensusErrorCode, "ignoring pre-consensus message since consensus already started")
+		return nil
 	}
 
 	// Mark signer as seen
@@ -105,11 +105,9 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 	}
 
 	if !hasNewQuorum {
-		// If didn't get any new quorum, didn't yet start QBFT, and has received the last message, then terminate.
+		// If didn't get any new quorum, didn't yet start QBFT (checked above), and has received the last message, then terminate.
 		if r.HasSeenAllPreConsensusSigners() {
-			if !r.HasStartedConsensus() {
-				r.BaseRunner.State.Finished = true
-			}
+			r.BaseRunner.State.Finished = true
 		}
 		return nil
 	}
@@ -230,7 +228,7 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 		// If all duties have been tested for selection or all messages (from all operators) have been seen, terminate.
 		if r.HaveCheckedAllDutiesForSelection(aggregatorMap, contributionMap) || r.HasSeenAllPreConsensusSigners() {
 			r.BaseRunner.State.Finished = true
-			return nil
+			return anyErr
 		}
 
 		// If no validator was selected, but there are more possible messages (and thus selections), keep waiting for more messages.
@@ -1203,16 +1201,10 @@ func (r *AggregatorCommitteeRunner) HasSubmittedAllDuties() bool {
 
 // HasStartedConsensus checks if consensus has already started by verifying if we have a QBFT instance for the duty's slot.
 func (r *AggregatorCommitteeRunner) HasStartedConsensus() bool {
-	if r.BaseRunner.QBFTController == nil {
-		return false
-	}
 	if r.BaseRunner.State == nil {
 		return false
 	}
-	if r.BaseRunner.State.StartingDuty == nil {
-		return false
-	}
-	return r.BaseRunner.QBFTController.InstanceForHeight(qbft.Height(r.BaseRunner.State.StartingDuty.DutySlot())) != nil
+	return r.BaseRunner.State.RunningInstance != nil || r.BaseRunner.State.DecidedValue != nil
 }
 
 // MarkPreConsensusSignerAsSeen marks the signer of the given pre-consensus message as seen

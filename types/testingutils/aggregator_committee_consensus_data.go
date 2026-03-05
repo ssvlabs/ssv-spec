@@ -11,11 +11,11 @@ import (
 )
 
 func TestAggregatorCommitteeConsensusData(version spec.DataVersion) *types.AggregatorCommitteeConsensusData {
-	return TestAggregatorCommitteeConsensusDataForDuty(TestingAggregatorCommitteeDutyMixed(version), version)
+	return TestAggregatorCommitteeConsensusDataForDuty(TestingAggregatorCommitteeDutyMixed(version), version, nil)
 }
 
 // TestAggregatorCommitteeConsensusDataForDuty creates consensus data matching the given duty
-func TestAggregatorCommitteeConsensusDataForDuty(duty *types.AggregatorCommitteeDuty, version spec.DataVersion) *types.AggregatorCommitteeConsensusData {
+func TestAggregatorCommitteeConsensusDataForDuty(duty *types.AggregatorCommitteeDuty, version spec.DataVersion, ksMap map[phase0.ValidatorIndex]*TestKeySet) *types.AggregatorCommitteeConsensusData {
 	consensusData := &types.AggregatorCommitteeConsensusData{
 		Version: version,
 
@@ -26,6 +26,12 @@ func TestAggregatorCommitteeConsensusDataForDuty(duty *types.AggregatorCommittee
 		Contributors:                []types.AssignedAggregator{},
 		SyncCommitteeContributions:  []altair.SyncCommitteeContribution{},
 	}
+
+	signer := NewTestingKeyManager()
+	beacon := NewTestingBeaconNode()
+	aggDomainData, _ := beacon.DomainData(1, types.DomainSelectionProof)
+	sccDomainData, _ := beacon.DomainData(1, types.DomainSyncCommitteeSelectionProof)
+	signingEnabled := (len(ksMap) > 0)
 
 	// Process each validator duty
 	for _, validatorDuty := range duty.ValidatorDuties {
@@ -60,10 +66,17 @@ func TestAggregatorCommitteeConsensusDataForDuty(duty *types.AggregatorCommittee
 				marshaledAtt, _ = attestation.MarshalSSZ()
 			}
 
+			blsSig := phase0.BLSSignature{}
+			if signingEnabled {
+				blsSignature, _, _ := signer.SignBeaconObject(types.SSZUint64(duty.DutySlot()), aggDomainData, ksMap[validatorDuty.ValidatorIndex].ValidatorSK.GetPublicKey().Serialize(), types.DomainSelectionProof)
+				blsSig = phase0.BLSSignature(blsSignature)
+			}
+
 			// Add aggregator data
 			consensusData.Aggregators = append(consensusData.Aggregators, types.AssignedAggregator{
 				ValidatorIndex: validatorDuty.ValidatorIndex,
 				CommitteeIndex: uint64(validatorDuty.CommitteeIndex),
+				SelectionProof: blsSig,
 			})
 
 			commIndexAlreadyExists := false
@@ -79,11 +92,27 @@ func TestAggregatorCommitteeConsensusDataForDuty(duty *types.AggregatorCommittee
 			}
 
 		case types.BNRoleSyncCommitteeContribution:
-			for i, contribution := range TestingSyncCommitteeContributions {
+			for idx, validatorSyncCommitteeIndex := range validatorDuty.ValidatorSyncCommitteeIndices {
+
+				subnet := beacon.SyncCommitteeSubnetID(phase0.CommitteeIndex(validatorSyncCommitteeIndex))
+
+				data := &altair.SyncAggregatorSelectionData{
+					Slot:              duty.DutySlot(),
+					SubcommitteeIndex: subnet,
+				}
+
+				blsSig := TestingContributionProofsSigned[idx]
+				if signingEnabled {
+					blsSignature, _, _ := signer.SignBeaconObject(data, sccDomainData, ksMap[validatorDuty.ValidatorIndex].ValidatorSK.GetPublicKey().Serialize(), types.DomainSyncCommitteeSelectionProof)
+					blsSig = phase0.BLSSignature(blsSignature)
+				}
+
+				contribution := TestingSyncCommitteeContributions[subnet]
+
 				// Add sync committee contributor data
 				consensusData.Contributors = append(consensusData.Contributors, types.AssignedAggregator{
 					ValidatorIndex: validatorDuty.ValidatorIndex,
-					SelectionProof: TestingContributionProofsSigned[i],
+					SelectionProof: blsSig,
 					CommitteeIndex: contribution.SubcommitteeIndex,
 				})
 
@@ -106,7 +135,14 @@ func TestAggregatorCommitteeConsensusDataForDuty(duty *types.AggregatorCommittee
 
 // TestAggregatorCommitteeConsensusDataBytesForDuty encodes the consensus data for the given duty
 func TestAggregatorCommitteeConsensusDataBytesForDuty(duty *types.AggregatorCommitteeDuty, version spec.DataVersion) []byte {
-	consensusData := TestAggregatorCommitteeConsensusDataForDuty(duty, version)
+	consensusData := TestAggregatorCommitteeConsensusDataForDuty(duty, version, nil)
+	bytes, _ := consensusData.Encode()
+	return bytes
+}
+
+// TestAggregatorCommitteeConsensusDataBytesForDuty encodes the consensus data for the given duty
+func TestAggregatorCommitteeConsensusDataBytesForDutyWithKS(duty *types.AggregatorCommitteeDuty, version spec.DataVersion, ksMap map[phase0.ValidatorIndex]*TestKeySet) []byte {
+	consensusData := TestAggregatorCommitteeConsensusDataForDuty(duty, version, ksMap)
 	bytes, _ := consensusData.Encode()
 	return bytes
 }

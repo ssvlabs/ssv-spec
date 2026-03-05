@@ -84,7 +84,6 @@ func PostDecided() tests.SpecTest {
 			testingutils.PreConsensusAggregatorCommitteeMsgForDuty(scDuty, ksMap, 1),
 			testingutils.PostConsensusAggregatorCommitteeMsgForDuty(scDuty, ksMap, 1, spec.DataVersionAltair),
 		},
-		ExpectedErrorCode: types.AggCommPreConsensusIgnoredSinceAlreadyStartedConsensusErrorCode,
 	})
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		// Aggregator duty
@@ -124,7 +123,6 @@ func PostDecided() tests.SpecTest {
 					testingutils.PreConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 1),
 					testingutils.PostConsensusAggregatorCommitteeMsgForDuty(aggDuty, ksMap, 1, version),
 				},
-				ExpectedErrorCode: types.AggCommPreConsensusIgnoredSinceAlreadyStartedConsensusErrorCode,
 			},
 			{
 				Name:   fmt.Sprintf("aggregator committee duty (%s)", version.String()),
@@ -152,7 +150,6 @@ func PostDecided() tests.SpecTest {
 					testingutils.PreConsensusAggregatorCommitteeMsgForDuty(mixedDuty, ksMap, 1),
 					testingutils.PostConsensusAggregatorCommitteeMsgForDuty(mixedDuty, ksMap, 1, version),
 				},
-				ExpectedErrorCode: types.AggCommPreConsensusIgnoredSinceAlreadyStartedConsensusErrorCode,
 			},
 		}...)
 	}

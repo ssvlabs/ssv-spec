@@ -57,7 +57,7 @@ var SSVDecidingMsgsForAggregatorCommitteeRunner = func(duty *types.AggregatorCom
 	}
 
 	// consensus
-	accd := TestAggregatorCommitteeConsensusDataForDuty(duty, version)
+	accd := TestAggregatorCommitteeConsensusDataForDuty(duty, version, nil)
 	fullData, err := accd.Encode()
 	if err != nil {
 		panic(err)
@@ -75,7 +75,7 @@ var SSVDecidingMsgsForAggregatorCommitteeRunner = func(duty *types.AggregatorCom
 var QBFTMsgsForAggregatorCommitteeRunner = func(duty *types.AggregatorCommitteeDuty, ks *TestKeySet, height qbft.Height, version spec.DataVersion) []*types.SignedSSVMessage {
 	id := AggregatorCommitteeMsgIDForKeySet(ks)
 	// consensus
-	accd := TestAggregatorCommitteeConsensusDataForDuty(duty, version)
+	accd := TestAggregatorCommitteeConsensusDataForDuty(duty, version, nil)
 	fullData, err := accd.Encode()
 	if err != nil {
 		panic(err)

@@ -93,7 +93,7 @@ func WrongValidatorIndex() tests.SpecTest {
 				Name:       "aggregator committee mixed",
 				Network:    types.BeaconTestNetwork,
 				RunnerRole: types.RoleAggregatorCommittee,
-				Input:      accdMixedDataBytesF(testingutils.TestAggregatorCommitteeConsensusDataForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(spec.DataVersionElectra), spec.DataVersionElectra)),
+				Input:      accdMixedDataBytesF(testingutils.TestAggregatorCommitteeConsensusDataForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(spec.DataVersionElectra), spec.DataVersionElectra, nil)),
 				// No error since input doesn't contain validator index
 			},
 			{
