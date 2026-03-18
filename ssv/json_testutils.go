@@ -90,22 +90,24 @@ func (pcs *State) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
+	var startingDuty types.Duty
+	switch {
+	case aux.ValidatorDuty != nil && aux.CommitteeDuty != nil:
+		return fmt.Errorf("can't unmarshal BaseRunner.State.StartingDuty: payload contains both ValidatorDuty and CommitteeDuty")
+	case aux.ValidatorDuty != nil:
+		startingDuty = aux.ValidatorDuty
+	case aux.CommitteeDuty != nil:
+		startingDuty = aux.CommitteeDuty
+	default:
+		return fmt.Errorf("can't unmarshal BaseRunner.State.StartingDuty: expected ValidatorDuty or CommitteeDuty")
+	}
+
 	pcs.PreConsensusContainer = aux.PreConsensusContainer
 	pcs.PostConsensusContainer = aux.PostConsensusContainer
 	pcs.RunningInstance = aux.RunningInstance
 	pcs.DecidedValue = aux.DecidedValue
 	pcs.Finished = aux.Finished
-
-	switch {
-	case aux.ValidatorDuty != nil && aux.CommitteeDuty != nil:
-		return fmt.Errorf("can't unmarshal BaseRunner.State.StartingDuty: payload contains both ValidatorDuty and CommitteeDuty")
-	case aux.ValidatorDuty != nil:
-		pcs.StartingDuty = aux.ValidatorDuty
-	case aux.CommitteeDuty != nil:
-		pcs.StartingDuty = aux.CommitteeDuty
-	default:
-		return fmt.Errorf("can't unmarshal BaseRunner.State.StartingDuty: expected ValidatorDuty or CommitteeDuty")
-	}
+	pcs.StartingDuty = startingDuty
 
 	return nil
 }

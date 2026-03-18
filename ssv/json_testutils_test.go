@@ -23,9 +23,16 @@ func (fakeDuty) RunnerRole() types.RunnerRole {
 func TestStateUnmarshalJSONRejectsMissingStartingDuty(t *testing.T) {
 	t.Parallel()
 
-	var state State
+	state := State{
+		DecidedValue: []byte{0xaa},
+		Finished:     false,
+		StartingDuty: &types.ValidatorDuty{Slot: 99},
+	}
 	err := json.Unmarshal([]byte(`{"Finished":true}`), &state)
 	require.EqualError(t, err, "can't unmarshal BaseRunner.State.StartingDuty: expected ValidatorDuty or CommitteeDuty")
+	require.Equal(t, []byte{0xaa}, state.DecidedValue)
+	require.False(t, state.Finished)
+	require.Equal(t, phase0.Slot(99), state.StartingDuty.DutySlot())
 }
 
 func TestStateMarshalJSONRejectsMissingStartingDuty(t *testing.T) {
