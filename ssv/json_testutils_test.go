@@ -61,9 +61,16 @@ func TestStateUnmarshalJSONRejectsAmbiguousStartingDuty(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	var state State
+	state := State{
+		DecidedValue: []byte{0xbb},
+		Finished:     false,
+		StartingDuty: &types.CommitteeDuty{Slot: 77},
+	}
 	err = json.Unmarshal(payload, &state)
 	require.EqualError(t, err, "can't unmarshal BaseRunner.State.StartingDuty: payload contains both ValidatorDuty and CommitteeDuty")
+	require.Equal(t, []byte{0xbb}, state.DecidedValue)
+	require.False(t, state.Finished)
+	require.Equal(t, phase0.Slot(77), state.StartingDuty.DutySlot())
 }
 
 func TestStateUnmarshalJSONAcceptsKnownDutyTypes(t *testing.T) {
@@ -162,4 +169,27 @@ func TestStateJSONRoundTripPreservesKnownDutyTypes(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestStateEncodeDecodeRoundTrip(t *testing.T) {
+	t.Parallel()
+
+	original := &State{
+		DecidedValue: []byte{0x05, 0x06},
+		Finished:     true,
+		StartingDuty: &types.ValidatorDuty{Slot: 55},
+	}
+
+	payload, err := original.Encode()
+	require.NoError(t, err)
+
+	var decoded State
+	err = decoded.Decode(payload)
+	require.NoError(t, err)
+	require.Equal(t, original.DecidedValue, decoded.DecidedValue)
+	require.Equal(t, original.Finished, decoded.Finished)
+
+	decodedDuty, ok := decoded.StartingDuty.(*types.ValidatorDuty)
+	require.True(t, ok)
+	require.Equal(t, phase0.Slot(55), decodedDuty.Slot)
 }
