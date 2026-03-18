@@ -54,14 +54,16 @@ func (pcs *State) MarshalJSON() ([]byte, error) {
 		Finished:               pcs.Finished,
 	}
 
-	if pcs.StartingDuty != nil {
-		if validatorDuty, ok := pcs.StartingDuty.(*types.ValidatorDuty); ok {
-			alias.ValidatorDuty = validatorDuty
-		} else if committeeDuty, ok := pcs.StartingDuty.(*types.CommitteeDuty); ok {
-			alias.CommitteeDuty = committeeDuty
-		} else {
-			return nil, fmt.Errorf("can't marshal because BaseRunner.State.StartingDuty isn't ValidatorDuty or CommitteeDuty")
-		}
+	if pcs.StartingDuty == nil {
+		return nil, fmt.Errorf("can't marshal BaseRunner.State.StartingDuty: expected ValidatorDuty or CommitteeDuty")
+	}
+
+	if validatorDuty, ok := pcs.StartingDuty.(*types.ValidatorDuty); ok {
+		alias.ValidatorDuty = validatorDuty
+	} else if committeeDuty, ok := pcs.StartingDuty.(*types.CommitteeDuty); ok {
+		alias.CommitteeDuty = committeeDuty
+	} else {
+		return nil, fmt.Errorf("can't marshal because BaseRunner.State.StartingDuty isn't ValidatorDuty or CommitteeDuty")
 	}
 	byts, err := json.Marshal(alias)
 
