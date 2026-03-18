@@ -94,11 +94,15 @@ func (pcs *State) UnmarshalJSON(data []byte) error {
 	pcs.DecidedValue = aux.DecidedValue
 	pcs.Finished = aux.Finished
 
-	// Determine which type of duty was marshaled
-	if aux.ValidatorDuty != nil {
+	switch {
+	case aux.ValidatorDuty != nil && aux.CommitteeDuty != nil:
+		return fmt.Errorf("can't unmarshal BaseRunner.State.StartingDuty: payload contains both ValidatorDuty and CommitteeDuty")
+	case aux.ValidatorDuty != nil:
 		pcs.StartingDuty = aux.ValidatorDuty
-	} else if aux.CommitteeDuty != nil {
+	case aux.CommitteeDuty != nil:
 		pcs.StartingDuty = aux.CommitteeDuty
+	default:
+		return fmt.Errorf("can't unmarshal BaseRunner.State.StartingDuty: expected ValidatorDuty or CommitteeDuty")
 	}
 
 	return nil
