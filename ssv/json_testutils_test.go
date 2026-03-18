@@ -53,9 +53,11 @@ func TestStateUnmarshalJSONRejectsAmbiguousStartingDuty(t *testing.T) {
 	t.Parallel()
 
 	payload, err := json.Marshal(struct {
+		Finished      bool                 `json:"Finished"`
 		ValidatorDuty *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
 		CommitteeDuty *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
 	}{
+		Finished:      true,
 		ValidatorDuty: &types.ValidatorDuty{Slot: 1},
 		CommitteeDuty: &types.CommitteeDuty{Slot: 1},
 	})
