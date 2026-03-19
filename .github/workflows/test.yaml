@@ -2,7 +2,7 @@ name: Test
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "spec-test-ci-run" ]
   pull_request:
     branches: [ "*" ]
 

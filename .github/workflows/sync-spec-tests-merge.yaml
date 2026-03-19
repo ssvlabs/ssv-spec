@@ -2,7 +2,7 @@ name: Sync Spec Tests (Merge)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "spec-test-ci-run" ]
 
 jobs:
 
