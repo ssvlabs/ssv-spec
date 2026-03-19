@@ -34,6 +34,16 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: ${{ steps.repo-name.outputs.name }}
 
+      - name: Get App bot identity
+        id: bot-identity
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          app_slug="${{ steps.app-token.outputs.app-slug }}"
+          user_id=$(gh api "/users/${app_slug}[bot]" --jq '.id')
+          echo "name=${app_slug}[bot]" >> "$GITHUB_OUTPUT"
+          echo "email=${user_id}+${app_slug}[bot]@users.noreply.github.com" >> "$GITHUB_OUTPUT"
+
       - name: Find ssv-spec PR for merged commit
         id: find-ssv-pr
         env:
@@ -88,6 +98,8 @@ jobs:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           SPEC_PR_NUMBER: ${{ steps.find-pr.outputs.spec-pr-number }}
           SPEC_PR_BRANCH: ${{ steps.find-pr.outputs.spec-pr-branch }}
+          BOT_NAME: ${{ steps.bot-identity.outputs.name }}
+          BOT_EMAIL: ${{ steps.bot-identity.outputs.email }}
         run: |
           set -euo pipefail
 
@@ -102,8 +114,8 @@ jobs:
 
           git clone "https://x-access-token:${GH_TOKEN}@github.com/${SPEC_TESTS_REPO}.git" "${CLONE_DIR}"
           cd "${CLONE_DIR}"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
+          git config user.name "${BOT_NAME}"
+          git config user.email "${BOT_EMAIL}"
           git fetch origin
 
           if [ -n "${SPEC_PR_BRANCH}" ]; then
@@ -121,9 +133,10 @@ jobs:
             fi
             gh pr merge --repo "${SPEC_TESTS_REPO}" "${SPEC_PR_NUMBER}" --merge --delete-branch
           else
-            # No spec-tests PR found — sync generated files directly to main.
-            # Only removes paths that the generator produces; other repo content is preserved.
-            git checkout main
+            # No spec-tests PR found (direct push to main) — create a branch + PR + auto-merge
+            # so we never bypass branch protection rules in spec-tests.
+            FALLBACK_BRANCH="sync/ssv-spec-${GITHUB_SHA:0:8}"
+            git checkout -b "${FALLBACK_BRANCH}" origin/main
             while IFS= read -r -d '' entry; do
               git rm -rf "$(basename "${entry}")" 2>/dev/null || true
             done < <(find "${GENERATED_DIR}" -maxdepth 1 -mindepth 1 -print0)
@@ -133,6 +146,12 @@ jobs:
               echo "No changes to sync to spec-tests main"
             else
               git commit -m "sync: ssv-spec ${GITHUB_SHA}"
-              git push origin main
+              git push origin "${FALLBACK_BRANCH}"
+              gh pr create --repo "${SPEC_TESTS_REPO}" \
+                --head "${FALLBACK_BRANCH}" \
+                --base main \
+                --title "sync: ssv-spec ${GITHUB_SHA:0:8}" \
+                --body "Direct sync from ssv-spec commit ${GITHUB_SHA} (no associated PR)"
+              gh pr merge --repo "${SPEC_TESTS_REPO}" "${FALLBACK_BRANCH}" --merge --delete-branch
             fi
           fi
