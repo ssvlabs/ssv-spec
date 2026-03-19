@@ -76,10 +76,9 @@ jobs:
           echo "pr-number=${PR_NUMBER}" >> "${GITHUB_OUTPUT}"
 
           if [ -z "${PR_NUMBER}" ] || [ -z "${PR_HEAD_REF}" ]; then
-            echo "No PR found for commit ${GITHUB_SHA}, will sync directly to main"
-            echo "spec-pr-number=" >> "${GITHUB_OUTPUT}"
-            echo "spec-pr-branch=" >> "${GITHUB_OUTPUT}"
-            exit 0
+            echo "No PR found for commit ${GITHUB_SHA} in ${{ github.repository }}." >&2
+            echo "Every push to main must come from a merged PR. If this is a GitHub API timing issue, re-run the workflow." >&2
+            exit 1
           fi
 
           # Find the open spec-tests PR whose branch exactly matches the ssv-spec branch name
@@ -118,40 +117,22 @@ jobs:
           git config user.email "${BOT_EMAIL}"
           git fetch origin
 
-          if [ -n "${SPEC_PR_BRANCH}" ]; then
-            # Update the spec-tests PR branch with the final generated files, then merge.
-            # Only removes paths that the generator produces; other repo content is preserved.
-            git checkout -B "${SPEC_PR_BRANCH}" "origin/${SPEC_PR_BRANCH}"
-            while IFS= read -r -d '' entry; do
-              git rm -rf "$(basename "${entry}")" 2>/dev/null || true
-            done < <(find "${GENERATED_DIR}" -maxdepth 1 -mindepth 1 -print0)
-            cp -r "${GENERATED_DIR}/." .
-            git add -A
-            if ! git diff --cached --quiet; then
-              git commit -m "sync: final update before merge - ssv-spec ${GITHUB_SHA}"
-              git push --force origin "${SPEC_PR_BRANCH}"
-            fi
-            gh pr merge --repo "${SPEC_TESTS_REPO}" "${SPEC_PR_NUMBER}" --merge --delete-branch
-          else
-            # No spec-tests PR found (direct push to main) — create a branch + PR + auto-merge
-            # so we never bypass branch protection rules in spec-tests.
-            FALLBACK_BRANCH="sync/ssv-spec-${GITHUB_SHA:0:8}"
-            git checkout -b "${FALLBACK_BRANCH}" origin/main
-            while IFS= read -r -d '' entry; do
-              git rm -rf "$(basename "${entry}")" 2>/dev/null || true
-            done < <(find "${GENERATED_DIR}" -maxdepth 1 -mindepth 1 -print0)
-            cp -r "${GENERATED_DIR}/." .
-            git add -A
-            if git diff --cached --quiet; then
-              echo "No changes to sync to spec-tests main"
-            else
-              git commit -m "sync: ssv-spec ${GITHUB_SHA}"
-              git push origin "${FALLBACK_BRANCH}"
-              gh pr create --repo "${SPEC_TESTS_REPO}" \
-                --head "${FALLBACK_BRANCH}" \
-                --base main \
-                --title "sync: ssv-spec ${GITHUB_SHA:0:8}" \
-                --body "Direct sync from ssv-spec commit ${GITHUB_SHA} (no associated PR)"
-              gh pr merge --repo "${SPEC_TESTS_REPO}" "${FALLBACK_BRANCH}" --merge --delete-branch
-            fi
+          if [ -z "${SPEC_PR_BRANCH}" ]; then
+            echo "No matching spec-tests PR found for ssv-spec branch '${SPEC_PR_BRANCH}'." >&2
+            echo "Open a PR in ${SPEC_TESTS_REPO} with a branch matching the ssv-spec PR branch, or re-run after the sync-spec-tests-pr workflow has created one." >&2
+            exit 1
           fi
+
+          # Update the spec-tests PR branch with the final generated files, then merge.
+          # Only removes paths that the generator produces; other repo content is preserved.
+          git checkout -B "${SPEC_PR_BRANCH}" "origin/${SPEC_PR_BRANCH}"
+          while IFS= read -r -d '' entry; do
+            git rm -rf "$(basename "${entry}")" 2>/dev/null || true
+          done < <(find "${GENERATED_DIR}" -maxdepth 1 -mindepth 1 -print0)
+          cp -r "${GENERATED_DIR}/." .
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "sync: final update before merge - ssv-spec ${GITHUB_SHA}"
+            git push --force origin "${SPEC_PR_BRANCH}"
+          fi
+          gh pr merge --repo "${SPEC_TESTS_REPO}" "${SPEC_PR_NUMBER}" --merge --delete-branch
