@@ -1,0 +1,116 @@
+name: Sync Spec Tests (Merge)
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+
+  sync-and-merge:
+    runs-on: ubuntu-latest
+    env:
+      SPEC_TESTS_REPO: ${{ vars.SPEC_TESTS_REPO }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate spec tests
+        uses: ./.github/actions/generate-spec-tests
+
+      - name: Get GitHub App token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.SPEC_TESTS_APP_ID }}
+          private-key: ${{ secrets.SPEC_TESTS_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Find spec-tests PR for merged commit
+        id: find-pr
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SPEC_TESTS_REPO}" ]; then
+            echo "SPEC_TESTS_REPO variable is not set (e.g. ssvlabs/spec-tests)" >&2
+            exit 1
+          fi
+
+          # Resolve the ssv-spec PR that introduced this merge commit (number + head branch)
+          PR_INFO=$(gh api "repos/${{ github.repository }}/commits/${GITHUB_SHA}/pulls" \
+            --jq '.[0] | {number: (.number // empty), head_ref: (.head.ref // empty)}' \
+            2>/dev/null || echo "{}")
+          PR_NUMBER=$(echo "${PR_INFO}" | jq -r '.number // empty')
+          PR_HEAD_REF=$(echo "${PR_INFO}" | jq -r '.head_ref // empty')
+          echo "pr-number=${PR_NUMBER}" >> "${GITHUB_OUTPUT}"
+
+          if [ -z "${PR_NUMBER}" ] || [ -z "${PR_HEAD_REF}" ]; then
+            echo "No PR found for commit ${GITHUB_SHA}, will sync directly to main"
+            echo "spec-pr-number=" >> "${GITHUB_OUTPUT}"
+            echo "spec-pr-branch=" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          # Find the open spec-tests PR whose branch exactly matches the ssv-spec branch name
+          SPEC_PR_JSON=$(gh api "repos/${SPEC_TESTS_REPO}/pulls?state=open&per_page=100" \
+            --jq ".[] | select(.head.ref == \"${PR_HEAD_REF}\")" \
+            2>/dev/null | head -c 4096 || echo "")
+
+          SPEC_PR_NUMBER=$(echo "${SPEC_PR_JSON}" | jq -r '.number // empty' 2>/dev/null || echo "")
+          SPEC_PR_BRANCH=$(echo "${SPEC_PR_JSON}" | jq -r '.head.ref // empty' 2>/dev/null || echo "")
+          echo "spec-pr-number=${SPEC_PR_NUMBER}" >> "${GITHUB_OUTPUT}"
+          echo "spec-pr-branch=${SPEC_PR_BRANCH}" >> "${GITHUB_OUTPUT}"
+
+      - name: Merge spec-tests PR (or sync directly to main)
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          SPEC_PR_NUMBER: ${{ steps.find-pr.outputs.spec-pr-number }}
+          SPEC_PR_BRANCH: ${{ steps.find-pr.outputs.spec-pr-branch }}
+        run: |
+          set -euo pipefail
+
+          GENERATED_DIR="${GITHUB_WORKSPACE}/../spec-tests"
+          CLONE_DIR=$(mktemp -d)
+
+          # Validate generated output exists
+          if [ -z "$(ls -A "${GENERATED_DIR}" 2>/dev/null)" ]; then
+            echo "Generated spec-tests directory is empty, aborting sync" >&2
+            exit 1
+          fi
+
+          git clone "https://x-access-token:${GH_TOKEN}@github.com/${SPEC_TESTS_REPO}.git" "${CLONE_DIR}"
+          cd "${CLONE_DIR}"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git fetch origin
+
+          if [ -n "${SPEC_PR_BRANCH}" ]; then
+            # Update the spec-tests PR branch with the final generated files, then merge.
+            # Only removes paths that the generator produces; other repo content is preserved.
+            git checkout -B "${SPEC_PR_BRANCH}" "origin/${SPEC_PR_BRANCH}"
+            while IFS= read -r -d '' entry; do
+              git rm -rf "$(basename "${entry}")" 2>/dev/null || true
+            done < <(find "${GENERATED_DIR}" -maxdepth 1 -mindepth 1 -print0)
+            cp -r "${GENERATED_DIR}/." .
+            git add -A
+            if ! git diff --cached --quiet; then
+              git commit -m "sync: final update before merge - ssv-spec ${GITHUB_SHA}"
+              git push --force origin "${SPEC_PR_BRANCH}"
+            fi
+            gh pr merge --repo "${SPEC_TESTS_REPO}" "${SPEC_PR_NUMBER}" --merge --delete-branch
+          else
+            # No spec-tests PR found — sync generated files directly to main.
+            # Only removes paths that the generator produces; other repo content is preserved.
+            git checkout main
+            while IFS= read -r -d '' entry; do
+              git rm -rf "$(basename "${entry}")" 2>/dev/null || true
+            done < <(find "${GENERATED_DIR}" -maxdepth 1 -mindepth 1 -print0)
+            cp -r "${GENERATED_DIR}/." .
+            git add -A
+            if git diff --cached --quiet; then
+              echo "No changes to sync to spec-tests main"
+            else
+              git commit -m "sync: ssv-spec ${GITHUB_SHA}"
+              git push origin main
+            fi
+          fi
