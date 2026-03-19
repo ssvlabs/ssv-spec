@@ -83,9 +83,11 @@ jobs:
 
           # Find the open spec-tests PR whose branch exactly matches the ssv-spec branch name
           # Uses App token which is scoped to spec-tests
+          # Note: gh api --jq takes a single string; --arg is a standalone jq flag so we pipe separately
           SPEC_PR_JSON=$(gh api "repos/${SPEC_TESTS_REPO}/pulls?state=open&per_page=100" \
-            --jq --arg ref "${PR_HEAD_REF}" '.[] | select(.head.ref == $ref)' \
-            2>/dev/null | head -c 4096 || echo "")
+            2>/dev/null \
+            | jq --arg ref "${PR_HEAD_REF}" '.[] | select(.head.ref == $ref)' \
+            | head -c 4096 || echo "")
 
           SPEC_PR_NUMBER=$(echo "${SPEC_PR_JSON}" | jq -r '.number // empty' 2>/dev/null || echo "")
           SPEC_PR_BRANCH=$(echo "${SPEC_PR_JSON}" | jq -r '.head.ref // empty' 2>/dev/null || echo "")
