@@ -39,14 +39,14 @@ func TestStateMarshalJSONRejectsMissingStartingDuty(t *testing.T) {
 	t.Parallel()
 
 	_, err := json.Marshal(&State{})
-	require.EqualError(t, err, "json: error calling MarshalJSON for type *ssv.State: can't marshal BaseRunner.State.StartingDuty: expected ValidatorDuty or CommitteeDuty")
+	require.EqualError(t, err, "json: error calling MarshalJSON for type *ssv.State: can't marshal BaseRunner.State.StartingDuty is nil")
 }
 
 func TestStateMarshalJSONRejectsUnsupportedStartingDuty(t *testing.T) {
 	t.Parallel()
 
 	_, err := json.Marshal(&State{StartingDuty: fakeDuty{}})
-	require.EqualError(t, err, "json: error calling MarshalJSON for type *ssv.State: can't marshal BaseRunner.State.StartingDuty: expected ValidatorDuty or CommitteeDuty")
+	require.EqualError(t, err, "json: error calling MarshalJSON for type *ssv.State: can't marshal BaseRunner.State.StartingDuty: expected ValidatorDuty or CommitteeDuty, got: ssv.fakeDuty")
 }
 
 func TestStateUnmarshalJSONRejectsAmbiguousStartingDuty(t *testing.T) {
