@@ -7,27 +7,37 @@ on:
 jobs:
 
   sync-and-merge:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pull-requests: read
     env:
       SPEC_TESTS_REPO: ${{ vars.SPEC_TESTS_REPO }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
 
       - name: Generate spec tests
         uses: ./.github/actions/generate-spec-tests
 
+      - name: Extract spec-tests repo name
+        id: repo-name
+        env:
+          SPEC_TESTS_REPO: ${{ vars.SPEC_TESTS_REPO }}
+        run: echo "name=${SPEC_TESTS_REPO##*/}" >> "$GITHUB_OUTPUT"
+
       - name: Get GitHub App token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v1.11.3
         id: app-token
         with:
           app-id: ${{ vars.SPEC_TESTS_APP_ID }}
           private-key: ${{ secrets.SPEC_TESTS_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
+          repositories: ${{ steps.repo-name.outputs.name }}
 
-      - name: Find spec-tests PR for merged commit
-        id: find-pr
+      - name: Find ssv-spec PR for merged commit
+        id: find-ssv-pr
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
 
@@ -37,11 +47,22 @@ jobs:
           fi
 
           # Resolve the ssv-spec PR that introduced this merge commit (number + head branch)
+          # Uses GITHUB_TOKEN which is scoped to ssv-spec
           PR_INFO=$(gh api "repos/${{ github.repository }}/commits/${GITHUB_SHA}/pulls" \
             --jq '.[0] | {number: (.number // empty), head_ref: (.head.ref // empty)}' \
             2>/dev/null || echo "{}")
-          PR_NUMBER=$(echo "${PR_INFO}" | jq -r '.number // empty')
-          PR_HEAD_REF=$(echo "${PR_INFO}" | jq -r '.head_ref // empty')
+          echo "number=$(echo "${PR_INFO}" | jq -r '.number // empty')" >> "${GITHUB_OUTPUT}"
+          echo "head-ref=$(echo "${PR_INFO}" | jq -r '.head_ref // empty')" >> "${GITHUB_OUTPUT}"
+
+      - name: Find matching spec-tests PR
+        id: find-pr
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR_NUMBER: ${{ steps.find-ssv-pr.outputs.number }}
+          PR_HEAD_REF: ${{ steps.find-ssv-pr.outputs.head-ref }}
+        run: |
+          set -euo pipefail
+
           echo "pr-number=${PR_NUMBER}" >> "${GITHUB_OUTPUT}"
 
           if [ -z "${PR_NUMBER}" ] || [ -z "${PR_HEAD_REF}" ]; then
@@ -52,8 +73,9 @@ jobs:
           fi
 
           # Find the open spec-tests PR whose branch exactly matches the ssv-spec branch name
+          # Uses App token which is scoped to spec-tests
           SPEC_PR_JSON=$(gh api "repos/${SPEC_TESTS_REPO}/pulls?state=open&per_page=100" \
-            --jq ".[] | select(.head.ref == \"${PR_HEAD_REF}\")" \
+            --jq --arg ref "${PR_HEAD_REF}" '.[] | select(.head.ref == $ref)' \
             2>/dev/null | head -c 4096 || echo "")
 
           SPEC_PR_NUMBER=$(echo "${SPEC_PR_JSON}" | jq -r '.number // empty' 2>/dev/null || echo "")

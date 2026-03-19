@@ -7,24 +7,31 @@ on:
 jobs:
 
   sync:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     env:
       SPEC_TESTS_REPO: ${{ vars.SPEC_TESTS_REPO }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
 
       - name: Generate spec tests
         uses: ./.github/actions/generate-spec-tests
 
+      - name: Extract spec-tests repo name
+        id: repo-name
+        env:
+          SPEC_TESTS_REPO: ${{ vars.SPEC_TESTS_REPO }}
+        run: echo "name=${SPEC_TESTS_REPO##*/}" >> "$GITHUB_OUTPUT"
+
       - name: Get GitHub App token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v1.11.3
         id: app-token
         with:
           app-id: ${{ vars.SPEC_TESTS_APP_ID }}
           private-key: ${{ secrets.SPEC_TESTS_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
+          repositories: ${{ steps.repo-name.outputs.name }}
 
       - name: Sync to spec-tests PR branch
         env:
@@ -42,6 +49,13 @@ jobs:
           fi
 
           BRANCH_NAME="${HEAD_REF}"
+
+          # Refuse to push to protected branch names in spec-tests
+          if [ "${BRANCH_NAME}" = "main" ] || [ "${BRANCH_NAME}" = "master" ]; then
+            echo "Refusing to sync: branch name '${BRANCH_NAME}' would overwrite a protected branch in spec-tests" >&2
+            exit 1
+          fi
+
           GENERATED_DIR="${GITHUB_WORKSPACE}/../spec-tests"
           CLONE_DIR=$(mktemp -d)
 
