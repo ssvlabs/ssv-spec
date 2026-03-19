@@ -13,10 +13,29 @@ runs:
       shell: bash
       run: go get -v -t -d ./...
 
-    - name: Create spec-tests output directory
-      shell: bash
-      run: mkdir -p ../spec-tests
-
     - name: Generate JSONs
       shell: bash
       run: make generate-jsons
+
+    - name: Copy generated files to spec-tests output directory
+      shell: bash
+      run: |
+        set -euo pipefail
+        OUTPUT_DIR="${GITHUB_WORKSPACE}/../spec-tests"
+        mkdir -p "${OUTPUT_DIR}"
+
+        # Copy each spectest/generate/tests and state_comparison dir,
+        # preserving the relative path from the repo root.
+        find . \( -type d -path "*/spectest/generate/tests" -o \
+                  -type d -path "*/spectest/generate/state_comparison" \) | \
+        while IFS= read -r src_dir; do
+          dest="${OUTPUT_DIR}/${src_dir#./}"
+          mkdir -p "${dest}"
+          cp -r "${src_dir}/." "${dest}/"
+        done
+
+        if [ -z "$(ls -A "${OUTPUT_DIR}" 2>/dev/null)" ]; then
+          echo "No files were copied to spec-tests output directory" >&2
+          exit 1
+        fi
+        echo "Copied spec-tests output to ${OUTPUT_DIR}"
