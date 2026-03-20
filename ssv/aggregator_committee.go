@@ -634,7 +634,7 @@ func (r *AggregatorCommitteeRunner) broadcastPartialSignatureMessage(
 	}
 	committeeID := types.GetCommitteeID(operatorIDs)
 
-	msgID := types.NewMsgID(committeeMember.DomainType, committeeID[:], r.BaseRunner.RunnerRoleType)
+	msgID := types.NewCommitteeMsgID(committeeMember.DomainType, committeeID, r.BaseRunner.RunnerRoleType)
 
 	encodedMsg, err := msg.Encode()
 	if err != nil {

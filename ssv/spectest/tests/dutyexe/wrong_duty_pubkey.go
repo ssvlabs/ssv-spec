@@ -17,12 +17,12 @@ func WrongDutyPubKey() tests.SpecTest {
 
 	// Correct ID for SSVMessage
 	getID := func(role types.RunnerRole) types.MessageID {
-		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
+		ret := types.NewValidatorMsgID(testingutils.TestingSSVDomainType, types.ValidatorPK(testingutils.TestingValidatorPubKey), role)
 		return ret
 	}
 	// Wrong ID for SignedMessage
 	getWrongID := func(role types.RunnerRole) []byte {
-		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingWrongValidatorPubKey[:], role)
+		ret := types.NewValidatorMsgID(testingutils.TestingSSVDomainType, types.ValidatorPK(testingutils.TestingWrongValidatorPubKey), role)
 		return ret[:]
 	}
 

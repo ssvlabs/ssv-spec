@@ -139,7 +139,7 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 	committeeID := types.GetCommitteeID(operatorIDs)
 	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   types.NewMsgID(committeeMember.DomainType, committeeID[:], cr.BaseRunner.RunnerRoleType),
+		MsgID:   types.NewCommitteeMsgID(committeeMember.DomainType, committeeID, cr.BaseRunner.RunnerRoleType),
 	}
 	ssvMsg.Data, err = postConsensusMsg.Encode()
 	if err != nil {

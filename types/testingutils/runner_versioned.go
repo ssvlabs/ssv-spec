@@ -88,7 +88,7 @@ var QBFTMsgsForAggregatorCommitteeRunner = func(duty *types.AggregatorCommitteeD
 }
 
 var SSVDecidingMsgsV = func(consensusData *types.ProposerConsensusData, ks *TestKeySet, role types.RunnerRole) []*types.SignedSSVMessage {
-	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
+	id := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), role)
 
 	signedF := func(partialSigMsg *types.PartialSignatureMessages) *types.SignedSSVMessage {
 		byts, _ := partialSigMsg.Encode()
@@ -124,7 +124,7 @@ var SSVDecidingMsgsV = func(consensusData *types.ProposerConsensusData, ks *Test
 }
 
 var ExpectedSSVDecidingMsgsV = func(consensusData *types.ProposerConsensusData, ks *TestKeySet, role types.RunnerRole) []*types.SignedSSVMessage {
-	id := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], role)
+	id := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), role)
 
 	ssvMsgF := func(partialSigMsg *types.PartialSignatureMessages) *types.SignedSSVMessage {
 		byts, _ := partialSigMsg.Encode()

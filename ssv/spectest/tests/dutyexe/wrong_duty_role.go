@@ -20,10 +20,9 @@ func WrongDutyRole() tests.SpecTest {
 	getID := func(role types.RunnerRole) types.MessageID {
 		if role == types.RoleAggregatorCommittee {
 			return testingutils.TestingAggregatorCommitteeMsgID
-		} else {
-			ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
-			return ret
 		}
+		ret := types.NewValidatorMsgID(testingutils.TestingSSVDomainType, types.ValidatorPK(testingutils.TestingValidatorPubKey), role)
+		return ret
 	}
 	// Wrong ID for SignedMessage
 	getWrongID := func(role types.RunnerRole) []byte {
@@ -33,12 +32,11 @@ func WrongDutyRole() tests.SpecTest {
 				committee = append(committee, op.Signer)
 			}
 			committeeID := types.GetCommitteeID(committee)
-			ret := types.NewMsgID(testingutils.TestingSSVDomainType, committeeID[:], types.RoleAggregatorCommittee+1)
-			return ret[:]
-		} else {
-			ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role+1)
+			ret := types.NewCommitteeMsgID(testingutils.TestingSSVDomainType, committeeID, types.RoleAggregatorCommittee+1)
 			return ret[:]
 		}
+		ret := types.NewValidatorMsgID(testingutils.TestingSSVDomainType, types.ValidatorPK(testingutils.TestingValidatorPubKey), role+1)
+		return ret[:]
 	}
 
 	// Function to get decided message with wrong ID for role

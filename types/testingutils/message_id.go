@@ -10,7 +10,7 @@ var CommitteeMsgID = func(keySet *TestKeySet) []byte {
 	}
 	committeeID := types.GetCommitteeID(committee)
 
-	ret := types.NewMsgID(TestingSSVDomainType, committeeID[:], types.RoleCommittee)
+	ret := types.NewCommitteeMsgID(TestingSSVDomainType, committeeID, types.RoleCommittee)
 	return ret[:]
 }
 
@@ -22,21 +22,21 @@ var AggregatorCommitteeMsgID = func(keySet *TestKeySet) []byte {
 	}
 	committeeID := types.GetCommitteeID(committee)
 
-	ret := types.NewMsgID(TestingSSVDomainType, committeeID[:], types.RoleAggregatorCommittee)
+	ret := types.NewCommitteeMsgID(TestingSSVDomainType, committeeID, types.RoleAggregatorCommittee)
 	return ret[:]
 }
 
 var ProposerMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleProposer)
+	ret := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), types.RoleProposer)
 	return ret[:]
 }()
 
 var ValidatorRegistrationMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleValidatorRegistration)
+	ret := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), types.RoleValidatorRegistration)
 	return ret[:]
 }()
 
 var VoluntaryExitMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleVoluntaryExit)
+	ret := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), types.RoleVoluntaryExit)
 	return ret[:]
 }()
