@@ -12,6 +12,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
+	"github.com/holiman/uint256"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -428,7 +429,7 @@ func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ss
 					GasUsed:          p.Deneb.Block.Body.ExecutionPayload.GasUsed,
 					Timestamp:        p.Deneb.Block.Body.ExecutionPayload.Timestamp,
 					ExtraData:        p.Deneb.Block.Body.ExecutionPayload.ExtraData,
-					BaseFeePerGas:    p.Deneb.Block.Body.ExecutionPayload.BaseFeePerGas,
+					BaseFeePerGas:    cloneUint256(p.Deneb.Block.Body.ExecutionPayload.BaseFeePerGas),
 					BlockHash:        p.Deneb.Block.Body.ExecutionPayload.BlockHash,
 					TransactionsRoot: txRoot,
 					WithdrawalsRoot:  withdrawalsRoot,
@@ -483,7 +484,7 @@ func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ss
 					GasUsed:          p.Electra.Block.Body.ExecutionPayload.GasUsed,
 					Timestamp:        p.Electra.Block.Body.ExecutionPayload.Timestamp,
 					ExtraData:        p.Electra.Block.Body.ExecutionPayload.ExtraData,
-					BaseFeePerGas:    p.Electra.Block.Body.ExecutionPayload.BaseFeePerGas,
+					BaseFeePerGas:    cloneUint256(p.Electra.Block.Body.ExecutionPayload.BaseFeePerGas),
 					BlockHash:        p.Electra.Block.Body.ExecutionPayload.BlockHash,
 					TransactionsRoot: txRoot,
 					WithdrawalsRoot:  withdrawalsRoot,
@@ -539,7 +540,7 @@ func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ss
 					GasUsed:          p.Fulu.Block.Body.ExecutionPayload.GasUsed,
 					Timestamp:        p.Fulu.Block.Body.ExecutionPayload.Timestamp,
 					ExtraData:        p.Fulu.Block.Body.ExecutionPayload.ExtraData,
-					BaseFeePerGas:    p.Fulu.Block.Body.ExecutionPayload.BaseFeePerGas,
+					BaseFeePerGas:    cloneUint256(p.Fulu.Block.Body.ExecutionPayload.BaseFeePerGas),
 					BlockHash:        p.Fulu.Block.Body.ExecutionPayload.BlockHash,
 					TransactionsRoot: txRoot,
 					WithdrawalsRoot:  withdrawalsRoot,
@@ -556,6 +557,14 @@ func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ss
 	default:
 		return nil, nil, fmt.Errorf("unsupported proposal version %d", p.Version)
 	}
+}
+
+func cloneUint256(v *uint256.Int) *uint256.Int {
+	if v == nil {
+		return nil
+	}
+
+	return new(uint256.Int).Set(v)
 }
 
 func (r *ProposerRunner) GetBaseRunner() *BaseRunner {

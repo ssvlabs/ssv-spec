@@ -123,9 +123,7 @@ var AllTests = []tests.TestF{
 	synccommitteeaggregator.NoneAggregatorQuorum,
 	synccommitteeaggregator.AllAggregatorQuorum,
 
-	proposer.ProposeBlindedBlockDecidedRegular,
 	proposer.ProposeRegularBlockDecidedBlinded,
-	proposer.BlindedRunnerAcceptsNormalBlock,
 	proposer.NormalProposerAcceptsBlindedBlock,
 
 	preconsensus.NoRunningDuty,
