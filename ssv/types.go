@@ -38,7 +38,10 @@ type AttesterCalls interface {
 type ProposerCalls interface {
 	// GetBeaconBlock returns beacon block by the given slot, graffiti, and randao.
 	GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*api.VersionedProposal, error)
-	// SubmitBeaconBlock submit the block to the node
+	// SubmitBeaconBlock submit the block to the node. Proposer consensus decides
+	// the blinded block form; if submission requires blob sidecars or other data
+	// not carried by the blinded decided value, the beacon-node implementation is
+	// responsible for recovering or reconstructing that data before submission.
 	SubmitBeaconBlock(block *api.VersionedProposal, sig phase0.BLSSignature) error
 }
 

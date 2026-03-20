@@ -134,6 +134,8 @@ func TestEnsureBlindedProposalFromFullBlock(t *testing.T) {
 	})
 
 	t.Run("fulu", func(t *testing.T) {
+		// Fulu currently reuses electraspec.BeaconBlock, so the fixture stores the
+		// same block shape under apiv1fulu.BlockContents.Block.
 		full := electraProposal(spec.DataVersionFulu)
 
 		blinded, marshaler, err := ensureBlindedProposal(full)

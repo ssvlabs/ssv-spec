@@ -300,7 +300,9 @@ func (r *ProposerRunner) executeDuty(duty types.Duty) error {
 
 // ensureBlindedProposal returns a blinded proposal and the concrete SSZ-marshaler
 // that must be encoded into proposer consensus data. If the input is already
-// blinded, it is returned unchanged.
+// blinded, it is returned unchanged. For full Deneb/Electra/Fulu proposals this
+// intentionally keeps only the blinded block contents needed for consensus; blob
+// sidecars and proofs from the outer BlockContents wrapper are not propagated.
 func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ssz.Marshaler, error) {
 	if p == nil {
 		return nil, nil, fmt.Errorf("nil proposal")
