@@ -19,7 +19,7 @@ func fullHappyFlowProposerReceivingBlindedBlockSC(version spec.DataVersion) *com
 	// encoded consensus data relative to messages
 	cdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
 	// encoded consensus data that the runner set as StartValue
-	startedCdBytes := testingutils.TestProposerConsensusDataBytsV(version)
+	startedCdBytes := testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)
 
 	return &comparable.StateComparison{
 		ExpectedState: func() ssv.Runner {
