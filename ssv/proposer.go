@@ -88,19 +88,26 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 	duty := r.GetState().StartingDuty.(*types.ValidatorDuty)
 
 	// get block data
-	vBlk, obj, err := r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
+	vBlk, _, err := r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
 	if err != nil {
 		return errors.Wrap(err, "failed to get Beacon block")
 	}
 
-	byts, err := obj.MarshalSSZ()
+	// Proposer consensus always agrees on the blinded block form. If the beacon
+	// node returned a full block, derive the blinded form locally before QBFT.
+	blindedVBlk, blindedObj, err := ensureBlindedProposal(vBlk)
 	if err != nil {
-		return errors.Wrap(err, "could not marshal beacon block")
+		return errors.Wrap(err, "could not blind beacon block")
+	}
+
+	byts, err := blindedObj.MarshalSSZ()
+	if err != nil {
+		return errors.Wrap(err, "could not marshal blinded beacon block")
 	}
 
 	input := &types.ValidatorConsensusData{
 		Duty:    *duty,
-		Version: vBlk.Version,
+		Version: blindedVBlk.Version,
 		DataSSZ: byts,
 	}
 
