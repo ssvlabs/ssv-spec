@@ -246,6 +246,9 @@ func denebProposal() *api.VersionedProposal {
 	}
 }
 
+// electraProposal creates a full-block proposal for Electra or Fulu.
+// Fulu currently reuses Electra's BeaconBlock type, so both paths share this helper.
+// If Fulu introduces a distinct BeaconBlockBody, split this into fork-specific builders.
 func electraProposal(version spec.DataVersion) *api.VersionedProposal {
 	payload := &denebspec.ExecutionPayload{
 		ParentHash:    hash32(0x41),

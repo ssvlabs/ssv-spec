@@ -434,7 +434,8 @@ func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ss
 					ExcessBlobGas:    p.Deneb.Block.Body.ExecutionPayload.ExcessBlobGas,
 				},
 				BLSToExecutionChanges: p.Deneb.Block.Body.BLSToExecutionChanges,
-				BlobKZGCommitments:    p.Deneb.Block.Body.BlobKZGCommitments,
+				// Blob commitments live on the beacon block body, not on the outer BlockContents wrapper.
+				BlobKZGCommitments: p.Deneb.Block.Body.BlobKZGCommitments,
 			},
 		}
 
