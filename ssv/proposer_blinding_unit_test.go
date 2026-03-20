@@ -88,7 +88,7 @@ func TestEnsureBlindedProposalFromFullBlock(t *testing.T) {
 	})
 
 	t.Run("deneb", func(t *testing.T) {
-		full := denebProposal(spec.DataVersionDeneb)
+		full := denebProposal()
 
 		blinded, marshaler, err := ensureBlindedProposal(full)
 		require.NoError(t, err)
@@ -196,7 +196,7 @@ func capellaProposal() *api.VersionedProposal {
 	}
 }
 
-func denebProposal(version spec.DataVersion) *api.VersionedProposal {
+func denebProposal() *api.VersionedProposal {
 	payload := &denebspec.ExecutionPayload{
 		ParentHash:    hash32(0x21),
 		FeeRecipient:  executionAddress(0x22),
@@ -241,7 +241,7 @@ func denebProposal(version spec.DataVersion) *api.VersionedProposal {
 	}
 
 	return &api.VersionedProposal{
-		Version: version,
+		Version: spec.DataVersionDeneb,
 		Deneb:   contents,
 	}
 }
