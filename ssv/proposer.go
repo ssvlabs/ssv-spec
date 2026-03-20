@@ -95,7 +95,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 	duty := r.GetState().StartingDuty.(*types.ValidatorDuty)
 
 	// get block data
-	vBlk, _, err := r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
+	vBlk, err := r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
 	if err != nil {
 		return errors.Wrap(err, "failed to get Beacon block")
 	}
@@ -508,6 +508,7 @@ func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ss
 			return nil, nil, fmt.Errorf("could not compute fulu withdrawals root: %w", err)
 		}
 
+		// Fulu currently reuses Electra's blinded block structure.
 		blinded := &apiv1electra.BlindedBeaconBlock{
 			Slot:          p.Fulu.Block.Slot,
 			ProposerIndex: p.Fulu.Block.ProposerIndex,

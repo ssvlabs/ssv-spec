@@ -105,22 +105,18 @@ func (bn *TestingBeaconNode) SubmitVoluntaryExit(voluntaryExit *phase0.SignedVol
 }
 
 // GetBeaconBlock returns beacon block by the given slot, graffiti, and randao.
-func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*api.VersionedProposal, ssz.Marshaler, error) {
+func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*api.VersionedProposal, error) {
 	version := VersionBySlot(slot)
 	vBlk := TestingBeaconBlockV(version)
 
-	switch version {
-	case spec.DataVersionCapella:
-		return vBlk, vBlk.Capella, nil
-	case spec.DataVersionDeneb:
-		return vBlk, vBlk.Deneb, nil
-	case spec.DataVersionElectra:
-		return vBlk, vBlk.Electra, nil
-	case spec.DataVersionFulu:
-		return vBlk, vBlk.Fulu, nil
-	default:
-		return nil, nil, fmt.Errorf("unsupported version %s", version)
+	if version != spec.DataVersionCapella &&
+		version != spec.DataVersionDeneb &&
+		version != spec.DataVersionElectra &&
+		version != spec.DataVersionFulu {
+		return nil, fmt.Errorf("unsupported version %s", version)
 	}
+
+	return vBlk, nil
 }
 
 // SubmitBeaconBlock submit the block (blinded or full) to the node
