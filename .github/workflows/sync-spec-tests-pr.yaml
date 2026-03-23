@@ -15,6 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v6.0.2
 
+      - name: Validate required variables
+        run: |
+          if [ -z "${{ vars.SPEC_TESTS_REPO }}" ]; then
+            echo "SPEC_TESTS_REPO variable is not set (e.g. ssvlabs/spec-tests)" >&2
+            exit 1
+          fi
+
       - name: Generate spec tests
         uses: ./.github/actions/generate-spec-tests
 
@@ -111,11 +118,11 @@ jobs:
           if gh pr view --repo "${SPEC_TESTS_REPO}" "${BRANCH_NAME}" >/dev/null 2>&1; then
             gh pr edit --repo "${SPEC_TESTS_REPO}" "${BRANCH_NAME}" \
               --title "sync: ${PR_TITLE}" \
-              --body "Auto-generated from ssv-spec PR #${PR_NUMBER}"
+              --body "Auto-generated from ssv-spec PR https://github.com/${{ github.repository }}/pull/${PR_NUMBER}"
           else
             gh pr create --repo "${SPEC_TESTS_REPO}" \
               --head "${BRANCH_NAME}" \
               --base "${RESOLVED_BASE}" \
               --title "sync: ${PR_TITLE}" \
-              --body "Auto-generated from ssv-spec PR #${PR_NUMBER}"
+              --body "Auto-generated from ssv-spec PR https://github.com/${{ github.repository }}/pull/${PR_NUMBER}"
           fi
