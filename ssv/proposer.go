@@ -2,6 +2,7 @@ package ssv
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/attestantio/go-eth2-client/api"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
@@ -360,11 +361,11 @@ func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ss
 				RANDAOReveal:      p.Capella.Body.RANDAOReveal,
 				ETH1Data:          p.Capella.Body.ETH1Data,
 				Graffiti:          p.Capella.Body.Graffiti,
-				ProposerSlashings: p.Capella.Body.ProposerSlashings,
-				AttesterSlashings: p.Capella.Body.AttesterSlashings,
-				Attestations:      p.Capella.Body.Attestations,
-				Deposits:          p.Capella.Body.Deposits,
-				VoluntaryExits:    p.Capella.Body.VoluntaryExits,
+				ProposerSlashings: slices.Clone(p.Capella.Body.ProposerSlashings),
+				AttesterSlashings: slices.Clone(p.Capella.Body.AttesterSlashings),
+				Attestations:      slices.Clone(p.Capella.Body.Attestations),
+				Deposits:          slices.Clone(p.Capella.Body.Deposits),
+				VoluntaryExits:    slices.Clone(p.Capella.Body.VoluntaryExits),
 				SyncAggregate:     p.Capella.Body.SyncAggregate,
 				ExecutionPayloadHeader: &capella.ExecutionPayloadHeader{
 					ParentHash:       p.Capella.Body.ExecutionPayload.ParentHash,
@@ -377,13 +378,13 @@ func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ss
 					GasLimit:         p.Capella.Body.ExecutionPayload.GasLimit,
 					GasUsed:          p.Capella.Body.ExecutionPayload.GasUsed,
 					Timestamp:        p.Capella.Body.ExecutionPayload.Timestamp,
-					ExtraData:        p.Capella.Body.ExecutionPayload.ExtraData,
+					ExtraData:        slices.Clone(p.Capella.Body.ExecutionPayload.ExtraData),
 					BaseFeePerGas:    p.Capella.Body.ExecutionPayload.BaseFeePerGas,
 					BlockHash:        p.Capella.Body.ExecutionPayload.BlockHash,
 					TransactionsRoot: txRoot,
 					WithdrawalsRoot:  withdrawalsRoot,
 				},
-				BLSToExecutionChanges: p.Capella.Body.BLSToExecutionChanges,
+				BLSToExecutionChanges: slices.Clone(p.Capella.Body.BLSToExecutionChanges),
 			},
 		}
 
@@ -411,11 +412,11 @@ func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ss
 				RANDAOReveal:      p.Deneb.Block.Body.RANDAOReveal,
 				ETH1Data:          p.Deneb.Block.Body.ETH1Data,
 				Graffiti:          p.Deneb.Block.Body.Graffiti,
-				ProposerSlashings: p.Deneb.Block.Body.ProposerSlashings,
-				AttesterSlashings: p.Deneb.Block.Body.AttesterSlashings,
-				Attestations:      p.Deneb.Block.Body.Attestations,
-				Deposits:          p.Deneb.Block.Body.Deposits,
-				VoluntaryExits:    p.Deneb.Block.Body.VoluntaryExits,
+				ProposerSlashings: slices.Clone(p.Deneb.Block.Body.ProposerSlashings),
+				AttesterSlashings: slices.Clone(p.Deneb.Block.Body.AttesterSlashings),
+				Attestations:      slices.Clone(p.Deneb.Block.Body.Attestations),
+				Deposits:          slices.Clone(p.Deneb.Block.Body.Deposits),
+				VoluntaryExits:    slices.Clone(p.Deneb.Block.Body.VoluntaryExits),
 				SyncAggregate:     p.Deneb.Block.Body.SyncAggregate,
 				ExecutionPayloadHeader: &deneb.ExecutionPayloadHeader{
 					ParentHash:       p.Deneb.Block.Body.ExecutionPayload.ParentHash,
@@ -428,17 +429,17 @@ func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ss
 					GasLimit:         p.Deneb.Block.Body.ExecutionPayload.GasLimit,
 					GasUsed:          p.Deneb.Block.Body.ExecutionPayload.GasUsed,
 					Timestamp:        p.Deneb.Block.Body.ExecutionPayload.Timestamp,
-					ExtraData:        p.Deneb.Block.Body.ExecutionPayload.ExtraData,
-					BaseFeePerGas:    cloneUint256(p.Deneb.Block.Body.ExecutionPayload.BaseFeePerGas),
+					ExtraData:        slices.Clone(p.Deneb.Block.Body.ExecutionPayload.ExtraData),
+					BaseFeePerGas:    new(uint256.Int).Set(p.Deneb.Block.Body.ExecutionPayload.BaseFeePerGas),
 					BlockHash:        p.Deneb.Block.Body.ExecutionPayload.BlockHash,
 					TransactionsRoot: txRoot,
 					WithdrawalsRoot:  withdrawalsRoot,
 					BlobGasUsed:      p.Deneb.Block.Body.ExecutionPayload.BlobGasUsed,
 					ExcessBlobGas:    p.Deneb.Block.Body.ExecutionPayload.ExcessBlobGas,
 				},
-				BLSToExecutionChanges: p.Deneb.Block.Body.BLSToExecutionChanges,
+				BLSToExecutionChanges: slices.Clone(p.Deneb.Block.Body.BLSToExecutionChanges),
 				// Blob commitments live on the beacon block body, not on the outer BlockContents wrapper.
-				BlobKZGCommitments: p.Deneb.Block.Body.BlobKZGCommitments,
+				BlobKZGCommitments: slices.Clone(p.Deneb.Block.Body.BlobKZGCommitments),
 			},
 		}
 
@@ -466,11 +467,11 @@ func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ss
 				RANDAOReveal:      p.Electra.Block.Body.RANDAOReveal,
 				ETH1Data:          p.Electra.Block.Body.ETH1Data,
 				Graffiti:          p.Electra.Block.Body.Graffiti,
-				ProposerSlashings: p.Electra.Block.Body.ProposerSlashings,
-				AttesterSlashings: p.Electra.Block.Body.AttesterSlashings,
-				Attestations:      p.Electra.Block.Body.Attestations,
-				Deposits:          p.Electra.Block.Body.Deposits,
-				VoluntaryExits:    p.Electra.Block.Body.VoluntaryExits,
+				ProposerSlashings: slices.Clone(p.Electra.Block.Body.ProposerSlashings),
+				AttesterSlashings: slices.Clone(p.Electra.Block.Body.AttesterSlashings),
+				Attestations:      slices.Clone(p.Electra.Block.Body.Attestations),
+				Deposits:          slices.Clone(p.Electra.Block.Body.Deposits),
+				VoluntaryExits:    slices.Clone(p.Electra.Block.Body.VoluntaryExits),
 				SyncAggregate:     p.Electra.Block.Body.SyncAggregate,
 				ExecutionPayloadHeader: &deneb.ExecutionPayloadHeader{
 					ParentHash:       p.Electra.Block.Body.ExecutionPayload.ParentHash,
@@ -483,16 +484,16 @@ func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ss
 					GasLimit:         p.Electra.Block.Body.ExecutionPayload.GasLimit,
 					GasUsed:          p.Electra.Block.Body.ExecutionPayload.GasUsed,
 					Timestamp:        p.Electra.Block.Body.ExecutionPayload.Timestamp,
-					ExtraData:        p.Electra.Block.Body.ExecutionPayload.ExtraData,
-					BaseFeePerGas:    cloneUint256(p.Electra.Block.Body.ExecutionPayload.BaseFeePerGas),
+					ExtraData:        slices.Clone(p.Electra.Block.Body.ExecutionPayload.ExtraData),
+					BaseFeePerGas:    new(uint256.Int).Set(p.Electra.Block.Body.ExecutionPayload.BaseFeePerGas),
 					BlockHash:        p.Electra.Block.Body.ExecutionPayload.BlockHash,
 					TransactionsRoot: txRoot,
 					WithdrawalsRoot:  withdrawalsRoot,
 					BlobGasUsed:      p.Electra.Block.Body.ExecutionPayload.BlobGasUsed,
 					ExcessBlobGas:    p.Electra.Block.Body.ExecutionPayload.ExcessBlobGas,
 				},
-				BLSToExecutionChanges: p.Electra.Block.Body.BLSToExecutionChanges,
-				BlobKZGCommitments:    p.Electra.Block.Body.BlobKZGCommitments,
+				BLSToExecutionChanges: slices.Clone(p.Electra.Block.Body.BLSToExecutionChanges),
+				BlobKZGCommitments:    slices.Clone(p.Electra.Block.Body.BlobKZGCommitments),
 				ExecutionRequests:     p.Electra.Block.Body.ExecutionRequests,
 			},
 		}
@@ -522,11 +523,11 @@ func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ss
 				RANDAOReveal:      p.Fulu.Block.Body.RANDAOReveal,
 				ETH1Data:          p.Fulu.Block.Body.ETH1Data,
 				Graffiti:          p.Fulu.Block.Body.Graffiti,
-				ProposerSlashings: p.Fulu.Block.Body.ProposerSlashings,
-				AttesterSlashings: p.Fulu.Block.Body.AttesterSlashings,
-				Attestations:      p.Fulu.Block.Body.Attestations,
-				Deposits:          p.Fulu.Block.Body.Deposits,
-				VoluntaryExits:    p.Fulu.Block.Body.VoluntaryExits,
+				ProposerSlashings: slices.Clone(p.Fulu.Block.Body.ProposerSlashings),
+				AttesterSlashings: slices.Clone(p.Fulu.Block.Body.AttesterSlashings),
+				Attestations:      slices.Clone(p.Fulu.Block.Body.Attestations),
+				Deposits:          slices.Clone(p.Fulu.Block.Body.Deposits),
+				VoluntaryExits:    slices.Clone(p.Fulu.Block.Body.VoluntaryExits),
 				SyncAggregate:     p.Fulu.Block.Body.SyncAggregate,
 				ExecutionPayloadHeader: &deneb.ExecutionPayloadHeader{
 					ParentHash:       p.Fulu.Block.Body.ExecutionPayload.ParentHash,
@@ -539,16 +540,16 @@ func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ss
 					GasLimit:         p.Fulu.Block.Body.ExecutionPayload.GasLimit,
 					GasUsed:          p.Fulu.Block.Body.ExecutionPayload.GasUsed,
 					Timestamp:        p.Fulu.Block.Body.ExecutionPayload.Timestamp,
-					ExtraData:        p.Fulu.Block.Body.ExecutionPayload.ExtraData,
-					BaseFeePerGas:    cloneUint256(p.Fulu.Block.Body.ExecutionPayload.BaseFeePerGas),
+					ExtraData:        slices.Clone(p.Fulu.Block.Body.ExecutionPayload.ExtraData),
+					BaseFeePerGas:    new(uint256.Int).Set(p.Fulu.Block.Body.ExecutionPayload.BaseFeePerGas),
 					BlockHash:        p.Fulu.Block.Body.ExecutionPayload.BlockHash,
 					TransactionsRoot: txRoot,
 					WithdrawalsRoot:  withdrawalsRoot,
 					BlobGasUsed:      p.Fulu.Block.Body.ExecutionPayload.BlobGasUsed,
 					ExcessBlobGas:    p.Fulu.Block.Body.ExecutionPayload.ExcessBlobGas,
 				},
-				BLSToExecutionChanges: p.Fulu.Block.Body.BLSToExecutionChanges,
-				BlobKZGCommitments:    p.Fulu.Block.Body.BlobKZGCommitments,
+				BLSToExecutionChanges: slices.Clone(p.Fulu.Block.Body.BLSToExecutionChanges),
+				BlobKZGCommitments:    slices.Clone(p.Fulu.Block.Body.BlobKZGCommitments),
 				ExecutionRequests:     p.Fulu.Block.Body.ExecutionRequests,
 			},
 		}
@@ -557,14 +558,6 @@ func ensureBlindedProposal(p *api.VersionedProposal) (*api.VersionedProposal, ss
 	default:
 		return nil, nil, fmt.Errorf("unsupported proposal version %d", p.Version)
 	}
-}
-
-func cloneUint256(v *uint256.Int) *uint256.Int {
-	if v == nil {
-		return nil
-	}
-
-	return new(uint256.Int).Set(v)
 }
 
 func (r *ProposerRunner) GetBaseRunner() *BaseRunner {
