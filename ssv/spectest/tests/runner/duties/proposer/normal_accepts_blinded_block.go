@@ -11,7 +11,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// NormalProposerAcceptsBlindedBlock tests a full happy flow for a proposer runner that produces normal blocks but receives as proposal a blinded block
+// NormalProposerAcceptsBlindedBlock tests the proposer full path where the
+// runner reaches consensus on the blinded block proposal.
 func NormalProposerAcceptsBlindedBlock() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
@@ -22,7 +23,8 @@ func NormalProposerAcceptsBlindedBlock() tests.SpecTest {
 		ks,
 	)
 
-	// proposerReceivingBlindedBlockV creates a test specification for versioned normal proposer receiving blinded block as proposal.
+	// proposerReceivingBlindedBlockV creates a versioned proposer test where the
+	// QBFT proposal value is the blinded block form.
 	proposerReceivingBlindedBlockV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
 		return &tests.MsgProcessingSpecTest{
 			Name:   fmt.Sprintf("normal proposer accepts blinded block proposal (%s)", version.String()),

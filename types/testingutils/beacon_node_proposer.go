@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"encoding/json"
+	"slices"
 
 	"github.com/attestantio/go-eth2-client/api"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
@@ -13,6 +14,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	ssz "github.com/ferranbt/fastssz"
+	"github.com/holiman/uint256"
 
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -322,11 +324,11 @@ var TestingBlindedBeaconBlockCapella = func() *apiv1capella.BlindedBeaconBlock {
 			RANDAOReveal:      fullBlk.Body.RANDAOReveal,
 			ETH1Data:          fullBlk.Body.ETH1Data,
 			Graffiti:          fullBlk.Body.Graffiti,
-			ProposerSlashings: fullBlk.Body.ProposerSlashings,
-			AttesterSlashings: fullBlk.Body.AttesterSlashings,
-			Attestations:      fullBlk.Body.Attestations,
-			Deposits:          fullBlk.Body.Deposits,
-			VoluntaryExits:    fullBlk.Body.VoluntaryExits,
+			ProposerSlashings: slices.Clone(fullBlk.Body.ProposerSlashings),
+			AttesterSlashings: slices.Clone(fullBlk.Body.AttesterSlashings),
+			Attestations:      slices.Clone(fullBlk.Body.Attestations),
+			Deposits:          slices.Clone(fullBlk.Body.Deposits),
+			VoluntaryExits:    slices.Clone(fullBlk.Body.VoluntaryExits),
 			SyncAggregate:     fullBlk.Body.SyncAggregate,
 			ExecutionPayloadHeader: &capella.ExecutionPayloadHeader{
 				ParentHash:       fullBlk.Body.ExecutionPayload.ParentHash,
@@ -339,13 +341,13 @@ var TestingBlindedBeaconBlockCapella = func() *apiv1capella.BlindedBeaconBlock {
 				GasLimit:         fullBlk.Body.ExecutionPayload.GasLimit,
 				GasUsed:          fullBlk.Body.ExecutionPayload.GasUsed,
 				Timestamp:        fullBlk.Body.ExecutionPayload.Timestamp,
-				ExtraData:        fullBlk.Body.ExecutionPayload.ExtraData,
+				ExtraData:        slices.Clone(fullBlk.Body.ExecutionPayload.ExtraData),
 				BaseFeePerGas:    fullBlk.Body.ExecutionPayload.BaseFeePerGas,
 				BlockHash:        fullBlk.Body.ExecutionPayload.BlockHash,
 				TransactionsRoot: txRoot,
 				WithdrawalsRoot:  withdrawalsRoot,
 			},
-			BLSToExecutionChanges: fullBlk.Body.BLSToExecutionChanges,
+			BLSToExecutionChanges: slices.Clone(fullBlk.Body.BLSToExecutionChanges),
 		},
 	}
 
@@ -375,11 +377,11 @@ var TestingBlindedBeaconBlockDeneb = func() *apiv1deneb.BlindedBeaconBlock {
 			RANDAOReveal:      blockContents.Block.Body.RANDAOReveal,
 			ETH1Data:          blockContents.Block.Body.ETH1Data,
 			Graffiti:          blockContents.Block.Body.Graffiti,
-			ProposerSlashings: blockContents.Block.Body.ProposerSlashings,
-			AttesterSlashings: blockContents.Block.Body.AttesterSlashings,
-			Attestations:      blockContents.Block.Body.Attestations,
-			Deposits:          blockContents.Block.Body.Deposits,
-			VoluntaryExits:    blockContents.Block.Body.VoluntaryExits,
+			ProposerSlashings: slices.Clone(blockContents.Block.Body.ProposerSlashings),
+			AttesterSlashings: slices.Clone(blockContents.Block.Body.AttesterSlashings),
+			Attestations:      slices.Clone(blockContents.Block.Body.Attestations),
+			Deposits:          slices.Clone(blockContents.Block.Body.Deposits),
+			VoluntaryExits:    slices.Clone(blockContents.Block.Body.VoluntaryExits),
 			SyncAggregate:     blockContents.Block.Body.SyncAggregate,
 			ExecutionPayloadHeader: &deneb.ExecutionPayloadHeader{
 				ParentHash:       blockContents.Block.Body.ExecutionPayload.ParentHash,
@@ -392,16 +394,16 @@ var TestingBlindedBeaconBlockDeneb = func() *apiv1deneb.BlindedBeaconBlock {
 				GasLimit:         blockContents.Block.Body.ExecutionPayload.GasLimit,
 				GasUsed:          blockContents.Block.Body.ExecutionPayload.GasUsed,
 				Timestamp:        blockContents.Block.Body.ExecutionPayload.Timestamp,
-				ExtraData:        blockContents.Block.Body.ExecutionPayload.ExtraData,
-				BaseFeePerGas:    blockContents.Block.Body.ExecutionPayload.BaseFeePerGas,
+				ExtraData:        slices.Clone(blockContents.Block.Body.ExecutionPayload.ExtraData),
+				BaseFeePerGas:    new(uint256.Int).Set(blockContents.Block.Body.ExecutionPayload.BaseFeePerGas),
 				BlockHash:        blockContents.Block.Body.ExecutionPayload.BlockHash,
 				TransactionsRoot: txRoot,
 				WithdrawalsRoot:  withdrawalsRoot,
 				BlobGasUsed:      blockContents.Block.Body.ExecutionPayload.BlobGasUsed,
 				ExcessBlobGas:    blockContents.Block.Body.ExecutionPayload.ExcessBlobGas,
 			},
-			BLSToExecutionChanges: blockContents.Block.Body.BLSToExecutionChanges,
-			BlobKZGCommitments:    blockContents.Block.Body.BlobKZGCommitments,
+			BLSToExecutionChanges: slices.Clone(blockContents.Block.Body.BLSToExecutionChanges),
+			BlobKZGCommitments:    slices.Clone(blockContents.Block.Body.BlobKZGCommitments),
 		},
 	}
 
@@ -439,11 +441,11 @@ var TestingBlindedBeaconBlockElectra = func() *apiv1electra.BlindedBeaconBlock {
 			RANDAOReveal:      blockContents.Block.Body.RANDAOReveal,
 			ETH1Data:          blockContents.Block.Body.ETH1Data,
 			Graffiti:          blockContents.Block.Body.Graffiti,
-			ProposerSlashings: blockContents.Block.Body.ProposerSlashings,
-			AttesterSlashings: blockContents.Block.Body.AttesterSlashings,
-			Attestations:      blockContents.Block.Body.Attestations,
-			Deposits:          blockContents.Block.Body.Deposits,
-			VoluntaryExits:    blockContents.Block.Body.VoluntaryExits,
+			ProposerSlashings: slices.Clone(blockContents.Block.Body.ProposerSlashings),
+			AttesterSlashings: slices.Clone(blockContents.Block.Body.AttesterSlashings),
+			Attestations:      slices.Clone(blockContents.Block.Body.Attestations),
+			Deposits:          slices.Clone(blockContents.Block.Body.Deposits),
+			VoluntaryExits:    slices.Clone(blockContents.Block.Body.VoluntaryExits),
 			SyncAggregate:     blockContents.Block.Body.SyncAggregate,
 			ExecutionPayloadHeader: &deneb.ExecutionPayloadHeader{
 				ParentHash:       blockContents.Block.Body.ExecutionPayload.ParentHash,
@@ -456,16 +458,16 @@ var TestingBlindedBeaconBlockElectra = func() *apiv1electra.BlindedBeaconBlock {
 				GasLimit:         blockContents.Block.Body.ExecutionPayload.GasLimit,
 				GasUsed:          blockContents.Block.Body.ExecutionPayload.GasUsed,
 				Timestamp:        blockContents.Block.Body.ExecutionPayload.Timestamp,
-				ExtraData:        blockContents.Block.Body.ExecutionPayload.ExtraData,
-				BaseFeePerGas:    blockContents.Block.Body.ExecutionPayload.BaseFeePerGas,
+				ExtraData:        slices.Clone(blockContents.Block.Body.ExecutionPayload.ExtraData),
+				BaseFeePerGas:    new(uint256.Int).Set(blockContents.Block.Body.ExecutionPayload.BaseFeePerGas),
 				BlockHash:        blockContents.Block.Body.ExecutionPayload.BlockHash,
 				TransactionsRoot: txRoot,
 				WithdrawalsRoot:  withdrawalsRoot,
 				BlobGasUsed:      blockContents.Block.Body.ExecutionPayload.BlobGasUsed,
 				ExcessBlobGas:    blockContents.Block.Body.ExecutionPayload.ExcessBlobGas,
 			},
-			BLSToExecutionChanges: blockContents.Block.Body.BLSToExecutionChanges,
-			BlobKZGCommitments:    blockContents.Block.Body.BlobKZGCommitments,
+			BLSToExecutionChanges: slices.Clone(blockContents.Block.Body.BLSToExecutionChanges),
+			BlobKZGCommitments:    slices.Clone(blockContents.Block.Body.BlobKZGCommitments),
 			ExecutionRequests:     blockContents.Block.Body.ExecutionRequests,
 		},
 	}
@@ -504,11 +506,11 @@ var TestingBlindedBeaconBlockFulu = func() *apiv1electra.BlindedBeaconBlock {
 			RANDAOReveal:      blockContents.Block.Body.RANDAOReveal,
 			ETH1Data:          blockContents.Block.Body.ETH1Data,
 			Graffiti:          blockContents.Block.Body.Graffiti,
-			ProposerSlashings: blockContents.Block.Body.ProposerSlashings,
-			AttesterSlashings: blockContents.Block.Body.AttesterSlashings,
-			Attestations:      blockContents.Block.Body.Attestations,
-			Deposits:          blockContents.Block.Body.Deposits,
-			VoluntaryExits:    blockContents.Block.Body.VoluntaryExits,
+			ProposerSlashings: slices.Clone(blockContents.Block.Body.ProposerSlashings),
+			AttesterSlashings: slices.Clone(blockContents.Block.Body.AttesterSlashings),
+			Attestations:      slices.Clone(blockContents.Block.Body.Attestations),
+			Deposits:          slices.Clone(blockContents.Block.Body.Deposits),
+			VoluntaryExits:    slices.Clone(blockContents.Block.Body.VoluntaryExits),
 			SyncAggregate:     blockContents.Block.Body.SyncAggregate,
 			ExecutionPayloadHeader: &deneb.ExecutionPayloadHeader{
 				ParentHash:       blockContents.Block.Body.ExecutionPayload.ParentHash,
@@ -521,16 +523,16 @@ var TestingBlindedBeaconBlockFulu = func() *apiv1electra.BlindedBeaconBlock {
 				GasLimit:         blockContents.Block.Body.ExecutionPayload.GasLimit,
 				GasUsed:          blockContents.Block.Body.ExecutionPayload.GasUsed,
 				Timestamp:        blockContents.Block.Body.ExecutionPayload.Timestamp,
-				ExtraData:        blockContents.Block.Body.ExecutionPayload.ExtraData,
-				BaseFeePerGas:    blockContents.Block.Body.ExecutionPayload.BaseFeePerGas,
+				ExtraData:        slices.Clone(blockContents.Block.Body.ExecutionPayload.ExtraData),
+				BaseFeePerGas:    new(uint256.Int).Set(blockContents.Block.Body.ExecutionPayload.BaseFeePerGas),
 				BlockHash:        blockContents.Block.Body.ExecutionPayload.BlockHash,
 				TransactionsRoot: txRoot,
 				WithdrawalsRoot:  withdrawalsRoot,
 				BlobGasUsed:      blockContents.Block.Body.ExecutionPayload.BlobGasUsed,
 				ExcessBlobGas:    blockContents.Block.Body.ExecutionPayload.ExcessBlobGas,
 			},
-			BLSToExecutionChanges: blockContents.Block.Body.BLSToExecutionChanges,
-			BlobKZGCommitments:    blockContents.Block.Body.BlobKZGCommitments,
+			BLSToExecutionChanges: slices.Clone(blockContents.Block.Body.BLSToExecutionChanges),
+			BlobKZGCommitments:    slices.Clone(blockContents.Block.Body.BlobKZGCommitments),
 			ExecutionRequests:     blockContents.Block.Body.ExecutionRequests,
 		},
 	}

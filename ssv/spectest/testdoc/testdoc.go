@@ -104,10 +104,8 @@ const NewDutyDuplicateDutyFinishedDoc = "Tests new duty start with duplicate dut
 const NewDutyDuplicateDutyNotFinishedDoc = "Tests new duty start with duplicate duty that has not finished"
 
 // Documentation for runner/duties/proposer tests
-const ProposerBlindedReceivingNormalBlockDoc = "Tests full happy flow for a blinded proposer runner that accepts a normal block proposal"
-const ProposerNormalReceivingBlindedBlockDoc = "Tests full happy flow for a normal proposer runner that accepts a blinded block proposal"
-const ProposeBlindedBlockDecidedRegularDoc = "Tests proposing a blinded block but the decided block is a regular block"
-const ProposeRegularBlockDecidedBlindedDoc = "Tests proposing a regular block but the decided block is a blinded block"
+const ProposerNormalReceivingBlindedBlockDoc = "Tests full happy flow for a proposer runner whose QBFT value is the blinded block proposal"
+const ProposeRegularBlockDecidedBlindedDoc = "Tests fetching a full block proposal and deciding on its blinded QBFT form"
 
 // Documentation for runner/duties/synccommitteeaggregator tests
 const SyncCommitteeAggregatorProofAllAggregatorDoc = "Tests sync committee aggregator proof validation when all selection proofs are aggregators"
@@ -206,7 +204,6 @@ const ValCheckAttestationUnmatchedSourceEpochDoc = "Tests attestation value chec
 const ValCheckAttestationUnmatchedTargetEpochDoc = "Tests attestation value check with unmatched target epoch from operator's own view (target epoch differs from expected)"
 const ValCheckAttestationUnmatchedSourceRootDoc = "Tests attestation value check with unmatched expected source root from operator's own view (source root differs from expected)"
 const ValCheckAttestationUnmatchedTargetRootDoc = "Tests attestation value check with unmatched target root from operator's own view (target root differs from expected)"
-
 
 // Documentation for valcheckduty tests
 const ValCheckDutyFarFutureDutySlotDoc = "Tests duty value check with duty slot too far in the future"

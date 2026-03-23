@@ -1,7 +1,7 @@
 {
   "Name": "normal proposer accepts blinded block proposal",
   "Type": "SSV multi message processing: multiple message processing tests",
-  "Documentation": "Tests full happy flow for a normal proposer runner that accepts a blinded block proposal",
+  "Documentation": "Tests full happy flow for a proposer runner whose QBFT value is the blinded block proposal",
   "Tests": [
     {
       "Name": "normal proposer accepts blinded block proposal (capella)",
@@ -260,7 +260,7 @@
         }
       ],
       "DecidedSlashable": false,
-      "PostDutyRunnerStateRoot": "4fe4d8beed729ab26d20e887a95e155dc0710dfa1c6130c069c44b64a58caa7d",
+      "PostDutyRunnerStateRoot": "5486f59adfc29901e1447803c7af865b2f17df819cc829f038f3ae84d59cf63e",
       "OutputMessages": [
         {
           "Type": 1,
@@ -561,7 +561,7 @@
         }
       ],
       "DecidedSlashable": false,
-      "PostDutyRunnerStateRoot": "6c2006a2704f8d76a1490ef765016916485bf8f6bd133e4183536bcbb2a024dd",
+      "PostDutyRunnerStateRoot": "a7cfb48081b2d2f7df64c21eb6366fef6e5c0ff2af25aa558e3e59e1632a4045",
       "OutputMessages": [
         {
           "Type": 1,
@@ -862,7 +862,7 @@
         }
       ],
       "DecidedSlashable": false,
-      "PostDutyRunnerStateRoot": "1eea08c46058c1326f8e0e45a299b91bf4be493ecf142a0c9e6a9a99cccea0b2",
+      "PostDutyRunnerStateRoot": "7cdb117ef76e62cab37e6c287f5d51a46979a59f552ab22fc5709fc8c3bb7dfe",
       "OutputMessages": [
         {
           "Type": 1,
@@ -1163,7 +1163,7 @@
         }
       ],
       "DecidedSlashable": false,
-      "PostDutyRunnerStateRoot": "2d59382939347655befbccfd80fbf4731554f3ccaf7b314e509f2457456cf580",
+      "PostDutyRunnerStateRoot": "74a3c7e44a1a460dee328e92723c4a6d8388f43a4bf11210c8684db504afe868",
       "OutputMessages": [
         {
           "Type": 1,

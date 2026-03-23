@@ -13,7 +13,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// ProposeRegularBlockDecidedBlinded tests proposing a regular block but the decided block is a blinded block. Full flow
+// ProposeRegularBlockDecidedBlinded tests the proposer flow where a full block
+// proposal is fetched locally but QBFT decides on its blinded form.
 func ProposeRegularBlockDecidedBlinded() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	test := tests.NewMsgProcessingSpecTest(
