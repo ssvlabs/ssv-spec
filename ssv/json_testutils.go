@@ -55,16 +55,19 @@ func (pcs *State) MarshalJSON() ([]byte, error) {
 		Finished:               pcs.Finished,
 	}
 
-	if pcs.StartingDuty != nil {
-		if validatorDuty, ok := pcs.StartingDuty.(*types.ValidatorDuty); ok {
-			alias.ValidatorDuty = validatorDuty
-		} else if committeeDuty, ok := pcs.StartingDuty.(*types.CommitteeDuty); ok {
-			alias.CommitteeDuty = committeeDuty
-		} else if aggregatorCommitteeDuty, ok := pcs.StartingDuty.(*types.AggregatorCommitteeDuty); ok {
-			alias.AggregatorCommitteeDuty = aggregatorCommitteeDuty
-		} else {
-			return nil, fmt.Errorf("can't marshal because BaseRunner.State.StartingDuty isn't ValidatorDuty, CommitteeDuty, or AggregatorCommitteeDuty")
-		}
+	if pcs.StartingDuty == nil {
+		return nil, fmt.Errorf("can't marshal BaseRunner.State.StartingDuty is nil")
+	}
+
+	switch duty := pcs.StartingDuty.(type) {
+	case *types.ValidatorDuty:
+		alias.ValidatorDuty = duty
+	case *types.CommitteeDuty:
+		alias.CommitteeDuty = duty
+	case *types.AggregatorCommitteeDuty:
+		alias.AggregatorCommitteeDuty = duty
+	default:
+		return nil, fmt.Errorf("can't marshal BaseRunner.State.StartingDuty: expected ValidatorDuty, CommitteeDuty, or AggregatorCommitteeDuty, got: %T", pcs.StartingDuty)
 	}
 	byts, err := json.Marshal(alias)
 
@@ -92,20 +95,38 @@ func (pcs *State) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
+	dutyCount := 0
+	if aux.ValidatorDuty != nil {
+		dutyCount++
+	}
+	if aux.CommitteeDuty != nil {
+		dutyCount++
+	}
+	if aux.AggregatorCommitteeDuty != nil {
+		dutyCount++
+	}
+	if dutyCount > 1 {
+		return fmt.Errorf("can't unmarshal BaseRunner.State.StartingDuty: payload contains more than one of ValidatorDuty, CommitteeDuty, and AggregatorCommitteeDuty")
+	}
+	if dutyCount == 0 {
+		return fmt.Errorf("can't unmarshal BaseRunner.State.StartingDuty: expected one of ValidatorDuty, CommitteeDuty, or AggregatorCommitteeDuty")
+	}
+
+	var startingDuty types.Duty
+	switch {
+	case aux.ValidatorDuty != nil:
+		startingDuty = aux.ValidatorDuty
+	case aux.CommitteeDuty != nil:
+		startingDuty = aux.CommitteeDuty
+	case aux.AggregatorCommitteeDuty != nil:
+		startingDuty = aux.AggregatorCommitteeDuty
+	}
 	pcs.PreConsensusContainer = aux.PreConsensusContainer
 	pcs.PostConsensusContainer = aux.PostConsensusContainer
 	pcs.RunningInstance = aux.RunningInstance
 	pcs.DecidedValue = aux.DecidedValue
 	pcs.Finished = aux.Finished
-
-	// Determine which type of duty was marshaled
-	if aux.ValidatorDuty != nil {
-		pcs.StartingDuty = aux.ValidatorDuty
-	} else if aux.CommitteeDuty != nil {
-		pcs.StartingDuty = aux.CommitteeDuty
-	} else if aux.AggregatorCommitteeDuty != nil {
-		pcs.StartingDuty = aux.AggregatorCommitteeDuty
-	}
+	pcs.StartingDuty = startingDuty
 
 	return nil
 }
