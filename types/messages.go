@@ -198,7 +198,10 @@ func (signedMsg *SignedSSVMessage) DeepCopy() *SignedSSVMessage {
 		Signatures:  make([][]byte, len(signedMsg.Signatures)),
 	}
 	copy(ret.OperatorIDs, signedMsg.OperatorIDs)
-	copy(ret.Signatures, signedMsg.Signatures)
+	for i, sig := range signedMsg.Signatures {
+		ret.Signatures[i] = make([]byte, len(sig))
+		copy(ret.Signatures[i], sig)
+	}
 
 	retSSV := &SSVMessage{
 		MsgType: signedMsg.SSVMessage.MsgType,
