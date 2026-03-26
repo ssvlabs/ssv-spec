@@ -199,8 +199,22 @@ func (signedMsg *SignedSSVMessage) DeepCopy() *SignedSSVMessage {
 	}
 	copy(ret.OperatorIDs, signedMsg.OperatorIDs)
 	for i, sig := range signedMsg.Signatures {
+		if sig == nil {
+			ret.Signatures[i] = nil
+			continue
+		}
 		ret.Signatures[i] = make([]byte, len(sig))
 		copy(ret.Signatures[i], sig)
+	}
+
+	if signedMsg.FullData != nil {
+		ret.FullData = make([]byte, len(signedMsg.FullData))
+		copy(ret.FullData, signedMsg.FullData)
+	}
+
+	if signedMsg.SSVMessage == nil {
+		ret.SSVMessage = nil
+		return ret
 	}
 
 	retSSV := &SSVMessage{
@@ -212,11 +226,6 @@ func (signedMsg *SignedSSVMessage) DeepCopy() *SignedSSVMessage {
 	retSSV.MsgID = msgID
 
 	copy(retSSV.Data, signedMsg.SSVMessage.Data)
-
-	if len(signedMsg.FullData) > 0 {
-		ret.FullData = make([]byte, len(signedMsg.FullData))
-		copy(ret.FullData, signedMsg.FullData)
-	}
 	ret.SSVMessage = retSSV
 	return ret
 }
