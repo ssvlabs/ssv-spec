@@ -48,8 +48,8 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
-				Runner:                  notFinishRunner(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner:                  notFinishRunner(testingutils.AggregatorCommitteeRunner(ks), testingutils.TestingSyncCommitteeContributionDuty),
+				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "f8f6de434622433553716a8d16abf43d92ddad8fd33f0350c39f87d12e30d7e2",
 				OutputMessages: []*types.PartialSignatureMessages{
@@ -95,7 +95,7 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
 			Name:                    fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner:                  notFinishRunner(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty(version)),
+			Runner:                  notFinishRunner(testingutils.AggregatorCommitteeRunner(ks), testingutils.TestingAggregatorDuty(version)),
 			Duty:                    testingutils.TestingAggregatorDuty(version),
 			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: "c47ae8ab2b504bcf0439e541f2d9d04138ccb45fee9411e12da9fd857a46a5b6",

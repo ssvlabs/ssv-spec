@@ -19,20 +19,19 @@ func PostDecided() tests.SpecTest {
 
 	expectedErrCode := types.SkipConsensusMessageAsConsensusHasFinishedErrorCode
 
+	sccSlot := testingutils.TestingSyncCommitteeContributionDuty.Slot
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"consensus valid post decided",
 		testdoc.ConsensusPostDecidedDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.RoleSyncCommitteeContribution),
-					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.SyncCommitteeContributionMsgID, testingutils.TestSyncCommitteeContributionConsensusDataByts),
+					testingutils.SSVDecidingMsgsForAggregatorCommitteeRunnerForKS(testingutils.TestingSyncCommitteeContributionDuty, ks, spec.DataVersionPhase0),
+					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), qbft.Height(sccSlot), testingutils.TestingAggregatorCommitteeMsgID[:], testingutils.TestSyncCommitteeContributionConsensusDataByts),
 				),
-				PostDutyRunnerStateRoot: postDecidedSyncCommitteeContributionSC().Root(),
-				PostDutyRunnerState:     postDecidedSyncCommitteeContributionSC().ExpectedState,
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
@@ -46,11 +45,11 @@ func PostDecided() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name:   fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: testingutils.AggregatorRunner(ks),
+			Runner: testingutils.AggregatorCommitteeRunner(ks),
 			Duty:   testingutils.TestingAggregatorDuty(version),
 			Messages: append(
-				testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData(version), ks, types.RoleAggregator),
-				testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), testingutils.TestingDutySlot, testingutils.AggregatorMsgID, testingutils.TestAggregatorConsensusDataByts(version)),
+				testingutils.SSVDecidingMsgsForAggregatorCommitteeRunnerForKS(testingutils.TestingAggregatorDuty(version), ks, version),
+				testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), qbft.Height(testingutils.TestingDutySlotV(version)), testingutils.TestingAggregatorCommitteeMsgID[:], testingutils.TestAggregatorConsensusDataByts(version)),
 			),
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
@@ -121,8 +120,6 @@ func PostDecided() tests.SpecTest {
 					types.OperatorID(4), qbft.Height(testingutils.TestingDutySlotV(version)), testingutils.ProposerMsgID,
 					testingutils.TestProposerConsensusDataBytsV(version)),
 			),
-			PostDutyRunnerStateRoot: postDecidedProposerSC(version).Root(),
-			PostDutyRunnerState:     postDecidedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
@@ -143,8 +140,6 @@ func PostDecided() tests.SpecTest {
 					types.OperatorID(4), qbft.Height(testingutils.TestingDutySlotV(version)), testingutils.ProposerMsgID,
 					testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)),
 			),
-			PostDutyRunnerStateRoot: postDecidedBlindedProposerSC(version).Root(),
-			PostDutyRunnerState:     postDecidedBlindedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),

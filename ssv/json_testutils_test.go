@@ -29,7 +29,7 @@ func TestStateUnmarshalJSONRejectsMissingStartingDuty(t *testing.T) {
 		StartingDuty: &types.ValidatorDuty{Slot: 99},
 	}
 	err := json.Unmarshal([]byte(`{"Finished":true}`), &state)
-	require.EqualError(t, err, "can't unmarshal BaseRunner.State.StartingDuty: expected ValidatorDuty or CommitteeDuty")
+	require.EqualError(t, err, "can't unmarshal BaseRunner.State.StartingDuty: expected one of ValidatorDuty, CommitteeDuty, or AggregatorCommitteeDuty")
 	require.Equal(t, []byte{0xaa}, state.DecidedValue)
 	require.False(t, state.Finished)
 	require.Equal(t, phase0.Slot(99), state.StartingDuty.DutySlot())
@@ -46,20 +46,22 @@ func TestStateMarshalJSONRejectsUnsupportedStartingDuty(t *testing.T) {
 	t.Parallel()
 
 	_, err := json.Marshal(&State{StartingDuty: fakeDuty{}})
-	require.EqualError(t, err, "json: error calling MarshalJSON for type *ssv.State: can't marshal BaseRunner.State.StartingDuty: expected ValidatorDuty or CommitteeDuty, got: ssv.fakeDuty")
+	require.EqualError(t, err, "json: error calling MarshalJSON for type *ssv.State: can't marshal BaseRunner.State.StartingDuty: expected ValidatorDuty, CommitteeDuty, or AggregatorCommitteeDuty, got: ssv.fakeDuty")
 }
 
 func TestStateUnmarshalJSONRejectsAmbiguousStartingDuty(t *testing.T) {
 	t.Parallel()
 
 	payload, err := json.Marshal(struct {
-		Finished      bool                 `json:"Finished"`
-		ValidatorDuty *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
-		CommitteeDuty *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+		Finished                bool                           `json:"Finished"`
+		ValidatorDuty           *types.ValidatorDuty           `json:"ValidatorDuty,omitempty"`
+		CommitteeDuty           *types.CommitteeDuty           `json:"CommitteeDuty,omitempty"`
+		AggregatorCommitteeDuty *types.AggregatorCommitteeDuty `json:"AggregatorCommitteeDuty,omitempty"`
 	}{
-		Finished:      true,
-		ValidatorDuty: &types.ValidatorDuty{Slot: 1},
-		CommitteeDuty: &types.CommitteeDuty{Slot: 1},
+		Finished:                true,
+		ValidatorDuty:           &types.ValidatorDuty{Slot: 1},
+		CommitteeDuty:           &types.CommitteeDuty{Slot: 1},
+		AggregatorCommitteeDuty: &types.AggregatorCommitteeDuty{Slot: 1},
 	})
 	require.NoError(t, err)
 
@@ -69,7 +71,7 @@ func TestStateUnmarshalJSONRejectsAmbiguousStartingDuty(t *testing.T) {
 		StartingDuty: &types.CommitteeDuty{Slot: 77},
 	}
 	err = json.Unmarshal(payload, &state)
-	require.EqualError(t, err, "can't unmarshal BaseRunner.State.StartingDuty: payload contains both ValidatorDuty and CommitteeDuty")
+	require.EqualError(t, err, "can't unmarshal BaseRunner.State.StartingDuty: payload contains more than one of ValidatorDuty, CommitteeDuty, and AggregatorCommitteeDuty")
 	require.Equal(t, []byte{0xbb}, state.DecidedValue)
 	require.False(t, state.Finished)
 	require.Equal(t, phase0.Slot(77), state.StartingDuty.DutySlot())
@@ -115,6 +117,25 @@ func TestStateUnmarshalJSONAcceptsKnownDutyTypes(t *testing.T) {
 		require.True(t, ok)
 		require.EqualValues(t, 34, committeeDuty.Slot)
 	})
+
+	t.Run("aggregator committee duty", func(t *testing.T) {
+		t.Parallel()
+
+		payload, err := json.Marshal(struct {
+			AggregatorCommitteeDuty *types.AggregatorCommitteeDuty `json:"AggregatorCommitteeDuty,omitempty"`
+		}{
+			AggregatorCommitteeDuty: &types.AggregatorCommitteeDuty{Slot: 56},
+		})
+		require.NoError(t, err)
+
+		var state State
+		err = json.Unmarshal(payload, &state)
+		require.NoError(t, err)
+
+		aggregatorCommitteeDuty, ok := state.StartingDuty.(*types.AggregatorCommitteeDuty)
+		require.True(t, ok)
+		require.EqualValues(t, 56, aggregatorCommitteeDuty.Slot)
+	})
 }
 
 func TestStateJSONRoundTripPreservesKnownDutyTypes(t *testing.T) {
@@ -134,6 +155,11 @@ func TestStateJSONRoundTripPreservesKnownDutyTypes(t *testing.T) {
 			name: "committee duty",
 			duty: &types.CommitteeDuty{Slot: 34},
 			slot: 34,
+		},
+		{
+			name: "aggregator committee duty",
+			duty: &types.AggregatorCommitteeDuty{Slot: 56},
+			slot: 56,
 		},
 	}
 
@@ -164,6 +190,10 @@ func TestStateJSONRoundTripPreservesKnownDutyTypes(t *testing.T) {
 				require.Equal(t, duty.Slot, decodedDuty.Slot)
 			case *types.CommitteeDuty:
 				decodedDuty, ok := decoded.StartingDuty.(*types.CommitteeDuty)
+				require.True(t, ok)
+				require.Equal(t, duty.Slot, decodedDuty.Slot)
+			case *types.AggregatorCommitteeDuty:
+				decodedDuty, ok := decoded.StartingDuty.(*types.AggregatorCommitteeDuty)
 				require.True(t, ok)
 				require.Equal(t, duty.Slot, decodedDuty.Slot)
 			default:

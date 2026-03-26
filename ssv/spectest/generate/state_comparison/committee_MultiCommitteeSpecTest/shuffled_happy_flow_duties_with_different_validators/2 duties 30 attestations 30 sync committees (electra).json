@@ -1,5 +1,5 @@
 {
-  "Runners": {
+  "CommitteeRunners": {
     "7424012": {
       "BaseRunner": {
         "State": {
@@ -639,8 +639,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -654,8 +654,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -669,8 +669,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -684,8 +684,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -699,8 +699,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -714,8 +714,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -729,8 +729,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -744,8 +744,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -759,8 +759,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -774,8 +774,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -789,8 +789,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -804,8 +804,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -819,8 +819,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -834,8 +834,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -849,8 +849,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               }
             ]
@@ -2263,8 +2263,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -2278,8 +2278,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -2293,8 +2293,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -2308,8 +2308,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -2323,8 +2323,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -2338,8 +2338,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -2353,8 +2353,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -2368,8 +2368,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -2383,8 +2383,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -2398,8 +2398,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -2413,8 +2413,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -2428,8 +2428,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -2443,8 +2443,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -2458,8 +2458,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               },
               {
@@ -2473,8 +2473,8 @@
                 "ValidatorCommitteeIndex": 11,
                 "ValidatorSyncCommitteeIndices": [
                   0,
-                  1,
-                  2
+                  129,
+                  257
                 ]
               }
             ]
@@ -3249,6 +3249,7 @@
       }
     }
   },
+  "AggregatorCommitteeRunners": {},
   "CommitteeMember": {
     "OperatorID": 1,
     "CommitteeID": "cf97adeedb59e05bfd73a2b4c2a8885708c4f4f70c84c64b27120e72ab733b72",

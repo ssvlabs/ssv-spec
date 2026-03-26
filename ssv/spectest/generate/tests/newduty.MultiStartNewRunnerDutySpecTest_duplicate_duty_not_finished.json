@@ -43,7 +43,7 @@
                   ],
                   "DomainType": "00000301"
                 },
-                "ID": "AAADAQMAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                 "Round": 1,
                 "Height": 12,
                 "LastPreparedRound": 0,
@@ -68,19 +68,24 @@
             },
             "DecidedValue": null,
             "Finished": false,
-            "ValidatorDuty": {
-              "Type": 4,
-              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "AggregatorCommitteeDuty": {
               "Slot": "12",
-              "ValidatorIndex": "1",
-              "CommitteeIndex": 3,
-              "CommitteeLength": 128,
-              "CommitteesAtSlot": 36,
-              "ValidatorCommitteeIndex": 11,
-              "ValidatorSyncCommitteeIndices": [
-                0,
-                1,
-                2
+              "ValidatorDuties": [
+                {
+                  "Type": 4,
+                  "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+                  "Slot": "12",
+                  "ValidatorIndex": "1",
+                  "CommitteeIndex": 3,
+                  "CommitteeLength": 128,
+                  "CommitteesAtSlot": 36,
+                  "ValidatorCommitteeIndex": 11,
+                  "ValidatorSyncCommitteeIndices": [
+                    0,
+                    129,
+                    257
+                  ]
+                }
               ]
             }
           },
@@ -118,7 +123,7 @@
             }
           },
           "QBFTController": {
-            "Identifier": "AAADAQMAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+            "Identifier": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
             "Height": 12,
             "StoredInstances": [
               {
@@ -148,7 +153,7 @@
                     ],
                     "DomainType": "00000301"
                   },
-                  "ID": "AAADAQMAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                  "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                   "Round": 1,
                   "Height": 12,
                   "LastPreparedRound": 0,
@@ -199,14 +204,14 @@
             }
           },
           "BeaconNetwork": "now_test_network",
-          "RunnerRoleType": 3
+          "RunnerRoleType": 6
         }
       },
       "PostDutyRunnerStateRoot": "f8f6de434622433553716a8d16abf43d92ddad8fd33f0350c39f87d12e30d7e2",
       "OutputMessages": [
         {
-          "Type": 3,
-          "Slot": "12",
+          "Type": 6,
+          "Slot": "50",
           "Messages": [
             {
               "PartialSignature": "b1dd2aa2afecc08d4f297f0d5c0a5fa054007db56603cc5cf9b98d66af4658d986c9cf509ec2771ef5af74504c46eadb03709e1096c11bc09e2d93200578dbf0f82af644b8b59572fcc942699121f2f94d0f7565022f5e86a63c9dc142fa4118",
@@ -229,20 +234,25 @@
           ]
         }
       ],
-      "ExpectedErrorCode": 42,
-      "ValidatorDuty": {
-        "Type": 4,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+      "ExpectedErrorCode": 40,
+      "AggregatorCommitteeDuty": {
         "Slot": "12",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 3,
-        "CommitteeLength": 128,
-        "CommitteesAtSlot": 36,
-        "ValidatorCommitteeIndex": 11,
-        "ValidatorSyncCommitteeIndices": [
-          0,
-          1,
-          2
+        "ValidatorDuties": [
+          {
+            "Type": 4,
+            "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+            "Slot": "12",
+            "ValidatorIndex": "1",
+            "CommitteeIndex": 3,
+            "CommitteeLength": 128,
+            "CommitteesAtSlot": 36,
+            "ValidatorCommitteeIndex": 11,
+            "ValidatorSyncCommitteeIndices": [
+              0,
+              129,
+              257
+            ]
+          }
         ]
       }
     },
@@ -456,7 +466,7 @@
           ]
         }
       ],
-      "ExpectedErrorCode": 42,
+      "ExpectedErrorCode": 40,
       "ValidatorDuty": {
         "Type": 2,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -537,7 +547,7 @@
       },
       "PostDutyRunnerStateRoot": "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
       "OutputMessages": null,
-      "ExpectedErrorCode": 42,
+      "ExpectedErrorCode": 40,
       "ValidatorDuty": {
         "Type": 5,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -618,7 +628,7 @@
       },
       "PostDutyRunnerStateRoot": "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
       "OutputMessages": null,
-      "ExpectedErrorCode": 42,
+      "ExpectedErrorCode": 40,
       "ValidatorDuty": {
         "Type": 6,
         "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
@@ -671,7 +681,7 @@
                   ],
                   "DomainType": "00000301"
                 },
-                "ID": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                 "Round": 1,
                 "Height": 12,
                 "LastPreparedRound": 0,
@@ -696,16 +706,21 @@
             },
             "DecidedValue": null,
             "Finished": false,
-            "ValidatorDuty": {
-              "Type": 1,
-              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "AggregatorCommitteeDuty": {
               "Slot": "12",
-              "ValidatorIndex": "1",
-              "CommitteeIndex": 22,
-              "CommitteeLength": 128,
-              "CommitteesAtSlot": 36,
-              "ValidatorCommitteeIndex": 11,
-              "ValidatorSyncCommitteeIndices": null
+              "ValidatorDuties": [
+                {
+                  "Type": 1,
+                  "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+                  "Slot": "12",
+                  "ValidatorIndex": "1",
+                  "CommitteeIndex": 3,
+                  "CommitteeLength": 128,
+                  "CommitteesAtSlot": 36,
+                  "ValidatorCommitteeIndex": 11,
+                  "ValidatorSyncCommitteeIndices": null
+                }
+              ]
             }
           },
           "Share": {
@@ -742,7 +757,7 @@
             }
           },
           "QBFTController": {
-            "Identifier": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+            "Identifier": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
             "Height": 12,
             "StoredInstances": [
               {
@@ -772,7 +787,7 @@
                     ],
                     "DomainType": "00000301"
                   },
-                  "ID": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                  "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                   "Round": 1,
                   "Height": 12,
                   "LastPreparedRound": 0,
@@ -823,13 +838,13 @@
             }
           },
           "BeaconNetwork": "now_test_network",
-          "RunnerRoleType": 1
+          "RunnerRoleType": 6
         }
       },
       "PostDutyRunnerStateRoot": "c47ae8ab2b504bcf0439e541f2d9d04138ccb45fee9411e12da9fd857a46a5b6",
       "OutputMessages": [
         {
-          "Type": 2,
+          "Type": 6,
           "Slot": "50",
           "Messages": [
             {
@@ -841,17 +856,22 @@
           ]
         }
       ],
-      "ExpectedErrorCode": 42,
-      "ValidatorDuty": {
-        "Type": 1,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+      "ExpectedErrorCode": 40,
+      "AggregatorCommitteeDuty": {
         "Slot": "12",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 22,
-        "CommitteeLength": 128,
-        "CommitteesAtSlot": 36,
-        "ValidatorCommitteeIndex": 11,
-        "ValidatorSyncCommitteeIndices": null
+        "ValidatorDuties": [
+          {
+            "Type": 1,
+            "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+            "Slot": "12",
+            "ValidatorIndex": "1",
+            "CommitteeIndex": 3,
+            "CommitteeLength": 128,
+            "CommitteesAtSlot": 36,
+            "ValidatorCommitteeIndex": 11,
+            "ValidatorSyncCommitteeIndices": null
+          }
+        ]
       }
     },
     {
@@ -894,7 +914,7 @@
                   ],
                   "DomainType": "00000301"
                 },
-                "ID": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                 "Round": 1,
                 "Height": 7424012,
                 "LastPreparedRound": 0,
@@ -919,16 +939,21 @@
             },
             "DecidedValue": null,
             "Finished": false,
-            "ValidatorDuty": {
-              "Type": 1,
-              "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+            "AggregatorCommitteeDuty": {
               "Slot": "7424012",
-              "ValidatorIndex": "1",
-              "CommitteeIndex": 22,
-              "CommitteeLength": 128,
-              "CommitteesAtSlot": 36,
-              "ValidatorCommitteeIndex": 11,
-              "ValidatorSyncCommitteeIndices": null
+              "ValidatorDuties": [
+                {
+                  "Type": 1,
+                  "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+                  "Slot": "7424012",
+                  "ValidatorIndex": "1",
+                  "CommitteeIndex": 3,
+                  "CommitteeLength": 128,
+                  "CommitteesAtSlot": 36,
+                  "ValidatorCommitteeIndex": 11,
+                  "ValidatorSyncCommitteeIndices": null
+                }
+              ]
             }
           },
           "Share": {
@@ -965,7 +990,7 @@
             }
           },
           "QBFTController": {
-            "Identifier": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+            "Identifier": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
             "Height": 7424012,
             "StoredInstances": [
               {
@@ -995,7 +1020,7 @@
                     ],
                     "DomainType": "00000301"
                   },
-                  "ID": "AAADAQEAAACOgAZlUagbMYJYcJ7a990fY81oag5NuLKbu3rP5lYIZ3r1pSfZRI7keDVIXgK1C8A=",
+                  "ID": "AAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3I=",
                   "Round": 1,
                   "Height": 7424012,
                   "LastPreparedRound": 0,
@@ -1046,13 +1071,13 @@
             }
           },
           "BeaconNetwork": "now_test_network",
-          "RunnerRoleType": 1
+          "RunnerRoleType": 6
         }
       },
       "PostDutyRunnerStateRoot": "c47ae8ab2b504bcf0439e541f2d9d04138ccb45fee9411e12da9fd857a46a5b6",
       "OutputMessages": [
         {
-          "Type": 2,
+          "Type": 6,
           "Slot": "7424044",
           "Messages": [
             {
@@ -1064,17 +1089,22 @@
           ]
         }
       ],
-      "ExpectedErrorCode": 42,
-      "ValidatorDuty": {
-        "Type": 1,
-        "PubKey": "0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+      "ExpectedErrorCode": 40,
+      "AggregatorCommitteeDuty": {
         "Slot": "7424012",
-        "ValidatorIndex": "1",
-        "CommitteeIndex": 22,
-        "CommitteeLength": 128,
-        "CommitteesAtSlot": 36,
-        "ValidatorCommitteeIndex": 11,
-        "ValidatorSyncCommitteeIndices": null
+        "ValidatorDuties": [
+          {
+            "Type": 1,
+            "PubKey": "0xb99696418493e6f324c8f7680f4de75e97fc9bdf709b93fb21149f4267eeaabae6c89d1091657d2c54eb387d8e6e3847",
+            "Slot": "7424012",
+            "ValidatorIndex": "1",
+            "CommitteeIndex": 3,
+            "CommitteeLength": 128,
+            "CommitteesAtSlot": 36,
+            "ValidatorCommitteeIndex": 11,
+            "ValidatorSyncCommitteeIndices": null
+          }
+        ]
       }
     },
     {
@@ -1279,7 +1309,7 @@
       },
       "PostDutyRunnerStateRoot": "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
       "OutputMessages": null,
-      "ExpectedErrorCode": 42,
+      "ExpectedErrorCode": 40,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -1376,8 +1406,8 @@
                   "ValidatorCommitteeIndex": 11,
                   "ValidatorSyncCommitteeIndices": [
                     0,
-                    1,
-                    2
+                    129,
+                    257
                   ]
                 }
               ]
@@ -1503,7 +1533,7 @@
       },
       "PostDutyRunnerStateRoot": "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
       "OutputMessages": null,
-      "ExpectedErrorCode": 42,
+      "ExpectedErrorCode": 40,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -1518,8 +1548,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]
@@ -1615,8 +1645,8 @@
                   "ValidatorCommitteeIndex": 11,
                   "ValidatorSyncCommitteeIndices": [
                     0,
-                    1,
-                    2
+                    129,
+                    257
                   ]
                 }
               ]
@@ -1742,7 +1772,7 @@
       },
       "PostDutyRunnerStateRoot": "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
       "OutputMessages": null,
-      "ExpectedErrorCode": 42,
+      "ExpectedErrorCode": 40,
       "CommitteeDuty": {
         "Slot": "12",
         "ValidatorDuties": [
@@ -1768,8 +1798,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]
@@ -1977,7 +2007,7 @@
       },
       "PostDutyRunnerStateRoot": "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
       "OutputMessages": null,
-      "ExpectedErrorCode": 42,
+      "ExpectedErrorCode": 40,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -2074,8 +2104,8 @@
                   "ValidatorCommitteeIndex": 11,
                   "ValidatorSyncCommitteeIndices": [
                     0,
-                    1,
-                    2
+                    129,
+                    257
                   ]
                 }
               ]
@@ -2201,7 +2231,7 @@
       },
       "PostDutyRunnerStateRoot": "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
       "OutputMessages": null,
-      "ExpectedErrorCode": 42,
+      "ExpectedErrorCode": 40,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -2216,8 +2246,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]
@@ -2313,8 +2343,8 @@
                   "ValidatorCommitteeIndex": 11,
                   "ValidatorSyncCommitteeIndices": [
                     0,
-                    1,
-                    2
+                    129,
+                    257
                   ]
                 }
               ]
@@ -2440,7 +2470,7 @@
       },
       "PostDutyRunnerStateRoot": "c3556c0d6524a6483057916e68c49e8815b25a47cf8e6677c5a37c2a42f89629",
       "OutputMessages": null,
-      "ExpectedErrorCode": 42,
+      "ExpectedErrorCode": 40,
       "CommitteeDuty": {
         "Slot": "7424012",
         "ValidatorDuties": [
@@ -2466,8 +2496,8 @@
             "ValidatorCommitteeIndex": 11,
             "ValidatorSyncCommitteeIndices": [
               0,
-              1,
-              2
+              129,
+              257
             ]
           }
         ]

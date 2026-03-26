@@ -12,7 +12,7 @@
       "ValidatorIndex": "1"
     }
   ],
-  "ExpectedErrorCode": 34,
+  "ExpectedErrorCode": 32,
   "ExpectedResult": null,
   "ExpectedQuorum": false,
   "PrivateKeys": {

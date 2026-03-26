@@ -2,6 +2,9 @@ package spectest
 
 import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
+	aggregatorcommitteesingleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/aggregatorcommittee/singleduty"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
+	committeemixedduties "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/mixedduties"
 	committeemultipleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/multipleduty"
 	committeesingleduty "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee/singleduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/dutyexe"
@@ -14,6 +17,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/postconsensus"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/preconsensus"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckaggcommittee"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckproposer"
@@ -76,6 +81,10 @@ var AllTests = []tests.TestF{
 	newduty.DuplicateDutyNotFinished,
 	newduty.FirstHeight,
 
+	committee.InvalidSig,
+	committee.CommitteeIDMismatch,
+	committee.WrongRole,
+
 	committeesingleduty.StartDuty,
 	committeesingleduty.StartNoDuty,
 	committeesingleduty.ValidBeaconVote,
@@ -96,6 +105,13 @@ var AllTests = []tests.TestF{
 	committeemultipleduty.ShuffledHappyFlowDutiesWithTheSameValidators,
 	committeemultipleduty.ShuffledHappyFlowDutiesWithDifferentValidators,
 	committeemultipleduty.FailedThanSuccessfulDuties,
+
+	aggregatorcommitteesingleduty.HappyFlow,
+	aggregatorcommitteesingleduty.DutyWithDifferentSlots,
+	aggregatorcommitteesingleduty.MaxValidators,
+
+	committeemixedduties.SameSlot,
+	committeemixedduties.MixedMultipleSlots,
 
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
@@ -133,10 +149,12 @@ var AllTests = []tests.TestF{
 	preconsensus.TooManyRoots,
 	preconsensus.UnorderedExpectedRoots,
 	preconsensus.InvalidSignedMessage,
+	preconsensus.InvalidQuorum,
 	preconsensus.InvalidOperatorSignature,
 	preconsensus.InvalidExpectedRoot,
 	preconsensus.DuplicateMsg,
 	preconsensus.DuplicateMsgDifferentRoots,
+	preconsensus.DuplicateMsgSameSubnet,
 	preconsensus.PostFinish,
 	preconsensus.PostDecided,
 	preconsensus.PostQuorum,
@@ -161,6 +179,12 @@ var AllTests = []tests.TestF{
 	preconsensus.InvalidSignedMessageNoSignatures,
 	preconsensus.InvalidSignedMessageEmptySignature,
 	preconsensus.InvalidSignedMessageDifferentLength,
+	preconsensus.SingleValidatorNotSelected,
+	preconsensus.SingleAggregatorValidatorSelected,
+	preconsensus.SingleContributorValidatorSelected,
+	preconsensus.TerminatesWhenAllSignersSeen,
+	preconsensus.TerminatesWhenAllSelectionsChecked,
+	preconsensus.IgnoreIfAlreadyStartedConsensus,
 
 	valcheckduty.WrongValidatorIndex,
 	valcheckduty.WrongValidatorPK,
@@ -178,6 +202,11 @@ var AllTests = []tests.TestF{
 	valcheckattestations.ValidNonSlashableSlot,
 
 	valcheckproposer.BlindedBlock,
+
+	valcheckaggcommittee.NoValidator,
+	valcheckaggcommittee.Valid,
+
+	valcheck.WrongDecoding,
 
 	dutyexe.WrongDutyRole,
 	dutyexe.WrongDutyPubKey,

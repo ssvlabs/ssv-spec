@@ -1,0 +1,20 @@
+{
+  "Name": "aggcommittee value check no validators",
+  "Type": "Value check: validations for input of different runner roles",
+  "Documentation": "Tests agg committee value check with no validators",
+  "Network": "prater",
+  "RunnerRole": 6,
+  "DutySlot": "12",
+  "Input": "AAAAAAAAAAAcAAAAHAAAABwAAAAcAAAAHAAAAA==",
+  "ExpectedSource": {
+    "epoch": "0",
+    "root": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "ExpectedTarget": {
+    "epoch": "0",
+    "root": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "SlashableSlots": {},
+  "ExpectedErrorCode": 78,
+  "AnyError": true
+}

@@ -122,8 +122,8 @@ func (b *BeaconVote) Decode(data []byte) error {
 	return b.UnmarshalSSZ(data)
 }
 
-// ValidatorConsensusData holds all relevant duty and data Decided on by consensus
-type ValidatorConsensusData struct {
+// ProposerConsensusData holds all relevant data about proposer duty for consensus
+type ProposerConsensusData struct {
 	// Duty max size is
 	// 			8 + 48 + 6*8 + 13*8 + 1 = 209
 	Duty    ValidatorDuty
@@ -163,32 +163,17 @@ type ValidatorConsensusData struct {
 	DataSSZ []byte `ssz-max:"8388608"` // 2^23 to account for potential gas limit increases
 }
 
-func (cd *ValidatorConsensusData) Validate() error {
-	switch cd.Duty.Type {
-	case BNRoleAggregator:
-		if _, _, err := cd.GetAggregateAndProof(); err != nil {
-			return err
-		}
-	case BNRoleProposer:
-		if _, _, err := cd.GetBlockData(); err != nil {
-			return err
-		}
-	case BNRoleSyncCommitteeContribution:
-		if _, err := cd.GetSyncCommitteeContributions(); err != nil {
-			return err
-		}
-	case BNRoleValidatorRegistration:
-		return NewError(ValidatorRegistrationNoConsensusDataErrorCode, "validator registration has no consensus data")
-	case BNRoleVoluntaryExit:
-		return NewError(ValidatorExitNoConsensusDataErrorCode, "voluntary exit has no consensus data")
-	default:
+func (cd *ProposerConsensusData) Validate() error {
+	if cd.Duty.Type != BNRoleProposer {
+
 		return NewError(UnknownDutyRoleDataErrorCode, "unknown duty role")
 	}
-	return nil
+	_, _, err := cd.GetBlockData()
+	return err
 }
 
 // GetBlockData returns block data for both blinded and regular blocks
-func (cd *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot ssz.HashRoot, err error) {
+func (cd *ProposerConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot ssz.HashRoot, err error) {
 	switch cd.Version {
 	case spec.DataVersionCapella:
 		blindedBlock := &apiv1capella.BlindedBeaconBlock{}
@@ -251,74 +236,264 @@ func (cd *ValidatorConsensusData) GetBlockData() (blk *api.VersionedProposal, si
 	}
 }
 
-func (cd *ValidatorConsensusData) GetAggregateAndProof() (*spec.VersionedAggregateAndProof, ssz.HashRoot, error) {
-	switch cd.Version {
-	case spec.DataVersionPhase0:
-		ret := &phase0.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-		}
-
-		return &spec.VersionedAggregateAndProof{Version: cd.Version, Phase0: ret}, ret, nil
-	case spec.DataVersionAltair:
-		ret := &phase0.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-		}
-
-		return &spec.VersionedAggregateAndProof{Version: cd.Version, Altair: ret}, ret, nil
-	case spec.DataVersionBellatrix:
-		ret := &phase0.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-		}
-
-		return &spec.VersionedAggregateAndProof{Version: cd.Version, Bellatrix: ret}, ret, nil
-	case spec.DataVersionCapella:
-		ret := &phase0.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-		}
-
-		return &spec.VersionedAggregateAndProof{Version: cd.Version, Capella: ret}, ret, nil
-	case spec.DataVersionDeneb:
-		ret := &phase0.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-		}
-
-		return &spec.VersionedAggregateAndProof{Version: cd.Version, Deneb: ret}, ret, nil
-	case spec.DataVersionElectra:
-		ret := &electra.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-		}
-
-		return &spec.VersionedAggregateAndProof{Version: cd.Version, Electra: ret}, ret, nil
-	case spec.DataVersionFulu:
-		ret := &electra.AggregateAndProof{}
-		if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-			return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-		}
-
-		return &spec.VersionedAggregateAndProof{Version: cd.Version, Fulu: ret}, ret, nil
-	default:
-		return nil, nil, fmt.Errorf("unknown aggregate and proof version %d", cd.Version)
-	}
-}
-
-func (cd *ValidatorConsensusData) GetSyncCommitteeContributions() (Contributions, error) {
-	ret := Contributions{}
-	if err := ret.UnmarshalSSZ(cd.DataSSZ); err != nil {
-		return nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz: %w", err))
-	}
-	return ret, nil
-}
-
-func (cd *ValidatorConsensusData) Encode() ([]byte, error) {
+func (cd *ProposerConsensusData) Encode() ([]byte, error) {
 	return cd.MarshalSSZ()
 }
 
-func (cd *ValidatorConsensusData) Decode(data []byte) error {
+func (cd *ProposerConsensusData) Decode(data []byte) error {
 	return cd.UnmarshalSSZ(data)
+}
+
+// AssignedAggregator represents a validator that has been assigned as an aggregator or sync committee contributor
+type AssignedAggregator struct {
+	ValidatorIndex phase0.ValidatorIndex
+	SelectionProof phase0.BLSSignature `ssz-size:"96"`
+	CommitteeIndex uint64
+}
+
+// AggregatorCommitteeConsensusData is the consensus data for the aggregator committee runner
+type AggregatorCommitteeConsensusData struct {
+	Version spec.DataVersion
+
+	// Aggregator duties
+	Aggregators []AssignedAggregator `ssz-max:"3000"` // For a maximum of 3k validators per committee
+	// AggregatorsCommitteeIndexes is a list of committee indexes used by the above aggregators
+	AggregatorsCommitteeIndexes []uint64 `ssz-max:"64"`
+	// AggregatedAttestations is a list of aggregated attestations (SSZ bytes), one for each committee above
+	AggregatedAttestations [][]byte `ssz-max:"64,131308"`
+
+	// Sync Committee duties
+	Contributors []AssignedAggregator `ssz-max:"2048"` // 512 * 4
+	// SyncCommitteeContributions is a list of contributions, one for each subcommittee
+	SyncCommitteeContributions []altair.SyncCommitteeContribution `ssz-max:"4"`
+}
+
+// Validate ensures the consensus data is internally consistent
+func (a *AggregatorCommitteeConsensusData) Validate() error {
+
+	// Ensure at least one validator
+	if len(a.Aggregators) == 0 && len(a.Contributors) == 0 {
+		return NewError(AggCommConsensusDataNoValidatorErrorCode, "no validators assigned to aggregator committee or sync committee")
+	}
+
+	// Aggregators validation
+
+	// Ensure there is exactly one aggregated attestation per committee index
+	if len(a.AggregatorsCommitteeIndexes) != len(a.AggregatedAttestations) {
+		return NewError(AggCommAggCommIdxCntMismatchErrorCode, "committee indexes and attestations count mismatch")
+	}
+
+	// Validate equal set (AggregatorsCommitteeIndexes vs. Aggregators.CommitteeIndex)
+	allowedAggCommittees := make(map[uint64]struct{}, len(a.AggregatorsCommitteeIndexes))
+	for _, idx := range a.AggregatorsCommitteeIndexes {
+		// Duplicates are not allowed
+		if _, dup := allowedAggCommittees[idx]; dup {
+			return NewError(AggCommDuplicatedCommIdxErrorCode, "duplicate index in AggregatorsCommitteeIndexes")
+		}
+		allowedAggCommittees[idx] = struct{}{}
+	}
+	usedAggCommittees := make(map[uint64]struct{}, len(a.AggregatorsCommitteeIndexes))
+	for _, agg := range a.Aggregators {
+		// Check it exists in allowed
+		if _, ok := allowedAggCommittees[agg.CommitteeIndex]; !ok {
+			return NewError(AggCommCommIdxMismatchErrorCode, "aggregator committee index not listed in AggregatorsCommitteeIndexes")
+		}
+		// Mark as used
+		usedAggCommittees[agg.CommitteeIndex] = struct{}{}
+	}
+	// Ensure no committee index was left unused (no more than necessary)
+	if len(usedAggCommittees) != len(allowedAggCommittees) {
+		return NewError(AggCommUnusedCommIdxErrorCode, "leftover aggregator committee index not usedAggCommittees by any aggregator")
+	}
+
+	// Ensure attestation objects are decoded correctly
+	for _, attBytes := range a.AggregatedAttestations {
+		if a.Version >= spec.DataVersionElectra {
+			att := &electra.Attestation{}
+			if err := att.UnmarshalSSZ(attBytes); err != nil {
+				return NewError(AggCommAttestationDecodingErrorCode, "failed to unmarshal attestation")
+			}
+		} else {
+			att := &phase0.Attestation{}
+			if err := att.UnmarshalSSZ(attBytes); err != nil {
+				return NewError(AggCommAttestationDecodingErrorCode, "failed to unmarshal attestation")
+			}
+		}
+	}
+
+	// Sync committee contributors validation
+
+	// Validate equal set (Contributors.CommitteeIndex vs. SyncCommitteeContributions.SubcommitteeIndex)
+	allowedSCSubnets := make(map[uint64]struct{}, len(a.SyncCommitteeContributions))
+	for _, contrib := range a.SyncCommitteeContributions {
+		// Duplicates are not allowed
+		if _, dup := allowedSCSubnets[contrib.SubcommitteeIndex]; dup {
+			return NewError(AggCommSCCSubnetDuplicateErrorCode, "duplicate subcommittee index in SyncCommitteeContributions")
+		}
+		allowedSCSubnets[contrib.SubcommitteeIndex] = struct{}{}
+	}
+	usedSCSubnets := make(map[uint64]struct{}, len(a.SyncCommitteeContributions))
+	for _, contributor := range a.Contributors {
+		// Check it exists in allowed
+		if _, ok := allowedSCSubnets[contributor.CommitteeIndex]; !ok {
+			return NewError(AggCommSubnetNotInSCSubnetsErrorCode, "sync committee contributor subnet not listed in SyncCommitteeContributions")
+		}
+		// Mark as used
+		usedSCSubnets[contributor.CommitteeIndex] = struct{}{}
+	}
+	// Ensure no subcommittee index was left unused (no more than necessary)
+	if len(usedSCSubnets) != len(allowedSCSubnets) {
+		return NewError(AggCommUnusedSubnetErrorCode, "leftover sync committee contributor subnet not used in SyncCommitteeContributions")
+	}
+
+	return nil
+}
+
+// Encode encodes the consensus data to SSZ
+func (a *AggregatorCommitteeConsensusData) Encode() ([]byte, error) {
+	return a.MarshalSSZ()
+}
+
+// Decode decodes the consensus data from SSZ
+func (a *AggregatorCommitteeConsensusData) Decode(data []byte) error {
+	return a.UnmarshalSSZ(data)
+}
+
+func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (ssz.HashRoot, error) {
+	switch aggProof.Version {
+	case spec.DataVersionPhase0:
+		return aggProof.Phase0, nil
+	case spec.DataVersionAltair:
+		return aggProof.Altair, nil
+	case spec.DataVersionBellatrix:
+		return aggProof.Bellatrix, nil
+	case spec.DataVersionCapella:
+		return aggProof.Capella, nil
+	case spec.DataVersionDeneb:
+		return aggProof.Deneb, nil
+	case spec.DataVersionElectra:
+		return aggProof.Electra, nil
+	case spec.DataVersionFulu:
+		return aggProof.Fulu, nil
+	default:
+		return nil, WrapError(UnknownVersionErrorCode, fmt.Errorf("unknown version %d", aggProof.Version))
+	}
+}
+
+// GetAggregateAndProofs returns all aggregate and proofs for the aggregator duties along with their hash roots
+func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.VersionedAggregateAndProof, error) {
+
+	proofs := make([]*spec.VersionedAggregateAndProof, 0, len(a.Aggregators))
+
+	for _, aggregator := range a.Aggregators {
+		// Decode attestation based on version
+		var aggregateAndProof *spec.VersionedAggregateAndProof
+
+		// Get index for validator in a.AggregatedAttestations
+		foundIndex := -1
+		for idx, committeeIndex := range a.AggregatorsCommitteeIndexes {
+			if committeeIndex == aggregator.CommitteeIndex {
+				foundIndex = idx
+				break
+			}
+		}
+		if foundIndex == -1 || foundIndex >= len(a.AggregatedAttestations) {
+			return nil, NewError(AggCommCommIdxMismatchErrorCode, "aggregator committee index not found for attestation")
+		}
+
+		switch a.Version {
+		case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
+			agg := &phase0.AggregateAndProof{
+				AggregatorIndex: aggregator.ValidatorIndex,
+				SelectionProof:  aggregator.SelectionProof,
+			}
+			// Unmarshal the attestation
+			att := &phase0.Attestation{}
+			if err := att.UnmarshalSSZ(a.AggregatedAttestations[foundIndex]); err != nil {
+				return nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal attestation: %w", err))
+			}
+			agg.Aggregate = att
+
+			aggregateAndProof = &spec.VersionedAggregateAndProof{
+				Version: a.Version,
+			}
+			// Set the appropriate version field and store hash root
+			switch a.Version {
+			case spec.DataVersionPhase0:
+				aggregateAndProof.Phase0 = agg
+			case spec.DataVersionAltair:
+				aggregateAndProof.Altair = agg
+			case spec.DataVersionBellatrix:
+				aggregateAndProof.Bellatrix = agg
+			case spec.DataVersionCapella:
+				aggregateAndProof.Capella = agg
+			case spec.DataVersionDeneb:
+				aggregateAndProof.Deneb = agg
+			default:
+				panic("unhandled default case")
+			}
+
+		case spec.DataVersionElectra, spec.DataVersionFulu:
+			agg := &electra.AggregateAndProof{
+				AggregatorIndex: aggregator.ValidatorIndex,
+				SelectionProof:  aggregator.SelectionProof,
+			}
+			// Unmarshal the attestation
+			att := &electra.Attestation{}
+			if err := att.UnmarshalSSZ(a.AggregatedAttestations[foundIndex]); err != nil {
+				return nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal electra attestation: %w", err))
+			}
+			agg.Aggregate = att
+
+			aggregateAndProof = &spec.VersionedAggregateAndProof{
+				Version: a.Version,
+			}
+
+			switch a.Version {
+			case spec.DataVersionElectra:
+				aggregateAndProof.Electra = agg
+			case spec.DataVersionFulu:
+				aggregateAndProof.Fulu = agg
+			default:
+				panic("unhandled default case")
+			}
+
+		default:
+			return nil, WrapError(UnknownBlockVersionErrorCode, fmt.Errorf("unsupported version %s", a.Version.String()))
+		}
+
+		proofs = append(proofs, aggregateAndProof)
+	}
+
+	return proofs, nil
+}
+
+// GetSyncCommitteeContributions returns the sync committee contributions
+func (a *AggregatorCommitteeConsensusData) GetSyncCommitteeContributions() (Contributions, error) {
+
+	contributions := make(Contributions, 0, len(a.Contributors))
+
+	for _, contributor := range a.Contributors {
+
+		// Find associated object in a.SyncCommitteeContributions
+		foundIndex := -1
+		for idx, contrib := range a.SyncCommitteeContributions {
+			if contrib.SubcommitteeIndex == contributor.CommitteeIndex {
+				foundIndex = idx
+				break
+			}
+		}
+		if foundIndex == -1 {
+			return nil, NewError(AggCommSubnetNotInSCSubnetsErrorCode, "sync committee contributor subnet not found in SyncCommitteeContributions")
+		}
+
+		var sigBytes [96]byte
+		copy(sigBytes[:], contributor.SelectionProof[:])
+		contributions = append(contributions, &Contribution{
+			SelectionProofSig: sigBytes,
+			Contribution:      a.SyncCommitteeContributions[foundIndex],
+		})
+	}
+
+	return contributions, nil
 }

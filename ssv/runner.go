@@ -140,11 +140,11 @@ func (b *BaseRunner) baseConsensusMsgProcessing(runner Runner, msg *types.Signed
 	}
 
 	if err := decidedValue.Decode(decidedSignedMsg.FullData); err != nil {
-		return true, nil, errors.Wrap(err, "failed to parse decided value to ValidatorConsensusData")
+		return true, nil, errors.Wrap(err, "failed to parse decided value to consensus data")
 	}
 
 	if err := b.validateDecidedConsensusData(runner, decidedValue); err != nil {
-		return true, nil, errors.Wrap(err, "decided ValidatorConsensusData invalid")
+		return true, nil, errors.Wrap(err, "decided consensus data invalid")
 	}
 
 	runner.GetBaseRunner().State.DecidedValue, err = decidedValue.Encode()
@@ -233,7 +233,7 @@ func (b *BaseRunner) didDecideCorrectly(prevDecided bool, signedMessage *types.S
 	return true, nil
 }
 
-// decide input param can be a BeaconVote or ValidatorConsensusData
+// decide input param can be a BeaconVote, ProposerConsensusData, or AggregatorCommitteeConsensusData
 func (b *BaseRunner) decide(runner Runner, slot phase0.Slot, input types.Encoder) error {
 	byts, err := input.Encode()
 	if err != nil {

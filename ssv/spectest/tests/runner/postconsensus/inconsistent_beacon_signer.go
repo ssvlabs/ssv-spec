@@ -20,43 +20,56 @@ func InconsistentBeaconSigner() tests.SpecTest {
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus inconsistent beacon signer",
 		testdoc.PostConsensusInconsistentBeaconSignerDoc,
-		[]*tests.MsgProcessingSpecTest{
-			{
-				Name: "sync committee contribution",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
-					testingutils.TestSyncCommitteeContributionConsensusData,
-				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
-				},
-				PostDutyRunnerStateRoot: inconsistentBeaconSignerSyncCommitteeContributionSC().Root(),
-				PostDutyRunnerState:     inconsistentBeaconSignerSyncCommitteeContributionSC().ExpectedState,
-				DontStartDuty:           true,
-				ExpectedErrorCode:       expectedErrorCode,
-			},
-		},
+		[]*tests.MsgProcessingSpecTest{},
 		ks,
 	)
 
-	for _, version := range testingutils.SupportedAggregatorVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-			Name: fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: decideRunner(
-				testingutils.AggregatorRunner(ks),
-				testingutils.TestingAggregatorDuty(version),
-				testingutils.TestAggregatorConsensusData(version),
-			),
-			Duty: testingutils.TestingAggregatorDuty(version),
-			Messages: []*types.SignedSSVMessage{
-				testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version))),
-			},
-			DontStartDuty:     true,
-			ExpectedErrorCode: expectedErrorCode,
+	// Aggregator committee duty
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name: "sync committee contribution",
+		Runner: decideAggregatorCommitteeRunner(
+			testingutils.AggregatorCommitteeRunner(ks),
+			testingutils.TestingSyncCommitteeContributionDuty,
+			testingutils.TestSyncCommitteeContributionConsensusData,
+		),
+		Duty: testingutils.TestingSyncCommitteeContributionDuty,
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
 		},
-		)
+		DontStartDuty:     true,
+		ExpectedErrorCode: expectedErrorCode,
+	})
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+			{
+				Name: fmt.Sprintf("aggregator (%s)", version.String()),
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingAggregatorDuty(version),
+					testingutils.TestAggregatorConsensusData(version),
+				),
+				Duty: testingutils.TestingAggregatorDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version))),
+				},
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
+			},
+			{
+				Name: fmt.Sprintf("aggregator committee mixed (%s)", version.String()),
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingAggregatorCommitteeDutyMixed(version),
+					testingutils.TestAggregatorCommitteeConsensusData(version),
+				),
+				Duty: testingutils.TestingAggregatorCommitteeDutyMixed(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedMsg(ks.Shares[1], 1, version, ks))),
+				},
+				DontStartDuty:     true,
+				ExpectedErrorCode: expectedErrorCode,
+			},
+		}...)
 	}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
@@ -119,10 +132,8 @@ func InconsistentBeaconSigner() tests.SpecTest {
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
 			},
-			PostDutyRunnerStateRoot: inconsistentBeaconSignerProposerSC(version).Root(),
-			PostDutyRunnerState:     inconsistentBeaconSignerProposerSC(version).ExpectedState,
-			DontStartDuty:           true,
-			ExpectedErrorCode:       expectedErrorCode,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 
@@ -139,10 +150,8 @@ func InconsistentBeaconSigner() tests.SpecTest {
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
 			},
-			PostDutyRunnerStateRoot: inconsistentBeaconSignerBlindedProposerSC(version).Root(),
-			PostDutyRunnerState:     inconsistentBeaconSignerBlindedProposerSC(version).ExpectedState,
-			DontStartDuty:           true,
-			ExpectedErrorCode:       expectedErrorCode,
+			DontStartDuty:     true,
+			ExpectedErrorCode: expectedErrorCode,
 		}
 	}
 

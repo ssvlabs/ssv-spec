@@ -4,12 +4,28 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
+
+func aggregatorRoot(ks *testingutils.TestKeySet, version spec.DataVersion) []string {
+	return []string{testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks, version))}
+}
+func syncCommitteeRoots(ks *testingutils.TestKeySet) []string {
+	return []string{
+		testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
+		testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
+		testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
+	}
+}
+func aggregatorAndSyncCommitteeRoots(ks *testingutils.TestKeySet, version spec.DataVersion) []string {
+	return append(
+		aggregatorRoot(ks, version),
+		syncCommitteeRoots(ks)...,
+	)
+}
 
 // Quorum  tests a quorum of valid SignedPartialSignatureMessage
 func Quorum() tests.SpecTest {
@@ -19,53 +35,62 @@ func Quorum() tests.SpecTest {
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"post consensus quorum",
 		testdoc.PostConsensusQuorumDoc,
-		[]*tests.MsgProcessingSpecTest{
-			{
-				Name: "sync committee contribution",
-				Runner: decideRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
-					testingutils.TestSyncCommitteeContributionConsensusData,
-				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks))),
-				},
-				PostDutyRunnerStateRoot: quorumSyncCommitteeContributionSC().Root(),
-				PostDutyRunnerState:     quorumSyncCommitteeContributionSC().ExpectedState,
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
-				},
-				DontStartDuty: true,
-			},
-		},
+		[]*tests.MsgProcessingSpecTest{},
 		ks,
 	)
 
-	for _, version := range testingutils.SupportedAggregatorVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-			Name: fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: decideRunner(
-				testingutils.AggregatorRunner(ks),
-				testingutils.TestingAggregatorDuty(version),
-				testingutils.TestAggregatorConsensusData(version),
-			),
-			Duty: testingutils.TestingAggregatorDuty(version),
-			Messages: []*types.SignedSSVMessage{
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version))),
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2, version))),
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3, version))),
-			},
-			BeaconBroadcastedRoots: []string{
-				testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks, version)),
-			},
-			DontStartDuty: true,
+	// Aggregator committee duty
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name: "sync committee contribution",
+		Runner: decideAggregatorCommitteeRunner(
+			testingutils.AggregatorCommitteeRunner(ks),
+			testingutils.TestingSyncCommitteeContributionDuty,
+			testingutils.TestSyncCommitteeContributionConsensusData,
+		),
+		Duty: testingutils.TestingSyncCommitteeContributionDuty,
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks))),
 		},
-		)
+		BeaconBroadcastedRoots: syncCommitteeRoots(ks),
+		DontStartDuty:          true,
+	})
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+			{
+				Name: fmt.Sprintf("aggregator (%s)", version.String()),
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingAggregatorDuty(version),
+					testingutils.TestAggregatorConsensusData(version),
+				),
+				Duty: testingutils.TestingAggregatorDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[3], 3, version))),
+				},
+				BeaconBroadcastedRoots: aggregatorRoot(ks, version),
+				DontStartDuty:          true,
+			},
+			{
+				Name: fmt.Sprintf("aggregator committee mixed (%s)", version.String()),
+				Runner: decideAggregatorCommitteeRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingAggregatorCommitteeDutyMixed(version),
+					testingutils.TestAggregatorCommitteeConsensusData(version),
+				),
+				Duty: testingutils.TestingAggregatorCommitteeDutyMixed(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedMsg(ks.Shares[1], 1, version, ks))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedMsg(ks.Shares[2], 2, version, ks))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedMsg(ks.Shares[3], 3, version, ks))),
+				},
+				BeaconBroadcastedRoots: aggregatorAndSyncCommitteeRoots(ks, version),
+				DontStartDuty:          true,
+			},
+		}...)
 	}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
@@ -143,8 +168,6 @@ func Quorum() tests.SpecTest {
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 			},
-			PostDutyRunnerStateRoot: quorumProposerSC(version).Root(),
-			PostDutyRunnerState:     quorumProposerSC(version).ExpectedState,
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 			},
@@ -167,8 +190,6 @@ func Quorum() tests.SpecTest {
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 			},
-			PostDutyRunnerStateRoot: quorumBlindedProposerSC(version).Root(),
-			PostDutyRunnerState:     quorumBlindedProposerSC(version).ExpectedState,
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
 			},

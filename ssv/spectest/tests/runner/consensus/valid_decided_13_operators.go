@@ -21,9 +21,9 @@ func ValidDecided13Operators() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:                    "sync committee contribution",
-				Runner:                  testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.RoleSyncCommitteeContribution),
+				Runner:                  testingutils.AggregatorCommitteeRunner(ks),
+				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
+				Messages:                testingutils.SSVDecidingMsgsForAggregatorCommitteeRunnerForKS(testingutils.TestingSyncCommitteeContributionDuty, ks, spec.DataVersionPhase0),
 				PostDutyRunnerStateRoot: "2feec534f4ef14ea96e83b17d4feaf3f40e4739a72fc7118c7da1ef2c1331937",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
@@ -59,9 +59,9 @@ func ValidDecided13Operators() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name:                    fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner:                  testingutils.AggregatorRunner(ks),
+			Runner:                  testingutils.AggregatorCommitteeRunner(ks),
 			Duty:                    testingutils.TestingAggregatorDuty(version),
-			Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData(version), ks, types.RoleAggregator),
+			Messages:                testingutils.SSVDecidingMsgsForAggregatorCommitteeRunnerForKS(testingutils.TestingAggregatorDuty(version), ks, version),
 			PostDutyRunnerStateRoot: "dd79a9da2d025a61d4e4ebdebbc9a331a876a43bb8c8e7c274132ae1c4a35175",
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),

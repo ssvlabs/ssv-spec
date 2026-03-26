@@ -4,32 +4,27 @@ package types
 type RunnerRole int32
 
 const (
-	RoleCommittee RunnerRole = iota
-	RoleAggregator
-	RoleProposer
-	RoleSyncCommitteeContribution
-
-	RoleValidatorRegistration
-	RoleVoluntaryExit
-
-	RoleUnknown = -1
+	RoleCommittee             = RunnerRole(0) // Combines attestation and sync committee duties
+	RoleProposer              = RunnerRole(2)
+	RoleValidatorRegistration = RunnerRole(4)
+	RoleVoluntaryExit         = RunnerRole(5)
+	RoleAggregatorCommittee   = RunnerRole(6) // Combines aggregator and sync committee contribution duties
+	RoleUnknown               = RunnerRole(-1)
 )
 
-// String returns name of the runner role
+// String returns the name of the runner role
 func (r RunnerRole) String() string {
 	switch r {
 	case RoleCommittee:
 		return "COMMITTEE_RUNNER"
-	case RoleAggregator:
-		return "AGGREGATOR_RUNNER"
 	case RoleProposer:
 		return "PROPOSER_RUNNER"
-	case RoleSyncCommitteeContribution:
-		return "SYNC_COMMITTEE_CONTRIBUTION_RUNNER"
 	case RoleValidatorRegistration:
 		return "VALIDATOR_REGISTRATION_RUNNER"
 	case RoleVoluntaryExit:
 		return "VOLUNTARY_EXIT_RUNNER"
+	case RoleAggregatorCommittee:
+		return "AGGREGATOR_COMMITTEE_RUNNER"
 	default:
 		return "UNDEFINED"
 	}

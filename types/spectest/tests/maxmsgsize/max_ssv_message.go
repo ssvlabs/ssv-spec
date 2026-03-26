@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	maxSizeSSVMessageFromQBFTMessage              = 722480
-	maxSizeSSVMessageFromPartialSignatureMessages = 217816
+	MaxSizeSSVMessageFromQBFTMessage              = 722480
+	MaxSizeSSVMessageFromPartialSignatureMessages = 727000
 )
 
 func maxSSVMessageFromData(data []byte) *types.SSVMessage {
@@ -43,8 +43,8 @@ func MaxSSVMessageFromQBFTMessage() *StructureSizeTest {
 		"max SSVMessage from qbftMessage",
 		testdoc.StructureSizeTestMaxSSVMessageFromQBFTMessageDoc,
 		maxSSVMessageFromQBFTMessage(),
-		maxSizeSSVMessageFromQBFTMessage,
-		true,
+		MaxSizeSSVMessageFromQBFTMessage,
+		false,
 	)
 }
 
@@ -53,7 +53,7 @@ func MaxSSVMessageFromPartialSignatureMessage() *StructureSizeTest {
 		"max SSVMessage from PartialSignatureMessages",
 		testdoc.StructureSizeTestMaxSSVMessageFromPartialSignatureMessagesDoc,
 		maxSSVMessageFromPartialSignatureMessages(),
-		maxSizeSSVMessageFromPartialSignatureMessages,
-		false,
+		MaxSizeSSVMessageFromPartialSignatureMessages,
+		true,
 	)
 }

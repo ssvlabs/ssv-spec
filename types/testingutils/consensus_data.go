@@ -1,9 +1,8 @@
 package testingutils
 
 import (
-	"crypto/sha256"
-
 	"github.com/attestantio/go-eth2-client/spec"
+
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
@@ -11,12 +10,8 @@ import (
 // Aggregator
 // ==================================================
 
-var TestAggregatorConsensusData = func(version spec.DataVersion) *types.ValidatorConsensusData {
-	return &types.ValidatorConsensusData{
-		Duty:    *TestingAggregatorDuty(version),
-		DataSSZ: TestingAggregateAndProofBytesV(version),
-		Version: version,
-	}
+var TestAggregatorConsensusData = func(version spec.DataVersion) *types.AggregatorCommitteeConsensusData {
+	return TestAggregatorCommitteeConsensusDataForDuty(TestingAggregatorCommitteeDutyOnlyAggregator(version), version, nil)
 }
 var TestAggregatorConsensusDataByts = func(version spec.DataVersion) []byte {
 	byts, _ := TestAggregatorConsensusData(version).Encode()
@@ -28,7 +23,7 @@ var TestAggregatorConsensusDataByts = func(version spec.DataVersion) []byte {
 // ==================================================
 
 // Used only as invalid test case
-var TestAttesterConsensusData = &types.ValidatorConsensusData{
+var TestAttesterConsensusData = &types.ProposerConsensusData{
 	Duty:    *TestingAttesterDuty(spec.DataVersionPhase0).ValidatorDuties[0],
 	DataSSZ: TestingAttestationDataBytes(spec.DataVersionPhase0),
 	Version: spec.DataVersionPhase0,
@@ -40,7 +35,7 @@ var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.Encode()
 // ==================================================
 
 // Used only as invalid test case
-var TestSyncCommitteeConsensusData = &types.ValidatorConsensusData{
+var TestSyncCommitteeConsensusData = &types.ProposerConsensusData{
 	Duty:    *TestingSyncCommitteeDuty(spec.DataVersionPhase0).ValidatorDuties[0],
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
 	Version: spec.DataVersionPhase0,
@@ -51,9 +46,9 @@ var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encod
 // Proposer
 // ==================================================
 
-var TestProposerConsensusDataV = func(version spec.DataVersion) *types.ValidatorConsensusData {
+var TestProposerConsensusDataV = func(version spec.DataVersion) *types.ProposerConsensusData {
 	duty := TestingProposerDutyV(version)
-	return &types.ValidatorConsensusData{
+	return &types.ProposerConsensusData{
 		Duty:    *duty,
 		Version: version,
 		DataSSZ: TestingBeaconBlockBytesV(version),
@@ -66,8 +61,8 @@ var TestProposerConsensusDataBytsV = func(version spec.DataVersion) []byte {
 	return byts
 }
 
-var TestProposerBlindedBlockConsensusDataV = func(version spec.DataVersion) *types.ValidatorConsensusData {
-	return &types.ValidatorConsensusData{
+var TestProposerBlindedBlockConsensusDataV = func(version spec.DataVersion) *types.ProposerConsensusData {
+	return &types.ProposerConsensusData{
 		Duty:    *TestingProposerDutyV(version),
 		Version: version,
 		DataSSZ: TestingBlindedBeaconBlockBytesV(version),
@@ -84,12 +79,14 @@ var TestProposerBlindedBlockConsensusDataBytsV = func(version spec.DataVersion) 
 // Sync Committee Contribution
 // ==================================================
 
-var TestSyncCommitteeContributionConsensusData = &types.ValidatorConsensusData{
-	Duty:    TestingSyncCommitteeContributionDuty,
-	DataSSZ: TestingContributionsDataBytes,
-	Version: spec.DataVersionPhase0,
+var TestSyncCommitteeContributionConsensusDataF = func() *types.AggregatorCommitteeConsensusData {
+	return TestAggregatorCommitteeConsensusDataForDuty(TestingAggregatorCommitteeDutyOnlySyncCommittee(), spec.DataVersionPhase0, nil)
 }
+
+var TestSyncCommitteeContributionConsensusDataForDuty = func(duty *types.AggregatorCommitteeDuty) *types.AggregatorCommitteeConsensusData {
+	return TestAggregatorCommitteeConsensusDataForDuty(duty, spec.DataVersionPhase0, nil)
+}
+
+var TestSyncCommitteeContributionConsensusData = TestSyncCommitteeContributionConsensusDataF()
+
 var TestSyncCommitteeContributionConsensusDataByts, _ = TestSyncCommitteeContributionConsensusData.Encode()
-var TestSyncCommitteeContributionConsensusDataRoot = func() [32]byte {
-	return sha256.Sum256(TestSyncCommitteeContributionConsensusDataByts)
-}()
