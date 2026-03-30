@@ -18,17 +18,18 @@ var (
 	CutoffRound = 12 // stop processing attestations after 8*2+120*3 = 6.2 min (~ 1 epoch)
 )
 
+func (i *Instance) advanceRound(newRound Round) {
+	i.State.Round = newRound
+	i.State.ProposalAcceptedForCurrentRound = nil
+	i.config.GetTimer().TimeoutForRound(newRound)
+}
+
 func (i *Instance) UponRoundTimeout() error {
 	if !i.CanProcessMessages() {
 		return types.NewError(types.TimeoutInstanceErrorCode, "instance stopped processing timeouts")
 	}
 
 	newRound := i.State.Round + 1
-	defer func() {
-		i.State.Round = newRound
-		i.State.ProposalAcceptedForCurrentRound = nil
-		i.config.GetTimer().TimeoutForRound(i.State.Round)
-	}()
 
 	roundChange, err := CreateRoundChange(i.State, i.signer, newRound, i.StartValue)
 	if err != nil {
@@ -39,5 +40,6 @@ func (i *Instance) UponRoundTimeout() error {
 		return errors.Wrap(err, "failed to broadcast round change message")
 	}
 
+	i.advanceRound(newRound)
 	return nil
 }

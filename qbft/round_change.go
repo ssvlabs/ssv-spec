@@ -85,9 +85,6 @@ func (i *Instance) uponRoundChange(
 }
 
 func (i *Instance) uponChangeRoundPartialQuorum(newRound Round, instanceStartValue []byte) error {
-	i.State.Round = newRound
-	i.State.ProposalAcceptedForCurrentRound = nil
-	i.config.GetTimer().TimeoutForRound(i.State.Round)
 	roundChange, err := CreateRoundChange(i.State, i.signer, newRound, instanceStartValue)
 	if err != nil {
 		return errors.Wrap(err, "failed to create round change message")
@@ -95,6 +92,7 @@ func (i *Instance) uponChangeRoundPartialQuorum(newRound Round, instanceStartVal
 	if err := i.Broadcast(roundChange); err != nil {
 		return errors.Wrap(err, "failed to broadcast round change message")
 	}
+	i.advanceRound(newRound)
 	return nil
 }
 
