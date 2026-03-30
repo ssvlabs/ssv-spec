@@ -118,6 +118,24 @@ func (msg *Message) GetPrepareJustifications() ([]*types.SignedSSVMessage, error
 	return unmarshalJustifications(msg.PrepareJustification)
 }
 
+func (msg *Message) RoundChangeJustificationProcessingMessages() ([]*ProcessingMessage, error) {
+	signedMessages, err := msg.GetRoundChangeJustifications()
+	if err != nil {
+		return nil, err
+	}
+
+	return processingMessagesFromSignedMessages(signedMessages)
+}
+
+func (msg *Message) PrepareJustificationProcessingMessages() ([]*ProcessingMessage, error) {
+	signedMessages, err := msg.GetPrepareJustifications()
+	if err != nil {
+		return nil, err
+	}
+
+	return processingMessagesFromSignedMessages(signedMessages)
+}
+
 func unmarshalJustifications(data [][]byte) ([]*types.SignedSSVMessage, error) {
 	ret := make([]*types.SignedSSVMessage, len(data))
 	for i, d := range data {
@@ -126,6 +144,18 @@ func unmarshalJustifications(data [][]byte) ([]*types.SignedSSVMessage, error) {
 			return nil, types.WrapError(types.UnmarshalSSZErrorCode, fmt.Errorf("unmarshal justification: %w", err))
 		}
 		ret[i] = sMsg
+	}
+	return ret, nil
+}
+
+func processingMessagesFromSignedMessages(signedMessages []*types.SignedSSVMessage) ([]*ProcessingMessage, error) {
+	ret := make([]*ProcessingMessage, 0, len(signedMessages))
+	for _, signedMessage := range signedMessages {
+		msg, err := NewProcessingMessage(signedMessage)
+		if err != nil {
+			return nil, errors.Wrap(err, "decode justification message")
+		}
+		ret = append(ret, msg)
 	}
 	return ret, nil
 }
