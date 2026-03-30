@@ -193,6 +193,10 @@ func (msg *SignedSSVMessage) Validate() error {
 
 // DeepCopy returns a new instance of SignedMessage, deep copied
 func (signedMsg *SignedSSVMessage) DeepCopy() *SignedSSVMessage {
+	if signedMsg == nil {
+		return nil
+	}
+
 	ret := &SignedSSVMessage{
 		OperatorIDs: make([]OperatorID, len(signedMsg.OperatorIDs)),
 		Signatures:  make([][]byte, len(signedMsg.Signatures)),

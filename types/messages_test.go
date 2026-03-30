@@ -36,6 +36,12 @@ func TestSignedSSVMessageDeepCopyDoesNotAliasSlices(t *testing.T) {
 }
 
 func TestSignedSSVMessageDeepCopyEdgeCases(t *testing.T) {
+	t.Run("nil receiver returns nil", func(t *testing.T) {
+		var original *SignedSSVMessage
+
+		require.Nil(t, original.DeepCopy())
+	})
+
 	t.Run("nil SSVMessage still copies FullData", func(t *testing.T) {
 		original := &SignedSSVMessage{
 			OperatorIDs: []OperatorID{1},
