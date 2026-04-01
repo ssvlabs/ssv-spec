@@ -2,6 +2,17 @@ package testingutils
 
 import "github.com/ssvlabs/ssv-spec/types"
 
+func CommitteeMsgIDForKeySet(keySet *TestKeySet) types.MessageID {
+	msgIDBytes := CommitteeMsgID(keySet)
+	var msgID types.MessageID
+	copy(msgID[:], msgIDBytes)
+	return msgID
+}
+
+var TestingCommitteeMsgID = func() types.MessageID {
+	return CommitteeMsgIDForKeySet(Testing4SharesSet())
+}()
+
 var CommitteeMsgID = func(keySet *TestKeySet) []byte {
 	// Identifier
 	committee := make([]uint64, 0)
