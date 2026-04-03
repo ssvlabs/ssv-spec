@@ -72,13 +72,15 @@ type RunnerPreset struct {
 }
 
 type MsgValidationSpecTest struct {
-	Name             string                       `json:"Name"`
-	Type             string                       `json:"Type,omitempty"`
-	Documentation    string                       `json:"Documentation"`
-	Runner           RunnerPreset                 `json:"Runner"`
-	Message          []byte                       `json:"Message"`
-	ExpectedDecision pubsub.ValidationResult      `json:"ExpectedDecision"`
-	PrivateKeys      *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+	Name             string                  `json:"Name"`
+	Type             string                  `json:"Type,omitempty"`
+	Documentation    string                  `json:"Documentation"`
+	Runner           RunnerPreset            `json:"Runner"`
+	Message          []byte                  `json:"Message"`
+	ExpectedDecision pubsub.ValidationResult `json:"ExpectedDecision"`
+	// PrivateKeys are emitted for generated JSON consumers; local test execution
+	// reconstructs the standard test key set in buildRunner.
+	PrivateKeys *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *MsgValidationSpecTest) TestName() string {

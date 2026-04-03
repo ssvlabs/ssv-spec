@@ -14,15 +14,20 @@ import (
 )
 
 func TestAll(t *testing.T) {
+	t.Parallel()
+
 	for _, testF := range AllTests {
 		test := testF()
 		t.Run(test.TestName(), func(t *testing.T) {
+			t.Parallel()
 			test.Run(t)
 		})
 	}
 }
 
 func TestJson(t *testing.T) {
+	t.Parallel()
+
 	basedir, err := os.Getwd()
 	require.NoError(t, err)
 
@@ -36,6 +41,8 @@ func TestJson(t *testing.T) {
 	for name, test := range untypedTests {
 		testName := test.(map[string]interface{})["Name"].(string)
 		t.Run(testName, func(t *testing.T) {
+			t.Parallel()
+
 			testType := strings.Split(name, "_")[0]
 			switch testType {
 			case reflect.TypeOf(&msgvalidation.MsgValidationSpecTest{}).String():
