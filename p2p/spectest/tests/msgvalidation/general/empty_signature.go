@@ -27,7 +27,10 @@ func EmptySignature() tests.SpecTest {
 	return msgvalidation.NewMsgValidationSpecTest(
 		"empty signature",
 		testdoc.EmptySignatureDoc,
-		msgvalidation.NewRunnerPreset(msgvalidation.RunnerTypeAggregatorCommittee),
+		msgvalidation.NewRunnerPreset(
+			msgvalidation.RunnerTypeAggregatorCommittee,
+			msgvalidation.StartDutyOp(msgvalidation.AggregatorCommitteeDuty(spec.DataVersionPhase0)),
+		),
 		msgvalidation.EncodeSignedSSVMessage(signedMsg),
 		pubsub.ValidationReject,
 		ks,

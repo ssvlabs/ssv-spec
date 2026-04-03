@@ -25,6 +25,7 @@ var AllTests = []tests.TestF{
 	consensus.ValidFutureDecidedConsensus,
 	consensus.DecidedConsensusBadFullData,
 	preconsensus.ValidPreConsensusPartialSignature,
+	preconsensus.InvalidPreConsensusPartialSignatureSignature,
 	preconsensus.PreConsensusWithoutRunningDuty,
 	preconsensus.PreConsensusSignerMismatch,
 	preconsensus.PreConsensusPastSlot,

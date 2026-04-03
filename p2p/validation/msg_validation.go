@@ -88,8 +88,14 @@ func validateConsensusMsg(runner ssv.Runner, signedMsg *types.SignedSSVMessage) 
 
 func validatePartialSigMsg(runner ssv.Runner, signedMsg *types.SignedSSVMessage) error {
 	partialSigMsg := &types.PartialSignatureMessages{}
+	if err := signedMsg.Validate(); err != nil {
+		return err
+	}
 	if len(signedMsg.OperatorIDs) != 1 {
 		return errors.New("partial signature msg allows 1 signer")
+	}
+	if err := types.Verify(signedMsg, runner.GetBaseRunner().QBFTController.CommitteeMember.Committee); err != nil {
+		return types.WrapError(types.MessageSignatureInvalidErrorCode, fmt.Errorf("msg signature invalid: %w", err))
 	}
 	if err := partialSigMsg.Decode(signedMsg.SSVMessage.Data); err != nil {
 		return err

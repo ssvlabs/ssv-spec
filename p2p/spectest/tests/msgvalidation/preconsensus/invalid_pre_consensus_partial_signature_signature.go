@@ -1,4 +1,4 @@
-package general
+package preconsensus
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
@@ -12,21 +12,21 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-func NoSignatures() tests.SpecTest {
+func InvalidPreConsensusPartialSignatureSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	duty := testingutils.TestingAggregatorAndSyncCommitteeContributorDuties(spec.DataVersionPhase0)
 	keySetMap := map[phase0.ValidatorIndex]*testingutils.TestKeySet{
 		testingutils.TestingValidatorIndex: ks,
 	}
-	partialSigMsg := testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, keySetMap, 1)
-	base := testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, partialSigMsg))
-	signedMsg := msgvalidation.MutateSignedSSVMessage(base, func(msg *types.SignedSSVMessage) {
-		msg.Signatures = nil
-	})
+	base := testingutils.SignPartialSigSSVMessage(
+		ks,
+		testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMsgForDuty(duty, keySetMap, 1)),
+	)
+	signedMsg := msgvalidation.MutatePartialSignatureSignedMessage(base, 1, ks.OperatorKeys[2], func(msg *types.PartialSignatureMessages) {})
 
 	return msgvalidation.NewMsgValidationSpecTest(
-		"no signatures",
-		testdoc.NoSignaturesDoc,
+		"invalid pre consensus partial signature signature",
+		testdoc.InvalidPreConsensusPartialSignatureSignatureDoc,
 		msgvalidation.NewRunnerPreset(
 			msgvalidation.RunnerTypeAggregatorCommittee,
 			msgvalidation.StartDutyOp(msgvalidation.AggregatorCommitteeDuty(spec.DataVersionPhase0)),

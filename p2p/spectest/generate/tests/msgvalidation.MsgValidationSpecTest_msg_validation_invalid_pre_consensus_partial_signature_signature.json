@@ -1,7 +1,7 @@
 {
-  "Name": "empty signature",
+  "Name": "invalid pre consensus partial signature signature",
   "Type": "P2P message validation: validation of pubsub decoding, signed-message verification, and runner acceptance rules",
-  "Documentation": "Rejects SignedSSVMessages that contain an empty signature entry.",
+  "Documentation": "Rejects a pre-consensus partial signature message whose outer RSA signature does not match the declared operator signer.",
   "Runner": {
     "Type": "aggregator_committee",
     "Setup": [
@@ -14,7 +14,7 @@
       }
     ]
   },
-  "Message": "EAAAABQAAAAcAAAAtAIAAAQAAAABAAAAAAAAAAEAAAAAAAAAAAADAQYAAAAAAAAAAAAAAAAAAAAAAAAAz5et7ttZ4Fv9c6K0wqiIVwjE9PcMhMZLJxIOcqtzO3JEAAAABgAAAAAAAAAMAAAAAAAAABQAAACkebAj2fKOuczdNbuWD7XCZVMN/xeK5+Spt38Bf3WcpaISXnJr3gzZKjMwCVSUyMAHgqJ/qJB+jBqt49rNuOBhRobGfh9igwRgXXhh4O2YA8auIWtKrlWo/7Se7Rk8vqdGJhHSxZK99SFPEk/npSaatz1E78nmzhq+MvgZauUm3gEAAAAAAAAAAQAAAAAAAACDG4Q3yrETidGd+a23e/ivwz2fFbLakVM7HyZcatPErkQNK5ZDRKRSEazW4/U2G8QP45dYHO3iwD+UIqF9QUgstBhydi8cD7dUw5XNOEWlBCfo+g7eS4xAkSr1fNqNLmepZ0d2aUJ0W0pkR+P0FPy6X+3pcn7gIalXbJpnCphuUwEAAAAAAAAAAQAAAAAAAACOojPrcPybPaFfLMimhZwbCDa32WRTxgaRTktxzmgC/B4tLn2l0y34wiMWUvwBFYoZS5XkTaPibbtzdRbyWsp8PucTchJ0/dvIKcPFJr+zg4aC9ruKh/g7m+XpTnkOQquZidOrbHWqIq711WiYqTDD9n3gDiQRAwcez4RSPHP8HAEAAAAAAAAAAQAAAAAAAAC0JzbtJgrct+/se4l2O44lu1kjnCbt346Cqrhbm6VKBomVHb6wPHmhKdv9mzbgYV4ZiGFAXF4G8sU9z9H+jKNXmUUsBjaP63OkxcPS0aN1NL9zRlbaTY3qMZQ4psYSDFvw83P8sAl0MLCRWzTcAAof8KLpk7wcS/kPAIZ0nz0mnwEAAAAAAAAAAQAAAAAAAAA=",
+  "Message": "EAAAABQBAAAcAQAAtAMAAAQAAABIY6xzcbuV7OwrG2ique8NhvjwuHnZSv3HHU43IxBeqijOty9nv6TtSc8wWapi5MNEHhdfPhbdyE49lzUMcQoA108Zq5UvTlxGgoNTtU8Dsbtxa4q/5QAUPBfuFwNdNyzBljmW7RVP+Yj7LH7I2NFf4H4o2hjeHAqfXpP//AzYmLyfxgtAqjkhN7ku6DHM8BF0QgzVfj8eMfIc+m4Kuaivx++evNm/BiriyFx74Agc52jkScm38Uatth52HF7zMo5jjoXDxDwNGRV9aOwRXKFX6buH5XTxJaS3tKl5pvvNuA+NTMbUiuSgnb/H/Lwvg/7Gd6DtKfcwC7N9ySqheg4oAQAAAAAAAAABAAAAAAAAAAAAAwEGAAAAAAAAAAAAAAAAAAAAAAAAAM+Xre7bWeBb/XOitMKoiFcIxPT3DITGSycSDnKrcztyRAAAAAYAAAAAAAAADAAAAAAAAAAUAAAApHmwI9nyjrnM3TW7lg+1wmVTDf8Xiufkqbd/AX91nKWiEl5ya94M2SozMAlUlMjAB4Kif6iQfowarePazbjgYUaGxn4fYoMEYF14YeDtmAPGriFrSq5VqP+0nu0ZPL6nRiYR0sWSvfUhTxJP56Ummrc9RO/J5s4avjL4GWrlJt4BAAAAAAAAAAEAAAAAAAAAgxuEN8qxE4nRnfmtt3v4r8M9nxWy2pFTOx8mXGrTxK5EDSuWQ0SkUhGs1uP1NhvED+OXWBzt4sA/lCKhfUFILLQYcnYvHA+3VMOVzThFpQQn6PoO3kuMQJEq9XzajS5nqWdHdmlCdFtKZEfj9BT8ul/t6XJ+4CGpV2yaZwqYblMBAAAAAAAAAAEAAAAAAAAAjqIz63D8mz2hXyzIpoWcGwg2t9lkU8YGkU5Lcc5oAvweLS59pdMt+MIjFlL8ARWKGUuV5E2j4m27c3UW8lrKfD7nE3ISdP3byCnDxSa/s4OGgva7iof4O5vl6U55DkKrmYnTq2x1qiKu9dVomKkww/Z94A4kEQMHHs+EUjxz/BwBAAAAAAAAAAEAAAAAAAAAtCc27SYK3Lfv7HuJdjuOJbtZI5wm7d+Ogqq4W5ulSgaJlR2+sDx5oSnb/Zs24GFeGYhhQFxeBvLFPc/R/oyjV5lFLAY2j+tzpMXD0tGjdTS/c0ZW2k2N6jGUOKbGEgxb8PNz/LAJdDCwkVs03AAKH/Ci6ZO8HEv5DwCGdJ89Jp8BAAAAAAAAAAEAAAAAAAAA",
   "ExpectedDecision": 1,
   "PrivateKeys": {
     "ValidatorSK": "3515c7d08e5affd729e9579f7588d30f2342ee6f6a9334acf006345262162c6f",

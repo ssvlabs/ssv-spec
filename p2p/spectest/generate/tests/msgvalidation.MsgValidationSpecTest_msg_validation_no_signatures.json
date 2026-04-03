@@ -3,7 +3,16 @@
   "Type": "P2P message validation: validation of pubsub decoding, signed-message verification, and runner acceptance rules",
   "Documentation": "Rejects SignedSSVMessages that carry no signatures.",
   "Runner": {
-    "Type": "aggregator_committee"
+    "Type": "aggregator_committee",
+    "Setup": [
+      {
+        "Type": "start_duty",
+        "Duty": {
+          "Kind": "aggregator_committee",
+          "Version": "phase0"
+        }
+      }
+    ]
   },
   "Message": "EAAAABAAAAAYAAAAsAIAAAEAAAAAAAAAAQAAAAAAAAAAAAMBBgAAAAAAAAAAAAAAAAAAAAAAAADPl63u21ngW/1zorTCqIhXCMT09wyExksnEg5yq3M7ckQAAAAGAAAAAAAAAAwAAAAAAAAAFAAAAKR5sCPZ8o65zN01u5YPtcJlUw3/F4rn5Km3fwF/dZylohJecmveDNkqMzAJVJTIwAeCon+okH6MGq3j2s244GFGhsZ+H2KDBGBdeGHg7ZgDxq4ha0quVaj/tJ7tGTy+p0YmEdLFkr31IU8ST+elJpq3PUTvyebOGr4y+Blq5SbeAQAAAAAAAAABAAAAAAAAAIMbhDfKsROJ0Z35rbd7+K/DPZ8VstqRUzsfJlxq08SuRA0rlkNEpFIRrNbj9TYbxA/jl1gc7eLAP5QioX1BSCy0GHJ2LxwPt1TDlc04RaUEJ+j6Dt5LjECRKvV82o0uZ6lnR3ZpQnRbSmRH4/QU/Lpf7elyfuAhqVdsmmcKmG5TAQAAAAAAAAABAAAAAAAAAI6iM+tw/Js9oV8syKaFnBsINrfZZFPGBpFOS3HOaAL8Hi0ufaXTLfjCIxZS/AEVihlLleRNo+Jtu3N1FvJaynw+5xNyEnT928gpw8Umv7ODhoL2u4qH+Dub5elOeQ5Cq5mJ06tsdaoirvXVaJipMMP2feAOJBEDBx7PhFI8c/wcAQAAAAAAAAABAAAAAAAAALQnNu0mCty37+x7iXY7jiW7WSOcJu3fjoKquFubpUoGiZUdvrA8eaEp2/2bNuBhXhmIYUBcXgbyxT3P0f6Mo1eZRSwGNo/rc6TFw9LRo3U0v3NGVtpNjeoxlDimxhIMW/Dzc/ywCXQwsJFbNNwACh/woumTvBxL+Q8AhnSfPSafAQAAAAAAAAABAAAAAAAAAA==",
   "ExpectedDecision": 1,

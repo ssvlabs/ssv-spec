@@ -18,6 +18,7 @@ const FutureConsensusMultiSignerDoc = "Rejects future non-decided consensus goss
 const ValidFutureDecidedConsensusDoc = "Accepts a future decided consensus message that carries quorum signatures and valid full data."
 const DecidedConsensusBadFullDataDoc = "Rejects a decided consensus message when FullData does not hash to the commit root."
 const ValidPreConsensusPartialSignatureDoc = "Accepts a valid aggregator-committee pre-consensus partial signature message."
+const InvalidPreConsensusPartialSignatureSignatureDoc = "Rejects a pre-consensus partial signature message whose outer RSA signature does not match the declared operator signer."
 const PreConsensusWithoutRunningDutyDoc = "Rejects pre-consensus partial signatures when the runner has no active duty."
 const PreConsensusSignerMismatchDoc = "Rejects pre-consensus partial signatures when the outer signer differs from the inner partial-signature signer."
 const PreConsensusPastSlotDoc = "Rejects pre-consensus partial signatures whose slot is older than the running duty slot."
