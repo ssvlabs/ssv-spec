@@ -21,12 +21,6 @@ func MsgValidation(runner ssv.Runner) MsgValidatorFunc {
 		if err != nil {
 			return pubsub.ValidationReject
 		}
-		if err := signedSSVMsg.Validate(); err != nil {
-			return pubsub.ValidationReject
-		}
-		if err := types.Verify(signedSSVMsg, runner.GetBaseRunner().QBFTController.CommitteeMember.Committee); err != nil {
-			return pubsub.ValidationReject
-		}
 
 		switch signedSSVMsg.SSVMessage.GetType() {
 		case types.SSVConsensusMsgType:
