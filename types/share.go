@@ -19,6 +19,56 @@ type ShareMember struct {
 	Signer      OperatorID
 }
 
+// Validate checks the following rules:
+// - SharePubKey must be 48 bytes
+// - Committee must be non-empty and within the ssz-max bound
+// - Committee members must be non-nil, have non-zero signer IDs, and 48-byte SharePubKeys
+// - Graffiti must be <= 32 bytes
+// - DomainType must be one of the known SSV domains in this spec
+func (share *Share) Validate() error {
+	if share == nil {
+		return NewError(InvalidShareErrorCode, "nil share")
+	}
+
+	if len(share.SharePubKey) != 48 {
+		return NewError(InvalidShareErrorCode, "invalid share public key length")
+	}
+
+	if len(share.Committee) == 0 {
+		return NewError(InvalidShareErrorCode, "empty committee")
+	}
+	if len(share.Committee) > 13 {
+		return NewError(InvalidShareErrorCode, "committee too large")
+	}
+
+	seenSigners := make(map[OperatorID]struct{}, len(share.Committee))
+	for _, member := range share.Committee {
+		if member == nil {
+			return NewError(InvalidShareErrorCode, "nil committee member")
+		}
+		if member.Signer == 0 {
+			return NewError(InvalidShareErrorCode, "committee member signer ID 0 not allowed")
+		}
+		if len(member.SharePubKey) != 48 {
+			return NewError(InvalidShareErrorCode, "invalid committee member share public key length")
+		}
+		if _, exists := seenSigners[member.Signer]; exists {
+			return NewError(InvalidShareErrorCode, "duplicate committee member signer")
+		}
+		seenSigners[member.Signer] = struct{}{}
+	}
+
+	if len(share.Graffiti) > 32 {
+		return NewError(InvalidShareErrorCode, "graffiti too large")
+	}
+
+	if !share.DomainType.IsKnown() {
+		return NewError(InvalidShareErrorCode, "unknown domain type")
+	}
+
+	return nil
+}
+
 func (share *Share) Encode() ([]byte, error) {
 	return share.MarshalSSZ()
 }

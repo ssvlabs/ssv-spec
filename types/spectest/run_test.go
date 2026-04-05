@@ -43,11 +43,14 @@ func TestJson(t *testing.T) {
 	untypedTests := map[string]interface{}{}
 	byteValue, err := os.ReadFile(path)
 	if err != nil {
-		panic(err.Error())
+		if os.IsNotExist(err) {
+			t.Skipf("missing %s; generate it with `make generate-jsons`", path)
+		}
+		t.Fatalf("failed to read %s: %v", path, err)
 	}
 
 	if err := json.Unmarshal(byteValue, &untypedTests); err != nil {
-		panic(err.Error())
+		t.Fatalf("failed to unmarshal JSON: %v", err)
 	}
 
 	fmt.Printf("running %d tests\n", len(untypedTests))

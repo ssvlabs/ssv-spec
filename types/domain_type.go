@@ -20,6 +20,19 @@ var (
 // DomainType is a unique identifier for signatures, 2 identical pieces of data signed with different domains will result in different sigs
 type DomainType [4]byte
 
+// IsKnown returns true if the domain matches one of the explicitly defined SSV domains in this spec.
+func (d DomainType) IsKnown() bool {
+	switch d {
+	case GenesisMainnet, AlanMainnet, BooleMainnet,
+		PrimusTestnet,
+		ShifuTestnet, ShifuV2Testnet,
+		JatoTestnet, JatoV2Testnet, JatoAlanTestnet:
+		return true
+	default:
+		return false
+	}
+}
+
 // DomainTypes represent specific forks for specific chains, messages are signed with the domain type making 2 messages from different domains incompatible
 // Historical Note:
 // The fork version values for JatoTestnet and JatoV2Testnet are both set to 0x1 due to an error

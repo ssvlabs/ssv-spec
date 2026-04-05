@@ -129,6 +129,48 @@ func (bd *ValidatorDuty) RunnerRole() RunnerRole {
 	return MapDutyToRunnerRole(bd.Type)
 }
 
+// Validate checks the following rules:
+// - Type must map to a known RunnerRole
+// - PubKey must be non-zero
+// - CommitteeLength/ValidatorCommitteeIndex must be consistent for committee-related roles
+// - ValidatorSyncCommitteeIndices must not exceed the ssz-max bound
+func (bd *ValidatorDuty) Validate() error {
+	if bd == nil {
+		return NewError(InvalidValidatorDutyErrorCode, "nil validator duty")
+	}
+
+	if MapDutyToRunnerRole(bd.Type) == RoleUnknown {
+		return NewError(InvalidValidatorDutyErrorCode, "unknown duty type")
+	}
+
+	allZero := true
+	for _, b := range bd.PubKey[:] {
+		if b != 0 {
+			allZero = false
+			break
+		}
+	}
+	if allZero {
+		return NewError(InvalidValidatorDutyErrorCode, "zero validator pubkey not allowed")
+	}
+
+	switch bd.Type {
+	case BNRoleAttester, BNRoleAggregator, BNRoleSyncCommittee, BNRoleSyncCommitteeContribution:
+		if bd.CommitteeLength == 0 {
+			return NewError(InvalidValidatorDutyErrorCode, "committee length must be non-zero")
+		}
+		if bd.ValidatorCommitteeIndex >= bd.CommitteeLength {
+			return NewError(InvalidValidatorDutyErrorCode, "validator committee index out of bounds")
+		}
+	}
+
+	if len(bd.ValidatorSyncCommitteeIndices) > 13 {
+		return NewError(InvalidValidatorDutyErrorCode, "too many sync committee indices")
+	}
+
+	return nil
+}
+
 // GetValidatorIndex returns the validator index
 func (bd *ValidatorDuty) GetValidatorIndex() spec.ValidatorIndex {
 	return bd.ValidatorIndex

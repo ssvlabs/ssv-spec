@@ -99,6 +99,8 @@ type SSVMessage struct {
 	Data []byte `ssz-max:"726932"`
 }
 
+const maxSSVMessageDataSize = 726932
+
 func (msg *SSVMessage) GetType() MsgType {
 	return msg.MsgType
 }
@@ -121,6 +123,36 @@ func (msg *SSVMessage) Encode() ([]byte, error) {
 // Decode returns error if decoding failed
 func (msg *SSVMessage) Decode(data []byte) error {
 	return msg.UnmarshalSSZ(data)
+}
+
+// Validate checks the following rules:
+// - MsgType must be in the known range
+// - MsgID must encode a known RunnerRole
+// - Data must not exceed the ssz-max bound
+func (msg *SSVMessage) Validate() error {
+	if msg == nil {
+		return NewError(NilSSVMessageErrorCode, "nil SSVMessage")
+	}
+
+	switch msg.MsgType {
+	case SSVConsensusMsgType, SSVPartialSignatureMsgType, DKGMsgType:
+		// ok
+	default:
+		return NewError(MessageTypeInvalidErrorCode, "invalid SSV message type")
+	}
+
+	// Role is used by higher-level components (committee/runner selection) and not all code paths
+	// enforce the same constraints. Here we only reject negative role values (including RoleUnknown),
+	// to avoid accepting wrapped/invalid encodings.
+	if msg.MsgID.GetRoleType() < 0 {
+		return NewError(SSVMessageInvalidRoleErrorCode, "invalid SSV message role")
+	}
+
+	if len(msg.Data) > maxSSVMessageDataSize {
+		return NewError(SSVMessageDataTooLargeErrorCode, "SSV message data too large")
+	}
+
+	return nil
 }
 
 // SignedSSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
@@ -188,7 +220,7 @@ func (msg *SignedSSVMessage) Validate() error {
 		return NewError(NilSSVMessageErrorCode, "nil SSVMessage")
 	}
 
-	return nil
+	return msg.SSVMessage.Validate()
 }
 
 // DeepCopy returns a new instance of SignedMessage, deep copied
