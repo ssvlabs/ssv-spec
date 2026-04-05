@@ -66,10 +66,11 @@ jobs:
           # Resolve the ssv-spec PR that introduced this merge commit (head branch name)
           # Uses GITHUB_TOKEN which is scoped to ssv-spec
           PR_INFO=$(gh api "repos/${{ github.repository }}/commits/${GITHUB_SHA}/pulls" \
-            --jq '.[0] | {number: (.number // empty), head_ref: (.head.ref // empty)}' \
+            --jq '.[0] | {number: (.number // empty), head_ref: (.head.ref // empty), base_ref: (.base.ref // empty)}' \
             2>/dev/null || echo "{}")
           PR_NUMBER=$(echo "${PR_INFO}" | jq -r '.number // empty')
           PR_HEAD_REF=$(echo "${PR_INFO}" | jq -r '.head_ref // empty')
+          PR_BASE_REF=$(echo "${PR_INFO}" | jq -r '.base_ref // empty')
 
           if [ -z "${PR_NUMBER}" ] || [ -z "${PR_HEAD_REF}" ]; then
             echo "No PR found for commit ${GITHUB_SHA} in ${{ github.repository }}." >&2
@@ -79,11 +80,13 @@ jobs:
 
           echo "number=${PR_NUMBER}" >> "${GITHUB_OUTPUT}"
           echo "head-ref=${PR_HEAD_REF}" >> "${GITHUB_OUTPUT}"
+          echo "base-ref=${PR_BASE_REF}" >> "${GITHUB_OUTPUT}"
 
       - name: Push final generated files to spec-tests branch
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           PR_HEAD_REF: ${{ steps.find-ssv-pr.outputs.head-ref }}
+          PR_BASE_REF: ${{ steps.find-ssv-pr.outputs.base-ref }}
           BOT_NAME: ${{ steps.bot-identity.outputs.name }}
           BOT_EMAIL: ${{ steps.bot-identity.outputs.email }}
         run: |
@@ -104,20 +107,42 @@ jobs:
           git config user.email "${BOT_EMAIL}"
           git fetch origin
 
+          RESOLVED_BASE="${PR_BASE_REF:-main}"
+          if ! git show-ref --verify --quiet "refs/remotes/origin/${RESOLVED_BASE}"; then
+            RESOLVED_BASE="main"
+          fi
+
+          mapfile -d '' GENERATED_ROOTS < <(find "${GENERATED_DIR}" -maxdepth 1 -mindepth 1 -print0)
+          GENERATED_PATHS=()
+          for entry in "${GENERATED_ROOTS[@]}"; do
+            GENERATED_PATHS+=("$(basename "${entry}")")
+          done
+
+          sync_generated_paths() {
+            while IFS= read -r -d '' entry; do
+              git rm -rf "$(basename "${entry}")" 2>/dev/null || true
+            done < <(find "${GENERATED_DIR}" -maxdepth 1 -mindepth 1 -print0)
+            cp -r "${GENERATED_DIR}/." .
+            git add -A
+          }
+
           # The spec-tests branch has the same name as the ssv-spec PR branch.
-          # Fail clearly if it does not exist yet (sync-spec-tests-pr should have created it).
           if ! git show-ref --verify --quiet "refs/remotes/origin/${PR_HEAD_REF}"; then
-            echo "Branch '${PR_HEAD_REF}' not found in ${SPEC_TESTS_REPO}." >&2
-            echo "The sync-spec-tests-pr workflow should have created it. Check that it ran successfully for this PR." >&2
+            git checkout --detach "origin/${RESOLVED_BASE}"
+            sync_generated_paths
+
+            if git diff --cached --quiet; then
+              echo "Branch '${PR_HEAD_REF}' not found in ${SPEC_TESTS_REPO}; verified no generated diff against '${RESOLVED_BASE}'."
+              exit 0
+            fi
+
+            echo "Branch '${PR_HEAD_REF}' not found in ${SPEC_TESTS_REPO}, but generated spec-tests differ from '${RESOLVED_BASE}'." >&2
+            echo "The PR sync workflow should have created the mirror branch." >&2
             exit 1
           fi
 
           git checkout -B "${PR_HEAD_REF}" "origin/${PR_HEAD_REF}"
-          while IFS= read -r -d '' entry; do
-            git rm -rf "$(basename "${entry}")" 2>/dev/null || true
-          done < <(find "${GENERATED_DIR}" -maxdepth 1 -mindepth 1 -print0)
-          cp -r "${GENERATED_DIR}/." .
-          git add -A
+          sync_generated_paths
 
           if git diff --cached --quiet; then
             echo "No changes to sync to spec-tests branch '${PR_HEAD_REF}'"
@@ -130,8 +155,13 @@ jobs:
           # Look up the PR number by branch name at merge time to avoid stale output data.
           SPEC_PR_NUMBER=$(gh pr view --repo "${SPEC_TESTS_REPO}" "${PR_HEAD_REF}" --json number --jq '.number' 2>/dev/null || echo "")
           if [ -z "${SPEC_PR_NUMBER}" ]; then
-            echo "No open spec-tests PR found for branch '${PR_HEAD_REF}' in ${SPEC_TESTS_REPO}." >&2
-            echo "The sync-spec-tests-pr workflow should have created it. Check that it ran successfully for this PR." >&2
+            if git diff --quiet "origin/${RESOLVED_BASE}...HEAD" -- "${GENERATED_PATHS[@]}"; then
+              echo "No open spec-tests PR found for branch '${PR_HEAD_REF}', and generated paths match '${RESOLVED_BASE}'; nothing to finalize."
+              exit 0
+            fi
+
+            echo "No open spec-tests PR found for branch '${PR_HEAD_REF}' in ${SPEC_TESTS_REPO}, but generated paths still differ from '${RESOLVED_BASE}'." >&2
+            echo "The PR sync workflow should have created or updated the mirror PR." >&2
             exit 1
           fi
           gh pr merge --repo "${SPEC_TESTS_REPO}" "${SPEC_PR_NUMBER}" --merge --delete-branch
