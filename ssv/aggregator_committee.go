@@ -48,6 +48,9 @@ func NewAggregatorCommitteeRunner(
 	if len(share) == 0 {
 		return nil, errors.New("no shares provided")
 	}
+	if err := validateShareMap(share); err != nil {
+		return nil, err
+	}
 
 	return &AggregatorCommitteeRunner{
 		BaseRunner: &BaseRunner{

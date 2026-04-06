@@ -37,6 +37,9 @@ func NewCommitteeRunner(beaconNetwork types.BeaconNetwork,
 	if len(share) == 0 {
 		return nil, fmt.Errorf("no shares")
 	}
+	if err := validateShareMap(share); err != nil {
+		return nil, err
+	}
 	return &CommitteeRunner{
 		BaseRunner: &BaseRunner{
 			RunnerRoleType: types.RoleCommittee,
@@ -401,6 +404,9 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	beaconVote := &types.BeaconVote{}
 	if err := beaconVote.Decode(beaconVoteData); err != nil {
 		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
+	}
+	if err := beaconVote.Validate(); err != nil {
+		return nil, nil, nil, errors.Wrap(err, "invalid beacon vote")
 	}
 
 	slot := duty.DutySlot()

@@ -44,6 +44,18 @@ func NewValidator(
 
 // StartDuty starts a duty for the validator
 func (v *Validator) StartDuty(duty types.Duty) error {
+	if err := v.CommitteeMember.Validate(); err != nil {
+		return errors.Wrap(err, "invalid committee member")
+	}
+	if err := v.Share.Validate(); err != nil {
+		return errors.Wrap(err, "invalid share")
+	}
+	if validatorDuty, ok := duty.(*types.ValidatorDuty); ok {
+		if err := validatorDuty.Validate(); err != nil {
+			return errors.Wrap(err, "invalid validator duty")
+		}
+	}
+
 	role := duty.RunnerRole()
 	dutyRunner := v.DutyRunners[role]
 	if dutyRunner == nil {
@@ -54,6 +66,13 @@ func (v *Validator) StartDuty(duty types.Duty) error {
 
 // ProcessMessage processes Network Message of all types
 func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error {
+	if err := v.CommitteeMember.Validate(); err != nil {
+		return errors.Wrap(err, "invalid committee member")
+	}
+	if err := v.Share.Validate(); err != nil {
+		return errors.Wrap(err, "invalid share")
+	}
+
 	// Validate message
 	if err := signedSSVMessage.Validate(); err != nil {
 		return errors.Wrap(err, "invalid SignedSSVMessage")

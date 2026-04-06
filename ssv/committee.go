@@ -41,6 +41,9 @@ func NewCommittee(
 
 // StartDuty starts a new duty for the given slot
 func (c *Committee) StartDuty(duty types.Duty) error {
+	if err := (&c.CommitteeMember).Validate(); err != nil {
+		return errors.Wrap(err, "invalid committee member")
+	}
 
 	slot := duty.DutySlot()
 
@@ -74,8 +77,17 @@ func (c *Committee) StartDuty(duty types.Duty) error {
 	filteredValidatorDuties := make([]*types.ValidatorDuty, 0)
 
 	for _, bduty := range validatorDuties {
+		if bduty == nil {
+			continue
+		}
 		if _, exists := c.Share[bduty.ValidatorIndex]; !exists {
 			continue
+		}
+		if err := bduty.Validate(); err != nil {
+			return errors.Wrap(err, "invalid validator duty")
+		}
+		if err := c.Share[bduty.ValidatorIndex].Validate(); err != nil {
+			return errors.Wrap(err, "invalid share")
 		}
 		dutyShares[bduty.ValidatorIndex] = c.Share[bduty.ValidatorIndex]
 		filteredValidatorDuties = append(filteredValidatorDuties, bduty)
@@ -107,6 +119,10 @@ func (c *Committee) StartDuty(duty types.Duty) error {
 
 // ProcessMessage processes Network Message of all types
 func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error {
+	if err := (&c.CommitteeMember).Validate(); err != nil {
+		return errors.Wrap(err, "invalid committee member")
+	}
+
 	// Validate message
 	if err := signedSSVMessage.Validate(); err != nil {
 		return errors.Wrap(err, "invalid SignedSSVMessage")
