@@ -60,6 +60,14 @@ func TestSignedSSVMessageValidateDelegatesToSSVMessageValidate(t *testing.T) {
 }
 
 func TestBeaconVoteValidate(t *testing.T) {
+	t.Run("nil checkpoints", func(t *testing.T) {
+		bv := &BeaconVote{Source: nil, Target: nil}
+		err := bv.Validate()
+		require.Error(t, err)
+		require.ErrorIs(t, err, &Error{})
+		require.Equal(t, BeaconVoteNilCheckpointErrorCode, err.(*Error).Code)
+	})
+
 	bv := &BeaconVote{
 		Source: &phase0.Checkpoint{Epoch: 2},
 		Target: &phase0.Checkpoint{Epoch: 1},

@@ -2,6 +2,7 @@ package ssv
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/pkg/errors"
 
@@ -20,6 +21,9 @@ type Validator struct {
 	Share           *types.Share
 	Signer          types.BeaconSigner
 	OperatorSigner  *types.OperatorSigner
+
+	validateOnce sync.Once
+	validateErr  error
 }
 
 func NewValidator(
@@ -42,13 +46,33 @@ func NewValidator(
 	}
 }
 
+func (v *Validator) validateInvariants() error {
+	v.validateOnce.Do(func() {
+		if v.CommitteeMember == nil {
+			v.validateErr = errors.New("nil committee member")
+			return
+		}
+		if err := v.CommitteeMember.Validate(); err != nil {
+			v.validateErr = errors.Wrap(err, "invalid committee member")
+			return
+		}
+
+		if v.Share == nil {
+			v.validateErr = errors.New("nil share")
+			return
+		}
+		if err := v.Share.Validate(); err != nil {
+			v.validateErr = errors.Wrap(err, "invalid share")
+			return
+		}
+	})
+	return v.validateErr
+}
+
 // StartDuty starts a duty for the validator
 func (v *Validator) StartDuty(duty types.Duty) error {
-	if err := v.CommitteeMember.Validate(); err != nil {
-		return errors.Wrap(err, "invalid committee member")
-	}
-	if err := v.Share.Validate(); err != nil {
-		return errors.Wrap(err, "invalid share")
+	if err := v.validateInvariants(); err != nil {
+		return err
 	}
 	if validatorDuty, ok := duty.(*types.ValidatorDuty); ok {
 		if err := validatorDuty.Validate(); err != nil {
@@ -66,11 +90,8 @@ func (v *Validator) StartDuty(duty types.Duty) error {
 
 // ProcessMessage processes Network Message of all types
 func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error {
-	if err := v.CommitteeMember.Validate(); err != nil {
-		return errors.Wrap(err, "invalid committee member")
-	}
-	if err := v.Share.Validate(); err != nil {
-		return errors.Wrap(err, "invalid share")
+	if err := v.validateInvariants(); err != nil {
+		return err
 	}
 
 	// Validate message

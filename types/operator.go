@@ -62,7 +62,10 @@ func (cm *CommitteeMember) Validate() error {
 		return NewError(InvalidCommitteeMemberErrorCode, "committee too large")
 	}
 
-	if uint64(len(cm.Committee)) < 3*cm.FaultyNodes+1 {
+	committeeSize := uint64(len(cm.Committee))
+	// Enforce the QBFT committee requirement n >= 3f+1 without risking uint64 overflow.
+	// Equivalent to: f <= floor((n-1)/3)
+	if cm.FaultyNodes > (committeeSize-1)/3 {
 		return NewError(InvalidCommitteeMemberErrorCode, "invalid faulty nodes bound for committee size")
 	}
 

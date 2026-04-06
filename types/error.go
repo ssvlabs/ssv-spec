@@ -98,6 +98,7 @@ const (
 	InvalidOperatorErrorCode
 	InvalidCommitteeMemberErrorCode
 	InvalidValidatorDutyErrorCode
+	BeaconVoteNilCheckpointErrorCode
 )
 
 type Error struct {

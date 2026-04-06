@@ -2,6 +2,7 @@ package ssv
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
@@ -19,6 +20,9 @@ type Committee struct {
 	CreateCommitteeRunnerFn           CreateRunnerFn
 	CreateAggregatorCommitteeRunnerFn CreateRunnerFn
 	Share                             map[phase0.ValidatorIndex]*types.Share
+
+	validateOnce sync.Once
+	validateErr  error
 }
 
 // NewCommittee creates a new cluster
@@ -39,10 +43,24 @@ func NewCommittee(
 	return c
 }
 
+func (c *Committee) validateInvariants() error {
+	c.validateOnce.Do(func() {
+		if err := (&c.CommitteeMember).Validate(); err != nil {
+			c.validateErr = errors.Wrap(err, "invalid committee member")
+			return
+		}
+		if err := validateShareMap(c.Share); err != nil {
+			c.validateErr = errors.Wrap(err, "invalid share map")
+			return
+		}
+	})
+	return c.validateErr
+}
+
 // StartDuty starts a new duty for the given slot
 func (c *Committee) StartDuty(duty types.Duty) error {
-	if err := (&c.CommitteeMember).Validate(); err != nil {
-		return errors.Wrap(err, "invalid committee member")
+	if err := c.validateInvariants(); err != nil {
+		return err
 	}
 
 	slot := duty.DutySlot()
@@ -86,9 +104,6 @@ func (c *Committee) StartDuty(duty types.Duty) error {
 		if err := bduty.Validate(); err != nil {
 			return errors.Wrap(err, "invalid validator duty")
 		}
-		if err := c.Share[bduty.ValidatorIndex].Validate(); err != nil {
-			return errors.Wrap(err, "invalid share")
-		}
 		dutyShares[bduty.ValidatorIndex] = c.Share[bduty.ValidatorIndex]
 		filteredValidatorDuties = append(filteredValidatorDuties, bduty)
 	}
@@ -119,8 +134,8 @@ func (c *Committee) StartDuty(duty types.Duty) error {
 
 // ProcessMessage processes Network Message of all types
 func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error {
-	if err := (&c.CommitteeMember).Validate(); err != nil {
-		return errors.Wrap(err, "invalid committee member")
+	if err := c.validateInvariants(); err != nil {
+		return err
 	}
 
 	// Validate message
