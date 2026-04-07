@@ -63,18 +63,25 @@ func (c *Committee) StartDuty(duty types.Duty) error {
 		return err
 	}
 
-	slot := duty.DutySlot()
-
 	// Get objects according to duty type
+	var slot phase0.Slot
 	var runnerMap *map[phase0.Slot]Runner
 	var createFn *CreateRunnerFn
 	var validatorDuties []*types.ValidatorDuty
 	switch d := duty.(type) {
 	case *types.CommitteeDuty:
+		if err := d.Validate(); err != nil {
+			return errors.Wrap(err, "invalid committee duty")
+		}
+		slot = phase0.Slot(d.Slot)
 		runnerMap = &c.CommitteeRunners
 		createFn = &c.CreateCommitteeRunnerFn
 		validatorDuties = d.ValidatorDuties
 	case *types.AggregatorCommitteeDuty:
+		if d == nil {
+			return types.NewError(types.InvalidAggregatorCommitteeDutyErrorCode, "nil aggregator committee duty")
+		}
+		slot = phase0.Slot(d.Slot)
 		runnerMap = &c.AggregatorCommitteeRunners
 		createFn = &c.CreateAggregatorCommitteeRunnerFn
 		validatorDuties = d.ValidatorDuties

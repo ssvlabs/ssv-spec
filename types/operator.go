@@ -58,7 +58,7 @@ func (cm *CommitteeMember) Validate() error {
 	if len(cm.Committee) == 0 {
 		return NewError(InvalidCommitteeMemberErrorCode, "empty committee")
 	}
-	if len(cm.Committee) > 13 {
+	if len(cm.Committee) > MaxCommitteeSize {
 		return NewError(InvalidCommitteeMemberErrorCode, "committee too large")
 	}
 

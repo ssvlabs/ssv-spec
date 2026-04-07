@@ -143,14 +143,7 @@ func (bd *ValidatorDuty) Validate() error {
 		return NewError(InvalidValidatorDutyErrorCode, "unknown duty type")
 	}
 
-	allZero := true
-	for _, b := range bd.PubKey[:] {
-		if b != 0 {
-			allZero = false
-			break
-		}
-	}
-	if allZero {
+	if bd.PubKey.IsZero() {
 		return NewError(InvalidValidatorDutyErrorCode, "zero validator pubkey not allowed")
 	}
 
@@ -164,7 +157,7 @@ func (bd *ValidatorDuty) Validate() error {
 		}
 	}
 
-	if len(bd.ValidatorSyncCommitteeIndices) > 13 {
+	if len(bd.ValidatorSyncCommitteeIndices) > MaxCommitteeSize {
 		return NewError(InvalidValidatorDutyErrorCode, "too many sync committee indices")
 	}
 
@@ -187,6 +180,35 @@ func (cd *CommitteeDuty) DutySlot() spec.Slot {
 
 func (cd *CommitteeDuty) RunnerRole() RunnerRole {
 	return RoleCommittee
+}
+
+// Validate checks the following rules:
+// - ValidatorDuties must be non-empty
+// - Each duty must be non-nil with slot matching CommitteeDuty.Slot
+// - Each duty type must be BNRoleAttester or BNRoleSyncCommittee
+// - Each duty must pass ValidatorDuty.Validate()
+func (cd *CommitteeDuty) Validate() error {
+	if cd == nil {
+		return NewError(UnknownDutyRoleDataErrorCode, "nil committee duty")
+	}
+	if len(cd.ValidatorDuties) == 0 {
+		return NewError(NoBeaconDutiesErrorCode, "no beacon duties")
+	}
+	for _, vd := range cd.ValidatorDuties {
+		if vd == nil {
+			return NewError(UnknownDutyRoleDataErrorCode, "nil validator duty")
+		}
+		if vd.Slot != cd.Slot {
+			return NewError(UnknownDutyRoleDataErrorCode, "mismatched slot in validator duty")
+		}
+		if vd.Type != BNRoleAttester && vd.Type != BNRoleSyncCommittee {
+			return NewError(WrongBeaconRoleTypeErrorCode, "invalid beacon role in validator duty")
+		}
+		if err := vd.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // AggregatorCommitteeDuty represents combined aggregator and sync committee contribution duties

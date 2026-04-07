@@ -42,7 +42,7 @@ func (share *Share) Validate() error {
 	if len(share.Committee) == 0 {
 		return NewError(InvalidShareErrorCode, "empty committee")
 	}
-	if len(share.Committee) > 13 {
+	if len(share.Committee) > MaxCommitteeSize {
 		return NewError(InvalidShareErrorCode, "committee too large")
 	}
 
