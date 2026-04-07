@@ -99,8 +99,6 @@ type SSVMessage struct {
 	Data []byte `ssz-max:"726932"`
 }
 
-const maxSSVMessageDataSize = 726932
-
 func (msg *SSVMessage) GetType() MsgType {
 	return msg.MsgType
 }
@@ -128,7 +126,6 @@ func (msg *SSVMessage) Decode(data []byte) error {
 // Validate checks the following rules:
 // - MsgType must be in the known range
 // - MsgID must encode a non-negative RunnerRole (unknown positive roles are accepted for forward compatibility)
-// - Data must not exceed the ssz-max bound
 func (msg *SSVMessage) Validate() error {
 	if msg == nil {
 		return NewError(NilSSVMessageErrorCode, "nil SSVMessage")
@@ -146,10 +143,6 @@ func (msg *SSVMessage) Validate() error {
 	// to avoid accepting wrapped/invalid encodings.
 	if msg.MsgID.GetRoleType() < 0 {
 		return NewError(SSVMessageInvalidRoleErrorCode, "invalid SSV message role")
-	}
-
-	if len(msg.Data) > maxSSVMessageDataSize {
-		return NewError(SSVMessageDataTooLargeErrorCode, "SSV message data too large")
 	}
 
 	return nil

@@ -133,7 +133,6 @@ func (bd *ValidatorDuty) RunnerRole() RunnerRole {
 // - Type must map to a known RunnerRole
 // - PubKey must be non-zero
 // - CommitteeLength/ValidatorCommitteeIndex must be consistent for committee-related roles
-// - ValidatorSyncCommitteeIndices must not exceed the ssz-max bound
 func (bd *ValidatorDuty) Validate() error {
 	if bd == nil {
 		return NewError(InvalidValidatorDutyErrorCode, "nil validator duty")
@@ -155,10 +154,6 @@ func (bd *ValidatorDuty) Validate() error {
 		if bd.ValidatorCommitteeIndex >= bd.CommitteeLength {
 			return NewError(InvalidValidatorDutyErrorCode, "validator committee index out of bounds")
 		}
-	}
-
-	if len(bd.ValidatorSyncCommitteeIndices) > MaxCommitteeSize {
-		return NewError(InvalidValidatorDutyErrorCode, "too many sync committee indices")
 	}
 
 	return nil

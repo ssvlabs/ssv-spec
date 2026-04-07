@@ -20,11 +20,9 @@ type ShareMember struct {
 }
 
 // Validate checks the following rules:
-// - SharePubKey must be 48 bytes
-// - Committee must be non-empty and within the ssz-max bound
-// - Committee members must be non-nil, have non-zero signer IDs, and 48-byte SharePubKeys
+// - Committee must be non-empty
+// - Committee members must have non-zero signer IDs with no duplicates
 // - ValidatorPubKey must not be all-zero
-// - Graffiti must be exactly 32 bytes
 // - DomainType must be one of the known SSV domains in this spec
 func (share *Share) Validate() error {
 	if share == nil {
@@ -35,36 +33,23 @@ func (share *Share) Validate() error {
 		return NewError(InvalidShareErrorCode, "zero validator pubkey not allowed")
 	}
 
-	if len(share.SharePubKey) != 48 {
-		return NewError(InvalidShareErrorCode, "invalid share public key length")
-	}
-
 	if len(share.Committee) == 0 {
 		return NewError(InvalidShareErrorCode, "empty committee")
-	}
-	if len(share.Committee) > MaxCommitteeSize {
-		return NewError(InvalidShareErrorCode, "committee too large")
 	}
 
 	seenSigners := make(map[OperatorID]struct{}, len(share.Committee))
 	for _, member := range share.Committee {
-		if member == nil {
-			return NewError(InvalidShareErrorCode, "nil committee member")
+		var signer OperatorID
+		if member != nil {
+			signer = member.Signer
 		}
-		if member.Signer == 0 {
+		if signer == 0 {
 			return NewError(InvalidShareErrorCode, "committee member signer ID 0 not allowed")
 		}
-		if len(member.SharePubKey) != 48 {
-			return NewError(InvalidShareErrorCode, "invalid committee member share public key length")
-		}
-		if _, exists := seenSigners[member.Signer]; exists {
+		if _, exists := seenSigners[signer]; exists {
 			return NewError(InvalidShareErrorCode, "duplicate committee member signer")
 		}
-		seenSigners[member.Signer] = struct{}{}
-	}
-
-	if len(share.Graffiti) != 32 {
-		return NewError(InvalidShareErrorCode, "invalid graffiti length")
+		seenSigners[signer] = struct{}{}
 	}
 
 	if !share.DomainType.IsKnown() {

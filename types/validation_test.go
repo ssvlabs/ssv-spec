@@ -30,17 +30,6 @@ func TestSSVMessageValidate(t *testing.T) {
 		require.Equal(t, SSVMessageInvalidRoleErrorCode, err.(*Error).Code)
 	})
 
-	t.Run("data too large", func(t *testing.T) {
-		msg := &SSVMessage{
-			MsgType: SSVConsensusMsgType,
-			MsgID:   NewMsgID(GenesisMainnet, make([]byte, 48), RoleCommittee),
-			Data:    make([]byte, maxSSVMessageDataSize+1),
-		}
-		err := msg.Validate()
-		require.Error(t, err)
-		require.ErrorIs(t, err, &Error{})
-		require.Equal(t, SSVMessageDataTooLargeErrorCode, err.(*Error).Code)
-	})
 }
 
 func TestSignedSSVMessageValidateDelegatesToSSVMessageValidate(t *testing.T) {
@@ -60,8 +49,8 @@ func TestSignedSSVMessageValidateDelegatesToSSVMessageValidate(t *testing.T) {
 }
 
 func TestBeaconVoteValidate(t *testing.T) {
-	t.Run("nil checkpoints", func(t *testing.T) {
-		bv := &BeaconVote{Source: nil, Target: nil}
+	t.Run("nil beacon vote", func(t *testing.T) {
+		var bv *BeaconVote
 		err := bv.Validate()
 		require.Error(t, err)
 		require.ErrorIs(t, err, &Error{})

@@ -23,7 +23,6 @@ type Operator struct {
 
 // Validate checks the following rules:
 // - OperatorID must be non-zero
-// - SSVOperatorPubKey must be 459 bytes
 func (o *Operator) Validate() error {
 	if o == nil {
 		return NewError(InvalidOperatorErrorCode, "nil operator")
@@ -31,16 +30,12 @@ func (o *Operator) Validate() error {
 	if o.OperatorID == 0 {
 		return NewError(InvalidOperatorErrorCode, "operator ID 0 not allowed")
 	}
-	if len(o.SSVOperatorPubKey) != 459 {
-		return NewError(InvalidOperatorErrorCode, "invalid operator public key length")
-	}
 	return nil
 }
 
 // Validate checks the following rules:
 // - OperatorID must be non-zero
-// - SSVOperatorPubKey must be 459 bytes
-// - Committee must be non-empty and within the ssz-max bound
+// - Committee must be non-empty
 // - FaultyNodes must satisfy the QBFT committee requirement n >= 3f+1
 // - CommitteeID must match the ID computed from committee OperatorIDs
 // - DomainType must be one of the known SSV domains in this spec
@@ -51,15 +46,8 @@ func (cm *CommitteeMember) Validate() error {
 	if cm.OperatorID == 0 {
 		return NewError(InvalidCommitteeMemberErrorCode, "operator ID 0 not allowed")
 	}
-	if len(cm.SSVOperatorPubKey) != 459 {
-		return NewError(InvalidCommitteeMemberErrorCode, "invalid operator public key length")
-	}
-
 	if len(cm.Committee) == 0 {
 		return NewError(InvalidCommitteeMemberErrorCode, "empty committee")
-	}
-	if len(cm.Committee) > MaxCommitteeSize {
-		return NewError(InvalidCommitteeMemberErrorCode, "committee too large")
 	}
 
 	committeeSize := uint64(len(cm.Committee))

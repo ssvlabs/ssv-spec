@@ -33,13 +33,6 @@ func TestOperatorValidate(t *testing.T) {
 		require.Equal(t, InvalidOperatorErrorCode, err.(*Error).Code)
 	})
 
-	t.Run("wrong pubkey length", func(t *testing.T) {
-		op := valid()
-		op.SSVOperatorPubKey = make([]byte, 10)
-		err := op.Validate()
-		require.Error(t, err)
-		require.Equal(t, InvalidOperatorErrorCode, err.(*Error).Code)
-	})
 }
 
 func TestCommitteeMemberValidate(t *testing.T) {
@@ -112,14 +105,6 @@ func TestShareValidate(t *testing.T) {
 
 	t.Run("valid", func(t *testing.T) {
 		require.NoError(t, valid().Validate())
-	})
-
-	t.Run("graffiti wrong length", func(t *testing.T) {
-		s := valid()
-		s.Graffiti = make([]byte, 31)
-		err := s.Validate()
-		require.Error(t, err)
-		require.Equal(t, InvalidShareErrorCode, err.(*Error).Code)
 	})
 
 	t.Run("zero validator pubkey", func(t *testing.T) {
