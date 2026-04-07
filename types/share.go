@@ -23,11 +23,16 @@ type ShareMember struct {
 // - SharePubKey must be 48 bytes
 // - Committee must be non-empty and within the ssz-max bound
 // - Committee members must be non-nil, have non-zero signer IDs, and 48-byte SharePubKeys
-// - Graffiti must be <= 32 bytes
+// - ValidatorPubKey must not be all-zero
+// - Graffiti must be exactly 32 bytes
 // - DomainType must be one of the known SSV domains in this spec
 func (share *Share) Validate() error {
 	if share == nil {
 		return NewError(InvalidShareErrorCode, "nil share")
+	}
+
+	if share.ValidatorPubKey == (ValidatorPK{}) {
+		return NewError(InvalidShareErrorCode, "zero validator pubkey not allowed")
 	}
 
 	if len(share.SharePubKey) != 48 {
@@ -58,8 +63,8 @@ func (share *Share) Validate() error {
 		seenSigners[member.Signer] = struct{}{}
 	}
 
-	if len(share.Graffiti) > 32 {
-		return NewError(InvalidShareErrorCode, "graffiti too large")
+	if len(share.Graffiti) != 32 {
+		return NewError(InvalidShareErrorCode, "invalid graffiti length")
 	}
 
 	if !share.DomainType.IsKnown() {

@@ -63,9 +63,9 @@ func (cm *CommitteeMember) Validate() error {
 	}
 
 	committeeSize := uint64(len(cm.Committee))
-	// Enforce the QBFT committee requirement n >= 3f+1 without risking uint64 overflow.
-	// Equivalent to: f <= floor((n-1)/3)
-	if cm.FaultyNodes > (committeeSize-1)/3 {
+	// Enforce the QBFT committee requirement n == 3f+1 without risking uint64 overflow.
+	// This also guarantees that quorum calculations using 2f+1 have the expected intersection properties.
+	if (committeeSize-1)%3 != 0 || cm.FaultyNodes != (committeeSize-1)/3 {
 		return NewError(InvalidCommitteeMemberErrorCode, "invalid faulty nodes bound for committee size")
 	}
 

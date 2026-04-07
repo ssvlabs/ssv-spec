@@ -127,7 +127,7 @@ func (msg *SSVMessage) Decode(data []byte) error {
 
 // Validate checks the following rules:
 // - MsgType must be in the known range
-// - MsgID must encode a known RunnerRole
+// - MsgID must encode a non-negative RunnerRole (unknown positive roles are accepted for forward compatibility)
 // - Data must not exceed the ssz-max bound
 func (msg *SSVMessage) Validate() error {
 	if msg == nil {

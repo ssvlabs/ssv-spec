@@ -126,7 +126,10 @@ func (b *BeaconVote) Decode(data []byte) error {
 // - Source and Target checkpoints must be non-nil
 // - Source.Epoch must be strictly less than Target.Epoch
 func (b *BeaconVote) Validate() error {
-	if b == nil || b.Source == nil || b.Target == nil {
+	if b == nil {
+		return NewError(BeaconVoteNilCheckpointErrorCode, "nil beacon vote")
+	}
+	if b.Source == nil || b.Target == nil {
 		return NewError(BeaconVoteNilCheckpointErrorCode, "nil source or target checkpoint")
 	}
 	if b.Source.Epoch >= b.Target.Epoch {
