@@ -52,24 +52,25 @@ func (msg MessageID) GetRoleType() RunnerRole {
 	return RunnerRole(binary.LittleEndian.Uint32(roleByts))
 }
 
-func NewMsgID(domain DomainType, dutyExecutorID []byte, role RunnerRole) MessageID {
-	roleByts := make([]byte, 4)
-	binary.LittleEndian.PutUint32(roleByts, uint32(role))
+func NewValidatorMsgID(domain DomainType, validatorPK ValidatorPK, role RunnerRole) MessageID {
+	mid := MessageID{}
+	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
+	binary.LittleEndian.PutUint32(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], uint32(role))
+	copy(mid[dutyExecutorIDStartPos:dutyExecutorIDStartPos+dutyExecutorIDSize], validatorPK[:])
+	return mid
+}
 
-	return newMessageID(domain[:], roleByts, dutyExecutorID)
+func NewCommitteeMsgID(domain DomainType, committeeID CommitteeID, role RunnerRole) MessageID {
+	mid := MessageID{}
+	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
+	binary.LittleEndian.PutUint32(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], uint32(role))
+	// CommitteeID is 32 bytes, right-aligned in the 48-byte executor ID slot.
+	copy(mid[dutyExecutorIDStartPos+dutyExecutorIDSize-len(committeeID):dutyExecutorIDStartPos+dutyExecutorIDSize], committeeID[:])
+	return mid
 }
 
 func (msgID MessageID) String() string {
 	return hex.EncodeToString(msgID[:])
-}
-
-func newMessageID(domain, roleByts, dutyExecutorID []byte) MessageID {
-	mid := MessageID{}
-	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
-	copy(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], roleByts)
-	prefixLen := dutyExecutorIDSize - len(dutyExecutorID)
-	copy(mid[dutyExecutorIDStartPos+prefixLen:dutyExecutorIDStartPos+dutyExecutorIDSize], dutyExecutorID)
-	return mid
 }
 
 type MsgType uint64
