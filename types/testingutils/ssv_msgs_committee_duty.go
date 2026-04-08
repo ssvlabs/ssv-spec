@@ -15,18 +15,15 @@ import (
 // ==================================================
 
 var SSVMsgAttester = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee))
+	return ssvMsg(qbftMsg, partialSigMsg, TestingCommitteeMsgID)
 }
 
 var SSVMsgCommittee = func(ks *TestKeySet, qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	msgIDBytes := CommitteeMsgID(ks)
-	var msgID types.MessageID
-	copy(msgID[:], msgIDBytes)
-	return ssvMsg(qbftMsg, partialSigMsg, msgID)
+	return ssvMsg(qbftMsg, partialSigMsg, CommitteeMsgIDForKeySet(ks))
 }
 
 var SSVMsgSyncCommittee = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee))
+	return ssvMsg(qbftMsg, partialSigMsg, TestingCommitteeMsgID)
 }
 
 // ==================================================

@@ -13,8 +13,6 @@ import (
 
 var TestingSignedSSVMessageSignature = []byte{1, 2, 3, 4}
 
-var TestingMessageID = types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleCommittee)
-
 var TestingSignedSSVMessage = func(sk *bls.SecretKey, operatorID types.OperatorID, rsaSK *rsa.PrivateKey) *types.SignedSSVMessage {
 	// SignedPartialSigMessage
 	signedPartialSig := PreConsensusSelectionProofMsg(sk, sk, operatorID, operatorID, spec.DataVersionPhase0)
@@ -26,7 +24,7 @@ var TestingSignedSSVMessage = func(sk *bls.SecretKey, operatorID types.OperatorI
 	// SSVMessage
 	ssvMsg := types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   TestingMessageID,
+		MsgID:   TestingCommitteeMsgID,
 		Data:    signedPartialSigByts[:],
 	}
 	ssvMsgByts, err := ssvMsg.Encode()

@@ -27,10 +27,10 @@ func FutureDecided() tests.SpecTest {
 				opIDs[i] = member.Signer
 			}
 			committeeID := types.GetCommitteeID(opIDs)
-			ret := types.NewMsgID(testingutils.TestingSSVDomainType, committeeID[:], role)
+			ret := types.NewCommitteeMsgID(testingutils.TestingSSVDomainType, committeeID, role)
 			return ret[:]
 		}
-		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
+		ret := types.NewValidatorMsgID(testingutils.TestingSSVDomainType, types.ValidatorPK(testingutils.TestingValidatorPubKey), role)
 		return ret[:]
 	}
 
