@@ -54,14 +54,16 @@ func (pcs *State) MarshalJSON() ([]byte, error) {
 		Finished:               pcs.Finished,
 	}
 
-	if pcs.StartingDuty != nil {
-		if validatorDuty, ok := pcs.StartingDuty.(*types.ValidatorDuty); ok {
-			alias.ValidatorDuty = validatorDuty
-		} else if committeeDuty, ok := pcs.StartingDuty.(*types.CommitteeDuty); ok {
-			alias.CommitteeDuty = committeeDuty
-		} else {
-			return nil, fmt.Errorf("can't marshal because BaseRunner.State.StartingDuty isn't ValidatorDuty or CommitteeDuty")
-		}
+	if pcs.StartingDuty == nil {
+		return nil, fmt.Errorf("can't marshal BaseRunner.State.StartingDuty is nil")
+	}
+
+	if validatorDuty, ok := pcs.StartingDuty.(*types.ValidatorDuty); ok {
+		alias.ValidatorDuty = validatorDuty
+	} else if committeeDuty, ok := pcs.StartingDuty.(*types.CommitteeDuty); ok {
+		alias.CommitteeDuty = committeeDuty
+	} else {
+		return nil, fmt.Errorf("can't marshal BaseRunner.State.StartingDuty: expected ValidatorDuty or CommitteeDuty, got: %T", pcs.StartingDuty)
 	}
 	byts, err := json.Marshal(alias)
 
@@ -88,18 +90,24 @@ func (pcs *State) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
+	var startingDuty types.Duty
+	switch {
+	case aux.ValidatorDuty != nil && aux.CommitteeDuty != nil:
+		return fmt.Errorf("can't unmarshal BaseRunner.State.StartingDuty: payload contains both ValidatorDuty and CommitteeDuty")
+	case aux.ValidatorDuty != nil:
+		startingDuty = aux.ValidatorDuty
+	case aux.CommitteeDuty != nil:
+		startingDuty = aux.CommitteeDuty
+	default:
+		return fmt.Errorf("can't unmarshal BaseRunner.State.StartingDuty: expected ValidatorDuty or CommitteeDuty")
+	}
+
 	pcs.PreConsensusContainer = aux.PreConsensusContainer
 	pcs.PostConsensusContainer = aux.PostConsensusContainer
 	pcs.RunningInstance = aux.RunningInstance
 	pcs.DecidedValue = aux.DecidedValue
 	pcs.Finished = aux.Finished
-
-	// Determine which type of duty was marshaled
-	if aux.ValidatorDuty != nil {
-		pcs.StartingDuty = aux.ValidatorDuty
-	} else if aux.CommitteeDuty != nil {
-		pcs.StartingDuty = aux.CommitteeDuty
-	}
+	pcs.StartingDuty = startingDuty
 
 	return nil
 }
