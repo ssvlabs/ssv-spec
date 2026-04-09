@@ -1,0 +1,128 @@
+name: Sync Spec Tests (PR)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+
+  sync:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    env:
+      SPEC_TESTS_REPO: ${{ vars.SPEC_TESTS_REPO }}
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - name: Validate required variables
+        run: |
+          if [ -z "${{ vars.SPEC_TESTS_REPO }}" ]; then
+            echo "SPEC_TESTS_REPO variable is not set (e.g. ssvlabs/spec-tests)" >&2
+            exit 1
+          fi
+
+      - name: Generate spec tests
+        uses: ./.github/actions/generate-spec-tests
+
+      - name: Extract spec-tests repo name
+        id: repo-name
+        env:
+          SPEC_TESTS_REPO: ${{ vars.SPEC_TESTS_REPO }}
+        run: echo "name=${SPEC_TESTS_REPO##*/}" >> "$GITHUB_OUTPUT"
+
+      - name: Get GitHub App token
+        uses: actions/create-github-app-token@v3.0.0
+        id: app-token
+        with:
+          app-id: ${{ vars.SPEC_TESTS_APP_ID }}
+          private-key: ${{ secrets.SPEC_TESTS_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ steps.repo-name.outputs.name }}
+
+      - name: Get App bot identity
+        id: bot-identity
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          app_slug="${{ steps.app-token.outputs.app-slug }}"
+          user_id=$(gh api "/users/${app_slug}[bot]" --jq '.id')
+          echo "name=${app_slug}[bot]" >> "$GITHUB_OUTPUT"
+          echo "email=${user_id}+${app_slug}[bot]@users.noreply.github.com" >> "$GITHUB_OUTPUT"
+
+      - name: Sync to spec-tests PR branch
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+          BOT_NAME: ${{ steps.bot-identity.outputs.name }}
+          BOT_EMAIL: ${{ steps.bot-identity.outputs.email }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SPEC_TESTS_REPO}" ]; then
+            echo "SPEC_TESTS_REPO variable is not set (e.g. ssvlabs/spec-tests)" >&2
+            exit 1
+          fi
+
+          BRANCH_NAME="${HEAD_REF}"
+
+          # Refuse to push to protected branch names in spec-tests
+          if [ "${BRANCH_NAME}" = "main" ] || [ "${BRANCH_NAME}" = "master" ]; then
+            echo "Refusing to sync: branch name '${BRANCH_NAME}' would overwrite a protected branch in spec-tests" >&2
+            exit 1
+          fi
+
+          GENERATED_DIR="${GITHUB_WORKSPACE}/../spec-tests"
+          CLONE_DIR=$(mktemp -d)
+
+          # Validate generated output exists
+          if [ -z "$(ls -A "${GENERATED_DIR}" 2>/dev/null)" ]; then
+            echo "Generated spec-tests directory is empty, aborting sync" >&2
+            exit 1
+          fi
+
+          git clone "https://x-access-token:${GH_TOKEN}@github.com/${SPEC_TESTS_REPO}.git" "${CLONE_DIR}"
+          cd "${CLONE_DIR}"
+          git config user.name "${BOT_NAME}"
+          git config user.email "${BOT_EMAIL}"
+          git fetch origin
+
+          # Determine base branch in spec-tests (fallback to main)
+          RESOLVED_BASE="${BASE_REF:-main}"
+          if ! git show-ref --verify --quiet "refs/remotes/origin/${RESOLVED_BASE}"; then
+            RESOLVED_BASE="main"
+          fi
+
+          # Reset sync branch to base, then replace only the generated paths.
+          # Other files/folders in spec-tests are left untouched.
+          git checkout -B "${BRANCH_NAME}" "origin/${RESOLVED_BASE}"
+          while IFS= read -r -d '' entry; do
+            git rm -rf "$(basename "${entry}")" 2>/dev/null || true
+          done < <(find "${GENERATED_DIR}" -maxdepth 1 -mindepth 1 -print0)
+          cp -r "${GENERATED_DIR}/." .
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No changes to sync"
+            exit 0
+          fi
+
+          git commit -m "sync: ssv-spec PR #${PR_NUMBER}"
+          # Force push to overwrite previous syncs for this PR
+          git push --force origin "${BRANCH_NAME}"
+
+          # Create PR if missing, otherwise update title/body
+          if gh pr view --repo "${SPEC_TESTS_REPO}" "${BRANCH_NAME}" >/dev/null 2>&1; then
+            gh pr edit --repo "${SPEC_TESTS_REPO}" "${BRANCH_NAME}" \
+              --title "sync: ${PR_TITLE}" \
+              --body "Auto-generated from ssv-spec PR https://github.com/${{ github.repository }}/pull/${PR_NUMBER}"
+          else
+            gh pr create --repo "${SPEC_TESTS_REPO}" \
+              --head "${BRANCH_NAME}" \
+              --base "${RESOLVED_BASE}" \
+              --title "sync: ${PR_TITLE}" \
+              --body "Auto-generated from ssv-spec PR https://github.com/${{ github.repository }}/pull/${PR_NUMBER}"
+          fi

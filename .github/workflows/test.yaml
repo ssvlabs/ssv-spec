@@ -8,21 +8,15 @@ on:
 
 jobs:
 
-  build:
-    runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.2
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 1.22.x
-
-      - name: Get Dependencies
-        run: go get -v -t -d ./...
-
-      - name: Generate JSONs
-        run: make generate-jsons
+      - name: Generate spec tests
+        uses: ./.github/actions/generate-spec-tests
 
       - name: Test
         run: make test
