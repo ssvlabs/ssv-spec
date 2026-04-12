@@ -1,8 +1,6 @@
 package testingutils
 
 import (
-	"bytes"
-
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 
@@ -96,18 +94,16 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 		}
 
 		// Identifier
-		var ownerID []byte
 		if role == types.RoleCommittee || role == types.RoleAggregatorCommittee {
 			committee := make([]uint64, 0)
 			for _, op := range keySetInstance.Committee() {
 				committee = append(committee, op.Signer)
 			}
 			committeeID := types.GetCommitteeID(committee)
-			ownerID = bytes.Clone(committeeID[:])
+			identifier = types.NewCommitteeMsgID(TestingSSVDomainType, committeeID, role)
 		} else {
-			ownerID = TestingValidatorPubKey[:]
+			identifier = types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), role)
 		}
-		identifier = types.NewMsgID(TestingSSVDomainType, ownerID, role)
 
 		// Network
 		net = NewTestingNetwork(1, keySetInstance.OperatorKeys[1])
@@ -232,18 +228,17 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	km := NewTestingKeyManager()
 
 	// Identifier
-	var ownerID []byte
+	var identifier types.MessageID
 	if role == types.RoleCommittee || role == types.RoleAggregatorCommittee {
 		committee := make([]uint64, 0)
 		for _, op := range keySet.Committee() {
 			committee = append(committee, op.Signer)
 		}
 		clusterID := types.GetCommitteeID(committee)
-		ownerID = clusterID[:]
+		identifier = types.NewCommitteeMsgID(TestingSSVDomainType, clusterID, role)
 	} else {
-		ownerID = TestingValidatorPubKey[:]
+		identifier = types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), role)
 	}
-	identifier := types.NewMsgID(TestingSSVDomainType, ownerID[:], role)
 
 	// Network
 	net := NewTestingNetwork(1, keySet.OperatorKeys[1])

@@ -31,12 +31,9 @@ func CommitteeIDMismatch() tests.SpecTest {
 	invalidateCommitteeID := func(msg *types.SignedSSVMessage) *types.SignedSSVMessage {
 		// Change committee ID to wrong one
 		msgID := msg.SSVMessage.MsgID
-		wrongCommitteeID := [48]byte{1}
-		msg.SSVMessage.MsgID = types.NewMsgID(
-			types.DomainType(msgID.GetDomain()),
-			wrongCommitteeID[:],
-			msgID.GetRoleType(),
-		)
+		domain := types.DomainType(msgID.GetDomain())
+		wrongCommitteeID := types.CommitteeID{1}
+		msg.SSVMessage.MsgID = types.NewCommitteeMsgID(domain, wrongCommitteeID, msgID.GetRoleType())
 
 		// fix signature not to raise invalid sig error
 		newSignature, err := types.SignSSVMessage(ks.OperatorKeys[1], msg.SSVMessage)

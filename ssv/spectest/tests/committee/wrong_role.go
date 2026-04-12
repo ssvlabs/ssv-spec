@@ -31,12 +31,12 @@ func WrongRole() tests.SpecTest {
 	invalidateRunnerRole := func(msg *types.SignedSSVMessage) *types.SignedSSVMessage {
 		// Change runner role to wrong one
 		msgID := msg.SSVMessage.MsgID
+		domain := types.DomainType(msgID.GetDomain())
+		var committeeID types.CommitteeID
+		executorID := msgID.GetDutyExecutorID()
+		copy(committeeID[:], executorID[len(executorID)-len(committeeID):])
 		wrongRunnerRole := types.RunnerRole(99) // Assuming 99 is an invalid role
-		msg.SSVMessage.MsgID = types.NewMsgID(
-			types.DomainType(msgID.GetDomain()),
-			msgID.GetDutyExecutorID(),
-			wrongRunnerRole,
-		)
+		msg.SSVMessage.MsgID = types.NewCommitteeMsgID(domain, committeeID, wrongRunnerRole)
 
 		// fix signature not to raise invalid sig error
 		newSignature, err := types.SignSSVMessage(ks.OperatorKeys[1], msg.SSVMessage)
