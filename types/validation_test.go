@@ -9,9 +9,10 @@ import (
 
 func TestSSVMessageValidate(t *testing.T) {
 	t.Run("invalid msg type", func(t *testing.T) {
+		var committeeID CommitteeID
 		msg := &SSVMessage{
 			MsgType: MsgType(99),
-			MsgID:   NewMsgID(GenesisMainnet, make([]byte, 48), RoleCommittee),
+			MsgID:   NewCommitteeMsgID(GenesisMainnet, committeeID, RoleCommittee),
 		}
 		err := msg.Validate()
 		require.Error(t, err)
@@ -20,9 +21,10 @@ func TestSSVMessageValidate(t *testing.T) {
 	})
 
 	t.Run("invalid role encoding in MsgID", func(t *testing.T) {
+		var committeeID CommitteeID
 		msg := &SSVMessage{
 			MsgType: SSVConsensusMsgType,
-			MsgID:   NewMsgID(GenesisMainnet, make([]byte, 48), RoleUnknown),
+			MsgID:   NewCommitteeMsgID(GenesisMainnet, committeeID, RoleUnknown),
 		}
 		err := msg.Validate()
 		require.Error(t, err)
@@ -38,7 +40,7 @@ func TestSignedSSVMessageValidateDelegatesToSSVMessageValidate(t *testing.T) {
 		OperatorIDs: []OperatorID{1},
 		SSVMessage: &SSVMessage{
 			MsgType: SSVConsensusMsgType,
-			MsgID:   NewMsgID(GenesisMainnet, make([]byte, 48), RoleUnknown),
+			MsgID:   NewCommitteeMsgID(GenesisMainnet, CommitteeID{}, RoleUnknown),
 		},
 	}
 
