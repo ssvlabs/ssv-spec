@@ -70,9 +70,6 @@ func (c *Committee) StartDuty(duty types.Duty) error {
 	var validatorDuties []*types.ValidatorDuty
 	switch d := duty.(type) {
 	case *types.CommitteeDuty:
-		if err := d.Validate(); err != nil {
-			return errors.Wrap(err, "invalid committee duty")
-		}
 		slot = phase0.Slot(d.Slot)
 		runnerMap = &c.CommitteeRunners
 		createFn = &c.CreateCommitteeRunnerFn
@@ -133,6 +130,12 @@ func (c *Committee) StartDuty(duty types.Duty) error {
 		}
 	default:
 		return errors.Errorf("unsupported duty type: %T", duty)
+	}
+
+	if committeeDuty, ok := filteredDuty.(*types.CommitteeDuty); ok {
+		if err := committeeDuty.Validate(); err != nil {
+			return errors.Wrap(err, "invalid committee duty")
+		}
 	}
 
 	(*runnerMap)[slot] = (*createFn)(dutyShares)

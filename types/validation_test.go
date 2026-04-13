@@ -59,13 +59,32 @@ func TestBeaconVoteValidate(t *testing.T) {
 		require.Equal(t, BeaconVoteNilCheckpointErrorCode, err.(*Error).Code)
 	})
 
-	bv := &BeaconVote{
-		Source: &phase0.Checkpoint{Epoch: 2},
-		Target: &phase0.Checkpoint{Epoch: 1},
-	}
+	t.Run("zero-value beacon vote", func(t *testing.T) {
+		err := (&BeaconVote{}).Validate()
+		require.Error(t, err)
+		require.ErrorIs(t, err, &Error{})
+		require.Equal(t, BeaconVoteNilCheckpointErrorCode, err.(*Error).Code)
+	})
 
-	err := bv.Validate()
-	require.Error(t, err)
-	require.ErrorIs(t, err, &Error{})
-	require.Equal(t, AttestationSourceNotLessThanTargetErrorCode, err.(*Error).Code)
+	t.Run("nil source only", func(t *testing.T) {
+		bv := &BeaconVote{
+			Target: &phase0.Checkpoint{Epoch: 1},
+		}
+		err := bv.Validate()
+		require.Error(t, err)
+		require.ErrorIs(t, err, &Error{})
+		require.Equal(t, BeaconVoteNilCheckpointErrorCode, err.(*Error).Code)
+	})
+
+	t.Run("source epoch must be less than target epoch", func(t *testing.T) {
+		bv := &BeaconVote{
+			Source: &phase0.Checkpoint{Epoch: 2},
+			Target: &phase0.Checkpoint{Epoch: 1},
+		}
+
+		err := bv.Validate()
+		require.Error(t, err)
+		require.ErrorIs(t, err, &Error{})
+		require.Equal(t, AttestationSourceNotLessThanTargetErrorCode, err.(*Error).Code)
+	})
 }
