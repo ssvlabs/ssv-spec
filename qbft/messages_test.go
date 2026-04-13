@@ -23,7 +23,7 @@ func TestRoundChangeJustificationProcessingMessagesReturnsDecodeError(t *testing
 
 	processingMessages, err := msg.RoundChangeJustificationProcessingMessages()
 	require.Nil(t, processingMessages)
-	require.ErrorContains(t, err, "decode justification message")
+	require.ErrorContains(t, err, "decode signed SSV message")
 }
 
 func TestRoundChangeJustificationProcessingMessages(t *testing.T) {
@@ -78,6 +78,6 @@ func TestPrepareJustificationProcessingMessagesReturnsDecodeError(t *testing.T) 
 
 	processingMessages, err := msg.PrepareJustificationProcessingMessages()
 	require.Nil(t, processingMessages)
-	require.ErrorContains(t, err, "decode justification message")
+	require.ErrorContains(t, err, "decode signed SSV message")
 }
 
