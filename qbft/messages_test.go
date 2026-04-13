@@ -80,4 +80,3 @@ func TestPrepareJustificationProcessingMessagesReturnsDecodeError(t *testing.T) 
 	require.Nil(t, processingMessages)
 	require.ErrorContains(t, err, "decode signed SSV message")
 }
-
