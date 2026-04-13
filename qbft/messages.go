@@ -153,7 +153,7 @@ func processingMessagesFromSignedMessages(signedMessages []*types.SignedSSVMessa
 	for _, signedMessage := range signedMessages {
 		msg, err := NewProcessingMessage(signedMessage)
 		if err != nil {
-			return nil, errors.Wrap(err, "decode justification message")
+			return nil, errors.Wrap(err, "decode signed SSV message")
 		}
 		ret = append(ret, msg)
 	}
