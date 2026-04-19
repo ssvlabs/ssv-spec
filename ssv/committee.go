@@ -100,6 +100,8 @@ func (c *Committee) StartDuty(duty types.Duty) error {
 
 	for _, bduty := range validatorDuties {
 		if bduty == nil {
+			// Preserve the previous best-effort behavior for malformed foreign entries:
+			// only duties that can be matched to this committee's shares are enforced.
 			continue
 		}
 		if _, exists := c.Share[bduty.ValidatorIndex]; !exists {
@@ -119,23 +121,29 @@ func (c *Committee) StartDuty(duty types.Duty) error {
 	var filteredDuty types.Duty
 	switch duty.(type) {
 	case *types.CommitteeDuty:
-		filteredDuty = &types.CommitteeDuty{
+		committeeDuty := &types.CommitteeDuty{
 			Slot:            slot,
 			ValidatorDuties: filteredValidatorDuties,
 		}
-	case *types.AggregatorCommitteeDuty:
-		filteredDuty = &types.AggregatorCommitteeDuty{
-			Slot:            slot,
-			ValidatorDuties: filteredValidatorDuties,
-		}
-	default:
-		return errors.Errorf("unsupported duty type: %T", duty)
-	}
-
-	if committeeDuty, ok := filteredDuty.(*types.CommitteeDuty); ok {
 		if err := committeeDuty.Validate(); err != nil {
 			return errors.Wrap(err, "invalid committee duty")
 		}
+		filteredDuty = committeeDuty
+	case *types.AggregatorCommitteeDuty:
+		aggregatorDuty := &types.AggregatorCommitteeDuty{
+			Slot:            slot,
+			ValidatorDuties: filteredValidatorDuties,
+		}
+		validatorIndex := make(map[phase0.ValidatorIndex]struct{}, len(dutyShares))
+		for validatorIdx := range dutyShares {
+			validatorIndex[validatorIdx] = struct{}{}
+		}
+		if err := aggregatorDuty.Validate(validatorIndex); err != nil {
+			return errors.Wrap(err, "invalid aggregator committee duty")
+		}
+		filteredDuty = aggregatorDuty
+	default:
+		return errors.Errorf("unsupported duty type: %T", duty)
 	}
 
 	(*runnerMap)[slot] = (*createFn)(dutyShares)

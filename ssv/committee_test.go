@@ -125,3 +125,35 @@ func TestCommitteeStartDutyIgnoresMalformedForeignValidatorDuty(t *testing.T) {
 	require.Equal(t, ownedIndex, startedDuty.ValidatorDuties[0].ValidatorIndex)
 	require.Equal(t, committee.CommitteeMember.GetQuorum(), runner.startQuorum)
 }
+
+func TestCommitteeStartDutyRejectsInvalidOwnedAggregatorDuty(t *testing.T) {
+	ownedIndex := phase0.ValidatorIndex(1)
+	runner := &testRunner{}
+
+	committee := NewCommittee(
+		validCommitteeMember(),
+		map[phase0.ValidatorIndex]*types.Share{
+			ownedIndex: validShare(ownedIndex),
+		},
+		func(map[phase0.ValidatorIndex]*types.Share) Runner { return runner },
+		func(map[phase0.ValidatorIndex]*types.Share) Runner { return runner },
+	)
+
+	var pubKey phase0.BLSPubKey
+	pubKey[0] = 1
+
+	err := committee.StartDuty(&types.AggregatorCommitteeDuty{
+		Slot: 10,
+		ValidatorDuties: []*types.ValidatorDuty{
+			{
+				Type:                    types.BNRoleAttester,
+				PubKey:                  pubKey,
+				Slot:                    10,
+				ValidatorIndex:          ownedIndex,
+				CommitteeLength:         4,
+				ValidatorCommitteeIndex: 0,
+			},
+		},
+	})
+	require.EqualError(t, err, "invalid aggregator committee duty: invalid beacon role in validator duty")
+}

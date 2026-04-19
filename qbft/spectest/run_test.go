@@ -33,6 +33,9 @@ func TestJson(t *testing.T) {
 	byteValue, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
+			if os.Getenv("CI") != "" {
+				t.Fatalf("missing %s in CI; generate it with `make generate-jsons`", path)
+			}
 			t.Skipf("missing %s; generate it with `make generate-jsons`", path)
 		}
 		t.Fatalf("failed to read %s: %v", path, err)
