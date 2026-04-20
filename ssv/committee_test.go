@@ -157,3 +157,20 @@ func TestCommitteeStartDutyRejectsInvalidOwnedAggregatorDuty(t *testing.T) {
 	})
 	require.EqualError(t, err, "invalid aggregator committee duty: invalid beacon role in validator duty")
 }
+
+func TestCommitteeStartDutyRejectsNilCommitteeDuty(t *testing.T) {
+	runner := &testRunner{}
+
+	committee := NewCommittee(
+		validCommitteeMember(),
+		map[phase0.ValidatorIndex]*types.Share{
+			1: validShare(1),
+		},
+		func(map[phase0.ValidatorIndex]*types.Share) Runner { return runner },
+		func(map[phase0.ValidatorIndex]*types.Share) Runner { return runner },
+	)
+
+	var duty *types.CommitteeDuty
+	err := committee.StartDuty(duty)
+	require.EqualError(t, err, "nil committee duty")
+}

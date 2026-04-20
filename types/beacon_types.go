@@ -147,7 +147,7 @@ func (bd *ValidatorDuty) Validate() error {
 	}
 
 	switch bd.Type {
-	case BNRoleAttester, BNRoleAggregator, BNRoleSyncCommittee, BNRoleSyncCommitteeContribution:
+	case BNRoleAttester, BNRoleAggregator:
 		if bd.CommitteeLength == 0 {
 			return NewError(InvalidValidatorDutyErrorCode, "committee length must be non-zero")
 		}

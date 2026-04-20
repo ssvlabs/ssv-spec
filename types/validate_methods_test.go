@@ -151,4 +151,20 @@ func TestValidatorDutyValidate(t *testing.T) {
 		require.Error(t, err)
 		require.Equal(t, InvalidValidatorDutyErrorCode, err.(*Error).Code)
 	})
+
+	t.Run("sync committee allows zero committee metadata", func(t *testing.T) {
+		d := valid()
+		d.Type = BNRoleSyncCommittee
+		d.CommitteeLength = 0
+		d.ValidatorCommitteeIndex = 0
+		require.NoError(t, d.Validate())
+	})
+
+	t.Run("sync committee contribution allows zero committee metadata", func(t *testing.T) {
+		d := valid()
+		d.Type = BNRoleSyncCommitteeContribution
+		d.CommitteeLength = 0
+		d.ValidatorCommitteeIndex = 0
+		require.NoError(t, d.Validate())
+	})
 }
