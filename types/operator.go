@@ -21,6 +21,73 @@ type Operator struct {
 	SSVOperatorPubKey []byte `ssz-size:"459"`
 }
 
+// Validate checks the following rules:
+// - OperatorID must be non-zero
+func (o *Operator) Validate() error {
+	if o == nil {
+		return NewError(InvalidOperatorErrorCode, "nil operator")
+	}
+	if o.OperatorID == 0 {
+		return NewError(InvalidOperatorErrorCode, "operator ID 0 not allowed")
+	}
+	return nil
+}
+
+// Validate checks the following rules:
+// - OperatorID must be non-zero
+// - Committee must be non-empty
+// - FaultyNodes must satisfy the QBFT committee requirement n >= 3f+1
+// - CommitteeID must match the ID computed from committee OperatorIDs
+// - DomainType must be one of the known SSV domains in this spec
+func (cm *CommitteeMember) Validate() error {
+	if cm == nil {
+		return NewError(InvalidCommitteeMemberErrorCode, "nil committee member")
+	}
+	if cm.OperatorID == 0 {
+		return NewError(InvalidCommitteeMemberErrorCode, "operator ID 0 not allowed")
+	}
+	if len(cm.Committee) == 0 {
+		return NewError(InvalidCommitteeMemberErrorCode, "empty committee")
+	}
+
+	committeeSize := uint64(len(cm.Committee))
+	// Enforce the QBFT committee requirement n == 3f+1 without risking uint64 overflow.
+	// This also guarantees that quorum calculations using 2f+1 have the expected intersection properties.
+	if (committeeSize-1)%3 != 0 || cm.FaultyNodes != (committeeSize-1)/3 {
+		return NewError(InvalidCommitteeMemberErrorCode, "invalid faulty nodes bound for committee size")
+	}
+
+	seenIDs := make(map[OperatorID]struct{}, len(cm.Committee))
+	opIDs := make([]OperatorID, 0, len(cm.Committee))
+	containsSelf := false
+	for _, op := range cm.Committee {
+		if err := op.Validate(); err != nil {
+			return NewError(InvalidCommitteeMemberErrorCode, "invalid committee operator")
+		}
+		if _, exists := seenIDs[op.OperatorID]; exists {
+			return NewError(InvalidCommitteeMemberErrorCode, "duplicate operator ID in committee")
+		}
+		seenIDs[op.OperatorID] = struct{}{}
+		opIDs = append(opIDs, op.OperatorID)
+		if op.OperatorID == cm.OperatorID {
+			containsSelf = true
+		}
+	}
+	if !containsSelf {
+		return NewError(InvalidCommitteeMemberErrorCode, "committee does not contain operator")
+	}
+
+	if GetCommitteeID(opIDs) != cm.CommitteeID {
+		return NewError(InvalidCommitteeMemberErrorCode, "committee ID mismatch")
+	}
+
+	if !cm.DomainType.IsKnown() {
+		return NewError(InvalidCommitteeMemberErrorCode, "unknown domain type")
+	}
+
+	return nil
+}
+
 // HasQuorum returns true if at least 2f+1 items are present (cnt is the number of items). It assumes nothing about those items, not their type or structure
 // https://github.com/ConsenSys/qbft-formal-spec-and-verification/blob/main/dafny/spec/L1/node_auxiliary_functions.dfy#L259
 

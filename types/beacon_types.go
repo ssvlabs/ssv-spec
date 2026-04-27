@@ -129,6 +129,36 @@ func (bd *ValidatorDuty) RunnerRole() RunnerRole {
 	return MapDutyToRunnerRole(bd.Type)
 }
 
+// Validate checks the following rules:
+// - Type must map to a known RunnerRole
+// - PubKey must be non-zero
+// - CommitteeLength/ValidatorCommitteeIndex must be consistent for committee-related roles
+func (bd *ValidatorDuty) Validate() error {
+	if bd == nil {
+		return NewError(InvalidValidatorDutyErrorCode, "nil validator duty")
+	}
+
+	if MapDutyToRunnerRole(bd.Type) == RoleUnknown {
+		return NewError(InvalidValidatorDutyErrorCode, "unknown duty type")
+	}
+
+	if bd.PubKey.IsZero() {
+		return NewError(InvalidValidatorDutyErrorCode, "zero validator pubkey not allowed")
+	}
+
+	switch bd.Type {
+	case BNRoleAttester, BNRoleAggregator:
+		if bd.CommitteeLength == 0 {
+			return NewError(InvalidValidatorDutyErrorCode, "committee length must be non-zero")
+		}
+		if bd.ValidatorCommitteeIndex >= bd.CommitteeLength {
+			return NewError(InvalidValidatorDutyErrorCode, "validator committee index out of bounds")
+		}
+	}
+
+	return nil
+}
+
 // GetValidatorIndex returns the validator index
 func (bd *ValidatorDuty) GetValidatorIndex() spec.ValidatorIndex {
 	return bd.ValidatorIndex
@@ -145,6 +175,35 @@ func (cd *CommitteeDuty) DutySlot() spec.Slot {
 
 func (cd *CommitteeDuty) RunnerRole() RunnerRole {
 	return RoleCommittee
+}
+
+// Validate checks the following rules:
+// - ValidatorDuties must be non-empty
+// - Each duty must be non-nil with slot matching CommitteeDuty.Slot
+// - Each duty type must be BNRoleAttester or BNRoleSyncCommittee
+// - Each duty must pass ValidatorDuty.Validate()
+func (cd *CommitteeDuty) Validate() error {
+	if cd == nil {
+		return NewError(UnknownDutyRoleDataErrorCode, "nil committee duty")
+	}
+	if len(cd.ValidatorDuties) == 0 {
+		return NewError(NoBeaconDutiesErrorCode, "no beacon duties")
+	}
+	for _, vd := range cd.ValidatorDuties {
+		if vd == nil {
+			return NewError(UnknownDutyRoleDataErrorCode, "nil validator duty")
+		}
+		if vd.Slot != cd.Slot {
+			return NewError(UnknownDutyRoleDataErrorCode, "mismatched slot in validator duty")
+		}
+		if vd.Type != BNRoleAttester && vd.Type != BNRoleSyncCommittee {
+			return NewError(WrongBeaconRoleTypeErrorCode, "invalid beacon role in validator duty")
+		}
+		if err := vd.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // AggregatorCommitteeDuty represents combined aggregator and sync committee contribution duties

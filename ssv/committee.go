@@ -2,6 +2,7 @@ package ssv
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
@@ -19,6 +20,9 @@ type Committee struct {
 	CreateCommitteeRunnerFn           CreateRunnerFn
 	CreateAggregatorCommitteeRunnerFn CreateRunnerFn
 	Share                             map[phase0.ValidatorIndex]*types.Share
+
+	validateOnce sync.Once
+	validateErr  error
 }
 
 // NewCommittee creates a new cluster
@@ -39,21 +43,45 @@ func NewCommittee(
 	return c
 }
 
+func (c *Committee) validateInvariants() error {
+	c.validateOnce.Do(func() {
+		if err := (&c.CommitteeMember).Validate(); err != nil {
+			c.validateErr = errors.Wrap(err, "invalid committee member")
+			return
+		}
+		if err := validateShareMap(c.Share); err != nil {
+			c.validateErr = errors.Wrap(err, "invalid share map")
+			return
+		}
+	})
+	return c.validateErr
+}
+
 // StartDuty starts a new duty for the given slot
 func (c *Committee) StartDuty(duty types.Duty) error {
-
-	slot := duty.DutySlot()
+	if err := c.validateInvariants(); err != nil {
+		return err
+	}
 
 	// Get objects according to duty type
+	var slot phase0.Slot
 	var runnerMap *map[phase0.Slot]Runner
 	var createFn *CreateRunnerFn
 	var validatorDuties []*types.ValidatorDuty
 	switch d := duty.(type) {
 	case *types.CommitteeDuty:
+		if d == nil {
+			return types.NewError(types.UnknownDutyRoleDataErrorCode, "nil committee duty")
+		}
+		slot = phase0.Slot(d.Slot)
 		runnerMap = &c.CommitteeRunners
 		createFn = &c.CreateCommitteeRunnerFn
 		validatorDuties = d.ValidatorDuties
 	case *types.AggregatorCommitteeDuty:
+		if d == nil {
+			return types.NewError(types.InvalidAggregatorCommitteeDutyErrorCode, "nil aggregator committee duty")
+		}
+		slot = phase0.Slot(d.Slot)
 		runnerMap = &c.AggregatorCommitteeRunners
 		createFn = &c.CreateAggregatorCommitteeRunnerFn
 		validatorDuties = d.ValidatorDuties
@@ -74,8 +102,16 @@ func (c *Committee) StartDuty(duty types.Duty) error {
 	filteredValidatorDuties := make([]*types.ValidatorDuty, 0)
 
 	for _, bduty := range validatorDuties {
+		if bduty == nil {
+			// Preserve the previous best-effort behavior for malformed foreign entries:
+			// only duties that can be matched to this committee's shares are enforced.
+			continue
+		}
 		if _, exists := c.Share[bduty.ValidatorIndex]; !exists {
 			continue
+		}
+		if err := bduty.Validate(); err != nil {
+			return errors.Wrap(err, "invalid validator duty")
 		}
 		dutyShares[bduty.ValidatorIndex] = c.Share[bduty.ValidatorIndex]
 		filteredValidatorDuties = append(filteredValidatorDuties, bduty)
@@ -88,15 +124,27 @@ func (c *Committee) StartDuty(duty types.Duty) error {
 	var filteredDuty types.Duty
 	switch duty.(type) {
 	case *types.CommitteeDuty:
-		filteredDuty = &types.CommitteeDuty{
+		committeeDuty := &types.CommitteeDuty{
 			Slot:            slot,
 			ValidatorDuties: filteredValidatorDuties,
 		}
+		if err := committeeDuty.Validate(); err != nil {
+			return errors.Wrap(err, "invalid committee duty")
+		}
+		filteredDuty = committeeDuty
 	case *types.AggregatorCommitteeDuty:
-		filteredDuty = &types.AggregatorCommitteeDuty{
+		aggregatorDuty := &types.AggregatorCommitteeDuty{
 			Slot:            slot,
 			ValidatorDuties: filteredValidatorDuties,
 		}
+		validatorIndex := make(map[phase0.ValidatorIndex]struct{}, len(dutyShares))
+		for validatorIdx := range dutyShares {
+			validatorIndex[validatorIdx] = struct{}{}
+		}
+		if err := aggregatorDuty.Validate(validatorIndex); err != nil {
+			return errors.Wrap(err, "invalid aggregator committee duty")
+		}
+		filteredDuty = aggregatorDuty
 	default:
 		return errors.Errorf("unsupported duty type: %T", duty)
 	}
@@ -107,6 +155,10 @@ func (c *Committee) StartDuty(duty types.Duty) error {
 
 // ProcessMessage processes Network Message of all types
 func (c *Committee) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) error {
+	if err := c.validateInvariants(); err != nil {
+		return err
+	}
+
 	// Validate message
 	if err := signedSSVMessage.Validate(); err != nil {
 		return errors.Wrap(err, "invalid SignedSSVMessage")

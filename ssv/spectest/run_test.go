@@ -56,7 +56,13 @@ func TestJson(t *testing.T) {
 	untypedTests := map[string]interface{}{}
 	byteValue, err := os.ReadFile(path)
 	if err != nil {
-		panic(err.Error())
+		if os.IsNotExist(err) {
+			if os.Getenv("CI") != "" {
+				t.Fatalf("missing %s in CI; generate it with `make generate-jsons`", path)
+			}
+			t.Skipf("missing %s; generate it with `make generate-jsons`", path)
+		}
+		t.Fatalf("failed to read %s: %v", path, err)
 	}
 
 	if err := json.Unmarshal(byteValue, &untypedTests); err != nil {

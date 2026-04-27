@@ -35,6 +35,9 @@ func NewVoluntaryExitRunner(
 	if len(share) != 1 {
 		return nil, fmt.Errorf("must have one share")
 	}
+	if err := validateShareMap(share); err != nil {
+		return nil, err
+	}
 
 	return &VoluntaryExitRunner{
 		BaseRunner: &BaseRunner{

@@ -38,7 +38,6 @@ func TestSignedSSVMessageDeepCopyDoesNotAliasSlices(t *testing.T) {
 func TestSignedSSVMessageDeepCopyEdgeCases(t *testing.T) {
 	t.Run("nil receiver returns nil", func(t *testing.T) {
 		var original *SignedSSVMessage
-
 		require.Nil(t, original.DeepCopy())
 	})
 

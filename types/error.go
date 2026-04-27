@@ -90,6 +90,15 @@ const (
 	UnknownVersionErrorCode
 	AggCommAttestationDecodingErrorCode
 	CommitteeWrongRoleErrorCode
+
+	// Validation errors for protocol-facing core types.
+	SSVMessageDataTooLargeErrorCode
+	SSVMessageInvalidRoleErrorCode
+	InvalidShareErrorCode
+	InvalidOperatorErrorCode
+	InvalidCommitteeMemberErrorCode
+	InvalidValidatorDutyErrorCode
+	BeaconVoteNilCheckpointErrorCode
 )
 
 type Error struct {

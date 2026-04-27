@@ -39,6 +39,9 @@ func NewValidatorRegistrationRunner(
 	if len(share) != 1 {
 		return nil, fmt.Errorf("must have one share")
 	}
+	if err := validateShareMap(share); err != nil {
+		return nil, err
+	}
 
 	return &ValidatorRegistrationRunner{
 		BaseRunner: &BaseRunner{

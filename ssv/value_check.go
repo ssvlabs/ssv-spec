@@ -51,8 +51,8 @@ func BeaconVoteValueCheckF(
 			return types.WrapError(types.DecodeBeaconVoteErrorCode, fmt.Errorf("failed decoding beacon vote: %w", err))
 		}
 
-		if bv.Source.Epoch >= bv.Target.Epoch {
-			return types.NewError(types.AttestationSourceNotLessThanTargetErrorCode, "attestation data source >= target")
+		if err := bv.Validate(); err != nil {
+			return err
 		}
 
 		if bv.Source.Epoch != expectedSource {
