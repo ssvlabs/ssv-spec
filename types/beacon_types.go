@@ -184,17 +184,17 @@ func (cd *CommitteeDuty) RunnerRole() RunnerRole {
 // - Each duty must pass ValidatorDuty.Validate()
 func (cd *CommitteeDuty) Validate() error {
 	if cd == nil {
-		return NewError(UnknownDutyRoleDataErrorCode, "nil committee duty")
+		return NewError(InvalidCommitteeDutyErrorCode, "nil committee duty")
 	}
 	if len(cd.ValidatorDuties) == 0 {
 		return NewError(NoBeaconDutiesErrorCode, "no beacon duties")
 	}
 	for _, vd := range cd.ValidatorDuties {
 		if vd == nil {
-			return NewError(UnknownDutyRoleDataErrorCode, "nil validator duty")
+			return NewError(InvalidCommitteeDutyErrorCode, "nil validator duty")
 		}
 		if vd.Slot != cd.Slot {
-			return NewError(UnknownDutyRoleDataErrorCode, "mismatched slot in validator duty")
+			return NewError(InvalidCommitteeDutyErrorCode, "mismatched slot in validator duty")
 		}
 		if vd.Type != BNRoleAttester && vd.Type != BNRoleSyncCommittee {
 			return NewError(WrongBeaconRoleTypeErrorCode, "invalid beacon role in validator duty")

@@ -71,7 +71,7 @@ func (c *Committee) StartDuty(duty types.Duty) error {
 	switch d := duty.(type) {
 	case *types.CommitteeDuty:
 		if d == nil {
-			return types.NewError(types.UnknownDutyRoleDataErrorCode, "nil committee duty")
+			return types.NewError(types.InvalidCommitteeDutyErrorCode, "nil committee duty")
 		}
 		slot = phase0.Slot(d.Slot)
 		runnerMap = &c.CommitteeRunners
