@@ -83,13 +83,28 @@ func rewriteLiteral(out []byte, name, validPubkey, validSig string) {
 	contentEnd := contentStart + rel
 
 	literal := out[contentStart:contentEnd]
-	pubkeys, sigs := discoverBLSValues(name, literal)
+	pubkeyCounts, sigCounts := discoverBLSValues(name, literal)
+
+	// Each BLS hex must appear in the literal exactly as many times as the
+	// typed walker found at BLS-typed positions. A higher literal count means
+	// a non-BLS field (e.g. KZG commitment/proof) shares the value, and a
+	// blind ReplaceAll would silently corrupt it.
+	for v, want := range pubkeyCounts {
+		if got := bytes.Count(literal, []byte(`"`+v+`"`)); got != want {
+			log.Fatalf("%s: pubkey %s appears %d time(s) in literal but walker found %d BLS position(s); refusing to replace", name, v, got, want)
+		}
+	}
+	for v, want := range sigCounts {
+		if got := bytes.Count(literal, []byte(`"`+v+`"`)); got != want {
+			log.Fatalf("%s: signature %s appears %d time(s) in literal but walker found %d BLS position(s); refusing to replace", name, v, got, want)
+		}
+	}
 
 	rewritten := bytes.Clone(literal)
-	for v := range pubkeys {
+	for v := range pubkeyCounts {
 		rewritten = bytes.ReplaceAll(rewritten, []byte(`"`+v+`"`), []byte(`"`+validPubkey+`"`))
 	}
-	for v := range sigs {
+	for v := range sigCounts {
 		rewritten = bytes.ReplaceAll(rewritten, []byte(`"`+v+`"`), []byte(`"`+validSig+`"`))
 	}
 	if len(rewritten) != contentEnd-contentStart {
@@ -98,12 +113,12 @@ func rewriteLiteral(out []byte, name, validPubkey, validSig string) {
 	copy(out[contentStart:contentEnd], rewritten)
 }
 
-func discoverBLSValues(name string, literal []byte) (pubkeys, sigs map[string]struct{}) {
-	pubkeys = map[string]struct{}{}
-	sigs = map[string]struct{}{}
+func discoverBLSValues(name string, literal []byte) (pubkeyCounts, sigCounts map[string]int) {
+	pubkeyCounts = map[string]int{}
+	sigCounts = map[string]int{}
 	visitor := proposerbls.Visitor{
-		Pubkey:    func(_ string, b []byte) { pubkeys["0x"+hex.EncodeToString(b)] = struct{}{} },
-		Signature: func(_ string, b []byte) { sigs["0x"+hex.EncodeToString(b)] = struct{}{} },
+		Pubkey:    func(_ string, b []byte) { pubkeyCounts["0x"+hex.EncodeToString(b)]++ },
+		Signature: func(_ string, b []byte) { sigCounts["0x"+hex.EncodeToString(b)]++ },
 	}
 
 	switch name {
