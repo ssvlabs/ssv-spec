@@ -1,6 +1,7 @@
 package testingutils
 
 import (
+	"encoding/hex"
 	"encoding/json"
 
 	"github.com/attestantio/go-eth2-client/api"
@@ -9,9 +10,11 @@ import (
 	apiv1electra "github.com/attestantio/go-eth2-client/api/v1/electra"
 	apiv1fulu "github.com/attestantio/go-eth2-client/api/v1/fulu"
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/electra"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
@@ -23,6 +26,105 @@ import (
 
 // SupportedBlockVersions is a list of supported regular/blinded beacon block versions by spec.
 var SupportedBlockVersions = []spec.DataVersion{spec.DataVersionCapella, spec.DataVersionDeneb, spec.DataVersionElectra, spec.DataVersionFulu}
+
+var (
+	validBLSFixturePubKey = mustBLSPubKey(
+		"0x8e80066551a81b318258709edaf7dd1f63cd686a0e4db8b29bbb7acfe65608677af5a527d9448ee47835485e02b50bc0",
+	)
+	validBLSFixtureSignature = mustBLSSignature(
+		"0xb08dbb1ebe8ce4604a06e0ca921184bbbb4fad0e29bb94bb6577329ebaba6b340d7fdf680b1d9e55816467050fd39e2e0861c7a7121155057228d3384d3c56fd01e43184bc3896b26b54db0ec27d030b2b5d72cdb6bc9acadfef9749a8f84b19",
+	)
+)
+
+func mustBLSPubKey(value string) phase0.BLSPubKey {
+	decoded, err := hex.DecodeString(value[2:])
+	if err != nil {
+		panic(err)
+	}
+	var pubkey phase0.BLSPubKey
+	if len(decoded) != len(pubkey) {
+		panic("invalid BLS pubkey fixture length")
+	}
+	copy(pubkey[:], decoded)
+	return pubkey
+}
+
+func mustBLSSignature(value string) phase0.BLSSignature {
+	decoded, err := hex.DecodeString(value[2:])
+	if err != nil {
+		panic(err)
+	}
+	var signature phase0.BLSSignature
+	if len(decoded) != len(signature) {
+		panic("invalid BLS signature fixture length")
+	}
+	copy(signature[:], decoded)
+	return signature
+}
+
+func useValidBLSFixtureBytesForCapellaBlock(body *capella.BeaconBlockBody) {
+	useValidBLSFixtureBytes(
+		&body.RANDAOReveal,
+		body.ProposerSlashings,
+		body.AttesterSlashings,
+		body.Attestations,
+		body.Deposits,
+		body.VoluntaryExits,
+		body.SyncAggregate,
+		body.BLSToExecutionChanges,
+	)
+}
+
+func useValidBLSFixtureBytesForDenebBlock(body *deneb.BeaconBlockBody) {
+	useValidBLSFixtureBytes(
+		&body.RANDAOReveal,
+		body.ProposerSlashings,
+		body.AttesterSlashings,
+		body.Attestations,
+		body.Deposits,
+		body.VoluntaryExits,
+		body.SyncAggregate,
+		body.BLSToExecutionChanges,
+	)
+}
+
+// Keep the large raw JSON constants untouched and normalize the decoded fixtures
+// at the typed boundary.
+func useValidBLSFixtureBytes(
+	randaoReveal *phase0.BLSSignature,
+	proposerSlashings []*phase0.ProposerSlashing,
+	attesterSlashings []*phase0.AttesterSlashing,
+	attestations []*phase0.Attestation,
+	deposits []*phase0.Deposit,
+	voluntaryExits []*phase0.SignedVoluntaryExit,
+	syncAggregate *altair.SyncAggregate,
+	blsToExecutionChanges []*capella.SignedBLSToExecutionChange,
+) {
+	*randaoReveal = validBLSFixtureSignature
+
+	for _, slashing := range proposerSlashings {
+		slashing.SignedHeader1.Signature = validBLSFixtureSignature
+		slashing.SignedHeader2.Signature = validBLSFixtureSignature
+	}
+	for _, slashing := range attesterSlashings {
+		slashing.Attestation1.Signature = validBLSFixtureSignature
+		slashing.Attestation2.Signature = validBLSFixtureSignature
+	}
+	for _, attestation := range attestations {
+		attestation.Signature = validBLSFixtureSignature
+	}
+	for _, deposit := range deposits {
+		deposit.Data.PublicKey = validBLSFixturePubKey
+		deposit.Data.Signature = validBLSFixtureSignature
+	}
+	for _, exit := range voluntaryExits {
+		exit.Signature = validBLSFixtureSignature
+	}
+	syncAggregate.SyncCommitteeSignature = validBLSFixtureSignature
+	for _, change := range blsToExecutionChanges {
+		change.Signature = validBLSFixtureSignature
+	}
+}
 
 var TestingBeaconBlockV = func(version spec.DataVersion) *api.VersionedProposal {
 	switch version {
@@ -304,6 +406,7 @@ var TestingBeaconBlockCapella = func() *capella.BeaconBlock {
 	if err != nil {
 		panic(err)
 	}
+	useValidBLSFixtureBytesForCapellaBlock(res.Body)
 	// using TestingDutySlotCapella to keep the consistency with TestingProposerDutyV Capella slot
 	res.Slot = TestingDutySlotCapella
 	return &res
@@ -357,6 +460,7 @@ var TestingBlockContentsDeneb = func() *apiv1deneb.BlockContents {
 	if err := json.Unmarshal(denebBlockContents, &res); err != nil {
 		panic(err)
 	}
+	useValidBLSFixtureBytesForDenebBlock(res.Block.Body)
 	// using ForkEpochPraterDeneb to keep the consistency with TestingProposerDutyV Deneb slot
 	res.Block.Slot = ForkEpochPraterDeneb
 	return &res
