@@ -17,16 +17,9 @@ fmt:
 test:
 	@go test -v -race -timeout 25m "${TEST_PKG}"
 
-.PHONY: regen-proposer-fixtures
-regen-proposer-fixtures:
-	@go generate ./types/testingutils
-
 .PHONY: generate-jsons
 generate-jsons:
-	@go test ./types/testingutils -run TestProposerFixturesBLSDecodable -count=1
-	@go generate ./qbft/spectest/generate
-	@go generate ./ssv/spectest/generate
-	@go generate ./types/spectest/generate
+	@go generate ./...
 
 .PHONY: generate-ssz
 generate-ssz:
