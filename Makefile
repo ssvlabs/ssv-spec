@@ -1,9 +1,10 @@
 GOPATH?=$(shell go env GOPATH)
 TEST_PKG?=./...
+GOLANGCI_LINT_VERSION?=v2.11.4
 
 .PHONY: lint-prepare
 lint-prepare:
-	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s latest
+	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- $(GOLANGCI_LINT_VERSION)
 
 .PHONY: lint
 lint:
