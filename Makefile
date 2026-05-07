@@ -3,7 +3,7 @@ TEST_PKG?=./...
 
 .PHONY: lint-prepare
 lint-prepare:
-	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s latest
+	curl -sfL https://golangci-lint.run/install.sh| sh -s latest
 
 .PHONY: lint
 lint:
