@@ -39,6 +39,9 @@ func NewValidatorRegistrationRunner(
 	if len(share) != 1 {
 		return nil, fmt.Errorf("must have one share")
 	}
+	if err := validateShareMap(share); err != nil {
+		return nil, err
+	}
 
 	return &ValidatorRegistrationRunner{
 		BaseRunner: &BaseRunner{
@@ -151,7 +154,7 @@ func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], types.RunnerRole(r.BaseRunner.RunnerRoleType))
+	msgID := types.NewValidatorMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.RunnerRoleType)
 
 	encodedMsg, err := msgs.Encode()
 	if err != nil {

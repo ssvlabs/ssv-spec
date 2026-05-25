@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/attestantio/go-eth2-client/spec/electra"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
@@ -83,9 +85,17 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 	case objMap["Round"] != nil && objMap["Height"] != nil:
 		correctType = &qbft.Message{}
 	case objMap["Duty"] != nil && objMap["DataSSZ"] != nil:
-		correctType = &types.ValidatorConsensusData{}
+		correctType = &types.ProposerConsensusData{}
 	case objMap["BlockRoot"] != nil && objMap["Source"] != nil && objMap["Target"] != nil:
 		correctType = &types.BeaconVote{}
+	case (objMap["Version"] != nil &&
+		objMap["Aggregators"] != nil && objMap["AggregatorsCommitteeIndexes"] != nil && objMap["AggregatedAttestations"] != nil &&
+		objMap["Contributors"] != nil && objMap["SyncCommitteeContributions"] != nil):
+		correctType = &types.AggregatorCommitteeConsensusData{}
+	case (objMap["aggregation_bits"] != nil && objMap["data"] != nil && objMap["signature"] != nil && objMap["committee_bits"] == nil):
+		correctType = &Phase0AttestationWrapper{Attestation: &phase0.Attestation{}}
+	case (objMap["aggregation_bits"] != nil && objMap["data"] != nil && objMap["signature"] != nil && objMap["committee_bits"] != nil):
+		correctType = &ElectraAttestationWrapper{Attestation: &electra.Attestation{}}
 	default:
 		return fmt.Errorf("could not determine object type from JSON")
 	}

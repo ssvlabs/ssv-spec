@@ -14,8 +14,6 @@ const (
 	WrongMessageHeightErrorCode
 	SignerIsNotInCommitteeErrorCode
 	NonUniqueSignerErrorCode
-	ValidatorRegistrationNoConsensusDataErrorCode
-	ValidatorExitNoConsensusDataErrorCode
 	UnknownDutyRoleDataErrorCode
 	UnknownBlockVersionErrorCode
 	IncorrectNumberOfSignaturesErrorCode
@@ -77,6 +75,30 @@ const (
 	InstanceAlreadyRunningErrorCode
 	StartInstanceErrorCode
 	TimeoutInstanceErrorCode
+	AggCommAggCommIdxCntMismatchErrorCode
+	AggCommCommIdxMismatchErrorCode
+	AggCommUnusedCommIdxErrorCode
+	AggCommDuplicatedCommIdxErrorCode
+	AggCommSubnetNotInSCSubnetsErrorCode
+	AggCommSCCSubnetDuplicateErrorCode
+	AggCommUnusedSubnetErrorCode
+	AggCommConsensusDataNoValidatorErrorCode
+	AggCommConsensusDataDecodeErrorCode
+	ProposerConsensusDataDecodeErrorCode
+	PostConsensusQuorumWithInvalidSignatures
+	InvalidAggregatorCommitteeDutyErrorCode
+	UnknownVersionErrorCode
+	AggCommAttestationDecodingErrorCode
+	CommitteeWrongRoleErrorCode
+
+	// Validation errors for protocol-facing core types.
+	SSVMessageDataTooLargeErrorCode
+	SSVMessageInvalidRoleErrorCode
+	InvalidShareErrorCode
+	InvalidOperatorErrorCode
+	InvalidCommitteeMemberErrorCode
+	InvalidValidatorDutyErrorCode
+	BeaconVoteNilCheckpointErrorCode
 )
 
 type Error struct {

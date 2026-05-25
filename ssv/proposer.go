@@ -36,6 +36,9 @@ func NewProposerRunner(
 	if len(share) != 1 {
 		return nil, fmt.Errorf("must have one share")
 	}
+	if err := validateShareMap(share); err != nil {
+		return nil, err
+	}
 
 	return &ProposerRunner{
 		BaseRunner: &BaseRunner{
@@ -98,7 +101,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 		return errors.Wrap(err, "could not marshal beacon block")
 	}
 
-	input := &types.ValidatorConsensusData{
+	input := &types.ProposerConsensusData{
 		Duty:    *duty,
 		Version: vBlk.Version,
 		DataSSZ: byts,
@@ -112,7 +115,7 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 }
 
 func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
-	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg, &types.ValidatorConsensusData{})
+	decided, decidedValue, err := r.BaseRunner.baseConsensusMsgProcessing(r, signedMsg, &types.ProposerConsensusData{})
 	if err != nil {
 		return errors.Wrap(err, "failed processing consensus message")
 	}
@@ -125,7 +128,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 	// specific duty sig
 	var blkToSign ssz.HashRoot
 
-	cd := decidedValue.(*types.ValidatorConsensusData)
+	cd := decidedValue.(*types.ProposerConsensusData)
 	_, blkToSign, err = cd.GetBlockData()
 	if err != nil {
 		return errors.Wrap(err, "could not get block data")
@@ -143,7 +146,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
+	msgID := types.NewValidatorMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.RunnerRoleType)
 
 	encodedMsg, err := postConsensusMsg.Encode()
 	if err != nil {
@@ -196,12 +199,12 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], sig)
 
-		validatorConsensusData := &types.ValidatorConsensusData{}
-		err = validatorConsensusData.Decode(r.GetState().DecidedValue)
+		proposerConsensusData := &types.ProposerConsensusData{}
+		err = proposerConsensusData.Decode(r.GetState().DecidedValue)
 		if err != nil {
 			return errors.Wrap(err, "could not create consensus data")
 		}
-		vBlk, _, err := validatorConsensusData.GetBlockData()
+		vBlk, _, err := proposerConsensusData.GetBlockData()
 		if err != nil {
 			return errors.Wrap(err, "could not get block")
 		}
@@ -221,13 +224,13 @@ func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, p
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
 func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	validatorConsensusData := &types.ValidatorConsensusData{}
-	err := validatorConsensusData.Decode(r.GetState().DecidedValue)
+	proposerConsensusData := &types.ProposerConsensusData{}
+	err := proposerConsensusData.Decode(r.GetState().DecidedValue)
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not create consensus data")
 	}
 
-	_, data, err := validatorConsensusData.GetBlockData()
+	_, data, err := proposerConsensusData.GetBlockData()
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get block data")
 	}
@@ -254,7 +257,7 @@ func (r *ProposerRunner) executeDuty(duty types.Duty) error {
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
 
-	msgID := types.NewMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey[:], r.BaseRunner.RunnerRoleType)
+	msgID := types.NewValidatorMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.RunnerRoleType)
 
 	encodedMsg, err := msgs.Encode()
 	if err != nil {

@@ -43,9 +43,9 @@ func Finished() tests.SpecTest {
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name: "sync committee aggregator",
-				Runner: finishRunner(testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty, true),
-				Duty:      &testingutils.TestingSyncCommitteeContributionNexEpochDuty,
+				Runner: finishRunner(testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingSyncCommitteeContributionDuty, true),
+				Duty:      testingutils.TestingSyncCommitteeContributionNexEpochDuty,
 				Threshold: ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
@@ -86,7 +86,7 @@ func Finished() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
 			Name:      fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner:    finishRunner(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty(version), true),
+			Runner:    finishRunner(testingutils.AggregatorCommitteeRunner(ks), testingutils.TestingAggregatorDuty(version), true),
 			Duty:      testingutils.TestingAggregatorDutyNextEpoch(version),
 			Threshold: ks.Threshold,
 			OutputMessages: []*types.PartialSignatureMessages{

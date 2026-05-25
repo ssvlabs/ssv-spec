@@ -11,6 +11,6 @@ func MapSyncCommitteeContribution() *DutySpecTest {
 		"map sync committee contribution role",
 		testdoc.MapSyncCommitteeContributionTestDoc,
 		types.BNRoleSyncCommitteeContribution,
-		types.RoleSyncCommitteeContribution,
+		types.RoleAggregatorCommittee,
 	)
 }

@@ -52,24 +52,25 @@ func (msg MessageID) GetRoleType() RunnerRole {
 	return RunnerRole(binary.LittleEndian.Uint32(roleByts))
 }
 
-func NewMsgID(domain DomainType, dutyExecutorID []byte, role RunnerRole) MessageID {
-	roleByts := make([]byte, 4)
-	binary.LittleEndian.PutUint32(roleByts, uint32(role))
+func NewValidatorMsgID(domain DomainType, validatorPK ValidatorPK, role RunnerRole) MessageID {
+	mid := MessageID{}
+	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
+	binary.LittleEndian.PutUint32(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], uint32(role))
+	copy(mid[dutyExecutorIDStartPos:dutyExecutorIDStartPos+dutyExecutorIDSize], validatorPK[:])
+	return mid
+}
 
-	return newMessageID(domain[:], roleByts, dutyExecutorID)
+func NewCommitteeMsgID(domain DomainType, committeeID CommitteeID, role RunnerRole) MessageID {
+	mid := MessageID{}
+	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
+	binary.LittleEndian.PutUint32(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], uint32(role))
+	// CommitteeID is 32 bytes, right-aligned in the 48-byte executor ID slot.
+	copy(mid[dutyExecutorIDStartPos+dutyExecutorIDSize-len(committeeID):dutyExecutorIDStartPos+dutyExecutorIDSize], committeeID[:])
+	return mid
 }
 
 func (msgID MessageID) String() string {
 	return hex.EncodeToString(msgID[:])
-}
-
-func newMessageID(domain, roleByts, dutyExecutorID []byte) MessageID {
-	mid := MessageID{}
-	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
-	copy(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], roleByts)
-	prefixLen := dutyExecutorIDSize - len(dutyExecutorID)
-	copy(mid[dutyExecutorIDStartPos+prefixLen:dutyExecutorIDStartPos+dutyExecutorIDSize], dutyExecutorID)
-	return mid
 }
 
 type MsgType uint64
@@ -95,8 +96,8 @@ type SSVMessage struct {
 	MsgType MsgType
 	MsgID   MessageID `ssz-size:"56"`
 	// Data max size is the max between max(qbft.SignedMessage) and max(PartialSignatureMessages)
-	// i.e., = max(722412, 144020) = 722412
-	Data []byte `ssz-max:"722412"`
+	// i.e., = max(722412, 726932) = 726932
+	Data []byte `ssz-max:"726932"`
 }
 
 func (msg *SSVMessage) GetType() MsgType {
@@ -123,12 +124,37 @@ func (msg *SSVMessage) Decode(data []byte) error {
 	return msg.UnmarshalSSZ(data)
 }
 
+// Validate checks the following rules:
+// - MsgType must be in the known range
+// - MsgID must encode a non-negative RunnerRole (unknown positive roles are accepted for forward compatibility)
+func (msg *SSVMessage) Validate() error {
+	if msg == nil {
+		return NewError(NilSSVMessageErrorCode, "nil SSVMessage")
+	}
+
+	switch msg.MsgType {
+	case SSVConsensusMsgType, SSVPartialSignatureMsgType, DKGMsgType:
+		// ok
+	default:
+		return NewError(MessageTypeInvalidErrorCode, "invalid SSV message type")
+	}
+
+	// Role is used by higher-level components (committee/runner selection) and not all code paths
+	// enforce the same constraints. Here we only reject negative role values (including RoleUnknown),
+	// to avoid accepting wrapped/invalid encodings.
+	if msg.MsgID.GetRoleType() < 0 {
+		return NewError(SSVMessageInvalidRoleErrorCode, "invalid SSV message role")
+	}
+
+	return nil
+}
+
 // SignedSSVMessage is the main message passed within the SSV network. It encapsulates the SSVMessage structure and a signature
 type SignedSSVMessage struct {
 	Signatures  [][]byte     `ssz-max:"13,256"` // Created by the operators' key
 	OperatorIDs []OperatorID `ssz-max:"13"`
 	SSVMessage  *SSVMessage
-	// Full data max value is the max value between ValidatorConsensusData and BeaconVote
+	// Full data max value is the max value between ProposerConsensusData, AggregatorCommitteeConsensusData, and BeaconVote
 	FullData []byte `ssz-max:"8388836"`
 }
 
@@ -188,17 +214,38 @@ func (msg *SignedSSVMessage) Validate() error {
 		return NewError(NilSSVMessageErrorCode, "nil SSVMessage")
 	}
 
-	return nil
+	return msg.SSVMessage.Validate()
 }
 
 // DeepCopy returns a new instance of SignedMessage, deep copied
 func (signedMsg *SignedSSVMessage) DeepCopy() *SignedSSVMessage {
+	if signedMsg == nil {
+		return nil
+	}
+
 	ret := &SignedSSVMessage{
 		OperatorIDs: make([]OperatorID, len(signedMsg.OperatorIDs)),
 		Signatures:  make([][]byte, len(signedMsg.Signatures)),
 	}
 	copy(ret.OperatorIDs, signedMsg.OperatorIDs)
-	copy(ret.Signatures, signedMsg.Signatures)
+	for i, sig := range signedMsg.Signatures {
+		if sig == nil {
+			ret.Signatures[i] = nil
+			continue
+		}
+		ret.Signatures[i] = make([]byte, len(sig))
+		copy(ret.Signatures[i], sig)
+	}
+
+	if signedMsg.FullData != nil {
+		ret.FullData = make([]byte, len(signedMsg.FullData))
+		copy(ret.FullData, signedMsg.FullData)
+	}
+
+	if signedMsg.SSVMessage == nil {
+		ret.SSVMessage = nil
+		return ret
+	}
 
 	retSSV := &SSVMessage{
 		MsgType: signedMsg.SSVMessage.MsgType,
@@ -209,11 +256,6 @@ func (signedMsg *SignedSSVMessage) DeepCopy() *SignedSSVMessage {
 	retSSV.MsgID = msgID
 
 	copy(retSSV.Data, signedMsg.SSVMessage.Data)
-
-	if len(signedMsg.FullData) > 0 {
-		ret.FullData = make([]byte, len(signedMsg.FullData))
-		copy(ret.FullData, signedMsg.FullData)
-	}
 	ret.SSVMessage = retSSV
 	return ret
 }

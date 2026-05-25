@@ -17,19 +17,24 @@ var TestingForkData = types.ForkData{Epoch: TestingDutyEpoch, Domain: TestingSSV
 // Consensus Data - Invalid Types
 // ==================================================
 
-var EncodeConsensusDataTest = func(cd *types.ValidatorConsensusData) []byte {
+var EncodeConsensusDataTest = func(cd *types.ProposerConsensusData) []byte {
 	encodedCD, _ := cd.Encode()
 	return encodedCD
 }
 
-var TestConsensusUnkownDutyTypeData = &types.ValidatorConsensusData{
+var EncodeAggregatorCommitteeConsensusDataTest = func(cd *types.AggregatorCommitteeConsensusData) []byte {
+	encodedCD, _ := cd.Encode()
+	return encodedCD
+}
+
+var TestConsensusUnkownDutyTypeData = &types.ProposerConsensusData{
 	Duty:    TestingUnknownDutyType,
 	DataSSZ: TestingAttestationDataBytes(spec.DataVersionPhase0),
 	Version: spec.DataVersionPhase0,
 }
 var TestConsensusUnkownDutyTypeDataByts, _ = TestConsensusUnkownDutyTypeData.Encode()
 
-var TestConsensusWrongDutyPKData = &types.ValidatorConsensusData{
+var TestConsensusWrongDutyPKData = &types.ProposerConsensusData{
 	Duty:    TestingWrongDutyPK,
 	DataSSZ: TestingAttestationDataBytes(spec.DataVersionPhase0),
 	Version: spec.DataVersionPhase0,
@@ -41,7 +46,7 @@ var TestConsensusWrongDutyPKDataByts, _ = TestConsensusWrongDutyPKData.Encode()
 // ==================================================
 
 var SSVMsgWrongID = func(qbftMsg *types.SignedSSVMessage, partialSigMsg *types.PartialSignatureMessages) *types.SSVMessage {
-	return ssvMsg(qbftMsg, partialSigMsg, types.NewMsgID(TestingSSVDomainType, TestingWrongValidatorPubKey[:], types.RoleCommittee))
+	return ssvMsg(qbftMsg, partialSigMsg, types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingWrongValidatorPubKey), types.RoleCommittee))
 }
 
 var ssvMsg = func(qbftMsg *types.SignedSSVMessage, postMsg *types.PartialSignatureMessages, msgID types.MessageID) *types.SSVMessage {

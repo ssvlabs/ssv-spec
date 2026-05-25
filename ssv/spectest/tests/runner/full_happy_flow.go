@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
@@ -20,31 +21,6 @@ func FullHappyFlow() tests.SpecTest {
 		testdoc.HappyFlowDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
-				Name:   "sync committee aggregator",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: append(
-					// consensus
-					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.RoleSyncCommitteeContribution),
-					[]*types.SignedSSVMessage{ // post consensus
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks))),
-						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks))),
-					}...,
-				),
-				PostDutyRunnerStateRoot: fullHappyFlowSyncCommitteeContributionSC().Root(), //"4987127ad389bb9d21500d447686f135a19f59ae10192e82bf052278853ad3d1",
-				PostDutyRunnerState:     fullHappyFlowSyncCommitteeContributionSC().ExpectedState,
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
-					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
-				},
-			},
-			{
 				Name:   "validator registration",
 				Runner: testingutils.ValidatorRegistrationRunner(ks),
 				Duty:   &testingutils.TestingValidatorRegistrationDuty,
@@ -53,8 +29,6 @@ func FullHappyFlow() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3))),
 				},
-				PostDutyRunnerStateRoot: fullHappyFlowValidatorRegistrationSC().Root(), // "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
-				PostDutyRunnerState:     fullHappyFlowValidatorRegistrationSC().ExpectedState,
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
@@ -71,8 +45,6 @@ func FullHappyFlow() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[2], 2))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[3], 3))),
 				},
-				PostDutyRunnerStateRoot: fullHappyFlowVoluntaryExitSC().Root(), // "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
-				PostDutyRunnerState:     fullHappyFlowVoluntaryExitSC().ExpectedState,
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
@@ -84,11 +56,14 @@ func FullHappyFlow() tests.SpecTest {
 		ks,
 	)
 
+	// Aggregator
 	for _, version := range testingutils.SupportedAggregatorVersions {
+		duty := testingutils.TestingAggregatorDuty(version)
+		height := qbft.Height(duty.Slot)
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name:   fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: testingutils.AggregatorRunner(ks),
-			Duty:   testingutils.TestingAggregatorDuty(version),
+			Runner: testingutils.AggregatorCommitteeRunner(ks),
+			Duty:   duty,
 			Messages: append(
 				[]*types.SignedSSVMessage{ // pre consensus
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version))),
@@ -96,7 +71,7 @@ func FullHappyFlow() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[3], ks.Shares[3], 3, 3, version))),
 				},
 				append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData(version), ks, types.RoleAggregator), // consensus
+					testingutils.QBFTMsgsForAggregatorCommitteeRunner(duty, ks, height, version), // consensus
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2, version))),
@@ -110,6 +85,72 @@ func FullHappyFlow() tests.SpecTest {
 			},
 			BeaconBroadcastedRoots: []string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks, version)),
+			},
+		})
+	}
+
+	// Sync Committee Aggregator
+	sccDuty := testingutils.TestingSyncCommitteeContributionDuty
+	sccKsMap := map[phase0.ValidatorIndex]*testingutils.TestKeySet{
+		testingutils.TestingValidatorIndex: ks,
+	}
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+
+		Name:   "sync committee aggregator",
+		Runner: testingutils.AggregatorCommitteeRunner(ks),
+		Duty:   sccDuty,
+		Messages: append(
+			// consensus
+			testingutils.SSVDecidingMsgsForAggregatorCommitteeRunner(sccDuty, sccKsMap, qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionPhase0)), spec.DataVersionPhase0),
+			[]*types.SignedSSVMessage{ // post consensus
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks))),
+				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[3], 3, ks))),
+			}...,
+		),
+		OutputMessages: []*types.PartialSignatureMessages{
+			testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
+			testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
+		},
+		BeaconBroadcastedRoots: []string{
+			testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
+			testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
+			testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
+		},
+	})
+
+	// Mixed Aggregator and SCC
+	for _, version := range testingutils.SupportedAggregatorVersions {
+		mixedDuty := testingutils.TestingAggregatorCommitteeDutyMixed(version)
+		height := testingutils.TestingDutySlotV(version)
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name:   fmt.Sprintf("aggregator committee mixed (%s)", version.String()),
+			Runner: testingutils.AggregatorCommitteeRunner(ks),
+			Duty:   mixedDuty,
+			Messages: append(
+				[]*types.SignedSSVMessage{ // pre consensus
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMixedMsg(ks.Shares[1], 1, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMixedMsg(ks.Shares[2], 2, version))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMixedMsg(ks.Shares[3], 3, version))),
+				},
+				append(
+					testingutils.QBFTMsgsForAggregatorCommitteeRunner(mixedDuty, ks, qbft.Height(height), version), // consensus
+					[]*types.SignedSSVMessage{ // post consensus
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedMsg(ks.Shares[1], 1, version, ks))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedMsg(ks.Shares[2], 2, version, ks))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMixedMsg(ks.Shares[3], 3, version, ks))),
+					}...,
+				)...,
+			),
+			OutputMessages: []*types.PartialSignatureMessages{
+				testingutils.PreConsensusAggregatorCommitteeMixedMsg(ks.Shares[1], 1, version),
+				testingutils.PostConsensusAggregatorCommitteeMixedMsg(ks.Shares[1], 1, version, ks),
+			},
+			BeaconBroadcastedRoots: []string{
+				testingutils.GetSSZRootNoError(testingutils.TestingSignedAggregateAndProof(ks, version)),
+				testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[0], testingutils.TestingContributionProofsSigned[0], ks)),
+				testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[1], testingutils.TestingContributionProofsSigned[1], ks)),
+				testingutils.GetSSZRootNoError(testingutils.TestingSignedSyncCommitteeContributions(testingutils.TestingSyncCommitteeContributions[2], testingutils.TestingContributionProofsSigned[2], ks)),
 			},
 		})
 	}
@@ -198,8 +239,6 @@ func FullHappyFlow() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 				}...,
 			),
-			PostDutyRunnerStateRoot: fullHappyFlowProposerSC(version).Root(),
-			PostDutyRunnerState:     fullHappyFlowProposerSC(version).ExpectedState,
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
@@ -224,8 +263,6 @@ func FullHappyFlow() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
 				}...,
 			),
-			PostDutyRunnerStateRoot: fullHappyFlowBlindedProposerSC(version).Root(),
-			PostDutyRunnerState:     fullHappyFlowBlindedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),

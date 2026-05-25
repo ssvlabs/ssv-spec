@@ -22,6 +22,10 @@ func MsgValidation(runner ssv.Runner) MsgValidatorFunc {
 			return pubsub.ValidationReject
 		}
 
+		if err := signedSSVMsg.Validate(); err != nil {
+			return pubsub.ValidationReject
+		}
+
 		switch signedSSVMsg.SSVMessage.GetType() {
 		case types.SSVConsensusMsgType:
 			if validateConsensusMsg(runner, signedSSVMsg) != nil {

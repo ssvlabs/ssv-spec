@@ -21,26 +21,16 @@ func PostFinish() tests.SpecTest {
 		runner.GetBaseRunner().State.Finished = true
 		return runner
 	}
+	finishAggCommRunner := func(runner ssv.Runner, duty *types.AggregatorCommitteeDuty) ssv.Runner {
+		runner.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
+		runner.GetBaseRunner().State.Finished = true
+		return runner
+	}
 
 	multiSpecTest := tests.NewMultiMsgProcessingSpecTest(
 		"pre consensus post finish",
 		testdoc.PreConsensusPostFinishDoc,
 		[]*tests.MsgProcessingSpecTest{
-			{
-				Name: "sync committee aggregator selection proof",
-				Runner: finishRunner(
-					testingutils.SyncCommitteeContributionRunner(ks),
-					&testingutils.TestingSyncCommitteeContributionDuty,
-				),
-				Duty: &testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4))),
-				},
-				PostDutyRunnerStateRoot: postFinishSyncCommitteeContributionSC().Root(),
-				PostDutyRunnerState:     postFinishSyncCommitteeContributionSC().ExpectedState,
-				DontStartDuty:           true,
-				ExpectedErrorCode:       types.NoRunningDutyErrorCode,
-			},
 			{
 				Name: "validator registration",
 				Runner: finishRunner(
@@ -51,10 +41,8 @@ func PostFinish() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1))),
 				},
-				PostDutyRunnerStateRoot: postFinishValidatorRegistrationSC().Root(),
-				PostDutyRunnerState:     postFinishValidatorRegistrationSC().ExpectedState,
-				DontStartDuty:           true,
-				ExpectedErrorCode:       types.NoRunningDutyErrorCode,
+				DontStartDuty:     true,
+				ExpectedErrorCode: types.NoRunningDutyErrorCode,
 			},
 			{
 				Name: "voluntary exit",
@@ -66,29 +54,56 @@ func PostFinish() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1))),
 				},
-				PostDutyRunnerStateRoot: postFinishVoluntaryExitSC().Root(),
-				PostDutyRunnerState:     postFinishVoluntaryExitSC().ExpectedState,
-				DontStartDuty:           true,
-				ExpectedErrorCode:       types.NoRunningDutyErrorCode,
+				DontStartDuty:     true,
+				ExpectedErrorCode: types.NoRunningDutyErrorCode,
 			},
 		},
 		ks,
 	)
 
+	// Aggregator Committee duty
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name: "sync committee aggregator selection proof",
+		Runner: finishAggCommRunner(
+			testingutils.AggregatorCommitteeRunner(ks),
+			testingutils.TestingSyncCommitteeContributionDuty,
+		),
+		Duty: testingutils.TestingSyncCommitteeContributionDuty,
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4))),
+		},
+		DontStartDuty:     true,
+		ExpectedErrorCode: types.NoRunningDutyErrorCode,
+	})
 	for _, version := range testingutils.SupportedAggregatorVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-			Name: fmt.Sprintf("aggregator selection proof (%s)", version.String()),
-			Runner: finishRunner(
-				testingutils.AggregatorRunner(ks),
-				testingutils.TestingAggregatorDuty(version),
-			),
-			Duty: testingutils.TestingAggregatorDuty(version),
-			Messages: []*types.SignedSSVMessage{
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4, version))),
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
+			{
+				Name: fmt.Sprintf("aggregator selection proof (%s)", version.String()),
+				Runner: finishAggCommRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingAggregatorDuty(version),
+				),
+				Duty: testingutils.TestingAggregatorDuty(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PreConsensusSelectionProofMsg(ks.Shares[4], ks.Shares[4], 4, 4, version))),
+				},
+				DontStartDuty:     true,
+				ExpectedErrorCode: types.NoRunningDutyErrorCode,
 			},
-			DontStartDuty:     true,
-			ExpectedErrorCode: types.NoRunningDutyErrorCode,
-		})
+			{
+				Name: fmt.Sprintf("aggregator committee duty (%s)", version.String()),
+				Runner: finishAggCommRunner(
+					testingutils.AggregatorCommitteeRunner(ks),
+					testingutils.TestingAggregatorCommitteeDutyMixed(version),
+				),
+				Duty: testingutils.TestingAggregatorCommitteeDutyMixed(version),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PreConsensusAggregatorCommitteeMixedMsg(ks.Shares[4], 4, version))),
+				},
+				DontStartDuty:     true,
+				ExpectedErrorCode: types.NoRunningDutyErrorCode,
+			},
+		}...)
 	}
 
 	// proposerV creates a test specification for versioned proposer.
@@ -103,10 +118,8 @@ func PostFinish() tests.SpecTest {
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version))),
 			},
-			PostDutyRunnerStateRoot: postFinishProposerSC(version).Root(),
-			PostDutyRunnerState:     postFinishProposerSC(version).ExpectedState,
-			DontStartDuty:           true,
-			ExpectedErrorCode:       types.NoRunningDutyErrorCode,
+			DontStartDuty:     true,
+			ExpectedErrorCode: types.NoRunningDutyErrorCode,
 		}
 	}
 
@@ -122,10 +135,8 @@ func PostFinish() tests.SpecTest {
 			Messages: []*types.SignedSSVMessage{
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version))),
 			},
-			PostDutyRunnerStateRoot: postFinishBlindedProposerSC(version).Root(),
-			PostDutyRunnerState:     postFinishBlindedProposerSC(version).ExpectedState,
-			DontStartDuty:           true,
-			ExpectedErrorCode:       types.NoRunningDutyErrorCode,
+			DontStartDuty:     true,
+			ExpectedErrorCode: types.NoRunningDutyErrorCode,
 		}
 	}
 

@@ -67,10 +67,8 @@ func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueChe
 			test.ExpectedTarget.Epoch)
 	case types.RoleProposer:
 		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex, nil)
-	case types.RoleAggregator:
-		return ssv.AggregatorValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex)
-	case types.RoleSyncCommitteeContribution:
-		return ssv.SyncCommitteeContributionValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex)
+	case types.RoleAggregatorCommittee:
+		return ssv.AggregatorCommitteeValueCheckF(signer, test.Network)
 	default:
 		panic("unknown role")
 	}

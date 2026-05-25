@@ -11,8 +11,13 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-func (b *BaseRunner) signBeaconObject(runner Runner, duty *types.ValidatorDuty,
-	obj ssz.HashRoot, slot phase0.Slot, domainType phase0.DomainType) (*types.PartialSignatureMessage, error) {
+func (b *BaseRunner) signBeaconObject(
+	runner Runner,
+	duty *types.ValidatorDuty,
+	obj ssz.HashRoot,
+	slot phase0.Slot,
+	domainType phase0.DomainType,
+) (*types.PartialSignatureMessage, error) {
 	epoch := runner.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(slot)
 	domain, err := runner.GetBeaconNode().DomainData(epoch, domainType)
 	if err != nil {

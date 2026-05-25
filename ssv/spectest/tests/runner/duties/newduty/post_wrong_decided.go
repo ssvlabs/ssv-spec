@@ -61,8 +61,8 @@ func PostWrongDecided() tests.SpecTest {
 		[]*StartNewRunnerDutySpecTest{
 			{
 				Name:                    "sync committee aggregator",
-				Runner:                  decideWrong(testingutils.SyncCommitteeContributionRunner(ks), &testingutils.TestingSyncCommitteeContributionDuty, 50),
-				Duty:                    &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner:                  decideWrong(testingutils.AggregatorCommitteeRunner(ks), testingutils.TestingSyncCommitteeContributionDuty, 50),
+				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "4fce8afe24a8f812c9daccfb54c8247771c88b48d161b06901669d1e23ce7a0d",
 				OutputMessages: []*types.PartialSignatureMessages{
@@ -94,7 +94,7 @@ func PostWrongDecided() tests.SpecTest {
 
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
 			Name:                    fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner:                  decideWrong(testingutils.AggregatorRunner(ks), testingutils.TestingAggregatorDuty(version), higherSlot),
+			Runner:                  decideWrong(testingutils.AggregatorCommitteeRunner(ks), testingutils.TestingAggregatorDuty(version), higherSlot),
 			Duty:                    testingutils.TestingAggregatorDuty(version),
 			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: "533fa28f89164dc4a26bdd4e2cd55cca8c17375d3e88251f2480ae727ced1ee1",

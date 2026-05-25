@@ -69,6 +69,9 @@ const StructureSizeTestExpectedProposalSignedSSVMessageDoc = "Test the expected 
 const StructureSizeTestExpectedPartialSignatureSignedSSVMessageDoc = "Test the expected size of a SignedSSVMessage containing partial signature messages with full data"
 const StructureSizeTestMaxBeaconVoteDoc = "Test the maximum size of a beacon vote with source and target checkpoints"
 const StructureSizeTestMaxConsensusDataDoc = "Test the maximum size of a validator consensus data with maximum SSZ data"
+const StructureSizeTestMaxAggregatorCommitteeConsensusDataDoc = "Test the maximum size of an aggregator committee consensus data with maximum SSZ data"
+const StructureSizeTestMaxPhase0AttestationDoc = "Test the maximum size of a phase0 attestation with maximum SSZ data"
+const StructureSizeTestMaxElectraAttestationDoc = "Test the maximum size of an electra attestation with maximum SSZ data"
 const StructureSizeTestMaxPartialSignatureMessageDoc = "Test the maximum size of a single partial signature message"
 const StructureSizeTestMaxPartialSignatureMessagesDoc = "Test the maximum size of partial signature messages collection"
 const StructureSizeTestMaxPartialSignatureMessagesForPreConsensusDoc = "Test the maximum size of partial signature messages for pre-consensus phase"
@@ -132,47 +135,65 @@ const SSZSpecTestType = "SSZ: validation of SSZ encoding and decoding"
 // Documentation for SSZSpecTest
 const SSZSpecTestWithdrawalsMarshalingDoc = "Test SSZ marshaling and hash tree root calculation of Capella withdrawals"
 
-// ValidatorConsensusDataTest
-const ValidatorConsensusDataTestType = "Validator consensus data: validation of validator consensus data"
+// ValAggregatorCommitteeConsensusDataTest
+const AggregatorCommitteeConsensusDataTestType = "Aggregator committee consensus data: validation of aggregator committee consensus data"
 
-// Documentation for ValidatorConsensusDataTest
-const ValidatorConsensusDataTestInvalidDenebBlockDoc = "Test validation error for invalid consensus data with empty Deneb block data"
-const ValidatorConsensusDataTestInvalidDenebBlindedBlockDoc = "Test validation error for invalid consensus data with empty Deneb blinded block data"
-const ValidatorConsensusDataTestInvalidCapellaBlockDoc = "Test validation error for invalid consensus data with empty Capella block data"
-const ValidatorConsensusDataTestInvalidCapellaBlindedBlockDoc = "Test validation error for invalid consensus data with empty Capella blinded block data"
-const ValidatorConsensusDataTestInvalidElectraBlockDoc = "Test validation error for invalid consensus data with empty Electra block data"
-const ValidatorConsensusDataTestInvalidElectraBlindedBlockDoc = "Test validation error for invalid consensus data with empty Electra blinded block data"
-const ValidatorConsensusDataTestInvalidFuluBlindedBlockDoc = "Test validation error for invalid consensus data with empty Fulu blinded block data"
-const ValidatorConsensusDataTestInvalidFuluBlockDoc = "Test validation error for invalid consensus data with empty Fulu block data"
-const ValidatorConsensusDataTestDenebBlindedBlockDoc = "Test validation of valid consensus data with Deneb blinded block"
-const ValidatorConsensusDataTestCapellaBlindedBlockDoc = "Test validation of valid consensus data with Capella blinded block"
-const ValidatorConsensusDataTestCapellaBlockDoc = "Test validation of valid consensus data with Capella block"
-const ValidatorConsensusDataTestElectraBlindedBlockDoc = "Test validation of valid consensus data with Electra blinded block"
-const ValidatorConsensusDataTestPhase0AggregatorNoJustificationsDoc = "Test phase0 aggregator consensus data with no pre-consensus justifications"
-const ValidatorConsensusDataTestElectraAggregatorNoJustificationsDoc = "Test Electra aggregator consensus data with no pre-consensus justifications"
-const ValidatorConsensusDataTestPhase0AggregatorValidationDoc = "Test validation of valid consensus data with Phase0 AggregateAndProof"
-const ValidatorConsensusDataTestElectraAggregatorValidationDoc = "Test validation of valid consensus data with Electra AggregateAndProof"
-const ValidatorConsensusDataTestProposerNoJustificationsDoc = "Test proposer consensus data with no pre-consensus justifications"
-const ValidatorConsensusDataTestSyncCommitteeContributionValidationDoc = "Test validation of valid consensus data with sync committee contribution"
-const ValidatorConsensusDataTestSyncCommitteeContributionNoJustificationsDoc = "Test sync committee contribution consensus data with no sync committee contribution pre-consensus justifications"
-const ValidatorConsensusDataTestVoluntaryExitDoc = "Test validation error for voluntary exit consensus data which has no consensus data"
-const ValidatorConsensusDataTestValidatorRegistrationDoc = "Test validation error for validator registration consensus data which has no consensus data"
-const ValidatorConsensusDataTestDenebBlockDoc = "Test validation of valid consensus data with Deneb block"
-const ValidatorConsensusDataTestElectraBlockDoc = "Test validation of valid consensus data with Electra block"
-const ValidatorConsensusDataTestInvalidPhase0AggregatorDoc = "Test validation error for invalid consensus data with Phase0 AggregateAndProof using incorrect data"
-const ValidatorConsensusDataTestInvalidElectraAggregatorDoc = "Test validation error for invalid consensus data with Electra AggregateAndProof using incorrect data"
-const ValidatorConsensusDataTestInvalidDutyDoc = "Test validation error for consensus data with unknown duty role"
-const ValidatorConsensusDataTestInvalidSyncCommitteeContributionDoc = "Test validation error for invalid consensus data with sync committee contribution using incorrect data"
+// AggregatorCommitteeConsensusDataEncodingTest
+const AggregatorCommitteeConsensusDataEncodingTestType = "Aggregator committee consensus data encoding"
 
-// ValidatorConsensusDataEncodingTest
-const ValidatorConsensusDataEncodingTestType = "Validator consensus data encoding"
+const AggregatorCommitteeConsensusDataTestInvalidNoValidatorsDoc = "Test validation error for invalid agg committee consensus data with no validators"
+const AggregatorCommitteeConsensusDataTestDuplicatedCommitteeIndexDoc = "Test validation error for invalid agg committee consensus data with duplicated committee index"
+const AggregatorCommitteeConsensusDataTestMissingCommitteeIndexDoc = "Test validation error for invalid agg committee consensus data with missing committee index"
+const AggregatorCommitteeConsensusDataTestUnusedCommitteeIndexDoc = "Test validation error for invalid agg committee consensus data with unused committee index"
+const AggregatorCommitteeConsensusDataTestInvalidPhase0AttestationDecodingDoc = "Test validation error for invalid agg committee consensus data with phase0 attestation decoding error"
+const AggregatorCommitteeConsensusDataTestInvalidElectraAttestationDecodingDoc = "Test validation error for invalid agg committee consensus data with electra attestation decoding error"
+const AggregatorCommitteeConsensusDataTestInvalidCommitteeIndexLenDoc = "Test validation error for invalid agg committee consensus data with wrong committee index length"
+const AggregatorCommitteeConsensusDataTestInvalidContributionLenDoc = "Test validation error for invalid agg committee consensus data with wrong contribution length"
+const AggregatorCommitteeConsensusDataTestInvalidDuplicatedSubnetDoc = "Test validation error for invalid agg committee consensus data with duplicated subnet"
+const AggregatorCommitteeConsensusDataTestInvalidSubnetMismatchDoc = "Test validation error for invalid agg committee consensus data with subnet mismatch"
+const AggregatorCommitteeConsensusDataTestMissingSubnetDoc = "Test validation error for invalid agg committee consensus data with missing subnet"
+const AggregatorCommitteeConsensusDataTestUnusedSubnetDoc = "Test validation error for invalid agg committee consensus data with unused subnet"
+const AggregatorCommitteeConsensusDataTestPhase0AggregatorNoJustificationsDoc = "Test phase0 aggregator agg committee consensus data with no pre-consensus justifications"
+const AggregatorCommitteeConsensusDataTestElectraAggregatorNoJustificationsDoc = "Test Electra aggregator agg committee consensus data with no pre-consensus justifications"
+const AggregatorCommitteeConsensusDataTestPhase0AggregatorValidationDoc = "Test validation of valid agg committee consensus data with Phase0 AggregateAndProof"
+const AggregatorCommitteeConsensusDataTestElectraAggregatorValidationDoc = "Test validation of valid agg committee consensus data with Electra AggregateAndProof"
+const AggregatorCommitteeConsensusDataTestSyncCommitteeContributionValidationDoc = "Test validation of valid agg committee consensus data with sync committee contribution"
+const AggregatorCommitteeConsensusDataTestSyncCommitteeContributionNoJustificationsDoc = "Test sync committee contribution agg committee consensus data with no sync committee contribution pre-consensus justifications"
 
-// Documentation for ValidatorConsensusDataEncodingTest
-const ValidatorConsensusDataEncodingTestProposerDoc = "Test encoding and decoding of proposer consensus data with Capella blinded block"
-const ValidatorConsensusDataEncodingTestBlindedProposerDoc = "Test encoding and decoding of blinded proposer consensus data with Capella blinded block"
-const ValidatorConsensusDataEncodingTestPhase0AggregatorDoc = "Test encoding and decoding of phase0 aggregator consensus data"
-const ValidatorConsensusDataEncodingTestElectraAggregatorDoc = "Test encoding and decoding of Electra aggregator consensus data"
-const ValidatorConsensusDataEncodingTestSyncCommitteeContributionDoc = "Test encoding and decoding of sync committee contribution consensus data"
+// ProposerConsensusDataTest
+const ProposerConsensusDataTestType = "Validator consensus data: validation of validator consensus data"
+
+// Documentation for ProposerConsensusDataTest
+const ProposerConsensusDataTestInvalidDenebBlockDoc = "Test validation error for invalid consensus data with empty Deneb block data"
+const ProposerConsensusDataTestInvalidDenebBlindedBlockDoc = "Test validation error for invalid consensus data with empty Deneb blinded block data"
+const ProposerConsensusDataTestInvalidCapellaBlockDoc = "Test validation error for invalid consensus data with empty Capella block data"
+const ProposerConsensusDataTestInvalidCapellaBlindedBlockDoc = "Test validation error for invalid consensus data with empty Capella blinded block data"
+const ProposerConsensusDataTestInvalidElectraBlockDoc = "Test validation error for invalid consensus data with empty Electra block data"
+const ProposerConsensusDataTestInvalidElectraBlindedBlockDoc = "Test validation error for invalid consensus data with empty Electra blinded block data"
+const ProposerConsensusDataTestInvalidFuluBlindedBlockDoc = "Test validation error for invalid consensus data with empty Fulu blinded block data"
+const ProposerConsensusDataTestInvalidFuluBlockDoc = "Test validation error for invalid consensus data with empty Fulu block data"
+const ProposerConsensusDataTestDenebBlindedBlockDoc = "Test validation of valid consensus data with Deneb blinded block"
+const ProposerConsensusDataTestCapellaBlindedBlockDoc = "Test validation of valid consensus data with Capella blinded block"
+const ProposerConsensusDataTestCapellaBlockDoc = "Test validation of valid consensus data with Capella block"
+const ProposerConsensusDataTestElectraBlindedBlockDoc = "Test validation of valid consensus data with Electra blinded block"
+const ProposerConsensusDataTestProposerNoJustificationsDoc = "Test proposer consensus data with no pre-consensus justifications"
+const ProposerConsensusDataTestVoluntaryExitDoc = "Test validation error for voluntary exit consensus data which has no consensus data"
+const ProposerConsensusDataTestValidatorRegistrationDoc = "Test validation error for validator registration consensus data which has no consensus data"
+const ProposerConsensusDataTestDenebBlockDoc = "Test validation of valid consensus data with Deneb block"
+const ProposerConsensusDataTestElectraBlockDoc = "Test validation of valid consensus data with Electra block"
+const ProposerConsensusDataTestInvalidDutyDoc = "Test validation error for consensus data with unknown duty role"
+
+// ProposerConsensusDataEncodingTest
+const ProposerConsensusDataEncodingTestType = "Validator consensus data encoding"
+
+// Documentation for ProposerConsensusDataEncodingTest
+const ProposerConsensusDataEncodingTestProposerDoc = "Test encoding and decoding of proposer consensus data with Capella blinded block"
+const ProposerConsensusDataEncodingTestBlindedProposerDoc = "Test encoding and decoding of blinded proposer consensus data with Capella blinded block"
+
+// AggregatorCommitteeConsensusDataEncodingTest
+const AggregatorCommitteeConsensusDataEncodingTestPhase0AggregatorDoc = "Test encoding and decoding of phase0 aggregator consensus data"
+const AggregatorCommitteeConsensusDataEncodingTestElectraAggregatorDoc = "Test encoding and decoding of Electra aggregator consensus data"
+const AggregatorCommitteeConsensusDataEncodingTestSyncCommitteeContributionDoc = "Test encoding and decoding of sync committee contribution consensus data"
 
 // ShareEncodingTest
 const ShareEncodingTestType = "Share encoding"

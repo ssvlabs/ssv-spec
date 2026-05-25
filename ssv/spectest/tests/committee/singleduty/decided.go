@@ -6,7 +6,6 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/qbft"
-	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
@@ -28,7 +27,6 @@ func Decided() tests.SpecTest {
 
 			validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 			ksMap := testingutils.KeySetMapForValidators(numValidators)
-			shareMap := testingutils.ShareMapFromKeySetMap(ksMap)
 
 			slot := testingutils.TestingDutySlotV(version)
 			height := qbft.Height(slot)
@@ -36,7 +34,7 @@ func Decided() tests.SpecTest {
 			tests = append(tests, []*committee.CommitteeSpecTest{
 				{
 					Name:      fmt.Sprintf("%v attestation (%s)", numValidators, version.String()),
-					Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+					Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 					Input: []interface{}{
 						testingutils.TestingAttesterDutyForValidators(version, validatorsIndexList),
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
@@ -56,7 +54,7 @@ func Decided() tests.SpecTest {
 				},
 				{
 					Name:      fmt.Sprintf("%v sync committee (%s)", numValidators, version.String()),
-					Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+					Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 					Input: []interface{}{
 						testingutils.TestingSyncCommitteeDutyForValidators(version, validatorsIndexList),
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
@@ -76,7 +74,7 @@ func Decided() tests.SpecTest {
 				},
 				{
 					Name:      fmt.Sprintf("%v attestations %v sync committees (%s)", numValidators, numValidators, version.String()),
-					Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap, testingutils.CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)),
+					Committee: testingutils.BaseCommitteeWithCreatorFieldsFromRunner(ksMap),
 					Input: []interface{}{
 						testingutils.TestingCommitteeDuty(validatorsIndexList, validatorsIndexList, version),
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(

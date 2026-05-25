@@ -24,10 +24,10 @@ func PostFinish() tests.SpecTest {
 		[]*tests.MsgProcessingSpecTest{
 			{
 				Name:   "sync committee contribution",
-				Runner: testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:   &testingutils.TestingSyncCommitteeContributionDuty,
+				Runner: testingutils.AggregatorCommitteeRunner(ks),
+				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgsV(testingutils.TestSyncCommitteeContributionConsensusData, ks, types.RoleSyncCommitteeContribution),
+					testingutils.SSVDecidingMsgsForAggregatorCommitteeRunnerForKS(testingutils.TestingSyncCommitteeContributionDuty, ks, spec.DataVersionPhase0),
 					// post consensus
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks))),
@@ -37,12 +37,10 @@ func PostFinish() tests.SpecTest {
 						[]*rsa.PrivateKey{ks.OperatorKeys[4]},
 						[]types.OperatorID{4},
 						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.SyncCommitteeContributionMsgID,
+						testingutils.TestingAggregatorCommitteeMsgID[:],
 						testingutils.TestSyncCommitteeContributionConsensusDataByts,
 					),
 				),
-				PostDutyRunnerStateRoot: postFinishSyncCommitteeContributionSC().Root(),
-				PostDutyRunnerState:     postFinishSyncCommitteeContributionSC().ExpectedState,
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 					testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks),
@@ -61,10 +59,10 @@ func PostFinish() tests.SpecTest {
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 			Name:   fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner: testingutils.AggregatorRunner(ks),
+			Runner: testingutils.AggregatorCommitteeRunner(ks),
 			Duty:   testingutils.TestingAggregatorDuty(version),
 			Messages: append(
-				testingutils.SSVDecidingMsgsV(testingutils.TestAggregatorConsensusData(version), ks, types.RoleAggregator),
+				testingutils.SSVDecidingMsgsForAggregatorCommitteeRunnerForKS(testingutils.TestingAggregatorDuty(version), ks, version),
 				// post consensus
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[1], 1, version))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregator(nil, testingutils.PostConsensusAggregatorMsg(ks.Shares[2], 2, version))),
@@ -74,7 +72,7 @@ func PostFinish() tests.SpecTest {
 					[]*rsa.PrivateKey{ks.OperatorKeys[4]},
 					[]types.OperatorID{4},
 					qbft.Height(testingutils.TestingDutySlotV(version)),
-					testingutils.AggregatorMsgID,
+					testingutils.TestingAggregatorCommitteeMsgID[:],
 					testingutils.TestAggregatorConsensusDataByts(version),
 				),
 			),
@@ -187,8 +185,6 @@ func PostFinish() tests.SpecTest {
 					testingutils.TestProposerConsensusDataBytsV(version),
 				),
 			),
-			PostDutyRunnerStateRoot: postFinishProposerSC(version).Root(),
-			PostDutyRunnerState:     postFinishProposerSC(version).ExpectedState,
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
@@ -221,8 +217,6 @@ func PostFinish() tests.SpecTest {
 					testingutils.TestProposerBlindedBlockConsensusDataBytsV(version),
 				),
 			),
-			PostDutyRunnerStateRoot: postFinishBlindedProposerSC(version).Root(),
-			PostDutyRunnerState:     postFinishBlindedProposerSC(version).ExpectedState,
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),

@@ -7,13 +7,13 @@ import (
 )
 
 const (
-	maxSizeQBFTMessageWithNoJustification = 132
-	maxSizeQBFTMessageWith1Justification  = 48284
-	maxSizeQBFTMessageWith2Justification  = 722412
+	MaxSizeQBFTMessageWithNoJustification = 132
+	MaxSizeQBFTMessageWith1Justification  = 48284
+	MaxSizeQBFTMessageWith2Justification  = 722412
 )
 
 func maxFullData() []byte {
-	fullData := [maxSizeFullConsensusData]byte{}
+	fullData := [MaxSizeFullConsensusData]byte{}
 	return fullData[:]
 }
 
@@ -86,7 +86,7 @@ func MaxQBFTMessageWithNoJustification() *StructureSizeTest {
 		"max qbftMessage with no justification",
 		testdoc.StructureSizeTestMaxQBFTMessageWithNoJustificationDoc,
 		maxQbftMessageNoJustification(),
-		maxSizeQBFTMessageWithNoJustification,
+		MaxSizeQBFTMessageWithNoJustification,
 		false,
 	)
 }
@@ -96,7 +96,7 @@ func MaxQBFTMessageWith1Justification() *StructureSizeTest {
 		"max qbftMessage with 1 justification",
 		testdoc.StructureSizeTestMaxQBFTMessageWith1JustificationDoc,
 		maxQbftMessageWith1Justification(),
-		maxSizeQBFTMessageWith1Justification,
+		MaxSizeQBFTMessageWith1Justification,
 		false,
 	)
 }
@@ -106,7 +106,7 @@ func MaxQBFTMessageWith2Justification() *StructureSizeTest {
 		"max qbftMessage with 2 justifications",
 		testdoc.StructureSizeTestMaxQBFTMessageWith2JustificationDoc,
 		maxQbftMessageWith2Justification(),
-		maxSizeQBFTMessageWith2Justification,
+		MaxSizeQBFTMessageWith2Justification,
 		true,
 	)
 }

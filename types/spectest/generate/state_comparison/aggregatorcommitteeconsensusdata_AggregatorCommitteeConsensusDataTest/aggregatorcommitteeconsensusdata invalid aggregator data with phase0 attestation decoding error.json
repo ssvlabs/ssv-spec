@@ -1,0 +1,24 @@
+{
+  "Name": "invalid aggregator data with phase0 attestation decoding error",
+  "Type": "Aggregator committee consensus data: validation of aggregator committee consensus data",
+  "Documentation": "Test validation error for invalid agg committee consensus data with phase0 attestation decoding error",
+  "AggCommConsensusData": {
+    "Version": "phase0",
+    "Aggregators": [
+      {
+        "ValidatorIndex": "1",
+        "SelectionProof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "CommitteeIndex": 3
+      }
+    ],
+    "AggregatorsCommitteeIndexes": [
+      3
+    ],
+    "AggregatedAttestations": [
+      "AQID"
+    ],
+    "Contributors": [],
+    "SyncCommitteeContributions": []
+  },
+  "ExpectedErrorCode": 84
+}

@@ -14,8 +14,8 @@ import (
 
 // FarFutureDutySlot tests duty.Slot higher than expected
 func FarFutureDutySlot() tests.SpecTest {
-	consensusDataBytsF := func(cd *types.ValidatorConsensusData) []byte {
-		cdCopy := &types.ValidatorConsensusData{}
+	consensusDataBytsF := func(cd *types.ProposerConsensusData) []byte {
+		cdCopy := &types.ProposerConsensusData{}
 		b, _ := json.Marshal(cd)
 		if err := json.Unmarshal(b, cdCopy); err != nil {
 			panic(err.Error())
@@ -41,25 +41,18 @@ func FarFutureDutySlot() tests.SpecTest {
 				// No error since input doesn't contain slot
 			},
 			{
-				Name:              "sync committee aggregator",
-				Network:           types.BeaconTestNetwork,
-				RunnerRole:        types.RoleSyncCommitteeContribution,
-				Input:             consensusDataBytsF(testingutils.TestSyncCommitteeContributionConsensusData),
-				ExpectedErrorCode: expectedErrCode,
+				Name:       "aggregator committee phase0",
+				Network:    types.BeaconTestNetwork,
+				RunnerRole: types.RoleAggregatorCommittee,
+				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(spec.DataVersionPhase0), spec.DataVersionPhase0),
+				// No error since input doesn't contain slot
 			},
 			{
-				Name:              "aggregator phase0",
-				Network:           types.BeaconTestNetwork,
-				RunnerRole:        types.RoleAggregator,
-				Input:             consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
-				ExpectedErrorCode: expectedErrCode,
-			},
-			{
-				Name:              "aggregator electra",
-				Network:           types.BeaconTestNetwork,
-				RunnerRole:        types.RoleAggregator,
-				Input:             consensusDataBytsF(testingutils.TestAggregatorConsensusData(spec.DataVersionElectra)),
-				ExpectedErrorCode: expectedErrCode,
+				Name:       "aggregator committee electra",
+				Network:    types.BeaconTestNetwork,
+				RunnerRole: types.RoleAggregatorCommittee,
+				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(spec.DataVersionElectra), spec.DataVersionElectra),
+				// No error since input doesn't contain slot
 			},
 			{
 				Name:              "proposer",

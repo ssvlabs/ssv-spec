@@ -2,13 +2,18 @@ package testingutils
 
 import "github.com/ssvlabs/ssv-spec/types"
 
-var AggregatorMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleAggregator)
-	return ret[:]
+func CommitteeMsgIDForKeySet(keySet *TestKeySet) types.MessageID {
+	msgIDBytes := CommitteeMsgID(keySet)
+	var msgID types.MessageID
+	copy(msgID[:], msgIDBytes)
+	return msgID
+}
+
+var TestingCommitteeMsgID = func() types.MessageID {
+	return CommitteeMsgIDForKeySet(Testing4SharesSet())
 }()
 
 var CommitteeMsgID = func(keySet *TestKeySet) []byte {
-
 	// Identifier
 	committee := make([]uint64, 0)
 	for _, op := range keySet.Committee() {
@@ -16,26 +21,33 @@ var CommitteeMsgID = func(keySet *TestKeySet) []byte {
 	}
 	committeeID := types.GetCommitteeID(committee)
 
-	ret := types.NewMsgID(TestingSSVDomainType, committeeID[:], types.RoleCommittee)
+	ret := types.NewCommitteeMsgID(TestingSSVDomainType, committeeID, types.RoleCommittee)
+	return ret[:]
+}
+
+var AggregatorCommitteeMsgID = func(keySet *TestKeySet) []byte {
+	// Identifier
+	committee := make([]uint64, 0)
+	for _, op := range keySet.Committee() {
+		committee = append(committee, op.Signer)
+	}
+	committeeID := types.GetCommitteeID(committee)
+
+	ret := types.NewCommitteeMsgID(TestingSSVDomainType, committeeID, types.RoleAggregatorCommittee)
 	return ret[:]
 }
 
 var ProposerMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleProposer)
-	return ret[:]
-}()
-
-var SyncCommitteeContributionMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleSyncCommitteeContribution)
+	ret := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), types.RoleProposer)
 	return ret[:]
 }()
 
 var ValidatorRegistrationMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleValidatorRegistration)
+	ret := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), types.RoleValidatorRegistration)
 	return ret[:]
 }()
 
 var VoluntaryExitMsgID = func() []byte {
-	ret := types.NewMsgID(TestingSSVDomainType, TestingValidatorPubKey[:], types.RoleVoluntaryExit)
+	ret := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), types.RoleVoluntaryExit)
 	return ret[:]
 }()

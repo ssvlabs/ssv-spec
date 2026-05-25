@@ -28,12 +28,12 @@ func NoErrorEncoding(obj ssz.Marshaler) []byte {
 // If we change the fields in ssv_msgs.go it will break a lot of roots, we're slowly fixing them
 // SHOULD BE REMOVED once all tests are fixes
 // see https://github.com/ssvlabs/ssv-spec/issues/178
-func FixIssue178(input *types.ValidatorConsensusData, version spec2.DataVersion) *types.ValidatorConsensusData {
+func FixIssue178(input *types.ProposerConsensusData, version spec2.DataVersion) *types.ProposerConsensusData {
 	byts, err := input.Encode()
 	if err != nil {
 		panic(err.Error())
 	}
-	ret := &types.ValidatorConsensusData{}
+	ret := &types.ProposerConsensusData{}
 	if err := ret.Decode(byts); err != nil {
 		panic(err.Error())
 	}

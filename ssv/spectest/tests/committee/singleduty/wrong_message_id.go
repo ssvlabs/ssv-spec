@@ -18,7 +18,7 @@ func WrongMessageID() tests.SpecTest {
 
 	// Incorrect ID for SSVMessage
 	getPubkeyID := func() types.MessageID {
-		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], types.RoleCommittee)
+		ret := types.NewValidatorMsgID(testingutils.TestingSSVDomainType, types.ValidatorPK(testingutils.TestingValidatorPubKey), types.RoleCommittee)
 		return ret
 	}
 

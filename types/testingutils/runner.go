@@ -1,8 +1,6 @@
 package testingutils
 
 import (
-	"bytes"
-
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 
@@ -21,6 +19,14 @@ var CommitteeRunnerWithShareMap = func(shareMap map[phase0.ValidatorIndex]*types
 	return baseRunnerWithShareMap(types.RoleCommittee, shareMap)
 }
 
+var AggregatorCommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.RoleAggregatorCommittee, keySet)
+}
+
+var AggregatorCommitteeRunnerWithShareMap = func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+	return baseRunnerWithShareMap(types.RoleAggregatorCommittee, shareMap)
+}
+
 var AttesterRunner7Operators = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleCommittee, keySet)
 }
@@ -33,16 +39,8 @@ var ProposerBlindedBlockRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleProposer, keySet)
 }
 
-var AggregatorRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleAggregator, keySet)
-}
-
 var SyncCommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleCommittee, keySet)
-}
-
-var SyncCommitteeContributionRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleSyncCommitteeContribution, keySet)
 }
 
 var ValidatorRegistrationRunner = func(keySet *TestKeySet) ssv.Runner {
@@ -66,6 +64,10 @@ var baseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.Val
 }
 
 var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[phase0.ValidatorIndex]*types.Share) (ssv.Runner, error) {
+	return ConstructBaseRunnerWithShareMapAndBeaconNode(role, shareMap, NewTestingBeaconNode())
+}
+
+var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, shareMap map[phase0.ValidatorIndex]*types.Share, beacon ssv.BeaconNode) (ssv.Runner, error) {
 
 	var identifier types.MessageID
 	var net *TestingNetwork
@@ -92,18 +94,16 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 		}
 
 		// Identifier
-		var ownerID []byte
-		if role == types.RoleCommittee {
+		if role == types.RoleCommittee || role == types.RoleAggregatorCommittee {
 			committee := make([]uint64, 0)
 			for _, op := range keySetInstance.Committee() {
 				committee = append(committee, op.Signer)
 			}
 			committeeID := types.GetCommitteeID(committee)
-			ownerID = bytes.Clone(committeeID[:])
+			identifier = types.NewCommitteeMsgID(TestingSSVDomainType, committeeID, role)
 		} else {
-			ownerID = TestingValidatorPubKey[:]
+			identifier = types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), role)
 		}
-		identifier = types.NewMsgID(TestingSSVDomainType, ownerID, role)
 
 		// Network
 		net = NewTestingNetwork(1, keySetInstance.OperatorKeys[1])
@@ -122,12 +122,8 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 		case types.RoleProposer:
 			valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
 				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey)
-		case types.RoleAggregator:
-			valCheck = ssv.AggregatorValueCheckF(km, types.BeaconTestNetwork,
-				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex)
-		case types.RoleSyncCommitteeContribution:
-			valCheck = ssv.SyncCommitteeContributionValueCheckF(km, types.BeaconTestNetwork,
-				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex)
+		case types.RoleAggregatorCommittee:
+			valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
 		default:
 			valCheck = nil
 		}
@@ -151,42 +147,18 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
-			NewTestingBeaconNode(),
+			beacon,
 			net,
 			km,
 			opSigner,
 			valCheck,
-		)
-	case types.RoleAggregator:
-		runner, err = ssv.NewAggregatorRunner(
-			types.BeaconTestNetwork,
-			shareMap,
-			contr,
-			NewTestingBeaconNode(),
-			net,
-			km,
-			opSigner,
-			valCheck,
-			TestingHighestDecidedSlot,
 		)
 	case types.RoleProposer:
 		runner, err = ssv.NewProposerRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
-			NewTestingBeaconNode(),
-			net,
-			km,
-			opSigner,
-			valCheck,
-			TestingHighestDecidedSlot,
-		)
-	case types.RoleSyncCommitteeContribution:
-		runner, err = ssv.NewSyncCommitteeAggregatorRunner(
-			types.BeaconTestNetwork,
-			shareMap,
-			contr,
-			NewTestingBeaconNode(),
+			beacon,
 			net,
 			km,
 			opSigner,
@@ -197,7 +169,7 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 		runner, err = ssv.NewValidatorRegistrationRunner(
 			types.BeaconTestNetwork,
 			shareMap,
-			NewTestingBeaconNode(),
+			beacon,
 			net,
 			km,
 			opSigner,
@@ -207,17 +179,28 @@ var ConstructBaseRunnerWithShareMap = func(role types.RunnerRole, shareMap map[p
 		runner, err = ssv.NewVoluntaryExitRunner(
 			types.BeaconTestNetwork,
 			shareMap,
-			NewTestingBeaconNode(),
+			beacon,
 			net,
 			km,
 			opSigner,
+		)
+	case types.RoleAggregatorCommittee:
+		runner, err = ssv.NewAggregatorCommitteeRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			contr,
+			beacon,
+			net,
+			km,
+			opSigner,
+			valCheck,
 		)
 	case UnknownDutyType:
 		runner, err = ssv.NewCommitteeRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
-			NewTestingBeaconNode(),
+			beacon,
 			net,
 			km,
 			opSigner,
@@ -245,18 +228,17 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	km := NewTestingKeyManager()
 
 	// Identifier
-	var ownerID []byte
-	if role == types.RoleCommittee {
+	var identifier types.MessageID
+	if role == types.RoleCommittee || role == types.RoleAggregatorCommittee {
 		committee := make([]uint64, 0)
 		for _, op := range keySet.Committee() {
 			committee = append(committee, op.Signer)
 		}
 		clusterID := types.GetCommitteeID(committee)
-		ownerID = clusterID[:]
+		identifier = types.NewCommitteeMsgID(TestingSSVDomainType, clusterID, role)
 	} else {
-		ownerID = TestingValidatorPubKey[:]
+		identifier = types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), role)
 	}
-	identifier := types.NewMsgID(TestingSSVDomainType, ownerID[:], role)
 
 	// Network
 	net := NewTestingNetwork(1, keySet.OperatorKeys[1])
@@ -276,12 +258,8 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	case types.RoleProposer:
 		valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
 			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, share.SharePubKey)
-	case types.RoleAggregator:
-		valCheck = ssv.AggregatorValueCheckF(km, types.BeaconTestNetwork,
-			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex)
-	case types.RoleSyncCommitteeContribution:
-		valCheck = ssv.SyncCommitteeContributionValueCheckF(km, types.BeaconTestNetwork,
-			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex)
+	case types.RoleAggregatorCommittee:
+		valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
 	default:
 		valCheck = nil
 	}
@@ -314,32 +292,8 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			opSigner,
 			valCheck,
 		)
-	case types.RoleAggregator:
-		runner, err = ssv.NewAggregatorRunner(
-			types.BeaconTestNetwork,
-			shareMap,
-			contr,
-			NewTestingBeaconNode(),
-			net,
-			km,
-			opSigner,
-			valCheck,
-			TestingHighestDecidedSlot,
-		)
 	case types.RoleProposer:
 		runner, err = ssv.NewProposerRunner(
-			types.BeaconTestNetwork,
-			shareMap,
-			contr,
-			NewTestingBeaconNode(),
-			net,
-			km,
-			opSigner,
-			valCheck,
-			TestingHighestDecidedSlot,
-		)
-	case types.RoleSyncCommitteeContribution:
-		runner, err = ssv.NewSyncCommitteeAggregatorRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			contr,
@@ -369,6 +323,17 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			km,
 			opSigner,
 		)
+	case types.RoleAggregatorCommittee:
+		runner, err = ssv.NewAggregatorCommitteeRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			contr,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+			valCheck,
+		)
 	case UnknownDutyType:
 		runner, err = ssv.NewCommitteeRunner(
 			types.BeaconTestNetwork,
@@ -390,7 +355,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 }
 
 // //////////////////////////////// For SSV Tests ////////////////////////////////////////////////////////////////
-var SSVDecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var SSVDecidingMsgsForHeight = func(consensusData *types.ProposerConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()
@@ -411,7 +376,7 @@ var SSVDecidingMsgsForHeightAndBeaconVote = func(beaconVote *types.BeaconVote, m
 	return SSVDecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
 }
 
-var SSVExpectedDecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var SSVExpectedDecidingMsgsForHeight = func(consensusData *types.ProposerConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()
@@ -494,7 +459,7 @@ var SSVExpectedDecidingMsgsForHeightWithRoot = func(root [32]byte, fullData, msg
 }
 
 // //////////////////// For QBFT TESTS /////////////////////////////////////////////////////////////////////////
-var DecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var DecidingMsgsForHeight = func(consensusData *types.ProposerConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()
@@ -502,7 +467,7 @@ var DecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, ms
 	return DecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
 }
 
-var ExpectedDecidingMsgsForHeight = func(consensusData *types.ValidatorConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
+var ExpectedDecidingMsgsForHeight = func(consensusData *types.ProposerConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()

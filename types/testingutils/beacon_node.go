@@ -26,18 +26,26 @@ import (
 
 type TestingBeaconNode struct {
 	BroadcastedRoots             []phase0.Root
-	syncCommitteeAggregatorRoots map[string]bool
+	SyncCommitteeAggregatorRoots map[string]bool
+	CommitteeIndexAggregators    map[phase0.CommitteeIndex]bool
 }
 
 func NewTestingBeaconNode() *TestingBeaconNode {
 	return &TestingBeaconNode{
-		BroadcastedRoots: []phase0.Root{},
+		BroadcastedRoots:             []phase0.Root{},
+		SyncCommitteeAggregatorRoots: make(map[string]bool),
+		CommitteeIndexAggregators:    make(map[phase0.CommitteeIndex]bool),
 	}
 }
 
 // SetSyncCommitteeAggregatorRootHexes FOR TESTING ONLY!! sets which sync committee aggregator roots will return true for aggregator
 func (bn *TestingBeaconNode) SetSyncCommitteeAggregatorRootHexes(roots map[string]bool) {
-	bn.syncCommitteeAggregatorRoots = roots
+	bn.SyncCommitteeAggregatorRoots = roots
+}
+
+// SetAggregators FOR TESTING ONLY!! sets committee indices values for IsAggregator
+func (bn *TestingBeaconNode) SetAggregators(committeeIndices map[phase0.CommitteeIndex]bool) {
+	bn.CommitteeIndexAggregators = committeeIndices
 }
 
 // GetBeaconNetwork returns the beacon network the node is on
@@ -238,14 +246,37 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 	return nil
 }
 
-// SubmitAggregateSelectionProof returns an AggregateAndProof object
-func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, index phase0.ValidatorIndex, slotSig []byte) (ssz.Marshaler, spec.DataVersion, error) {
-	version := VersionBySlot(slot)
-	return TestingAggregateAndProofV(version), version, nil
+// IsAggregator returns true if the validator is selected as an aggregator
+func (bn *TestingBeaconNode) IsAggregator(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, slotSig []byte) bool {
+	// In production, this would check the selection proof against the committee modulo
+
+	// Check if committee index is set
+	if val, found := bn.CommitteeIndexAggregators[committeeIndex]; found {
+		return val
+	}
+
+	// Always return true for testing, for committees not set
+	return true
 }
 
-// SubmitSignedAggregateSelectionProof broadcasts a signed aggregator msg
-func (bn *TestingBeaconNode) SubmitSignedAggregateSelectionProof(msg *spec.VersionedSignedAggregateAndProof) error {
+// GetAggregateAttestation returns the aggregate attestation for the given slot and committee
+func (bn *TestingBeaconNode) GetAggregateAttestation(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, error) {
+	version := VersionBySlot(slot)
+	if version >= spec.DataVersionElectra {
+		return TestingElectraAggregateAndProof(TestingValidatorIndex).Aggregate, nil
+	}
+	return TestingPhase0AggregateAndProof(TestingValidatorIndex).Aggregate, nil
+}
+
+// SubmitAggregateSelectionProof returns an AggregateAndProof object
+// Deprecated: Use IsAggregator and GetAggregateAttestation instead. Kept for backward compatibility.
+func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, index phase0.ValidatorIndex, slotSig []byte) (ssz.Marshaler, spec.DataVersion, error) {
+	version := VersionBySlot(slot)
+	return TestingAggregateAndProofV(version, TestingValidatorIndex), version, nil
+}
+
+// SubmitSignedAggregateAndProof broadcasts a signed aggregator msg
+func (bn *TestingBeaconNode) SubmitSignedAggregateAndProof(msg *spec.VersionedSignedAggregateAndProof) error {
 	var root [32]byte
 
 	switch msg.Version {
@@ -271,6 +302,16 @@ func (bn *TestingBeaconNode) SubmitSignedAggregateSelectionProof(msg *spec.Versi
 	return nil
 }
 
+// SubmitMultipleSignedAggregateAndProof broadcasts multiple signed aggregator msgs
+func (bn *TestingBeaconNode) SubmitMultipleSignedAggregateAndProof(msg []*spec.VersionedSignedAggregateAndProof) error {
+	for _, m := range msg {
+		if err := bn.SubmitSignedAggregateAndProof(m); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // GetSyncMessageBlockRoot returns beacon block root for sync committee
 func (bn *TestingBeaconNode) GetSyncMessageBlockRoot(slot phase0.Slot) (phase0.Root, spec.DataVersion, error) {
 	return TestingSyncCommitteeBlockRoot, spec.DataVersionPhase0, nil
@@ -286,20 +327,26 @@ func (bn *TestingBeaconNode) SubmitSyncMessages(msgs []*altair.SyncCommitteeMess
 }
 
 // IsSyncCommitteeAggregator returns tru if aggregator
-func (bn *TestingBeaconNode) IsSyncCommitteeAggregator(proof []byte) (bool, error) {
-	if len(bn.syncCommitteeAggregatorRoots) != 0 {
-		if val, found := bn.syncCommitteeAggregatorRoots[hex.EncodeToString(proof)]; found {
-			return val, nil
+func (bn *TestingBeaconNode) IsSyncCommitteeAggregator(proof []byte) bool {
+	if len(bn.SyncCommitteeAggregatorRoots) != 0 {
+		if val, found := bn.SyncCommitteeAggregatorRoots[hex.EncodeToString(proof)]; found {
+			return val
 		}
-		return false, nil
+		return false
 	}
-	return true, nil
+	return true
 }
 
 // SyncCommitteeSubnetID returns sync committee subnet ID from subcommittee index
-func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index phase0.CommitteeIndex) (uint64, error) {
-	// each subcommittee index correlates to TestingContributionProofRoots by index
-	return uint64(index), nil
+func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index phase0.CommitteeIndex) uint64 {
+	// Real calculation:
+	// Each subnet has syncCommitteeSize / subnetCount validators
+	// subnetCount is 4 for mainnet
+	// const subnetCount = 4
+	// const syncCommitteeSize = 512
+	// const subnetSize = syncCommitteeSize / subnetCount
+	// Outputs index / subnetSize
+	return uint64(index) / (512 / 4)
 }
 
 // GetSyncCommitteeContribution returns

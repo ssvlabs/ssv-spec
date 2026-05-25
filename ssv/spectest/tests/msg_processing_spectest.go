@@ -39,6 +39,10 @@ type MsgProcessingSpecTest struct {
 	DontStartDuty          bool // if set to true will not start a duty for the runner
 	ExpectedErrorCode      int
 	PrivateKeys            *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+	QBFTProposals          [][]byte                     `json:"QBFTProposals,omitempty"` // optional consensus data (full data) of QBFT proposal messages expected to be sent.
+	// Beacon node extra data
+	BeaconAggregators       []phase0.CommitteeIndex `json:"BeaconAggregators,omitempty"`
+	BeaconAggregatorsValues []bool                  `json:"BeaconAggregatorsValues,omitempty"`
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {
@@ -55,8 +59,17 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	var committee []*types.Operator
 	switch test.Runner.(type) {
 	case *ssv.CommitteeRunner:
-		var runnerInstance *ssv.CommitteeRunner
-		for _, runner := range c.Runners {
+		var runnerInstance ssv.Runner
+		for _, runner := range c.CommitteeRunners {
+			runnerInstance = runner
+			break
+		}
+		network = runnerInstance.GetNetwork().(*testingutils.TestingNetwork)
+		beaconNetwork = runnerInstance.GetBeaconNode().(*testingutils.TestingBeaconNode)
+		committee = c.CommitteeMember.Committee
+	case *ssv.AggregatorCommitteeRunner:
+		var runnerInstance ssv.Runner
+		for _, runner := range c.AggregatorCommitteeRunners {
 			runnerInstance = runner
 			break
 		}
@@ -74,6 +87,12 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 
 	// test beacon broadcasted msgs
 	testingutils.CompareBroadcastedBeaconMsgs(t, test.BeaconBroadcastedRoots, beaconNetwork.BroadcastedRoots)
+
+	// If len(test.QBFTProposals) > 0, check for proposals matching
+	if len(test.QBFTProposals) > 0 {
+		broadcastedFullData := network.GetFullDataFromBroadcastedMessages()
+		testingutils.CompareConsensusData(t, test.QBFTProposals, broadcastedFullData)
+	}
 
 	// post root
 	postRoot, err := test.Runner.GetRoot()
@@ -104,6 +123,8 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 		ketSetMap[valIdx] = testingutils.KeySetForShare(validatorShare)
 	}
 
+	test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode).SetAggregators(test.BeaconAggregatorsMap())
+
 	var v *ssv.Validator
 	var c *ssv.Committee
 	var lastErr error
@@ -114,7 +135,34 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 		if !test.DontStartDuty {
 			lastErr = c.StartDuty(test.Duty.(*types.CommitteeDuty))
 		} else {
-			c.Runners[test.Duty.DutySlot()] = test.Runner.(*ssv.CommitteeRunner)
+			c.CommitteeRunners[test.Duty.DutySlot()] = test.Runner.(*ssv.CommitteeRunner)
+		}
+
+		for _, msg := range test.Messages {
+			err := c.ProcessMessage(msg)
+			if err != nil {
+				lastErr = err
+			}
+			if test.DecidedSlashable && IsQBFTProposalMessage(msg) {
+				consensusMsg, err := qbft.DecodeMessage(msg.SSVMessage.Data)
+				if err != nil {
+					panic(err)
+				}
+				slot := phase0.Slot(consensusMsg.Height)
+				for _, validatorShare := range test.Runner.GetBaseRunner().Share {
+					test.Runner.GetSigner().(*testingutils.TestingKeyManager).AddSlashableSlot(validatorShare.
+						SharePubKey, slot)
+				}
+			}
+		}
+
+	case *ssv.AggregatorCommitteeRunner:
+		c = testingutils.BaseAggregatorCommitteeWithRunner(ketSetMap, test.Runner.(*ssv.AggregatorCommitteeRunner))
+
+		if !test.DontStartDuty {
+			lastErr = c.StartDuty(test.Duty.(*types.AggregatorCommitteeDuty))
+		} else {
+			c.AggregatorCommitteeRunners[test.Duty.DutySlot()] = test.Runner.(*ssv.AggregatorCommitteeRunner)
 		}
 
 		for _, msg := range test.Messages {
@@ -154,6 +202,14 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 	return v, c, lastErr
 }
 
+func (test *MsgProcessingSpecTest) BeaconAggregatorsMap() map[phase0.CommitteeIndex]bool {
+	aggregatorsMap := make(map[phase0.CommitteeIndex]bool)
+	for i, idx := range test.BeaconAggregators {
+		aggregatorsMap[idx] = test.BeaconAggregatorsValues[i]
+	}
+	return aggregatorsMap
+}
+
 // IsQBFTProposalMessage checks if the message is a QBFT proposal message
 func IsQBFTProposalMessage(msg *types.SignedSSVMessage) bool {
 	if msg.SSVMessage.MsgType == types.SSVConsensusMsgType {
@@ -176,12 +232,10 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 	switch test.Runner.(type) {
 	case *ssv.CommitteeRunner:
 		runner = &ssv.CommitteeRunner{}
-	case *ssv.AggregatorRunner:
-		runner = &ssv.AggregatorRunner{}
 	case *ssv.ProposerRunner:
 		runner = &ssv.ProposerRunner{}
-	case *ssv.SyncCommitteeAggregatorRunner:
-		runner = &ssv.SyncCommitteeAggregatorRunner{}
+	case *ssv.AggregatorCommitteeRunner:
+		runner = &ssv.AggregatorCommitteeRunner{}
 	case *ssv.ValidatorRegistrationRunner:
 		runner = &ssv.ValidatorRegistrationRunner{}
 	case *ssv.VoluntaryExitRunner:
@@ -225,8 +279,11 @@ type MsgProcessingSpecTestAlias struct {
 	BeaconBroadcastedRoots  []string
 	DontStartDuty           bool
 	ExpectedErrorCode       int
-	ValidatorDuty           *types.ValidatorDuty `json:"ValidatorDuty,omitempty"`
-	CommitteeDuty           *types.CommitteeDuty `json:"CommitteeDuty,omitempty"`
+	ValidatorDuty           *types.ValidatorDuty           `json:"ValidatorDuty,omitempty"`
+	CommitteeDuty           *types.CommitteeDuty           `json:"CommitteeDuty,omitempty"`
+	AggregatorCommitteeDuty *types.AggregatorCommitteeDuty `json:"AggregatorCommitteeDuty,omitempty"`
+	BeaconAggregators       []phase0.CommitteeIndex        `json:"BeaconAggregators,omitempty"`
+	BeaconAggregatorsValues []bool                         `json:"BeaconAggregatorsValues,omitempty"`
 }
 
 func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
@@ -241,6 +298,8 @@ func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
 		BeaconBroadcastedRoots:  t.BeaconBroadcastedRoots,
 		DontStartDuty:           t.DontStartDuty,
 		ExpectedErrorCode:       t.ExpectedErrorCode,
+		BeaconAggregators:       t.BeaconAggregators,
+		BeaconAggregatorsValues: t.BeaconAggregatorsValues,
 	}
 
 	if t.Duty != nil {
@@ -248,8 +307,10 @@ func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
 			alias.ValidatorDuty = duty
 		} else if committeeDuty, ok := t.Duty.(*types.CommitteeDuty); ok {
 			alias.CommitteeDuty = committeeDuty
+		} else if aggCommitteeDuty, ok := t.Duty.(*types.AggregatorCommitteeDuty); ok {
+			alias.AggregatorCommitteeDuty = aggCommitteeDuty
 		} else {
-			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't ValidatorDuty or CommitteeDuty")
+			return nil, errors.New("can't marshal StartNewRunnerDutySpecTest because t.Duty isn't ValidatorDuty, CommitteeDuty, or AggregatorCommitteeDuty")
 		}
 	}
 	byts, err := json.Marshal(alias)
@@ -275,12 +336,16 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	t.BeaconBroadcastedRoots = aux.BeaconBroadcastedRoots
 	t.DontStartDuty = aux.DontStartDuty
 	t.ExpectedErrorCode = aux.ExpectedErrorCode
+	t.BeaconAggregators = aux.BeaconAggregators
+	t.BeaconAggregatorsValues = aux.BeaconAggregatorsValues
 
 	// Determine which type of duty was marshaled
 	if aux.ValidatorDuty != nil {
 		t.Duty = aux.ValidatorDuty
 	} else if aux.CommitteeDuty != nil {
 		t.Duty = aux.CommitteeDuty
+	} else if aux.AggregatorCommitteeDuty != nil {
+		t.Duty = aux.AggregatorCommitteeDuty
 	}
 
 	return nil

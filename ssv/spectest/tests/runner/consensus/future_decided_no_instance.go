@@ -20,16 +20,16 @@ func FutureDecidedNoInstance() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	getID := func(role types.RunnerRole) []byte {
-		if role == types.RoleCommittee {
+		if role == types.RoleCommittee || role == types.RoleAggregatorCommittee {
 			opIDs := make([]types.OperatorID, len(ks.Committee()))
 			for i, member := range ks.Committee() {
 				opIDs[i] = member.Signer
 			}
 			committeeID := types.GetCommitteeID(opIDs)
-			ret := types.NewMsgID(testingutils.TestingSSVDomainType, committeeID[:], role)
+			ret := types.NewCommitteeMsgID(testingutils.TestingSSVDomainType, committeeID, role)
 			return ret[:]
 		}
-		ret := types.NewMsgID(testingutils.TestingSSVDomainType, testingutils.TestingValidatorPubKey[:], role)
+		ret := types.NewValidatorMsgID(testingutils.TestingSSVDomainType, types.ValidatorPK(testingutils.TestingValidatorPubKey), role)
 		return ret[:]
 	}
 
@@ -50,11 +50,12 @@ func FutureDecidedNoInstance() tests.SpecTest {
 		testdoc.ConsensusFutureDecidedNoInstanceDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
-				Name:          "sync committee contribution",
-				Runner:        testingutils.SyncCommitteeContributionRunner(ks),
-				Duty:          &testingutils.TestingSyncCommitteeContributionDuty,
-				DontStartDuty: true,
-				Messages:      []*types.SignedSSVMessage{getDecidedMessage(types.RoleSyncCommitteeContribution, testingutils.TestingDutySlot+1)},
+				Name:              "sync committee contribution",
+				Runner:            testingutils.AggregatorCommitteeRunner(ks),
+				Duty:              testingutils.TestingSyncCommitteeContributionDuty,
+				DontStartDuty:     true,
+				Messages:          []*types.SignedSSVMessage{getDecidedMessage(types.RoleAggregatorCommittee, testingutils.TestingDutySlot+1)},
+				ExpectedErrorCode: expectedErrCode,
 			},
 		},
 		ks,
@@ -62,11 +63,12 @@ func FutureDecidedNoInstance() tests.SpecTest {
 
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-			Name:          fmt.Sprintf("aggregator (%s)", version.String()),
-			Runner:        testingutils.AggregatorRunner(ks),
-			Duty:          testingutils.TestingAggregatorDuty(version),
-			DontStartDuty: true,
-			Messages:      []*types.SignedSSVMessage{getDecidedMessage(types.RoleAggregator, testingutils.TestingDutySlot+1)},
+			Name:              fmt.Sprintf("aggregator (%s)", version.String()),
+			Runner:            testingutils.AggregatorCommitteeRunner(ks),
+			Duty:              testingutils.TestingAggregatorDuty(version),
+			DontStartDuty:     true,
+			Messages:          []*types.SignedSSVMessage{getDecidedMessage(types.RoleAggregatorCommittee, testingutils.TestingDutySlot+1)},
+			ExpectedErrorCode: expectedErrCode,
 		},
 		)
 	}

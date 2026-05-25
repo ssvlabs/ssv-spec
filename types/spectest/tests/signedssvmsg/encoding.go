@@ -7,7 +7,6 @@ import (
 
 // Encoding tests encoding of a SignedSSVMessage
 func Encoding() *EncodingTest {
-
 	ks := testingutils.Testing4SharesSet()
 
 	msg := testingutils.TestingSignedSSVMessage(ks.Shares[1], 1, ks.OperatorKeys[1])

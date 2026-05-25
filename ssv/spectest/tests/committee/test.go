@@ -48,14 +48,20 @@ func (test *CommitteeSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 
 	broadcastedMsgs := make([]*types.SignedSSVMessage, 0)
 	broadcastedRoots := make([]phase0.Root, 0)
-	for _, runner := range test.Committee.Runners {
+	for _, runner := range test.Committee.CommitteeRunners {
+		network := runner.GetNetwork().(*testingutils.TestingNetwork)
+		beaconNetwork := runner.GetBeaconNode().(*testingutils.TestingBeaconNode)
+		broadcastedMsgs = append(broadcastedMsgs, network.BroadcastedMsgs...)
+		broadcastedRoots = append(broadcastedRoots, beaconNetwork.BroadcastedRoots...)
+	}
+	for _, runner := range test.Committee.AggregatorCommitteeRunners {
 		network := runner.GetNetwork().(*testingutils.TestingNetwork)
 		beaconNetwork := runner.GetBeaconNode().(*testingutils.TestingBeaconNode)
 		broadcastedMsgs = append(broadcastedMsgs, network.BroadcastedMsgs...)
 		broadcastedRoots = append(broadcastedRoots, beaconNetwork.BroadcastedRoots...)
 	}
 
-	// test output message (in asynchronous order)
+	// test output message
 	testingutils.ComparePartialSignatureOutputMessagesInAsynchronousOrder(t, test.OutputMessages, broadcastedMsgs, test.Committee.CommitteeMember.Committee)
 
 	// test beacon broadcasted msgs
@@ -84,7 +90,7 @@ func (test *CommitteeSpecTest) runPreTesting() error {
 		var err error
 		switch input := input.(type) {
 		case types.Duty:
-			err = test.Committee.StartDuty(input.(*types.CommitteeDuty))
+			err = test.Committee.StartDuty(input)
 		case *types.SignedSSVMessage:
 			err = test.Committee.ProcessMessage(input)
 		default:
