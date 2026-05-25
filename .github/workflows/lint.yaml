@@ -21,8 +21,8 @@ jobs:
       - name: Get Dependencies
         run: go get -v -t -d ./...
 
-      - name: Prepare
-        run: make lint-prepare
-
       - name: Lint
-        run: make lint
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: v2.12.2
+          args: -v ./...
