@@ -15,9 +15,21 @@ import (
 
 //go:generate go run main.go
 
-var specTestsDir = filepath.Join("..", "..", "..", "..", "spec-tests", "types")
-var testsDir = filepath.Join(specTestsDir, "tests")
-var stateComparisonDir = filepath.Join(specTestsDir, "state_comparison")
+const specTestsModule = "types"
+
+var specTestsDir string
+var testsDir string
+var stateComparisonDir string
+
+func init() {
+	var err error
+	specTestsDir, err = comparable2.SpecTestsDirForModule(specTestsModule)
+	if err != nil {
+		panic(err.Error())
+	}
+	testsDir = filepath.Join(specTestsDir, "tests")
+	stateComparisonDir = filepath.Join(specTestsDir, "state_comparison")
+}
 
 func main() {
 	clearStateComparisonFolder()
@@ -65,6 +77,9 @@ func main() {
 }
 
 func clearStateComparisonFolder() {
+	if err := comparable2.EnsureSpecTestsSubdir(specTestsModule, stateComparisonDir); err != nil {
+		panic(err.Error())
+	}
 	if err := os.RemoveAll(stateComparisonDir); err != nil {
 		panic(err.Error())
 	}
@@ -75,6 +90,9 @@ func clearStateComparisonFolder() {
 }
 
 func clearTestsFolder() {
+	if err := comparable2.EnsureSpecTestsSubdir(specTestsModule, testsDir); err != nil {
+		panic(err.Error())
+	}
 	if err := os.RemoveAll(testsDir); err != nil {
 		panic(err.Error())
 	}
