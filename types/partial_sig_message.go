@@ -18,6 +18,10 @@ const (
 	VoluntaryExitPartialSig = PartialSigMsgType(5)
 	// AggregatorCommitteePartialSig is a partial signature for combined aggregator and sync committee selection proofs
 	AggregatorCommitteePartialSig = PartialSigMsgType(6)
+	// PTCAttesterPartialSig is a partial signature over a Gloas (ePBS) PayloadAttestationData object (SIP #94 §3)
+	PTCAttesterPartialSig = PartialSigMsgType(7)
+	// ProposerPreferencesPartialSig is a partial signature over a Gloas (ePBS) ProposerPreferences object (SIP #94 §5)
+	ProposerPreferencesPartialSig = PartialSigMsgType(8)
 )
 
 type PartialSignatureMessages struct {
