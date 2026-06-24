@@ -14,7 +14,7 @@ const (
 	// pre-consolidation aggregator / sync-committee-contribution runner roles.
 	RolePTCAttester         = RunnerRole(7)
 	RoleProposerPreferences = RunnerRole(8)
-	RoleEnvelopeBuilder     = RunnerRole(9)
+	RoleEnvelopeProposer    = RunnerRole(9)
 
 	RoleUnknown = RunnerRole(-1)
 )
@@ -36,8 +36,8 @@ func (r RunnerRole) String() string {
 		return "PTC_ATTESTER_RUNNER"
 	case RoleProposerPreferences:
 		return "PROPOSER_PREFERENCES_RUNNER"
-	case RoleEnvelopeBuilder:
-		return "ENVELOPE_BUILDER_RUNNER"
+	case RoleEnvelopeProposer:
+		return "ENVELOPE_PROPOSER_RUNNER"
 	default:
 		return "UNDEFINED"
 	}

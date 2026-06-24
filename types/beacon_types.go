@@ -57,7 +57,7 @@ const (
 	// Gloas (ePBS) roles, per SIP #94.
 	BNRolePTCAttester
 	BNRoleProposerPreferences
-	BNRoleEnvelopeBuilder
+	BNRoleEnvelopeProposer
 
 	BNRoleUnknown = math.MaxUint64
 )
@@ -83,8 +83,8 @@ func (r BeaconRole) String() string {
 		return "PTC_ATTESTER"
 	case BNRoleProposerPreferences:
 		return "PROPOSER_PREFERENCES"
-	case BNRoleEnvelopeBuilder:
-		return "ENVELOPE_BUILDER"
+	case BNRoleEnvelopeProposer:
+		return "ENVELOPE_PROPOSER"
 	default:
 		return "UNDEFINED"
 	}
@@ -137,8 +137,8 @@ func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
 		return RolePTCAttester
 	case BNRoleProposerPreferences:
 		return RoleProposerPreferences
-	case BNRoleEnvelopeBuilder:
-		return RoleEnvelopeBuilder
+	case BNRoleEnvelopeProposer:
+		return RoleEnvelopeProposer
 	}
 	return RoleUnknown
 }
