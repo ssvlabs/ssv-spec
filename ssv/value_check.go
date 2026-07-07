@@ -10,6 +10,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 func dutyValueCheck(
@@ -107,14 +108,24 @@ func ProposerValueCheckF(
 			return errors.Wrap(err, "duty invalid")
 		}
 
-		blockData, _, err := cd.GetBlockData()
-		if err != nil {
-			return errors.Wrap(err, "could not get block data")
-		}
-
-		slot, err := blockData.Slot()
-		if err != nil {
-			return errors.Wrap(err, "failed to get slot from block data")
+		// Determine the block slot for the slashing check. Gloas (ePBS) blocks are carried opaquely
+		// in DataSSZ as a gloas.BeaconBlock and cannot be decoded via GetBlockData's
+		// api.VersionedProposal, which has no Gloas arm (SIP #94 §4).
+		var slot phase0.Slot
+		if cd.Version >= gloas.DataVersionGloas {
+			block := &gloas.BeaconBlock{}
+			if err := block.UnmarshalSSZ(cd.DataSSZ); err != nil {
+				return types.WrapError(types.UnmarshalSSZErrorCode, errors.Wrap(err, "failed decoding gloas beacon block"))
+			}
+			slot = block.Slot
+		} else {
+			blockData, _, err := cd.GetBlockData()
+			if err != nil {
+				return errors.Wrap(err, "could not get block data")
+			}
+			if slot, err = blockData.Slot(); err != nil {
+				return errors.Wrap(err, "failed to get slot from block data")
+			}
 		}
 		return signer.IsBeaconBlockSlashable(sharePublicKey, slot)
 	}
