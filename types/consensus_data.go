@@ -212,6 +212,12 @@ func (cd *ProposerConsensusData) Validate() error {
 
 		return NewError(UnknownDutyRoleDataErrorCode, "unknown duty role")
 	}
+	// Gloas (ePBS) and later: the block is carried opaquely in DataSSZ as a gloas.BeaconBlock and
+	// cannot be decoded via GetBlockData's api.VersionedProposal. Keep types/ free of the gloas
+	// import — decode/validation is owned by ProposerValueCheckF (SIP #94 §4, design "Option A").
+	if cd.Version > spec.DataVersionFulu {
+		return nil
+	}
 	_, _, err := cd.GetBlockData()
 	return err
 }
