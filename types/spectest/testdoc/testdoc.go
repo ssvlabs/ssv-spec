@@ -12,6 +12,18 @@ const BeaconVoteEncodingSpecTestType = "Beacon vote encoding: validation of beac
 // Documentation for BeaconVoteEncodingSpecTest
 const BeaconVoteEncodingTestDoc = "Test encoding and decoding of BeaconVote with hash tree root verification"
 
+// GloasBeaconVoteEncodingSpecTest
+const GloasBeaconVoteEncodingSpecTestType = "Gloas beacon vote encoding: validation of Gloas beacon vote encoding"
+
+// Documentation for GloasBeaconVoteEncodingSpecTest
+const GloasBeaconVoteEncodingTestDoc = "Test encoding and decoding of GloasBeaconVote (SIP #94 §2) with hash tree root verification"
+
+// EnvelopeConsensusDataEncodingSpecTest
+const EnvelopeConsensusDataEncodingSpecTestType = "Envelope consensus data encoding: validation of envelope consensus data encoding"
+
+// Documentation for EnvelopeConsensusDataEncodingSpecTest
+const EnvelopeConsensusDataEncodingTestDoc = "Test encoding and decoding of EnvelopeConsensusData (SIP #94 §6) with hash tree root verification"
+
 // CommitteeMemberTest
 const CommitteeMemberTestType = "Committee member: validation of committee member quorum requirements"
 
