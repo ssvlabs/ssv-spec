@@ -138,6 +138,34 @@ func (b *BeaconVote) Validate() error {
 	return nil
 }
 
+// GloasBeaconVote is the Gloas (ePBS) variant of BeaconVote — the value the CommitteeRunner agrees on
+// for Gloas slots (SIP #94 §2). It mirrors BeaconVote (BlockRoot + Source/Target checkpoints, 112 bytes)
+// and appends the BN-supplied AttestationData.Index for a fixed 120-byte SSZ encoding. In Gloas the
+// index is fork-choice-dependent (0 = payload EMPTY, 1 = FULL for non-same-slot attestations; 0 for
+// same-slot) and part of the signed attestation root, so it must travel through consensus rather than be
+// reconstructed locally. A distinct type (rather than extending BeaconVote in place) keeps pre-Gloas
+// wire bytes unchanged and makes the two forms mutually-rejecting on length: the 120B-vs-112B difference
+// fails a cross-fork decode cleanly.
+//
+// After the Gloas fork has activated on all networks and pre-Gloas slots are unreachable, a follow-up
+// SIP can retire BeaconVote and rename GloasBeaconVote back to BeaconVote.
+type GloasBeaconVote struct {
+	BlockRoot            phase0.Root `ssz-size:"32"`
+	Source               *phase0.Checkpoint
+	Target               *phase0.Checkpoint
+	AttestationDataIndex phase0.CommitteeIndex // copied from AttestationData.Index (0 or 1)
+}
+
+// Encode the GloasBeaconVote object
+func (b *GloasBeaconVote) Encode() ([]byte, error) {
+	return b.MarshalSSZ()
+}
+
+// Decode the GloasBeaconVote object
+func (b *GloasBeaconVote) Decode(data []byte) error {
+	return b.UnmarshalSSZ(data)
+}
+
 // ProposerConsensusData holds all relevant data about proposer duty for consensus
 type ProposerConsensusData struct {
 	// Duty max size is
@@ -257,6 +285,29 @@ func (cd *ProposerConsensusData) Encode() ([]byte, error) {
 }
 
 func (cd *ProposerConsensusData) Decode(data []byte) error {
+	return cd.UnmarshalSSZ(data)
+}
+
+// EnvelopeConsensusData is the QBFT value for the §6 envelope-signing duty (SIP #94 §6). It shares
+// ProposerConsensusData's wire shape (Duty + Version + DataSSZ) but is a distinct type so the envelope
+// path reads as its own role rather than borrowing the proposer's. DataSSZ carries the SSZ-encoded
+// gloas.BlindedExecutionPayloadEnvelope; the field is opaque here (no gloas import) and decoded by the
+// envelope runner and its value check.
+type EnvelopeConsensusData struct {
+	Duty    ValidatorDuty
+	Version spec.DataVersion
+	// DataSSZ carries the SSZ-encoded BlindedExecutionPayloadEnvelope. Same bound as
+	// ProposerConsensusData.DataSSZ so the two encode identically for a given {Duty, Version, DataSSZ}.
+	DataSSZ []byte `ssz-max:"8388608"`
+}
+
+// Encode the EnvelopeConsensusData object
+func (cd *EnvelopeConsensusData) Encode() ([]byte, error) {
+	return cd.MarshalSSZ()
+}
+
+// Decode the EnvelopeConsensusData object
+func (cd *EnvelopeConsensusData) Decode(data []byte) error {
 	return cd.UnmarshalSSZ(data)
 }
 
