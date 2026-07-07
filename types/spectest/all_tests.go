@@ -9,6 +9,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/envelopeconsensusdata"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/gloasbeaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/maxmsgsize"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerconsensusdata"
@@ -126,6 +128,8 @@ var AllTests = []SpecTest{
 	duty.MapUnknownRole(),
 
 	beaconvote.BeaconVoteEncoding(),
+	gloasbeaconvote.GloasBeaconVoteEncoding(),
+	envelopeconsensusdata.EnvelopeConsensusDataEncoding(),
 
 	maxmsgsize.MaxConsensusData(),
 	maxmsgsize.MaxBeaconVote(),

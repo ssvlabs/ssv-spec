@@ -14,6 +14,8 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/envelopeconsensusdata"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/gloasbeaconvote"
 
 	"github.com/stretchr/testify/require"
 
@@ -167,6 +169,18 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &beaconvote.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&gloasbeaconvote.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &gloasbeaconvote.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&envelopeconsensusdata.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &envelopeconsensusdata.EncodingTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			case reflect.TypeOf(&maxmsgsize.StructureSizeTest{}).String():
