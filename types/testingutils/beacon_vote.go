@@ -35,3 +35,24 @@ var TestWrongBeaconVote = types.BeaconVote{
 	},
 }
 var TestWrongBeaconVoteByts, _ = TestWrongBeaconVote.Encode()
+
+// ==================================================
+// GloasBeaconVote (ePBS / SIP #94 §2)
+// ==================================================
+
+// TestGloasBeaconVote mirrors TestBeaconVote and adds the BN-supplied AttestationDataIndex
+// (1 = payload FULL). Fixed 120-byte SSZ; plain container, so its hash tree root is stable
+// (unaffected by the EIP-7688 progressive-merkleization question, which only touches §4/§6).
+var TestGloasBeaconVote = types.GloasBeaconVote{
+	BlockRoot: TestingBlockRoot,
+	Source: &phase0.Checkpoint{
+		Epoch: 0,
+		Root:  TestingBlockRoot,
+	},
+	Target: &phase0.Checkpoint{
+		Epoch: 1,
+		Root:  TestingBlockRoot,
+	},
+	AttestationDataIndex: 1,
+}
+var TestGloasBeaconVoteByts, _ = TestGloasBeaconVote.Encode()
