@@ -1,0 +1,244 @@
+# ePBS (SIP-94) reference implementation in ssv-spec — epic plan
+
+Ephemeral planning document — delete once the epic is done. Not referenced from code or committed work.
+
+**Status of everything below: tentative / suggestive, not definitive.** The investigation behind this plan (2026-07-07) was breadth-first reconnaissance — enough to size the epic, sequence it, and pick working assumptions, not final design work. Every design decision (D1–D10), scope call, file-level claim, and "resolved" marker must be re-investigated thoroughly and independently when its slice is implemented, and the implementation-time finding wins over anything written here. The inputs this plan leans on all move: consensus-specs / the Glamsterdam devnet feature set, the SIP-94 text and review thread, the node's `epbs-gloas` branch (force-pushed; aetheria#141 observed same-day pin staleness), the ssv-spec base branch stack, anchor's harness and issues, and go-eth2-client. Where this doc says "working assumption (agreed)" it means a direction was picked and agreed with Iurii on 2026-07-07 — not that the question is closed.
+
+## Goal
+
+Implement the SIP-94 (ePBS / EIP-7732 / Gloas) protocol changes as a reference implementation in ssv-spec, with generated JSON test vectors, so that:
+
+- ssv-spec is the normative artifact for ePBS (today it is the node's force-pushed `epbs-gloas` branch — anchor issues cite line numbers into it as "go-ssv parity" and aetheria#141 documents those pins going stale within a review round);
+- anchor gets Gloas fixtures for its `anchor/spec_tests` harness (sigp/anchor#1073 explicitly waits for "Gloas proposer fixtures … from the Go ssv-spec generator"; #953 tracks fixture quality);
+- the ssv node's spectest mapping gains vector coverage for the new runners once it re-points to the merged spec.
+
+Base: `epbs-gloas-constants` branch (PR ssv-spec#632 — domains 0x0B/0C/0D, beacon/runner roles 7/8/9, partial-sig types 7/8, `MapDutyToRunnerRole`, all already in). The branch stack is `boole` → `agg-comm-pre-consensus-termination-fix-repo-size` (#604 line) → `epbs-gloas-constants`; ePBS lands after Boole, matching the node's plan.
+
+Primary porting source: the node's `protocol/v2/types/gloas` package and Gloas runner/value-check code on `ssvlabs/ssv@epbs-gloas` (PR #2901, devnet-validated). The package doc there says explicitly: "only types ssv-spec does not yet carry are defined here" — it was built as the staging ground for this migration.
+
+## Scope map (SIP section → spec work)
+
+| SIP § | Spec-side work | Out of spec scope (node-side) |
+|-------|----------------|-------------------------------|
+| §1 timing | none (spec has no wall-clock model) | all retiming, `IntervalDuration` |
+| §2 Gloas attestations | `GloasBeaconVote` type, `GloasBeaconVoteValueCheckF`, committee-runner fork gate, Gloas attestation construction | BN fetch quirks, aggregation endpoint |
+| §3 PTC | `PTCAttesterRunner` (VR-shaped, no consensus), BN-mock calls, vectors | duty fetch/refresh, SSE triggers, scheduler |
+| §4 proposer | `DataVersionGloas` arm in proposer runner, vendored `gloas.BeaconBlock` family, vectors | produceBlockV4 HTTP, `include_payload`, telemetry, ProposerDelayEPBS |
+| §5 preferences | `ProposerPreferencesRunner` (per-proposal-slot state), `gloas.ProposerPreferences` type, VR deprecation gate in the VR runner, vectors | lookahead scheduling, pre-fork seed emission, dependent_root refresh, publish-finality rule |
+| §6 envelope | `EnvelopeProposerRunner` (QBFT), `EnvelopeConsensusData` + blinded envelope types, `EnvelopeValueCheckF` with §4-root linkage, vectors | envelope fetch endpoints, stateless-variant publish plumbing |
+| §5/§7 message validation | none (ssv-spec's `p2p/validation` is a thin example; the wire-validation rules — fork gates, §5 slot semantics — are SIP text + node/anchor message validators) | `validRoleAtSlot`, earliness/lateness/dedup rules |
+
+Explicit non-goals: mixed ssv+anchor aetheria suite (deferred by decision), builder-API `RequestAuthV1` (future SIP), retiring `BeaconVote`/renaming `GloasBeaconVote` (post-fork follow-up SIP), moving generated JSON out of the repo (size problem is systemic, flagged under risks).
+
+## Design decisions
+
+### D1. Fork awareness = `DataVersion`, not fork epochs
+
+Spec runners are already fork-gated through `BeaconNode.DataVersion(epoch)` (`VersionCalls`) — see `constructAttestationData`'s `version >= spec.DataVersionElectra` gate in `ssv/committee_runner.go`. Gloas gating uses the same mechanism: `beacon.DataVersion(epoch) >= DataVersionGloas`. No fork-epoch map is added to `types.BeaconNetwork` (the node's `IsGloasAtSlot` is its own network-config concern).
+
+Two axes, kept separate: `DataVersion` (the `spec.DataVersion` enum) selects container/attestation *shapes*, while beacon signing **domains** are computed in the mock from a fixed `GenesisForkVersion` (`ComputeETHDomain(domain, types.GenesisForkVersion, …)` in `types/testingutils/beacon_node.go`), independent of fork epoch. That is *why* `DataVersion`-only fork awareness is sufficient here: the new Gloas domains (`DomainPTCAttester` / `DomainProposerPreferences` / `DomainBeaconBuilder`) resolve correctly from their domain-type constant alone, with no per-fork-version wiring. The `domain epoch = duty-slot epoch` notes under D5–D7 track real-BN semantics but do not change the mock-computed domain.
+
+go-eth2-client v0.27.0 has no `DataVersionGloas` (enum ends at Fulu) and no Gloas field in `api.VersionedProposal`. Add a placeholder in the new `types/gloas` package:
+
+```go
+// Placeholder until go-eth2-client ships Gloas; enum is iota-ordered, so Fulu+1 will match upstream.
+const DataVersionGloas = spec.DataVersionFulu + 1
+```
+
+Same approach as the node's `networkconfig/beacon.go` placeholder (node deletes its copy when it consumes the spec one). Caveat carried over: `.String()` prints "unknown" — acceptable for now, reconcile when upstream ships. **Re-verify before PR 2 relies on the placeholder:** confirm how `spec.DataVersion` is serialized in the generated JSON vectors — if it is the integer (expected), Gloas rides in cleanly as `Fulu+1`; if any fixture path serializes via `.String()`, Gloas becomes `"unknown"` and collides with genuine-unknown / any future over-max version, which anchor's decoder would mis-handle. Grep the fixtures and record the finding.
+
+testingutils: add `ForkEpochGloas`, `TestingDutyEpochGloas` / `TestingDutySlotGloas` (+NextEpoch/Invalid) and Gloas arms in `TestingDutyEpochV` / `TestingDutySlotV` / `VersionBySlot` / `VersionByEpoch` (`types/testingutils/beacon_node_versions.go`). The mock BN's `DataVersion(epoch)` then makes any duty at a Gloas slot exercise the Gloas paths — the whole versioned test matrix keys off this. **This pure fork machinery lands in PR 2** (with the `DataVersionGloas` placeholder and `types/gloas`), not PR 3: it carries no runner logic, and placing it in PR 2 is what lets PRs 3/4/5/6/7 each depend on PR 2 alone and stay reorderable (see the landing-order recap).
+
+### D2. Type placement: consensus data flat in `types/`, beacon containers in `types/gloas`
+
+- `GloasBeaconVote` → `types/consensus_data.go`, next to `BeaconVote` (only phase0 deps; keeps the pair adjacent for the eventual retire/rename follow-up). Fixed 120-byte SSZ vs 112 — cross-fork decode fails cleanly on length, per SIP.
+- `EnvelopeConsensusData` → `types/consensus_data.go`, next to `ProposerConsensusData` (fields: `Duty ValidatorDuty`, `Version spec.DataVersion`, `DataSSZ []byte` with the same `ssz-max:"8388608"`; DataSSZ is opaque, no gloas imports).
+- Vendored Gloas beacon containers → new package `types/gloas`: `BeaconBlock` family (body with `ExecutionPayloadBid`, `PayloadAttestation`s), `ExecutionPayloadBid`, `ExecutionRequests` (EIP-8282 five-list) + builder deposit/exit request types, `BuilderIndex` + `BuilderIndexSelfBuild`, `PayloadAttestationData`/`PayloadAttestationMessage`, `ProposerPreferences`/`SignedProposerPreferences`, `BlindedExecutionPayloadEnvelope`/`SignedBlindedExecutionPayloadEnvelope`, `DataVersionGloas`. Ported from the node's `protocol/v2/types/gloas` with its round-trip tests and the devnet golden-block test data.
+
+Why the split: `types/gloas` importing `types` would cycle if `types` also referenced gloas containers. Keeping the two consensus-data types flat (they reference nothing from `types/gloas`) and everything beacon-chain-shaped in the subpackage avoids the cycle, and makes `types/gloas` the clean "delete/shrink when go-eth2-client ships Gloas" surface.
+
+Deliberately NOT vendored (node-only): full `ExecutionPayload` / full `ExecutionPayloadEnvelope` (see D6), `PTCDuty` (a beacon-API DTO; spec PTC duties reuse `types.ValidatorDuty` per SIP §3), `GloasBlockContents`.
+
+sszgen: follow the node's `go list -m`-resolved `--include` style for the new directives rather than the hardcoded `$GOPATH/...@v0.27.0` paths used in `types/generate.go` today (those break silently on version bumps; worth adopting for the new files and optionally migrating the old ones later).
+
+### D3. Committee runner (§2)
+
+- `executeDuty`: on `DataVersion(epoch) >= DataVersionGloas`, build `GloasBeaconVote` from `GetAttestationData(slot)` — the mock already returns `*phase0.AttestationData`, which carries the BN-supplied `Index`; copy it into `AttestationDataIndex`. Pre-Gloas path unchanged.
+- `ProcessConsensus` / `expectedPostConsensusRootsAndBeaconObjects`: decode prototype selected by version (`&GloasBeaconVote{}` vs `&BeaconVote{}`), mirroring the node's `committee.go` fork-prototype selection.
+- `constructAttestationData`: Gloas arm sets `Index = vote.AttestationDataIndex` (0/1), overriding the Electra `Index = 0` rule (node's version takes an extra `gloasIndex *phase0.CommitteeIndex` param — mirror that shape).
+- Attestation container is unchanged by Gloas (only `data.index` semantics change), so `ConstructVersionedAttestationWithoutSignature` / `VersionedAttestationWithSignature` / `GetAggregateAndProofHashRoot` get `DataVersionGloas` arms that reuse the Electra-shaped container (`spec.VersionedAttestation` has no Gloas field — set the Electra field under the Gloas version tag; the wrapper is local/API-side, not wire format, so this is interop-safe).
+- **`AggregatorCommitteeConsensusData.Version` at Gloas slots — working assumption (agreed 2026-07-07; needs SIP-thread blessing as a one-sentence nit; re-verify independently at PR 3 time).**
+  - *Node's current behavior:* `BeaconForkAtEpoch` deliberately **caps at Fulu** for Gloas epochs ("`IsGloas` is the Gloas gate today"), with an explicit TODO to extend once version-switching callers handle Gloas — so today the node stamps `Version: Fulu` on Gloas slots.
+  - *Why it matters:* that stamp flows into `AggregatorCommitteeConsensusData.Version`, which **is QBFT wire format** (`aggregator_committee.go` stamps `r.beacon.DataVersion(epoch)`). The reference (this repo) must therefore define the normative value at Gloas slots, and a spec/node mismatch here breaks consensus. Independent of which value is chosen, a Gloas arm is *required*: `GetAggregateAndProofs` currently hits its `default` and errors on any version past Fulu.
+  - *Picked direction:* stamp the honest `DataVersionGloas` and add Gloas arms to the versioned helpers (`GetAggregateAndProofs`, `constructVersionedSignedAggregateAndProof`, mock submit switches → Electra-shaped containers, same as Fulu); the node then resolves its Fulu-cap TODO to match before the fork, and anchor is told explicitly.
+  - *Rationale:* encoding the node's temporary cap as normative bakes a TODO into the protocol; an un-upgraded operator can't perform Gloas duties anyway, so the compat cost of the honest version is nil.
+  - *Fallback (if the thread prefers minimal churn):* spec mirrors the Fulu cap for aggregator-committee only (single call-site cap), revisit at the next fork.
+  - *Re-verify at PR 3 (open question beyond the version field):* whether the new 0/1 `AttestationDataIndex` changes anything aggregator-side — attestation-aggregation grouping, or the `AggregatorCommitteeConsensusData` value-check — or whether reusing the Electra-shaped container is fully sufficient.
+- `GloasBeaconVoteValueCheckF` in `ssv/value_check.go`, mirroring `BeaconVoteValueCheckF` plus (per SIP §2): reject `AttestationDataIndex > 1`; build the slashability `AttestationData` with the decided index instead of the `math.MaxUint64` sentinel, so cross-index equivocation over the same `(source, target, slot)` trips `IsAttestationSlashable`. Port shape from the node's `NewGloasVoteChecker`.
+- Mock: `TestingBeaconNode.GetAttestationData` must return Gloas-shaped data (index 0/1) for Gloas slots — extend `beacon_node_attestation.go` fixtures.
+
+### D4. Proposer runner (§4)
+
+Gloas produce/decide/submit is additive, mirroring the node's separate `gloas_proposer.go` path rather than forcing Gloas into `api.VersionedProposal`:
+
+- `ProposerCalls` gains `GetGloasBeaconBlock(slot, graffiti, randao) (*gloas.BeaconBlock, error)` and `SubmitGloasBeaconBlock(block *gloas.BeaconBlock, sig phase0.BLSSignature) error` (mock implementations + fixtures in `beacon_node_proposer.go`). `GetBeaconBlock`/`SubmitBeaconBlock` stay pre-Gloas.
+- `ProposerRunner.ProcessPreConsensus` (after RANDAO quorum): version-gated fetch; `ProposerConsensusData{Version: DataVersionGloas, DataSSZ: block.MarshalSSZ()}`. No blinded/regular duality — Gloas blocks are bid-only, the block is the QBFT value directly.
+- `ProposerConsensusData.GetBlockData()` stays pre-Gloas (it returns `*api.VersionedProposal`, which cannot carry Gloas); `Validate()` gains a version gate that decodes `gloas.BeaconBlock` for `DataVersionGloas` instead of calling `GetBlockData` — the node's `checkValidatorConsensusData` does exactly this. `ProcessConsensus` / `expectedPostConsensusRootsAndDomain` / `ProcessPostConsensus` get the same gate (sign the Gloas block root under `DomainProposer`; submit via `SubmitGloasBeaconBlock`). The `Validate()` gate itself lands in PR 2 with the type (and gets a direct type-level unit test there, since no proposer runner exists until PR 4); the runner-side gates listed here are PR 4.
+- `ProposerValueCheckF` works unchanged apart from routing through the version-gated decode for the slashability slot check.
+- RANDAO pre-consensus unchanged.
+- Fixtures: `TestingGloasBeaconBlock` ported from the node's `types/gloas/testing.go` (+ golden block testdata); `SupportedBlockVersions` in `beacon_node_proposer.go` gains `DataVersionGloas`, which automatically extends every test iterating `SupportedBlockVersions` — this is the bulk of the "Gloas proposer fixtures" anchor#1073 waits for.
+
+### D5. PTC runner (§3)
+
+New `ssv/ptc_attester.go`, VR-shaped (non-QBFT, one partial-sig round), single share:
+
+- `executeDuty`: fetch `gloas.PayloadAttestationData` from the mock (`PTCCalls.GetPayloadAttestationData(slot)`), pin it as the frozen observation, sign under `DomainPTCAttester` (domain epoch = duty-slot epoch), broadcast `PartialSignatureMessages{Type: PTCAttesterPartialSig, Slot: duty.Slot}`.
+- Abstain path — exact node semantics to mirror: `StartNewDuty` clears any prior observation; a **zero `BeaconBlockRoot`** from the BN is the "no block for this slot" contract → abstain: no freeze, no sign, no broadcast, duty left running. **Terminal-state semantics to pin down at PR 5 (spec has no wall clock):** define whether an abstained duty is `Finished()`-with-no-output or genuinely still-running (awaiting a re-trigger that `StartNewDuty` would clear-and-reobserve); the abstain vector's `PostDutyRunnerStateRoot` must assert exactly one of these. A BN **error** is operational failure, not abstention (node marks the duty failed; spec: return the error). With no frozen observation, `expectedPreConsensusRootsAndDomain` errors ("no frozen payload attestation data") → incoming peer partials are rejected, and a defensive "reached quorum without frozen data" error guards reconstruction. Vectors: abstain (zero-root fixture → no output messages, peer msg rejected), plus the convergence/split cases.
+- `expectedPreConsensusRootsAndDomain`: the pinned observation + `DomainPTCAttester` — incoming partials validate against the operator's own frozen root (honest convergence; a diverging peer's root fails `verifyExpectedRoot`).
+- On quorum: reconstruct, wrap as `gloas.PayloadAttestationMessage{ValidatorIndex, Data, Signature}`, submit via `PTCCalls.SubmitPayloadAttestation(...)`, mark finished.
+- One runner instance per PTC-assigned validator (single-share constructor, like VR); duty = `types.ValidatorDuty{Type: BNRolePTCAttester}`.
+- New `PTCCalls` interface on `BeaconNode` + `TestingBeaconNode` support (`beacon_node_ptc.go`), duty fixture `TestingPTCAttesterDuty`, msg helpers `ssv_msgs_ptc.go` (`SSVMsgPTCAttester`, `PreConsensusPTCMsg`).
+
+### D6. Envelope runner (§6)
+
+Design status (checked SIP PR thread, 2026-07-07; re-confirm the thread hasn't moved when PR 7 starts): §6 **stays QBFT** for the ePBS fork — the no-QBFT "dissemination message + partial-sig" alternative (iurii's gist, discussed with Shane in June) was explicitly parked as "ship QBFT for ePBS, revisit as a follow-up SIP once there's data", mainly because the dissemination carrier is a new top-level wire message class every client must adopt. The SIP text, the node implementation, and this plan all encode the QBFT shape; if the follow-up SIP ever lands, that's a new epic (new `MsgType`, message-validation dispatch, anchor adoption), and the QBFT §6 vectors remain valid for the QBFT era.
+
+New `ssv/envelope_proposer.go` (`RoleEnvelopeProposer`, QBFT, no pre-consensus), plus the §4→§6 linkage:
+
+- Shared root store: small `ProposedBlockRoots` type in `ssv/` (slot → §4-decided block root). The proposer runner records its decided Gloas block root there in `ProcessConsensus`; the envelope runner reads it in `executeDuty` (error if absent — the §6 duty only exists after a §4 decide) and the value check compares against it. Mirrors the node's design (`ssv.ProposedBlockRoots` shared between `proposer.go` and `envelope.go`, value check rebuilt per duty). **Spec caveat:** because the harness serializes each runner independently (see PR 7), the store is *duplicated* per-runner in vectors, not genuinely shared — the proposer fixture carries its recorded root in its post-state, the envelope fixture is seeded with the root directly. The cross-runner identity (envelope consumes exactly what the proposer produced) is therefore asserted by fixture construction, not execution — see the coverage note under PR 7.
+- `executeDuty`: fetch the operator's blinded envelope from the mock (`EnvelopeCalls.GetBlindedExecutionPayloadEnvelope(slot, blockRoot)`), wrap in `EnvelopeConsensusData{Version: DataVersionGloas, DataSSZ: blinded.MarshalSSZ()}`, `decide(...)`.
+- `EnvelopeValueCheckF` (per SIP §6): SSZ-decode; duty slot/validator/pubkey match; `BuilderIndex == BuilderIndexSelfBuild`; `BeaconBlockRoot ==` the stored §4 root. No envelope-content validation (leader-trusted, blinded-block trust model).
+- `ProcessConsensus`: sign the decided blinded envelope's root under `DomainBeaconBuilder` (domain epoch = duty-slot epoch), broadcast `PostConsensusPartialSig` (role discriminates routing — no new partial-sig type, per SIP).
+- `ProcessPostConsensus`: reconstruct; publish-by-content-match — only the operator whose own produced blinded envelope equals the decided bytes submits (`EnvelopeCalls.SubmitBlindedExecutionPayloadEnvelope(signed)`); others finish without publishing. Model the **stateful** self-build variant only (blinded fetch + blinded publish): it is wire-identical in signing root to the stateless variant and avoids vendoring the full `ExecutionPayload`/blobs; the stateless variant is node-side plumbing. Document this in the runner comment.
+- Duty = `types.ValidatorDuty{Type: BNRoleEnvelopeProposer}` for the proposer's slot; in tests the store is seeded directly on the runner fixture (see the harness direction under PR 7 — whether a sequenced two-runner flow test is added or the isolated-store coverage gap is knowingly accepted is a conscious call to make at PR 7, not a default).
+
+Naming: spec uses `EnvelopeProposer` (already renamed on this branch); the node currently ships `RoleEnvelopeBuilder`/`EnvelopeBuilderRunner` and renames when it re-points to merged spec.
+
+### D7. ProposerPreferences runner (§5) — per-proposal-slot state is protocol-required
+
+The wire messages carry the **proposal slot** (`PartialSignatureMessages.Slot = proposal_slot`), and a validator legitimately holds several lookahead proposal slots concurrently. A single-state VR-shaped runner cannot represent this: `ShouldProcessNonBeaconDuty` rejects any duty ≤ the current one, and `validatePartialSigMsgForSlot` rejects messages for the non-active slot — i.e., concurrent lookahead duties would cancel each other. This is exactly why the node built a dispatcher (`ProposerPreferencesRunner` keyed `bySlot` → sub-runners), and anchor's #1062 encodes the same as its "slot-advance exemption" rule.
+
+Spec shape: `ssv/proposer_preferences.go` with runner-internal `map[phase0.Slot]*state` (or sub-runner structs), each slot an independent VR-shaped flow:
+
+- `executeDuty(duty)`: derive `gloas.ProposerPreferences{DependentRoot, ProposalSlot: duty.Slot, ValidatorIndex, FeeRecipient (share), TargetGasLimit (runner config, like VR's gasLimit)}`; `DependentRoot` from a new `ProposerPreferencesCalls.ProposerDutiesDependentRoot(epoch)` mock call. Sign under `DomainProposerPreferences` with domain epoch = `compute_epoch_at_slot(proposal_slot)` (note: computed for the proposal slot even when emitted earlier — the SIP's pre-fork-emission rule falls out of this). Broadcast `{Type: ProposerPreferencesPartialSig, Slot: proposal_slot}`.
+- `ProcessPreConsensus`: route by `psigMsgs.Slot` to the per-slot state; validate against the operator's own derived root (config/observation divergence splits roots — liveness, not safety); on quorum reconstruct `gloas.SignedProposerPreferences` and `SubmitProposerPreferences(...)`.
+- Re-emission for a slot replaces that slot's state (freezes a new dependent_root), matching the node.
+- Keep eviction/bookkeeping minimal — a `Finished` per slot; pruning heuristics stay node-side.
+
+VR deprecation (same SIP section): `ValidatorRegistrationRunner.StartNewDuty` (or `executeDuty`) errors when `beacon.DataVersion(epoch) >= DataVersionGloas`, with a new error code — the spec-visible half of the deprecation (wire-side rejection is node message validation, anchor#1115). Vector: VR duty at a Gloas slot → error; VR at pre-Gloas slot unchanged.
+
+### D8. Max message sizes — no wire change, new expected-size entries
+
+`SignedSSVMessage.FullData` max (8388836, driven by `ProposerConsensusData`) is unchanged: `GloasBeaconVote` is 120 B; the Gloas block is bid-only (smaller than Deneb `BlockContents`); `EnvelopeConsensusData` reuses the same `ssz-max` and its real payload (blinded envelope + five-list `ExecutionRequests`) is far below it. Work: add the new types to the `types/spectest/tests/maxmsgsize` expected-size tests (`max_*/expected_*` entries), and extend the `FullData` comment in `types/messages.go` to mention `EnvelopeConsensusData`.
+
+### D9. Envelope/block HTR — REVISED 2026-07-07 after reading the pinned spec: ship positional now, gate progressive on fork scope + upstream. EIP-7688 is in the pinned Gloas spec; the node (and devnet-6) predate it.
+
+Re-verify all of this at PR 2 implementation time — the fork's feature set and client adoption are the fastest-moving inputs this epic has. Facts as established on 2026-07-07:
+
+- consensus-specs **#4630 (EIP-7688) merged into `specs/gloas` on 2026-07-06** — the day the SIP's pin was reviewed. At the pin, progressive types include `ExecutionPayloadEnvelope` ([1]×5), `ExecutionPayloadBid` ([1]×12, with `ProgressiveList[KZGCommitment]`), `ExecutionRequests` ([1]×5, all five request lists progressive), `BeaconBlockBody` ([1]×13, progressive operation lists), `Attestation`/`IndexedAttestation`/`PayloadAttestation`. **Plain Containers remain:** `PayloadAttestationData` (§3 signing root), `ProposerPreferences`/`SignedProposerPreferences` (§5 signing root), `SignedExecutionPayloadEnvelope`, the Builder request element types.
+- Net signing-root exposure for SSV: **only §4 (block root, via progressive body/bid/requests) and §6 (envelope root)**. §2/§3/§5 sign plain containers — unaffected.
+- The node's sszgen-positional HTR was correct for devnet-6 (lighthouse v8.2.0 / lodestar v1.43 predate #4630) and is now stale relative to the pinned spec. EIP-7916 progressive **serialization is identical to normal lists** — only merkleization differs — so the node's wire bytes stay right; its §4/§6 signing roots change under 7688.
+- go-eth2-client has Gloas support in flight (open PRs #269, and #280 "with dynamic-ssz"), not shipped.
+
+**REVISED after reading the actual pinned SSZ + Gloas spec at PR 2 time (2026-07-07).** The earlier working assumption ("implement progressive per the pin — a *small* switchable layer over four containers, as a spike") understated the work and over-assumed the target. Three findings from `ssz/simple-serialize.md` and the Gloas container defs at the pin changed the call:
+
+1. **The progressive change cascades through the whole §4 block subtree — not four top-level containers.** `BeaconBlockBody` (`[1]*13`) has **seven** `ProgressiveList` fields (proposer_slashings, attester_slashings, attestations, deposits, voluntary_exits, bls_to_execution_changes, payload_attestations); `attestations: ProgressiveList[Attestation]` where `Attestation` is *itself* `ProgressiveContainer([1]*4)`; `ExecutionRequests` (`[1]*5`) nests five more progressive lists; `ExecutionPayloadBid` (`[1]*12`) nests a progressive `blob_kzg_commitments`. Correct progressive HTR is `merkleize_progressive` (`hash(merkleize(chunks[:k],k), merkleize_progressive(chunks[k:],4k))`) + `mix_in_active_fields` applied *recursively down that entire tree*, plus progressive-list roots (`mix_in_length(merkleize_progressive(...), len)`) for every list field — a large, error-prone hand-roll reaching into go-eth2-client's Electra element types, not a localized helper over four structs.
+2. **Serialization is byte-identical pre/post-7688** (confirmed in the pinned spec: progressive lists/containers offset-serialize exactly like bounded ones). So **encoding and round-trip vectors are HTR-independent** — safe to freeze now regardless of the merkleization choice. Only *signing-root* vectors depend on it.
+3. **Devnet-6 empirically ran positional roots.** The node's §4 block, signed over its sszgen-**positional** root, was accepted and landed canonical on glamsterdam-devnet-6 (lighthouse v8.2.0 / lodestar v1.43) — both predate the #4630 merge (2026-07-06). Positional is therefore not "stale/wrong"; it is what the only clients that have run Gloas implement. Whether progressive (7688) is in **Glamsterdam's launch** fork is unconfirmed (it may land with heze/eip8148 instead).
+
+Revised recommendation for PR 2:
+- **Ship positional HTR** — the node's sszgen output, already in place; matches devnet-6 on-chain reality and the node.
+- **Freeze encoding/round-trip vectors now** (HTR-independent; the bulk of what anchor consumes today). Already done for the ported types.
+- **Hold §4-block / §6-envelope *signing-root* goldens out of the first cut** (or ship them clearly labeled provisional-positional) until the fork-scope question resolves. SIP comment Draft 1 asks exactly that question (progressive affects the §4 block root, not only §6).
+- **Make progressive HTR a separate, fork-scope-gated follow-up that leans on go-eth2-client PR #280 ("with dynamic-ssz")** — upstream's own EIP-7688 merkleization vehicle. Hand-rolling the full cascade in ssv-spec is the last resort, justified only if upstream lags *and* 7688 is confirmed for launch.
+
+This is a better-informed position than the original D9: don't spend PR 2 hand-rolling a deep, speculative merkleization cascade; ship the (correct-for-today) positional roots, keep the anchor-facing encoding vectors moving, and gate the progressive work on a real fork-scope signal + upstream tooling.
+
+Node follow-up (out of scope here, tracked node-side): if Glamsterdam launches with 7688, the node's `gloas` HTR needs the same progressive treatment before that devnet — its PR already lists an "SSZ/HTR cross-check … once canonical Gloas spec vectors exist" follow-up. Submit-side containers built from go-eth2-client (`electra.Attestation` et al.) hash positionally — fine, they are never SSV signing roots; the mock records their roots only for vector bookkeeping (document in testingutils).
+
+### D10. Error codes
+
+Append new codes to `types/error.go` (iota list, append-only): Gloas-vote decode/index-invalid, envelope decode/builder-index/root-mismatch, PTC no-observation, preferences codes, VR-deprecated-at-Gloas. Naming per existing `...ErrorCode` convention; wire error-code list is what anchor's `error_codes.rs` mirrors, so append-only matters. **Caveat (heads-up to anchor):** the base stack already broke strict append-only this cycle — the `delete AggCommPreConsensusIgnoredSinceAlreadyStartedConsensusErrorCode` commit removed a mid-list code and shifted every subsequent iota value; anchor's `error_codes.rs` must be re-synced to the post-deletion offsets before it can rely on the Gloas additions.
+
+## Work breakdown — PR slices
+
+Stacked on `epbs-gloas-constants`, in landing order. Each ssv-slice PR regenerates JSON (`make generate-jsons`) including `state_comparison`, and adds `testdoc` entries for new tests.
+
+Standing rule for every slice: **start by re-verifying the assumptions the slice leans on** — re-read the relevant SIP sections and thread state, re-grep the node's `epbs-gloas` tip for the ported code (it force-pushes), re-check the consensus-specs pin / devnet feature set (PR 2/7 especially), and re-confirm anchor-side expectations (PR 2/4). The per-slice designs below are sketches to start from, not specs to transcribe.
+
+Runner-wiring checklist (applies to every new runner — PR 5 PTC, PR 6 ProposerPreferences, PR 7 EnvelopeProposer; the per-slice designs describe runner *behavior*, this is the *plumbing* each one also needs):
+- Production dispatch: construct the runner into `Validator.DutyRunners` (`map[types.RunnerRole]Runner`), dispatched by `duty.RunnerRole()` — `MapDutyToRunnerRole` already maps the new BN roles (landed on this branch), so this is construction, not routing.
+- testingutils construction: a new `case` in the `baseRunner` / `ConstructBaseRunner*` / `ConstructBaseRunnerWithShareMap*` switch (`types/testingutils/runner.go`) — single-share for PTC/preferences/envelope (like VR/proposer, not the committee share-map path).
+- Message routing/fixtures: message-ID helpers and `DutyRunnerForMsgID` coverage (`types/testingutils/message_id.go`, per-runner `ssv_msgs_*.go`).
+- Envelope only: full QBFT config/controller wiring mirroring `RoleProposer` (value check, timers, decided-handling) — it is the one new QBFT runner; PTC and preferences are VR-shaped (no QBFT).
+- Harness: add the runner to the `overrideStateComparison` type switch and the `run_test.go` role mapping (also listed under PR 7).
+
+**PR 1 — constants (#632, open).** Already done; merges first (after its Boole-stack base).
+
+**PR 2 — `types/gloas` package + fork machinery + encoding vectors.**
+Port from node `protocol/v2/types/gloas`: containers per D2, `DataVersionGloas`, round-trip tests, golden devnet-block wire test, `testing.go` fixtures; sszgen directives (D2 style). **Fork machinery (moved here from PR 3, per D1):** `ForkEpochGloas`, `TestingDutySlotGloas` / `TestingDutyEpochGloas` (+NextEpoch/Invalid), and Gloas arms in `VersionBySlot` / `VersionByEpoch` / `TestingDutySlotV` / `TestingDutyEpochV` — no runner logic, and landing it here is what keeps PRs 3–7 dependent on PR 2 alone. Flat types: `GloasBeaconVote` + `EnvelopeConsensusData` in `types/consensus_data.go` (+ sszgen). `ProposerConsensusData.Validate()` gains its `DataVersionGloas` gate here (decode `gloas.BeaconBlock` instead of `GetBlockData`, per D4), with a **direct type-level unit test** for the Gloas path — no proposer runner exists until PR 4. Decide `EnvelopeConsensusData`'s validation surface explicitly: it is validated through `EnvelopeValueCheckF` (PR 7), so it needs no standalone `Validate()` unless a type-level invariant emerges — state the choice. **Merkleization: ship positional, defer progressive (D9, REVISED).** Do NOT hand-roll the progressive-HTR cascade in this PR — investigation showed it reaches through the whole §4 block tree and that positional is what devnet-6 clients actually run. Keep the node's sszgen-positional HTR; the progressive layer is a fork-scope-gated follow-up (see D9). New `types/spectest` suites: `gloasbeaconvote` (encoding, mirroring `tests/beaconvote`), `envelopeconsensusdata`, encoding tests for the `types/gloas` containers, `maxmsgsize` entries (D8), error codes (D10) — all HTR-independent, safe to freeze. **Hold the §4-block / §6-envelope signing-root golden vectors out of this cut** (or ship them clearly labeled provisional-positional); they get frozen once Glamsterdam's fork scope confirms positional vs. progressive.
+*Anchor value: immediate — their harness's types/encoding categories (`beacon_vote_encoding.rs` et al.) are exactly this layer.*
+
+**PR 3 — committee runner (§2) + aggregator-committee Gloas arms.**
+(Fork machinery now lands in PR 2.) Gloas attestation-data fixtures; committee runner fork gate + Gloas attestation construction (D3); `GloasBeaconVoteValueCheckF`; add Gloas to `SupportedAttestationVersions`. **Also edits Boole-stack aggregator-committee helpers** (`GetAggregateAndProofs`, `constructVersionedSignedAggregateAndProof`, mock submit switches) for the D3 version-stamp decision — the freshest base-stack code, so expect rebase churn (risk #7); consider isolating the `AggregatorCommitteeConsensusData.Version` stamp (the one SIP-blessing item) in its own micro-PR, and settle the D3 open question (does the 0/1 index change aggregation/value-check?). Vectors: `valcheckattestations` Gloas twins (valid / index>1 / slashable-with-index / cross-index equivocation caught / source≥target etc.), committee single/multiple/mixed-duty Gloas cases, happy flow at Gloas slot.
+
+**PR 4 — proposer runner Gloas path (§4).**
+D4 in full: BN-mock Gloas produce/submit, runner version gates, `SupportedBlockVersions += DataVersionGloas`, `TestingGloasBeaconBlock` fixtures. Vectors: every test iterating `SupportedBlockVersions` picks up a Gloas case (~139 files reference the `Supported*Versions` slices across PRs 3–4), `valcheckproposer` Gloas cases, Gloas full-happy-flow.
+*Anchor value: closes the #1073 acceptance criterion.*
+
+**PR 5 — PTC runner (§3).**
+D5: runner, `PTCCalls` + mock, duty/msg fixtures. Vectors: join the ~41 `preconsensus` multi-tests (quorum/duplicate/invalid-root/7-10-13-operators/…), `newduty` cases, plus PTC-specific: convergence quorum, minority-split no-reconstruct, abstain (no observation → no broadcast, peer msgs rejected), wrong-root rejection, `dutyexe` role checks.
+
+**PR 6 — ProposerPreferences runner + VR deprecation (§5).**
+D7: runner with per-slot state, `ProposerPreferencesCalls` + mock (dependent_root fixture), gas-limit config plumbing (like VR), VR Gloas gate + error. Vectors: preconsensus joins, quorum/reconstruct/submit happy flow, **concurrent lookahead slots** (two active proposal slots interleaved — the test that pins the slot-advance exemption), re-emission-replaces-slot, root-divergence no-quorum, VR-at-Gloas rejected, VR-pre-Gloas unchanged.
+
+**PR 7 — EnvelopeProposer runner (§6).**
+D6: runner, `ProposedBlockRoots` store + proposer-runner recording (small §4 touch), `EnvelopeCalls` + mock, `EnvelopeValueCheckF`. Vectors: consensus/postconsensus/newduty joins for a QBFT runner, new `valcheckenvelope` suite (valid / wrong builder-index / root≠§4 / duty mismatch / decode garbage), publish-by-content-match (builder operator submits, non-builder finishes silent), no-§4-root duty rejection.
+
+Harness direction (investigated 2026-07-07; re-validate against real fixtures when building PR 7): **no new test kind planned**. `MsgProcessingSpecTest` JSON-marshals the whole `Runner` into the fixture, so an exported `ProposedBlockRoots` field on the envelope (and proposer) runner rides into the vector and consumers reconstruct the value check from it; envelope unit vectors ship with the store pre-seeded, and the proposer's root-recording is asserted via its serialized post-state (`PostDutyRunnerStateRoot`). **Verify first:** confirm the `Runner` JSON path (`ssv/json_testutils.go`) does not use a custom `MarshalJSON` that would silently drop the new exported field — if it does, the field must be added there too or the whole seeded-store scheme fails. **Known coverage hole — decide consciously, don't let it default to "deferred":** the seeded-store scheme tests each runner in isolation and asserts the §4→§6 linkage *by fixture construction, not execution* — nothing proves the seeded root is what the proposer runner would actually produce, yet that linkage (the value check's `BeaconBlockRoot ==` §4-root rule) is the entire reason §6 exists. Pick one at PR 7 and write it down: (a) add a sequenced two-runner §4→§6 test following the `CommitteeSpecTest` `Input []interface{}` precedent — costs the node and anchor a new mapper, but is the only end-to-end coverage of the epic's one novel cross-runner invariant; or (b) ship the isolated vectors and record this as an accepted coverage gap. The earlier "deferred unless a concrete gap surfaces" framing was wrong: the gap is inherent, not contingent. Mechanical harness work either way: add the three new runners to the `overrideStateComparison` type switch and the `run_test.go` mapping.
+
+**PR 8 (optional, post-epic) — cleanups**: adopt `go list -m` includes for pre-existing sszgen directives, `p2p/SPEC.md` touch-ups if any doc mentions duty roles.
+
+Rough size expectation: hand-written Go is dominated by PRs 2–4; generated JSON grows mainly in PRs 3–4 (versioned matrix) — likely tens of MB on top of the current ~550 MB `generate/` tree. The Boole aggregator-committee PR (+1.27M lines, 1518 files) is the ceiling comparator; this epic spread over 6 PRs should land each slice well below that.
+
+## Test plan summary (vector categories per consumer)
+
+| Category | Where | New/extended | Primary consumer |
+|----------|-------|--------------|------------------|
+| Type encodings + roots | `types/spectest` | gloas containers, GloasBeaconVote, EnvelopeConsensusData, envelope signing-root golden | anchor types harness (today), node |
+| Max msg sizes | `types/spectest/maxmsgsize` | new expected-size entries | both |
+| Value checks | `ssv/spectest/valcheck*` | gloas attestations, envelope, proposer-Gloas | both |
+| Runner state machines | `ssv/spectest/tests/runner/*` | PTC/preferences join preconsensus+newduty; envelope joins consensus+postconsensus+newduty; versioned matrices pick up Gloas | node spectest mapping; anchor when it maps runner suites |
+| Committee flows | `ssv/spectest/tests/committee/*` | Gloas vote cases | both |
+| Duty execution | `dutyexe`, `runnerconstruction` | new-role cases | both |
+
+## Risks / dependencies / follow-ups
+
+1. **EIP-7688 adoption timing (D9, REVISED)** — investigation at PR 2 time showed the progressive change cascades through the whole §4 block tree (not four containers) and that devnet-6 empirically ran *positional* roots, so hand-rolling progressive HTR now is both large and speculative. Revised call: ship positional HTR (correct for devnet-6, matches the node), freeze the HTR-independent encoding vectors, hold signing-root goldens as provisional/deferred, and make progressive HTR a fork-scope-gated follow-up leaning on go-eth2-client #280. Watch devnet-7 configs; SIP Draft 1 asks the gating fork-scope question. Node needs the same HTR fix *iff* Glamsterdam launches with 7688 (tracked node-side).
+2. **`DataVersionGloas` placeholder drift** — go-eth2-client Gloas support is in flight (open PRs #269 and #280 "with dynamic-ssz" — their progressive-SSZ approach is worth watching for our HTR layer). When it ships: swap placeholder → upstream enum (values match by construction); optionally fold D4's parallel methods back into `GetBeaconBlock`. Don't wait for upstream.
+3. **SIP status (checked 2026-07-07)** — §6 stays QBFT for this fork (the no-QBFT dissemination design is parked as a potential follow-up SIP, per the PR thread). There is no §7 in the current text; the §5 dedup rule was agreed in-thread on 2026-07-07 (dedup `ProposerPreferencesPartialSig` by `(slot, signer, signing_root)`, repeat of a seen root rejected, up to 4 distinct roots per (slot, signer)) — message-validation semantics, node/anchor-side, no spec-repo code; the planned "re-emission replaces slot state" vector is consistent with it. One SIP nit to raise: pin `AggregatorCommitteeConsensusData.Version` at Gloas slots (see D3).
+4. **Repo size** — current generated footprint: 136 MB `ssv/spectest/generate/tests` + 293 MB `state_comparison` + 35 MB `types/spectest/generate`. The epic adds roughly +15–25% (new version in two `Supported*Versions` matrices + three runners joining ~100 multi-tests). Mitigation (vectors as release artifacts) is out of scope — worth its own issue.
+5. **Node re-pointing** — after merge: node re-points both go.mods to tagged ssv-spec, deletes its `types/gloas` duplicates (its package doc anticipates this), renames `EnvelopeBuilder`→`EnvelopeProposer`, resolves the `BeaconForkAtEpoch` Fulu-cap TODO to match D3's version-stamping decision, adopts the progressive HTR, extends its `protocol/v2/ssv/spectest` mapping to the new runners/vectors. Tracked node-side (PR #2901 follow-ups already list the re-point).
+6. **Anchor coordination (investigated — concrete rule)** — anchor consumes only the flat `types/spectest/generate/tests` dir via a prefix dispatcher (prefix = Go test package + type name before the first `_`, e.g. `beaconvote.EncodingTest`). Unknown prefixes are skipped with a warning (non-breaking today; they plan to make it panic once coverage is complete), but **known prefixes execute** — so Gloas fixtures must live in NEW spec-test packages (`gloasbeaconvote`, `envelopeconsensusdata`, …), never appended under existing prefixes like `beaconvote.EncodingTest`, or anchor's CI fails on the next submodule bump (their decoder would run on 120-byte fixtures). Runner-suite vectors aren't consumed by anchor yet, so PRs 3–7 are non-breaking for them by construction. Ping anchor after PR 2 and PR 4 (#1073/#953) with the new prefixes.
+7. **Branch-stack churn** — the base stack (`boole` → agg-comm fix branches) is still landing; each rebase regenerates JSON, so keep hand-written and generated changes in separate commits within each PR to keep rebases mechanical.
+
+## Immediate coordination actions (before / alongside PR 2)
+
+Documented here so they don't get lost; none of them are done yet, and each is itself subject to the re-verify rule:
+
+1. **SIP thread** — raise two points on ssvlabs/SIPs#94 (drafts written, awaiting review): (a) EIP-7688 makes the **§4 block** signing root progressive (not only §6), and the fork-scope question — is 7688 in Glamsterdam's launch, given devnet-6 ran positional? — which gates whether signing-root vectors freeze positional or progressive; (b) the D3 nit: pin `AggregatorCommitteeConsensusData.Version` at Gloas slots (proposed: the honest `DataVersionGloas`).
+2. **Node follow-ups** (ssvlabs/ssv, tracked alongside PR #2901's existing follow-up list): resolve the `BeaconForkAtEpoch` Fulu-cap TODO consistently with (b); adopt the progressive HTR in `protocol/v2/types/gloas` before a #4630-era devnet.
+3. **Anchor ping** — after PR 2 lands (and again after PR 4), point sigp/anchor#1073/#953 at the new fixture prefixes; confirm the new-packages-only naming rule matches their dispatcher expectations.
+4. **Watch list** — Glamsterdam devnet-7 feature set (EIP-7688 in or out); go-eth2-client Gloas PRs #269/#280 (their progressive-SSZ approach may replace our hand-rolled HTR layer).
+
+## Landing order recap
+
+```
+boole → agg-comm-pre-consensus-termination(-fix-repo-size) → #632 (PR 1)
+  → PR 2 (types/gloas + fork machinery + encodings)   ← all later PRs depend on this alone; anchor types vectors available
+  → PR 3 (committee §2 + aggregator arms)
+  → PR 4 (proposer §4)                 ← anchor #1073 satisfied
+  → PR 5 (PTC §3)          [depends only on PR 2 — reorderable vs 3/4/6]
+  → PR 6 (preferences + VR §5)  [depends only on PR 2 — reorderable]
+  → PR 7 (envelope §6)     [depends on PR 4 for the §4 block-root linkage]
+```
