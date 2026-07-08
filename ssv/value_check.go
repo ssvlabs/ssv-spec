@@ -117,6 +117,11 @@ func ProposerValueCheckF(
 			if err := block.UnmarshalSSZ(cd.DataSSZ); err != nil {
 				return types.WrapError(types.UnmarshalSSZErrorCode, errors.Wrap(err, "failed decoding gloas beacon block"))
 			}
+			// The QBFT-agreed block must be for the duty's slot; without this pin the cluster could
+			// agree on a block for a different slot (SIP #94 §4). Mirrors §6's duty-slot match.
+			if block.Slot != cd.Duty.Slot {
+				return types.NewError(types.ProposerBlockSlotMismatchErrorCode, "gloas block slot does not match duty slot")
+			}
 			slot = block.Slot
 		} else {
 			blockData, _, err := cd.GetBlockData()
