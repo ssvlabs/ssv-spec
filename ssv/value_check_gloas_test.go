@@ -37,8 +37,9 @@ func TestProposerConsensusDataValidateGloasOpaque(t *testing.T) {
 	require.Error(t, (&types.ProposerConsensusData{Duty: wrongDuty, Version: gloas.DataVersionGloas, DataSSZ: block}).Validate())
 }
 
-// TestProposerValueCheckFGloas asserts the value check decodes a Gloas block (accepting a valid one
-// and rejecting an undecodable one with UnmarshalSSZErrorCode).
+// TestProposerValueCheckFGloas asserts the value check decodes a Gloas block: accepting a valid one,
+// rejecting an undecodable one (UnmarshalSSZErrorCode), and rejecting a slot-mismatched one
+// (ProposerBlockSlotMismatchErrorCode).
 func TestProposerValueCheckFGloas(t *testing.T) {
 	km := testingutils.NewTestingKeyManager()
 	duty := testingutils.TestingProposerDutyV(gloas.DataVersionGloas)
@@ -51,9 +52,16 @@ func TestProposerValueCheckFGloas(t *testing.T) {
 
 	garbage, err := (&types.ProposerConsensusData{Duty: *duty, Version: gloas.DataVersionGloas, DataSSZ: []byte("garbage")}).Encode()
 	require.NoError(t, err)
-	var typedErr *types.Error
-	require.ErrorAs(t, valueCheck(garbage), &typedErr)
-	require.Equal(t, types.UnmarshalSSZErrorCode, typedErr.Code)
+	var decodeErr *types.Error
+	require.ErrorAs(t, valueCheck(garbage), &decodeErr)
+	require.Equal(t, types.UnmarshalSSZErrorCode, decodeErr.Code)
+
+	// a block whose slot does not match the duty slot is rejected
+	slotMismatch, err := (&types.ProposerConsensusData{Duty: *duty, Version: gloas.DataVersionGloas, DataSSZ: testingGloasBeaconBlockSSZ(t, duty.Slot+1)}).Encode()
+	require.NoError(t, err)
+	var slotErr *types.Error
+	require.ErrorAs(t, valueCheck(slotMismatch), &slotErr)
+	require.Equal(t, types.ProposerBlockSlotMismatchErrorCode, slotErr.Code)
 }
 
 // testingGloasBeaconBlockSSZ builds a minimal valid Gloas beacon block (mirrors the
