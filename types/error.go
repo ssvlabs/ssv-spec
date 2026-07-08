@@ -101,6 +101,8 @@ const (
 	BeaconVoteNilCheckpointErrorCode
 	UnexpectedJustificationErrorCode
 	JustificationWithFullDataErrorCode
+
+	ProposerBlockSlotMismatchErrorCode
 )
 
 type Error struct {
