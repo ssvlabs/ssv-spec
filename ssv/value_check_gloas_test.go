@@ -14,27 +14,22 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// Gloas (ePBS §4, design "Option A"): ProposerConsensusData.Validate treats the Gloas block as
-// opaque (keeping the types package free of the gloas import), while ProposerValueCheckF owns the
-// gloas.BeaconBlock decode. These live as a plain unit test because the value-check's Gloas decode
-// is not yet expressible as a generated spectest vector (the ssv/spectest suite is blocked, and the
-// proposerconsensusdata suite only exercises the now-opaque Validate); the anchor-facing vector is
-// a follow-up once that is unblocked and the fixture prefix is coordinated with anchor.
+// Gloas (ePBS §4): ProposerValueCheckF branches on the fork before any type-layer validation — on a
+// Gloas slot it decodes gloas.BeaconBlock directly and never routes through
+// ProposerConsensusData.Validate()/GetBlockData() (which have no Gloas arm, since go-eth2-client's
+// api.VersionedProposal can't carry Gloas). §2's GloasBeaconVoteValueCheckF is here too. These are
+// plain unit tests; the anchor-facing generated vectors are a follow-up (risk-#6 prefix coordination).
 
-// TestProposerConsensusDataValidateGloasOpaque asserts Validate is opaque for a Gloas value: it
-// accepts any DataSSZ (block decode/validation is the value check's job) but still checks the duty.
-func TestProposerConsensusDataValidateGloasOpaque(t *testing.T) {
+// TestProposerConsensusDataValidateErrorsOnGloas documents why the value-check must branch on the
+// fork: the types-layer Validate() cannot handle a Gloas value and errors.
+func TestProposerConsensusDataValidateErrorsOnGloas(t *testing.T) {
 	duty := testingutils.TestingProposerDutyV(gloas.DataVersionGloas)
 	block := testingGloasBeaconBlockSSZ(t, duty.Slot)
 
-	require.NoError(t, (&types.ProposerConsensusData{Duty: *duty, Version: gloas.DataVersionGloas, DataSSZ: block}).Validate())
-	// Opaque: even an undecodable block passes Validate (rejected later, in the value check).
-	require.NoError(t, (&types.ProposerConsensusData{Duty: *duty, Version: gloas.DataVersionGloas, DataSSZ: []byte("garbage")}).Validate())
-
-	// The duty-type check still runs for Gloas.
-	wrongDuty := *duty
-	wrongDuty.Type = types.BNRoleAttester
-	require.Error(t, (&types.ProposerConsensusData{Duty: wrongDuty, Version: gloas.DataVersionGloas, DataSSZ: block}).Validate())
+	// The types-layer Validate() cannot validate a Gloas value (GetBlockData's api.VersionedProposal
+	// has no Gloas arm), so it errors — which is exactly why ProposerValueCheckF branches on the fork
+	// and never routes a Gloas value through Validate() (SIP #94 §4, branch-and-skip).
+	require.Error(t, (&types.ProposerConsensusData{Duty: *duty, Version: gloas.DataVersionGloas, DataSSZ: block}).Validate())
 }
 
 // TestProposerValueCheckFGloas asserts the value check decodes a Gloas block: accepting a valid one,
@@ -82,4 +77,39 @@ func testingGloasBeaconBlockSSZ(t *testing.T, slot phase0.Slot) []byte {
 	}).MarshalSSZ()
 	require.NoError(t, err)
 	return byts
+}
+
+// TestGloasBeaconVoteValueCheckF asserts the §2 Gloas vote value-check: accepts a valid vote,
+// rejects index > 1, an undecodable vote, and source >= target.
+func TestGloasBeaconVoteValueCheckF(t *testing.T) {
+	km := testingutils.NewTestingKeyManager()
+	ks := testingutils.Testing4SharesSet()
+	sharePubKeys := []types.ShareValidatorPK{ks.Shares[1].GetPublicKey().Serialize()}
+	valueCheck := ssv.GloasBeaconVoteValueCheckF(km, testingutils.TestingDutySlotGloas, sharePubKeys,
+		testingutils.TestGloasBeaconVote.Source.Epoch, testingutils.TestGloasBeaconVote.Target.Epoch)
+
+	require.NoError(t, valueCheck(testingutils.TestGloasBeaconVoteByts))
+
+	badIndex := testingutils.TestGloasBeaconVote
+	badIndex.AttestationDataIndex = 2
+	badIndexByts, err := badIndex.Encode()
+	require.NoError(t, err)
+	requireErrorCode(t, valueCheck(badIndexByts), types.GloasBeaconVoteInvalidIndexErrorCode)
+
+	requireErrorCode(t, valueCheck([]byte("garbage")), types.DecodeGloasBeaconVoteErrorCode)
+
+	badCheckpoints := testingutils.TestGloasBeaconVote
+	badCheckpoints.Source = &phase0.Checkpoint{Epoch: 2, Root: testingutils.TestingBlockRoot}
+	badCheckpoints.Target = &phase0.Checkpoint{Epoch: 1, Root: testingutils.TestingBlockRoot}
+	badCheckpointsByts, err := badCheckpoints.Encode()
+	require.NoError(t, err)
+	requireErrorCode(t, valueCheck(badCheckpointsByts), types.AttestationSourceNotLessThanTargetErrorCode)
+}
+
+// requireErrorCode asserts err is a *types.Error carrying the given code.
+func requireErrorCode(t *testing.T, err error, code int) {
+	t.Helper()
+	var e *types.Error
+	require.ErrorAs(t, err, &e)
+	require.Equal(t, code, e.Code)
 }
