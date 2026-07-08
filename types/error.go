@@ -103,6 +103,8 @@ const (
 	JustificationWithFullDataErrorCode
 
 	ProposerBlockSlotMismatchErrorCode
+	DecodeGloasBeaconVoteErrorCode
+	GloasBeaconVoteInvalidIndexErrorCode
 )
 
 type Error struct {
