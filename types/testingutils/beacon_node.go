@@ -18,6 +18,7 @@ import (
 	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -86,6 +87,13 @@ func (bn *TestingBeaconNode) SubmitAttestations(attestations []*spec.VersionedAt
 			root, _ = singleAttestation.HashTreeRoot()
 		case spec.DataVersionFulu:
 			singleAttestation, err := att.Fulu.ToSingleAttestation(att.ValidatorIndex)
+			if err != nil {
+				panic(err)
+			}
+			root, _ = singleAttestation.HashTreeRoot()
+		case gloas.DataVersionGloas:
+			// Gloas reuses the Electra attestation shape (SIP #94 §2).
+			singleAttestation, err := att.Electra.ToSingleAttestation(att.ValidatorIndex)
 			if err != nil {
 				panic(err)
 			}
@@ -294,6 +302,8 @@ func (bn *TestingBeaconNode) SubmitSignedAggregateAndProof(msg *spec.VersionedSi
 		root, _ = msg.Electra.HashTreeRoot()
 	case spec.DataVersionFulu:
 		root, _ = msg.Fulu.HashTreeRoot()
+	case gloas.DataVersionGloas:
+		root, _ = msg.Electra.HashTreeRoot() // Gloas reuses the Electra aggregate shape (SIP #94 §2)
 	default:
 		panic("unsupported version")
 	}
