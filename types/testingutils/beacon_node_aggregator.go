@@ -8,6 +8,7 @@ import (
 	"github.com/prysmaticlabs/go-bitfield"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 var SupportedAggregatorVersions = []spec.DataVersion{spec.DataVersionPhase0, spec.DataVersionElectra}
@@ -90,6 +91,12 @@ var TestingVersionedSignedAggregateAndProof = func(ks *TestKeySet, version spec.
 			Version: version,
 			Fulu:    TestingElectraSignedAggregateAndProof(ks, TestingValidatorIndex),
 		}
+	case gloas.DataVersionGloas:
+		// Gloas reuses the Electra aggregate shape (SIP #94 §2).
+		return &spec.VersionedSignedAggregateAndProof{
+			Version: version,
+			Electra: TestingElectraSignedAggregateAndProof(ks, TestingValidatorIndex),
+		}
 	default:
 		panic("unknown data version")
 	}
@@ -99,7 +106,7 @@ var TestingSignedAggregateAndProof = func(ks *TestKeySet, version spec.DataVersi
 	switch version {
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingPhase0SignedAggregateAndProof(ks, TestingValidatorIndex)
-	case spec.DataVersionElectra, spec.DataVersionFulu:
+	case spec.DataVersionElectra, spec.DataVersionFulu, gloas.DataVersionGloas:
 		return TestingElectraSignedAggregateAndProof(ks, TestingValidatorIndex)
 	default:
 		panic("unknown data version")
