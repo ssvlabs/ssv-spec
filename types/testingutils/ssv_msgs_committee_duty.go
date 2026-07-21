@@ -8,6 +8,7 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -229,6 +230,9 @@ var postConsensusAttestationMsg = func(
 	version := VersionBySlot(slot)
 	if version >= spec.DataVersionElectra {
 		attData.Index = 0
+	}
+	if version >= gloas.DataVersionGloas {
+		attData.Index = 1 // SIP #94 §2: Gloas carries the payload-status index (1 = payload present, matching TestGloasBeaconVote)
 	}
 
 	if wrongRoot {
