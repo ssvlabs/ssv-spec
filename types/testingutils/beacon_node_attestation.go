@@ -8,6 +8,7 @@ import (
 	"github.com/prysmaticlabs/go-bitfield"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -40,6 +41,9 @@ var TestingAttestationData = func(version spec.DataVersion) *phase0.AttestationD
 	if version >= spec.DataVersionElectra {
 		attData.Index = 0
 	}
+	if version >= gloas.DataVersionGloas {
+		attData.Index = 1 // SIP #94 §2: Gloas carries the payload-status index (1 = payload present, matching TestGloasBeaconVote)
+	}
 
 	return attData
 }
@@ -67,6 +71,9 @@ var TestingAttestationDataForValidatorDuty = func(duty *types.ValidatorDuty) *ph
 	if version >= spec.DataVersionElectra {
 		attData.Index = 0
 	}
+	if version >= gloas.DataVersionGloas {
+		attData.Index = 1 // SIP #94 §2: Gloas carries the payload-status index (1 = payload present, matching TestGloasBeaconVote)
+	}
 
 	return attData
 }
@@ -87,6 +94,9 @@ var TestingAttestationNextEpochData = func(version spec.DataVersion) *phase0.Att
 	}
 	if version >= spec.DataVersionElectra {
 		attData.Index = 0
+	}
+	if version >= gloas.DataVersionGloas {
+		attData.Index = 1 // SIP #94 §2: Gloas carries the payload-status index (1 = payload present, matching TestGloasBeaconVote)
 	}
 	return attData
 }
