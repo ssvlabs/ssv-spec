@@ -147,7 +147,7 @@ var TestingAttestationResponseBeaconObject = func(ks *TestKeySet, version spec.D
 	switch version {
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingSignedAttestation(ks)
-	case spec.DataVersionElectra, spec.DataVersionFulu:
+	case spec.DataVersionElectra, spec.DataVersionFulu, gloas.DataVersionGloas:
 		return TestingElectraSingleAttestation(ks)
 	default:
 		panic("unknown data version")
@@ -187,7 +187,7 @@ var TestingAttestationResponseBeaconObjectForValidatorIndex = func(ks *TestKeySe
 	switch version {
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingSignedAttestationForValidatorIndex(ks, validatorIndex)
-	case spec.DataVersionElectra, spec.DataVersionFulu:
+	case spec.DataVersionElectra, spec.DataVersionFulu, gloas.DataVersionGloas:
 		return TestingElectraSingleAttestationForValidatorIndex(ks, validatorIndex)
 	default:
 		panic("unknown data version")
@@ -222,7 +222,7 @@ var TestingAttestationResponseBeaconObjectForDuty = func(ks *TestKeySet, version
 	switch version {
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingSignedAttestationForDuty(ks, duty)
-	case spec.DataVersionElectra, spec.DataVersionFulu:
+	case spec.DataVersionElectra, spec.DataVersionFulu, gloas.DataVersionGloas:
 		return TestingElectraSingleAttestationForDuty(ks, duty)
 	default:
 		panic("unknown data version")
@@ -274,7 +274,7 @@ var TestingSignedAttestationResponseSSZRootForKeyMap = func(ksMap map[phase0.Val
 	switch version {
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingSignedAttestationSSZRootForKeyMap(ksMap)
-	case spec.DataVersionElectra, spec.DataVersionFulu:
+	case spec.DataVersionElectra, spec.DataVersionFulu, gloas.DataVersionGloas:
 		return TestingElectraSingleAttestationSSZRootForKeyMap(ksMap)
 	default:
 		panic("unknown data version")

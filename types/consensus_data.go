@@ -14,6 +14,8 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
+
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 type Contribution struct {
@@ -442,6 +444,9 @@ func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (ss
 		return aggProof.Electra, nil
 	case spec.DataVersionFulu:
 		return aggProof.Fulu, nil
+	case gloas.DataVersionGloas:
+		// Gloas reuses the Electra aggregate-and-proof shape (SIP #94 §2); no Gloas field on the versioned wrapper.
+		return aggProof.Electra, nil
 	default:
 		return nil, WrapError(UnknownVersionErrorCode, fmt.Errorf("unknown version %d", aggProof.Version))
 	}
@@ -500,7 +505,7 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 				panic("unhandled default case")
 			}
 
-		case spec.DataVersionElectra, spec.DataVersionFulu:
+		case spec.DataVersionElectra, spec.DataVersionFulu, gloas.DataVersionGloas:
 			agg := &electra.AggregateAndProof{
 				AggregatorIndex: aggregator.ValidatorIndex,
 				SelectionProof:  aggregator.SelectionProof,
@@ -517,7 +522,8 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 			}
 
 			switch a.Version {
-			case spec.DataVersionElectra:
+			case spec.DataVersionElectra, gloas.DataVersionGloas:
+				// Gloas reuses the Electra aggregate shape (SIP #94 §2).
 				aggregateAndProof.Electra = agg
 			case spec.DataVersionFulu:
 				aggregateAndProof.Fulu = agg
