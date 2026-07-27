@@ -80,7 +80,7 @@ func ValidDecided13Operators() tests.SpecTest {
 				Name:     fmt.Sprintf("attester (%s)", version.String()),
 				Runner:   testingutils.CommitteeRunner(ks),
 				Duty:     testingutils.TestingAttesterDuty(version),
-				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, height),
+				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version),
 				},
@@ -89,7 +89,7 @@ func ValidDecided13Operators() tests.SpecTest {
 				Name:     fmt.Sprintf("sync committee (%s)", version.String()),
 				Runner:   testingutils.CommitteeRunner(ks),
 				Duty:     testingutils.TestingSyncCommitteeDuty(version),
-				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, height),
+				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version),
 				},
@@ -98,7 +98,7 @@ func ValidDecided13Operators() tests.SpecTest {
 				Name:     fmt.Sprintf("attester and sync committee (%s)", version.String()),
 				Runner:   testingutils.CommitteeRunner(ks),
 				Duty:     testingutils.TestingAttesterAndSyncCommitteeDuties(version),
-				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, height),
+				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version),
 				},

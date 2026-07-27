@@ -71,7 +71,7 @@ func PostDecided() tests.SpecTest {
 				Runner: testingutils.CommitteeRunner(ks),
 				Duty:   testingutils.TestingAttesterDuty(version),
 				Messages: append(
-					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, height),
+					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
 					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), height, testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
@@ -84,7 +84,7 @@ func PostDecided() tests.SpecTest {
 				Runner: testingutils.CommitteeRunner(ks),
 				Duty:   testingutils.TestingSyncCommitteeDuty(version),
 				Messages: append(
-					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, height),
+					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
 					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), height, testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
@@ -97,7 +97,7 @@ func PostDecided() tests.SpecTest {
 				Runner: testingutils.CommitteeRunner(ks),
 				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties(version),
 				Messages: append(
-					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, height),
+					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
 					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), height, testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{

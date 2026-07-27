@@ -19,7 +19,7 @@ func DecidedSlashableAttestation() tests.SpecTest {
 		testdoc.ConsensusDecidedSlashableAttestationDoc,
 		testingutils.CommitteeRunner(ks),
 		testingutils.TestingAttesterDuty(spec.DataVersionPhase0),
-		testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+		testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestBeaconVoteByts, ks, testingutils.TestingDutySlot),
 		true,
 		"",
 		nil,
