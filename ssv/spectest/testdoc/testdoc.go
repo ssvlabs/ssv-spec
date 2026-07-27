@@ -218,6 +218,10 @@ const ValCheckAttestationValidNonSlashableSlotDoc = "Tests attestation value che
 const ValCheckAttestationValidDoc = "Tests attestation value check with valid attestation"
 const ValCheckAttestationUnmatchedSourceEpochDoc = "Tests attestation value check with unmatched expected source epoch from operator's own view (source epoch differs from expected)"
 const ValCheckAttestationUnmatchedTargetEpochDoc = "Tests attestation value check with unmatched target epoch from operator's own view (target epoch differs from expected)"
+const ValCheckGloasAttestationValidDoc = "Tests Gloas attestation value check (SIP #94 §2) with a valid GloasBeaconVote"
+const ValCheckGloasAttestationInvalidIndexDoc = "Tests Gloas attestation value check (SIP #94 §2) rejecting an attestation data index above 1 (only 0 = payload absent and 1 = payload present are valid)"
+const ValCheckGloasAttestationSourceHigherThanTargetDoc = "Tests Gloas attestation value check (SIP #94 §2) with source epoch higher than target epoch"
+const ValCheckGloasAttestationSlashableDoc = "Tests Gloas attestation value check (SIP #94 §2) with a slashable attestation"
 
 // Documentation for valcheckduty tests
 const ValCheckDutyFarFutureDutySlotDoc = "Tests duty value check with duty slot too far in the future"
