@@ -158,7 +158,7 @@ func SignersAndSignaturesWithDifferentLength() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterDuty(version),
 				Messages: []*types.SignedSSVMessage{
 					diffLength(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version),
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
 				ExpectedErrorCode: expectedErrorCode,
@@ -169,7 +169,7 @@ func SignersAndSignaturesWithDifferentLength() tests.SpecTest {
 				Duty:   testingutils.TestingSyncCommitteeDuty(version),
 				Messages: []*types.SignedSSVMessage{
 					diffLength(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version),
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
 				ExpectedErrorCode: expectedErrorCode,
@@ -180,7 +180,7 @@ func SignersAndSignaturesWithDifferentLength() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties(version),
 				Messages: []*types.SignedSSVMessage{
 					diffLength(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version),
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
 				ExpectedErrorCode: expectedErrorCode,
