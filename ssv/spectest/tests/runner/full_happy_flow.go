@@ -167,7 +167,7 @@ func FullHappyFlow() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterDuty(version),
 				Messages: append(
 					// consensus
-					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, height),
+					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, version))),
@@ -187,7 +187,7 @@ func FullHappyFlow() tests.SpecTest {
 				Duty:   testingutils.TestingSyncCommitteeDuty(version),
 				Messages: append(
 					// consensus
-					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, height),
+					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2, version))),
@@ -207,7 +207,7 @@ func FullHappyFlow() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties(version),
 				Messages: append(
 					// consensus
-					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, height),
+					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[2], 2, version))),
