@@ -68,3 +68,28 @@ func TestingBeaconVoteBytesV(version spec.DataVersion) []byte {
 	}
 	return TestBeaconVoteByts
 }
+
+// TestWrongGloasBeaconVote mirrors TestWrongBeaconVote (source epoch >= target epoch) in the Gloas
+// shape, so negative tests keep exercising the intended value-check failure on Gloas slots instead
+// of failing the 120-byte length check first.
+var TestWrongGloasBeaconVote = types.GloasBeaconVote{
+	BlockRoot: phase0.Root{1, 2, 3, 4},
+	Source: &phase0.Checkpoint{
+		Epoch: 2,
+		Root:  phase0.Root{1, 2, 3, 4},
+	},
+	Target: &phase0.Checkpoint{
+		Epoch: 1,
+		Root:  phase0.Root{1, 2, 3, 5},
+	},
+	AttestationDataIndex: 1,
+}
+var TestWrongGloasBeaconVoteByts, _ = TestWrongGloasBeaconVote.Encode()
+
+// TestingWrongBeaconVoteBytesV is the fork-appropriate deliberately-invalid committee value.
+func TestingWrongBeaconVoteBytesV(version spec.DataVersion) []byte {
+	if version >= gloas.DataVersionGloas {
+		return TestWrongGloasBeaconVoteByts
+	}
+	return TestWrongBeaconVoteByts
+}
