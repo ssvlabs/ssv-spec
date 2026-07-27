@@ -23,13 +23,13 @@ func PastMessageDutyFinished() tests.SpecTest {
 	ksMap := testingutils.KeySetMapForValidators(numValidators)
 	ks := testingutils.Testing4SharesSet()
 
-	decidedValue := testingutils.TestBeaconVoteByts
 	msgID := testingutils.CommitteeMsgID(ks)
 
 	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 
+		decidedValue := testingutils.TestingBeaconVoteBytesV(version)
 		pastSlot := testingutils.TestingDutySlotV(version) - 2
 		pastHeight := qbft.Height(pastSlot)
 
