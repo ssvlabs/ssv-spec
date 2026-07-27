@@ -176,6 +176,10 @@ func InvalidDecidedValue() tests.SpecTest {
 	}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
+		// The commit is sent at the duty's own slot so it reaches the duty's runner: the invalid vote is
+		// then rejected by the value check, which is what leaves the runner without a decided value.
+		// A hardcoded height would instead be dropped for having no runner at that slot, reaching the
+		// same error without exercising the value check.
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
 			{
 				Name:   fmt.Sprintf("attester (%s)", version.String()),
@@ -187,7 +191,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 						},
 						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
+						qbft.Height(testingutils.TestingDutySlotV(version)),
 						testingutils.CommitteeMsgID(ks),
 						testingutils.TestWrongBeaconVoteByts,
 					),
@@ -205,7 +209,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 						},
 						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
+						qbft.Height(testingutils.TestingDutySlotV(version)),
 						testingutils.CommitteeMsgID(ks),
 						testingutils.TestWrongBeaconVoteByts,
 					),
@@ -223,7 +227,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 						},
 						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
+						qbft.Height(testingutils.TestingDutySlotV(version)),
 						testingutils.CommitteeMsgID(ks),
 						testingutils.TestWrongBeaconVoteByts,
 					),
