@@ -153,7 +153,10 @@ jobs:
 
           # Merge the spec-tests PR now that the ssv-spec PR has been merged.
           # Look up the PR number by branch name at merge time to avoid stale output data.
-          SPEC_PR_NUMBER=$(gh pr view --repo "${SPEC_TESTS_REPO}" "${PR_HEAD_REF}" --json number --jq '.number' 2>/dev/null || echo "")
+          # Scoped to --state open so a previously closed PR from the same branch
+          # is not mistaken for the mirror PR we are meant to merge.
+          SPEC_PR_NUMBER=$(gh pr list --repo "${SPEC_TESTS_REPO}" \
+            --head "${PR_HEAD_REF}" --state open --json number --jq '.[0].number // empty')
           if [ -z "${SPEC_PR_NUMBER}" ]; then
             if git diff --quiet "origin/${RESOLVED_BASE}...HEAD" -- "${GENERATED_PATHS[@]}"; then
               echo "No open spec-tests PR found for branch '${PR_HEAD_REF}', and generated paths match '${RESOLVED_BASE}'; nothing to finalize."
