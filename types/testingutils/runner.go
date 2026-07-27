@@ -11,6 +11,29 @@ import (
 
 var TestingHighestDecidedSlot = phase0.Slot(0)
 
+// committeeVoteValueCheckF routes a committee consensus value to the fork-appropriate value-check by
+// decoded vote type: a 120-byte GloasBeaconVote (SIP #94 §2) is validated by GloasBeaconVoteValueCheckF,
+// otherwise the 112-byte BeaconVote by BeaconVoteValueCheckF. A single committee runner serves duties
+// across slots, so the check dispatches on the value itself — the spec analog of the node picking
+// NewVoteChecker vs NewGloasVoteChecker per slot.
+func committeeVoteValueCheckF(
+	signer types.BeaconSigner,
+	slot phase0.Slot,
+	sharePublicKeys []types.ShareValidatorPK,
+	expectedSource phase0.Epoch,
+	expectedTarget phase0.Epoch,
+) qbft.ProposedValueCheckF {
+	beaconCheck := ssv.BeaconVoteValueCheckF(signer, slot, sharePublicKeys, expectedSource, expectedTarget)
+	gloasCheck := ssv.GloasBeaconVoteValueCheckF(signer, slot, sharePublicKeys, expectedSource, expectedTarget)
+	return func(data []byte) error {
+		// GloasBeaconVote is a fixed 120-byte container; Decode succeeds only at that exact length.
+		if (&types.GloasBeaconVote{}).Decode(data) == nil {
+			return gloasCheck(data)
+		}
+		return beaconCheck(data)
+	}
+}
+
 var CommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleCommittee, keySet)
 }
@@ -117,7 +140,7 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 		// Create ValueCheck
 		switch role {
 		case types.RoleCommittee:
-			valCheck = ssv.BeaconVoteValueCheckF(km, TestingDutySlot,
+			valCheck = committeeVoteValueCheckF(km, TestingDutySlot,
 				sharePubKeys, TestBeaconVote.Source.Epoch, TestBeaconVote.Target.Epoch)
 		case types.RoleProposer:
 			valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
@@ -253,7 +276,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	var valCheck qbft.ProposedValueCheckF
 	switch role {
 	case types.RoleCommittee:
-		valCheck = ssv.BeaconVoteValueCheckF(km, TestingDutySlot,
+		valCheck = committeeVoteValueCheckF(km, TestingDutySlot,
 			[]types.ShareValidatorPK{share.SharePubKey}, TestBeaconVote.Source.Epoch, TestBeaconVote.Target.Epoch)
 	case types.RoleProposer:
 		valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
