@@ -8,9 +8,10 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
-var SupportedAttestationVersions = []spec.DataVersion{spec.DataVersionPhase0, spec.DataVersionElectra}
+var SupportedAttestationVersions = []spec.DataVersion{spec.DataVersionPhase0, spec.DataVersionElectra, gloas.DataVersionGloas}
 
 // ==================================================
 // Versioned CommitteeDuty
