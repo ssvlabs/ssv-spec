@@ -10,6 +10,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -22,11 +23,15 @@ func ProposalWithConsensusData() tests.SpecTest {
 	validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 	ksMap := testingutils.KeySetMapForValidators(numValidators)
 
-	expectedErrorCode := types.DecodeBeaconVoteErrorCode
-
 	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
+
+		// The committee value is decoded by the slot's fork, so the decode error differs from Gloas on.
+		expectedErrorCode := types.DecodeBeaconVoteErrorCode
+		if version >= gloas.DataVersionGloas {
+			expectedErrorCode = types.DecodeGloasBeaconVoteErrorCode
+		}
 
 		slot := testingutils.TestingDutySlotV(version)
 		height := qbft.Height(slot)
