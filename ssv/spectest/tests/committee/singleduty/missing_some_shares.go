@@ -45,15 +45,15 @@ func MissingSomeShares() tests.SpecTest {
 					testingutils.TestingAttesterDutyForValidators(version, dutyValidators),
 
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestBeaconVoteByts,
+						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestingBeaconVoteBytesV(version),
 						height),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
+					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
+					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
 
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
+					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
+					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
 
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForKeySet(committeeShareKSMap, 1, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsgForKeySet(committeeShareKSMap, 2, version))),
@@ -72,15 +72,15 @@ func MissingSomeShares() tests.SpecTest {
 					testingutils.TestingSyncCommitteeDutyForValidators(version, dutyValidators),
 
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestBeaconVoteByts,
+						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestingBeaconVoteBytesV(version),
 						height),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
+					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
+					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
 
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
+					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
+					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
 
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsgForKeySet(committeeShareKSMap, 1, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsgForKeySet(committeeShareKSMap, 2, version))),
@@ -99,15 +99,15 @@ func MissingSomeShares() tests.SpecTest {
 					testingutils.TestingCommitteeDuty(dutyValidators, dutyValidators, version),
 
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestBeaconVoteByts,
+						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestingBeaconVoteBytesV(version),
 						height),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
+					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
+					testingutils.TestingPrepareMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
 
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
-					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestBeaconVoteByts)),
+					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[1], 1, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
+					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[2], 2, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
+					testingutils.TestingCommitMessageWithParams(ks.OperatorKeys[3], 3, 1, height, msgID, sha256.Sum256(testingutils.TestingBeaconVoteBytesV(version))),
 
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsgForKeySet(committeeShareKSMap, 1, version))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsgForKeySet(committeeShareKSMap, 2, version))),
