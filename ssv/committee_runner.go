@@ -96,10 +96,12 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 	// carrying the BN-supplied attestation index (SIP #94 §2), before Gloas a plain BeaconVote. Both
 	// implement types.Encoder, so the QBFT plumbing is identical. StartingDuty is set whenever State
 	// is (see BaseRunner), so default to BeaconVote when no duty is running yet.
+	var version spec.DataVersion
 	var votePrototype types.Encoder = &types.BeaconVote{}
 	if state := cr.BaseRunner.State; state != nil {
 		epoch := cr.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(state.StartingDuty.DutySlot())
-		if cr.beacon.DataVersion(epoch) >= gloas.DataVersionGloas {
+		version = cr.beacon.DataVersion(epoch)
+		if version >= gloas.DataVersionGloas {
 			votePrototype = &types.GloasBeaconVote{}
 		}
 	}
@@ -121,10 +123,10 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		Messages: []*types.PartialSignatureMessage{},
 	}
 
-	epoch := cr.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(duty.DutySlot())
-	version := cr.beacon.DataVersion(epoch)
-
-	beaconVote, gloasIndex := baseVoteAndIndex(decidedValue)
+	beaconVote, gloasIndex, err := baseVoteAndIndex(decidedValue)
+	if err != nil {
+		return err
+	}
 	for _, validatorDuty := range duty.(*types.CommitteeDuty).ValidatorDuties {
 		switch validatorDuty.Type {
 		case types.BNRoleAttester:
@@ -429,7 +431,10 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	if err := decodedVote.Decode(beaconVoteData); err != nil {
 		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
 	}
-	beaconVote, gloasIndex := baseVoteAndIndex(decodedVote)
+	beaconVote, gloasIndex, err := baseVoteAndIndex(decodedVote)
+	if err != nil {
+		return nil, nil, nil, err
+	}
 	if err := beaconVote.Validate(); err != nil {
 		return nil, nil, nil, errors.Wrap(err, "invalid beacon vote")
 	}
@@ -540,15 +545,17 @@ func (cr CommitteeRunner) GetOperatorSigner() *types.OperatorSigner {
 // baseVoteAndIndex splits a decided committee value into its base BeaconVote fields and, on Gloas,
 // the BN-supplied attestation index (SIP #94 §2). Pre-Gloas the value is already a *types.BeaconVote
 // and the returned index is nil.
-func baseVoteAndIndex(decidedValue interface{}) (*types.BeaconVote, *phase0.CommitteeIndex) {
+func baseVoteAndIndex(decidedValue interface{}) (*types.BeaconVote, *phase0.CommitteeIndex, error) {
 	switch vote := decidedValue.(type) {
 	case *types.GloasBeaconVote:
 		index := vote.AttestationDataIndex
-		return &types.BeaconVote{BlockRoot: vote.BlockRoot, Source: vote.Source, Target: vote.Target}, &index
+		return &types.BeaconVote{BlockRoot: vote.BlockRoot, Source: vote.Source, Target: vote.Target}, &index, nil
 	case *types.BeaconVote:
-		return vote, nil
+		return vote, nil, nil
 	default:
-		return nil, nil
+		// Unreachable: the caller selects the prototype. Fail loudly rather than returning a nil vote
+		// that would nil-deref inside constructAttestationData.
+		return nil, nil, fmt.Errorf("unexpected committee decided value type %T", decidedValue)
 	}
 }
 
