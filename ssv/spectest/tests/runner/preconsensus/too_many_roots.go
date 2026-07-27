@@ -82,19 +82,6 @@ func TooManyRoots() tests.SpecTest {
 		ks,
 	)
 
-	// Aggregator Committee duty
-	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-		Name:   "sync committee aggregator selection proof",
-		Runner: testingutils.AggregatorCommitteeRunner(ks),
-		Duty:   testingutils.TestingSyncCommitteeContributionDuty,
-		Messages: []*types.SignedSSVMessage{
-			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PreConsensusContributionProofTooManyRootsMsg(ks.Shares[1], ks.Shares[1], 1, 1, testingutils.TestingDutySlot))),
-		},
-		OutputMessages: []*types.PartialSignatureMessages{
-			testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-		},
-		// No error is expected as AggregatorCommitteeRunner does not validate the number of roots
-	})
 	for _, version := range testingutils.SupportedAggregatorVersions {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
 			{
