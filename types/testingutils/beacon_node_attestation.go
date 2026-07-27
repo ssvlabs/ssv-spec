@@ -146,10 +146,6 @@ var TestingElectraSingleAttestationV = func(ks *TestKeySet, version spec.DataVer
 	}
 }
 
-var TestingElectraSingleAttestation = func(ks *TestKeySet) *electra.SingleAttestation {
-	return TestingElectraSingleAttestationV(ks, spec.DataVersionElectra)
-}
-
 var TestingAttestationResponseBeaconObject = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
 	switch version {
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
@@ -188,10 +184,6 @@ var TestingElectraSingleAttestationForValidatorIndexV = func(ks *TestKeySet, val
 		Data:           attData,
 		Signature:      signBeaconObject(attData, types.DomainAttester, ks),
 	}
-}
-
-var TestingElectraSingleAttestationForValidatorIndex = func(ks *TestKeySet, validatorIndex phase0.ValidatorIndex) *electra.SingleAttestation {
-	return TestingElectraSingleAttestationForValidatorIndexV(ks, validatorIndex, spec.DataVersionElectra)
 }
 
 var TestingAttestationResponseBeaconObjectForValidatorIndex = func(ks *TestKeySet, version spec.DataVersion, validatorIndex phase0.ValidatorIndex) ssz.HashRoot {
@@ -281,10 +273,6 @@ var TestingElectraSingleAttestationSSZRootForKeyMapV = func(ksMap map[phase0.Val
 		ret = append(ret, GetSSZRootNoError(singleAtt))
 	}
 	return ret
-}
-
-var TestingElectraSingleAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
-	return TestingElectraSingleAttestationSSZRootForKeyMapV(ksMap, spec.DataVersionElectra)
 }
 
 var TestingSignedAttestationResponseSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet, version spec.DataVersion) []string {
