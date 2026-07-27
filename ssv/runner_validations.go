@@ -73,9 +73,12 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 
 	switch runner.(type) {
 	case *CommitteeRunner:
-		decidedValue := &types.BeaconVote{}
-		if err := decidedValue.Decode(decidedValueBytes); err != nil {
-			return errors.Wrap(err, "failed to parse decided value to BeaconData")
+		// The decided value is a BeaconVote, or a GloasBeaconVote (120B) on Gloas slots (SIP #94 §2);
+		// this only checks decodability, so accept either fork's shape.
+		if (&types.GloasBeaconVote{}).Decode(decidedValueBytes) != nil {
+			if err := (&types.BeaconVote{}).Decode(decidedValueBytes); err != nil {
+				return errors.Wrap(err, "failed to parse decided value to BeaconData")
+			}
 		}
 
 		return b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot())

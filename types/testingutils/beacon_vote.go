@@ -1,9 +1,11 @@
 package testingutils
 
 import (
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -56,3 +58,13 @@ var TestGloasBeaconVote = types.GloasBeaconVote{
 	AttestationDataIndex: 1,
 }
 var TestGloasBeaconVoteByts, _ = TestGloasBeaconVote.Encode()
+
+// TestingBeaconVoteBytesV returns the SSZ-encoded committee consensus value for the fork: a
+// GloasBeaconVote (SIP #94 §2, 120 B) at Gloas slots, otherwise a BeaconVote (112 B). Committee
+// tests that iterate SupportedAttestationVersions use this so the decided value matches the fork.
+func TestingBeaconVoteBytesV(version spec.DataVersion) []byte {
+	if version >= gloas.DataVersionGloas {
+		return TestGloasBeaconVoteByts
+	}
+	return TestBeaconVoteByts
+}

@@ -23,13 +23,13 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 	ksMap := testingutils.KeySetMapForValidators(numValidators)
 	ks := testingutils.Testing4SharesSet()
 
-	decidedValue := testingutils.TestBeaconVoteByts
 	msgID := testingutils.CommitteeMsgID(ks)
 
 	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 
+		decidedValue := testingutils.TestingBeaconVoteBytesV(version)
 		pastHeight := qbft.Height(testingutils.TestingDutySlotV(version) - 2)
 
 		bumpHeight := func(c *ssv.Committee, previousDuty types.Duty) *ssv.Committee {
