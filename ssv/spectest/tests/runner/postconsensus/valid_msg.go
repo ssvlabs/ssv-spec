@@ -10,6 +10,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -32,9 +33,17 @@ func finishCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) 
 }
 
 func decideCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) ssv.Runner {
-	bvBytes, err := bv.Encode()
-	if err != nil {
-		panic(err)
+	// On Gloas slots the committee decides a GloasBeaconVote (SIP #94 §2), before Gloas the passed
+	// BeaconVote; derive the fork-appropriate encoded value from the duty slot.
+	var bvBytes []byte
+	if version := testingutils.VersionBySlot(duty.DutySlot()); version >= gloas.DataVersionGloas {
+		bvBytes = testingutils.TestingBeaconVoteBytesV(version)
+	} else {
+		var err error
+		bvBytes, err = bv.Encode()
+		if err != nil {
+			panic(err)
+		}
 	}
 	return decideRunnerForData(r, duty, bvBytes)
 }
