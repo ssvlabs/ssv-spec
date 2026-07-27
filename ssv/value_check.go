@@ -163,7 +163,9 @@ func ProposerValueCheckF(
 		// Gloas arm (go-eth2-client's api.VersionedProposal can't carry Gloas). Branch on the fork
 		// before any type-layer validation and decode the block here, so a Gloas value never routes
 		// through Validate()/GetBlockData(). Pre-Gloas is unchanged.
-		if cd.Version >= gloas.DataVersionGloas {
+		// Exact match, not >=: a future fork's consensus data must not be decoded as a Gloas block —
+		// it falls through to Validate() and errors as an unknown version.
+		if cd.Version == gloas.DataVersionGloas {
 			if err := dutyValueCheck(&cd.Duty, network, types.BNRoleProposer, validatorPK, validatorIndex); err != nil {
 				return errors.Wrap(err, "duty invalid")
 			}
