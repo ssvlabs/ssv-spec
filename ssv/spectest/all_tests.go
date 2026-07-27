@@ -98,6 +98,7 @@ var AllTests = []tests.TestF{
 	committeesingleduty.WrongMessageID,
 	committeesingleduty.StartWithNoSharesForDuty,
 	committeesingleduty.MissingSomeShares,
+	committeesingleduty.GloasPreGloasVote,
 
 	committeemultipleduty.SequencedDecidedDuties,
 	committeemultipleduty.SequencedHappyFlowDuties,
