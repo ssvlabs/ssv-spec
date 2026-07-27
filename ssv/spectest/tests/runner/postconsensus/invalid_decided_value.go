@@ -179,7 +179,8 @@ func InvalidDecidedValue() tests.SpecTest {
 		// The commit is sent at the duty's own slot so it reaches the duty's runner: the invalid vote is
 		// then rejected by the value check, which is what leaves the runner without a decided value.
 		// A hardcoded height would instead be dropped for having no runner at that slot, reaching the
-		// same error without exercising the value check.
+		// same error without exercising the value check. The invalid vote must also be fork-shaped, or at a
+		// Gloas slot it would be rejected on container length instead of the source >= target rule.
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
 			{
 				Name:   fmt.Sprintf("attester (%s)", version.String()),
@@ -193,7 +194,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlotV(version)),
 						testingutils.CommitteeMsgID(ks),
-						testingutils.TestWrongBeaconVoteByts,
+						testingutils.TestingWrongBeaconVoteBytesV(version),
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version))),
 				},
@@ -211,7 +212,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlotV(version)),
 						testingutils.CommitteeMsgID(ks),
-						testingutils.TestWrongBeaconVoteByts,
+						testingutils.TestingWrongBeaconVoteBytesV(version),
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
@@ -229,7 +230,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlotV(version)),
 						testingutils.CommitteeMsgID(ks),
-						testingutils.TestWrongBeaconVoteByts,
+						testingutils.TestingWrongBeaconVoteBytesV(version),
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
