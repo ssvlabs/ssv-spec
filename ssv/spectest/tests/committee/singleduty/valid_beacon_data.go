@@ -26,7 +26,7 @@ func ValidBeaconVote() tests.SpecTest {
 			Input: []interface{}{
 				testingutils.TestingCommitteeDuty(testingutils.ValidatorIndexList(30), testingutils.ValidatorIndexList(30), version),
 				testingutils.TestingProposalMessageWithIdentifierAndFullData(
-					ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
+					ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version),
 					qbft.Height(testingutils.TestingDutySlotV(version))),
 			},
 		})
