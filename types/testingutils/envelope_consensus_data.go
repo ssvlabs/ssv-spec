@@ -36,4 +36,3 @@ var TestEnvelopeConsensusData = types.EnvelopeConsensusData{
 	Version: gloas.DataVersionGloas,
 	DataSSZ: testEnvelopeDataSSZ,
 }
-var TestEnvelopeConsensusDataByts, _ = TestEnvelopeConsensusData.Encode()
