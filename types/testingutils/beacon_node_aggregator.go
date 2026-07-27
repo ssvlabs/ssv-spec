@@ -176,16 +176,9 @@ var TestingElectraAggregateAndProofV = func(aggregatorIndex phase0.ValidatorInde
 	}
 }
 
-var TestingElectraAggregateAndProof = func(aggregatorIndex phase0.ValidatorIndex) *electra.AggregateAndProof {
-	return TestingElectraAggregateAndProofV(aggregatorIndex, spec.DataVersionElectra)
-}
 var TestingElectraAggregateAndProofBytesV = func(aggregatorIndex phase0.ValidatorIndex, version spec.DataVersion) []byte {
 	ret, _ := TestingElectraAggregateAndProofV(aggregatorIndex, version).MarshalSSZ()
 	return ret
-}
-
-var TestingElectraAggregateAndProofBytes = func(aggregatorIndex phase0.ValidatorIndex) []byte {
-	return TestingElectraAggregateAndProofBytesV(aggregatorIndex, spec.DataVersionElectra)
 }
 
 var TestingWrongElectraAggregateAndProofV = func(aggregatorIndex phase0.ValidatorIndex, version spec.DataVersion) *electra.AggregateAndProof {
@@ -199,10 +192,6 @@ var TestingWrongElectraAggregateAndProofV = func(aggregatorIndex phase0.Validato
 	}
 	ret.AggregatorIndex = 100
 	return ret
-}
-
-var TestingWrongElectraAggregateAndProof = func(aggregatorIndex phase0.ValidatorIndex) *electra.AggregateAndProof {
-	return TestingWrongElectraAggregateAndProofV(aggregatorIndex, spec.DataVersionElectra)
 }
 
 var TestingPhase0SignedAggregateAndProof = func(ks *TestKeySet, aggregatorIndex phase0.ValidatorIndex) *phase0.SignedAggregateAndProof {
@@ -219,8 +208,4 @@ var TestingElectraSignedAggregateAndProofV = func(ks *TestKeySet, aggregatorInde
 		Message:   agg,
 		Signature: signBeaconObject(agg, types.DomainAggregateAndProof, ks),
 	}
-}
-
-var TestingElectraSignedAggregateAndProof = func(ks *TestKeySet, aggregatorIndex phase0.ValidatorIndex) *electra.SignedAggregateAndProof {
-	return TestingElectraSignedAggregateAndProofV(ks, aggregatorIndex, spec.DataVersionElectra)
 }
