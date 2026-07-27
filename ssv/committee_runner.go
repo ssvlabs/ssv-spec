@@ -96,10 +96,9 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 	// carrying the BN-supplied attestation index (SIP #94 §2), before Gloas a plain BeaconVote. Both
 	// implement types.Encoder, so the QBFT plumbing is identical. StartingDuty is set whenever State
 	// is (see BaseRunner), so default to BeaconVote when no duty is running yet.
-	var version spec.DataVersion
 	var votePrototype types.Encoder = &types.BeaconVote{}
 	if state := cr.BaseRunner.State; state != nil {
-		votePrototype, version = committeeVoteForSlot(cr.beacon, state.StartingDuty.DutySlot())
+		votePrototype, _ = committeeVoteForSlot(cr.beacon, state.StartingDuty.DutySlot())
 	}
 
 	decided, decidedValue, err := cr.BaseRunner.baseConsensusMsgProcessing(cr, msg, votePrototype)
@@ -113,6 +112,7 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 	}
 
 	duty := cr.BaseRunner.State.StartingDuty
+	version := committeeVersionForSlot(cr.beacon, duty.DutySlot())
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
 		Slot:     duty.DutySlot(),
@@ -414,7 +414,7 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	beaconVoteData := cr.BaseRunner.State.DecidedValue
 
 	slot := duty.DutySlot()
-	epoch := cr.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(slot)
+	epoch := cr.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(slot)
 
 	// Decode the decided value into the slot's fork prototype, then split into the base vote and the
 	// optional Gloas attestation index (SIP #94 §2).
