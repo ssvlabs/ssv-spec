@@ -72,7 +72,7 @@ func PostDecided() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterDuty(version),
 				Messages: append(
 					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
-					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), height, testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
+					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), height, testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version)),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version),
@@ -85,7 +85,7 @@ func PostDecided() tests.SpecTest {
 				Duty:   testingutils.TestingSyncCommitteeDuty(version),
 				Messages: append(
 					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
-					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), height, testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
+					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), height, testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version)),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version),
@@ -98,7 +98,7 @@ func PostDecided() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties(version),
 				Messages: append(
 					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
-					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), height, testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
+					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), height, testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version)),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version),

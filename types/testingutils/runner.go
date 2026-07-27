@@ -7,30 +7,47 @@ import (
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 var TestingHighestDecidedSlot = phase0.Slot(0)
 
-// committeeVoteValueCheckF routes a committee consensus value to the fork-appropriate value-check by
-// decoded vote type: a 120-byte GloasBeaconVote (SIP #94 §2) is validated by GloasBeaconVoteValueCheckF,
-// otherwise the 112-byte BeaconVote by BeaconVoteValueCheckF. A single committee runner serves duties
-// across slots, so the check dispatches on the value itself — the spec analog of the node picking
-// NewVoteChecker vs NewGloasVoteChecker per slot.
+// committeeVoteValueCheckF routes a committee consensus value to the fork-appropriate value check:
+// GloasBeaconVoteValueCheckF at Gloas slots (SIP #94 §2), BeaconVoteValueCheckF before. The fork must
+// be decided by the duty's slot, not by the value's shape — otherwise a pre-Gloas BeaconVote proposed
+// at a Gloas slot would pass the check and then fail to decode in ProcessConsensus, killing the duty
+// after decision (and contradicting the GloasPreGloasVote value-check vector).
+//
+// The slot is resolved lazily because the runner, and the QBFT config holding this check, are built
+// before the duty is known: production constructs the checker per duty, so the harness reads the
+// running duty at call time.
 func committeeVoteValueCheckF(
 	signer types.BeaconSigner,
-	slot phase0.Slot,
+	slotF func() phase0.Slot,
 	sharePublicKeys []types.ShareValidatorPK,
 	expectedSource phase0.Epoch,
 	expectedTarget phase0.Epoch,
 ) qbft.ProposedValueCheckF {
-	beaconCheck := ssv.BeaconVoteValueCheckF(signer, slot, sharePublicKeys, expectedSource, expectedTarget)
-	gloasCheck := ssv.GloasBeaconVoteValueCheckF(signer, slot, sharePublicKeys, expectedSource, expectedTarget)
 	return func(data []byte) error {
-		// GloasBeaconVote is a fixed 120-byte container; Decode succeeds only at that exact length.
-		if (&types.GloasBeaconVote{}).Decode(data) == nil {
-			return gloasCheck(data)
+		slot := slotF()
+		if VersionBySlot(slot) >= gloas.DataVersionGloas {
+			return ssv.GloasBeaconVoteValueCheckF(signer, slot, sharePublicKeys, expectedSource, expectedTarget)(data)
 		}
-		return beaconCheck(data)
+		return ssv.BeaconVoteValueCheckF(signer, slot, sharePublicKeys, expectedSource, expectedTarget)(data)
+	}
+}
+
+// committeeDutySlotF resolves the running duty's slot for the committee value check. Falls back to
+// TestingDutySlot when no duty has started yet (e.g. DontStartDuty tests), matching the previous
+// hardcoded behaviour for that case.
+func committeeDutySlotF(runner *ssv.Runner) func() phase0.Slot {
+	return func() phase0.Slot {
+		if runner != nil && *runner != nil {
+			if state := (*runner).GetBaseRunner().State; state != nil && state.StartingDuty != nil {
+				return state.StartingDuty.DutySlot()
+			}
+		}
+		return TestingDutySlot
 	}
 }
 
@@ -97,6 +114,8 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 	var opSigner *types.OperatorSigner
 	var valCheck qbft.ProposedValueCheckF
 	var contr *qbft.Controller
+	// Assigned once the runner exists; the committee value check reads the running duty through it.
+	var valCheckRunner ssv.Runner
 
 	km := NewTestingKeyManager()
 
@@ -140,7 +159,7 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 		// Create ValueCheck
 		switch role {
 		case types.RoleCommittee:
-			valCheck = committeeVoteValueCheckF(km, TestingDutySlot,
+			valCheck = committeeVoteValueCheckF(km, committeeDutySlotF(&valCheckRunner),
 				sharePubKeys, TestBeaconVote.Source.Epoch, TestBeaconVote.Target.Epoch)
 		case types.RoleProposer:
 			valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
@@ -235,6 +254,7 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 	default:
 		return nil, errors.New("unknown role type")
 	}
+	valCheckRunner = runner
 	return runner, err
 }
 
@@ -249,6 +269,8 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.Runner, error) {
 	share := TestingShare(keySet, TestingValidatorIndex)
 	km := NewTestingKeyManager()
+	// Assigned once the runner exists; the committee value check reads the running duty through it.
+	var valCheckRunner ssv.Runner
 
 	// Identifier
 	var identifier types.MessageID
@@ -276,7 +298,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	var valCheck qbft.ProposedValueCheckF
 	switch role {
 	case types.RoleCommittee:
-		valCheck = committeeVoteValueCheckF(km, TestingDutySlot,
+		valCheck = committeeVoteValueCheckF(km, committeeDutySlotF(&valCheckRunner),
 			[]types.ShareValidatorPK{share.SharePubKey}, TestBeaconVote.Source.Epoch, TestBeaconVote.Target.Epoch)
 	case types.RoleProposer:
 		valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
@@ -374,6 +396,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	default:
 		return nil, errors.New("unknown role type")
 	}
+	valCheckRunner = runner
 	return runner, err
 }
 
