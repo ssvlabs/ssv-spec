@@ -75,7 +75,7 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 	case *CommitteeRunner:
 		// The decided value is a GloasBeaconVote at Gloas slots (SIP #94 §2), a BeaconVote before;
 		// decode the shape the duty's fork mandates so a cross-fork value is rejected here too.
-		decidedVote, _ := committeeVoteForSlot(runner.GetBeaconNode(), b.State.StartingDuty.DutySlot())
+		decidedVote := committeeVoteForSlot(runner.GetBeaconNode(), b.State.StartingDuty.DutySlot())
 		if err := decidedVote.Decode(decidedValueBytes); err != nil {
 			return errors.Wrap(err, "failed to parse decided value to BeaconData")
 		}
