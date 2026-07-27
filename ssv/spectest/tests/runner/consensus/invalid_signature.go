@@ -166,7 +166,7 @@ func InvalidSignature() tests.SpecTest {
 					// Invalid Message
 					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(ks,
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version),
+							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 							qbft.Height(testingutils.TestingDutySlot)), nil)),
 				},
 				ExpectedErrorCode: expectedErrorCode,
@@ -179,7 +179,7 @@ func InvalidSignature() tests.SpecTest {
 					// Invalid Message
 					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(ks,
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version),
+							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 							qbft.Height(testingutils.TestingDutySlot)), nil)),
 				},
 				ExpectedErrorCode: expectedErrorCode,
@@ -192,7 +192,7 @@ func InvalidSignature() tests.SpecTest {
 					// Invalid Message
 					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[2], testingutils.SSVMsgCommittee(ks,
 						testingutils.TestingProposalMessageWithIdentifierAndFullData(
-							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version),
+							ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 							qbft.Height(testingutils.TestingDutySlot)), nil)),
 				},
 				ExpectedErrorCode: expectedErrorCode,
