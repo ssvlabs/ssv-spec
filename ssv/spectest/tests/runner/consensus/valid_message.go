@@ -147,7 +147,7 @@ func ValidMessage() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterDuty(version),
 				Messages: []*types.SignedSSVMessage{
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version),
 						qbft.Height(testingutils.TestingDutySlotV(version))),
 				},
 			},
@@ -157,7 +157,7 @@ func ValidMessage() tests.SpecTest {
 				Duty:   testingutils.TestingSyncCommitteeDuty(version),
 				Messages: []*types.SignedSSVMessage{
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version),
 						qbft.Height(testingutils.TestingDutySlotV(version))),
 				},
 			},
@@ -167,7 +167,7 @@ func ValidMessage() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties(version),
 				Messages: []*types.SignedSSVMessage{
 					testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version),
 						qbft.Height(testingutils.TestingDutySlotV(version))),
 				},
 			},
