@@ -34,16 +34,20 @@ func finishCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) 
 
 func decideCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) ssv.Runner {
 	// On Gloas slots the committee decides a GloasBeaconVote (SIP #94 §2), before Gloas the passed
-	// BeaconVote; derive the fork-appropriate encoded value from the duty slot.
-	var bvBytes []byte
-	if version := testingutils.VersionBySlot(duty.DutySlot()); version >= gloas.DataVersionGloas {
-		bvBytes = testingutils.TestingBeaconVoteBytesV(version)
-	} else {
-		var err error
-		bvBytes, err = bv.Encode()
-		if err != nil {
-			panic(err)
+	// BeaconVote. Carry the caller's vote over into the Gloas shape rather than substituting a canonical
+	// one, so a deliberately-invalid vote stays invalid at Gloas slots too.
+	var value types.Encoder = bv
+	if testingutils.VersionBySlot(duty.DutySlot()) >= gloas.DataVersionGloas {
+		value = &types.GloasBeaconVote{
+			BlockRoot:            bv.BlockRoot,
+			Source:               bv.Source,
+			Target:               bv.Target,
+			AttestationDataIndex: testingutils.TestGloasBeaconVote.AttestationDataIndex,
 		}
+	}
+	bvBytes, err := value.Encode()
+	if err != nil {
+		panic(err)
 	}
 	return decideRunnerForData(r, duty, bvBytes)
 }
