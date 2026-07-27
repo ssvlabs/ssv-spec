@@ -113,3 +113,40 @@ func requireErrorCode(t *testing.T, err error, code int) {
 	require.ErrorAs(t, err, &e)
 	require.Equal(t, code, e.Code)
 }
+
+// TestGloasBeaconVoteValueCheckF_CrossIndexEquivocation pins the one semantic rule Gloas adds beyond a
+// shape change (SIP #94 §2): the decided attestation index goes into the slashability data, replacing
+// the pre-Gloas math.MaxUint64 sentinel. Two votes over the same (source, target, slot) that differ
+// only in that index are then a double vote; under the sentinel they would build identical attestation
+// data and the equivocation would go undetected — a slashing-safety failure rather than a liveness one.
+//
+// The key manager records the first attestation data it is asked about per slot, so the second, differing
+// one is reported slashable. That also makes the assertions discriminating: were the sentinel still used,
+// re-checking the *same* vote would build data differing from what was recorded and would be flagged.
+func TestGloasBeaconVoteValueCheckF_CrossIndexEquivocation(t *testing.T) {
+	km := testingutils.NewTestingKeyManagerRecordingAttestations()
+	ks := testingutils.Testing4SharesSet()
+	sharePubKeys := []types.ShareValidatorPK{ks.Shares[1].GetPublicKey().Serialize()}
+
+	payloadPresent := testingutils.TestGloasBeaconVote // AttestationDataIndex = 1
+	require.EqualValues(t, 1, payloadPresent.AttestationDataIndex)
+	payloadAbsent := payloadPresent
+	payloadAbsent.AttestationDataIndex = 0
+
+	valueCheck := ssv.GloasBeaconVoteValueCheckF(km, testingutils.TestingDutySlotGloas, sharePubKeys,
+		payloadPresent.Source.Epoch, payloadPresent.Target.Epoch)
+
+	presentByts, err := payloadPresent.Encode()
+	require.NoError(t, err)
+	absentByts, err := payloadAbsent.Encode()
+	require.NoError(t, err)
+
+	// The operator votes payload-present.
+	require.NoError(t, valueCheck(presentByts))
+
+	// Re-voting the very same value is not equivocation.
+	require.NoError(t, valueCheck(presentByts))
+
+	// Voting payload-absent for the same (source, target, slot) is: only the index differs.
+	requireErrorCode(t, valueCheck(absentByts), types.SlashableAttestationErrorCode)
+}
