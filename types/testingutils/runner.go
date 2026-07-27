@@ -37,17 +37,23 @@ func committeeVoteValueCheckF(
 	}
 }
 
-// committeeDutySlotF resolves the running duty's slot for the committee value check. Falls back to
-// TestingDutySlot when no duty has started yet (e.g. DontStartDuty tests), matching the previous
-// hardcoded behaviour for that case.
+// committeeDutySlotF resolves the running duty's slot for the committee value check.
+//
+// A missing runner means the construction site never back-patched the reference, which would silently
+// validate every duty — Gloas ones included — against TestingDutySlot's pre-Gloas fork and surface as
+// a bogus DecodeBeaconVoteErrorCode. That is a wiring bug, so fail loudly rather than fall back. Not
+// having started a duty yet is legitimate (e.g. DontStartDuty tests) and keeps the previous
+// TestingDutySlot behaviour.
 func committeeDutySlotF(runner *ssv.Runner) func() phase0.Slot {
 	return func() phase0.Slot {
-		if runner != nil && *runner != nil {
-			if state := (*runner).GetBaseRunner().State; state != nil && state.StartingDuty != nil {
-				return state.StartingDuty.DutySlot()
-			}
+		if runner == nil || *runner == nil {
+			panic("committee value check has no runner: the value check was built without back-patching the runner reference")
 		}
-		return TestingDutySlot
+		state := (*runner).GetBaseRunner().State
+		if state == nil || state.StartingDuty == nil {
+			return TestingDutySlot
+		}
+		return state.StartingDuty.DutySlot()
 	}
 }
 
