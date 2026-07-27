@@ -168,24 +168,10 @@ var TestingInvalidDutySlotV = func(version spec.DataVersion) phase0.Slot {
 	}
 }
 
+// VersionBySlot resolves a slot's fork. slot < ForkEpoch*32 is equivalent to slot/32 < ForkEpoch, so
+// it delegates rather than repeating every threshold: one table to keep in step with the fork schedule.
 var VersionBySlot = func(slot phase0.Slot) spec.DataVersion {
-	if slot < ForkEpochAltair*32 {
-		return spec.DataVersionPhase0
-	} else if slot < ForkEpochBellatrix*32 {
-		return spec.DataVersionAltair
-	} else if slot < ForkEpochPraterCapella*32 {
-		return spec.DataVersionBellatrix
-	} else if slot < ForkEpochPraterDeneb*32 {
-		return spec.DataVersionCapella
-	} else if slot < ForkEpochPraterElectra*32 {
-		return spec.DataVersionDeneb
-	} else if slot < ForkEpochFulu*32 {
-		return spec.DataVersionElectra
-	} else if slot < ForkEpochGloas*32 {
-		return spec.DataVersionFulu
-	}
-
-	return gloas.DataVersionGloas
+	return VersionByEpoch(phase0.Epoch(slot / 32))
 }
 
 var VersionByEpoch = func(epoch phase0.Epoch) spec.DataVersion {
