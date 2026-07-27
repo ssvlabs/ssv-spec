@@ -158,7 +158,7 @@ func EmptySignature() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterDuty(version),
 				Messages: []*types.SignedSSVMessage{
 					emptySignature(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version),
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
 				ExpectedErrorCode: expectedErrorCode,
@@ -169,7 +169,7 @@ func EmptySignature() tests.SpecTest {
 				Duty:   testingutils.TestingSyncCommitteeDuty(version),
 				Messages: []*types.SignedSSVMessage{
 					emptySignature(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version),
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
 				ExpectedErrorCode: expectedErrorCode,
@@ -180,7 +180,7 @@ func EmptySignature() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties(version),
 				Messages: []*types.SignedSSVMessage{
 					emptySignature(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestingBeaconVoteBytesV(version),
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts,
 						qbft.Height(testingutils.TestingDutySlot))),
 				},
 				ExpectedErrorCode: expectedErrorCode,
