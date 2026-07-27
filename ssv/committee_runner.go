@@ -94,11 +94,12 @@ func (cr CommitteeRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureM
 func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 	// Decode the decided value into the slot's fork prototype: on Gloas slots it is a GloasBeaconVote
 	// carrying the BN-supplied attestation index (SIP #94 §2), before Gloas a plain BeaconVote. Both
-	// implement types.Encoder, so the QBFT plumbing is identical. StartingDuty is set whenever State
-	// is (see BaseRunner), so default to BeaconVote when no duty is running yet.
+	// implement types.Encoder, so the QBFT plumbing is identical. With no state there is no duty to read
+	// the fork from, but consensus processing also stops before the prototype is used, so the pre-Gloas
+	// default is inert rather than a fallback anything relies on.
 	var votePrototype types.Encoder = &types.BeaconVote{}
 	if state := cr.BaseRunner.State; state != nil {
-		votePrototype, _ = committeeVoteForSlot(cr.beacon, state.StartingDuty.DutySlot())
+		votePrototype = committeeVoteForSlot(cr.beacon, state.StartingDuty.DutySlot())
 	}
 
 	decided, decidedValue, err := cr.BaseRunner.baseConsensusMsgProcessing(cr, msg, votePrototype)
@@ -418,7 +419,8 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 
 	// Decode the decided value into the slot's fork prototype, then split into the base vote and the
 	// optional Gloas attestation index (SIP #94 §2).
-	decodedVote, dataVersion := committeeVoteForSlot(cr.beacon, slot)
+	decodedVote := committeeVoteForSlot(cr.beacon, slot)
+	dataVersion := committeeVersionForSlot(cr.beacon, slot)
 	if err := decodedVote.Decode(beaconVoteData); err != nil {
 		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
 	}
@@ -541,15 +543,14 @@ func committeeVersionForSlot(beacon BeaconNode, slot phase0.Slot) spec.DataVersi
 	return beacon.DataVersion(beacon.GetBeaconNetwork().EstimatedEpochAtSlot(slot))
 }
 
-// committeeVoteForSlot returns the empty committee consensus value to decode into for the slot's fork —
-// a GloasBeaconVote from Gloas on (SIP #94 §2), a BeaconVote before — plus that fork's data version.
-// Every committee path derives the fork through here so the decisions cannot drift apart.
-func committeeVoteForSlot(beacon BeaconNode, slot phase0.Slot) (types.Encoder, spec.DataVersion) {
-	version := committeeVersionForSlot(beacon, slot)
-	if version >= gloas.DataVersionGloas {
-		return &types.GloasBeaconVote{}, version
+// committeeVoteForSlot returns the empty committee consensus value to decode into for the slot's fork:
+// a GloasBeaconVote from Gloas on (SIP #94 §2), a BeaconVote before. Every committee path derives the
+// fork through this and committeeVersionForSlot so the decisions cannot drift apart.
+func committeeVoteForSlot(beacon BeaconNode, slot phase0.Slot) types.Encoder {
+	if committeeVersionForSlot(beacon, slot) >= gloas.DataVersionGloas {
+		return &types.GloasBeaconVote{}
 	}
-	return &types.BeaconVote{}, version
+	return &types.BeaconVote{}
 }
 
 // baseVoteAndIndex splits a decided committee value into its base BeaconVote fields and, on Gloas,
