@@ -169,8 +169,8 @@ func ProposerValueCheckF(
 			if err := dutyValueCheck(&cd.Duty, network, types.BNRoleProposer, validatorPK, validatorIndex); err != nil {
 				return errors.Wrap(err, "duty invalid")
 			}
-			block := &gloas.BeaconBlock{}
-			if err := block.UnmarshalSSZ(cd.DataSSZ); err != nil {
+			block, err := gloas.DecodeBeaconBlock(cd.DataSSZ)
+			if err != nil {
 				return types.WrapError(types.UnmarshalSSZErrorCode, errors.Wrap(err, "failed decoding gloas beacon block"))
 			}
 			// The QBFT-agreed block must be for the duty's slot; without this pin the cluster could
