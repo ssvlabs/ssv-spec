@@ -7,12 +7,16 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-var SSVDecidingMsgsForCommitteeRunner = func(beaconVote *types.BeaconVote, ks *TestKeySet, height qbft.Height) []*types.SignedSSVMessage {
+var SSVDecidingMsgsForCommitteeRunner = func(beaconVoteBytes []byte, ks *TestKeySet, height qbft.Height) []*types.SignedSSVMessage {
 	id := CommitteeMsgID(ks)
 
-	// consensus
-	qbftMsgs := SSVDecidingMsgsForHeightAndBeaconVote(beaconVote, id[:], height, ks)
-	return qbftMsgs
+	// consensus — beaconVoteBytes is the encoded committee value: BeaconVote (112B) or, on Gloas,
+	// GloasBeaconVote (120B, SIP #94 §2), so callers pass TestingBeaconVoteBytesV(version).
+	r, err := qbft.HashDataRoot(beaconVoteBytes)
+	if err != nil {
+		panic(err)
+	}
+	return SSVDecidingMsgsForHeightWithRoot(r, beaconVoteBytes, id[:], height, ks)
 }
 
 var SSVDecidingMsgsForAggregatorCommitteeRunnerForKS = func(duty *types.AggregatorCommitteeDuty, ks *TestKeySet, version spec.DataVersion) []*types.SignedSSVMessage {

@@ -386,19 +386,6 @@ var SSVDecidingMsgsForHeight = func(consensusData *types.ProposerConsensusData, 
 	return SSVDecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
 }
 
-var SSVDecidingMsgsForHeightAndBeaconVote = func(beaconVote *types.BeaconVote, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
-	fullData, err := beaconVote.Encode()
-	if err != nil {
-		panic(err)
-	}
-	r, err := qbft.HashDataRoot(fullData)
-	if err != nil {
-		panic(err)
-	}
-
-	return SSVDecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
-}
-
 var SSVExpectedDecidingMsgsForHeight = func(consensusData *types.ProposerConsensusData, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
