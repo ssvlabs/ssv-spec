@@ -200,6 +200,10 @@ var AllTests = []tests.TestF{
 	valcheckattestations.MinoritySlashable,
 	valcheckattestations.MajoritySlashable,
 	valcheckattestations.ValidNonSlashableSlot,
+	valcheckattestations.GloasValid,
+	valcheckattestations.GloasInvalidIndex,
+	valcheckattestations.GloasSourceHigherThanTarget,
+	valcheckattestations.GloasSlashable,
 
 	valcheckproposer.BlindedBlock,
 
