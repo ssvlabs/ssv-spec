@@ -87,6 +87,55 @@ func GloasSourceHigherThanTarget() tests.SpecTest {
 	)
 }
 
+// GloasUnmatchedSourceEpoch tests a GloasBeaconVote whose source epoch differs from the one the
+// operator expects from its own view.
+func GloasUnmatchedSourceEpoch() tests.SpecTest {
+	data := testingutils.TestGloasBeaconVote
+
+	// Different from the vote's source epoch (0), so the checkpoint comparison fails.
+	expectedSource := phase0.Checkpoint{Epoch: 1, Root: testingutils.TestingBlockRoot}
+
+	input, err := data.Encode()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return valcheck.NewSpecTest(
+		"gloas attestation value check unmatched source epoch",
+		testdoc.ValCheckGloasAttestationUnmatchedSourceEpochDoc,
+		types.BeaconTestNetwork,
+		types.RoleCommittee,
+		testingutils.TestingDutySlotGloas,
+		input,
+		expectedSource,
+		*data.Target,
+		map[string][]phase0.Slot{},
+		[]types.ShareValidatorPK{},
+		types.CheckpointMismatch,
+		false,
+	)
+}
+
+// GloasPreGloasVote tests that a pre-Gloas BeaconVote proposed at a Gloas slot is rejected: the Gloas
+// vote is a fixed 120-byte container, so the 112-byte pre-Gloas value fails decoding on length. This
+// is the cross-fork decode safety the SIP relies on (SIP #94 §2).
+func GloasPreGloasVote() tests.SpecTest {
+	return valcheck.NewSpecTest(
+		"gloas attestation value check pre-gloas vote",
+		testdoc.ValCheckGloasAttestationPreGloasVoteDoc,
+		types.BeaconTestNetwork,
+		types.RoleCommittee,
+		testingutils.TestingDutySlotGloas,
+		testingutils.TestBeaconVoteByts,
+		*testingutils.TestBeaconVote.Source,
+		*testingutils.TestBeaconVote.Target,
+		map[string][]phase0.Slot{},
+		[]types.ShareValidatorPK{},
+		types.DecodeGloasBeaconVoteErrorCode,
+		false,
+	)
+}
+
 // GloasSlashable tests a GloasBeaconVote for a slot already marked slashable for the share.
 func GloasSlashable() tests.SpecTest {
 	keySet := testingutils.Testing4SharesSet()
