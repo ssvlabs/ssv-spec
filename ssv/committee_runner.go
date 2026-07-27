@@ -99,11 +99,7 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 	var version spec.DataVersion
 	var votePrototype types.Encoder = &types.BeaconVote{}
 	if state := cr.BaseRunner.State; state != nil {
-		epoch := cr.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(state.StartingDuty.DutySlot())
-		version = cr.beacon.DataVersion(epoch)
-		if version >= gloas.DataVersionGloas {
-			votePrototype = &types.GloasBeaconVote{}
-		}
+		votePrototype, version = committeeVoteForSlot(cr.beacon, state.StartingDuty.DutySlot())
 	}
 
 	decided, decidedValue, err := cr.BaseRunner.baseConsensusMsgProcessing(cr, msg, votePrototype)
@@ -420,14 +416,9 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	slot := duty.DutySlot()
 	epoch := cr.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(slot)
 
-	dataVersion := cr.beacon.DataVersion(epoch)
-
 	// Decode the decided value into the slot's fork prototype, then split into the base vote and the
 	// optional Gloas attestation index (SIP #94 §2).
-	var decodedVote types.Encoder = &types.BeaconVote{}
-	if dataVersion >= gloas.DataVersionGloas {
-		decodedVote = &types.GloasBeaconVote{}
-	}
+	decodedVote, dataVersion := committeeVoteForSlot(cr.beacon, slot)
 	if err := decodedVote.Decode(beaconVoteData); err != nil {
 		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
 	}
@@ -508,12 +499,10 @@ func (cr CommitteeRunner) executeDuty(duty types.Duty) error {
 		return errors.Wrap(err, "failed to get attestation data")
 	}
 
-	epoch := cr.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(slot)
-
 	// On Gloas slots the consensus value is a GloasBeaconVote carrying the BN-supplied attestation
 	// index (SIP #94 §2); before Gloas it is a plain BeaconVote.
 	var input types.Encoder
-	if cr.beacon.DataVersion(epoch) >= gloas.DataVersionGloas {
+	if committeeVersionForSlot(cr.beacon, slot) >= gloas.DataVersionGloas {
 		input = &types.GloasBeaconVote{
 			BlockRoot:            attData.BeaconBlockRoot,
 			Source:               attData.Source,
@@ -540,6 +529,27 @@ func (cr CommitteeRunner) GetSigner() types.BeaconSigner {
 
 func (cr CommitteeRunner) GetOperatorSigner() *types.OperatorSigner {
 	return cr.operatorSigner
+}
+
+// committeeVersionForSlot returns the data version the committee duty at slot runs under.
+//
+// The comparisons against gloas.DataVersionGloas below are >=, not ==, because this version comes from
+// the local beacon node's fork schedule: any version at or beyond Gloas is Gloas or a later fork, all
+// of which use the Gloas-shaped vote. Contrast ProposerValueCheckF, which matches == because the
+// version there is carried inside a received consensus-data value and so is attacker-controlled.
+func committeeVersionForSlot(beacon BeaconNode, slot phase0.Slot) spec.DataVersion {
+	return beacon.DataVersion(beacon.GetBeaconNetwork().EstimatedEpochAtSlot(slot))
+}
+
+// committeeVoteForSlot returns the empty committee consensus value to decode into for the slot's fork —
+// a GloasBeaconVote from Gloas on (SIP #94 §2), a BeaconVote before — plus that fork's data version.
+// Every committee path derives the fork through here so the decisions cannot drift apart.
+func committeeVoteForSlot(beacon BeaconNode, slot phase0.Slot) (types.Encoder, spec.DataVersion) {
+	version := committeeVersionForSlot(beacon, slot)
+	if version >= gloas.DataVersionGloas {
+		return &types.GloasBeaconVote{}, version
+	}
+	return &types.BeaconVote{}, version
 }
 
 // baseVoteAndIndex splits a decided committee value into its base BeaconVote fields and, on Gloas,

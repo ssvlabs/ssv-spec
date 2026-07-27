@@ -9,7 +9,6 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 func (b *BaseRunner) ValidatePreConsensusMsg(runner Runner, psigMsgs *types.PartialSignatureMessages) error {
@@ -76,12 +75,7 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 	case *CommitteeRunner:
 		// The decided value is a GloasBeaconVote at Gloas slots (SIP #94 §2), a BeaconVote before;
 		// decode the shape the duty's fork mandates so a cross-fork value is rejected here too.
-		dutySlot := b.State.StartingDuty.DutySlot()
-		epoch := b.BeaconNetwork.EstimatedEpochAtSlot(dutySlot)
-		var decidedVote types.Encoder = &types.BeaconVote{}
-		if runner.GetBeaconNode().DataVersion(epoch) >= gloas.DataVersionGloas {
-			decidedVote = &types.GloasBeaconVote{}
-		}
+		decidedVote, _ := committeeVoteForSlot(runner.GetBeaconNode(), b.State.StartingDuty.DutySlot())
 		if err := decidedVote.Decode(decidedValueBytes); err != nil {
 			return errors.Wrap(err, "failed to parse decided value to BeaconData")
 		}
