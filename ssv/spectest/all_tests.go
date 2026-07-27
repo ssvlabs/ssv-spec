@@ -204,6 +204,8 @@ var AllTests = []tests.TestF{
 	valcheckattestations.GloasInvalidIndex,
 	valcheckattestations.GloasSourceHigherThanTarget,
 	valcheckattestations.GloasSlashable,
+	valcheckattestations.GloasUnmatchedSourceEpoch,
+	valcheckattestations.GloasPreGloasVote,
 
 	valcheckproposer.BlindedBlock,
 
