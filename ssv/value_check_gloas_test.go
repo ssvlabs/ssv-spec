@@ -120,9 +120,13 @@ func requireErrorCode(t *testing.T, err error, code int) {
 // only in that index are then a double vote; under the sentinel they would build identical attestation
 // data and the equivocation would go undetected — a slashing-safety failure rather than a liveness one.
 //
-// The key manager records the first attestation data it is asked about per slot, so the second, differing
-// one is reported slashable. That also makes the assertions discriminating: were the sentinel still used,
-// re-checking the *same* vote would build data differing from what was recorded and would be flagged.
+// The key manager records the first attestation data it is asked about per slot and reports a later,
+// differing one as slashable.
+//
+// Only the last assertion discriminates: reinstating the sentinel makes it fail, because both votes then
+// build identical attestation data and the equivocation disappears. The one before it — that repeating
+// the same vote is not equivocation — holds under either implementation, so it guards against
+// over-eager slashing rather than pinning this rule; do not read it as protecting the index behaviour.
 func TestGloasBeaconVoteValueCheckF_CrossIndexEquivocation(t *testing.T) {
 	km := testingutils.NewTestingKeyManagerRecordingAttestations()
 	ks := testingutils.Testing4SharesSet()
