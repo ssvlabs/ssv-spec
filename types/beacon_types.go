@@ -29,6 +29,14 @@ var (
 	DomainPTCAttester         = [4]byte{0x0c, 0x00, 0x00, 0x00}
 	DomainProposerPreferences = [4]byte{0x0d, 0x00, 0x00, 0x00}
 
+	// DomainRequestAuth is builder-specs' DOMAIN_REQUEST_AUTH, authenticating direct
+	// validator→builder requests (RequestAuthV1) under Gloas (ePBS). Like
+	// DomainApplicationBuilder it is an application-namespace domain: signing uses
+	// genesis-style compute_domain (genesis fork version, zero genesis-validators-root),
+	// never a fork-versioned domain. NOT to be confused with the beacon domain
+	// DomainBeaconBuilder (0x0b000000) — the two differ only in the last byte.
+	DomainRequestAuth = [4]byte{0x0b, 0x00, 0x00, 0x01}
+
 	DomainError = [4]byte{0x99, 0x99, 0x99, 0x99}
 )
 
