@@ -78,6 +78,25 @@ jobs:
             exit 1
           fi
 
+          # PR_HEAD_REF flows into `git checkout -B`, `git push --force` and
+          # `gh pr list --head` below. It is a bare branch name with no fork
+          # owner, so a fork PR opened from the fork's default branch yields
+          # `main` — and `origin/main` always exists, so the "mirror branch
+          # missing" check cannot catch it. Enforce the same shape and
+          # protected-name rules as sync-spec-tests-pr.yaml before it is used.
+          if ! [[ "${PR_HEAD_REF}" =~ ^[A-Za-z0-9._/-]+$ ]] \
+            || [[ "${PR_HEAD_REF}" == -* ]] \
+            || [[ "${PR_HEAD_REF}" == *..* ]] \
+            || [[ "${PR_HEAD_REF}" == "HEAD" ]]; then
+            echo "Refusing to sync: unsafe branch name '${PR_HEAD_REF}'" >&2
+            exit 1
+          fi
+
+          if [ "${PR_HEAD_REF}" = "main" ] || [ "${PR_HEAD_REF}" = "master" ]; then
+            echo "Refusing to sync: branch name '${PR_HEAD_REF}' would overwrite a protected branch in ${SPEC_TESTS_REPO}" >&2
+            exit 1
+          fi
+
           echo "number=${PR_NUMBER}" >> "${GITHUB_OUTPUT}"
           echo "head-ref=${PR_HEAD_REF}" >> "${GITHUB_OUTPUT}"
           echo "base-ref=${PR_BASE_REF}" >> "${GITHUB_OUTPUT}"
