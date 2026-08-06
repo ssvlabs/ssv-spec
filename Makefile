@@ -5,7 +5,10 @@ GOLANGCI_LINT_VERSION?=v2.12.2
 
 .PHONY: lint-prepare
 lint-prepare:
-	curl -sfL https://golangci-lint.run/install.sh| sh -s $(GOLANGCI_LINT_VERSION)
+	@tmp=$$(mktemp) \
+		&& curl -sfL https://golangci-lint.run/install.sh -o "$$tmp" \
+		&& sh "$$tmp" $(GOLANGCI_LINT_VERSION) \
+		&& rm -f "$$tmp"
 
 .PHONY: lint
 lint:
