@@ -1,6 +1,10 @@
 version: 2
 updates:
+  # "/" covers .github/workflows only. The composite action lives outside that
+  # directory, so it needs its own entry or its pins never get bumped.
   - package-ecosystem: github-actions
-    directory: "/"
+    directories:
+      - "/"
+      - "/.github/actions/generate-spec-tests"
     schedule:
       interval: weekly
