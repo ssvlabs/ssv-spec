@@ -4,6 +4,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+# Both runs force-push the same mirror branch with no ordering, so an older commit's
+# fixtures can land last and leave it stale. Keyed on PR number, not head_ref (collides across forks).
+concurrency:
+  group: sync-spec-tests-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
 
   # Runs PR-controlled code (`go generate`). Deliberately holds no spec-tests
