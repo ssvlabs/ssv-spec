@@ -2,7 +2,7 @@
 
 ## Overview
 
-Every PR from a branch in this repo automatically keeps a matching branch and PR open in the [spec-tests](https://github.com/ssvlabs/spec-tests) repository, populated with freshly generated JSON test fixtures. When the ssv-spec PR is merged, the spec-tests PR is finalized and merged automatically. Fork PRs are excluded — see [Fork PRs](#fork-prs).
+Every PR from a branch in this repo whose fixtures differ from `spec-tests` automatically keeps a matching branch and PR open in the [spec-tests](https://github.com/ssvlabs/spec-tests) repository, populated with freshly generated JSON test fixtures. When the ssv-spec PR is merged, the spec-tests PR is finalized and merged automatically. Fork PRs are excluded — see [Fork PRs](#fork-prs).
 
 ```
 ssv-spec PR opened/updated

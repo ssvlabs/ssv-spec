@@ -117,9 +117,10 @@ jobs:
           echo "base-ref=${PR_BASE_REF}" >> "${GITHUB_OUTPUT}"
           echo "is-fork=${IS_FORK}" >> "${GITHUB_OUTPUT}"
 
-      # Fork PRs never got a mirror branch (the PR sync workflow skips them);
-      # their fixtures reach spec-tests with the next same-repo merge, since
-      # each sync below replaces the whole generated tree.
+      # Fork PRs never got a mirror branch (the PR sync workflow skips them),
+      # so there is nothing here to finalize. Their fixtures land with a later
+      # in-repo merge that does have a mirror branch — each sync below replaces
+      # the whole generated tree. See "Fork PRs" in README.md for the gap.
       - name: Push final generated files to spec-tests branch
         if: steps.find-ssv-pr.outputs.is-fork == 'false'
         env:
