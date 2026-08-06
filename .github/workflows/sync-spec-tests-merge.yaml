@@ -66,11 +66,12 @@ jobs:
           # Resolve the ssv-spec PR that introduced this merge commit (head branch name)
           # Uses GITHUB_TOKEN which is scoped to ssv-spec
           PR_INFO=$(gh api "repos/${{ github.repository }}/commits/${GITHUB_SHA}/pulls" \
-            --jq '.[0] | {number: (.number // empty), head_ref: (.head.ref // empty), base_ref: (.base.ref // empty)}' \
+            --jq '.[0] | {number: (.number // empty), head_ref: (.head.ref // empty), base_ref: (.base.ref // empty), head_repo: (.head.repo.full_name // empty)}' \
             2>/dev/null || echo "{}")
           PR_NUMBER=$(echo "${PR_INFO}" | jq -r '.number // empty')
           PR_HEAD_REF=$(echo "${PR_INFO}" | jq -r '.head_ref // empty')
           PR_BASE_REF=$(echo "${PR_INFO}" | jq -r '.base_ref // empty')
+          PR_HEAD_REPO=$(echo "${PR_INFO}" | jq -r '.head_repo // empty')
 
           if [ -z "${PR_NUMBER}" ] || [ -z "${PR_HEAD_REF}" ]; then
             echo "No PR found for commit ${GITHUB_SHA} in ${{ github.repository }}." >&2
@@ -97,15 +98,24 @@ jobs:
             exit 1
           fi
 
+          # Empty head_repo (API quirk or same-repo omission) preserves today's
+          # behavior: treated as NOT a fork.
+          IS_FORK=false
+          if [ -n "${PR_HEAD_REPO}" ] && [ "${PR_HEAD_REPO}" != "${{ github.repository }}" ]; then
+            IS_FORK=true
+          fi
+
           echo "number=${PR_NUMBER}" >> "${GITHUB_OUTPUT}"
           echo "head-ref=${PR_HEAD_REF}" >> "${GITHUB_OUTPUT}"
           echo "base-ref=${PR_BASE_REF}" >> "${GITHUB_OUTPUT}"
+          echo "is-fork=${IS_FORK}" >> "${GITHUB_OUTPUT}"
 
       - name: Push final generated files to spec-tests branch
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           PR_HEAD_REF: ${{ steps.find-ssv-pr.outputs.head-ref }}
           PR_BASE_REF: ${{ steps.find-ssv-pr.outputs.base-ref }}
+          IS_FORK: ${{ steps.find-ssv-pr.outputs.is-fork }}
           BOT_NAME: ${{ steps.bot-identity.outputs.name }}
           BOT_EMAIL: ${{ steps.bot-identity.outputs.email }}
         run: |
@@ -144,6 +154,24 @@ jobs:
             cp -r "${GENERATED_DIR}/." .
             git add -A
           }
+
+          # Fork PRs never got a mirror branch (the PR sync workflow skips
+          # forks), so there is no mirror branch or mirror PR to touch. Push
+          # straight to the base branch instead — a plain fast-forward push,
+          # not the force-push-to-main hazard the PR_HEAD_REF validation above guards against.
+          if [ "${IS_FORK}" = "true" ]; then
+            git checkout -B "${RESOLVED_BASE}" "origin/${RESOLVED_BASE}"
+            sync_generated_paths
+
+            if git diff --cached --quiet; then
+              echo "No changes to sync to spec-tests branch '${RESOLVED_BASE}' (fork PR)"
+              exit 0
+            fi
+
+            git commit -m "sync: final update from ssv-spec ${GITHUB_SHA} (fork PR)"
+            git push origin "${RESOLVED_BASE}"
+            exit 0
+          fi
 
           # The spec-tests branch has the same name as the ssv-spec PR branch.
           if ! git show-ref --verify --quiet "refs/remotes/origin/${PR_HEAD_REF}"; then
