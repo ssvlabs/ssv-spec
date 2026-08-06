@@ -14,7 +14,11 @@ jobs:
 
   # Runs PR-controlled code (`go generate`). Deliberately holds no spec-tests
   # credentials: its only output is an artifact consumed as data by `sync`.
+  #
+  # Fork PRs get no secrets on `pull_request` anyway, so sync cannot work; they
+  # are synced after merge by sync-spec-tests-merge.yaml instead.
   generate:
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -48,6 +52,7 @@ jobs:
   # checked out here, the generated tree is only ever treated as data.
   sync:
     needs: generate
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
     permissions:
       contents: read

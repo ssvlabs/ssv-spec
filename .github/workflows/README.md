@@ -32,7 +32,7 @@ ssv-spec PR merged
 | File | Trigger | Purpose |
 |---|---|---|
 | `test.yaml` | PR, push to `main` | Build, generate, run tests |
-| `sync-spec-tests-pr.yaml` | PR opened / updated / reopened | Sync generated files to spec-tests, create/update PR |
+| `sync-spec-tests-pr.yaml` | PR opened / updated / reopened, same-repo only | Sync generated files to spec-tests, create/update PR |
 | `sync-spec-tests-merge.yaml` | Push to `main` | Push final files to spec-tests branch, merge spec-tests PR |
 | `../.github/actions/generate-spec-tests/action.yaml` | (composite, called by all above) | Set up Go, generate JSON fixtures |
 
@@ -88,6 +88,12 @@ Runs on every push to `main`.
 5. Verify that matching branch exists in `spec-tests` (created by the PR workflow)
 6. Push a final sync commit to that branch if anything changed
 7. Look up the open spec-tests PR for that branch, merge it, delete the branch
+
+---
+
+### Fork PRs
+
+Fork PRs get no mirror branch or mirror PR while open, because `pull_request` from a fork receives no secrets. Their fixtures are still generated and tested by `test.yaml`, which needs no secrets, so correctness is verified. After merge, `sync-spec-tests-merge.yaml` pushes their fixtures straight to the `spec-tests` base branch. Contributing from a branch in `ssvlabs/ssv-spec` is the recommended path: it gets the mirror PR preview while the PR is open.
 
 ---
 
