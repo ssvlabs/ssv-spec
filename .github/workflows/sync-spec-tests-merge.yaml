@@ -66,7 +66,7 @@ jobs:
           # Resolve the ssv-spec PR that introduced this merge commit (head branch name)
           # Uses GITHUB_TOKEN which is scoped to ssv-spec
           PR_INFO=$(gh api "repos/${{ github.repository }}/commits/${GITHUB_SHA}/pulls" \
-            --jq '.[0] | {number: (.number // empty), head_ref: (.head.ref // empty), base_ref: (.base.ref // empty), head_repo: (.head.repo.full_name // empty)}' \
+            --jq '.[0] | {number: (.number // empty), head_ref: (.head.ref // empty), base_ref: (.base.ref // empty), head_repo: (.head.repo.full_name // "")}' \
             2>/dev/null || echo "{}")
           PR_NUMBER=$(echo "${PR_INFO}" | jq -r '.number // empty')
           PR_HEAD_REF=$(echo "${PR_INFO}" | jq -r '.head_ref // empty')
@@ -79,11 +79,13 @@ jobs:
             exit 1
           fi
 
-          # Empty head_repo (API quirk or same-repo omission) preserves today's
-          # behavior: treated as NOT a fork.
-          IS_FORK=false
-          if [ -n "${PR_HEAD_REPO}" ] && [ "${PR_HEAD_REPO}" != "${{ github.repository }}" ]; then
-            IS_FORK=true
+          # Same-repo PRs always report head.repo; it is null only when the head
+          # repository is gone (deleted fork). Unknown therefore means "not this
+          # repo", and skipping the sync is the safe reading — there is no mirror
+          # branch to finalize and nothing to push.
+          IS_FORK=true
+          if [ "${PR_HEAD_REPO}" = "${{ github.repository }}" ]; then
+            IS_FORK=false
           fi
 
           # PR_HEAD_REF flows into `git checkout -B`, `git push --force` and
@@ -119,7 +121,7 @@ jobs:
       # their fixtures reach spec-tests with the next same-repo merge, since
       # each sync below replaces the whole generated tree.
       - name: Push final generated files to spec-tests branch
-        if: steps.find-ssv-pr.outputs.is-fork != 'true'
+        if: steps.find-ssv-pr.outputs.is-fork == 'false'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           PR_HEAD_REF: ${{ steps.find-ssv-pr.outputs.head-ref }}

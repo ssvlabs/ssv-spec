@@ -2,7 +2,7 @@
 
 ## Overview
 
-Every PR to this repo automatically keeps a matching branch and PR open in the [spec-tests](https://github.com/ssvlabs/spec-tests) repository, populated with freshly generated JSON test fixtures. When the ssv-spec PR is merged, the spec-tests PR is finalized and merged automatically.
+Every PR from a branch in this repo automatically keeps a matching branch and PR open in the [spec-tests](https://github.com/ssvlabs/spec-tests) repository, populated with freshly generated JSON test fixtures. When the ssv-spec PR is merged, the spec-tests PR is finalized and merged automatically. Fork PRs are excluded — see [Fork PRs](#fork-prs).
 
 ```
 ssv-spec PR opened/updated
@@ -93,7 +93,9 @@ Runs on every push to `main`.
 
 ### Fork PRs
 
-Fork PRs get no mirror branch or mirror PR while open, because `pull_request` from a fork receives no secrets. Their fixtures are still generated and tested by `test.yaml`, which needs no secrets, so correctness is verified either way. After merge they reach spec-tests with the next merge from an in-repo branch, since each sync replaces the entire generated tree.
+Fork PRs get no mirror branch or mirror PR while open, because `pull_request` from a fork receives no secrets. Their fixtures are still generated and tested by `test.yaml`, which needs no secrets, so correctness is verified either way.
+
+After merge, their fixtures reach spec-tests with the next in-repo merge **that has a mirror branch** — each sync replaces the whole generated tree, so it carries the fork's changes along. The gap: an in-repo PR whose own fixtures match spec-tests never pushes a mirror branch, and if such a PR merges next, its merge run finds no mirror branch, sees the fork's fixture diff, and fails loudly rather than pushing. The sync then completes on the following in-repo merge that does have one.
 
 Contributing from a branch in `ssvlabs/ssv-spec` is the recommended path: it gets the mirror PR preview while the PR is open.
 
