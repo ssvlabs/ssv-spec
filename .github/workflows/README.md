@@ -93,7 +93,7 @@ Runs on every push to `main`.
 
 ### Fork PRs
 
-Fork PRs get no mirror branch or mirror PR while open, because `pull_request` from a fork receives no secrets. Their fixtures are still generated and tested by `test.yaml`, which needs no secrets, so correctness is verified. After merge, `sync-spec-tests-merge.yaml` pushes their fixtures straight to the `spec-tests` base branch. Contributing from a branch in `ssvlabs/ssv-spec` is the recommended path: it gets the mirror PR preview while the PR is open.
+Fork PRs get no mirror branch or mirror PR while open, because `pull_request` from a fork receives no secrets. Their fixtures are still generated and tested by `test.yaml`, which needs no secrets, so correctness is verified. Their fixtures reach spec-tests with the next merge from an in-repo branch, because each sync replaces the entire generated tree. Contributing from a branch in `ssvlabs/ssv-spec` is the recommended path: it gets the mirror PR preview while the PR is open.
 
 ---
 
