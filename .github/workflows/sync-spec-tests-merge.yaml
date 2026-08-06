@@ -93,8 +93,8 @@ jobs:
           # missing" check cannot catch it. Enforce the same shape and
           # protected-name rules as sync-spec-tests-pr.yaml before it is used.
           # Same-repo only: for fork PRs, PR_HEAD_REF never reaches
-          # `git checkout -B`, `git push` or `gh pr list --head` — the fork path
-          # syncs to the base branch instead.
+          # `git checkout -B`, `git push` or `gh pr list --head`, because the
+          # push step below is skipped for them entirely.
           if [ "${IS_FORK}" != "true" ]; then
             if ! [[ "${PR_HEAD_REF}" =~ ^[A-Za-z0-9._/-]+$ ]] \
               || [[ "${PR_HEAD_REF}" == -* ]] \
