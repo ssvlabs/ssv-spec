@@ -34,7 +34,7 @@ ssv-spec PR merged
 | `test.yaml` | PR, push to `main` | Build, generate, run tests |
 | `sync-spec-tests-pr.yaml` | PR opened / updated / reopened, same-repo only | Sync generated files to spec-tests, create/update PR |
 | `sync-spec-tests-merge.yaml` | Push to `main` | Push final files to spec-tests branch, merge spec-tests PR |
-| `../.github/actions/generate-spec-tests/action.yaml` | (composite, called by all above) | Set up Go, generate JSON fixtures |
+| `../actions/generate-spec-tests/action.yaml` | (composite, called by all above) | Set up Go, generate JSON fixtures |
 
 ---
 
@@ -134,4 +134,4 @@ Set these in **ssv-spec → Settings → Secrets and variables → Actions**.
 |---|---|
 | `SPEC_TESTS_APP_PRIVATE_KEY` | Contents of the `.pem` private key file for the GitHub App |
 
-See the [GitHub App setup guide](https://github.com/ssvlabs/ssv-spec/blob/main/.github/workflows/GITHUB_APP_SETUP.md) for step-by-step instructions on creating the app.
+To create the App: [Registering a GitHub App](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app) with the two permissions above, installed on `spec-tests` only. Its App ID goes in `SPEC_TESTS_APP_ID` and its generated `.pem` private key in `SPEC_TESTS_APP_PRIVATE_KEY`.
