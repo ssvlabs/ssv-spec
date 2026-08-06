@@ -42,7 +42,7 @@ func TestJson(t *testing.T) {
 	basedir, _ := os.Getwd()
 	specTestsDir, err := comparable.SpecTestsDirFrom(basedir)
 	if err != nil {
-		panic(err.Error())
+		t.Fatalf("Failed to resolve spec-tests dir: %v", err)
 	}
 	path := filepath.Join(specTestsDir, "tests.json")
 	untypedTests := map[string]interface{}{}
