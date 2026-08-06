@@ -115,12 +115,15 @@ jobs:
           echo "base-ref=${PR_BASE_REF}" >> "${GITHUB_OUTPUT}"
           echo "is-fork=${IS_FORK}" >> "${GITHUB_OUTPUT}"
 
+      # Fork PRs never got a mirror branch (the PR sync workflow skips them);
+      # their fixtures reach spec-tests with the next same-repo merge, since
+      # each sync below replaces the whole generated tree.
       - name: Push final generated files to spec-tests branch
+        if: steps.find-ssv-pr.outputs.is-fork != 'true'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           PR_HEAD_REF: ${{ steps.find-ssv-pr.outputs.head-ref }}
           PR_BASE_REF: ${{ steps.find-ssv-pr.outputs.base-ref }}
-          IS_FORK: ${{ steps.find-ssv-pr.outputs.is-fork }}
           BOT_NAME: ${{ steps.bot-identity.outputs.name }}
           BOT_EMAIL: ${{ steps.bot-identity.outputs.email }}
         run: |
@@ -159,24 +162,6 @@ jobs:
             cp -r "${GENERATED_DIR}/." .
             git add -A
           }
-
-          # Fork PRs never got a mirror branch (the PR sync workflow skips
-          # forks), so there is no mirror branch or mirror PR to touch. Push
-          # straight to the base branch instead — a plain fast-forward push,
-          # not the force-push-to-main hazard the PR_HEAD_REF validation above guards against.
-          if [ "${IS_FORK}" = "true" ]; then
-            git checkout -B "${RESOLVED_BASE}" "origin/${RESOLVED_BASE}"
-            sync_generated_paths
-
-            if git diff --cached --quiet; then
-              echo "No changes to sync to spec-tests branch '${RESOLVED_BASE}' (fork PR)"
-              exit 0
-            fi
-
-            git commit -m "sync: final update from ssv-spec ${GITHUB_SHA} (fork PR)"
-            git push origin "${RESOLVED_BASE}"
-            exit 0
-          fi
 
           # The spec-tests branch has the same name as the ssv-spec PR branch.
           if ! git show-ref --verify --quiet "refs/remotes/origin/${PR_HEAD_REF}"; then
