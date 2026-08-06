@@ -38,6 +38,21 @@ ssv-spec PR merged
 
 ---
 
+## Running Locally
+
+The JSON fixtures are no longer committed to this repo — they are generated into a **sibling** `spec-tests` directory, so generation must run before the tests:
+
+```console
+foo@bar:~/ssv-spec$ go generate ./...   # or: make generate-jsons
+foo@bar:~/ssv-spec$ make test
+```
+
+Fixtures resolve to `<parent-of-ssv-spec>/spec-tests/<module>` (`qbft`, `ssv`, `types`), created automatically by `go generate`. A fresh clone that runs `make test` first will fail — `make test` does not depend on `generate-jsons`.
+
+> **Multiple checkouts:** the path is derived from the repo root's parent and is not namespaced per checkout, so two clones or worktrees sharing a parent directory also share one `spec-tests` and overwrite each other's output. Give each checkout its own parent directory.
+
+---
+
 ## Workflows in Detail
 
 ### `test.yaml`
