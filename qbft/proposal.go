@@ -85,24 +85,14 @@ func isValidProposal(
 	}
 
 	// get justifications
-	roundChangeJustificationSignedMessages, _ := msg.QBFTMessage.GetRoundChangeJustifications() // no need to check error, checked on signedProposal.Validate()
-	prepareJustificationSignedMessages, _ := msg.QBFTMessage.GetPrepareJustifications()         // no need to check error, checked on signedProposal.Validate()
-
-	roundChangeJustification := make([]*ProcessingMessage, 0)
-	for _, rcSignedMessage := range roundChangeJustificationSignedMessages {
-		rc, err := NewProcessingMessage(rcSignedMessage)
-		if err != nil {
-			return errors.Wrap(err, "could not create ProcessingMessage from round change justification")
-		}
-		roundChangeJustification = append(roundChangeJustification, rc)
+	roundChangeJustification, err := msg.QBFTMessage.RoundChangeJustificationProcessingMessages()
+	if err != nil {
+		return errors.Wrap(err, "could not decode round change justification")
 	}
-	prepareJustification := make([]*ProcessingMessage, 0)
-	for _, prepareSignedMessage := range prepareJustificationSignedMessages {
-		msg, err := NewProcessingMessage(prepareSignedMessage)
-		if err != nil {
-			return errors.Wrap(err, "could not create ProcessingMessage from prepare justification")
-		}
-		prepareJustification = append(prepareJustification, msg)
+
+	prepareJustification, err := msg.QBFTMessage.PrepareJustificationProcessingMessages()
+	if err != nil {
+		return errors.Wrap(err, "could not decode prepare justification")
 	}
 
 	if err := isProposalJustification(
