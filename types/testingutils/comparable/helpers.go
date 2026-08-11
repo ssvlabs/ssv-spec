@@ -44,8 +44,11 @@ func FixIssue178(input *types.ProposerConsensusData, version spec2.DataVersion) 
 // UnmarshalStateComparison reads a json derived from 'testName' and unmarshals it into 'targetState'
 func UnmarshalStateComparison[T types.Root](basedir string, testName string, testType string, targetState T) (T, error) {
 	var nilT T
-	basedir = filepath.Join(basedir, "generate")
-	scDir := GetSCDir(basedir, testType)
+	specTestsDir, err := SpecTestsDirFrom(basedir)
+	if err != nil {
+		return nilT, err
+	}
+	scDir := GetSCDir(specTestsDir, testType)
 	path := filepath.Join(scDir, fmt.Sprintf("%s.json", testName))
 
 	byteValue, err := os.ReadFile(filepath.Clean(path))
@@ -63,8 +66,11 @@ func UnmarshalStateComparison[T types.Root](basedir string, testName string, tes
 
 // readStateComparison reads a json derived from 'testName' and unmarshals it into a json object
 func readStateComparison(basedir string, testName string, testType string) (map[string]interface{}, error) {
-	basedir = filepath.Join(basedir, "generate")
-	scDir := GetSCDir(basedir, testType)
+	specTestsDir, err := SpecTestsDirFrom(basedir)
+	if err != nil {
+		return nil, err
+	}
+	scDir := GetSCDir(specTestsDir, testType)
 	path := filepath.Join(scDir, fmt.Sprintf("%s.json", testName))
 	byteValue, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
@@ -99,6 +105,110 @@ func GetSCDir(basedir string, testType string) string {
 		".", "_").
 		Replace(testType)
 	return filepath.Join(basedir, "state_comparison", testType)
+}
+
+func SpecTestsDirFrom(basedir string) (string, error) {
+	root, err := goModRootFrom(basedir)
+	if err != nil {
+		return "", err
+	}
+
+	module, err := moduleFrom(root, basedir)
+	if err != nil {
+		return "", err
+	}
+	return specTestsDir(root, module), nil
+}
+
+func SpecTestsDirForModule(module string) (string, error) {
+	basedir, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+	root, err := goModRootFrom(basedir)
+	if err != nil {
+		return "", err
+	}
+	if !isSpecTestModule(module) {
+		return "", fmt.Errorf("invalid spec-tests module %q", module)
+	}
+	return specTestsDir(root, module), nil
+}
+
+func EnsureSpecTestsSubdir(module string, dir string) error {
+	if !isSpecTestModule(module) {
+		return fmt.Errorf("invalid spec-tests module %q", module)
+	}
+	specTestsDir, err := SpecTestsDirForModule(module)
+	if err != nil {
+		return err
+	}
+
+	absSpecTestsDir, err := filepath.Abs(specTestsDir)
+	if err != nil {
+		return err
+	}
+	absDir, err := filepath.Abs(dir)
+	if err != nil {
+		return err
+	}
+	if filepath.Base(absSpecTestsDir) != module || filepath.Base(filepath.Dir(absSpecTestsDir)) != "spec-tests" {
+		return fmt.Errorf("refusing to use unexpected spec-tests dir %s", absSpecTestsDir)
+	}
+
+	rel, err := filepath.Rel(absSpecTestsDir, absDir)
+	if err != nil {
+		return err
+	}
+	if rel == "." || rel == ".." || strings.HasPrefix(rel, ".."+string(os.PathSeparator)) {
+		return fmt.Errorf("refusing to use path outside %s: %s", absSpecTestsDir, absDir)
+	}
+	return nil
+}
+
+func moduleFrom(root string, start string) (string, error) {
+	absRoot, err := filepath.Abs(root)
+	if err != nil {
+		return "", err
+	}
+	absStart, err := filepath.Abs(start)
+	if err != nil {
+		return "", err
+	}
+	rel, err := filepath.Rel(absRoot, absStart)
+	if err != nil {
+		return "", err
+	}
+	module := strings.Split(filepath.Clean(rel), string(os.PathSeparator))[0]
+	if !isSpecTestModule(module) {
+		return "", fmt.Errorf("failed to locate module root from %s", start)
+	}
+	return module, nil
+}
+
+func goModRootFrom(start string) (string, error) {
+	dir := filepath.Clean(start)
+	for {
+		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
+			return dir, nil
+		} else if !os.IsNotExist(err) {
+			return "", err
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			break
+		}
+		dir = parent
+	}
+	return "", fmt.Errorf("failed to locate go.mod from %s", start)
+}
+
+func specTestsDir(root string, module string) string {
+	return filepath.Join(root, "..", "spec-tests", module)
+}
+
+func isSpecTestModule(module string) bool {
+	return module == "qbft" || module == "ssv" || module == "types"
 }
 
 // CompareWithJson compares the given test with the expected state from the state comparison folder

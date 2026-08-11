@@ -184,3 +184,9 @@ To generate all json spec tests, run:
 foo@bar:~$ go generate ./...
 ```
 Then run all tests
+
+```console
+foo@bar:~$ make test
+```
+
+The generated JSONs are not committed here — they are written to a sibling `spec-tests` directory (`<parent-of-ssv-spec>/spec-tests/<module>`), so `go generate ./...` must run before `make test`. See [.github/workflows/README.md](.github/workflows/README.md#running-locally) for the full local setup, including the caveat about multiple checkouts sharing one `spec-tests` directory.

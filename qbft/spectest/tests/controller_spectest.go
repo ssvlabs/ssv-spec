@@ -209,8 +209,9 @@ func (test *ControllerSpecTest) runInstanceWithData(
 func (test *ControllerSpecTest) overrideStateComparison(t *testing.T) {
 	basedir, err := os.Getwd()
 	require.NoError(t, err)
-	basedir = filepath.Join(basedir, "generate")
-	dir := typescomparable.GetSCDir(basedir, reflect.TypeOf(test).String())
+	specTestsDir, err := typescomparable.SpecTestsDirFrom(basedir)
+	require.NoError(t, err)
+	dir := typescomparable.GetSCDir(specTestsDir, reflect.TypeOf(test).String())
 	path := filepath.Join(dir, fmt.Sprintf("%s.json", test.TestName()))
 	byteValue, err := os.ReadFile(filepath.Clean(path))
 	require.NoError(t, err)

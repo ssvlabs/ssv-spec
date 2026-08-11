@@ -18,8 +18,21 @@ import (
 
 //go:generate go run main.go
 
-var testsDir = "tests"
-var stateComparisonDir = "state_comparison"
+const specTestsModule = "qbft"
+
+var specTestsDir string
+var testsDir string
+var stateComparisonDir string
+
+func init() {
+	var err error
+	specTestsDir, err = comparable2.SpecTestsDirForModule(specTestsModule)
+	if err != nil {
+		panic(err.Error())
+	}
+	testsDir = filepath.Join(specTestsDir, "tests")
+	stateComparisonDir = filepath.Join(specTestsDir, "state_comparison")
+}
 
 func main() {
 	clearStateComparisonFolder()
@@ -75,21 +88,27 @@ func main() {
 }
 
 func clearStateComparisonFolder() {
+	if err := comparable2.EnsureSpecTestsSubdir(specTestsModule, stateComparisonDir); err != nil {
+		panic(err.Error())
+	}
 	if err := os.RemoveAll(stateComparisonDir); err != nil {
 		panic(err.Error())
 	}
 
-	if err := os.Mkdir(stateComparisonDir, 0700); err != nil {
+	if err := os.MkdirAll(stateComparisonDir, 0700); err != nil {
 		panic(err.Error())
 	}
 }
 
 func clearTestsFolder() {
+	if err := comparable2.EnsureSpecTestsSubdir(specTestsModule, testsDir); err != nil {
+		panic(err.Error())
+	}
 	if err := os.RemoveAll(testsDir); err != nil {
 		panic(err.Error())
 	}
 
-	if err := os.Mkdir(testsDir, 0700); err != nil {
+	if err := os.MkdirAll(testsDir, 0700); err != nil {
 		panic(err.Error())
 	}
 }
@@ -120,7 +139,7 @@ func writeJsonStateComparison(name, testType string, post interface{}) {
 }
 
 func scDir(testType string) string {
-	return comparable2.GetSCDir(".", testType)
+	return comparable2.GetSCDir(specTestsDir, testType)
 }
 
 func writeJson(name string, data []byte) {

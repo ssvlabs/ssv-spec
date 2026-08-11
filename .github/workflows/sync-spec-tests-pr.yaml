@@ -1,0 +1,193 @@
+name: Sync Spec Tests (PR)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# Both runs force-push the same mirror branch with no ordering, so an older commit's
+# fixtures can land last and leave it stale. Keyed on PR number, not head_ref (collides across forks).
+concurrency:
+  group: sync-spec-tests-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+
+  # Runs PR-controlled code (`go generate`). Deliberately holds no spec-tests
+  # credentials: its only output is an artifact consumed as data by `sync`.
+  #
+  # Fork PRs get no secrets on `pull_request` anyway, so sync cannot work; they
+  # are synced after merge by sync-spec-tests-merge.yaml instead.
+  generate:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Validate required variables
+        run: |
+          if [ -z "${{ vars.SPEC_TESTS_REPO }}" ]; then
+            echo "SPEC_TESTS_REPO variable is not set (e.g. ssvlabs/spec-tests)" >&2
+            exit 1
+          fi
+
+      - name: Generate spec tests
+        uses: ./.github/actions/generate-spec-tests
+
+      # One tarball rather than raw files: the generated tree is tens of
+      # thousands of small JSONs, which upload-artifact handles poorly.
+      - name: Pack generated spec tests
+        run: tar -czf spec-tests.tar.gz -C "${GITHUB_WORKSPACE}/.." spec-tests
+
+      - name: Upload generated spec tests
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: spec-tests
+          path: spec-tests.tar.gz
+          retention-days: 1
+          if-no-files-found: error
+
+  # Holds the spec-tests App token. Runs no code from the PR: ssv-spec is never
+  # checked out here, the generated tree is only ever treated as data.
+  sync:
+    needs: generate
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    env:
+      SPEC_TESTS_REPO: ${{ vars.SPEC_TESTS_REPO }}
+    steps:
+      - name: Download generated spec tests
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: spec-tests
+
+      - name: Unpack generated spec tests
+        run: |
+          set -euo pipefail
+          mkdir -p generated
+          # tar refuses absolute paths and `..` members unless -P is given, so a
+          # generator-controlled filename cannot escape ./generated.
+          tar -xzf spec-tests.tar.gz -C generated
+
+      - name: Extract spec-tests repo name
+        id: repo-name
+        env:
+          SPEC_TESTS_REPO: ${{ vars.SPEC_TESTS_REPO }}
+        run: echo "name=${SPEC_TESTS_REPO##*/}" >> "$GITHUB_OUTPUT"
+
+      - name: Get GitHub App token
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+        id: app-token
+        with:
+          app-id: ${{ vars.SPEC_TESTS_APP_ID }}
+          private-key: ${{ secrets.SPEC_TESTS_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ steps.repo-name.outputs.name }}
+
+      - name: Get App bot identity
+        id: bot-identity
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          app_slug="${{ steps.app-token.outputs.app-slug }}"
+          user_id=$(gh api "/users/${app_slug}[bot]" --jq '.id')
+          echo "name=${app_slug}[bot]" >> "$GITHUB_OUTPUT"
+          echo "email=${user_id}+${app_slug}[bot]@users.noreply.github.com" >> "$GITHUB_OUTPUT"
+
+      - name: Sync to spec-tests PR branch
+        # Attacker-controlled values (PR_TITLE, HEAD_REF) MUST stay in `env:` and
+        # be referenced as shell variables. Inlining them as `${{ ... }}` in the
+        # script below would splice them into the shell source: script injection.
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+          BOT_NAME: ${{ steps.bot-identity.outputs.name }}
+          BOT_EMAIL: ${{ steps.bot-identity.outputs.email }}
+          PR_URL: ${{ github.server_url }}/${{ github.repository }}/pull/${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SPEC_TESTS_REPO}" ]; then
+            echo "SPEC_TESTS_REPO variable is not set (e.g. ssvlabs/spec-tests)" >&2
+            exit 1
+          fi
+
+          BRANCH_NAME="${HEAD_REF}"
+
+          # HEAD_REF is attacker-controlled and flows into `git checkout -B`,
+          # `git push` and `gh pr create --head`. Enforce a strict shape so it
+          # cannot be read as an option, a traversal, or a special ref.
+          if ! [[ "${BRANCH_NAME}" =~ ^[A-Za-z0-9._/-]+$ ]] \
+            || [[ "${BRANCH_NAME}" == -* ]] \
+            || [[ "${BRANCH_NAME}" == *..* ]] \
+            || [[ "${BRANCH_NAME}" == "HEAD" ]]; then
+            echo "Refusing to sync: unsafe branch name '${BRANCH_NAME}'" >&2
+            exit 1
+          fi
+
+          # Refuse to push to protected branch names in spec-tests
+          if [ "${BRANCH_NAME}" = "main" ] || [ "${BRANCH_NAME}" = "master" ]; then
+            echo "Refusing to sync: branch name '${BRANCH_NAME}' would overwrite a protected branch in spec-tests" >&2
+            exit 1
+          fi
+
+          GENERATED_DIR="${GITHUB_WORKSPACE}/generated/spec-tests"
+          CLONE_DIR=$(mktemp -d)
+
+          # Validate generated output exists
+          if [ -z "$(ls -A "${GENERATED_DIR}" 2>/dev/null)" ]; then
+            echo "Generated spec-tests directory is empty, aborting sync" >&2
+            exit 1
+          fi
+
+          git clone "https://x-access-token:${GH_TOKEN}@github.com/${SPEC_TESTS_REPO}.git" "${CLONE_DIR}"
+          cd "${CLONE_DIR}"
+          git config user.name "${BOT_NAME}"
+          git config user.email "${BOT_EMAIL}"
+          git fetch origin
+
+          # Determine base branch in spec-tests (fallback to main)
+          RESOLVED_BASE="${BASE_REF:-main}"
+          if ! git show-ref --verify --quiet "refs/remotes/origin/${RESOLVED_BASE}"; then
+            RESOLVED_BASE="main"
+          fi
+
+          # Reset sync branch to base, then replace only the generated paths.
+          # Other files/folders in spec-tests are left untouched.
+          git checkout -B "${BRANCH_NAME}" "origin/${RESOLVED_BASE}"
+          while IFS= read -r -d '' entry; do
+            git rm -rf "$(basename "${entry}")" 2>/dev/null || true
+          done < <(find "${GENERATED_DIR}" -maxdepth 1 -mindepth 1 -print0)
+          cp -r "${GENERATED_DIR}/." .
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No changes to sync"
+            exit 0
+          fi
+
+          git commit -m "sync: ssv-spec PR ${PR_URL}"
+          # Force push to overwrite previous syncs for this PR
+          git push --force origin "${BRANCH_NAME}"
+
+          # Create PR if there is no open one for this branch, otherwise update
+          # title/body. Scoped to --state open so a previously closed PR from the
+          # same branch is not picked up and edited.
+          SPEC_PR_NUMBER=$(gh pr list --repo "${SPEC_TESTS_REPO}" \
+            --head "${BRANCH_NAME}" --state open --json number --jq '.[0].number // empty')
+          if [ -n "${SPEC_PR_NUMBER}" ]; then
+            gh pr edit --repo "${SPEC_TESTS_REPO}" "${SPEC_PR_NUMBER}" \
+              --title "sync: ${PR_TITLE}" \
+              --body "Auto-generated from ssv-spec PR ${PR_URL}"
+          else
+            gh pr create --repo "${SPEC_TESTS_REPO}" \
+              --head "${BRANCH_NAME}" \
+              --base "${RESOLVED_BASE}" \
+              --title "sync: ${PR_TITLE}" \
+              --body "Auto-generated from ssv-spec PR ${PR_URL}"
+          fi
