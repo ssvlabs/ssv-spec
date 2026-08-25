@@ -22,7 +22,7 @@ const (
 	PTCAttesterPartialSig = PartialSigMsgType(7)
 	// ProposerPreferencesPartialSig is a partial signature over a Gloas (ePBS) ProposerPreferences object (SIP #94 §5)
 	ProposerPreferencesPartialSig = PartialSigMsgType(8)
-	// RequestAuthPartialSig is a partial signature over a builder-specs RequestAuthV1 object,
+	// RequestAuthPartialSig is a partial signature over a builder-specs BuilderRequestAuth object,
 	// authenticating direct validator→builder requests for a proposal slot (SIP #94 §5 extension)
 	RequestAuthPartialSig = PartialSigMsgType(9)
 )
