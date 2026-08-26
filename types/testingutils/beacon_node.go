@@ -254,6 +254,26 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 	return nil
 }
 
+// GetGloasBeaconBlock returns the Gloas (ePBS §4) beacon block for the slot. The fixture block carries
+// the requested slot, so the value check's block-slot/duty-slot pin holds for any duty slot.
+func (bn *TestingBeaconNode) GetGloasBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, error) {
+	return gloas.TestingBeaconBlock(slot), nil
+}
+
+// SubmitGloasBeaconBlock records the signed Gloas (ePBS §4) block's root, mirroring SubmitBeaconBlock.
+func (bn *TestingBeaconNode) SubmitGloasBeaconBlock(block *gloas.BeaconBlock, sig phase0.BLSSignature) error {
+	sb := &gloas.SignedBeaconBlock{
+		Message:   block,
+		Signature: sig,
+	}
+	r, err := sb.HashTreeRoot()
+	if err != nil {
+		return err
+	}
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	return nil
+}
+
 // IsAggregator returns true if the validator is selected as an aggregator
 func (bn *TestingBeaconNode) IsAggregator(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, slotSig []byte) bool {
 	// In production, this would check the selection proof against the committee modulo

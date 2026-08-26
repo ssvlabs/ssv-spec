@@ -15,6 +15,7 @@ import (
 	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -22,7 +23,9 @@ import (
 // ==================================================
 
 // SupportedBlockVersions is a list of supported regular/blinded beacon block versions by spec.
-var SupportedBlockVersions = []spec.DataVersion{spec.DataVersionCapella, spec.DataVersionDeneb, spec.DataVersionElectra, spec.DataVersionFulu}
+// Gloas (ePBS §4) blocks are bid-only — the "blinded" fixtures at that version return the same
+// bid-only forms, pinning that a blinded-configured runner behaves identically from Gloas on.
+var SupportedBlockVersions = []spec.DataVersion{spec.DataVersionCapella, spec.DataVersionDeneb, spec.DataVersionElectra, spec.DataVersionFulu, gloas.DataVersionGloas}
 
 var TestingBeaconBlockV = func(version spec.DataVersion) *api.VersionedProposal {
 	switch version {
@@ -52,6 +55,16 @@ var TestingBeaconBlockV = func(version spec.DataVersion) *api.VersionedProposal 
 }
 
 var TestingBeaconBlockBytesV = func(version spec.DataVersion) []byte {
+	// Gloas (ePBS §4): api.VersionedProposal cannot carry a Gloas block, so TestingBeaconBlockV has no
+	// Gloas arm — serve the bid-only fixture block's bytes directly.
+	if version == gloas.DataVersionGloas {
+		ret, err := gloas.TestingBeaconBlock(TestingDutySlotV(version)).MarshalSSZ()
+		if err != nil {
+			panic(err.Error())
+		}
+		return ret
+	}
+
 	var ret []byte
 	vBlk := TestingBeaconBlockV(version)
 
@@ -115,6 +128,11 @@ var TestingBlindedBeaconBlockV = func(version spec.DataVersion) *api.VersionedPr
 }
 
 var TestingBlindedBeaconBlockBytesV = func(version spec.DataVersion) []byte {
+	// Gloas (ePBS §4) has no blinded variant — blocks are bid-only, so blinded ≡ regular.
+	if version == gloas.DataVersionGloas {
+		return TestingBeaconBlockBytesV(version)
+	}
+
 	var ret []byte
 	vBlk := TestingBlindedBeaconBlockV(version)
 
@@ -196,6 +214,15 @@ var TestingWrongBeaconBlockV = func(version spec.DataVersion) *api.VersionedProp
 }
 
 var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
+	// Gloas (SIP #94 §4): the bid-only block signed under DomainProposer.
+	if version == gloas.DataVersionGloas {
+		blk := gloas.TestingBeaconBlock(TestingDutySlotV(version))
+		return &gloas.SignedBeaconBlock{
+			Message:   blk,
+			Signature: signBeaconObject(blk, types.DomainProposer, ks),
+		}
+	}
+
 	vBlk := TestingBeaconBlockV(version)
 
 	switch version {
@@ -258,6 +285,11 @@ var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) s
 }
 
 var TestingSignedBlindedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
+	// Gloas (ePBS §4) has no blinded variant — blocks are bid-only, so blinded ≡ regular.
+	if version == gloas.DataVersionGloas {
+		return TestingSignedBeaconBlockV(ks, version)
+	}
+
 	vBlk := TestingBlindedBeaconBlockV(version)
 
 	switch version {
@@ -579,6 +611,8 @@ var TestingProposerDutyNextEpochV = func(version spec.DataVersion) *types.Valida
 		duty.Slot = TestingDutySlotElectraNextEpoch
 	case spec.DataVersionFulu:
 		duty.Slot = TestingDutySlotFuluNextEpoch
+	case gloas.DataVersionGloas:
+		duty.Slot = TestingDutySlotGloasNextEpoch
 
 	default:
 		panic("unsupported version")

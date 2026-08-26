@@ -73,7 +73,8 @@ func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueChe
 		return ssv.BeaconVoteValueCheckF(signer, test.DutySlot, shareValidatorsPK, test.ExpectedSource.Epoch,
 			test.ExpectedTarget.Epoch)
 	case types.RoleProposer:
-		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex, nil)
+		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex,
+			shareValidatorsPK[0], testingutils.VersionByEpoch)
 	case types.RoleAggregatorCommittee:
 		return ssv.AggregatorCommitteeValueCheckF(signer, test.Network)
 	default:
