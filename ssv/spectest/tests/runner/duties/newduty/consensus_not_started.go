@@ -54,6 +54,15 @@ func ConsensusNotStarted() tests.SpecTest {
 				},
 			},
 			{
+				Name:      "ptc attestation",
+				Runner:    startRunner(testingutils.PTCAttesterRunner(ks), testingutils.TestingPTCAttesterDuty()),
+				Duty:      testingutils.TestingPTCAttesterNextEpochDuty(),
+				Threshold: ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusPTCNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+			},
+			{
 				Name:      "validator registration",
 				Runner:    startRunner(testingutils.ValidatorRegistrationRunner(ks), &testingutils.TestingValidatorRegistrationDuty),
 				Duty:      &testingutils.TestingValidatorRegistrationDutyNextEpoch,

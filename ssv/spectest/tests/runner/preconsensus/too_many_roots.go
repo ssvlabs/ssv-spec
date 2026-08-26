@@ -78,6 +78,18 @@ func TooManyRoots() tests.SpecTest {
 				},
 				ExpectedErrorCode: types.WrongRootsCountErrorCode,
 			},
+			{
+				Name:   "ptc attestation",
+				Runner: testingutils.PTCAttesterRunner(ks),
+				Duty:   testingutils.TestingPTCAttesterDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPTCAttester(nil, testingutils.PreConsensusPTCTooManyRootsMsg(ks.Shares[1], 1))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusPTCMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedErrorCode: types.WrongRootsCountErrorCode,
+			},
 		},
 		ks,
 	)
