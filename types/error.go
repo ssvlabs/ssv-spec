@@ -109,6 +109,10 @@ const (
 	PTCAttesterNoConsensusPhaseErrorCode
 	PTCAttesterNoPostConsensusPhaseErrorCode
 	PTCAttesterNoObservationErrorCode
+	ProposerPreferencesNoConsensusPhaseErrorCode
+	ProposerPreferencesNoPostConsensusPhaseErrorCode
+	ProposerPreferencesNoPreferenceErrorCode
+	ValidatorRegistrationDeprecatedErrorCode
 )
 
 type Error struct {
