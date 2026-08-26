@@ -3,9 +3,8 @@ package ssv_test
 import (
 	"testing"
 
-	"github.com/attestantio/go-eth2-client/spec/altair"
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	bitfield "github.com/prysmaticlabs/go-bitfield"
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/ssv"
@@ -33,13 +32,15 @@ func TestProposerConsensusDataValidateErrorsOnGloas(t *testing.T) {
 }
 
 // TestProposerValueCheckFGloas asserts the value check decodes a Gloas block: accepting a valid one,
-// rejecting an undecodable one (UnmarshalSSZErrorCode), and rejecting a slot-mismatched one
-// (ProposerBlockSlotMismatchErrorCode).
+// rejecting an undecodable one (UnmarshalSSZErrorCode), rejecting a slot-mismatched one
+// (ProposerBlockSlotMismatchErrorCode), and rejecting a version that disagrees with the duty slot's
+// fork in either direction (QBFTValueInvalidErrorCode).
 func TestProposerValueCheckFGloas(t *testing.T) {
 	km := testingutils.NewTestingKeyManager()
 	duty := testingutils.TestingProposerDutyV(gloas.DataVersionGloas)
 	valueCheck := ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
-		types.ValidatorPK(testingutils.TestingValidatorPubKey), testingutils.TestingValidatorIndex, nil)
+		types.ValidatorPK(testingutils.TestingValidatorPubKey), testingutils.TestingValidatorIndex, nil,
+		testingutils.VersionByEpoch)
 
 	valid, err := (&types.ProposerConsensusData{Duty: *duty, Version: gloas.DataVersionGloas, DataSSZ: testingGloasBeaconBlockSSZ(t, duty.Slot)}).Encode()
 	require.NoError(t, err)
@@ -47,34 +48,32 @@ func TestProposerValueCheckFGloas(t *testing.T) {
 
 	garbage, err := (&types.ProposerConsensusData{Duty: *duty, Version: gloas.DataVersionGloas, DataSSZ: []byte("garbage")}).Encode()
 	require.NoError(t, err)
-	var decodeErr *types.Error
-	require.ErrorAs(t, valueCheck(garbage), &decodeErr)
-	require.Equal(t, types.UnmarshalSSZErrorCode, decodeErr.Code)
+	requireErrorCode(t, valueCheck(garbage), types.UnmarshalSSZErrorCode)
 
 	// a block whose slot does not match the duty slot is rejected
 	slotMismatch, err := (&types.ProposerConsensusData{Duty: *duty, Version: gloas.DataVersionGloas, DataSSZ: testingGloasBeaconBlockSSZ(t, duty.Slot+1)}).Encode()
 	require.NoError(t, err)
-	var slotErr *types.Error
-	require.ErrorAs(t, valueCheck(slotMismatch), &slotErr)
-	require.Equal(t, types.ProposerBlockSlotMismatchErrorCode, slotErr.Code)
+	requireErrorCode(t, valueCheck(slotMismatch), types.ProposerBlockSlotMismatchErrorCode)
+
+	// the leader-stamped Version must agree with the duty slot's fork: a pre-Gloas Version on a Gloas
+	// slot is rejected by the explicit guard (the stamp is attacker-controlled) ...
+	preGloasVersion, err := (&types.ProposerConsensusData{Duty: *duty, Version: spec.DataVersionElectra, DataSSZ: testingGloasBeaconBlockSSZ(t, duty.Slot)}).Encode()
+	require.NoError(t, err)
+	requireErrorCode(t, valueCheck(preGloasVersion), types.QBFTValueInvalidErrorCode)
+
+	// ... and a Gloas Version on a pre-Gloas slot takes the pre-Gloas branch, where Validate() rejects
+	// it as an unknown version — both mismatch directions fail, matching the node's slot-based check.
+	electraDuty := testingutils.TestingProposerDutyV(spec.DataVersionElectra)
+	gloasVersionPreGloasSlot, err := (&types.ProposerConsensusData{Duty: *electraDuty, Version: gloas.DataVersionGloas, DataSSZ: testingGloasBeaconBlockSSZ(t, electraDuty.Slot)}).Encode()
+	require.NoError(t, err)
+	requireErrorCode(t, valueCheck(gloasVersionPreGloasSlot), types.QBFTValueInvalidErrorCode)
 }
 
-// testingGloasBeaconBlockSSZ builds a minimal valid Gloas beacon block (mirrors the
-// types/gloas round-trip fixture) and returns its SSZ encoding.
+// testingGloasBeaconBlockSSZ returns the SSZ encoding of the shared minimal Gloas beacon block
+// fixture at the given slot.
 func testingGloasBeaconBlockSSZ(t *testing.T, slot phase0.Slot) []byte {
 	t.Helper()
-	byts, err := (&gloas.BeaconBlock{
-		Slot:          slot,
-		ProposerIndex: testingutils.TestingValidatorIndex,
-		Body: &gloas.BeaconBlockBody{
-			ETH1Data:      &phase0.ETH1Data{BlockHash: make([]byte, 32)},
-			SyncAggregate: &altair.SyncAggregate{SyncCommitteeBits: bitfield.NewBitvector512()},
-			SignedExecutionPayloadBid: &gloas.SignedExecutionPayloadBid{Message: &gloas.ExecutionPayloadBid{
-				BuilderIndex: gloas.BuilderIndexSelfBuild,
-			}},
-			ParentExecutionRequests: &gloas.ExecutionRequests{},
-		},
-	}).MarshalSSZ()
+	byts, err := gloas.TestingBeaconBlock(slot).MarshalSSZ()
 	require.NoError(t, err)
 	return byts
 }
