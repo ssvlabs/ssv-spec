@@ -91,6 +91,15 @@ func DuplicateDutyFinished() tests.SpecTest {
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
 				ExpectedErrorCode:       expectedTaskErrorCode,
 			},
+			{
+				Name: "ptc attestation",
+				Runner: finishTaskRunner(testingutils.PTCAttesterRunner(ks),
+					testingutils.TestingPTCAttesterDuty()),
+				Duty:                    testingutils.TestingPTCAttesterDuty(),
+				Threshold:               ks.Threshold,
+				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
+				ExpectedErrorCode:       expectedTaskErrorCode,
+			},
 		},
 		ks,
 	)

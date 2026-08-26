@@ -71,6 +71,15 @@ func Finished() tests.SpecTest {
 				},
 			},
 			{
+				Name:      "ptc attestation",
+				Runner:    finishRunner(testingutils.PTCAttesterRunner(ks), testingutils.TestingPTCAttesterDuty(), false),
+				Duty:      testingutils.TestingPTCAttesterNextEpochDuty(),
+				Threshold: ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusPTCNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+			},
+			{
 				Name:      "validator registration",
 				Runner:    finishRunner(testingutils.ValidatorRegistrationRunner(ks), &testingutils.TestingValidatorRegistrationDuty, false),
 				Duty:      &testingutils.TestingValidatorRegistrationDutyNextEpoch,
