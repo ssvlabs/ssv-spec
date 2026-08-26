@@ -97,6 +97,10 @@ var VoluntaryExitRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleVoluntaryExit, keySet)
 }
 
+var PTCAttesterRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.RolePTCAttester, keySet)
+}
+
 var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(UnknownDutyType, keySet)
 }
@@ -225,6 +229,15 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 		)
 	case types.RoleVoluntaryExit:
 		runner, err = ssv.NewVoluntaryExitRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			beacon,
+			net,
+			km,
+			opSigner,
+		)
+	case types.RolePTCAttester:
+		runner, err = ssv.NewPTCAttesterRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			beacon,
@@ -367,6 +380,15 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 		)
 	case types.RoleVoluntaryExit:
 		runner, err = ssv.NewVoluntaryExitRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+		)
+	case types.RolePTCAttester:
+		runner, err = ssv.NewPTCAttesterRunner(
 			types.BeaconTestNetwork,
 			shareMap,
 			NewTestingBeaconNode(),
