@@ -242,6 +242,8 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 		runner = &ssv.VoluntaryExitRunner{}
 	case *ssv.PTCAttesterRunner:
 		runner = &ssv.PTCAttesterRunner{}
+	case *ssv.ProposerPreferencesRunner:
+		runner = &ssv.ProposerPreferencesRunner{}
 	default:
 		t.Fatalf("unknown runner type")
 	}
