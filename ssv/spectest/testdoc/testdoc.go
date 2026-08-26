@@ -234,6 +234,7 @@ const ValCheckDutyWrongValidatorPKDoc = "Tests duty value check with wrong valid
 
 // Documentation for valcheckproposer tests
 const ValCheckProposerBlindedBlockDoc = "Tests proposer value check with blinded block data"
+const ValCheckProposerGloasBlocksDoc = "Tests Gloas proposer value check (SIP #94 §4): decodes the opaque bid-only block, pins its slot to the duty slot, rejects a Version that disagrees with the slot's fork in either direction, and consults slashing protection"
 
 // Documentation for valcheckaggcommittee
 const ValCheckAggCommitteeNoValidatorsDoc = "Tests agg committee value check with no validators"

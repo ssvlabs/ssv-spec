@@ -166,8 +166,15 @@ func (km *TestingKeyManager) SignRoot(data types.Root, sigType types.SignatureTy
 	return nil, errors.New("pk not found")
 }
 
-// IsBeaconBlockSlashable returns error if the given block is slashable
+// IsBeaconBlockSlashable returns an error if the share has the slot marked slashable, mirroring
+// IsAttestationSlashable's use of the slashable-slots store.
 func (km *TestingKeyManager) IsBeaconBlockSlashable(pk []byte, slot phase0.Slot) error {
+	entry := hex.EncodeToString(pk)
+	for _, slashableSlot := range km.slashableSlots[entry] {
+		if slashableSlot == slot {
+			return types.NewError(types.SlashableProposalErrorCode, "slashable proposal")
+		}
+	}
 	return nil
 }
 
