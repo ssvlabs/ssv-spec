@@ -209,6 +209,7 @@ var AllTests = []tests.TestF{
 	valcheckattestations.GloasPreGloasVote,
 
 	valcheckproposer.BlindedBlock,
+	valcheckproposer.GloasBlocks,
 
 	valcheckaggcommittee.NoValidator,
 	valcheckaggcommittee.Valid,
