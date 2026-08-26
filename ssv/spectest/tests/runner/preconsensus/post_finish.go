@@ -57,6 +57,19 @@ func PostFinish() tests.SpecTest {
 				DontStartDuty:     true,
 				ExpectedErrorCode: types.NoRunningDutyErrorCode,
 			},
+			{
+				Name: "ptc attestation",
+				Runner: finishRunner(
+					testingutils.PTCAttesterRunner(ks),
+					testingutils.TestingPTCAttesterDuty(),
+				),
+				Duty: testingutils.TestingPTCAttesterDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPTCAttester(nil, testingutils.PreConsensusPTCMsg(ks.Shares[1], 1))),
+				},
+				DontStartDuty:     true,
+				ExpectedErrorCode: types.NoRunningDutyErrorCode,
+			},
 		},
 		ks,
 	)
