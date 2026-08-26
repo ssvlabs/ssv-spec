@@ -91,6 +91,21 @@ func InvalidMessageSlot() tests.SpecTest {
 				// unlike the pre-Gloas runners above for which it is in the future.
 				ExpectedErrorCode: types.PartialSigMessageInvalidSlotErrorCode,
 			},
+			{
+				Name:   "proposer preferences",
+				Runner: testingutils.ProposerPreferencesRunner(ks),
+				Duty:   testingutils.TestingProposerPreferencesDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, invalidateSlot(testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1)))),
+				},
+				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				// §5 messages address a proposal slot's flow by their slot, so an invalidated slot is a
+				// route miss — there is no duty for it — rather than a base-runner slot check.
+				ExpectedErrorCode: types.NoRunningDutyErrorCode,
+			},
 		},
 		ks,
 	)

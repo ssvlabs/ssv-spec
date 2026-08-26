@@ -21,6 +21,13 @@ func PostFinish() tests.SpecTest {
 		runner.GetBaseRunner().State.Finished = true
 		return runner
 	}
+	finishPreferencesRunner := func(runner ssv.Runner, duty *types.ValidatorDuty) ssv.Runner {
+		sub := runner.(*ssv.ProposerPreferencesRunner).NewSlotRunner()
+		sub.BaseRunner.State = ssv.NewRunnerState(3, duty)
+		sub.BaseRunner.State.Finished = true
+		runner.(*ssv.ProposerPreferencesRunner).BySlot[duty.Slot] = sub
+		return runner
+	}
 	finishAggCommRunner := func(runner ssv.Runner, duty *types.AggregatorCommitteeDuty) ssv.Runner {
 		runner.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		runner.GetBaseRunner().State.Finished = true
@@ -66,6 +73,21 @@ func PostFinish() tests.SpecTest {
 				Duty: testingutils.TestingPTCAttesterDuty(),
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPTCAttester(nil, testingutils.PreConsensusPTCMsg(ks.Shares[1], 1))),
+				},
+				DontStartDuty:     true,
+				ExpectedErrorCode: types.NoRunningDutyErrorCode,
+			},
+			{
+				// §5 state lives in the per-slot sub-runners, so the finished duty is seeded there:
+				// the sub for the message's proposal slot exists but concluded, and rejects the partial.
+				Name: "proposer preferences",
+				Runner: finishPreferencesRunner(
+					testingutils.ProposerPreferencesRunner(ks),
+					testingutils.TestingProposerPreferencesDuty(),
+				),
+				Duty: testingutils.TestingProposerPreferencesDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1))),
 				},
 				DontStartDuty:     true,
 				ExpectedErrorCode: types.NoRunningDutyErrorCode,
