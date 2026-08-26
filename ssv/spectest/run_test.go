@@ -24,6 +24,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	comparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
@@ -520,6 +521,7 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 	require.NoError(t, json.Unmarshal(byts, &base))
 
 	ret := baseRunnerForRole(base.RunnerRoleType, base, ks)
+	fixRunnerRoleSpecificState(t, ret, runnerMap, ks)
 
 	if ret.GetBaseRunner().QBFTController != nil {
 		ret.GetBaseRunner().QBFTController = fixControllerForRun(t, ret, ret.GetBaseRunner().QBFTController, ks)
@@ -587,6 +589,46 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 	return newInst
 }
 
+// fixRunnerRoleSpecificState restores runner state living outside BaseRunner (baseRunnerForRole
+// rebuilds only that): the PTC attester's frozen observation and the proposer-preferences
+// dispatcher's per-slot sub-runners, whose own sub-state is grafted onto dependency-complete
+// sub-runners the same way.
+func fixRunnerRoleSpecificState(t *testing.T, runner ssv.Runner, runnerMap map[string]interface{}, ks *testingutils.TestKeySet) {
+	switch r := runner.(type) {
+	case *ssv.PTCAttesterRunner:
+		if raw, ok := runnerMap["PayloadAttestationData"]; ok && raw != nil {
+			byts, _ := json.Marshal(raw)
+			data := &gloas.PayloadAttestationData{}
+			require.NoError(t, json.Unmarshal(byts, data))
+			r.PayloadAttestationData = data
+		}
+	case *ssv.ProposerPreferencesRunner:
+		raw, ok := runnerMap["BySlot"].(map[string]interface{})
+		if !ok {
+			return
+		}
+		for _, subRaw := range raw {
+			subMap, ok := subRaw.(map[string]interface{})
+			if !ok || subMap["BaseRunner"] == nil {
+				continue
+			}
+			subBase := &ssv.BaseRunner{}
+			byts, _ := json.Marshal(subMap["BaseRunner"])
+			require.NoError(t, json.Unmarshal(byts, subBase))
+
+			sub := r.NewSlotRunner()
+			sub.BaseRunner = subBase
+			if prefRaw, ok := subMap["ProposerPreferences"]; ok && prefRaw != nil {
+				byts, _ := json.Marshal(prefRaw)
+				pref := &gloas.ProposerPreferences{}
+				require.NoError(t, json.Unmarshal(byts, pref))
+				sub.ProposerPreferences = pref
+			}
+			r.BySlot[subBase.State.StartingDuty.DutySlot()] = sub
+		}
+	}
+}
+
 func baseRunnerForRole(role types.RunnerRole, base *ssv.BaseRunner, ks *testingutils.TestKeySet) ssv.Runner {
 	switch role {
 	case types.RoleCommittee:
@@ -612,6 +654,10 @@ func baseRunnerForRole(role types.RunnerRole, base *ssv.BaseRunner, ks *testingu
 	case types.RolePTCAttester:
 		ret := testingutils.PTCAttesterRunner(ks)
 		ret.(*ssv.PTCAttesterRunner).BaseRunner = base
+		return ret
+	case types.RoleProposerPreferences:
+		ret := testingutils.ProposerPreferencesRunner(ks)
+		ret.(*ssv.ProposerPreferencesRunner).BaseRunner = base
 		return ret
 	case testingutils.UnknownDutyType:
 		ret := testingutils.UnknownDutyTypeRunner(ks)
