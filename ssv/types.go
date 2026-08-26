@@ -106,6 +106,15 @@ type VersionCalls interface {
 	DataVersion(epoch phase0.Epoch) spec.DataVersion
 }
 
+// PTCCalls interface has all Gloas (ePBS) Payload Timeliness Committee duty specific calls (SIP #94 §3)
+type PTCCalls interface {
+	// GetPayloadAttestationData returns the slot's payload attestation data as observed by the local
+	// beacon node; a zero BeaconBlockRoot signals no block was seen for the slot — the abstain trigger.
+	GetPayloadAttestationData(slot phase0.Slot) (*gloas.PayloadAttestationData, error)
+	// SubmitPayloadAttestation submits the reconstructed payload attestation message to the node
+	SubmitPayloadAttestation(msg *gloas.PayloadAttestationMessage) error
+}
+
 type BeaconNode interface {
 	// GetBeaconNetwork returns the beacon network the node is on
 	GetBeaconNetwork() types.BeaconNetwork
@@ -116,6 +125,7 @@ type BeaconNode interface {
 	SyncCommitteeContributionCalls
 	ValidatorRegistrationCalls
 	VoluntaryExitCalls
+	PTCCalls
 	DomainCalls
 	VersionCalls
 }

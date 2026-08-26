@@ -104,6 +104,9 @@ const (
 	DecodeGloasBeaconVoteErrorCode
 	GloasBeaconVoteInvalidIndexErrorCode
 	SlashableProposalErrorCode
+	PTCAttesterNoConsensusPhaseErrorCode
+	PTCAttesterNoPostConsensusPhaseErrorCode
+	PTCAttesterNoObservationErrorCode
 )
 
 type Error struct {
