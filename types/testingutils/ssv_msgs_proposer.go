@@ -6,6 +6,7 @@ import (
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -73,7 +74,15 @@ var postConsensusBeaconBlockMsgV = func(
 
 	var root phase0.Root
 	var err error
-	if wrongRoot {
+	if version == gloas.DataVersionGloas {
+		// Gloas (ePBS §4): api.VersionedProposal cannot carry a Gloas block — the signing root is the
+		// bid-only fixture block's own hash tree root (a wrong root comes from a wrong-slot block).
+		slot := TestingDutySlotV(version)
+		if wrongRoot {
+			slot += 100
+		}
+		root, err = gloas.TestingBeaconBlock(slot).HashTreeRoot()
+	} else if wrongRoot {
 		blk := TestingWrongBeaconBlockV(version)
 		root, err = blk.Root()
 	} else {

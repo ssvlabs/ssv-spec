@@ -9,6 +9,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/p2p"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // DutyRunners is a map of duty runners mapped by msg id hex.
@@ -40,6 +41,12 @@ type ProposerCalls interface {
 	GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*api.VersionedProposal, ssz.Marshaler, error)
 	// SubmitBeaconBlock submit the block to the node
 	SubmitBeaconBlock(block *api.VersionedProposal, sig phase0.BLSSignature) error
+	// GetGloasBeaconBlock returns the Gloas (ePBS) beacon block for the given slot, graffiti, and
+	// randao (SIP #94 §4). Separate from GetBeaconBlock because api.VersionedProposal cannot carry a
+	// Gloas block; there is no blinded variant — Gloas blocks are bid-only.
+	GetGloasBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, error)
+	// SubmitGloasBeaconBlock submits the signed Gloas (ePBS) block to the node (SIP #94 §4)
+	SubmitGloasBeaconBlock(block *gloas.BeaconBlock, sig phase0.BLSSignature) error
 }
 
 // AggregatorCalls interface has all attestation aggregator duty specific calls
