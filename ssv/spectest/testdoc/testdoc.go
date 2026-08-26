@@ -232,6 +232,10 @@ const ValCheckDutyWrongDutyTypeDoc = "Tests duty value check with wrong duty typ
 const ValCheckDutyWrongValidatorIndexDoc = "Tests duty value check with wrong validator index across different roles"
 const ValCheckDutyWrongValidatorPKDoc = "Tests duty value check with wrong validator public key across different roles"
 
+// Documentation for ptcattester tests
+const PTCAttesterAbstainDoc = "Tests the SIP #94 §3 abstain rule: no block seen for the slot, so the operator signs nothing and rejects peer partials"
+const PTCAttesterDivergingObservationDoc = "Tests SIP #94 §3 honest convergence under a minority split: a diverging peer partial is rejected and the matching minority stays below quorum"
+
 // Documentation for valcheckproposer tests
 const ValCheckProposerBlindedBlockDoc = "Tests proposer value check with blinded block data"
 const ValCheckProposerGloasBlocksDoc = "Tests Gloas proposer value check (SIP #94 §4): decodes the opaque bid-only block, pins its slot to the duty slot, rejects a Version that disagrees with the slot's fork in either direction, and consults slashing protection"

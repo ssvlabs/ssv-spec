@@ -14,6 +14,7 @@ import (
 	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/ptcattester"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/postconsensus"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/preconsensus"
@@ -207,6 +208,9 @@ var AllTests = []tests.TestF{
 	valcheckattestations.GloasSlashable,
 	valcheckattestations.GloasUnmatchedSourceEpoch,
 	valcheckattestations.GloasPreGloasVote,
+
+	ptcattester.Abstain,
+	ptcattester.DivergingObservation,
 
 	valcheckproposer.BlindedBlock,
 	valcheckproposer.GloasBlocks,

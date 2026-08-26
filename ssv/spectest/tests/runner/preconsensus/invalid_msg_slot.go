@@ -76,6 +76,21 @@ func InvalidMessageSlot() tests.SpecTest {
 				},
 				ExpectedErrorCode: types.PartialSigMessageFutureSlotErrorCode,
 			},
+			{
+				Name:   "ptc attestation",
+				Runner: testingutils.PTCAttesterRunner(ks),
+				Duty:   testingutils.TestingPTCAttesterDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPTCAttester(nil, invalidateSlot(testingutils.PreConsensusPTCMsg(ks.Shares[1], 1)))),
+				},
+				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusPTCMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				// The invalidated slot is a pre-Gloas constant — in the past of the Gloas-era PTC duty,
+				// unlike the pre-Gloas runners above for which it is in the future.
+				ExpectedErrorCode: types.PartialSigMessageInvalidSlotErrorCode,
+			},
 		},
 		ks,
 	)
