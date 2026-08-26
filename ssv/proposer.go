@@ -9,6 +9,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 type ProposerRunner struct {
@@ -91,20 +92,38 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 	duty := r.GetState().StartingDuty.(*types.ValidatorDuty)
 
 	// get block data
-	vBlk, obj, err := r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
-	if err != nil {
-		return errors.Wrap(err, "failed to get Beacon block")
-	}
-
-	byts, err := obj.MarshalSSZ()
-	if err != nil {
-		return errors.Wrap(err, "could not marshal beacon block")
-	}
-
-	input := &types.ProposerConsensusData{
-		Duty:    *duty,
-		Version: vBlk.Version,
-		DataSSZ: byts,
+	var input *types.ProposerConsensusData
+	if versionForSlot(r.beacon, duty.Slot) >= gloas.DataVersionGloas {
+		// Gloas (ePBS §4): api.VersionedProposal cannot carry a Gloas block, so it is fetched via the
+		// dedicated call and travels opaque in DataSSZ (decoded by the value check and the
+		// post-consensus paths). Gloas blocks are bid-only — there is no blinded variant.
+		blk, err := r.GetBeaconNode().GetGloasBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
+		if err != nil {
+			return errors.Wrap(err, "failed to get Gloas Beacon block")
+		}
+		byts, err := blk.MarshalSSZ()
+		if err != nil {
+			return errors.Wrap(err, "could not marshal Gloas beacon block")
+		}
+		input = &types.ProposerConsensusData{
+			Duty:    *duty,
+			Version: gloas.DataVersionGloas,
+			DataSSZ: byts,
+		}
+	} else {
+		vBlk, obj, err := r.GetBeaconNode().GetBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
+		if err != nil {
+			return errors.Wrap(err, "failed to get Beacon block")
+		}
+		byts, err := obj.MarshalSSZ()
+		if err != nil {
+			return errors.Wrap(err, "could not marshal beacon block")
+		}
+		input = &types.ProposerConsensusData{
+			Duty:    *duty,
+			Version: vBlk.Version,
+			DataSSZ: byts,
+		}
 	}
 
 	if err := r.BaseRunner.decide(r, input.Duty.DutySlot(), input); err != nil {
@@ -129,9 +148,19 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 	var blkToSign ssz.HashRoot
 
 	cd := decidedValue.(*types.ProposerConsensusData)
-	_, blkToSign, err = cd.GetBlockData()
-	if err != nil {
-		return errors.Wrap(err, "could not get block data")
+	if versionForSlot(r.beacon, cd.Duty.Slot) >= gloas.DataVersionGloas {
+		// Gloas blocks are opaque to the types layer (GetBlockData has no Gloas arm); decode here —
+		// the decoded block doubles as the ssz.HashRoot to sign under DomainProposer (SIP #94 §4).
+		blk, err := gloas.DecodeBeaconBlock(cd.DataSSZ)
+		if err != nil {
+			return errors.Wrap(err, "could not decode Gloas block from consensus data")
+		}
+		blkToSign = blk
+	} else {
+		_, blkToSign, err = cd.GetBlockData()
+		if err != nil {
+			return errors.Wrap(err, "could not get block data")
+		}
 	}
 
 	msg, err := r.BaseRunner.signBeaconObject(r, r.BaseRunner.State.StartingDuty.(*types.ValidatorDuty), blkToSign,
@@ -204,13 +233,23 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 		if err != nil {
 			return errors.Wrap(err, "could not create consensus data")
 		}
-		vBlk, _, err := proposerConsensusData.GetBlockData()
-		if err != nil {
-			return errors.Wrap(err, "could not get block")
-		}
+		if versionForSlot(r.beacon, proposerConsensusData.Duty.Slot) >= gloas.DataVersionGloas {
+			blk, err := gloas.DecodeBeaconBlock(proposerConsensusData.DataSSZ)
+			if err != nil {
+				return errors.Wrap(err, "could not decode Gloas block from consensus data")
+			}
+			if err := r.GetBeaconNode().SubmitGloasBeaconBlock(blk, specSig); err != nil {
+				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed Gloas block")
+			}
+		} else {
+			vBlk, _, err := proposerConsensusData.GetBlockData()
+			if err != nil {
+				return errors.Wrap(err, "could not get block")
+			}
 
-		if err := r.GetBeaconNode().SubmitBeaconBlock(vBlk, specSig); err != nil {
-			return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed Beacon block")
+			if err := r.GetBeaconNode().SubmitBeaconBlock(vBlk, specSig); err != nil {
+				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed Beacon block")
+			}
 		}
 	}
 	r.GetState().Finished = true
@@ -228,6 +267,14 @@ func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, 
 	err := proposerConsensusData.Decode(r.GetState().DecidedValue)
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not create consensus data")
+	}
+
+	if versionForSlot(r.beacon, proposerConsensusData.Duty.Slot) >= gloas.DataVersionGloas {
+		blk, err := gloas.DecodeBeaconBlock(proposerConsensusData.DataSSZ)
+		if err != nil {
+			return nil, phase0.DomainType{}, errors.Wrap(err, "could not decode Gloas block from consensus data")
+		}
+		return []ssz.HashRoot{blk}, types.DomainProposer, nil
 	}
 
 	_, data, err := proposerConsensusData.GetBlockData()

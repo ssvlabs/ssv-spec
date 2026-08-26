@@ -113,7 +113,7 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 	}
 
 	duty := cr.BaseRunner.State.StartingDuty
-	version := committeeVersionForSlot(cr.beacon, duty.DutySlot())
+	version := versionForSlot(cr.beacon, duty.DutySlot())
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
 		Slot:     duty.DutySlot(),
@@ -420,7 +420,7 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	// Decode the decided value into the slot's fork prototype, then split into the base vote and the
 	// optional Gloas attestation index (SIP #94 §2).
 	decodedVote := committeeVoteForSlot(cr.beacon, slot)
-	dataVersion := committeeVersionForSlot(cr.beacon, slot)
+	dataVersion := versionForSlot(cr.beacon, slot)
 	if err := decodedVote.Decode(beaconVoteData); err != nil {
 		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
 	}
@@ -504,7 +504,7 @@ func (cr CommitteeRunner) executeDuty(duty types.Duty) error {
 	// On Gloas slots the consensus value is a GloasBeaconVote carrying the BN-supplied attestation
 	// index (SIP #94 §2); before Gloas it is a plain BeaconVote.
 	var input types.Encoder
-	if committeeVersionForSlot(cr.beacon, slot) >= gloas.DataVersionGloas {
+	if versionForSlot(cr.beacon, slot) >= gloas.DataVersionGloas {
 		input = &types.GloasBeaconVote{
 			BlockRoot:            attData.BeaconBlockRoot,
 			Source:               attData.Source,
@@ -533,21 +533,23 @@ func (cr CommitteeRunner) GetOperatorSigner() *types.OperatorSigner {
 	return cr.operatorSigner
 }
 
-// committeeVersionForSlot returns the data version the committee duty at slot runs under.
+// versionForSlot returns the data version the duty at slot runs under, per the local beacon node's
+// fork schedule.
 //
-// The comparisons against gloas.DataVersionGloas below are >=, not ==, because this version comes from
-// the local beacon node's fork schedule: any version at or beyond Gloas is Gloas or a later fork, all
-// of which use the Gloas-shaped vote. Contrast ProposerValueCheckF, which matches == because the
-// version there is carried inside a received consensus-data value and so is attacker-controlled.
-func committeeVersionForSlot(beacon BeaconNode, slot phase0.Slot) spec.DataVersion {
+// Comparisons of this version against gloas.DataVersionGloas are >=, not ==, because any version at
+// or beyond Gloas is Gloas or a later fork, all of which keep the Gloas-shaped values until a later
+// fork's spec changes them. Contrast the version stamped *inside* a received consensus-data value
+// (e.g. ProposerConsensusData.Version), which is attacker-controlled and therefore pinned against
+// the slot's fork where it is consumed (see ProposerValueCheckF).
+func versionForSlot(beacon BeaconNode, slot phase0.Slot) spec.DataVersion {
 	return beacon.DataVersion(beacon.GetBeaconNetwork().EstimatedEpochAtSlot(slot))
 }
 
 // committeeVoteForSlot returns the empty committee consensus value to decode into for the slot's fork:
 // a GloasBeaconVote from Gloas on (SIP #94 §2), a BeaconVote before. Every committee path derives the
-// fork through this and committeeVersionForSlot so the decisions cannot drift apart.
+// fork through this and versionForSlot so the decisions cannot drift apart.
 func committeeVoteForSlot(beacon BeaconNode, slot phase0.Slot) types.Encoder {
-	if committeeVersionForSlot(beacon, slot) >= gloas.DataVersionGloas {
+	if versionForSlot(beacon, slot) >= gloas.DataVersionGloas {
 		return &types.GloasBeaconVote{}
 	}
 	return &types.BeaconVote{}
