@@ -101,6 +101,10 @@ var PTCAttesterRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RolePTCAttester, keySet)
 }
 
+var ProposerPreferencesRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.RoleProposerPreferences, keySet)
+}
+
 var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(UnknownDutyType, keySet)
 }
@@ -244,6 +248,16 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 			net,
 			km,
 			opSigner,
+		)
+	case types.RoleProposerPreferences:
+		runner, err = ssv.NewProposerPreferencesRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			beacon,
+			net,
+			km,
+			opSigner,
+			types.DefaultGasLimit,
 		)
 	case types.RoleAggregatorCommittee:
 		runner, err = ssv.NewAggregatorCommitteeRunner(
@@ -395,6 +409,16 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			net,
 			km,
 			opSigner,
+		)
+	case types.RoleProposerPreferences:
+		runner, err = ssv.NewProposerPreferencesRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+			types.DefaultGasLimit,
 		)
 	case types.RoleAggregatorCommittee:
 		runner, err = ssv.NewAggregatorCommitteeRunner(

@@ -106,6 +106,15 @@ type VersionCalls interface {
 	DataVersion(epoch phase0.Epoch) spec.DataVersion
 }
 
+// ProposerPreferencesCalls interface has all Gloas (ePBS) proposer-preferences duty specific calls (SIP #94 §5)
+type ProposerPreferencesCalls interface {
+	// ProposerDutiesDependentRoot returns the dependent root the epoch's proposer duties were computed
+	// against; the preference pins it so consumers can tell which duty assignment it was emitted for.
+	ProposerDutiesDependentRoot(epoch phase0.Epoch) (phase0.Root, error)
+	// SubmitProposerPreferences submits the reconstructed signed proposer preferences to the node
+	SubmitProposerPreferences(preferences *gloas.SignedProposerPreferences) error
+}
+
 // PTCCalls interface has all Gloas (ePBS) Payload Timeliness Committee duty specific calls (SIP #94 §3)
 type PTCCalls interface {
 	// GetPayloadAttestationData returns the slot's payload attestation data as observed by the local
@@ -126,6 +135,7 @@ type BeaconNode interface {
 	ValidatorRegistrationCalls
 	VoluntaryExitCalls
 	PTCCalls
+	ProposerPreferencesCalls
 	DomainCalls
 	VersionCalls
 }
