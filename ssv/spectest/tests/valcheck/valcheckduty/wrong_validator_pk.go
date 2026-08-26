@@ -1,8 +1,6 @@
 package valcheckduty
 
 import (
-	"encoding/json"
-
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
@@ -15,9 +13,12 @@ import (
 // WrongValidatorPK tests duty.PubKey wrong
 func WrongValidatorPK() tests.SpecTest {
 	consensusDataBytsF := func(cd *types.ProposerConsensusData) []byte {
+		b, err := cd.Encode()
+		if err != nil {
+			panic(err.Error())
+		}
 		cdCopy := &types.ProposerConsensusData{}
-		b, _ := json.Marshal(cd)
-		if err := json.Unmarshal(b, cdCopy); err != nil {
+		if err := cdCopy.Decode(b); err != nil {
 			panic(err.Error())
 		}
 		cdCopy.Duty.PubKey = testingutils.TestingWrongValidatorPubKey
