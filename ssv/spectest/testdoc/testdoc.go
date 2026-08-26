@@ -232,6 +232,12 @@ const ValCheckDutyWrongDutyTypeDoc = "Tests duty value check with wrong duty typ
 const ValCheckDutyWrongValidatorIndexDoc = "Tests duty value check with wrong validator index across different roles"
 const ValCheckDutyWrongValidatorPKDoc = "Tests duty value check with wrong validator public key across different roles"
 
+// Documentation for proposerpreferences tests
+const ProposerPreferencesConcurrentLookaheadSlotsDoc = "Tests two concurrently-active proposal slots (SIP #94 §5): each is an independent per-slot flow, so both reach quorum and submit"
+const ProposerPreferencesReemissionReplacesSlotDoc = "Tests that re-emitting a proposal slot's duty replaces the slot's flow (SIP #94 §5): the prior incarnation's partials are discarded, so no quorum forms from stale aggregation"
+const ProposerPreferencesDivergingDependentRootDoc = "Tests SIP #94 §5 honest convergence under a dependent-root split: a diverging peer partial is rejected and the matching minority stays below quorum"
+const NewDutyValidatorRegistrationDeprecatedDoc = "Tests that the validator registration duty is rejected from Gloas (SIP #94 §5), superseded by proposer preferences"
+
 // Documentation for ptcattester tests
 const PTCAttesterAbstainDoc = "Tests the SIP #94 §3 abstain rule: no block seen for the slot, so the operator signs nothing and rejects peer partials"
 const PTCAttesterDivergingObservationDoc = "Tests SIP #94 §3 honest convergence under a minority split: a diverging peer partial is rejected and the matching minority stays below quorum"
