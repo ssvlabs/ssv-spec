@@ -14,6 +14,7 @@ import (
 	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposerpreferences"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/ptcattester"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/postconsensus"
@@ -81,6 +82,7 @@ var AllTests = []tests.TestF{
 	newduty.DuplicateDutyFinished,
 	newduty.DuplicateDutyNotFinished,
 	newduty.FirstHeight,
+	newduty.ValidatorRegistrationDeprecated,
 
 	committee.InvalidSig,
 	committee.CommitteeIDMismatch,
@@ -211,6 +213,10 @@ var AllTests = []tests.TestF{
 
 	ptcattester.Abstain,
 	ptcattester.DivergingObservation,
+
+	proposerpreferences.ConcurrentLookaheadSlots,
+	proposerpreferences.ReemissionReplacesSlot,
+	proposerpreferences.DivergingDependentRoot,
 
 	valcheckproposer.BlindedBlock,
 	valcheckproposer.GloasBlocks,

@@ -80,6 +80,18 @@ func TooFewRoots() tests.SpecTest {
 				},
 				ExpectedErrorCode: expectedErrorCode,
 			},
+			{
+				Name:   "proposer preferences",
+				Runner: testingutils.ProposerPreferencesRunner(ks),
+				Duty:   testingutils.TestingProposerPreferencesDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusProposerPreferencesTooFewRootsMsg(ks.Shares[1], 1))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedErrorCode: expectedErrorCode,
+			},
 		},
 		ks,
 	)
