@@ -105,6 +105,7 @@ const (
 	ProposerBlockSlotMismatchErrorCode
 	DecodeGloasBeaconVoteErrorCode
 	GloasBeaconVoteInvalidIndexErrorCode
+	SlashableProposalErrorCode
 )
 
 type Error struct {
