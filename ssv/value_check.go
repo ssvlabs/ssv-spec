@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 
@@ -153,6 +154,7 @@ func ProposerValueCheckF(
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
 	sharePublicKey []byte,
+	dataVersion func(phase0.Epoch) spec.DataVersion,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ProposerConsensusData{}
@@ -160,12 +162,19 @@ func ProposerValueCheckF(
 			return types.WrapError(types.ProposerConsensusDataDecodeErrorCode, errors.Wrap(err, "failed decoding consensus data"))
 		}
 		// Gloas (ePBS §4): the block is opaque to the types layer — GetBlockData()/Validate() have no
-		// Gloas arm (go-eth2-client's api.VersionedProposal can't carry Gloas). Branch on the fork
-		// before any type-layer validation and decode the block here, so a Gloas value never routes
-		// through Validate()/GetBlockData(). Pre-Gloas is unchanged.
-		// Exact match, not >=: a future fork's consensus data must not be decoded as a Gloas block —
-		// it falls through to Validate() and errors as an unknown version.
-		if cd.Version == gloas.DataVersionGloas {
+		// Gloas arm (go-eth2-client's api.VersionedProposal can't carry Gloas). Branch on the duty
+		// slot's fork before any type-layer validation and decode the block here, so a Gloas value
+		// never routes through Validate()/GetBlockData(). Pre-Gloas is unchanged.
+		//
+		// The branch is on the slot's fork, not on the leader-stamped cd.Version: the stamp is
+		// attacker-controlled, so on a Gloas slot it is additionally pinned to the slot's fork below.
+		// (The reverse mismatch — a Gloas Version on a pre-Gloas slot — takes the pre-Gloas branch and
+		// is rejected by Validate()'s unknown-version error, so both mismatch directions fail and the
+		// node-side slot-based check agrees with this one on every value.)
+		if dataVersion(network.EstimatedEpochAtSlot(cd.Duty.Slot)) >= gloas.DataVersionGloas {
+			if cd.Version < gloas.DataVersionGloas {
+				return types.NewError(types.QBFTValueInvalidErrorCode, "value version does not match slot fork")
+			}
 			if err := dutyValueCheck(&cd.Duty, network, types.BNRoleProposer, validatorPK, validatorIndex); err != nil {
 				return errors.Wrap(err, "duty invalid")
 			}
