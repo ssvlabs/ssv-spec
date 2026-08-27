@@ -112,8 +112,8 @@ func GloasBeaconVoteValueCheckF(
 				fmt.Sprintf("attestation data index %d must be 0 or 1", bv.AttestationDataIndex))
 		}
 
-		if bv.Source.Epoch >= bv.Target.Epoch {
-			return types.NewError(types.AttestationSourceNotLessThanTargetErrorCode, "attestation data source >= target")
+		if err := bv.Validate(); err != nil {
+			return err
 		}
 
 		if bv.Source.Epoch != expectedSource {
@@ -148,6 +148,8 @@ func GloasBeaconVoteValueCheckF(
 	}
 }
 
+// ProposerValueCheckF validates the proposer QBFT value. dataVersion maps an epoch to its fork and
+// must describe the same chain as network — the caller owns keeping the two in agreement.
 func ProposerValueCheckF(
 	signer types.BeaconSigner,
 	network types.BeaconNetwork,
