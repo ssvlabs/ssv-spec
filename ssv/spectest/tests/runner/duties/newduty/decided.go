@@ -117,5 +117,13 @@ func PostDecided() tests.SpecTest {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{proposerV(v), proposerBlindedV(v)}...)
 	}
 
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
+		Name:           "envelope proposer",
+		Runner:         decidedRunner(testingutils.EnvelopeProposerRunner(ks), testingutils.TestingEnvelopeProposerDuty()),
+		Duty:           testingutils.TestingEnvelopeProposerNextEpochDuty(),
+		Threshold:      ks.Threshold,
+		OutputMessages: []*types.PartialSignatureMessages{},
+	})
+
 	return multiSpecTest
 }

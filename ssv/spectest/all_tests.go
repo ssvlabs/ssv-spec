@@ -12,6 +12,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/consensus"
 	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/envelopeproposer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposerpreferences"
@@ -23,6 +24,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckaggcommittee"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckenvelope"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckproposer"
 )
 
@@ -218,8 +220,14 @@ var AllTests = []tests.TestF{
 	proposerpreferences.ReemissionReplacesSlot,
 	proposerpreferences.DivergingDependentRoot,
 
+	envelopeproposer.HappyFlow,
+	envelopeproposer.ContentMismatchNoPublish,
+	envelopeproposer.NoProposedBlockRoot,
+
 	valcheckproposer.BlindedBlock,
 	valcheckproposer.GloasBlocks,
+
+	valcheckenvelope.EnvelopeBlocks,
 
 	valcheckaggcommittee.NoValidator,
 	valcheckaggcommittee.Valid,

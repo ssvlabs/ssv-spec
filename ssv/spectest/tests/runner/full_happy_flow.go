@@ -84,6 +84,25 @@ func FullHappyFlow() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedProposerPreferences(ks, testingutils.TestingDutySlotGloas)),
 				},
 			},
+			{
+				Name:   "envelope proposer",
+				Runner: testingutils.EnvelopeProposerRunner(ks),
+				Duty:   testingutils.TestingEnvelopeProposerDuty(),
+				Messages: append(
+					testingutils.SSVDecidingMsgsForEnvelopeProposer(testingutils.TestingDutySlotGloas, ks),
+					[]*types.SignedSSVMessage{
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[2], 2))),
+						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[3], 3))),
+					}...,
+				),
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1), // broadcasts when consensus decides
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedExecutionPayloadEnvelope(ks, testingutils.TestingDutySlotGloas)),
+				},
+			},
 		},
 		ks,
 	)
