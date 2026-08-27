@@ -156,5 +156,16 @@ func FutureMessage() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name:   "envelope proposer",
+		Runner: testingutils.EnvelopeProposerRunner(ks),
+		Duty:   testingutils.TestingEnvelopeProposerDuty(),
+		Messages: []*types.SignedSSVMessage{
+			futureMsgF(testingutils.TestingEnvelopeConsensusData(testingutils.TestingDutySlotGloas), testingutils.EnvelopeProposerMsgID),
+		},
+		DontStartDuty:     true,
+		ExpectedErrorCode: expectedErrorCode,
+	})
+
 	return multiSpecTest
 }
