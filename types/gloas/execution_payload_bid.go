@@ -27,7 +27,7 @@ func (b BuilderIndex) MarshalJSON() ([]byte, error) {
 	return []byte(strconv.Quote(strconv.FormatUint(uint64(b), 10))), nil
 }
 
-// UnmarshalJSON implements json.Unmarshaler.
+// UnmarshalJSON implements json.Unmarshaler, accepting the quoted beacon-API form and a bare number.
 func (b *BuilderIndex) UnmarshalJSON(input []byte) error {
 	unquoted := strings.Trim(string(input), `"`)
 	index, err := strconv.ParseUint(unquoted, 10, 64)
