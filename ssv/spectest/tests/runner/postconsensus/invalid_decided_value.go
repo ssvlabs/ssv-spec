@@ -10,6 +10,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -238,6 +239,45 @@ func InvalidDecidedValue() tests.SpecTest {
 			},
 		}...)
 	}
+
+	// An envelope value whose duty carries an unknown role, rejected by the envelope value check.
+	envelopeCdByts := func() []byte {
+		cd := &types.EnvelopeConsensusData{
+			Duty: types.ValidatorDuty{
+				Type:           100,
+				PubKey:         testingutils.TestingValidatorPubKey,
+				Slot:           testingutils.TestingDutySlotGloas,
+				ValidatorIndex: testingutils.TestingValidatorIndex,
+			},
+			Version: gloas.DataVersionGloas,
+			DataSSZ: testingutils.TestingBlindedExecutionPayloadEnvelopeBytes(testingutils.TestingDutySlotGloas),
+		}
+		byts, err := cd.Encode()
+		if err != nil {
+			panic(err.Error())
+		}
+		return byts
+	}
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name:   "envelope proposer",
+		Runner: testingutils.EnvelopeProposerRunner(ks),
+		Duty:   testingutils.TestingEnvelopeProposerDuty(),
+		Messages: []*types.SignedSSVMessage{
+			testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+				[]*rsa.PrivateKey{
+					ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
+				},
+				[]types.OperatorID{1, 2, 3},
+				qbft.Height(testingutils.TestingDutySlotGloas),
+				testingutils.EnvelopeProposerMsgID,
+				envelopeCdByts(),
+			),
+		},
+		OutputMessages: []*types.PartialSignatureMessages{},
+		// The envelope value check's own typed rejection surfaces (the proposer path wraps its
+		// invalid value differently).
+		ExpectedErrorCode: types.WrongBeaconRoleTypeErrorCode,
+	})
 
 	return multiSpecTest
 }

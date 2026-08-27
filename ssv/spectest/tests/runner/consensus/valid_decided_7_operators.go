@@ -116,5 +116,15 @@ func ValidDecided7Operators() tests.SpecTest {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
 	}
 
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name:     "envelope proposer",
+		Runner:   testingutils.EnvelopeProposerRunner(ks),
+		Duty:     testingutils.TestingEnvelopeProposerDuty(),
+		Messages: testingutils.SSVDecidingMsgsForEnvelopeProposer(testingutils.TestingDutySlotGloas, ks),
+		OutputMessages: []*types.PartialSignatureMessages{
+			testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1),
+		},
+	})
+
 	return multiSpecTest
 }

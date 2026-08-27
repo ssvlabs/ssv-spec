@@ -152,5 +152,21 @@ func PostDecided() tests.SpecTest {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
 	}
 
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name:   "envelope proposer",
+		Runner: testingutils.EnvelopeProposerRunner(ks),
+		Duty:   testingutils.TestingEnvelopeProposerDuty(),
+		Messages: append(
+			testingutils.SSVDecidingMsgsForEnvelopeProposer(testingutils.TestingDutySlotGloas, ks),
+			testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4],
+				types.OperatorID(4), qbft.Height(testingutils.TestingDutySlotGloas), testingutils.EnvelopeProposerMsgID,
+				testingutils.TestingEnvelopeConsensusDataByts(testingutils.TestingDutySlotGloas)),
+		),
+		OutputMessages: []*types.PartialSignatureMessages{
+			testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1),
+		},
+		ExpectedErrorCode: expectedErrCode,
+	})
+
 	return multiSpecTest
 }
