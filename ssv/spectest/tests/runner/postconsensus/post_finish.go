@@ -5,6 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 
+	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -147,6 +148,26 @@ func PostFinish() tests.SpecTest {
 			},
 		}...)
 	}
+
+	finishEnvelopeRunner := func() ssv.Runner {
+		r := decideEnvelopeRunner(
+			testingutils.EnvelopeProposerRunner(ks),
+			testingutils.TestingEnvelopeProposerDuty(),
+			testingutils.TestingEnvelopeConsensusDataByts(testingutils.TestingDutySlotGloas),
+		)
+		r.GetBaseRunner().State.Finished = true
+		return r
+	}
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name:   "envelope proposer",
+		Runner: finishEnvelopeRunner(),
+		Duty:   testingutils.TestingEnvelopeProposerDuty(),
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[4], 4))),
+		},
+		DontStartDuty:     true,
+		ExpectedErrorCode: errCode,
+	})
 
 	return multiSpecTest
 }

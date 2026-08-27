@@ -232,5 +232,33 @@ func PostFinish() tests.SpecTest {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
 	}
 
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name:   "envelope proposer",
+		Runner: testingutils.EnvelopeProposerRunner(ks),
+		Duty:   testingutils.TestingEnvelopeProposerDuty(),
+		Messages: append(
+			testingutils.SSVDecidingMsgsForEnvelopeProposer(testingutils.TestingDutySlotGloas, ks), // consensus
+			// post consensus
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[2], 2))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[3], 3))),
+			// commit msg
+			testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
+				[]*rsa.PrivateKey{ks.OperatorKeys[4]},
+				[]types.OperatorID{4},
+				qbft.Height(testingutils.TestingDutySlotGloas),
+				testingutils.EnvelopeProposerMsgID,
+				testingutils.TestingEnvelopeConsensusDataByts(testingutils.TestingDutySlotGloas),
+			),
+		),
+		OutputMessages: []*types.PartialSignatureMessages{
+			testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1),
+		},
+		BeaconBroadcastedRoots: []string{
+			testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedExecutionPayloadEnvelope(ks, testingutils.TestingDutySlotGloas)),
+		},
+		ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
+	})
+
 	return multiSpecTest
 }
