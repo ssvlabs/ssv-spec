@@ -15,6 +15,10 @@ import (
 type ProposerRunner struct {
 	BaseRunner *BaseRunner
 
+	// ProposedBlockRoots records each decided Gloas block's root for the §6 envelope duty
+	// (SIP #94 §6); shared with the envelope runner in production.
+	ProposedBlockRoots ProposedBlockRoots
+
 	beacon         BeaconNode
 	network        Network
 	signer         types.BeaconSigner
@@ -49,6 +53,7 @@ func NewProposerRunner(
 			QBFTController:     qbftController,
 			highestDecidedSlot: highestDecidedSlot,
 		},
+		ProposedBlockRoots: ProposedBlockRoots{},
 
 		beacon:         beacon,
 		network:        network,
@@ -156,6 +161,12 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 			return errors.Wrap(err, "could not decode Gloas block from consensus data")
 		}
 		blkToSign = blk
+		// Record the decided block's root for the §6 envelope duty (SIP #94 §6).
+		blockRoot, err := blk.HashTreeRoot()
+		if err != nil {
+			return errors.Wrap(err, "could not hash decided Gloas block")
+		}
+		r.ProposedBlockRoots.Record(cd.Duty.Slot, blockRoot)
 	} else {
 		_, blkToSign, err = cd.GetBlockData()
 		if err != nil {
