@@ -147,5 +147,14 @@ func Finished() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
+		Name: "envelope proposer",
+		Runner: finishRunner(testingutils.EnvelopeProposerRunner(ks),
+			testingutils.TestingEnvelopeProposerDuty(), true),
+		Duty:           testingutils.TestingEnvelopeProposerNextEpochDuty(),
+		Threshold:      ks.Threshold,
+		OutputMessages: []*types.PartialSignatureMessages{},
+	})
+
 	return multiSpecTest
 }
