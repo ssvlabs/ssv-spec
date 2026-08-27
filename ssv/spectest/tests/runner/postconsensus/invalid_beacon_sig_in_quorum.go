@@ -166,5 +166,22 @@ func InvalidBeaconSignatureInQuorum() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name: "envelope proposer",
+		Runner: decideEnvelopeRunner(
+			testingutils.EnvelopeProposerRunner(ks),
+			testingutils.TestingEnvelopeProposerDuty(),
+			testingutils.TestingEnvelopeConsensusDataByts(testingutils.TestingDutySlotGloas),
+		),
+		Duty: testingutils.TestingEnvelopeProposerDuty(),
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerWrongBeaconSigMsg(ks.Shares[1], 1))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[2], 2))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[3], 3))),
+		},
+		DontStartDuty:     true,
+		ExpectedErrorCode: expectedErrorCode,
+	})
+
 	return multiSpecTest
 }

@@ -159,5 +159,20 @@ func InconsistentBeaconSigner() tests.SpecTest {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
 	}
 
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name: "envelope proposer",
+		Runner: decideEnvelopeRunner(
+			testingutils.EnvelopeProposerRunner(ks),
+			testingutils.TestingEnvelopeProposerDuty(),
+			testingutils.TestingEnvelopeConsensusDataByts(testingutils.TestingDutySlotGloas),
+		),
+		Duty: testingutils.TestingEnvelopeProposerDuty(),
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1))),
+		},
+		DontStartDuty:     true,
+		ExpectedErrorCode: expectedErrorCode,
+	})
+
 	return multiSpecTest
 }

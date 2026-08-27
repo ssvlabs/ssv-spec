@@ -169,5 +169,13 @@ func PastMessage() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name:          "envelope proposer",
+		Runner:        bumpHeight(testingutils.EnvelopeProposerRunner(ks)),
+		Duty:          testingutils.TestingEnvelopeProposerDuty(),
+		Messages:      []*types.SignedSSVMessage{pastMsgF(testingutils.TestingEnvelopeConsensusData(testingutils.TestingDutySlotGloas), testingutils.EnvelopeProposerMsgID)},
+		DontStartDuty: true,
+	})
+
 	return multiSpecTest
 }
