@@ -223,6 +223,7 @@ var AllTests = []tests.TestF{
 	envelopeproposer.HappyFlow,
 	envelopeproposer.ContentMismatchNoPublish,
 	envelopeproposer.NoProposedBlockRoot,
+	envelopeproposer.RootLinkage,
 
 	valcheckproposer.BlindedBlock,
 	valcheckproposer.GloasBlocks,

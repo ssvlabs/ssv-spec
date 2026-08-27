@@ -239,6 +239,7 @@ const ValCheckEnvelopeBlocksDoc = "Tests Gloas envelope value check (SIP #94 §6
 const EnvelopeProposerHappyFlowDoc = "Tests the full §6 envelope flow (SIP #94 §6): consensus over the produced blinded envelope, post-consensus quorum, and publication by the producing operator"
 const EnvelopeProposerContentMismatchNoPublishDoc = "Tests publish-by-content-match (SIP #94 §6): a decided envelope this operator did not produce finishes without publication"
 const EnvelopeProposerNoProposedBlockRootDoc = "Tests that the §6 envelope duty is rejected for a slot with no recorded §4-decided block root"
+const EnvelopeProposerRootLinkageDoc = "Tests the §4→§6 linkage end to end (SIP #94 §6): the envelope flow consumes the block root a real proposer decision recorded, rather than a fixture-seeded one"
 
 // Documentation for proposerpreferences tests
 const ProposerPreferencesConcurrentLookaheadSlotsDoc = "Tests two concurrently-active proposal slots (SIP #94 §5): each is an independent per-slot flow, so both reach quorum and submit"
