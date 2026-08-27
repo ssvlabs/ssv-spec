@@ -57,6 +57,14 @@ var PostConsensusEnvelopeProposerWrongBeaconSigMsg = func(sk *bls.SecretKey, id 
 	return postConsensusEnvelopeMsg(sk, id, 1, false, true)
 }
 
+var PostConsensusEnvelopeProposerWrongValidatorIndexMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
+	msg := postConsensusEnvelopeMsg(sk, id, 1, false, false)
+	for _, m := range msg.Messages {
+		m.ValidatorIndex = TestingWrongValidatorIndex
+	}
+	return msg
+}
+
 // PostConsensusEnvelopeProposerMsgForEnvelope signs the given decided envelope's root — used when the
 // decided envelope is not this operator's own production.
 var PostConsensusEnvelopeProposerMsgForEnvelope = func(sk *bls.SecretKey, id types.OperatorID, envelope *gloas.BlindedExecutionPayloadEnvelope) *types.PartialSignatureMessages {

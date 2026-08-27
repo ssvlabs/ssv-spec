@@ -158,5 +158,20 @@ func DuplicateMsg() tests.SpecTest {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
 	}
 
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name: "envelope proposer",
+		Runner: decideEnvelopeRunner(
+			testingutils.EnvelopeProposerRunner(ks),
+			testingutils.TestingEnvelopeProposerDuty(),
+			testingutils.TestingEnvelopeConsensusDataByts(testingutils.TestingDutySlotGloas),
+		),
+		Duty: testingutils.TestingEnvelopeProposerDuty(),
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1))),
+		},
+		DontStartDuty: true,
+	})
+
 	return multiSpecTest
 }
