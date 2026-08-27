@@ -595,6 +595,19 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 // sub-runners the same way.
 func fixRunnerRoleSpecificState(t *testing.T, runner ssv.Runner, runnerMap map[string]interface{}, ks *testingutils.TestKeySet) {
 	switch r := runner.(type) {
+	case *ssv.EnvelopeProposerRunner:
+		if raw, ok := runnerMap["ProposedBlockRoots"]; ok && raw != nil {
+			byts, _ := json.Marshal(raw)
+			roots := ssv.ProposedBlockRoots{}
+			require.NoError(t, json.Unmarshal(byts, &roots))
+			r.ProposedBlockRoots = roots
+		}
+		if raw, ok := runnerMap["ProducedEnvelope"]; ok && raw != nil {
+			byts, _ := json.Marshal(raw)
+			envelope := &gloas.BlindedExecutionPayloadEnvelope{}
+			require.NoError(t, json.Unmarshal(byts, envelope))
+			r.ProducedEnvelope = envelope
+		}
 	case *ssv.PTCAttesterRunner:
 		if raw, ok := runnerMap["PayloadAttestationData"]; ok && raw != nil {
 			byts, _ := json.Marshal(raw)
@@ -658,6 +671,10 @@ func baseRunnerForRole(role types.RunnerRole, base *ssv.BaseRunner, ks *testingu
 	case types.RoleProposerPreferences:
 		ret := testingutils.ProposerPreferencesRunner(ks)
 		ret.(*ssv.ProposerPreferencesRunner).BaseRunner = base
+		return ret
+	case types.RoleEnvelopeProposer:
+		ret := testingutils.EnvelopeProposerRunner(ks)
+		ret.(*ssv.EnvelopeProposerRunner).BaseRunner = base
 		return ret
 	case testingutils.UnknownDutyType:
 		ret := testingutils.UnknownDutyTypeRunner(ks)
