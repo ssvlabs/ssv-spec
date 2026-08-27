@@ -1,6 +1,10 @@
 package gloas
 
 import (
+	"fmt"
+	"strconv"
+	"strings"
+
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -16,6 +20,23 @@ type BuilderIndex uint64
 
 // BuilderIndexSelfBuild (BUILDER_INDEX_SELF_BUILD) flags a self-built execution payload (SIP #94 §4).
 const BuilderIndexSelfBuild = BuilderIndex(^uint64(0))
+
+// MarshalJSON implements json.Marshaler, using the beacon-API decimal-string form. The self-build
+// sentinel exceeds float64 precision, so a raw JSON number would not survive generic decoding.
+func (b BuilderIndex) MarshalJSON() ([]byte, error) {
+	return []byte(strconv.Quote(strconv.FormatUint(uint64(b), 10))), nil
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (b *BuilderIndex) UnmarshalJSON(input []byte) error {
+	unquoted := strings.Trim(string(input), `"`)
+	index, err := strconv.ParseUint(unquoted, 10, 64)
+	if err != nil {
+		return fmt.Errorf("invalid value for builder index: %w", err)
+	}
+	*b = BuilderIndex(index)
+	return nil
+}
 
 // ExecutionPayloadBid is the Gloas (ePBS) bid the proposer commits to in the block body, replacing the
 // inline execution payload of pre-Gloas blocks: the block carries only this commitment, and the payload
