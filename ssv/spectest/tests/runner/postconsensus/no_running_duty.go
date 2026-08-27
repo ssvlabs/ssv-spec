@@ -119,5 +119,16 @@ func NoRunningDuty() tests.SpecTest {
 		}...)
 	}
 
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+		Name:   "envelope proposer",
+		Runner: testingutils.EnvelopeProposerRunner(ks),
+		Duty:   testingutils.TestingEnvelopeProposerDuty(),
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1))),
+		},
+		DontStartDuty:     true,
+		ExpectedErrorCode: errCode,
+	})
+
 	return multiSpecTest
 }
