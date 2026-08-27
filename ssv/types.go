@@ -115,6 +115,16 @@ type ProposerPreferencesCalls interface {
 	SubmitProposerPreferences(preferences *gloas.SignedProposerPreferences) error
 }
 
+// EnvelopeCalls interface has all Gloas (ePBS) execution-payload envelope duty specific calls (SIP #94 §6)
+type EnvelopeCalls interface {
+	// GetBlindedExecutionPayloadEnvelope returns this operator's own produced blinded envelope for the
+	// slot's decided block (self-build)
+	GetBlindedExecutionPayloadEnvelope(slot phase0.Slot, blockRoot phase0.Root) (*gloas.BlindedExecutionPayloadEnvelope, error)
+	// SubmitBlindedExecutionPayloadEnvelope publishes the signed envelope; the producing beacon node
+	// reconstructs the full body from its cache
+	SubmitBlindedExecutionPayloadEnvelope(envelope *gloas.SignedBlindedExecutionPayloadEnvelope) error
+}
+
 // PTCCalls interface has all Gloas (ePBS) Payload Timeliness Committee duty specific calls (SIP #94 §3)
 type PTCCalls interface {
 	// GetPayloadAttestationData returns the slot's payload attestation data as observed by the local
@@ -136,6 +146,7 @@ type BeaconNode interface {
 	VoluntaryExitCalls
 	PTCCalls
 	ProposerPreferencesCalls
+	EnvelopeCalls
 	DomainCalls
 	VersionCalls
 }
