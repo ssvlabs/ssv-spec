@@ -49,13 +49,13 @@ func (msg MessageID) GetDutyExecutorID() []byte {
 
 func (msg MessageID) GetRoleType() RunnerRole {
 	roleByts := msg[roleTypeStartPos : roleTypeStartPos+roleTypeSize]
-	return RunnerRole(binary.LittleEndian.Uint32(roleByts))
+	return RunnerRoleFromWireUint32(binary.LittleEndian.Uint32(roleByts))
 }
 
 func NewValidatorMsgID(domain DomainType, validatorPK ValidatorPK, role RunnerRole) MessageID {
 	mid := MessageID{}
 	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
-	binary.LittleEndian.PutUint32(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], uint32(role))
+	binary.LittleEndian.PutUint32(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], role.WireUint32())
 	copy(mid[dutyExecutorIDStartPos:dutyExecutorIDStartPos+dutyExecutorIDSize], validatorPK[:])
 	return mid
 }
@@ -63,7 +63,7 @@ func NewValidatorMsgID(domain DomainType, validatorPK ValidatorPK, role RunnerRo
 func NewCommitteeMsgID(domain DomainType, committeeID CommitteeID, role RunnerRole) MessageID {
 	mid := MessageID{}
 	copy(mid[domainStartPos:domainStartPos+domainSize], domain[:])
-	binary.LittleEndian.PutUint32(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], uint32(role))
+	binary.LittleEndian.PutUint32(mid[roleTypeStartPos:roleTypeStartPos+roleTypeSize], role.WireUint32())
 	// CommitteeID is 32 bytes, right-aligned in the 48-byte executor ID slot.
 	copy(mid[dutyExecutorIDStartPos+dutyExecutorIDSize-len(committeeID):dutyExecutorIDStartPos+dutyExecutorIDSize], committeeID[:])
 	return mid
