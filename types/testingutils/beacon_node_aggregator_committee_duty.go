@@ -7,7 +7,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/gloas"
@@ -214,7 +213,7 @@ var TestingSignedAggregatorCommitteeBeaconObjectSSZRoot = func(duty *types.Aggre
 		d, _ := beacon.DomainData(1, types.DomainAggregateAndProof)
 
 		// Get the appropriate aggregate and proof object
-		var signingRoot ssz.HashRoot
+		var signingRoot types.HashRoot
 		switch version {
 		case spec.DataVersionElectra, gloas.DataVersionGloas:
 			// Gloas reuses the Electra aggregate shape (SIP #94 §2).
@@ -244,7 +243,7 @@ var TestingSignedAggregatorCommitteeBeaconObjectSSZRoot = func(duty *types.Aggre
 		copy(blsSig[:], sig)
 
 		// Create signed aggregate and proof
-		var signedAgg ssz.HashRoot
+		var signedAgg types.HashRoot
 		switch version {
 		case spec.DataVersionElectra, gloas.DataVersionGloas:
 			// Gloas reuses the Electra aggregate shape (SIP #94 §2).

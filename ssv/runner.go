@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -25,14 +24,14 @@ type Getters interface {
 // proposer signs the block root under DomainProposer (required) and the §6 envelope root under
 // DomainBeaconBuilder (optional — a block-only packet is still final; SIP #94 §4/§6).
 type PostConsensusRoot struct {
-	Root     ssz.HashRoot
+	Root     types.HashRoot
 	Domain   phase0.DomainType
 	Optional bool
 }
 
 // SingleDomainPostConsensusRoots pairs each root with one domain, all required — the shape every runner
 // but the Gloas proposer returns from expectedPostConsensusRootsAndDomains.
-func SingleDomainPostConsensusRoots(domain phase0.DomainType, roots ...ssz.HashRoot) []PostConsensusRoot {
+func SingleDomainPostConsensusRoots(domain phase0.DomainType, roots ...types.HashRoot) []PostConsensusRoot {
 	ret := make([]PostConsensusRoot, 0, len(roots))
 	for _, r := range roots {
 		ret = append(ret, PostConsensusRoot{Root: r, Domain: domain})
@@ -57,7 +56,7 @@ type Runner interface {
 	ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error
 
 	// expectedPreConsensusRootsAndDomain an INTERNAL function, returns the expected pre-consensus roots to sign
-	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error)
+	expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error)
 	// expectedPostConsensusRootsAndDomains an INTERNAL function, returns the expected post-consensus roots
 	// to sign, each paired with the domain it is signed under (SIP #94 §4: the Gloas proposer signs the
 	// block root under DomainProposer and the §6 envelope root under DomainBeaconBuilder).
