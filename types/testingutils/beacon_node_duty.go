@@ -4,7 +4,6 @@ import (
 	"encoding/hex"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -20,7 +19,7 @@ const (
 )
 
 // Util function for signing a beacon object with the appropriate domain
-var signBeaconObject = func(obj ssz.HashRoot, domainType phase0.DomainType, ks *TestKeySet) phase0.BLSSignature {
+var signBeaconObject = func(obj types.HashRoot, domainType phase0.DomainType, ks *TestKeySet) phase0.BLSSignature {
 	domain, _ := NewTestingBeaconNode().DomainData(1, domainType)
 	ret, _, _ := NewTestingKeyManager().SignBeaconObject(obj, domain, ks.ValidatorPK.Serialize(), domainType)
 
@@ -31,7 +30,7 @@ var signBeaconObject = func(obj ssz.HashRoot, domainType phase0.DomainType, ks *
 }
 
 // Util inline function for getting the SSZ root of an object
-func GetSSZRootNoError(obj ssz.HashRoot) string {
+func GetSSZRootNoError(obj types.HashRoot) string {
 	r, _ := obj.HashTreeRoot()
 	return hex.EncodeToString(r[:])
 }

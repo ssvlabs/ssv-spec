@@ -10,10 +10,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 )
 
-// Regenerate with `go generate ./types/gloas/` (or `make generate-ssz`). The includes are resolved from the module graph (`go list -m`)
-// so they track go-eth2-client across dependency bumps rather than pinning.
-//go:generate sh -c "go run github.com/ferranbt/fastssz/sszgen --path ./execution_payload_bid.go --include $(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/phase0,$(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/bellatrix,$(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/deneb --objs ExecutionPayloadBid,SignedExecutionPayloadBid"
-
 // BuilderIndex identifies a builder in the Gloas builder registry. The sentinel BuilderIndexSelfBuild
 // (BUILDER_INDEX_SELF_BUILD = UINT64_MAX) marks a self-built payload — the only path SSV produces.
 type BuilderIndex uint64
@@ -43,18 +39,18 @@ func (b *BuilderIndex) UnmarshalJSON(input []byte) error {
 // itself ships separately in the envelope (§6). For self-build, BuilderIndex is BuilderIndexSelfBuild.
 // Fields match the pinned spec / go-eth2-client PR #280.
 type ExecutionPayloadBid struct {
-	ParentBlockHash       phase0.Hash32              `ssz-size:"32"`
-	ParentBlockRoot       phase0.Root                `ssz-size:"32"`
-	BlockHash             phase0.Hash32              `ssz-size:"32"`
-	PrevRandao            phase0.Hash32              `ssz-size:"32"`
-	FeeRecipient          bellatrix.ExecutionAddress `ssz-size:"20"`
-	GasLimit              uint64
-	BuilderIndex          BuilderIndex
-	Slot                  phase0.Slot
-	Value                 phase0.Gwei
-	ExecutionPayment      phase0.Gwei
-	BlobKZGCommitments    []deneb.KZGCommitment `ssz-max:"4096" ssz-size:"?,48"`
-	ExecutionRequestsRoot phase0.Root           `ssz-size:"32"`
+	ParentBlockHash       phase0.Hash32              `ssz-index:"0"  ssz-size:"32"`
+	ParentBlockRoot       phase0.Root                `ssz-index:"1"  ssz-size:"32"`
+	BlockHash             phase0.Hash32              `ssz-index:"2"  ssz-size:"32"`
+	PrevRandao            phase0.Hash32              `ssz-index:"3"  ssz-size:"32"`
+	FeeRecipient          bellatrix.ExecutionAddress `ssz-index:"4"  ssz-size:"20"`
+	GasLimit              uint64                     `ssz-index:"5"`
+	BuilderIndex          BuilderIndex               `ssz-index:"6"`
+	Slot                  phase0.Slot                `ssz-index:"7"`
+	Value                 phase0.Gwei                `ssz-index:"8"`
+	ExecutionPayment      phase0.Gwei                `ssz-index:"9"`
+	BlobKZGCommitments    []deneb.KZGCommitment      `ssz-index:"10" ssz-type:"progressive-list"`
+	ExecutionRequestsRoot phase0.Root                `ssz-index:"11"`
 }
 
 // SignedExecutionPayloadBid wraps an ExecutionPayloadBid with the builder's (or, for self-build, the

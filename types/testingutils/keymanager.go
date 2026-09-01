@@ -10,7 +10,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ethereum/go-ethereum/common"
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -178,7 +177,7 @@ func (km *TestingKeyManager) IsBeaconBlockSlashable(pk []byte, slot phase0.Slot)
 	return nil
 }
 
-func (km *TestingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain phase0.Domain, pk []byte, domainType phase0.DomainType) (types.Signature, [32]byte, error) {
+func (km *TestingKeyManager) SignBeaconObject(obj types.HashRoot, domain phase0.Domain, pk []byte, domainType phase0.DomainType) (types.Signature, [32]byte, error) {
 	mu.Lock()
 	defer mu.Unlock()
 
@@ -243,7 +242,7 @@ func (km *TestingKeyManager) RemoveShare(pubKey string) error {
 	return nil
 }
 
-func (km *TestingKeyManager) hasSignRequest(pk string, obj ssz.HashRoot, domain phase0.Domain) (*SignOutput, bool) {
+func (km *TestingKeyManager) hasSignRequest(pk string, obj types.HashRoot, domain phase0.Domain) (*SignOutput, bool) {
 	if _, exists := km.keyStorage.signatureCache[pk]; !exists {
 		return &SignOutput{}, false
 	}
@@ -261,7 +260,7 @@ func (km *TestingKeyManager) hasSignRequest(pk string, obj ssz.HashRoot, domain 
 	return km.keyStorage.signatureCache[pk][root][domain], true
 }
 
-func (km *TestingKeyManager) storeSignRequest(pk string, obj ssz.HashRoot, domain phase0.Domain, sig types.Signature, r [32]byte) {
+func (km *TestingKeyManager) storeSignRequest(pk string, obj types.HashRoot, domain phase0.Domain, sig types.Signature, r [32]byte) {
 	if _, exists := km.keyStorage.signatureCache[pk]; !exists {
 		km.keyStorage.signatureCache[pk] = make(map[string]map[phase0.Domain]*SignOutput)
 	}
