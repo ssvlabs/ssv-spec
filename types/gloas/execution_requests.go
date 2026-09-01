@@ -6,11 +6,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 )
 
-// Regenerate with `go generate ./types/gloas/` (or `make generate-ssz`). -path is this file: sszgen parses the builder requests and
-// ExecutionRequests here and resolves the reused Electra request types (deposits/withdrawals/
-// consolidations) from the --include path. Includes track go-eth2-client via `go list -m`.
-//go:generate sh -c "go run github.com/ferranbt/fastssz/sszgen --path ./execution_requests.go --include $(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/phase0,$(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/bellatrix,$(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/electra --objs BuilderDepositRequest,BuilderExitRequest,ExecutionRequests"
-
 // BuilderDepositRequest is the EIP-8282 builder deposit request — a fixed-size container in the Gloas
 // ExecutionRequests.
 type BuilderDepositRequest struct {
@@ -32,9 +27,9 @@ type BuilderExitRequest struct {
 // electra.ExecutionRequests (three) marshals a block two offsets short and a Gloas CL rejects the §4 submit
 // as invalid SSZ — hence this five-list variant. List bounds are the spec MAX_* values.
 type ExecutionRequests struct {
-	Deposits        []*electra.DepositRequest       `ssz-max:"8192"`
-	Withdrawals     []*electra.WithdrawalRequest    `ssz-max:"16"`
-	Consolidations  []*electra.ConsolidationRequest `ssz-max:"2"`
-	BuilderDeposits []*BuilderDepositRequest        `ssz-max:"256"`
-	BuilderExits    []*BuilderExitRequest           `ssz-max:"16"`
+	Deposits        []*electra.DepositRequest       `ssz-index:"0" ssz-type:"progressive-list"`
+	Withdrawals     []*electra.WithdrawalRequest    `ssz-index:"1" ssz-type:"progressive-list"`
+	Consolidations  []*electra.ConsolidationRequest `ssz-index:"2" ssz-type:"progressive-list"`
+	BuilderDeposits []*BuilderDepositRequest        `ssz-index:"3" ssz-type:"progressive-list"`
+	BuilderExits    []*BuilderExitRequest           `ssz-index:"4" ssz-type:"progressive-list"`
 }

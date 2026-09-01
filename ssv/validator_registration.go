@@ -7,7 +7,6 @@ import (
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -127,7 +126,7 @@ func (r *ValidatorRegistrationRunner) ProcessPostConsensus(signedMsg *types.Part
 	return types.NewError(types.ValidatorRegistrationNoPostConsensusPhaseErrorCode, "no post consensus phase for validator registration")
 }
 
-func (r *ValidatorRegistrationRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *ValidatorRegistrationRunner) expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	if r.BaseRunner.State == nil || r.BaseRunner.State.StartingDuty == nil {
 		return nil, types.DomainError, fmt.Errorf("no running duty to compute preconsensus roots and domain")
 	}
@@ -135,11 +134,11 @@ func (r *ValidatorRegistrationRunner) expectedPreConsensusRootsAndDomain() ([]ss
 	if err != nil {
 		return nil, types.DomainError, errors.Wrap(err, "could not calculate validator registration")
 	}
-	return []ssz.HashRoot{vr}, types.DomainApplicationBuilder, nil
+	return []types.HashRoot{vr}, types.DomainApplicationBuilder, nil
 }
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *ValidatorRegistrationRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *ValidatorRegistrationRunner) expectedPostConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	return nil, [4]byte{}, fmt.Errorf("no post consensus roots for validator registration")
 }
 

@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -150,12 +149,12 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 	}
 
 	// specific duty sig
-	var blkToSign ssz.HashRoot
+	var blkToSign types.HashRoot
 
 	cd := decidedValue.(*types.ProposerConsensusData)
 	if versionForSlot(r.beacon, cd.Duty.Slot) >= gloas.DataVersionGloas {
 		// Gloas blocks are opaque to the types layer (GetBlockData has no Gloas arm); decode here —
-		// the decoded block doubles as the ssz.HashRoot to sign under DomainProposer (SIP #94 §4).
+		// the decoded block doubles as the types.HashRoot to sign under DomainProposer (SIP #94 §4).
 		blk, err := gloas.DecodeBeaconBlock(cd.DataSSZ)
 		if err != nil {
 			return errors.Wrap(err, "could not decode Gloas block from consensus data")
@@ -279,13 +278,13 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 	return nil
 }
 
-func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.GetState().StartingDuty.DutySlot())
-	return []ssz.HashRoot{types.SSZUint64(epoch)}, types.DomainRandao, nil
+	return []types.HashRoot{types.SSZUint64(epoch)}, types.DomainRandao, nil
 }
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	proposerConsensusData := &types.ProposerConsensusData{}
 	err := proposerConsensusData.Decode(r.GetState().DecidedValue)
 	if err != nil {
@@ -297,14 +296,14 @@ func (r *ProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, 
 		if err != nil {
 			return nil, phase0.DomainType{}, errors.Wrap(err, "could not decode Gloas block from consensus data")
 		}
-		return []ssz.HashRoot{blk}, types.DomainProposer, nil
+		return []types.HashRoot{blk}, types.DomainProposer, nil
 	}
 
 	_, data, err := proposerConsensusData.GetBlockData()
 	if err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not get block data")
 	}
-	return []ssz.HashRoot{data}, types.DomainProposer, nil
+	return []types.HashRoot{data}, types.DomainProposer, nil
 }
 
 // executeDuty steps:

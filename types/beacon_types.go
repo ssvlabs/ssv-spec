@@ -5,7 +5,6 @@ import (
 	"time"
 
 	spec "github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 )
 
 var GenesisValidatorsRoot = spec.Root{}
@@ -424,7 +423,7 @@ func ComputeETHDomain(domain spec.DomainType, fork spec.Version, genesisValidato
 	return ret, nil
 }
 
-func ComputeETHSigningRoot(obj ssz.HashRoot, domain spec.Domain) (spec.Root, error) {
+func ComputeETHSigningRoot(obj HashRoot, domain spec.Domain) (spec.Root, error) {
 	root, err := obj.HashTreeRoot()
 	if err != nil {
 		return spec.Root{}, err
