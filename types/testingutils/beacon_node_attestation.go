@@ -1,10 +1,10 @@
 package testingutils
 
 import (
+	"github.com/OffchainLabs/go-bitfield"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -71,11 +71,11 @@ var TestingWrongAttestationData = func(version spec.DataVersion) *phase0.Attesta
 // The runner submits the Electra-shaped attestation (Gloas reuses it, SIP #94 §2), which the testing beacon
 // node records as the on-wire SingleAttestation.
 
-var TestingAttestationResponseBeaconObject = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
+var TestingAttestationResponseBeaconObject = func(ks *TestKeySet, version spec.DataVersion) types.HashRoot {
 	return TestingAttestationResponseBeaconObjectForValidatorIndex(ks, version, TestingValidatorIndex)
 }
 
-var TestingAttestationResponseBeaconObjectForValidatorIndex = func(ks *TestKeySet, version spec.DataVersion, validatorIndex phase0.ValidatorIndex) ssz.HashRoot {
+var TestingAttestationResponseBeaconObjectForValidatorIndex = func(ks *TestKeySet, version spec.DataVersion, validatorIndex phase0.ValidatorIndex) types.HashRoot {
 	duty := TestingAttesterDutyForValidator(version, validatorIndex).ValidatorDuties[0]
 	attData := TestingAttestationData(version)
 	return &electra.SingleAttestation{
@@ -86,7 +86,7 @@ var TestingAttestationResponseBeaconObjectForValidatorIndex = func(ks *TestKeySe
 	}
 }
 
-var TestingAttestationResponseBeaconObjectForDuty = func(ks *TestKeySet, version spec.DataVersion, duty *types.ValidatorDuty) ssz.HashRoot {
+var TestingAttestationResponseBeaconObjectForDuty = func(ks *TestKeySet, version spec.DataVersion, duty *types.ValidatorDuty) types.HashRoot {
 	attData := TestingAttestationDataForValidatorDuty(duty)
 	return &electra.SingleAttestation{
 		CommitteeIndex: duty.CommitteeIndex,

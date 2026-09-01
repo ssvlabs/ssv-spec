@@ -6,7 +6,6 @@ import (
 	"slices"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -418,9 +417,9 @@ func deriveBlindedEnvelope(d *gloas.GloasProposalData) (*gloas.BlindedExecutionP
 	}, nil
 }
 
-func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.GetState().StartingDuty.DutySlot())
-	return []ssz.HashRoot{types.SSZUint64(epoch)}, types.DomainRandao, nil
+	return []types.HashRoot{types.SSZUint64(epoch)}, types.DomainRandao, nil
 }
 
 // expectedPostConsensusSigningRoots an INTERNAL function, returns the signing roots of the decided proposal's
@@ -441,7 +440,7 @@ func (r *ProposerRunner) expectedPostConsensusSigningRoots() ([]PostConsensusSig
 // PostConsensusRoot is an object the proposer's post-consensus round signs, the domain to sign it under, and
 // whether the round can do without it (see postConsensusRoots).
 type PostConsensusRoot struct {
-	Root     ssz.HashRoot
+	Root     types.HashRoot
 	Domain   phase0.DomainType
 	Optional bool
 }

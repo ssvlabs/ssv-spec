@@ -3,7 +3,6 @@ package testingutils
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/gloas"
@@ -25,7 +24,7 @@ var TestingBeaconBlockBytesV = func(version spec.DataVersion) []byte {
 }
 
 // TestingSignedBeaconBlockV is the bid-only block signed under DomainProposer (SIP #94 §4).
-var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
+var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) types.HashRoot {
 	if version != gloas.DataVersionGloas {
 		panic("unsupported version")
 	}

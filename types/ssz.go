@@ -7,6 +7,13 @@ import (
 	ssz "github.com/ferranbt/fastssz"
 )
 
+// HashRoot is the minimal interface needed to sign/merkleize a beacon object: just
+// HashTreeRoot(). fastssz's HashRoot also requires GetTree(), which dynamic-ssz
+// types (go-eth2-client Gloas, the regenerated gloas package) do not implement.
+type HashRoot interface {
+	HashTreeRoot() ([32]byte, error)
+}
+
 type SSZUint64 uint64
 
 func (s SSZUint64) GetTree() (*ssz.Node, error) {

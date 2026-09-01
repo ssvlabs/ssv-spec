@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -45,7 +44,7 @@ type Runner interface {
 	ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error
 
 	// expectedPreConsensusRootsAndDomain an INTERNAL function, returns the expected pre-consensus roots to sign
-	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error)
+	expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error)
 	// expectedPostConsensusSigningRoots an INTERNAL function, returns the signing roots a post-consensus
 	// packet is checked against, each computed under its own domain
 	expectedPostConsensusSigningRoots() ([]PostConsensusSigningRoot, error)

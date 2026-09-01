@@ -3,9 +3,9 @@ package gloas
 import (
 	_ "embed"
 
+	bitfield "github.com/OffchainLabs/go-bitfield"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	bitfield "github.com/prysmaticlabs/go-bitfield"
 )
 
 // TestingParentRoot and TestingStateRoot are the fixture block's parent and state roots: non-zero and distinct,
