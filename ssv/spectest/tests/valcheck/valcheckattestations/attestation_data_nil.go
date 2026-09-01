@@ -1,6 +1,8 @@
 package valcheckattestations
 
 import (
+	"github.com/attestantio/go-eth2-client/spec/phase0"
+
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
@@ -8,7 +10,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// BeaconVoteDataNil tests consensus data != nil
+// BeaconVoteDataNil tests value-check rejection of a BeaconVote with nil Source/Target (which encode to
+// zero checkpoints, so source is not less than target).
 func BeaconVoteDataNil() tests.SpecTest {
 	consensusData := &types.BeaconVote{
 		Source: nil,
@@ -23,8 +26,8 @@ func BeaconVoteDataNil() tests.SpecTest {
 		types.RoleCommittee,
 		testingutils.TestingDutySlot,
 		input,
-		*consensusData.Source,
-		*consensusData.Target,
+		phase0.Checkpoint{},
+		phase0.Checkpoint{},
 		nil,
 		nil,
 		types.AttestationSourceNotLessThanTargetErrorCode,
