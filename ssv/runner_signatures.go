@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/pkg/errors"
 
@@ -14,7 +13,7 @@ import (
 func (b *BaseRunner) signBeaconObject(
 	runner Runner,
 	duty *types.ValidatorDuty,
-	obj ssz.HashRoot,
+	obj types.HashRoot,
 	slot phase0.Slot,
 	domainType phase0.DomainType,
 ) (*types.PartialSignatureMessage, error) {
