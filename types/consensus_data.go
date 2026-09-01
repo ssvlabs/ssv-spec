@@ -31,18 +31,20 @@ func (c *Contributions) GetTree() (*ssz.Node, error) {
 }
 
 func (c *Contributions) HashTreeRootWith(hh ssz.HashWalker) error {
-	// taken from https://github.com/prysmaticlabs/prysm/blob/develop/encoding/ssz/htrutils.go#L97-L119
+	// *Contribution is now dynamic-ssz-generated and no longer implements fastssz's HashTreeRootWith,
+	// so append each element's HashTreeRoot() as a leaf chunk and let fastssz merkleize — same list
+	// root as the per-element composition.
 	subIndx := hh.Index()
 	num := uint64(len(*c))
 	if num > 13 {
 		return ssz.ErrIncorrectListSize
 	}
 	for _, elem := range *c {
-		{
-			if err := elem.HashTreeRootWith(hh); err != nil {
-				return err
-			}
+		root, err := elem.HashTreeRoot()
+		if err != nil {
+			return err
 		}
+		hh.Append(root[:])
 	}
 	hh.MerkleizeWithMixin(subIndx, num, 13)
 	return nil
@@ -387,7 +389,7 @@ func (a *AggregatorCommitteeConsensusData) Decode(data []byte) error {
 	return a.UnmarshalSSZ(data)
 }
 
-func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (ssz.HashRoot, error) {
+func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (HashRoot, error) {
 	if aggProof.Version != gloas.DataVersionGloas {
 		return nil, WrapError(UnknownVersionErrorCode, fmt.Errorf("unknown version %d", aggProof.Version))
 	}

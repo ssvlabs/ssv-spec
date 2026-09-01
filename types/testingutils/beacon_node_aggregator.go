@@ -1,11 +1,11 @@
 package testingutils
 
 import (
+	"github.com/OffchainLabs/go-bitfield"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
-	"github.com/prysmaticlabs/go-bitfield"
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/gloas"
@@ -57,7 +57,7 @@ var TestingVersionedSignedAggregateAndProof = func(ks *TestKeySet, version spec.
 	}
 }
 
-var TestingSignedAggregateAndProof = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
+var TestingSignedAggregateAndProof = func(ks *TestKeySet, version spec.DataVersion) types.HashRoot {
 	return TestingElectraSignedAggregateAndProofV(ks, TestingValidatorIndex, version)
 }
 
