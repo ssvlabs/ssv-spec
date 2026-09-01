@@ -12,7 +12,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/electra"
-	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/gloas"
@@ -213,7 +212,7 @@ var TestingWrongBeaconBlockV = func(version spec.DataVersion) *api.VersionedProp
 	}
 }
 
-var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
+var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) types.HashRoot {
 	// Gloas (SIP #94 §4): the bid-only block signed under DomainProposer.
 	if version == gloas.DataVersionGloas {
 		blk := gloas.TestingBeaconBlock(TestingDutySlotV(version))
@@ -284,7 +283,7 @@ var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) s
 	}
 }
 
-var TestingSignedBlindedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
+var TestingSignedBlindedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) types.HashRoot {
 	// Gloas (ePBS §4) has no blinded variant — blocks are bid-only, so blinded ≡ regular.
 	if version == gloas.DataVersionGloas {
 		return TestingSignedBeaconBlockV(ks, version)

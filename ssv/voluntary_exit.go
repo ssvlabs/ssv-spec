@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -110,16 +109,16 @@ func (r *VoluntaryExitRunner) ProcessPostConsensus(signedMsg *types.PartialSigna
 	return types.NewError(types.ValidatorExitNoPostConsensusPhaseErrorCode, "no post consensus phase for voluntary exit")
 }
 
-func (r *VoluntaryExitRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *VoluntaryExitRunner) expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	vr, err := r.calculateVoluntaryExit()
 	if err != nil {
 		return nil, types.DomainError, errors.Wrap(err, "could not calculate voluntary exit")
 	}
-	return []ssz.HashRoot{vr}, types.DomainVoluntaryExit, nil
+	return []types.HashRoot{vr}, types.DomainVoluntaryExit, nil
 }
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *VoluntaryExitRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *VoluntaryExitRunner) expectedPostConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	return nil, [4]byte{}, fmt.Errorf("no post consensus roots for voluntary exit")
 }
 

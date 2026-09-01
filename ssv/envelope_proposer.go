@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -208,12 +207,12 @@ func (r *EnvelopeProposerRunner) builtDecidedEnvelope(decidedDataSSZ []byte) boo
 	return bytes.Equal(producedSSZ, decidedDataSSZ)
 }
 
-func (r *EnvelopeProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *EnvelopeProposerRunner) expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	return nil, types.DomainError, types.NewError(types.EnvelopeProposerNoPreConsensusPhaseErrorCode, "no pre consensus phase for envelope proposer")
 }
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *EnvelopeProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *EnvelopeProposerRunner) expectedPostConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	cd := &types.EnvelopeConsensusData{}
 	if err := cd.Decode(r.GetState().DecidedValue); err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not create consensus data")
@@ -222,7 +221,7 @@ func (r *EnvelopeProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.Ha
 	if err := blinded.Decode(cd.DataSSZ); err != nil {
 		return nil, phase0.DomainType{}, errors.Wrap(err, "could not decode blinded envelope from consensus data")
 	}
-	return []ssz.HashRoot{blinded}, types.DomainBeaconBuilder, nil
+	return []types.HashRoot{blinded}, types.DomainBeaconBuilder, nil
 }
 
 // executeDuty steps:

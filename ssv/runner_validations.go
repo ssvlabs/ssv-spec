@@ -5,7 +5,6 @@ import (
 	"sort"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/types"
@@ -123,13 +122,13 @@ func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val types.Encod
 	return nil
 }
 
-func (b *BaseRunner) verifyExpectedRoot(runner Runner, psigMsgs *types.PartialSignatureMessages, expectedRootObjs []ssz.HashRoot, domain phase0.DomainType) error {
+func (b *BaseRunner) verifyExpectedRoot(runner Runner, psigMsgs *types.PartialSignatureMessages, expectedRootObjs []types.HashRoot, domain phase0.DomainType) error {
 	if len(expectedRootObjs) != len(psigMsgs.Messages) {
 		return types.NewError(types.WrongRootsCountErrorCode, "wrong expected roots count")
 	}
 
 	// convert expected roots to map and mark unique roots when verified
-	sortedExpectedRoots, err := func(expectedRootObjs []ssz.HashRoot) ([][32]byte, error) {
+	sortedExpectedRoots, err := func(expectedRootObjs []types.HashRoot) ([][32]byte, error) {
 		epoch := b.BeaconNetwork.EstimatedEpochAtSlot(b.State.StartingDuty.DutySlot())
 		d, err := runner.GetBeaconNode().DomainData(epoch, domain)
 		if err != nil {

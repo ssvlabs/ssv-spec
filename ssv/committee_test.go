@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/stretchr/testify/require"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -35,10 +34,10 @@ func (r *testRunner) ProcessConsensus(*types.SignedSSVMessage) error { return ni
 func (r *testRunner) ProcessPostConsensus(*types.PartialSignatureMessages) error {
 	return nil
 }
-func (r *testRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *testRunner) expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	return nil, phase0.DomainType{}, nil
 }
-func (r *testRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *testRunner) expectedPostConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	return nil, phase0.DomainType{}, nil
 }
 func (r *testRunner) executeDuty(types.Duty) error { return nil }
