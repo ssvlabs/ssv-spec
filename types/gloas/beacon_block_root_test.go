@@ -11,7 +11,7 @@ import (
 // TestSignedBeaconBlockRootMatchesGoEth2Client pins the core invariant of the dynamic-ssz migration:
 // ssv-spec's Gloas SignedBeaconBlock must produce the same hash_tree_root as go-eth2-client's
 // spec/gloas type — the progressive-merkleization reference validated against consensus-specs on
-// devnet-8. Decoding the same real block into both and comparing roots catches a future dynssz/tag
+// devnet-6. Decoding the same real block into both and comparing roots catches a future dynssz/tag
 // drift that the round-trip and wire tests would miss: serialization can byte-match while HTR
 // diverges, which is exactly the class of bug (wrong progressive root) this migration fixes.
 //
