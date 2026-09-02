@@ -5,7 +5,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/electra"
+	eth2gloas "github.com/attestantio/go-eth2-client/spec/gloas"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/ssvlabs/ssv-spec/types"
@@ -211,15 +211,14 @@ var TestingSignedAggregatorCommitteeBeaconObjectSSZRoot = func(duty *types.Aggre
 		beacon := NewTestingBeaconNode()
 		d, _ := beacon.DomainData(1, types.DomainAggregateAndProof)
 
-		// Gloas reuses the Electra aggregate shape (SIP #94 §2).
-		sig, _, _ := signer.SignBeaconObject(aggregateAndProof.Electra, d, ks.ValidatorPK.Serialize(), types.DomainAggregateAndProof)
+		sig, _, _ := signer.SignBeaconObject(aggregateAndProof.Gloas, d, ks.ValidatorPK.Serialize(), types.DomainAggregateAndProof)
 
 		// Convert signature to BLSSignature
 		var blsSig phase0.BLSSignature
 		copy(blsSig[:], sig)
 
-		signedAgg := &electra.SignedAggregateAndProof{
-			Message:   aggregateAndProof.Electra,
+		signedAgg := &eth2gloas.SignedAggregateAndProof{
+			Message:   aggregateAndProof.Gloas,
 			Signature: blsSig,
 		}
 
