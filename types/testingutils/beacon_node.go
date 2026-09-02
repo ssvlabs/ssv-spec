@@ -76,13 +76,13 @@ func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot) (*phase0.Attes
 
 // SubmitAttestations submit attestations to the node
 // Note: The test is concerned with what should be sent on the wire. Thus, attestations are converted into a
-// SingleAttestation object as in the Ethereum spec (Gloas reuses the Electra shape, SIP #94 §2).
+// SingleAttestation object as in the Ethereum spec.
 func (bn *TestingBeaconNode) SubmitAttestations(attestations []*spec.VersionedAttestation) error {
 	for _, att := range attestations {
 		if att.Version != gloas.DataVersionGloas {
 			panic("unsupported version")
 		}
-		singleAttestation, err := att.Electra.ToSingleAttestation(att.ValidatorIndex)
+		singleAttestation, err := att.Gloas.ToSingleAttestation(att.ValidatorIndex)
 		if err != nil {
 			panic(err)
 		}
@@ -153,7 +153,7 @@ func (bn *TestingBeaconNode) IsAggregator(slot phase0.Slot, committeeIndex phase
 
 // GetAggregateAttestation returns the aggregate attestation for the given slot and committee
 func (bn *TestingBeaconNode) GetAggregateAttestation(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, error) {
-	return TestingElectraAggregateAndProofV(TestingValidatorIndex, gloas.DataVersionGloas).Aggregate, nil
+	return TestingGloasAggregateAndProofV(TestingValidatorIndex, gloas.DataVersionGloas).Aggregate, nil
 }
 
 // SubmitAggregateSelectionProof returns an AggregateAndProof object
@@ -167,7 +167,7 @@ func (bn *TestingBeaconNode) SubmitSignedAggregateAndProof(msg *spec.VersionedSi
 	if msg.Version != gloas.DataVersionGloas {
 		panic("unsupported version")
 	}
-	root, _ := msg.Electra.HashTreeRoot() // Gloas reuses the Electra aggregate shape (SIP #94 §2)
+	root, _ := msg.Gloas.HashTreeRoot()
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, root)
 	return nil
 }
