@@ -12,7 +12,11 @@ import (
 
 const (
 	MaxSizeAggregatorCommitteeConsensusData = 8970524
-	MaxSizeElectraAttestation               = 131308
+	// MaxSizeElectraAttestation over-approximates a single attestation's SSZ size. It bounds the
+	// AggregatedAttestations list element (consensus_data.go's ssz-max:"64,131308"), a root-affecting
+	// limit, so it is deliberately kept at or above the true max — the exact max attestation size is
+	// 16621, asserted by MaxElectraAttestation. Do not "correct" it down.
+	MaxSizeElectraAttestation = 131308
 )
 
 func maxAggregatorCommitteeConsensusData() *types.AggregatorCommitteeConsensusData {
@@ -89,10 +93,9 @@ func (w *ElectraAttestationWrapper) Decode(data []byte) error {
 }
 
 func maxElectraAttestation() *ElectraAttestationWrapper {
-	aggbits := [131072]byte{1}
 	return &ElectraAttestationWrapper{
 		Attestation: &electra.Attestation{
-			AggregationBits: bitfield.Bitlist(aggbits[:]),
+			AggregationBits: bitfield.NewBitlist(131072),
 			Data: &phase0.AttestationData{
 				Slot:            1,
 				Index:           0,
@@ -127,7 +130,9 @@ func MaxElectraAttestation() *StructureSizeTest {
 		"max ElectraAttestation",
 		testdoc.StructureSizeTestMaxElectraAttestationDoc,
 		maxElectraAttestation(),
-		MaxSizeElectraAttestation,
-		true,
+		16621, // exact encoded size of a max electra attestation (full 131072-bit aggregation bitlist)
+		// AggregationBits is a Bitlist: its byte length (16385) can never equal the bit-count ssz-max tag
+		// (131072), so check ≤ rather than ==. ExpectedEncodedLength above pins the true maximum.
+		false,
 	)
 }
