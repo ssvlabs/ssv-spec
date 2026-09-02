@@ -92,8 +92,7 @@ func (bn *TestingBeaconNode) SubmitAttestations(attestations []*spec.VersionedAt
 			}
 			root, _ = singleAttestation.HashTreeRoot()
 		case gloas.DataVersionGloas:
-			// Gloas reuses the Electra attestation shape (SIP #94 §2).
-			singleAttestation, err := att.Electra.ToSingleAttestation(att.ValidatorIndex)
+			singleAttestation, err := att.Gloas.ToSingleAttestation(att.ValidatorIndex)
 			if err != nil {
 				panic(err)
 			}
@@ -323,7 +322,7 @@ func (bn *TestingBeaconNode) SubmitSignedAggregateAndProof(msg *spec.VersionedSi
 	case spec.DataVersionFulu:
 		root, _ = msg.Fulu.HashTreeRoot()
 	case gloas.DataVersionGloas:
-		root, _ = msg.Electra.HashTreeRoot() // Gloas reuses the Electra aggregate shape (SIP #94 §2)
+		root, _ = msg.Gloas.HashTreeRoot()
 	default:
 		panic("unsupported version")
 	}
