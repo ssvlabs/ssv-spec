@@ -113,6 +113,10 @@ type ProposerPreferencesCalls interface {
 	ProposerDutiesDependentRoot(epoch phase0.Epoch) (phase0.Root, error)
 	// SubmitProposerPreferences submits the reconstructed signed proposer preferences to the node
 	SubmitProposerPreferences(preferences *gloas.SignedProposerPreferences) error
+	// SubmitBuilderRequestAuth holds the reconstructed builder-request-auth signature for the proposal
+	// slot; the node forwards it to the builder as each entry's auth in the §4 produce body and,
+	// optionally, via POST /eth/v1/validator/builder_preferences (SIP #94 §5 builder-request-auth extension).
+	SubmitBuilderRequestAuth(auth *gloas.SignedBuilderRequestAuth) error
 }
 
 // EnvelopeCalls interface has all Gloas (ePBS) execution-payload envelope duty specific calls (SIP #94 §6)

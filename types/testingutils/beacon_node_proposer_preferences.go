@@ -57,6 +57,23 @@ var TestingProposerPreferencesNextEpochDuty = func() *types.ValidatorDuty {
 	return duty
 }
 
+// TestingBuilderRequestAuth is the frozen §5 builder-request-auth for one entry's data at a proposal slot.
+var TestingBuilderRequestAuth = func(data []byte, proposalSlot phase0.Slot) *gloas.BuilderRequestAuth {
+	return &gloas.BuilderRequestAuth{
+		Data: data,
+		Slot: proposalSlot,
+	}
+}
+
+// TestingSignedBuilderRequestAuth is the reconstructed object the runner submits on per-root quorum.
+var TestingSignedBuilderRequestAuth = func(ks *TestKeySet, data []byte, proposalSlot phase0.Slot) *gloas.SignedBuilderRequestAuth {
+	auth := TestingBuilderRequestAuth(data, proposalSlot)
+	return &gloas.SignedBuilderRequestAuth{
+		Message:   auth,
+		Signature: signBeaconObject(auth, types.DomainBuilderRequestAuth, ks),
+	}
+}
+
 // ProposerDutiesDependentRoot returns the fixture dependent root for any epoch
 func (bn *TestingBeaconNode) ProposerDutiesDependentRoot(epoch phase0.Epoch) (phase0.Root, error) {
 	return TestingProposerDutiesDependentRoot, nil
@@ -65,6 +82,16 @@ func (bn *TestingBeaconNode) ProposerDutiesDependentRoot(epoch phase0.Epoch) (ph
 // SubmitProposerPreferences records the signed proposer preferences' root
 func (bn *TestingBeaconNode) SubmitProposerPreferences(preferences *gloas.SignedProposerPreferences) error {
 	r, err := preferences.HashTreeRoot()
+	if err != nil {
+		return err
+	}
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	return nil
+}
+
+// SubmitBuilderRequestAuth records the signed builder-request-auth's root (SIP #94 §5)
+func (bn *TestingBeaconNode) SubmitBuilderRequestAuth(auth *gloas.SignedBuilderRequestAuth) error {
+	r, err := auth.HashTreeRoot()
 	if err != nil {
 		return err
 	}

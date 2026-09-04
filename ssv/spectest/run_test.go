@@ -616,6 +616,14 @@ func fixRunnerRoleSpecificState(t *testing.T, runner ssv.Runner, runnerMap map[s
 			r.PayloadAttestationData = data
 		}
 	case *ssv.ProposerPreferencesRunner:
+		// Restore the §5 builder-entry config first: NewSlotRunner below (and any re-run of the duty)
+		// reads it off the dispatcher to re-freeze the auth round.
+		if entriesRaw, ok := runnerMap["BuilderEntries"]; ok && entriesRaw != nil {
+			byts, _ := json.Marshal(entriesRaw)
+			entries := []ssv.BuilderEntry{}
+			require.NoError(t, json.Unmarshal(byts, &entries))
+			r.BuilderEntries = entries
+		}
 		raw, ok := runnerMap["BySlot"].(map[string]interface{})
 		if !ok {
 			return
@@ -636,6 +644,12 @@ func fixRunnerRoleSpecificState(t *testing.T, runner ssv.Runner, runnerMap map[s
 				pref := &gloas.ProposerPreferences{}
 				require.NoError(t, json.Unmarshal(byts, pref))
 				sub.ProposerPreferences = pref
+			}
+			if authsRaw, ok := subMap["BuilderRequestAuths"]; ok && authsRaw != nil {
+				byts, _ := json.Marshal(authsRaw)
+				auths := []*gloas.BuilderRequestAuth{}
+				require.NoError(t, json.Unmarshal(byts, &auths))
+				sub.BuilderRequestAuths = auths
 			}
 			r.BySlot[subBase.State.StartingDuty.DutySlot()] = sub
 		}

@@ -116,6 +116,7 @@ const (
 	EnvelopeDisseminationDecodeErrorCode
 	EnvelopeNoSelectedEnvelopeErrorCode
 	EnvelopeDisseminationUnsupportedErrorCode
+	RequestAuthNoAuthErrorCode
 )
 
 type Error struct {
