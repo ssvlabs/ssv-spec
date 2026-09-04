@@ -27,6 +27,12 @@ type ProposerPreferencesRunner struct {
 	// BySlot holds one sub-runner per concurrently-active proposal slot.
 	BySlot map[phase0.Slot]*ProposerPreferencesSlotRunner
 
+	// BuilderEntries is the cluster-configured §5 builder-request-auth entry set (static config; SIP #94
+	// §5). It is exported so it survives the spec-test JSON round-trip: unlike gasLimit (a fixed test
+	// constant reconstructed by role), it varies per test, and a reconstructed dispatcher must carry it to
+	// re-freeze the auth round. The dispatcher passes it to each sub-runner it creates.
+	BuilderEntries []BuilderEntry
+
 	beacon         BeaconNode
 	network        Network
 	signer         types.BeaconSigner
@@ -43,6 +49,7 @@ func NewProposerPreferencesRunner(
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
 	gasLimit uint64,
+	builderEntries []BuilderEntry,
 ) (Runner, error) {
 
 	if len(share) != 1 {
@@ -58,7 +65,8 @@ func NewProposerPreferencesRunner(
 			BeaconNetwork:  beaconNetwork,
 			Share:          share,
 		},
-		BySlot: map[phase0.Slot]*ProposerPreferencesSlotRunner{},
+		BySlot:         map[phase0.Slot]*ProposerPreferencesSlotRunner{},
+		BuilderEntries: builderEntries,
 
 		beacon:         beacon,
 		network:        network,
@@ -85,7 +93,7 @@ func (r *ProposerPreferencesRunner) StartNewDuty(duty types.Duty, quorum uint64)
 // per started duty, and the spec-test harness seeds pre-existing slot flows through it.
 func (r *ProposerPreferencesRunner) NewSlotRunner() *ProposerPreferencesSlotRunner {
 	return NewProposerPreferencesSlotRunner(r.BaseRunner.BeaconNetwork, r.BaseRunner.Share, r.beacon,
-		r.network, r.signer, r.operatorSigner, r.gasLimit)
+		r.network, r.signer, r.operatorSigner, r.gasLimit, r.BuilderEntries)
 }
 
 // HasRunningDuty returns true if any proposal slot's duty is still running
@@ -178,16 +186,22 @@ func (r *ProposerPreferencesRunner) GetOperatorSigner() *types.OperatorSigner {
 type ProposerPreferencesSlotRunner struct {
 	BaseRunner *BaseRunner
 
-	// ProposerPreferences is this slot's frozen preference. Incoming partial signatures are validated
-	// against exactly its root; nil until the duty executes.
+	// ProposerPreferences is this slot's frozen preference. Incoming ProposerPreferencesPartialSig
+	// partials are validated against exactly its root; nil until the duty executes.
 	ProposerPreferences *gloas.ProposerPreferences
+	// BuilderRequestAuths is this slot's frozen builder-request-auth set — one per distinct configured
+	// entry data (SIP #94 §5 builder-request-auth extension). Incoming RequestAuthPartialSig partials
+	// validate against these roots and collect per root, independently of the preference round. Empty
+	// when no builder entries are configured.
+	BuilderRequestAuths []*gloas.BuilderRequestAuth
 
 	beacon         BeaconNode
 	network        Network
 	signer         types.BeaconSigner
 	operatorSigner *types.OperatorSigner
 
-	gasLimit uint64
+	gasLimit       uint64
+	builderEntries []BuilderEntry
 }
 
 // NewProposerPreferencesSlotRunner constructs one proposal slot's flow; the dispatcher creates one
@@ -200,6 +214,7 @@ func NewProposerPreferencesSlotRunner(
 	signer types.BeaconSigner,
 	operatorSigner *types.OperatorSigner,
 	gasLimit uint64,
+	builderEntries []BuilderEntry,
 ) *ProposerPreferencesSlotRunner {
 	return &ProposerPreferencesSlotRunner{
 		BaseRunner: &BaseRunner{
@@ -213,6 +228,7 @@ func NewProposerPreferencesSlotRunner(
 		signer:         signer,
 		operatorSigner: operatorSigner,
 		gasLimit:       gasLimit,
+		builderEntries: builderEntries,
 	}
 }
 
@@ -226,6 +242,12 @@ func (r *ProposerPreferencesSlotRunner) HasRunningDuty() bool {
 }
 
 func (r *ProposerPreferencesSlotRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
+	// The builder-request-auth round rides the same duty but collects independently of the preference
+	// round — neither gates the other (SIP #94 §5).
+	if signedMsg.Type == types.RequestAuthPartialSig {
+		return r.processRequestAuth(signedMsg)
+	}
+
 	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing proposer preferences message")
@@ -300,6 +322,8 @@ func (r *ProposerPreferencesSlotRunner) expectedPostConsensusRootsAndDomain() ([
 //     when emitted earlier, which is what makes pre-fork emission for post-fork slots work — and
 //     broadcast the partial signature with the proposal slot
 //  3. once a quorum of operators converged on the same preference, reconstruct and submit it
+//  4. run the builder-request-auth round riding this duty (executeRequestAuthRound), independently of
+//     the preference round
 func (r *ProposerPreferencesSlotRunner) executeDuty(duty types.Duty) error {
 	proposalSlot := duty.DutySlot()
 	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(proposalSlot)
@@ -328,33 +352,166 @@ func (r *ProposerPreferencesSlotRunner) executeDuty(duty types.Duty) error {
 		Slot:     proposalSlot,
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
+	if err := r.broadcastPartialSig(msgs); err != nil {
+		return err
+	}
 
-	msgID := types.NewValidatorMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.RunnerRoleType)
+	return r.executeRequestAuthRound(duty.(*types.ValidatorDuty), proposalSlot)
+}
 
+// executeRequestAuthRound freezes one BuilderRequestAuth per distinct configured entry data, signs each
+// under DomainBuilderRequestAuth (chain-independent), and broadcasts them together in a single
+// RequestAuthPartialSig container — one partial per frozen auth, the multi-root pre-consensus shape the
+// container and quorum machinery expect. Entries sharing data share a root; zero-length data is skipped;
+// entries are capped at MaxBuilderEntries (SIP #94 §5). No configured entries means no auth round.
+func (r *ProposerPreferencesSlotRunner) executeRequestAuthRound(duty *types.ValidatorDuty, proposalSlot phase0.Slot) error {
+	r.BuilderRequestAuths = nil
+	authMsgs := &types.PartialSignatureMessages{
+		Type:     types.RequestAuthPartialSig,
+		Slot:     proposalSlot,
+		Messages: []*types.PartialSignatureMessage{},
+	}
+	seen := make(map[string]bool)
+	for _, entry := range r.builderEntries {
+		if len(r.BuilderRequestAuths) >= MaxBuilderEntries {
+			break
+		}
+		data := entry.AuthData()
+		if len(data) == 0 || seen[string(data)] {
+			continue
+		}
+		seen[string(data)] = true
+
+		auth := &gloas.BuilderRequestAuth{Data: data, Slot: proposalSlot}
+		r.BuilderRequestAuths = append(r.BuilderRequestAuths, auth)
+
+		msg, err := r.BaseRunner.signBeaconObject(r, duty, auth, proposalSlot, types.DomainBuilderRequestAuth)
+		if err != nil {
+			return errors.Wrap(err, "could not sign builder request auth")
+		}
+		authMsgs.Messages = append(authMsgs.Messages, msg)
+	}
+	if len(authMsgs.Messages) == 0 {
+		return nil
+	}
+	return r.broadcastPartialSig(authMsgs)
+}
+
+// broadcastPartialSig operator-signs a partial-signature container into an SSVMessage and broadcasts it.
+func (r *ProposerPreferencesSlotRunner) broadcastPartialSig(msgs *types.PartialSignatureMessages) error {
 	encodedMsg, err := msgs.Encode()
 	if err != nil {
 		return err
 	}
-
 	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVPartialSignatureMsgType,
-		MsgID:   msgID,
+		MsgID:   types.NewValidatorMsgID(r.GetShare().DomainType, r.GetShare().ValidatorPubKey, r.BaseRunner.RunnerRoleType),
 		Data:    encodedMsg,
 	}
-
 	sig, err := r.operatorSigner.SignSSVMessage(ssvMsg)
 	if err != nil {
 		return errors.Wrap(err, "could not sign SSVMessage")
 	}
-
 	msgToBroadcast := &types.SignedSSVMessage{
 		Signatures:  [][]byte{sig},
 		OperatorIDs: []types.OperatorID{r.operatorSigner.GetOperatorID()},
 		SSVMessage:  ssvMsg,
 	}
-
 	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
-		return errors.Wrap(err, "can't broadcast partial proposer preferences sig")
+		return errors.Wrap(err, "can't broadcast partial signature")
+	}
+	return nil
+}
+
+// processRequestAuth handles a RequestAuthPartialSig container (SIP #94 §5): it collects its partials
+// against the frozen auth roots — independently of the preference round and of the runner's finished
+// state, since auth collection continues until the proposal slot — and reconstructs and submits one
+// SignedBuilderRequestAuth per root that reaches quorum.
+func (r *ProposerPreferencesSlotRunner) processRequestAuth(signedMsg *types.PartialSignatureMessages) error {
+	quorum, roots, err := r.baseRequestAuthProcessing(signedMsg)
+	if err != nil {
+		return errors.Wrap(err, "failed processing builder request auth message")
+	}
+	if !quorum {
+		return nil
+	}
+
+	// A multi-root container can push several auth roots over quorum at once; submit each.
+	for _, root := range roots {
+		auth := r.authForSigningRoot(root)
+		if auth == nil {
+			return types.NewError(types.RequestAuthNoAuthErrorCode, "builder-request-auth quorum for an unknown root")
+		}
+
+		fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey[:], r.GetShare().ValidatorIndex)
+		if err != nil {
+			r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PreConsensusContainer, root, r.GetShare().Committee,
+				r.GetShare().ValidatorIndex)
+			return errors.Wrap(err, "got builder-request-auth quorum but it has invalid signatures")
+		}
+		specSig := phase0.BLSSignature{}
+		copy(specSig[:], fullSig)
+
+		if err := r.beacon.SubmitBuilderRequestAuth(&gloas.SignedBuilderRequestAuth{Message: auth, Signature: specSig}); err != nil {
+			return errors.Wrap(err, "could not submit builder request auth")
+		}
+	}
+	return nil
+}
+
+// baseRequestAuthProcessing validates a RequestAuthPartialSig against the frozen auth roots under
+// DomainBuilderRequestAuth and adds it to the pre-consensus container (per-root quorum). It deliberately
+// skips the running-duty check the preference round uses: the auth round keeps collecting after the
+// preference round finishes (SIP #94 §5 — neither gates the other).
+func (r *ProposerPreferencesSlotRunner) baseRequestAuthProcessing(signedMsg *types.PartialSignatureMessages) (bool, [][32]byte, error) {
+	if r.BaseRunner.State == nil {
+		return false, nil, types.NewError(types.NoRunningDutyErrorCode, "no running duty")
+	}
+	if err := r.BaseRunner.validatePartialSigMsgForSlot(signedMsg, r.BaseRunner.State.StartingDuty.DutySlot()); err != nil {
+		return false, nil, err
+	}
+	if err := r.BaseRunner.validateValidatorIndexInPartialSigMsg(signedMsg); err != nil {
+		return false, nil, err
+	}
+	roots, domain, err := r.expectedRequestAuthRootsAndDomain()
+	if err != nil {
+		return false, nil, err
+	}
+	if err := r.BaseRunner.verifyExpectedRoot(r, signedMsg, roots, domain); err != nil {
+		return false, nil, err
+	}
+	quorum, quorumRoots := r.BaseRunner.basePartialSigMsgProcessing(signedMsg, r.GetState().PreConsensusContainer)
+	return quorum, quorumRoots, nil
+}
+
+// expectedRequestAuthRootsAndDomain returns the frozen builder-request-auth roots and their domain, so
+// incoming RequestAuthPartialSig partials validate against exactly this operator's configured entries.
+func (r *ProposerPreferencesSlotRunner) expectedRequestAuthRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+	if len(r.BuilderRequestAuths) == 0 {
+		return nil, types.DomainError, types.NewError(types.RequestAuthNoAuthErrorCode, "no frozen builder request auths")
+	}
+	roots := make([]ssz.HashRoot, 0, len(r.BuilderRequestAuths))
+	for _, auth := range r.BuilderRequestAuths {
+		roots = append(roots, auth)
+	}
+	return roots, types.DomainBuilderRequestAuth, nil
+}
+
+// authForSigningRoot returns the frozen auth whose DomainBuilderRequestAuth signing root equals root.
+func (r *ProposerPreferencesSlotRunner) authForSigningRoot(root [32]byte) *gloas.BuilderRequestAuth {
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.DutySlot())
+	domain, err := r.beacon.DomainData(epoch, types.DomainBuilderRequestAuth)
+	if err != nil {
+		return nil
+	}
+	for _, auth := range r.BuilderRequestAuths {
+		signingRoot, err := types.ComputeETHSigningRoot(auth, domain)
+		if err != nil {
+			continue
+		}
+		if signingRoot == root {
+			return auth
+		}
 	}
 	return nil
 }
