@@ -19,3 +19,7 @@ package types
 //go:generate go run github.com/ferranbt/fastssz/sszgen --path consensus_data.go --include ./operator.go,./signer.go,./partial_sig_message.go,./beacon_types.go,$GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.27.0/spec/phase0,$GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.27.0/spec,$GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.27.0/spec/altair --exclude-objs Contributions,BeaconNetwork,BeaconRole
 //go:generate go install golang.org/x/tools/cmd/goimports@latest
 //go:generate goimports -w consensus_data_encoding.go
+
+//go:generate rm -f ./envelope_dissemination_encoding.go
+//go:generate go run github.com/ferranbt/fastssz/sszgen --path envelope_dissemination.go --include ./gloas,$GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.27.0/spec/phase0,$GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.27.0/spec/electra,$GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.27.0/spec/bellatrix,$GOPATH/pkg/mod/github.com/attestantio/go-eth2-client@v0.27.0/spec/capella --exclude-objs ExecutionRequests,BuilderDepositRequest,BuilderExitRequest,ExecutionPayloadBid,SignedExecutionPayloadBid,BeaconBlock,BeaconBlockBody,SignedBeaconBlock,PayloadAttestation,PayloadAttestationData,PayloadAttestationMessage,ProposerPreferences,SignedProposerPreferences
+//go:generate goimports -w envelope_dissemination_encoding.go

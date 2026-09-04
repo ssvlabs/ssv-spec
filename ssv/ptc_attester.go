@@ -119,6 +119,12 @@ func (r *PTCAttesterRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) 
 	return types.NewError(types.PTCAttesterNoConsensusPhaseErrorCode, "no consensus phase for ptc attestation")
 }
 
+// ProcessEnvelopeDissemination returns an error: only the envelope-proposer runner processes
+// disseminated envelopes (SIP #94 §6).
+func (*PTCAttesterRunner) ProcessEnvelopeDissemination(*types.SignedSSVMessage) error {
+	return types.NewError(types.EnvelopeDisseminationUnsupportedErrorCode, "runner does not process envelope dissemination")
+}
+
 func (r *PTCAttesterRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
 	return types.NewError(types.PTCAttesterNoPostConsensusPhaseErrorCode, "no post consensus phase for ptc attestation")
 }

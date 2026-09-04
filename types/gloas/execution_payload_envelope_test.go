@@ -34,28 +34,3 @@ func TestBlindedExecutionPayloadEnvelopeRoundTrip(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, r1, r2)
 }
-
-// The signed blinded envelope — the §6 publication body on the blinded path — round-trips
-// through SSZ with a stable root.
-func TestSignedBlindedExecutionPayloadEnvelopeRoundTrip(t *testing.T) {
-	signedBlinded := &SignedBlindedExecutionPayloadEnvelope{
-		Message: &BlindedExecutionPayloadEnvelope{
-			PayloadRoot:           phase0.Root{0x01},
-			ExecutionRequests:     &ExecutionRequests{},
-			BuilderIndex:          BuilderIndexSelfBuild,
-			BeaconBlockRoot:       phase0.Root{0x02},
-			ParentBeaconBlockRoot: phase0.Root{0x03},
-		},
-		Signature: phase0.BLSSignature{0xab, 0xcd},
-	}
-
-	b, err := signedBlinded.MarshalSSZ()
-	require.NoError(t, err)
-	out := &SignedBlindedExecutionPayloadEnvelope{}
-	require.NoError(t, out.UnmarshalSSZ(b))
-	r1, err := signedBlinded.HashTreeRoot()
-	require.NoError(t, err)
-	r2, err := out.HashTreeRoot()
-	require.NoError(t, err)
-	require.Equal(t, r1, r2)
-}

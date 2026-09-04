@@ -117,6 +117,12 @@ func (r *ValidatorRegistrationRunner) ProcessConsensus(signedMsg *types.SignedSS
 	return types.NewError(types.ValidatorRegistrationNoConsensusPhaseErrorCode, "no consensus phase for validator registration")
 }
 
+// ProcessEnvelopeDissemination returns an error: only the envelope-proposer runner processes
+// disseminated envelopes (SIP #94 §6).
+func (*ValidatorRegistrationRunner) ProcessEnvelopeDissemination(*types.SignedSSVMessage) error {
+	return types.NewError(types.EnvelopeDisseminationUnsupportedErrorCode, "runner does not process envelope dissemination")
+}
+
 func (r *ValidatorRegistrationRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
 	return types.NewError(types.ValidatorRegistrationNoPostConsensusPhaseErrorCode, "no post consensus phase for validator registration")
 }

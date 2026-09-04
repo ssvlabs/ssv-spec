@@ -78,6 +78,19 @@ func PostFinish() tests.SpecTest {
 				ExpectedErrorCode: types.NoRunningDutyErrorCode,
 			},
 			{
+				Name: "envelope proposer",
+				Runner: finishRunner(
+					testingutils.EnvelopeProposerRunner(ks),
+					testingutils.TestingEnvelopeProposerDuty(),
+				),
+				Duty: testingutils.TestingEnvelopeProposerDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[1], 1))),
+				},
+				DontStartDuty:     true,
+				ExpectedErrorCode: types.NoRunningDutyErrorCode,
+			},
+			{
 				// §5 state lives in the per-slot sub-runners, so the finished duty is seeded there:
 				// the sub for the message's proposal slot exists but concluded, and rejects the partial.
 				Name: "proposer preferences",

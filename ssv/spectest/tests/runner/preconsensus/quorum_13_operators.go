@@ -128,6 +128,29 @@ func Quorum13Operators() tests.SpecTest {
 				},
 			},
 			{
+				Name:   "envelope proposer",
+				Runner: testingutils.EnvelopeProposerRunner(ks),
+				Duty:   testingutils.TestingEnvelopeProposerDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[1], 1))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[2], 2))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[3], 3))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[4], 4))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[5], 5))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[6], 6))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[7], 7))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[8], 8))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[9], 9))),
+				},
+				PostDutyRunnerStateRoot: "530111e289234d0c522eee11f16287de385592c2677f0acb18ba6435544738aa",
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusEnvelopeMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingBlindedExecutionPayloadEnvelope(testingutils.TestingDutySlotGloas)),
+				},
+			},
+			{
 				Name:   "proposer preferences",
 				Runner: testingutils.ProposerPreferencesRunner(ks),
 				Duty:   testingutils.TestingProposerPreferencesDuty(),
