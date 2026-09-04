@@ -30,3 +30,7 @@ types:
     output: proposerpreferences_ssz.go
   - name: SignedProposerPreferences
     output: signedproposerpreferences_ssz.go
+  - name: BuilderRequestAuth
+    output: builderrequestauth_ssz.go
+  - name: SignedBuilderRequestAuth
+    output: signedbuilderrequestauth_ssz.go

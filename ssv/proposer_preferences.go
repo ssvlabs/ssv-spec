@@ -485,11 +485,11 @@ func (r *ProposerPreferencesSlotRunner) baseRequestAuthProcessing(signedMsg *typ
 
 // expectedRequestAuthRootsAndDomain returns the frozen builder-request-auth roots and their domain, so
 // incoming RequestAuthPartialSig partials validate against exactly this operator's configured entries.
-func (r *ProposerPreferencesSlotRunner) expectedRequestAuthRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *ProposerPreferencesSlotRunner) expectedRequestAuthRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	if len(r.BuilderRequestAuths) == 0 {
 		return nil, types.DomainError, types.NewError(types.RequestAuthNoAuthErrorCode, "no frozen builder request auths")
 	}
-	roots := make([]ssz.HashRoot, 0, len(r.BuilderRequestAuths))
+	roots := make([]types.HashRoot, 0, len(r.BuilderRequestAuths))
 	for _, auth := range r.BuilderRequestAuths {
 		roots = append(roots, auth)
 	}
