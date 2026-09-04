@@ -35,6 +35,10 @@ func MsgValidation(runner ssv.Runner) MsgValidatorFunc {
 			if validatePartialSigMsg(runner, signedSSVMsg.SSVMessage.Data) != nil {
 				return pubsub.ValidationReject
 			}
+		case types.SSVEnvelopeDisseminationMsgType:
+			if validateEnvelopeDisseminationMsg(signedSSVMsg) != nil {
+				return pubsub.ValidationReject
+			}
 		default:
 			return pubsub.ValidationReject
 		}
@@ -100,6 +104,20 @@ func validatePartialSigMsg(runner ssv.Runner, data []byte) error {
 		return runner.GetBaseRunner().ValidatePostConsensusMsg(runner, signedMsg)
 	}
 	return runner.GetBaseRunner().ValidatePreConsensusMsg(runner, signedMsg)
+}
+
+// validateEnvelopeDisseminationMsg applies the Gloas (ePBS) §6 dissemination structural rules: exactly
+// one signer and a decodable EnvelopeDissemination carrier (including its blinded envelope field). The
+// binding checks against the §4 decision are runner concerns, not validation rules (SIP #94 §6/§7).
+func validateEnvelopeDisseminationMsg(signedMsg *types.SignedSSVMessage) error {
+	if len(signedMsg.OperatorIDs) != 1 {
+		return errors.New("allows 1 signer")
+	}
+	dissemination := &types.EnvelopeDissemination{}
+	if err := dissemination.Decode(signedMsg.SSVMessage.Data); err != nil {
+		return errors.Wrap(err, "could not decode envelope dissemination")
+	}
+	return nil
 }
 
 func validateFutureMsg(

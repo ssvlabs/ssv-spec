@@ -106,6 +106,12 @@ func (r *VoluntaryExitRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage
 	return types.NewError(types.ValidatorExitNoConsensusPhaseErrorCode, "no consensus phase for voluntary exit")
 }
 
+// ProcessEnvelopeDissemination returns an error: only the envelope-proposer runner processes
+// disseminated envelopes (SIP #94 §6).
+func (*VoluntaryExitRunner) ProcessEnvelopeDissemination(*types.SignedSSVMessage) error {
+	return types.NewError(types.EnvelopeDisseminationUnsupportedErrorCode, "runner does not process envelope dissemination")
+}
+
 func (r *VoluntaryExitRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
 	return types.NewError(types.ValidatorExitNoPostConsensusPhaseErrorCode, "no post consensus phase for voluntary exit")
 }

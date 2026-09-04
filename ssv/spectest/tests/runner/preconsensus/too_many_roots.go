@@ -91,6 +91,18 @@ func TooManyRoots() tests.SpecTest {
 				ExpectedErrorCode: types.WrongRootsCountErrorCode,
 			},
 			{
+				Name:   "envelope proposer",
+				Runner: testingutils.EnvelopeProposerRunner(ks),
+				Duty:   testingutils.TestingEnvelopeProposerDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeTooManyRootsMsg(ks.Shares[1], 1))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusEnvelopeMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedErrorCode: types.WrongRootsCountErrorCode,
+			},
+			{
 				Name:   "proposer preferences",
 				Runner: testingutils.ProposerPreferencesRunner(ks),
 				Duty:   testingutils.TestingProposerPreferencesDuty(),
