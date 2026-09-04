@@ -12,6 +12,22 @@ import (
 
 var TestingHighestDecidedSlot = phase0.Slot(0)
 
+// TestingProposedBlock derives the §4→§6 linkage facts for a slot from the fixture Gloas block, as the
+// proposer runner would record them: the block root, parent root, and the bid's execution-requests root
+// (SIP #94 §6).
+var TestingProposedBlock = func(slot phase0.Slot) ssv.ProposedBlock {
+	block := gloas.TestingBeaconBlock(slot)
+	root, err := block.HashTreeRoot()
+	if err != nil {
+		panic(err.Error())
+	}
+	return ssv.ProposedBlock{
+		BlockRoot:             root,
+		ParentRoot:            block.ParentRoot,
+		ExecutionRequestsRoot: block.Body.SignedExecutionPayloadBid.Message.ExecutionRequestsRoot,
+	}
+}
+
 // committeeVoteValueCheckF routes a committee consensus value to the fork-appropriate value check:
 // GloasBeaconVoteValueCheckF at Gloas slots (SIP #94 §2), BeaconVoteValueCheckF before. The fork must
 // be decided by the duty's slot, not by the value's shape — otherwise a pre-Gloas BeaconVote proposed
@@ -136,9 +152,10 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 	var valCheckRunner ssv.Runner
 	// The §4→§6 linkage store, shared between the envelope runner and its value check; pre-seeded with
 	// the fixture block roots at the Gloas duty slots, as if the proposer had decided them (SIP #94 §6).
-	envelopeRoots := ssv.ProposedBlockRoots{
-		TestingDutySlotGloas:          TestingProposedGloasBlockRoot(TestingDutySlotGloas),
-		TestingDutySlotGloasNextEpoch: TestingProposedGloasBlockRoot(TestingDutySlotGloasNextEpoch),
+	envelopeRoots := ssv.ProposedBlocks{
+		TestingDutySlotGloas:          TestingProposedBlock(TestingDutySlotGloas),
+		TestingDutySlotGloasNextEpoch: TestingProposedBlock(TestingDutySlotGloasNextEpoch),
+		TestingEnvelopeNonBuilderSlot: TestingProposedBlock(TestingEnvelopeNonBuilderSlot),
 	}
 
 	km := NewTestingKeyManager()
@@ -188,9 +205,6 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 		case types.RoleProposer:
 			valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
 				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey, VersionByEpoch)
-		case types.RoleEnvelopeProposer:
-			valCheck = ssv.EnvelopeValueCheckF(types.BeaconTestNetwork,
-				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, envelopeRoots)
 		case types.RoleAggregatorCommittee:
 			valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
 		default:
@@ -276,14 +290,11 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 		runner, err = ssv.NewEnvelopeProposerRunner(
 			types.BeaconTestNetwork,
 			shareMap,
-			contr,
 			beacon,
 			net,
 			km,
 			opSigner,
-			valCheck,
 			envelopeRoots,
-			TestingHighestDecidedSlot,
 		)
 	case types.RoleAggregatorCommittee:
 		runner, err = ssv.NewAggregatorCommitteeRunner(
@@ -332,9 +343,10 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	var valCheckRunner ssv.Runner
 	// The §4→§6 linkage store, shared between the envelope runner and its value check; pre-seeded with
 	// the fixture block roots at the Gloas duty slots, as if the proposer had decided them (SIP #94 §6).
-	envelopeRoots := ssv.ProposedBlockRoots{
-		TestingDutySlotGloas:          TestingProposedGloasBlockRoot(TestingDutySlotGloas),
-		TestingDutySlotGloasNextEpoch: TestingProposedGloasBlockRoot(TestingDutySlotGloasNextEpoch),
+	envelopeRoots := ssv.ProposedBlocks{
+		TestingDutySlotGloas:          TestingProposedBlock(TestingDutySlotGloas),
+		TestingDutySlotGloasNextEpoch: TestingProposedBlock(TestingDutySlotGloasNextEpoch),
+		TestingEnvelopeNonBuilderSlot: TestingProposedBlock(TestingEnvelopeNonBuilderSlot),
 	}
 
 	// Identifier
@@ -368,9 +380,6 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	case types.RoleProposer:
 		valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
 			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, share.SharePubKey, VersionByEpoch)
-	case types.RoleEnvelopeProposer:
-		valCheck = ssv.EnvelopeValueCheckF(types.BeaconTestNetwork,
-			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, envelopeRoots)
 	case types.RoleAggregatorCommittee:
 		valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
 	default:
@@ -459,14 +468,11 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 		runner, err = ssv.NewEnvelopeProposerRunner(
 			types.BeaconTestNetwork,
 			shareMap,
-			contr,
 			NewTestingBeaconNode(),
 			net,
 			km,
 			opSigner,
-			valCheck,
 			envelopeRoots,
-			TestingHighestDecidedSlot,
 		)
 	case types.RoleAggregatorCommittee:
 		runner, err = ssv.NewAggregatorCommitteeRunner(

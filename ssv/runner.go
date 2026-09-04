@@ -35,6 +35,10 @@ type Runner interface {
 	ProcessConsensus(msg *types.SignedSSVMessage) error
 	// ProcessPostConsensus processes all post-consensus msgs, returns error if can't process
 	ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error
+	// ProcessEnvelopeDissemination processes a disseminated blinded execution-payload envelope for the
+	// Gloas (ePBS) self-build envelope-signing duty (SIP #94 §6). Only the envelope-proposer runner acts
+	// on it; every other runner returns an unsupported-message error.
+	ProcessEnvelopeDissemination(msg *types.SignedSSVMessage) error
 
 	// expectedPreConsensusRootsAndDomain an INTERNAL function, returns the expected pre-consensus roots to sign
 	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error)

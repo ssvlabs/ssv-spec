@@ -75,12 +75,6 @@ func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueChe
 	case types.RoleProposer:
 		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex,
 			shareValidatorsPK[0], testingutils.VersionByEpoch)
-	case types.RoleEnvelopeProposer:
-		// The §4→§6 linkage store, seeded as if the proposer had decided the fixture block (SIP #94 §6).
-		roots := ssv.ProposedBlockRoots{
-			testingutils.TestingDutySlotGloas: testingutils.TestingProposedGloasBlockRoot(testingutils.TestingDutySlotGloas),
-		}
-		return ssv.EnvelopeValueCheckF(test.Network, pubKeyBytes, testingutils.TestingValidatorIndex, roots)
 	case types.RoleAggregatorCommittee:
 		return ssv.AggregatorCommitteeValueCheckF(signer, test.Network)
 	default:

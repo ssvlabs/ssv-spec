@@ -152,6 +152,13 @@ func (v *Validator) ProcessMessage(signedSSVMessage *types.SignedSSVMessage) err
 			return dutyRunner.ProcessPostConsensus(psigMsgs)
 		}
 		return dutyRunner.ProcessPreConsensus(psigMsgs)
+	case types.SSVEnvelopeDisseminationMsgType:
+		// Gloas (ePBS) §6 envelope dissemination carries a free-standing blinded envelope with exactly
+		// one signer; the runner decodes and content-selects it.
+		if len(signedSSVMessage.OperatorIDs) != 1 {
+			return errors.New("EnvelopeDissemination has more than 1 signer")
+		}
+		return dutyRunner.ProcessEnvelopeDissemination(signedSSVMessage)
 	default:
 		return errors.New("unknown msg")
 	}

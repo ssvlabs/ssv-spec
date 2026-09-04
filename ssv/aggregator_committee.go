@@ -358,6 +358,12 @@ func (r *AggregatorCommitteeRunner) ProcessConsensus(signedMsg *types.SignedSSVM
 	return r.broadcastPartialSignatureMessage(postConsensusMsg)
 }
 
+// ProcessEnvelopeDissemination returns an error: only the envelope-proposer runner processes
+// disseminated envelopes (SIP #94 §6).
+func (*AggregatorCommitteeRunner) ProcessEnvelopeDissemination(*types.SignedSSVMessage) error {
+	return types.NewError(types.EnvelopeDisseminationUnsupportedErrorCode, "runner does not process envelope dissemination")
+}
+
 func (r *AggregatorCommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
 	quorum, rootsList, err := r.BaseRunner.basePostConsensusMsgProcessing(r, signedMsg)
 	if err != nil {

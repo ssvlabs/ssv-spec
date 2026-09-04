@@ -67,14 +67,6 @@ func decideAggregatorCommitteeRunner(r ssv.Runner, duty types.Duty, cd *types.Ag
 	return decideRunnerForData(r, duty, cdBytes)
 }
 
-// decideEnvelopeRunner seeds a decided §6 envelope runner: the decided state plus this operator's own
-// produced envelope — the §6 runner publishes only when it produced the decided envelope, and in these
-// fixtures the deciding value is the operator's own fixture envelope.
-func decideEnvelopeRunner(r ssv.Runner, duty types.Duty, decidedValue []byte) ssv.Runner {
-	r.(*ssv.EnvelopeProposerRunner).ProducedEnvelope = testingutils.TestingBlindedExecutionPayloadEnvelope(duty.DutySlot())
-	return decideRunnerForData(r, duty, decidedValue)
-}
-
 func decideRunnerForData(r ssv.Runner, duty types.Duty, decidedValue []byte) ssv.Runner {
 
 	var share *types.Share
@@ -272,21 +264,6 @@ func ValidMessage() tests.SpecTest {
 			},
 		}...)
 	}
-
-	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-		Name: "envelope proposer",
-		Runner: decideEnvelopeRunner(
-			testingutils.EnvelopeProposerRunner(ks),
-			testingutils.TestingEnvelopeProposerDuty(),
-			testingutils.TestingEnvelopeConsensusDataByts(testingutils.TestingDutySlotGloas),
-		),
-		Duty: testingutils.TestingEnvelopeProposerDuty(),
-		Messages: []*types.SignedSSVMessage{
-			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1))),
-		},
-		PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-		DontStartDuty:           true,
-	})
 
 	return multiSpecTest
 }

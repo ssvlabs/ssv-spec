@@ -150,10 +150,12 @@ func Finished() tests.SpecTest {
 	multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
 		Name: "envelope proposer",
 		Runner: finishRunner(testingutils.EnvelopeProposerRunner(ks),
-			testingutils.TestingEnvelopeProposerDuty(), true),
-		Duty:           testingutils.TestingEnvelopeProposerNextEpochDuty(),
-		Threshold:      ks.Threshold,
-		OutputMessages: []*types.PartialSignatureMessages{},
+			testingutils.TestingEnvelopeProposerDuty(), false),
+		Duty:      testingutils.TestingEnvelopeProposerNextEpochDuty(),
+		Threshold: ks.Threshold,
+		OutputMessages: []*types.PartialSignatureMessages{
+			testingutils.PreConsensusEnvelopeNextEpochMsg(ks.Shares[1], 1), // disseminates and signs when starting a new duty
+		},
 	})
 
 	return multiSpecTest

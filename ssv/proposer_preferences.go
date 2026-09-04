@@ -111,6 +111,12 @@ func (r *ProposerPreferencesRunner) ProcessConsensus(signedMsg *types.SignedSSVM
 	return types.NewError(types.ProposerPreferencesNoConsensusPhaseErrorCode, "no consensus phase for proposer preferences")
 }
 
+// ProcessEnvelopeDissemination returns an error: only the envelope-proposer runner processes
+// disseminated envelopes (SIP #94 §6).
+func (*ProposerPreferencesRunner) ProcessEnvelopeDissemination(*types.SignedSSVMessage) error {
+	return types.NewError(types.EnvelopeDisseminationUnsupportedErrorCode, "runner does not process envelope dissemination")
+}
+
 func (r *ProposerPreferencesRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
 	return types.NewError(types.ProposerPreferencesNoPostConsensusPhaseErrorCode, "no post consensus phase for proposer preferences")
 }
@@ -263,6 +269,12 @@ func (r *ProposerPreferencesSlotRunner) ProcessPreConsensus(signedMsg *types.Par
 
 func (r *ProposerPreferencesSlotRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
 	return types.NewError(types.ProposerPreferencesNoConsensusPhaseErrorCode, "no consensus phase for proposer preferences")
+}
+
+// ProcessEnvelopeDissemination returns an error: only the envelope-proposer runner processes
+// disseminated envelopes (SIP #94 §6).
+func (*ProposerPreferencesSlotRunner) ProcessEnvelopeDissemination(*types.SignedSSVMessage) error {
+	return types.NewError(types.EnvelopeDisseminationUnsupportedErrorCode, "runner does not process envelope dissemination")
 }
 
 func (r *ProposerPreferencesSlotRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {

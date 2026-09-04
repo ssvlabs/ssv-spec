@@ -138,15 +138,5 @@ func PostWrongDecided() tests.SpecTest {
 		}...)
 	}
 
-	multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
-		Name:                    "envelope proposer",
-		Runner:                  decideWrong(testingutils.EnvelopeProposerRunner(ks), testingutils.TestingEnvelopeProposerDuty(), qbft.Height(testingutils.TestingDutySlotGloas+50)),
-		Duty:                    testingutils.TestingEnvelopeProposerDuty(),
-		Threshold:               ks.Threshold,
-		PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-		OutputMessages:          []*types.PartialSignatureMessages{},
-		ExpectedErrorCode:       types.DutyAlreadyPassedErrorCode,
-	})
-
 	return multiSpecTest
 }

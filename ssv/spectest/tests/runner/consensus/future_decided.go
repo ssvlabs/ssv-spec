@@ -190,21 +190,5 @@ func FutureDecided() tests.SpecTest {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
 	}
 
-	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-		Name:   "envelope proposer",
-		Runner: testingutils.EnvelopeProposerRunner(ks),
-		Duty:   testingutils.TestingEnvelopeProposerDuty(),
-		Messages: []*types.SignedSSVMessage{
-			testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
-				[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
-				[]types.OperatorID{1, 2, 3},
-				qbft.Height(testingutils.TestingDutySlotGloas+1),
-				getID(types.RoleEnvelopeProposer),
-			),
-		},
-		OutputMessages:    []*types.PartialSignatureMessages{},
-		ExpectedErrorCode: errCode,
-	})
-
 	return multiSpecTest
 }

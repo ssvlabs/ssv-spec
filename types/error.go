@@ -111,11 +111,11 @@ const (
 	ProposerPreferencesNoPostConsensusPhaseErrorCode
 	ProposerPreferencesNoPreferenceErrorCode
 	ValidatorRegistrationDeprecatedErrorCode
-	EnvelopeProposerNoPreConsensusPhaseErrorCode
-	EnvelopeConsensusDataDecodeErrorCode
-	EnvelopeWrongBuilderIndexErrorCode
-	EnvelopeBlockRootMismatchErrorCode
-	EnvelopeNoProposedBlockRootErrorCode
+	EnvelopeProposerNoConsensusPhaseErrorCode
+	EnvelopeProposerNoPostConsensusPhaseErrorCode
+	EnvelopeDisseminationDecodeErrorCode
+	EnvelopeNoSelectedEnvelopeErrorCode
+	EnvelopeDisseminationUnsupportedErrorCode
 )
 
 type Error struct {

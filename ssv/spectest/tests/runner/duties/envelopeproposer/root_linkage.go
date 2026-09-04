@@ -12,20 +12,21 @@ import (
 )
 
 // RootLinkage tests the §4→§6 linkage end to end (SIP #94 §6): a proposer runner is driven through a
-// real Gloas block decision, recording the decided block root into a store the envelope runner shares,
-// and the envelope flow then runs against that recorded root. Other envelope vectors seed the store
-// with fixture literals; here the root the envelope duty consumes is the one §4 actually recorded, so
-// any drift between the proposer's recording and the envelope value check's expectation fails the flow.
+// real Gloas block decision, recording the decided block facts into a store the envelope runner shares,
+// and the builder-operator envelope flow then runs and binds against those recorded facts. Other
+// envelope vectors seed the store with fixture facts; here the facts the envelope duty binds against are
+// the ones §4 actually recorded, so any drift between the proposer's recording and the envelope runner's
+// binding fails the flow.
 func RootLinkage() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	slot := phase0.Slot(testingutils.TestingDutySlotGloas)
 
 	// Shared §4→§6 store, empty until the proposer decides.
-	sharedRoots := ssv.ProposedBlockRoots{}
+	sharedBlocks := ssv.ProposedBlocks{}
 
-	// Run the §4 proposer to a decision for the slot; ProcessConsensus records the decided block root.
+	// Run the §4 proposer to a decision for the slot; ProcessConsensus records the decided block facts.
 	proposerRunner := testingutils.ProposerRunner(ks).(*ssv.ProposerRunner)
-	proposerRunner.ProposedBlockRoots = sharedRoots
+	proposerRunner.ProposedBlocks = sharedBlocks
 	v := testingutils.BaseValidator(ks)
 	v.DutyRunners[types.RoleProposer] = proposerRunner
 	v.Network = proposerRunner.GetNetwork()
@@ -37,33 +38,29 @@ func RootLinkage() tests.SpecTest {
 			panic(err.Error())
 		}
 	}
-	if root, ok := sharedRoots.Get(slot); !ok || root != testingutils.TestingProposedGloasBlockRoot(slot) {
-		panic("proposer run did not record the decided block root")
+	if block, ok := sharedBlocks.Get(slot); !ok || block.BlockRoot != testingutils.TestingProposedGloasBlockRoot(slot) {
+		panic("proposer run did not record the decided block")
 	}
 
-	// The envelope runner reads the recorded root; its value check still holds the fixture-seeded
-	// store, so the two sides must agree for the flow to decide and publish.
+	// The envelope runner (builder operator) binds against the facts §4 recorded.
 	envelopeRunner := testingutils.EnvelopeProposerRunner(ks).(*ssv.EnvelopeProposerRunner)
-	envelopeRunner.ProposedBlockRoots = sharedRoots
+	envelopeRunner.ProposedBlocks = sharedBlocks
 
 	return &tests.MsgProcessingSpecTest{
 		Name:          "envelope proposer root linkage",
 		Documentation: testdoc.EnvelopeProposerRootLinkageDoc,
 		Runner:        envelopeRunner,
 		Duty:          testingutils.TestingEnvelopeProposerDuty(),
-		Messages: append(
-			testingutils.SSVDecidingMsgsForEnvelopeProposer(slot, ks),
-			[]*types.SignedSSVMessage{
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1))),
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[2], 2))),
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[3], 3))),
-			}...,
-		),
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[1], 1))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[2], 2))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[3], 3))),
+		},
 		OutputMessages: []*types.PartialSignatureMessages{
-			testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1), // broadcasts when consensus decides
+			testingutils.PreConsensusEnvelopeMsg(ks.Shares[1], 1),
 		},
 		BeaconBroadcastedRoots: []string{
-			testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedExecutionPayloadEnvelope(ks, slot)),
+			testingutils.GetSSZRootNoError(testingutils.TestingBlindedExecutionPayloadEnvelope(slot)),
 		},
 	}
 }

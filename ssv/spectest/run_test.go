@@ -596,11 +596,11 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 func fixRunnerRoleSpecificState(t *testing.T, runner ssv.Runner, runnerMap map[string]interface{}, ks *testingutils.TestKeySet) {
 	switch r := runner.(type) {
 	case *ssv.EnvelopeProposerRunner:
-		if raw, ok := runnerMap["ProposedBlockRoots"]; ok && raw != nil {
+		if raw, ok := runnerMap["ProposedBlocks"]; ok && raw != nil {
 			byts, _ := json.Marshal(raw)
-			roots := ssv.ProposedBlockRoots{}
-			require.NoError(t, json.Unmarshal(byts, &roots))
-			r.ProposedBlockRoots = roots
+			blocks := ssv.ProposedBlocks{}
+			require.NoError(t, json.Unmarshal(byts, &blocks))
+			r.ProposedBlocks = blocks
 		}
 		if raw, ok := runnerMap["ProducedEnvelope"]; ok && raw != nil {
 			byts, _ := json.Marshal(raw)

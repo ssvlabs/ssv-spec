@@ -212,47 +212,6 @@ func ProposerValueCheckF(
 	}
 }
 
-// EnvelopeValueCheckF validates the §6 envelope-signing QBFT value (SIP #94 §6): the duty must be a
-// well-formed envelope-proposer duty for this validator, the blinded envelope must decode, its
-// builder index must be the self-build sentinel, and its beacon block root must equal the recorded
-// §4-decided block root for the duty's slot — the linkage that is the reason §6 exists. The envelope
-// content itself is leader-trusted (blinded-block trust model), so no further validation applies.
-func EnvelopeValueCheckF(
-	network types.BeaconNetwork,
-	validatorPK types.ValidatorPK,
-	validatorIndex phase0.ValidatorIndex,
-	proposedBlockRoots ProposedBlockRoots,
-) qbft.ProposedValueCheckF {
-	return func(data []byte) error {
-		cd := &types.EnvelopeConsensusData{}
-		if err := cd.Decode(data); err != nil {
-			return types.WrapError(types.EnvelopeConsensusDataDecodeErrorCode, errors.Wrap(err, "failed decoding envelope consensus data"))
-		}
-
-		if err := dutyValueCheck(&cd.Duty, network, types.BNRoleEnvelopeProposer, validatorPK, validatorIndex); err != nil {
-			return errors.Wrap(err, "duty invalid")
-		}
-
-		blinded := &gloas.BlindedExecutionPayloadEnvelope{}
-		if err := blinded.Decode(cd.DataSSZ); err != nil {
-			return types.WrapError(types.UnmarshalSSZErrorCode, errors.Wrap(err, "failed decoding blinded envelope"))
-		}
-
-		if blinded.BuilderIndex != gloas.BuilderIndexSelfBuild {
-			return types.NewError(types.EnvelopeWrongBuilderIndexErrorCode, "envelope builder index is not self-build")
-		}
-
-		blockRoot, ok := proposedBlockRoots.Get(cd.Duty.Slot)
-		if !ok {
-			return types.NewError(types.EnvelopeNoProposedBlockRootErrorCode, "no decided block root recorded for the envelope slot")
-		}
-		if blinded.BeaconBlockRoot != blockRoot {
-			return types.NewError(types.EnvelopeBlockRootMismatchErrorCode, "envelope beacon block root does not match the decided block")
-		}
-		return nil
-	}
-}
-
 func AggregatorCommitteeValueCheckF(
 	signer types.BeaconSigner,
 	network types.BeaconNetwork,
