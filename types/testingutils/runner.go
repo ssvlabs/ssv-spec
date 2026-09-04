@@ -121,6 +121,21 @@ var ProposerPreferencesRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleProposerPreferences, keySet)
 }
 
+// TestingBuilderEntries are two distinct-data builder entries for the §5 builder-request-auth round: two
+// distinct auth data means two frozen BuilderRequestAuths and two independent per-root quorums.
+var TestingBuilderEntries = []ssv.BuilderEntry{
+	{Data: []byte("builder-auth-token-1"), URL: "https://builder-1.example"},
+	{Data: []byte("builder-auth-token-2"), URL: "https://builder-2.example"},
+}
+
+// ProposerPreferencesRunnerWithBuilderEntries builds a proposer-preferences runner with TestingBuilderEntries
+// configured, so executing the duty also runs the §5 builder-request-auth round.
+var ProposerPreferencesRunnerWithBuilderEntries = func(keySet *TestKeySet) ssv.Runner {
+	runner := baseRunner(types.RoleProposerPreferences, keySet)
+	runner.(*ssv.ProposerPreferencesRunner).BuilderEntries = TestingBuilderEntries
+	return runner
+}
+
 var EnvelopeProposerRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleEnvelopeProposer, keySet)
 }
@@ -285,6 +300,7 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 			km,
 			opSigner,
 			types.DefaultGasLimit,
+			nil, // builder entries: none by default; the §5 auth-round tests set the exported BuilderEntries field
 		)
 	case types.RoleEnvelopeProposer:
 		runner, err = ssv.NewEnvelopeProposerRunner(
@@ -463,6 +479,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			km,
 			opSigner,
 			types.DefaultGasLimit,
+			nil, // builder entries: none by default; the §5 auth-round tests set the exported BuilderEntries field
 		)
 	case types.RoleEnvelopeProposer:
 		runner, err = ssv.NewEnvelopeProposerRunner(
