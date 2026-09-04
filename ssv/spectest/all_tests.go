@@ -218,6 +218,11 @@ var AllTests = []tests.TestF{
 	proposerpreferences.ConcurrentLookaheadSlots,
 	proposerpreferences.ReemissionReplacesSlot,
 	proposerpreferences.DivergingDependentRoot,
+	proposerpreferences.BuilderRequestAuthHappyFlow,
+	proposerpreferences.BuilderRequestAuthSharedDataDedup,
+	proposerpreferences.BuilderRequestAuthCapAtMax,
+	proposerpreferences.BuilderRequestAuthWrongRoot,
+	proposerpreferences.BuilderRequestAuthIndependentOfPreference,
 
 	envelopeproposer.HappyFlow,
 	envelopeproposer.ContentMismatchNoPublish,

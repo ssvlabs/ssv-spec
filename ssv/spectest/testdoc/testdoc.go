@@ -242,6 +242,11 @@ const EnvelopeProposerRootLinkageDoc = "Tests the §4→§6 linkage end to end (
 const ProposerPreferencesConcurrentLookaheadSlotsDoc = "Tests two concurrently-active proposal slots (SIP #94 §5): each is an independent per-slot flow, so both reach quorum and submit"
 const ProposerPreferencesReemissionReplacesSlotDoc = "Tests that re-emitting a proposal slot's duty replaces the slot's flow (SIP #94 §5): the prior incarnation's partials are discarded, so no quorum forms from stale aggregation"
 const ProposerPreferencesDivergingDependentRootDoc = "Tests SIP #94 §5 honest convergence under a dependent-root split: a diverging peer partial is rejected and the matching minority stays below quorum"
+const ProposerPreferencesBuilderRequestAuthHappyFlowDoc = "Tests the SIP #94 §5 builder-request-auth round: two distinct-data entries yield two auth partials alongside the preference, and each root reaches its own quorum and submits"
+const ProposerPreferencesBuilderRequestAuthSharedDataDedupDoc = "Tests SIP #94 §5 dedup: three entries with two sharing auth data freeze two auths, not three, so the round broadcasts a two-partial container"
+const ProposerPreferencesBuilderRequestAuthCapAtMaxDoc = "Tests SIP #94 §5 MaxBuilderEntries cap: given more distinct entries than the cap, only the first MaxBuilderEntries are frozen and broadcast"
+const ProposerPreferencesBuilderRequestAuthWrongRootDoc = "Tests SIP #94 §5 divergence rejection: a peer container signing a divergent auth data fails the expected-root check rather than mixing into a quorum"
+const ProposerPreferencesBuilderRequestAuthIndependentOfPreferenceDoc = "Tests SIP #94 §5 independence: auth partials arriving after the preference round has finished still reach per-root quorum and submit"
 const NewDutyValidatorRegistrationDeprecatedDoc = "Tests that the validator registration duty is rejected from Gloas (SIP #94 §5), superseded by proposer preferences"
 
 // Documentation for ptcattester tests
