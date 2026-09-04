@@ -1,0 +1,18 @@
+package: .
+legacy: true
+without-dynamic-expressions: true
+types:
+  - name: AggregatorCommitteeConsensusData
+    output: aggregatorcommitteeconsensusdata_ssz.go
+  - name: AssignedAggregator
+    output: assignedaggregator_ssz.go
+  - name: BeaconVote
+    output: beaconvote_ssz.go
+  - name: Contribution
+    output: contribution_ssz.go
+  - name: EnvelopeDissemination
+    output: envelopedissemination_ssz.go
+  - name: GloasBeaconVote
+    output: gloasbeaconvote_ssz.go
+  - name: ProposerConsensusData
+    output: proposerconsensusdata_ssz.go

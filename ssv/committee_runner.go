@@ -3,13 +3,13 @@ package ssv
 import (
 	"fmt"
 
+	"github.com/OffchainLabs/go-bitfield"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/electra"
+	eth2gloas "github.com/attestantio/go-eth2-client/spec/gloas"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
-	"github.com/prysmaticlabs/go-bitfield"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -397,13 +397,13 @@ func findValidators(
 }
 
 // Unneeded since no preconsensus phase
-func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	panic("not in use")
 }
 
 // This function signature returns only one domain type... but we can have mixed domains
 // instead we rely on expectedPostConsensusRootsAndBeaconObjects that is called later
-func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	panic("not in use")
 }
 
@@ -636,12 +636,10 @@ func VersionedAttestationWithSignature(att *spec.VersionedAttestation, specSig p
 		}
 		att.Fulu.Signature = specSig
 	case gloas.DataVersionGloas:
-		// spec.VersionedAttestation has no Gloas field; Gloas reuses the Electra container shape
-		// (local API wrapper, not wire format — SIP #94 §2), distinguished by the Version tag.
-		if att.Electra == nil {
-			return att, fmt.Errorf("no Electra attestation")
+		if att.Gloas == nil {
+			return att, fmt.Errorf("no Gloas attestation")
 		}
-		att.Electra.Signature = specSig
+		att.Gloas.Signature = specSig
 	default:
 		return nil, fmt.Errorf("unknown version: %s", att.Version)
 	}
@@ -666,6 +664,24 @@ func ConstructElectraAttestationWithoutSignature(attestationData *phase0.Attesta
 	committeeBits.SetBitAt(uint64(validatorDuty.CommitteeIndex), true)
 
 	return &electra.Attestation{
+		Data:            attestationData,
+		AggregationBits: aggregationBitfield,
+		CommitteeBits:   committeeBits,
+	}
+}
+
+// ConstructGloasAttestationWithoutSignature builds the Gloas attestation container (SIP #94 §2). It
+// serializes like the Electra one but merkleizes as a progressive container with a progressive-bitlist
+// aggregation_bits (EIP-7688 / EIP-7916), so its hash tree root — and the aggregate-and-proof signing
+// root built on it — differs from Electra's.
+func ConstructGloasAttestationWithoutSignature(attestationData *phase0.AttestationData, validatorDuty *types.ValidatorDuty) *eth2gloas.Attestation {
+	aggregationBitfield := bitfield.NewBitlist(validatorDuty.CommitteeLength)
+	aggregationBitfield.SetBitAt(validatorDuty.ValidatorCommitteeIndex, true)
+
+	committeeBits := bitfield.NewBitvector64()
+	committeeBits.SetBitAt(uint64(validatorDuty.CommitteeIndex), true)
+
+	return &eth2gloas.Attestation{
 		Data:            attestationData,
 		AggregationBits: aggregationBitfield,
 		CommitteeBits:   committeeBits,
@@ -701,8 +717,7 @@ func ConstructVersionedAttestationWithoutSignature(attestationData *phase0.Attes
 		ret.Fulu = ConstructElectraAttestationWithoutSignature(attestationData, validatorDuty)
 		return ret, nil
 	case gloas.DataVersionGloas:
-		// Gloas reuses the Electra attestation container (SIP #94 §2); the Version tag distinguishes it.
-		ret.Electra = ConstructElectraAttestationWithoutSignature(attestationData, validatorDuty)
+		ret.Gloas = ConstructGloasAttestationWithoutSignature(attestationData, validatorDuty)
 		return ret, nil
 	default:
 		return nil, fmt.Errorf("unknown version")

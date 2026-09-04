@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -184,17 +183,17 @@ func (r *EnvelopeProposerRunner) ProcessEnvelopeDissemination(msg *types.SignedS
 	return r.selectAndSign(duty, slot, dissemination.Envelope)
 }
 
-func (r *EnvelopeProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *EnvelopeProposerRunner) expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	// Peer partials validate against this operator's selected envelope; with none selected — the operator
 	// has not seen a binding dissemination — every peer message is rejected.
 	if r.SelectedEnvelope == nil {
 		return nil, types.DomainError, types.NewError(types.EnvelopeNoSelectedEnvelopeErrorCode, "no selected envelope")
 	}
-	return []ssz.HashRoot{r.SelectedEnvelope}, types.DomainBeaconBuilder, nil
+	return []types.HashRoot{r.SelectedEnvelope}, types.DomainBeaconBuilder, nil
 }
 
 // expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *EnvelopeProposerRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *EnvelopeProposerRunner) expectedPostConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	return nil, [4]byte{}, fmt.Errorf("no post consensus roots for envelope proposer")
 }
 

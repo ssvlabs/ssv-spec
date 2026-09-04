@@ -7,8 +7,8 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/electra"
+	eth2gloas "github.com/attestantio/go-eth2-client/spec/gloas"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -612,12 +612,12 @@ func (r *AggregatorCommitteeRunner) executeDuty(duty types.Duty) error {
 }
 
 // expectedPreConsensusRootsAndDomain returns expected pre-consensus roots
-func (r *AggregatorCommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *AggregatorCommitteeRunner) expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	panic("not in use")
 }
 
 // expectedPostConsensusRootsAndDomain returns expected post-consensus roots
-func (r *AggregatorCommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *AggregatorCommitteeRunner) expectedPostConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	panic("not in use")
 }
 
@@ -1122,12 +1122,12 @@ func (r *AggregatorCommitteeRunner) constructSignedAggregateAndProof(
 			Signature: signature,
 		}
 	case gloas.DataVersionGloas:
-		// Gloas reuses the Electra aggregate-and-proof shape (SIP #94 §2); no Gloas field on the versioned wrapper.
-		if aggregateAndProof.Electra == nil {
-			return nil, errors.New("nil Electra aggregate and proof")
+		// Gloas has its own container (SIP #94 §2): same bytes as Electra's, different hash tree root.
+		if aggregateAndProof.Gloas == nil {
+			return nil, errors.New("nil Gloas aggregate and proof")
 		}
-		ret.Electra = &electra.SignedAggregateAndProof{
-			Message:   aggregateAndProof.Electra,
+		ret.Gloas = &eth2gloas.SignedAggregateAndProof{
+			Message:   aggregateAndProof.Gloas,
 			Signature: signature,
 		}
 

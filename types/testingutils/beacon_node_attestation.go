@@ -1,11 +1,10 @@
 package testingutils
 
 import (
+	"github.com/OffchainLabs/go-bitfield"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
-	"github.com/prysmaticlabs/go-bitfield"
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/gloas"
@@ -146,7 +145,7 @@ var TestingElectraSingleAttestationV = func(ks *TestKeySet, version spec.DataVer
 	}
 }
 
-var TestingAttestationResponseBeaconObject = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
+var TestingAttestationResponseBeaconObject = func(ks *TestKeySet, version spec.DataVersion) types.HashRoot {
 	switch version {
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingSignedAttestation(ks)
@@ -186,7 +185,7 @@ var TestingElectraSingleAttestationForValidatorIndexV = func(ks *TestKeySet, val
 	}
 }
 
-var TestingAttestationResponseBeaconObjectForValidatorIndex = func(ks *TestKeySet, version spec.DataVersion, validatorIndex phase0.ValidatorIndex) ssz.HashRoot {
+var TestingAttestationResponseBeaconObjectForValidatorIndex = func(ks *TestKeySet, version spec.DataVersion, validatorIndex phase0.ValidatorIndex) types.HashRoot {
 	switch version {
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingSignedAttestationForValidatorIndex(ks, validatorIndex)
@@ -221,7 +220,7 @@ var TestingElectraSingleAttestationForDuty = func(ks *TestKeySet, duty *types.Va
 	}
 }
 
-var TestingAttestationResponseBeaconObjectForDuty = func(ks *TestKeySet, version spec.DataVersion, duty *types.ValidatorDuty) ssz.HashRoot {
+var TestingAttestationResponseBeaconObjectForDuty = func(ks *TestKeySet, version spec.DataVersion, duty *types.ValidatorDuty) types.HashRoot {
 	switch version {
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingSignedAttestationForDuty(ks, duty)
