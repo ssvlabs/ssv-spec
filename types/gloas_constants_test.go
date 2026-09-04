@@ -31,6 +31,11 @@ func TestGloasWireConstants(t *testing.T) {
 	require.Equal(t, PartialSigMsgType(7), PTCAttesterPartialSig)
 	require.Equal(t, PartialSigMsgType(8), ProposerPreferencesPartialSig)
 	require.Equal(t, PartialSigMsgType(9), RequestAuthPartialSig)
+	require.Equal(t, PartialSigMsgType(10), EnvelopePartialSig)
+
+	// SSVMessage.MsgType is iota-assigned, so appending or reordering the class above the
+	// envelope-dissemination class would silently renumber it (SIP #94 §6).
+	require.Equal(t, MsgType(3), SSVEnvelopeDisseminationMsgType)
 
 	require.Equal(t, RolePTCAttester, MapDutyToRunnerRole(BNRolePTCAttester))
 	require.Equal(t, RoleProposerPreferences, MapDutyToRunnerRole(BNRoleProposerPreferences))

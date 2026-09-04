@@ -25,6 +25,9 @@ const (
 	// RequestAuthPartialSig is a partial signature over a builder-specs BuilderRequestAuth object,
 	// authenticating direct validator→builder requests for a proposal slot (SIP #94 §5 extension)
 	RequestAuthPartialSig = PartialSigMsgType(9)
+	// EnvelopePartialSig is a partial signature over a Gloas (ePBS) blinded execution-payload envelope's
+	// signing root under DomainBeaconBuilder, for the self-build envelope-signing duty (SIP #94 §6)
+	EnvelopePartialSig = PartialSigMsgType(10)
 )
 
 type PartialSignatureMessages struct {
