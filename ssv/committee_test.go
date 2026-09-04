@@ -21,13 +21,14 @@ func (r *testRunner) Decode([]byte) error     { return nil }
 func (r *testRunner) GetRoot() ([32]byte, error) {
 	return [32]byte{}, nil
 }
-func (r *testRunner) GetBaseRunner() *BaseRunner               { return nil }
-func (r *testRunner) GetBeaconNode() BeaconNode                { return nil }
-func (r *testRunner) GetValCheckF() qbft.ProposedValueCheckF   { return nil }
-func (r *testRunner) GetSigner() types.BeaconSigner            { return nil }
-func (r *testRunner) GetOperatorSigner() *types.OperatorSigner { return nil }
-func (r *testRunner) GetNetwork() Network                      { return nil }
-func (r *testRunner) HasRunningDuty() bool                     { return false }
+func (r *testRunner) GetBaseRunner() *BaseRunner                                 { return nil }
+func (r *testRunner) GetBeaconNode() BeaconNode                                  { return nil }
+func (r *testRunner) GetValCheckF() qbft.ProposedValueCheckF                     { return nil }
+func (r *testRunner) GetSigner() types.BeaconSigner                              { return nil }
+func (r *testRunner) GetOperatorSigner() *types.OperatorSigner                   { return nil }
+func (r *testRunner) GetNetwork() Network                                        { return nil }
+func (r *testRunner) ProcessEnvelopeDissemination(*types.SignedSSVMessage) error { return nil }
+func (r *testRunner) HasRunningDuty() bool                                       { return false }
 func (r *testRunner) ProcessPreConsensus(*types.PartialSignatureMessages) error {
 	return nil
 }

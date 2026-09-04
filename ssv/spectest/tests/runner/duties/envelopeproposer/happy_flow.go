@@ -7,10 +7,11 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// HappyFlow tests the full §6 envelope flow (SIP #94 §6): the duty starts for a slot whose §4-decided
-// block root is recorded, consensus decides the operator's own produced blinded envelope, post-consensus
-// reaches quorum, and — since this operator produced the decided envelope — it publishes the signed
-// envelope.
+// HappyFlow tests the full §6 envelope flow for the builder operator (SIP #94 §6): the duty starts for a
+// slot whose §4-decided block is recorded, this operator's beacon node built that block, so it
+// disseminates its blinded envelope and threshold-signs it in one round; the signing round reaches
+// quorum and — since it holds the produced envelope that blinds to the selected one — it publishes the
+// reveal. There is no consensus phase.
 func HappyFlow() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	slot := testingutils.TestingEnvelopeProposerDuty().Slot
@@ -20,19 +21,16 @@ func HappyFlow() tests.SpecTest {
 		Documentation: testdoc.EnvelopeProposerHappyFlowDoc,
 		Runner:        testingutils.EnvelopeProposerRunner(ks),
 		Duty:          testingutils.TestingEnvelopeProposerDuty(),
-		Messages: append(
-			testingutils.SSVDecidingMsgsForEnvelopeProposer(slot, ks),
-			[]*types.SignedSSVMessage{
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1))),
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[2], 2))),
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[3], 3))),
-			}...,
-		),
+		Messages: []*types.SignedSSVMessage{
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[1], 1))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[2], 2))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[3], 3))),
+		},
 		OutputMessages: []*types.PartialSignatureMessages{
-			testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1), // broadcasts when consensus decides
+			testingutils.PreConsensusEnvelopeMsg(ks.Shares[1], 1), // disseminates and signs on duty start
 		},
 		BeaconBroadcastedRoots: []string{
-			testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedExecutionPayloadEnvelope(ks, slot)),
+			testingutils.GetSSZRootNoError(testingutils.TestingBlindedExecutionPayloadEnvelope(slot)),
 		},
 	}
 }

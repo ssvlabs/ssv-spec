@@ -1,4 +1,4 @@
-package envelopeconsensusdata
+package envelopedissemination
 
 import (
 	reflect2 "reflect"
@@ -24,7 +24,7 @@ func (test *EncodingTest) TestName() string {
 
 func (test *EncodingTest) Run(t *testing.T) {
 	// decode
-	decoded := &types.EnvelopeConsensusData{}
+	decoded := &types.EnvelopeDissemination{}
 	require.NoError(t, decoded.Decode(test.Data))
 
 	// encode
@@ -43,7 +43,7 @@ func (test *EncodingTest) Run(t *testing.T) {
 func NewEncodingTest(name, documentation string, data []byte, expectedRoot [32]byte) *EncodingTest {
 	return &EncodingTest{
 		Name:          name,
-		Type:          testdoc.EnvelopeConsensusDataEncodingSpecTestType,
+		Type:          testdoc.EnvelopeDisseminationEncodingSpecTestType,
 		Documentation: documentation,
 		Data:          data,
 		ExpectedRoot:  expectedRoot,

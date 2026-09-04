@@ -4,9 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/herumi/bls-eth-go-binary/bls"
 
-	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -18,123 +16,93 @@ var SSVMsgEnvelopeProposer = func(qbftMsg *types.SignedSSVMessage, partialSigMsg
 }
 
 // ==================================================
-// Consensus
+// Dissemination (SIP #94 §6)
 // ==================================================
 
-// SSVDecidingMsgsForEnvelopeProposer returns the §6 envelope QBFT deciding messages for the slot; the
-// envelope duty has no pre-consensus phase.
-var SSVDecidingMsgsForEnvelopeProposer = func(slot phase0.Slot, ks *TestKeySet) []*types.SignedSSVMessage {
-	id := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), types.RoleEnvelopeProposer)
-	fullData := TestingEnvelopeConsensusDataByts(slot)
-	r, err := qbft.HashDataRoot(fullData)
-	if err != nil {
-		panic(err)
+// EnvelopeDisseminationSSVMsg is the §6 dissemination SSVMessage carrying the slot's blinded envelope.
+var EnvelopeDisseminationSSVMsg = func(slot phase0.Slot) *types.SSVMessage {
+	return &types.SSVMessage{
+		MsgType: types.SSVEnvelopeDisseminationMsgType,
+		MsgID:   types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), types.RoleEnvelopeProposer),
+		Data:    TestingEnvelopeDisseminationBytes(slot),
 	}
-	return SSVDecidingMsgsForHeightWithRoot(r, fullData, id[:], qbft.Height(slot), ks)
+}
+
+// SignedEnvelopeDisseminationSSVMsg is a §6 dissemination operator-signed by the given operator (the
+// builder operator disseminating its blinded envelope).
+var SignedEnvelopeDisseminationSSVMsg = func(ks *TestKeySet, signer types.OperatorID, slot phase0.Slot) *types.SignedSSVMessage {
+	return SignedSSVMessageWithSigner(signer, ks.OperatorKeys[signer], EnvelopeDisseminationSSVMsg(slot))
 }
 
 // ==================================================
-// PostConsensus
+// PreConsensus (the single threshold-signing round, EnvelopePartialSig)
 // ==================================================
 
-var PostConsensusEnvelopeProposerMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
-	return postConsensusEnvelopeMsg(sk, id, 1, false, false)
+var PreConsensusEnvelopeMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
+	return envelopeMsg(sk, id, 1, false, TestingDutySlotGloas, false)
 }
 
-var PostConsensusEnvelopeProposerTooManyRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
-	return postConsensusEnvelopeMsg(sk, id, 2, false, false)
+var PreConsensusEnvelopeTooFewRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
+	return envelopeMsg(sk, id, 0, false, TestingDutySlotGloas, false)
 }
 
-var PostConsensusEnvelopeProposerTooFewRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
-	return postConsensusEnvelopeMsg(sk, id, 0, false, false)
+var PreConsensusEnvelopeTooManyRootsMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
+	return envelopeMsg(sk, id, 2, false, TestingDutySlotGloas, false)
 }
 
-var PostConsensusEnvelopeProposerWrongRootMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
-	return postConsensusEnvelopeMsg(sk, id, 1, true, false)
+var PreConsensusEnvelopeWrongBeaconSigMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
+	return envelopeMsg(sk, id, 1, false, TestingDutySlotGloas, true)
 }
 
-var PostConsensusEnvelopeProposerWrongBeaconSigMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
-	return postConsensusEnvelopeMsg(sk, id, 1, false, true)
+// PreConsensusEnvelopeWrongRootMsg signs a diverging envelope (different PayloadRoot): a peer that
+// selected a different envelope, whose root fails the operator's expected-root check rather than
+// reconstructing into a mixed signature.
+var PreConsensusEnvelopeWrongRootMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
+	return envelopeMsg(sk, id, 1, true, TestingDutySlotGloas, false)
 }
 
-var PostConsensusEnvelopeProposerWrongValidatorIndexMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
-	msg := postConsensusEnvelopeMsg(sk, id, 1, false, false)
-	for _, m := range msg.Messages {
-		m.ValidatorIndex = TestingWrongValidatorIndex
-	}
-	return msg
+var PreConsensusEnvelopeNextEpochMsg = func(sk *bls.SecretKey, id types.OperatorID) *types.PartialSignatureMessages {
+	return envelopeMsg(sk, id, 1, false, TestingDutySlotGloasNextEpoch, false)
 }
 
-// PostConsensusEnvelopeProposerMsgForEnvelope signs the given decided envelope's root — used when the
-// decided envelope is not this operator's own production.
-var PostConsensusEnvelopeProposerMsgForEnvelope = func(sk *bls.SecretKey, id types.OperatorID, envelope *gloas.BlindedExecutionPayloadEnvelope) *types.PartialSignatureMessages {
-	signer := NewTestingKeyManager()
-	beacon := NewTestingBeaconNode()
-
-	root, err := envelope.HashTreeRoot()
-	if err != nil {
-		panic(err)
-	}
-	hashRoot := types.SSZ32Bytes(root)
-
-	epoch := types.BeaconTestNetwork.EstimatedEpochAtSlot(TestingDutySlotGloas)
-	d, _ := beacon.DomainData(epoch, types.DomainBeaconBuilder)
-	sig, signingRoot, _ := signer.SignBeaconObject(hashRoot, d, sk.GetPublicKey().Serialize(), types.DomainBeaconBuilder)
-	blsSig := phase0.BLSSignature{}
-	copy(blsSig[:], sig)
-
-	return &types.PartialSignatureMessages{
-		Type: types.PostConsensusPartialSig,
-		Slot: TestingDutySlotGloas,
-		Messages: []*types.PartialSignatureMessage{
-			{
-				PartialSignature: blsSig[:],
-				SigningRoot:      signingRoot,
-				Signer:           id,
-				ValidatorIndex:   TestingValidatorIndex,
-			},
-		},
-	}
+// PreConsensusEnvelopeMsgForSlot signs the slot's blinded envelope root — used at the non-builder slot,
+// where the operator signs a peer's disseminated envelope but does not publish.
+var PreConsensusEnvelopeMsgForSlot = func(sk *bls.SecretKey, id types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
+	return envelopeMsg(sk, id, 1, false, slot, false)
 }
 
-var postConsensusEnvelopeMsg = func(
+var envelopeMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
 	msgCnt int,
-	wrongRoot bool,
+	divergingEnvelope bool,
+	slot phase0.Slot,
 	wrongBeaconSig bool,
 ) *types.PartialSignatureMessages {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
+	epoch := types.BeaconTestNetwork.EstimatedEpochAtSlot(slot)
+	d, _ := beacon.DomainData(epoch, types.DomainBeaconBuilder)
 
-	envelope := TestingBlindedExecutionPayloadEnvelope(TestingDutySlotGloas)
-	if wrongRoot {
+	envelope := TestingBlindedExecutionPayloadEnvelope(slot)
+	if divergingEnvelope {
 		envelope.PayloadRoot = phase0.Root{0xba, 0xdb, 0xad}
 	}
-	root, err := envelope.HashTreeRoot()
-	if err != nil {
-		panic(err)
-	}
-	hashRoot := types.SSZ32Bytes(root)
 
-	epoch := types.BeaconTestNetwork.EstimatedEpochAtSlot(TestingDutySlotGloas)
-	d, _ := beacon.DomainData(epoch, types.DomainBeaconBuilder)
-	sig, signingRoot, _ := signer.SignBeaconObject(hashRoot, d, sk.GetPublicKey().Serialize(), types.DomainBeaconBuilder)
+	signed, root, _ := signer.SignBeaconObject(envelope, d, sk.GetPublicKey().Serialize(), types.DomainBeaconBuilder)
 	if wrongBeaconSig {
-		sig, signingRoot, _ = signer.SignBeaconObject(hashRoot, d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainBeaconBuilder)
+		signed, root, _ = signer.SignBeaconObject(envelope, d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainBeaconBuilder)
 	}
-	blsSig := phase0.BLSSignature{}
-	copy(blsSig[:], sig)
 
 	msgs := types.PartialSignatureMessages{
-		Type:     types.PostConsensusPartialSig,
-		Slot:     TestingDutySlotGloas,
+		Type:     types.EnvelopePartialSig,
+		Slot:     slot,
 		Messages: []*types.PartialSignatureMessage{},
 	}
 	for i := 0; i < msgCnt; i++ {
 		msg := &types.PartialSignatureMessage{
-			PartialSignature: blsSig[:],
-			SigningRoot:      signingRoot,
+			PartialSignature: signed[:],
+			SigningRoot:      root,
 			Signer:           id,
 			ValidatorIndex:   TestingValidatorIndex,
 		}

@@ -15,9 +15,9 @@ import (
 type ProposerRunner struct {
 	BaseRunner *BaseRunner
 
-	// ProposedBlockRoots records each decided Gloas block's root for the §6 envelope duty
-	// (SIP #94 §6); shared with the envelope runner in production.
-	ProposedBlockRoots ProposedBlockRoots
+	// ProposedBlocks records each decided Gloas block's facts (root, parent root, execution-requests
+	// root) for the §6 envelope duty (SIP #94 §6); shared with the envelope runner in production.
+	ProposedBlocks ProposedBlocks
 
 	beacon         BeaconNode
 	network        Network
@@ -53,7 +53,7 @@ func NewProposerRunner(
 			QBFTController:     qbftController,
 			highestDecidedSlot: highestDecidedSlot,
 		},
-		ProposedBlockRoots: ProposedBlockRoots{},
+		ProposedBlocks: ProposedBlocks{},
 
 		beacon:         beacon,
 		network:        network,
@@ -161,12 +161,18 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 			return errors.Wrap(err, "could not decode Gloas block from consensus data")
 		}
 		blkToSign = blk
-		// Record the decided block's root for the §6 envelope duty (SIP #94 §6).
+		// Record the decided block's facts for the §6 envelope duty (SIP #94 §6): its root, parent root,
+		// and the bid's execution-requests root — the envelope runner binds the disseminated envelope
+		// against exactly these.
 		blockRoot, err := blk.HashTreeRoot()
 		if err != nil {
 			return errors.Wrap(err, "could not hash decided Gloas block")
 		}
-		r.ProposedBlockRoots.Record(cd.Duty.Slot, blockRoot)
+		r.ProposedBlocks.Record(cd.Duty.Slot, ProposedBlock{
+			BlockRoot:             blockRoot,
+			ParentRoot:            blk.ParentRoot,
+			ExecutionRequestsRoot: blk.Body.SignedExecutionPayloadBid.Message.ExecutionRequestsRoot,
+		})
 	} else {
 		_, blkToSign, err = cd.GetBlockData()
 		if err != nil {
@@ -214,6 +220,12 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 		return errors.Wrap(err, "can't broadcast partial post consensus sig")
 	}
 	return nil
+}
+
+// ProcessEnvelopeDissemination returns an error: only the envelope-proposer runner processes
+// disseminated envelopes (SIP #94 §6).
+func (*ProposerRunner) ProcessEnvelopeDissemination(*types.SignedSSVMessage) error {
+	return types.NewError(types.EnvelopeDisseminationUnsupportedErrorCode, "runner does not process envelope dissemination")
 }
 
 func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {

@@ -128,13 +128,5 @@ func FutureDecidedNoInstance() tests.SpecTest {
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
 	}
 
-	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-		Name:          "envelope proposer",
-		Runner:        testingutils.EnvelopeProposerRunner(ks),
-		Duty:          testingutils.TestingEnvelopeProposerDuty(),
-		DontStartDuty: true,
-		Messages:      []*types.SignedSSVMessage{getDecidedMessage(types.RoleEnvelopeProposer, qbft.Height(testingutils.TestingDutySlotGloas)+1)},
-	})
-
 	return multiSpecTest
 }
