@@ -24,6 +24,19 @@ var (
 	DomainContributionAndProof        = [4]byte{0x09, 0x00, 0x00, 0x00}
 	DomainApplicationBuilder          = [4]byte{0x00, 0x00, 0x00, 0x01}
 
+	// Gloas (ePBS) domains, per SIP #94 / consensus-specs.
+	DomainBeaconBuilder       = [4]byte{0x0b, 0x00, 0x00, 0x00}
+	DomainPTCAttester         = [4]byte{0x0c, 0x00, 0x00, 0x00}
+	DomainProposerPreferences = [4]byte{0x0d, 0x00, 0x00, 0x00}
+
+	// DomainBuilderRequestAuth is builder-specs' DOMAIN_BUILDER_REQUEST_AUTH, authenticating direct
+	// validator→builder requests (BuilderRequestAuth) under Gloas (ePBS). Like
+	// DomainApplicationBuilder it is an application-namespace domain: signing uses
+	// genesis-style compute_domain (genesis fork version, zero genesis-validators-root),
+	// never a fork-versioned domain. NOT to be confused with the beacon domain
+	// DomainBeaconBuilder (0x0b000000) — the two differ only in the last byte.
+	DomainBuilderRequestAuth = [4]byte{0x0b, 0x00, 0x00, 0x01}
+
 	DomainError = [4]byte{0x99, 0x99, 0x99, 0x99}
 )
 
@@ -49,6 +62,11 @@ const (
 	BNRoleValidatorRegistration
 	BNRoleVoluntaryExit
 
+	// Gloas (ePBS) roles, per SIP #94.
+	BNRolePTCAttester
+	BNRoleProposerPreferences
+	BNRoleEnvelopeProposer
+
 	BNRoleUnknown = math.MaxUint64
 )
 
@@ -69,6 +87,12 @@ func (r BeaconRole) String() string {
 		return "VALIDATOR_REGISTRATION"
 	case BNRoleVoluntaryExit:
 		return "VOLUNTARY_EXIT"
+	case BNRolePTCAttester:
+		return "PTC_ATTESTER"
+	case BNRoleProposerPreferences:
+		return "PROPOSER_PREFERENCES"
+	case BNRoleEnvelopeProposer:
+		return "ENVELOPE_PROPOSER"
 	default:
 		return "UNDEFINED"
 	}
@@ -117,6 +141,12 @@ func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
 		return RoleValidatorRegistration
 	case BNRoleVoluntaryExit:
 		return RoleVoluntaryExit
+	case BNRolePTCAttester:
+		return RolePTCAttester
+	case BNRoleProposerPreferences:
+		return RoleProposerPreferences
+	case BNRoleEnvelopeProposer:
+		return RoleEnvelopeProposer
 	}
 	return RoleUnknown
 }
