@@ -87,6 +87,18 @@ func InvalidSignedMessageEmptySignature() tests.SpecTest {
 				ExpectedErrorCode: expectedErrorCode,
 			},
 			{
+				Name:   "envelope proposer",
+				Runner: testingutils.EnvelopeProposerRunner(ks),
+				Duty:   testingutils.TestingEnvelopeProposerDuty(),
+				Messages: []*types.SignedSSVMessage{
+					emptySignature(testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[1], 1)))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusEnvelopeMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedErrorCode: expectedErrorCode,
+			},
+			{
 				Name:   "proposer preferences",
 				Runner: testingutils.ProposerPreferencesRunner(ks),
 				Duty:   testingutils.TestingProposerPreferencesDuty(),

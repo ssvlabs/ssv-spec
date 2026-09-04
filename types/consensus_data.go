@@ -306,29 +306,6 @@ func (cd *ProposerConsensusData) Decode(data []byte) error {
 	return cd.UnmarshalSSZ(data)
 }
 
-// EnvelopeConsensusData is the QBFT value for the §6 envelope-signing duty (SIP #94 §6). It shares
-// ProposerConsensusData's wire shape (Duty + Version + DataSSZ) but is a distinct type so the envelope
-// path reads as its own role rather than borrowing the proposer's. DataSSZ carries the SSZ-encoded
-// gloas.BlindedExecutionPayloadEnvelope; the field is opaque here (no gloas import) and decoded by the
-// envelope runner and its value check.
-type EnvelopeConsensusData struct {
-	Duty    ValidatorDuty
-	Version spec.DataVersion
-	// DataSSZ carries the SSZ-encoded BlindedExecutionPayloadEnvelope. Same bound as
-	// ProposerConsensusData.DataSSZ so the two encode identically for a given {Duty, Version, DataSSZ}.
-	DataSSZ []byte `ssz-max:"8388608"`
-}
-
-// Encode the EnvelopeConsensusData object
-func (cd *EnvelopeConsensusData) Encode() ([]byte, error) {
-	return cd.MarshalSSZ()
-}
-
-// Decode the EnvelopeConsensusData object
-func (cd *EnvelopeConsensusData) Decode(data []byte) error {
-	return cd.UnmarshalSSZ(data)
-}
-
 // AssignedAggregator represents a validator that has been assigned as an aggregator or sync committee contributor
 type AssignedAggregator struct {
 	ValidatorIndex phase0.ValidatorIndex

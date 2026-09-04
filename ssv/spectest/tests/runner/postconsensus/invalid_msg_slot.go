@@ -196,25 +196,6 @@ func InvalidMessageSlot() tests.SpecTest {
 		}...)
 	}
 
-	invalidateEnvelopeSlot := func(msg *types.PartialSignatureMessages) *types.PartialSignatureMessages {
-		msg.Slot = testingutils.TestingDutySlotGloas + 1
-		return msg
-	}
-	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
-		Name: "envelope proposer",
-		Runner: decideEnvelopeRunner(
-			testingutils.EnvelopeProposerRunner(ks),
-			testingutils.TestingEnvelopeProposerDuty(),
-			testingutils.TestingEnvelopeConsensusDataByts(testingutils.TestingDutySlotGloas),
-		),
-		Duty: testingutils.TestingEnvelopeProposerDuty(),
-		Messages: []*types.SignedSSVMessage{
-			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, invalidateEnvelopeSlot(testingutils.PostConsensusEnvelopeProposerMsg(ks.Shares[1], 1)))),
-		},
-		DontStartDuty:     true,
-		ExpectedErrorCode: types.PartialSigMessageFutureSlotErrorCode,
-	})
-
 	return multiSpecTest
 
 }

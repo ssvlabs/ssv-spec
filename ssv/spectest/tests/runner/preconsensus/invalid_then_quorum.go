@@ -72,6 +72,24 @@ func InvalidThenQuorum() tests.SpecTest {
 				},
 			},
 			{
+				Name:   "envelope proposer",
+				Runner: testingutils.EnvelopeProposerRunner(ks),
+				Duty:   testingutils.TestingEnvelopeProposerDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeWrongBeaconSigMsg(ks.Shares[1], 1))),
+
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[1], 1))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[2], 2))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[3], 3))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusEnvelopeMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingBlindedExecutionPayloadEnvelope(testingutils.TestingDutySlotGloas)),
+				},
+			},
+			{
 				Name:   "proposer preferences",
 				Runner: testingutils.ProposerPreferencesRunner(ks),
 				Duty:   testingutils.TestingProposerPreferencesDuty(),

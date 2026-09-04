@@ -24,7 +24,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckaggcommittee"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckattestations"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckduty"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckenvelope"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck/valcheckproposer"
 )
 
@@ -227,8 +226,6 @@ var AllTests = []tests.TestF{
 
 	valcheckproposer.BlindedBlock,
 	valcheckproposer.GloasBlocks,
-
-	valcheckenvelope.EnvelopeBlocks,
 
 	valcheckaggcommittee.NoValidator,
 	valcheckaggcommittee.Valid,

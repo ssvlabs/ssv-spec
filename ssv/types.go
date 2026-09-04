@@ -118,11 +118,14 @@ type ProposerPreferencesCalls interface {
 // EnvelopeCalls interface has all Gloas (ePBS) execution-payload envelope duty specific calls (SIP #94 §6)
 type EnvelopeCalls interface {
 	// GetBlindedExecutionPayloadEnvelope returns this operator's own produced blinded envelope for the
-	// slot's decided block (self-build)
+	// slot's decided block. It answers only on the beacon node that built the block (held from the §4
+	// produceBlockV4 self-build response), so an error means this operator is not the builder operator.
 	GetBlindedExecutionPayloadEnvelope(slot phase0.Slot, blockRoot phase0.Root) (*gloas.BlindedExecutionPayloadEnvelope, error)
-	// SubmitBlindedExecutionPayloadEnvelope publishes the signed envelope; the producing beacon node
-	// reconstructs the full body from its cache
-	SubmitBlindedExecutionPayloadEnvelope(envelope *gloas.SignedBlindedExecutionPayloadEnvelope) error
+	// SubmitExecutionPayloadEnvelope publishes the reconstructed reveal. The builder operator passes the
+	// blinded envelope plus the threshold-reconstructed signature (valid for the full envelope by
+	// root-equivalence); its beacon node forms the full SignedExecutionPayloadEnvelope body from its
+	// cache (SIP #94 §6).
+	SubmitExecutionPayloadEnvelope(envelope *gloas.BlindedExecutionPayloadEnvelope, signature phase0.BLSSignature) error
 }
 
 // PTCCalls interface has all Gloas (ePBS) Payload Timeliness Committee duty specific calls (SIP #94 §3)
