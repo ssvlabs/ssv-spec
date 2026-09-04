@@ -8,6 +8,7 @@ import (
 	"github.com/prysmaticlabs/go-bitfield"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -40,6 +41,9 @@ var TestingAttestationData = func(version spec.DataVersion) *phase0.AttestationD
 	if version >= spec.DataVersionElectra {
 		attData.Index = 0
 	}
+	if version >= gloas.DataVersionGloas {
+		attData.Index = 1 // SIP #94 §2: Gloas carries the payload-status index (1 = payload present, matching TestGloasBeaconVote)
+	}
 
 	return attData
 }
@@ -67,6 +71,9 @@ var TestingAttestationDataForValidatorDuty = func(duty *types.ValidatorDuty) *ph
 	if version >= spec.DataVersionElectra {
 		attData.Index = 0
 	}
+	if version >= gloas.DataVersionGloas {
+		attData.Index = 1 // SIP #94 §2: Gloas carries the payload-status index (1 = payload present, matching TestGloasBeaconVote)
+	}
 
 	return attData
 }
@@ -87,6 +94,9 @@ var TestingAttestationNextEpochData = func(version spec.DataVersion) *phase0.Att
 	}
 	if version >= spec.DataVersionElectra {
 		attData.Index = 0
+	}
+	if version >= gloas.DataVersionGloas {
+		attData.Index = 1 // SIP #94 §2: Gloas carries the payload-status index (1 = payload present, matching TestGloasBeaconVote)
 	}
 	return attData
 }
@@ -120,10 +130,13 @@ var TestingSignedAttestation = func(ks *TestKeySet) *phase0.Attestation {
 	}
 }
 
-var TestingElectraSingleAttestation = func(ks *TestKeySet) *electra.SingleAttestation {
+// TestingElectraSingleAttestationV builds the Electra-shaped SingleAttestation for the given fork.
+// The version matters from Gloas on: the attestation data carries the payload-status index and the
+// Gloas duty slot (SIP #94 §2), so it must match what the runner actually submits.
+var TestingElectraSingleAttestationV = func(ks *TestKeySet, version spec.DataVersion) *electra.SingleAttestation {
 	duty := TestingAttesterDuty(spec.DataVersionPhase0).ValidatorDuties[0]
 
-	attData := TestingAttestationData(spec.DataVersionElectra)
+	attData := TestingAttestationData(version)
 
 	return &electra.SingleAttestation{
 		CommitteeIndex: duty.CommitteeIndex,
@@ -137,8 +150,8 @@ var TestingAttestationResponseBeaconObject = func(ks *TestKeySet, version spec.D
 	switch version {
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingSignedAttestation(ks)
-	case spec.DataVersionElectra, spec.DataVersionFulu:
-		return TestingElectraSingleAttestation(ks)
+	case spec.DataVersionElectra, spec.DataVersionFulu, gloas.DataVersionGloas:
+		return TestingElectraSingleAttestationV(ks, version)
 	default:
 		panic("unknown data version")
 	}
@@ -158,12 +171,12 @@ var TestingSignedAttestationForValidatorIndex = func(ks *TestKeySet, validatorIn
 	}
 }
 
-var TestingElectraSingleAttestationForValidatorIndex = func(ks *TestKeySet, validatorIndex phase0.ValidatorIndex) *electra.SingleAttestation {
+var TestingElectraSingleAttestationForValidatorIndexV = func(ks *TestKeySet, validatorIndex phase0.ValidatorIndex, version spec.DataVersion) *electra.SingleAttestation {
 
 	committeeDuty := TestingAttesterDutyForValidator(spec.DataVersionPhase0, validatorIndex)
 	duty := committeeDuty.ValidatorDuties[0]
 
-	attData := TestingAttestationData(spec.DataVersionElectra)
+	attData := TestingAttestationData(version)
 
 	return &electra.SingleAttestation{
 		CommitteeIndex: duty.CommitteeIndex,
@@ -177,8 +190,8 @@ var TestingAttestationResponseBeaconObjectForValidatorIndex = func(ks *TestKeySe
 	switch version {
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingSignedAttestationForValidatorIndex(ks, validatorIndex)
-	case spec.DataVersionElectra, spec.DataVersionFulu:
-		return TestingElectraSingleAttestationForValidatorIndex(ks, validatorIndex)
+	case spec.DataVersionElectra, spec.DataVersionFulu, gloas.DataVersionGloas:
+		return TestingElectraSingleAttestationForValidatorIndexV(ks, validatorIndex, version)
 	default:
 		panic("unknown data version")
 	}
@@ -212,7 +225,7 @@ var TestingAttestationResponseBeaconObjectForDuty = func(ks *TestKeySet, version
 	switch version {
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingSignedAttestationForDuty(ks, duty)
-	case spec.DataVersionElectra, spec.DataVersionFulu:
+	case spec.DataVersionElectra, spec.DataVersionFulu, gloas.DataVersionGloas:
 		return TestingElectraSingleAttestationForDuty(ks, duty)
 	default:
 		panic("unknown data version")
@@ -237,13 +250,15 @@ var TestingSignedAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIn
 	return ret
 }
 
-var TestingElectraSingleAttestationSSZRootForKeyMap = func(ksMap map[phase0.ValidatorIndex]*TestKeySet) []string {
+// TestingElectraSingleAttestationSSZRootForKeyMapV builds the expected submitted-attestation roots
+// for the given fork; from Gloas the duty slot and payload-status index differ (SIP #94 §2).
+var TestingElectraSingleAttestationSSZRootForKeyMapV = func(ksMap map[phase0.ValidatorIndex]*TestKeySet, version spec.DataVersion) []string {
 	ret := make([]string, 0)
 
 	for _, valKs := range SortedMapKeys(ksMap) {
 		ks := valKs.Value
 		valIdx := valKs.Key
-		committeeDuty := TestingAttesterDutyForValidator(spec.DataVersionElectra, valIdx)
+		committeeDuty := TestingAttesterDutyForValidator(version, valIdx)
 		duty := committeeDuty.ValidatorDuties[0]
 
 		attData := TestingAttestationDataForValidatorDuty(duty)
@@ -264,8 +279,8 @@ var TestingSignedAttestationResponseSSZRootForKeyMap = func(ksMap map[phase0.Val
 	switch version {
 	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
 		return TestingSignedAttestationSSZRootForKeyMap(ksMap)
-	case spec.DataVersionElectra, spec.DataVersionFulu:
-		return TestingElectraSingleAttestationSSZRootForKeyMap(ksMap)
+	case spec.DataVersionElectra, spec.DataVersionFulu, gloas.DataVersionGloas:
+		return TestingElectraSingleAttestationSSZRootForKeyMapV(ksMap, version)
 	default:
 		panic("unknown data version")
 	}

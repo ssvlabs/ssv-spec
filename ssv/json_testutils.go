@@ -283,6 +283,78 @@ func (r *ValidatorRegistrationRunner) GetRoot() ([32]byte, error) {
 	return ret, nil
 }
 
+// ProposerPreferencesRunner
+func (r *ProposerPreferencesRunner) Encode() ([]byte, error) {
+	return json.Marshal(r)
+}
+
+func (r *ProposerPreferencesRunner) Decode(data []byte) error {
+	return json.Unmarshal(data, &r)
+}
+
+func (r *ProposerPreferencesRunner) GetRoot() ([32]byte, error) {
+	marshaledRoot, err := r.Encode()
+	if err != nil {
+		return [32]byte{}, errors.Wrap(err, "could not encode ProposerPreferencesRunner")
+	}
+	ret := sha256.Sum256(marshaledRoot)
+	return ret, nil
+}
+
+// ProposerPreferencesSlotRunner
+func (r *ProposerPreferencesSlotRunner) Encode() ([]byte, error) {
+	return json.Marshal(r)
+}
+
+func (r *ProposerPreferencesSlotRunner) Decode(data []byte) error {
+	return json.Unmarshal(data, &r)
+}
+
+func (r *ProposerPreferencesSlotRunner) GetRoot() ([32]byte, error) {
+	marshaledRoot, err := r.Encode()
+	if err != nil {
+		return [32]byte{}, errors.Wrap(err, "could not encode ProposerPreferencesSlotRunner")
+	}
+	ret := sha256.Sum256(marshaledRoot)
+	return ret, nil
+}
+
+// EnvelopeProposerRunner
+func (r *EnvelopeProposerRunner) Encode() ([]byte, error) {
+	return json.Marshal(r)
+}
+
+func (r *EnvelopeProposerRunner) Decode(data []byte) error {
+	return json.Unmarshal(data, &r)
+}
+
+func (r *EnvelopeProposerRunner) GetRoot() ([32]byte, error) {
+	marshaledRoot, err := r.Encode()
+	if err != nil {
+		return [32]byte{}, errors.Wrap(err, "could not encode EnvelopeProposerRunner")
+	}
+	ret := sha256.Sum256(marshaledRoot)
+	return ret, nil
+}
+
+// PTCAttesterRunner
+func (r *PTCAttesterRunner) Encode() ([]byte, error) {
+	return json.Marshal(r)
+}
+
+func (r *PTCAttesterRunner) Decode(data []byte) error {
+	return json.Unmarshal(data, &r)
+}
+
+func (r *PTCAttesterRunner) GetRoot() ([32]byte, error) {
+	marshaledRoot, err := r.Encode()
+	if err != nil {
+		return [32]byte{}, errors.Wrap(err, "could not encode PTCAttesterRunner")
+	}
+	ret := sha256.Sum256(marshaledRoot)
+	return ret, nil
+}
+
 // VoluntaryExitRunner
 func (r *VoluntaryExitRunner) Encode() ([]byte, error) {
 	return json.Marshal(r)

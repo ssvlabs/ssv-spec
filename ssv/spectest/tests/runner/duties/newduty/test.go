@@ -157,6 +157,13 @@ func (mTest *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error
 				err,
 			)
 		}
+		if _, duplicate := ret[test.Name]; duplicate {
+			// State comparisons are keyed by sub-test name, so a duplicate would silently overwrite the
+			// earlier one and its fixture. Placeholder fork versions are a way to hit this: any
+			// DataVersion outside go-eth2-client's enum stringifies to "unknown", so two of them would
+			// name their sub-tests identically.
+			return nil, fmt.Errorf("duplicate sub-test name %q", test.Name)
+		}
 		ret[test.Name] = test.Runner
 	}
 	return ret, nil
@@ -184,6 +191,12 @@ func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, nam
 		runner = &ssv.ValidatorRegistrationRunner{}
 	case *ssv.VoluntaryExitRunner:
 		runner = &ssv.VoluntaryExitRunner{}
+	case *ssv.PTCAttesterRunner:
+		runner = &ssv.PTCAttesterRunner{}
+	case *ssv.EnvelopeProposerRunner:
+		runner = &ssv.EnvelopeProposerRunner{}
+	case *ssv.ProposerPreferencesRunner:
+		runner = &ssv.ProposerPreferencesRunner{}
 	default:
 		t.Fatalf("unknown runner type")
 	}

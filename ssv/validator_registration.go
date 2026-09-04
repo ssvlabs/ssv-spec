@@ -12,6 +12,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 type ValidatorRegistrationRunner struct {
@@ -116,6 +117,12 @@ func (r *ValidatorRegistrationRunner) ProcessConsensus(signedMsg *types.SignedSS
 	return types.NewError(types.ValidatorRegistrationNoConsensusPhaseErrorCode, "no consensus phase for validator registration")
 }
 
+// ProcessEnvelopeDissemination returns an error: only the envelope-proposer runner processes
+// disseminated envelopes (SIP #94 §6).
+func (*ValidatorRegistrationRunner) ProcessEnvelopeDissemination(*types.SignedSSVMessage) error {
+	return types.NewError(types.EnvelopeDisseminationUnsupportedErrorCode, "runner does not process envelope dissemination")
+}
+
 func (r *ValidatorRegistrationRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
 	return types.NewError(types.ValidatorRegistrationNoPostConsensusPhaseErrorCode, "no post consensus phase for validator registration")
 }
@@ -137,6 +144,14 @@ func (r *ValidatorRegistrationRunner) expectedPostConsensusRootsAndDomain() ([]s
 }
 
 func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
+	// From Gloas the validator registration duty is deprecated: fee recipient and gas limit travel in
+	// the §5 proposer preferences instead (SIP #94 §5).
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(duty.DutySlot())
+	if r.beacon.DataVersion(epoch) >= gloas.DataVersionGloas {
+		return types.NewError(types.ValidatorRegistrationDeprecatedErrorCode,
+			"validator registration is deprecated from Gloas; use proposer preferences")
+	}
+
 	vr, err := r.calculateValidatorRegistration(duty.DutySlot())
 	if err != nil {
 		return errors.Wrap(err, "could not calculate validator registration")

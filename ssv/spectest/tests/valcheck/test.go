@@ -10,6 +10,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -63,10 +64,17 @@ func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueChe
 	}
 	switch test.RunnerRole {
 	case types.RoleCommittee:
+		// From Gloas the committee value is a GloasBeaconVote with its own value check (SIP #94 §2);
+		// select by the duty slot's fork, as production does.
+		if testingutils.VersionBySlot(test.DutySlot) >= gloas.DataVersionGloas {
+			return ssv.GloasBeaconVoteValueCheckF(signer, test.DutySlot, shareValidatorsPK, test.ExpectedSource.Epoch,
+				test.ExpectedTarget.Epoch)
+		}
 		return ssv.BeaconVoteValueCheckF(signer, test.DutySlot, shareValidatorsPK, test.ExpectedSource.Epoch,
 			test.ExpectedTarget.Epoch)
 	case types.RoleProposer:
-		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex, nil)
+		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex,
+			shareValidatorsPK[0], testingutils.VersionByEpoch)
 	case types.RoleAggregatorCommittee:
 		return ssv.AggregatorCommitteeValueCheckF(signer, test.Network)
 	default:

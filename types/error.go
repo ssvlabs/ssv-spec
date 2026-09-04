@@ -99,6 +99,24 @@ const (
 	InvalidCommitteeMemberErrorCode
 	InvalidValidatorDutyErrorCode
 	BeaconVoteNilCheckpointErrorCode
+
+	ProposerBlockSlotMismatchErrorCode
+	DecodeGloasBeaconVoteErrorCode
+	GloasBeaconVoteInvalidIndexErrorCode
+	SlashableProposalErrorCode
+	PTCAttesterNoConsensusPhaseErrorCode
+	PTCAttesterNoPostConsensusPhaseErrorCode
+	PTCAttesterNoObservationErrorCode
+	ProposerPreferencesNoConsensusPhaseErrorCode
+	ProposerPreferencesNoPostConsensusPhaseErrorCode
+	ProposerPreferencesNoPreferenceErrorCode
+	ValidatorRegistrationDeprecatedErrorCode
+	EnvelopeProposerNoConsensusPhaseErrorCode
+	EnvelopeProposerNoPostConsensusPhaseErrorCode
+	EnvelopeDisseminationDecodeErrorCode
+	EnvelopeNoSelectedEnvelopeErrorCode
+	EnvelopeDisseminationUnsupportedErrorCode
+	RequestAuthNoAuthErrorCode
 )
 
 type Error struct {

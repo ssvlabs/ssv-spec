@@ -13,6 +13,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // AggregatorCommitteeRunner runs aggregate and sync committee contribution duties
@@ -355,6 +356,12 @@ func (r *AggregatorCommitteeRunner) ProcessConsensus(signedMsg *types.SignedSSVM
 	}
 
 	return r.broadcastPartialSignatureMessage(postConsensusMsg)
+}
+
+// ProcessEnvelopeDissemination returns an error: only the envelope-proposer runner processes
+// disseminated envelopes (SIP #94 §6).
+func (*AggregatorCommitteeRunner) ProcessEnvelopeDissemination(*types.SignedSSVMessage) error {
+	return types.NewError(types.EnvelopeDisseminationUnsupportedErrorCode, "runner does not process envelope dissemination")
 }
 
 func (r *AggregatorCommitteeRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
@@ -1112,6 +1119,15 @@ func (r *AggregatorCommitteeRunner) constructSignedAggregateAndProof(
 		}
 		ret.Fulu = &electra.SignedAggregateAndProof{
 			Message:   aggregateAndProof.Fulu,
+			Signature: signature,
+		}
+	case gloas.DataVersionGloas:
+		// Gloas reuses the Electra aggregate-and-proof shape (SIP #94 §2); no Gloas field on the versioned wrapper.
+		if aggregateAndProof.Electra == nil {
+			return nil, errors.New("nil Electra aggregate and proof")
+		}
+		ret.Electra = &electra.SignedAggregateAndProof{
+			Message:   aggregateAndProof.Electra,
 			Signature: signature,
 		}
 

@@ -9,11 +9,17 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/envelopedissemination"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/gloasbeaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/maxmsgsize"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/payloadattestationdata"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/payloadattestationmessage"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerconsensusdata"
 	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerconsensusdata/proposer"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerpreferences"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/share"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedproposerpreferences"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssz"
@@ -126,6 +132,12 @@ var AllTests = []SpecTest{
 	duty.MapUnknownRole(),
 
 	beaconvote.BeaconVoteEncoding(),
+	gloasbeaconvote.GloasBeaconVoteEncoding(),
+	envelopedissemination.EnvelopeDisseminationEncoding(),
+	payloadattestationdata.PayloadAttestationDataEncoding(),
+	payloadattestationmessage.PayloadAttestationMessageEncoding(),
+	proposerpreferences.ProposerPreferencesEncoding(),
+	signedproposerpreferences.SignedProposerPreferencesEncoding(),
 
 	maxmsgsize.MaxConsensusData(),
 	maxmsgsize.MaxBeaconVote(),

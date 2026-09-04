@@ -12,8 +12,11 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/consensus"
 	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/envelopeproposer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposerpreferences"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/ptcattester"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/postconsensus"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/preconsensus"
@@ -80,6 +83,7 @@ var AllTests = []tests.TestF{
 	newduty.DuplicateDutyFinished,
 	newduty.DuplicateDutyNotFinished,
 	newduty.FirstHeight,
+	newduty.ValidatorRegistrationDeprecated,
 
 	committee.InvalidSig,
 	committee.CommitteeIDMismatch,
@@ -98,6 +102,7 @@ var AllTests = []tests.TestF{
 	committeesingleduty.WrongMessageID,
 	committeesingleduty.StartWithNoSharesForDuty,
 	committeesingleduty.MissingSomeShares,
+	committeesingleduty.GloasPreGloasVote,
 
 	committeemultipleduty.SequencedDecidedDuties,
 	committeemultipleduty.SequencedHappyFlowDuties,
@@ -200,8 +205,32 @@ var AllTests = []tests.TestF{
 	valcheckattestations.MinoritySlashable,
 	valcheckattestations.MajoritySlashable,
 	valcheckattestations.ValidNonSlashableSlot,
+	valcheckattestations.GloasValid,
+	valcheckattestations.GloasInvalidIndex,
+	valcheckattestations.GloasSourceHigherThanTarget,
+	valcheckattestations.GloasSlashable,
+	valcheckattestations.GloasUnmatchedSourceEpoch,
+	valcheckattestations.GloasPreGloasVote,
+
+	ptcattester.Abstain,
+	ptcattester.DivergingObservation,
+
+	proposerpreferences.ConcurrentLookaheadSlots,
+	proposerpreferences.ReemissionReplacesSlot,
+	proposerpreferences.DivergingDependentRoot,
+	proposerpreferences.BuilderRequestAuthHappyFlow,
+	proposerpreferences.BuilderRequestAuthSharedDataDedup,
+	proposerpreferences.BuilderRequestAuthCapAtMax,
+	proposerpreferences.BuilderRequestAuthWrongRoot,
+	proposerpreferences.BuilderRequestAuthIndependentOfPreference,
+
+	envelopeproposer.HappyFlow,
+	envelopeproposer.ContentMismatchNoPublish,
+	envelopeproposer.NoProposedBlockRoot,
+	envelopeproposer.RootLinkage,
 
 	valcheckproposer.BlindedBlock,
+	valcheckproposer.GloasBlocks,
 
 	valcheckaggcommittee.NoValidator,
 	valcheckaggcommittee.Valid,

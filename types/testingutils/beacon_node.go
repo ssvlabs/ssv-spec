@@ -18,6 +18,7 @@ import (
 	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -86,6 +87,13 @@ func (bn *TestingBeaconNode) SubmitAttestations(attestations []*spec.VersionedAt
 			root, _ = singleAttestation.HashTreeRoot()
 		case spec.DataVersionFulu:
 			singleAttestation, err := att.Fulu.ToSingleAttestation(att.ValidatorIndex)
+			if err != nil {
+				panic(err)
+			}
+			root, _ = singleAttestation.HashTreeRoot()
+		case gloas.DataVersionGloas:
+			// Gloas reuses the Electra attestation shape (SIP #94 §2).
+			singleAttestation, err := att.Electra.ToSingleAttestation(att.ValidatorIndex)
 			if err != nil {
 				panic(err)
 			}
@@ -246,6 +254,26 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 	return nil
 }
 
+// GetGloasBeaconBlock returns the Gloas (ePBS §4) beacon block for the slot. The fixture block carries
+// the requested slot, so the value check's block-slot/duty-slot pin holds for any duty slot.
+func (bn *TestingBeaconNode) GetGloasBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, error) {
+	return gloas.TestingBeaconBlock(slot), nil
+}
+
+// SubmitGloasBeaconBlock records the signed Gloas (ePBS §4) block's root, mirroring SubmitBeaconBlock.
+func (bn *TestingBeaconNode) SubmitGloasBeaconBlock(block *gloas.BeaconBlock, sig phase0.BLSSignature) error {
+	sb := &gloas.SignedBeaconBlock{
+		Message:   block,
+		Signature: sig,
+	}
+	r, err := sb.HashTreeRoot()
+	if err != nil {
+		return err
+	}
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	return nil
+}
+
 // IsAggregator returns true if the validator is selected as an aggregator
 func (bn *TestingBeaconNode) IsAggregator(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, slotSig []byte) bool {
 	// In production, this would check the selection proof against the committee modulo
@@ -263,7 +291,7 @@ func (bn *TestingBeaconNode) IsAggregator(slot phase0.Slot, committeeIndex phase
 func (bn *TestingBeaconNode) GetAggregateAttestation(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, error) {
 	version := VersionBySlot(slot)
 	if version >= spec.DataVersionElectra {
-		return TestingElectraAggregateAndProof(TestingValidatorIndex).Aggregate, nil
+		return TestingElectraAggregateAndProofV(TestingValidatorIndex, version).Aggregate, nil
 	}
 	return TestingPhase0AggregateAndProof(TestingValidatorIndex).Aggregate, nil
 }
@@ -294,6 +322,8 @@ func (bn *TestingBeaconNode) SubmitSignedAggregateAndProof(msg *spec.VersionedSi
 		root, _ = msg.Electra.HashTreeRoot()
 	case spec.DataVersionFulu:
 		root, _ = msg.Fulu.HashTreeRoot()
+	case gloas.DataVersionGloas:
+		root, _ = msg.Electra.HashTreeRoot() // Gloas reuses the Electra aggregate shape (SIP #94 §2)
 	default:
 		panic("unsupported version")
 	}

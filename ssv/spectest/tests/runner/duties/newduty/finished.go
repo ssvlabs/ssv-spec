@@ -17,6 +17,13 @@ import (
 func Finished() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
+	finishPreferencesRunner := func(r ssv.Runner, duty *types.ValidatorDuty) ssv.Runner {
+		sub := r.(*ssv.ProposerPreferencesRunner).NewSlotRunner()
+		sub.BaseRunner.State = ssv.NewRunnerState(3, duty)
+		sub.BaseRunner.State.Finished = true
+		r.(*ssv.ProposerPreferencesRunner).BySlot[duty.Slot] = sub
+		return r
+	}
 	finishRunner := func(r ssv.Runner, duty types.Duty, finishController bool) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 
@@ -71,6 +78,26 @@ func Finished() tests.SpecTest {
 				},
 			},
 			{
+				Name:      "ptc attestation",
+				Runner:    finishRunner(testingutils.PTCAttesterRunner(ks), testingutils.TestingPTCAttesterDuty(), false),
+				Duty:      testingutils.TestingPTCAttesterNextEpochDuty(),
+				Threshold: ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusPTCNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+			},
+			{
+				// §5 state lives in the per-slot sub-runners: the finished prior duty is seeded into
+				// BySlot, and the next-epoch duty starts its own independent slot flow beside it.
+				Name:      "proposer preferences",
+				Runner:    finishPreferencesRunner(testingutils.ProposerPreferencesRunner(ks), testingutils.TestingProposerPreferencesDuty()),
+				Duty:      testingutils.TestingProposerPreferencesNextEpochDuty(),
+				Threshold: ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusProposerPreferencesNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+			},
+			{
 				Name:      "validator registration",
 				Runner:    finishRunner(testingutils.ValidatorRegistrationRunner(ks), &testingutils.TestingValidatorRegistrationDuty, false),
 				Duty:      &testingutils.TestingValidatorRegistrationDutyNextEpoch,
@@ -119,6 +146,17 @@ func Finished() tests.SpecTest {
 			},
 		}...)
 	}
+
+	multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
+		Name: "envelope proposer",
+		Runner: finishRunner(testingutils.EnvelopeProposerRunner(ks),
+			testingutils.TestingEnvelopeProposerDuty(), false),
+		Duty:      testingutils.TestingEnvelopeProposerNextEpochDuty(),
+		Threshold: ks.Threshold,
+		OutputMessages: []*types.PartialSignatureMessages{
+			testingutils.PreConsensusEnvelopeNextEpochMsg(ks.Shares[1], 1), // disseminates and signs when starting a new duty
+		},
+	})
 
 	return multiSpecTest
 }

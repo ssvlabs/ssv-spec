@@ -10,6 +10,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -32,7 +33,19 @@ func finishCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) 
 }
 
 func decideCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) ssv.Runner {
-	bvBytes, err := bv.Encode()
+	// On Gloas slots the committee decides a GloasBeaconVote (SIP #94 §2), before Gloas the passed
+	// BeaconVote. Carry the caller's vote over into the Gloas shape rather than substituting a canonical
+	// one, so a deliberately-invalid vote stays invalid at Gloas slots too.
+	var value types.Encoder = bv
+	if testingutils.VersionBySlot(duty.DutySlot()) >= gloas.DataVersionGloas {
+		value = &types.GloasBeaconVote{
+			BlockRoot:            bv.BlockRoot,
+			Source:               bv.Source,
+			Target:               bv.Target,
+			AttestationDataIndex: testingutils.TestGloasBeaconVote.AttestationDataIndex,
+		}
+	}
+	bvBytes, err := value.Encode()
 	if err != nil {
 		panic(err)
 	}

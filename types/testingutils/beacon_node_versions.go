@@ -3,6 +3,8 @@ package testingutils
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -10,6 +12,10 @@ import (
 // ==================================================
 
 const (
+	// ForkEpochGloas is a test-only value placed after Fulu (arbitrary, like the other testnet
+	// fork epochs here); adjust to match the node's config if cross-repo slot parity is wanted.
+	ForkEpochGloas = 250000
+
 	ForkEpochFulu = 242000
 
 	ForkEpochPraterElectra = 232000
@@ -59,6 +65,11 @@ const (
 	TestingDutySlotFulu          = ForkEpochFulu*32 + 12
 	TestingDutySlotFuluNextEpoch = TestingDutySlotFulu + 32
 	TestingDutySlotFuluInvalid   = TestingDutySlotFulu + 50
+
+	TestingDutyEpochGloas         = ForkEpochGloas
+	TestingDutySlotGloas          = ForkEpochGloas*32 + 12
+	TestingDutySlotGloasNextEpoch = TestingDutySlotGloas + 32
+	TestingDutySlotGloasInvalid   = TestingDutySlotGloas + 50
 )
 
 var TestingDutyEpochV = func(version spec.DataVersion) phase0.Epoch {
@@ -77,6 +88,8 @@ var TestingDutyEpochV = func(version spec.DataVersion) phase0.Epoch {
 		return TestingDutyEpochElectra
 	case spec.DataVersionFulu:
 		return TestingDutyEpochFulu
+	case gloas.DataVersionGloas:
+		return TestingDutyEpochGloas
 
 	default:
 		panic("unsupported version")
@@ -99,6 +112,8 @@ var TestingDutySlotV = func(version spec.DataVersion) phase0.Slot {
 		return TestingDutySlotElectra
 	case spec.DataVersionFulu:
 		return TestingDutySlotFulu
+	case gloas.DataVersionGloas:
+		return TestingDutySlotGloas
 
 	default:
 		panic("unsupported version")
@@ -121,6 +136,8 @@ var TestingDutySlotNextEpochV = func(version spec.DataVersion) phase0.Slot {
 		return TestingDutySlotElectraNextEpoch
 	case spec.DataVersionFulu:
 		return TestingDutySlotFuluNextEpoch
+	case gloas.DataVersionGloas:
+		return TestingDutySlotGloasNextEpoch
 
 	default:
 		panic("unsupported version")
@@ -143,28 +160,18 @@ var TestingInvalidDutySlotV = func(version spec.DataVersion) phase0.Slot {
 		return TestingDutySlotElectraInvalid
 	case spec.DataVersionFulu:
 		return TestingDutySlotFuluInvalid
+	case gloas.DataVersionGloas:
+		return TestingDutySlotGloasInvalid
 
 	default:
 		panic("unsupported version")
 	}
 }
 
+// VersionBySlot resolves a slot's fork. slot < ForkEpoch*32 is equivalent to slot/32 < ForkEpoch, so
+// it delegates rather than repeating every threshold: one table to keep in step with the fork schedule.
 var VersionBySlot = func(slot phase0.Slot) spec.DataVersion {
-	if slot < ForkEpochAltair*32 {
-		return spec.DataVersionPhase0
-	} else if slot < ForkEpochBellatrix*32 {
-		return spec.DataVersionAltair
-	} else if slot < ForkEpochPraterCapella*32 {
-		return spec.DataVersionBellatrix
-	} else if slot < ForkEpochPraterDeneb*32 {
-		return spec.DataVersionCapella
-	} else if slot < ForkEpochPraterElectra*32 {
-		return spec.DataVersionDeneb
-	} else if slot < ForkEpochFulu*32 {
-		return spec.DataVersionElectra
-	}
-
-	return spec.DataVersionFulu
+	return VersionByEpoch(phase0.Epoch(slot / 32))
 }
 
 var VersionByEpoch = func(epoch phase0.Epoch) spec.DataVersion {
@@ -180,6 +187,8 @@ var VersionByEpoch = func(epoch phase0.Epoch) spec.DataVersion {
 		return spec.DataVersionDeneb
 	} else if epoch < ForkEpochFulu {
 		return spec.DataVersionElectra
+	} else if epoch < ForkEpochGloas {
+		return spec.DataVersionFulu
 	}
-	return spec.DataVersionFulu
+	return gloas.DataVersionGloas
 }

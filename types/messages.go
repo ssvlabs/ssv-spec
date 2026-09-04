@@ -82,12 +82,11 @@ const (
 	SSVPartialSignatureMsgType
 	// DKGMsgType represent all DKG related messages
 	DKGMsgType
-	// SSVEnvelopeDisseminationMsgType carries a free-standing blinded execution-payload envelope for the
-	// Gloas (ePBS) self-build envelope-signing duty (SIP #94 §6). Consensus messages are bound to a live
-	// QBFT round and partial-signature messages carry only a bare signing root, so neither can carry a
-	// value to be signed; this class disseminates that value. Validation admits it only for
-	// RoleEnvelopeProposer. The carrier payload type lives with the envelope runner (see the reference
-	// implementation), which this constants layer intentionally does not depend on.
+	// SSVEnvelopeDisseminationMsgType carries a free-standing blinded execution-payload envelope
+	// (EnvelopeDissemination) for the Gloas (ePBS) self-build envelope-signing duty (SIP #94 §6):
+	// consensus messages are bound to a live QBFT round and partial-signature messages carry only a bare
+	// signing root, so neither can carry a value to disseminate. Validation admits it only for
+	// RoleEnvelopeProposer.
 	SSVEnvelopeDisseminationMsgType
 )
 
@@ -161,7 +160,7 @@ type SignedSSVMessage struct {
 	Signatures  [][]byte     `ssz-max:"13,256"` // Created by the operators' key
 	OperatorIDs []OperatorID `ssz-max:"13"`
 	SSVMessage  *SSVMessage
-	// Full data max value is the max value between ProposerConsensusData, AggregatorCommitteeConsensusData, and BeaconVote
+	// Full data max value is the max value between ProposerConsensusData, AggregatorCommitteeConsensusData, BeaconVote, and GloasBeaconVote
 	FullData []byte `ssz-max:"8388836"`
 }
 
