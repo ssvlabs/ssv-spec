@@ -21,6 +21,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/aggregatorcommitteeconsensusdata"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/builderrequestauth"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/payloadattestationdata"
@@ -29,6 +30,7 @@ import (
 	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerconsensusdata/proposer"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerpreferences"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/share"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedbuilderrequestauth"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedproposerpreferences"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
@@ -209,6 +211,18 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &signedproposerpreferences.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&builderrequestauth.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &builderrequestauth.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&signedbuilderrequestauth.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &signedbuilderrequestauth.EncodingTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			case reflect.TypeOf(&maxmsgsize.StructureSizeTest{}).String():

@@ -7,9 +7,10 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
-// Gloas (ePBS, SIP #94) beacon-container fixtures shared by the encoding spec tests and, later,
-// the §3 PTC and §5 proposer-preferences runners. All four are plain fixed-size SSZ containers,
-// so their hash tree roots are stable under EIP-7688 (unlike the §4 block / §6 envelope family).
+// Gloas (ePBS, SIP #94) beacon-container fixtures for the encoding spec tests. All are SSZ containers
+// whose hash tree roots are stable under EIP-7688 (unlike the §4 block / §6 envelope family) —
+// fixed-size, or with only a variable-length byte-list member (BuilderRequestAuth.Data) that
+// merkleizes independently of container layout.
 
 var TestPayloadAttestationData = &gloas.PayloadAttestationData{
 	BeaconBlockRoot:   phase0.Root{0x01, 0x02},
@@ -34,5 +35,15 @@ var TestProposerPreferences = &gloas.ProposerPreferences{
 
 var TestSignedProposerPreferences = &gloas.SignedProposerPreferences{
 	Message:   TestProposerPreferences,
+	Signature: phase0.BLSSignature{0xbb, 0xcc},
+}
+
+var TestBuilderRequestAuth = &gloas.BuilderRequestAuth{
+	Data: []byte{0x01, 0x02, 0x03},
+	Slot: 42,
+}
+
+var TestSignedBuilderRequestAuth = &gloas.SignedBuilderRequestAuth{
+	Message:   TestBuilderRequestAuth,
 	Signature: phase0.BLSSignature{0xbb, 0xcc},
 }
