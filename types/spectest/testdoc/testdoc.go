@@ -48,6 +48,18 @@ const SignedProposerPreferencesEncodingSpecTestType = "Signed proposer preferenc
 // Documentation for SignedProposerPreferencesEncodingSpecTest
 const SignedProposerPreferencesEncodingTestDoc = "Test encoding and decoding of SignedProposerPreferences (SIP #94 §5) with hash tree root verification"
 
+// BuilderRequestAuthEncodingSpecTest
+const BuilderRequestAuthEncodingSpecTestType = "Builder request auth encoding: validation of builder request auth encoding"
+
+// Documentation for BuilderRequestAuthEncodingSpecTest
+const BuilderRequestAuthEncodingTestDoc = "Test encoding and decoding of BuilderRequestAuth (SIP #94 §5) with hash tree root verification"
+
+// SignedBuilderRequestAuthEncodingSpecTest
+const SignedBuilderRequestAuthEncodingSpecTestType = "Signed builder request auth encoding: validation of signed builder request auth encoding"
+
+// Documentation for SignedBuilderRequestAuthEncodingSpecTest
+const SignedBuilderRequestAuthEncodingTestDoc = "Test encoding and decoding of SignedBuilderRequestAuth (SIP #94 §5) with hash tree root verification"
+
 // CommitteeMemberTest
 const CommitteeMemberTestType = "Committee member: validation of committee member quorum requirements"
 
