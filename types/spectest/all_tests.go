@@ -6,6 +6,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/aggregatorcommitteeconsensusdata"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/builderrequestauth"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
@@ -19,6 +20,7 @@ import (
 	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerconsensusdata/proposer"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerpreferences"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/share"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedbuilderrequestauth"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedproposerpreferences"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
@@ -138,6 +140,8 @@ var AllTests = []SpecTest{
 	payloadattestationmessage.PayloadAttestationMessageEncoding(),
 	proposerpreferences.ProposerPreferencesEncoding(),
 	signedproposerpreferences.SignedProposerPreferencesEncoding(),
+	builderrequestauth.BuilderRequestAuthEncoding(),
+	signedbuilderrequestauth.SignedBuilderRequestAuthEncoding(),
 
 	maxmsgsize.MaxConsensusData(),
 	maxmsgsize.MaxBeaconVote(),
