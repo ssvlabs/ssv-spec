@@ -28,6 +28,7 @@ import (
 
 var AllTests = []tests.TestF{
 	runner.FullHappyFlow,
+	runner.GloasProposerLateEnvelopeQuorum,
 
 	postconsensus.TooManyRoots,
 	postconsensus.TooFewRoots,

@@ -18,7 +18,7 @@ type ProposerRunner struct {
 	// producedEnvelope is this operator's own blinded execution-payload envelope from its Gloas
 	// produceBlockV4 response (SIP #94 §6). It is what lets the operator publish the §6 reveal when it
 	// turns out to be the builder operator — its BeaconBlockRoot equals the decided block root. Nil
-	// pre-Gloas and until the Gloas produce in ProcessPreConsensus.
+	// pre-Gloas, on an external bid, and until the Gloas produce in ProcessPreConsensus.
 	producedEnvelope *gloas.BlindedExecutionPayloadEnvelope
 
 	beacon         BeaconNode
@@ -100,17 +100,22 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 	// get block data
 	var input *types.ProposerConsensusData
 	if versionForSlot(r.beacon, duty.Slot) >= gloas.DataVersionGloas {
-		// Gloas (ePBS §4): produce yields the self-build block and its own blinded envelope (SIP #94 §6),
+		// Gloas (ePBS §4): a self-build produce yields the block and its own blinded envelope (SIP #94 §6),
 		// so the operator carries payload_root in the decided value and — if it turns out to be the builder
-		// operator — publishes the reveal. api.VersionedProposal cannot carry a Gloas block, so the
-		// {block, payload_root} wrapper travels opaque in DataSSZ (decoded by the value check and the
-		// post-consensus paths).
+		// operator — publishes the reveal. An external bid win (p2p/builder-API) returns a bare block and a
+		// nil envelope, so payload_root is zero (the value check pins it zero iff not self-build).
+		// api.VersionedProposal cannot carry a Gloas block, so the {block, payload_root} wrapper travels
+		// opaque in DataSSZ (decoded by the value check and the post-consensus paths).
 		blk, envelope, err := r.GetBeaconNode().GetGloasBeaconBlock(duty.Slot, r.GetShare().Graffiti, fullSig)
 		if err != nil {
 			return errors.Wrap(err, "failed to get Gloas Beacon block")
 		}
 		r.producedEnvelope = envelope
-		byts, err := (&gloas.GloasProposalData{Block: blk, PayloadRoot: envelope.PayloadRoot}).MarshalSSZ()
+		var payloadRoot phase0.Root
+		if envelope != nil {
+			payloadRoot = envelope.PayloadRoot
+		}
+		byts, err := (&gloas.GloasProposalData{Block: blk, PayloadRoot: payloadRoot}).MarshalSSZ()
 		if err != nil {
 			return errors.Wrap(err, "could not marshal Gloas proposal data")
 		}
@@ -286,8 +291,10 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 			if err := r.GetBeaconNode().SubmitGloasBeaconBlock(proposalData.Block, specSig); err != nil {
 				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed Gloas block")
 			}
-			// The block root is the required entry, so its quorum finalizes the round; the §6 envelope
-			// entry (if any) reconstructs and publishes in this same pass (SIP #94 §4/§6).
+			// The block root is the required entry, so its quorum finalizes the duty. The optional §6
+			// envelope root reconstructs independently and may complete in a later packet —
+			// ValidatePostConsensusMsg keeps admitting packets while awaitingEnvelope() holds, so the reveal
+			// is not lost (SIP #94 §4).
 			r.GetState().Finished = true
 		case root == envelopeSigningRoot:
 			if err := r.publishEnvelope(cd, specSig); err != nil {
@@ -353,6 +360,41 @@ func (r *ProposerRunner) publishEnvelope(cd *types.ProposerConsensusData, sig ph
 		return errors.Wrap(err, "could not submit execution payload envelope")
 	}
 	return nil
+}
+
+// awaitingEnvelope reports whether the block is decided (so the duty is finished) but the optional §6
+// envelope root is expected and has not yet reached post-consensus quorum — the window in which the
+// proposer keeps accepting post-consensus packets (ValidatePostConsensusMsg) so an envelope quorum reached
+// only after the block's still publishes the reveal (SIP #94 §4). It is derived from state on each call, so
+// it is independent of packet order and needs no reset between duties: false pre-Gloas and on an external
+// bid (no envelope root), with no decided value (a never-started duty), and once the envelope reconstructs.
+func (r *ProposerRunner) awaitingEnvelope() bool {
+	state := r.GetState()
+	if state == nil || len(state.DecidedValue) == 0 {
+		return false
+	}
+	expected, err := r.expectedPostConsensusRootsAndDomains()
+	if err != nil {
+		return false
+	}
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(state.StartingDuty.DutySlot())
+	for _, e := range expected {
+		if !e.Optional {
+			continue
+		}
+		d, err := r.GetBeaconNode().DomainData(epoch, e.Domain)
+		if err != nil {
+			return false
+		}
+		sr, err := types.ComputeETHSigningRoot(e.Root, d)
+		if err != nil {
+			return false
+		}
+		if !state.PostConsensusContainer.HasQuorum(r.GetShare().ValidatorIndex, sr) {
+			return true
+		}
+	}
+	return false
 }
 
 // deriveBlindedEnvelope builds the §6 blinded envelope entirely from the decided GloasProposalData: with
