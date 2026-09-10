@@ -57,11 +57,6 @@ var ProposerPreferencesMsgID = func() []byte {
 	return ret[:]
 }()
 
-var EnvelopeProposerMsgID = func() []byte {
-	ret := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), types.RoleEnvelopeProposer)
-	return ret[:]
-}()
-
 var PTCAttesterMsgID = func() []byte {
 	ret := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), types.RolePTCAttester)
 	return ret[:]

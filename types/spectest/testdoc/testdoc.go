@@ -18,12 +18,6 @@ const GloasBeaconVoteEncodingSpecTestType = "Gloas beacon vote encoding: validat
 // Documentation for GloasBeaconVoteEncodingSpecTest
 const GloasBeaconVoteEncodingTestDoc = "Test encoding and decoding of GloasBeaconVote (SIP #94 §2) with hash tree root verification"
 
-// EnvelopeDisseminationEncodingSpecTest
-const EnvelopeDisseminationEncodingSpecTestType = "Envelope dissemination encoding: validation of envelope dissemination encoding"
-
-// Documentation for EnvelopeDisseminationEncodingSpecTest
-const EnvelopeDisseminationEncodingTestDoc = "Test encoding and decoding of EnvelopeDissemination (SIP #94 §6) with hash tree root verification"
-
 // PayloadAttestationDataEncodingSpecTest
 const PayloadAttestationDataEncodingSpecTestType = "Payload attestation data encoding: validation of payload attestation data encoding"
 

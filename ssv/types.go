@@ -41,10 +41,13 @@ type ProposerCalls interface {
 	GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*api.VersionedProposal, ssz.Marshaler, error)
 	// SubmitBeaconBlock submit the block to the node
 	SubmitBeaconBlock(block *api.VersionedProposal, sig phase0.BLSSignature) error
-	// GetGloasBeaconBlock returns the Gloas (ePBS) beacon block for the given slot, graffiti, and
-	// randao (SIP #94 §4). Separate from GetBeaconBlock because api.VersionedProposal cannot carry a
-	// Gloas block; there is no blinded variant — Gloas blocks are bid-only.
-	GetGloasBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, error)
+	// GetGloasBeaconBlock returns the Gloas (ePBS) self-build beacon block for the given slot, graffiti,
+	// and randao, together with the blinded form of its own produced execution-payload envelope (SIP #94
+	// §4/§6). SSV only self-builds, so the response is BlockContents: the operator holds the envelope —
+	// hence its payload_root — from produce onward, packs payload_root into the §4 decided value, and (if
+	// it turns out to be the builder operator) publishes the reveal. Separate from GetBeaconBlock because
+	// api.VersionedProposal cannot carry a Gloas block.
+	GetGloasBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, *gloas.BlindedExecutionPayloadEnvelope, error)
 	// SubmitGloasBeaconBlock submits the signed Gloas (ePBS) block to the node (SIP #94 §4)
 	SubmitGloasBeaconBlock(block *gloas.BeaconBlock, sig phase0.BLSSignature) error
 }
@@ -119,16 +122,15 @@ type ProposerPreferencesCalls interface {
 	SubmitBuilderRequestAuth(auth *gloas.SignedBuilderRequestAuth) error
 }
 
-// EnvelopeCalls interface has all Gloas (ePBS) execution-payload envelope duty specific calls (SIP #94 §6)
+// EnvelopeCalls interface has the Gloas (ePBS) execution-payload envelope publish call (SIP #94 §6).
+// Under the post-consensus-fold model the envelope signature rides the §4 proposer post-consensus packet;
+// only publication remains a beacon-node call, made by the builder operator.
 type EnvelopeCalls interface {
-	// GetBlindedExecutionPayloadEnvelope returns this operator's own produced blinded envelope for the
-	// slot's decided block. It answers only on the beacon node that built the block (held from the §4
-	// produceBlockV4 self-build response), so an error means this operator is not the builder operator.
-	GetBlindedExecutionPayloadEnvelope(slot phase0.Slot, blockRoot phase0.Root) (*gloas.BlindedExecutionPayloadEnvelope, error)
-	// SubmitExecutionPayloadEnvelope publishes the reconstructed reveal. The builder operator passes the
-	// blinded envelope plus the threshold-reconstructed signature (valid for the full envelope by
-	// root-equivalence); its beacon node forms the full SignedExecutionPayloadEnvelope body from its
-	// cache (SIP #94 §6).
+	// SubmitExecutionPayloadEnvelope publishes the reconstructed reveal (SIP #94 §6). The builder operator
+	// — the one whose own produceBlockV4 response holds the decided block and its full envelope — passes
+	// the blinded envelope plus the threshold-reconstructed signature (valid for the full envelope by
+	// root-equivalence); its beacon node forms the full SignedExecutionPayloadEnvelopeContents body and
+	// publishes to each of its nodes.
 	SubmitExecutionPayloadEnvelope(envelope *gloas.BlindedExecutionPayloadEnvelope, signature phase0.BLSSignature) error
 }
 

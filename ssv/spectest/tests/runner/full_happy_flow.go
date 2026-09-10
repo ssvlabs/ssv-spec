@@ -84,22 +84,6 @@ func FullHappyFlow() tests.SpecTest {
 					testingutils.GetSSZRootNoError(testingutils.TestingSignedProposerPreferences(ks, testingutils.TestingDutySlotGloas)),
 				},
 			},
-			{
-				Name:   "envelope proposer",
-				Runner: testingutils.EnvelopeProposerRunner(ks),
-				Duty:   testingutils.TestingEnvelopeProposerDuty(),
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[1], 1))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[2], 2))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgEnvelopeProposer(nil, testingutils.PreConsensusEnvelopeMsg(ks.Shares[3], 3))),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusEnvelopeMsg(ks.Shares[1], 1), // disseminates and signs on duty start
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingBlindedExecutionPayloadEnvelope(testingutils.TestingDutySlotGloas)),
-				},
-			},
 		},
 		ks,
 	)
@@ -291,9 +275,9 @@ func FullHappyFlow() tests.SpecTest {
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
-			BeaconBroadcastedRoots: []string{
+			BeaconBroadcastedRoots: testingutils.WithGloasEnvelopeBroadcast([]string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
-			},
+			}, version),
 		}
 	}
 
@@ -315,9 +299,9 @@ func FullHappyFlow() tests.SpecTest {
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
-			BeaconBroadcastedRoots: []string{
+			BeaconBroadcastedRoots: testingutils.WithGloasEnvelopeBroadcast([]string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
-			},
+			}, version),
 		}
 	}
 
