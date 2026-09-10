@@ -254,10 +254,23 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 	return nil
 }
 
-// GetGloasBeaconBlock returns the Gloas (ePBS §4) beacon block for the slot. The fixture block carries
-// the requested slot, so the value check's block-slot/duty-slot pin holds for any duty slot.
-func (bn *TestingBeaconNode) GetGloasBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, error) {
-	return gloas.TestingBeaconBlock(slot), nil
+// GetGloasBeaconBlock returns the Gloas (ePBS §4) self-build block for the slot plus its own blinded
+// envelope (SIP #94 §6) — the produce-held BlockContents. The fixture block carries the requested slot, so
+// the value check's block-slot/duty-slot pin holds for any duty slot, and the envelope is the one derived
+// from that block, so the operator publishes it as the builder operator.
+func (bn *TestingBeaconNode) GetGloasBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, *gloas.BlindedExecutionPayloadEnvelope, error) {
+	return gloas.TestingBeaconBlock(slot), TestingBlindedExecutionPayloadEnvelope(slot), nil
+}
+
+// SubmitExecutionPayloadEnvelope records the published §6 reveal's root — the blinded envelope's root,
+// which by root-equivalence is the full envelope's (SIP #94 §6).
+func (bn *TestingBeaconNode) SubmitExecutionPayloadEnvelope(envelope *gloas.BlindedExecutionPayloadEnvelope, signature phase0.BLSSignature) error {
+	r, err := envelope.HashTreeRoot()
+	if err != nil {
+		return err
+	}
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	return nil
 }
 
 // SubmitGloasBeaconBlock records the signed Gloas (ePBS §4) block's root, mirroring SubmitBeaconBlock.

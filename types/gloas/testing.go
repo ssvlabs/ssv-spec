@@ -8,9 +8,9 @@ import (
 
 // TestingBeaconBlock returns a minimal self-build Gloas BeaconBlock for the slot, with the required
 // fixed-size body fields populated so it round-trips through SSZ. The bid commits the execution-requests
-// root of an empty ExecutionRequests, so the §6 envelope duty's binding check
-// (hash_tree_root(envelope.ExecutionRequests) == bid.ExecutionRequestsRoot) holds against a disseminated
-// envelope carrying the same empty requests. For use in tests.
+// root of an empty ExecutionRequests; the §6 blinded envelope derived from the decided block copies that
+// same root straight from the bid (SIP #94 §6), so its post-consensus signing root is well-defined. For
+// use in tests.
 func TestingBeaconBlock(slot phase0.Slot) *BeaconBlock {
 	requestsRoot, err := (&ExecutionRequests{}).HashTreeRoot()
 	if err != nil {

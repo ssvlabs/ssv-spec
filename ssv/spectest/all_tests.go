@@ -12,7 +12,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/consensus"
 	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/envelopeproposer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposerpreferences"
@@ -56,6 +55,7 @@ var AllTests = []tests.TestF{
 	postconsensus.Quorum7Operators,
 	postconsensus.Quorum10Operators,
 	postconsensus.Quorum13Operators,
+	postconsensus.GloasBlockOnlyQuorum,
 	postconsensus.InvalidDecidedValue,
 	postconsensus.InvalidThenQuorum,
 	postconsensus.InvalidQuorumThenValidQuorum,
@@ -223,11 +223,6 @@ var AllTests = []tests.TestF{
 	proposerpreferences.BuilderRequestAuthCapAtMax,
 	proposerpreferences.BuilderRequestAuthWrongRoot,
 	proposerpreferences.BuilderRequestAuthIndependentOfPreference,
-
-	envelopeproposer.HappyFlow,
-	envelopeproposer.ContentMismatchNoPublish,
-	envelopeproposer.NoProposedBlockRoot,
-	envelopeproposer.RootLinkage,
 
 	valcheckproposer.BlindedBlock,
 	valcheckproposer.GloasBlocks,

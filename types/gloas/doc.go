@@ -7,6 +7,6 @@
 // DataVersionGloas is reconciled with the upstream enum.
 //
 // The full (unblinded) ExecutionPayloadEnvelope and ExecutionPayload are deliberately not vendored:
-// the spec models the §6 duty over the blinded form only (the signing root is identical), so the
+// the spec signs the §6 envelope over the blinded form only (the signing root is identical), so the
 // full-payload types remain node-side.
 package gloas

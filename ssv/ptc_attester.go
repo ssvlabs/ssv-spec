@@ -119,12 +119,6 @@ func (r *PTCAttesterRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) 
 	return types.NewError(types.PTCAttesterNoConsensusPhaseErrorCode, "no consensus phase for ptc attestation")
 }
 
-// ProcessEnvelopeDissemination returns an error: only the envelope-proposer runner processes
-// disseminated envelopes (SIP #94 §6).
-func (*PTCAttesterRunner) ProcessEnvelopeDissemination(*types.SignedSSVMessage) error {
-	return types.NewError(types.EnvelopeDisseminationUnsupportedErrorCode, "runner does not process envelope dissemination")
-}
-
 func (r *PTCAttesterRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
 	return types.NewError(types.PTCAttesterNoPostConsensusPhaseErrorCode, "no post consensus phase for ptc attestation")
 }
@@ -139,9 +133,9 @@ func (r *PTCAttesterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot
 	return []ssz.HashRoot{r.PayloadAttestationData}, types.DomainPTCAttester, nil
 }
 
-// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *PTCAttesterRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return nil, [4]byte{}, fmt.Errorf("no post consensus roots for ptc attestation")
+// expectedPostConsensusRootsAndDomains an INTERNAL function, returns the expected post-consensus roots to sign
+func (r *PTCAttesterRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error) {
+	return nil, fmt.Errorf("no post consensus roots for ptc attestation")
 }
 
 // executeDuty steps:

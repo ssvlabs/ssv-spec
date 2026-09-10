@@ -165,6 +165,7 @@ const PostConsensusPartialInvalidSignatureQuorumThenValidQuorumDoc = "Tests post
 const PostConsensusPostFinishDoc = "Tests post-consensus message processing after duty is finished"
 const PostConsensusPreDecidedDoc = "Tests post-consensus message processing before duty is decided, expecting error"
 const PostConsensusUnknownSignerDoc = "Tests post-consensus message processing with unknown signer, expecting error"
+const PostConsensusGloasBlockOnlyDoc = "Tests that a Gloas (ePBS) self-build proposer finalizes on a block-only post-consensus packet: the SIP #94 §6 envelope root is optional, so when the envelope partial-sigs miss quorum the block partial-sigs alone still submit the block and finish the duty, broadcasting no envelope reveal."
 
 // Documentation for runner/preconsensus tests
 const PreConsensusDuplicateMsgDoc = "Tests pre-consensus message processing with duplicate messages"
@@ -231,12 +232,6 @@ const ValCheckDutyFarFutureDutySlotDoc = "Tests duty value check with duty slot 
 const ValCheckDutyWrongDutyTypeDoc = "Tests duty value check with wrong duty type"
 const ValCheckDutyWrongValidatorIndexDoc = "Tests duty value check with wrong validator index across different roles"
 const ValCheckDutyWrongValidatorPKDoc = "Tests duty value check with wrong validator public key across different roles"
-
-// Documentation for envelopeproposer tests
-const EnvelopeProposerHappyFlowDoc = "Tests the full §6 envelope flow for the builder operator (SIP #94 §6): dissemination of the blinded envelope, threshold-signing quorum, and publication — no consensus"
-const EnvelopeProposerContentMismatchNoPublishDoc = "Tests publish-by-content-match (SIP #94 §6): a non-builder operator signs a peer's disseminated envelope but publishes nothing, since only the builder operator holds the envelope body"
-const EnvelopeProposerNoProposedBlockRootDoc = "Tests that the §6 envelope duty takes no action for a slot with no recorded §4-decided block — a silent wait, not an error"
-const EnvelopeProposerRootLinkageDoc = "Tests the §4→§6 linkage end to end (SIP #94 §6): the envelope flow binds against the block facts a real proposer decision recorded, rather than fixture-seeded ones"
 
 // Documentation for proposerpreferences tests
 const ProposerPreferencesConcurrentLookaheadSlotsDoc = "Tests two concurrently-active proposal slots (SIP #94 §5): each is an independent per-slot flow, so both reach quorum and submit"

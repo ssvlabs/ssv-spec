@@ -21,14 +21,13 @@ func (r *testRunner) Decode([]byte) error     { return nil }
 func (r *testRunner) GetRoot() ([32]byte, error) {
 	return [32]byte{}, nil
 }
-func (r *testRunner) GetBaseRunner() *BaseRunner                                 { return nil }
-func (r *testRunner) GetBeaconNode() BeaconNode                                  { return nil }
-func (r *testRunner) GetValCheckF() qbft.ProposedValueCheckF                     { return nil }
-func (r *testRunner) GetSigner() types.BeaconSigner                              { return nil }
-func (r *testRunner) GetOperatorSigner() *types.OperatorSigner                   { return nil }
-func (r *testRunner) GetNetwork() Network                                        { return nil }
-func (r *testRunner) ProcessEnvelopeDissemination(*types.SignedSSVMessage) error { return nil }
-func (r *testRunner) HasRunningDuty() bool                                       { return false }
+func (r *testRunner) GetBaseRunner() *BaseRunner               { return nil }
+func (r *testRunner) GetBeaconNode() BeaconNode                { return nil }
+func (r *testRunner) GetValCheckF() qbft.ProposedValueCheckF   { return nil }
+func (r *testRunner) GetSigner() types.BeaconSigner            { return nil }
+func (r *testRunner) GetOperatorSigner() *types.OperatorSigner { return nil }
+func (r *testRunner) GetNetwork() Network                      { return nil }
+func (r *testRunner) HasRunningDuty() bool                     { return false }
 func (r *testRunner) ProcessPreConsensus(*types.PartialSignatureMessages) error {
 	return nil
 }
@@ -39,8 +38,8 @@ func (r *testRunner) ProcessPostConsensus(*types.PartialSignatureMessages) error
 func (r *testRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	return nil, phase0.DomainType{}, nil
 }
-func (r *testRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return nil, phase0.DomainType{}, nil
+func (r *testRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error) {
+	return nil, nil
 }
 func (r *testRunner) executeDuty(types.Duty) error { return nil }
 func (r *testRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
