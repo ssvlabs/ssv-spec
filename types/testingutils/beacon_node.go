@@ -29,6 +29,9 @@ type TestingBeaconNode struct {
 	BroadcastedRoots             []phase0.Root
 	SyncCommitteeAggregatorRoots map[string]bool
 	CommitteeIndexAggregators    map[phase0.CommitteeIndex]bool
+	// producesExternalBid makes the Gloas produce return a bare external-bid block and a nil envelope
+	// (SIP #94 §4), for testing the external-build path where SSV does not self-build.
+	producesExternalBid bool
 }
 
 func NewTestingBeaconNode() *TestingBeaconNode {
@@ -47,6 +50,12 @@ func (bn *TestingBeaconNode) SetSyncCommitteeAggregatorRootHexes(roots map[strin
 // SetAggregators FOR TESTING ONLY!! sets committee indices values for IsAggregator
 func (bn *TestingBeaconNode) SetAggregators(committeeIndices map[phase0.CommitteeIndex]bool) {
 	bn.CommitteeIndexAggregators = committeeIndices
+}
+
+// SetProducesExternalBid FOR TESTING ONLY!! makes GetGloasBeaconBlock return a bare external-bid block
+// with a nil envelope (SIP #94 §4), exercising the external-build path instead of self-build.
+func (bn *TestingBeaconNode) SetProducesExternalBid(v bool) {
+	bn.producesExternalBid = v
 }
 
 // GetBeaconNetwork returns the beacon network the node is on
@@ -257,8 +266,13 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 // GetGloasBeaconBlock returns the Gloas (ePBS §4) self-build block for the slot plus its own blinded
 // envelope (SIP #94 §6) — the produce-held BlockContents. The fixture block carries the requested slot, so
 // the value check's block-slot/duty-slot pin holds for any duty slot, and the envelope is the one derived
-// from that block, so the operator publishes it as the builder operator.
+// from that block, so the operator publishes it as the builder operator. Under SetProducesExternalBid it
+// instead returns a bare external-bid block and a nil envelope (the §4 external-build path).
 func (bn *TestingBeaconNode) GetGloasBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, *gloas.BlindedExecutionPayloadEnvelope, error) {
+	if bn.producesExternalBid {
+		// External bid win: a bare block and no envelope, so the decided value carries a zero payload_root.
+		return gloas.TestingBeaconBlockExternalBuild(slot), nil, nil
+	}
 	return gloas.TestingBeaconBlock(slot), TestingBlindedExecutionPayloadEnvelope(slot), nil
 }
 
