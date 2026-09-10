@@ -15,10 +15,10 @@ import (
 )
 
 // GloasBlocks covers the Gloas (ePBS, SIP #94 §4) proposer value-check rules. At a Gloas duty slot the
-// consensus value carries an opaque bid-only gloas.BeaconBlock in DataSSZ, so the value check decodes
-// it directly (never routing through the pre-Gloas Validate()/GetBlockData()), pins the block's slot to
-// the duty's, and rejects a leader-stamped Version that disagrees with the duty slot's fork in either
-// direction.
+// consensus value carries an opaque {block, payload_root} GloasProposalData in DataSSZ, so the value check
+// decodes it directly (never routing through the pre-Gloas Validate()/GetBlockData()), pins the block's
+// slot to the duty's, requires payload_root to be zero iff the bid is not self-build, and rejects a
+// leader-stamped Version that disagrees with the duty slot's fork in either direction.
 func GloasBlocks() tests.SpecTest {
 	gloasDuty := testingutils.TestingProposerDutyV(gloas.DataVersionGloas)
 	electraDuty := testingutils.TestingProposerDutyV(spec.DataVersionElectra)
@@ -32,7 +32,9 @@ func GloasBlocks() tests.SpecTest {
 	}
 	gloasBlockBytes := testingutils.TestingBeaconBlockBytesV(gloas.DataVersionGloas)
 
-	slotMismatchBlock, err := gloas.TestingBeaconBlock(gloasDuty.Slot + 100).MarshalSSZ()
+	slotMismatchBlock := testingutils.TestingGloasProposalDataBytes(gloasDuty.Slot + 100)
+	// A self-build value (the fixture bid is self-build) with a zero payload_root trips the §4 presence rule.
+	selfBuildZeroPayloadRoot, err := (&gloas.GloasProposalData{Block: gloas.TestingBeaconBlock(gloasDuty.Slot)}).MarshalSSZ()
 	if err != nil {
 		panic(err.Error())
 	}
@@ -64,6 +66,14 @@ func GloasBlocks() tests.SpecTest {
 				RunnerRole:        types.RoleProposer,
 				Input:             encode(&types.ProposerConsensusData{Duty: *gloasDuty, Version: gloas.DataVersionGloas, DataSSZ: slotMismatchBlock}),
 				ExpectedErrorCode: types.ProposerBlockSlotMismatchErrorCode,
+			},
+			{
+				// payload_root MUST be non-zero on the self-build path (SIP #94 §4); zero trips the rule.
+				Name:              "self-build with zero payload_root",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleProposer,
+				Input:             encode(&types.ProposerConsensusData{Duty: *gloasDuty, Version: gloas.DataVersionGloas, DataSSZ: selfBuildZeroPayloadRoot}),
+				ExpectedErrorCode: types.QBFTValueInvalidErrorCode,
 			},
 			{
 				// The leader-stamped Version is attacker-controlled, so on a Gloas slot it is pinned to

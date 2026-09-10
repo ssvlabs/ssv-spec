@@ -189,9 +189,9 @@ func PostFinish() tests.SpecTest {
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
-			BeaconBroadcastedRoots: []string{
+			BeaconBroadcastedRoots: testingutils.WithGloasEnvelopeBroadcast([]string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
-			},
+			}, version),
 			ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		}
 	}
@@ -221,9 +221,9 @@ func PostFinish() tests.SpecTest {
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
-			BeaconBroadcastedRoots: []string{
+			BeaconBroadcastedRoots: testingutils.WithGloasEnvelopeBroadcast([]string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
-			},
+			}, version),
 			ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		}
 	}

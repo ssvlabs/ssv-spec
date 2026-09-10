@@ -119,24 +119,18 @@ func (r *ProposerPreferencesRunner) ProcessConsensus(signedMsg *types.SignedSSVM
 	return types.NewError(types.ProposerPreferencesNoConsensusPhaseErrorCode, "no consensus phase for proposer preferences")
 }
 
-// ProcessEnvelopeDissemination returns an error: only the envelope-proposer runner processes
-// disseminated envelopes (SIP #94 §6).
-func (*ProposerPreferencesRunner) ProcessEnvelopeDissemination(*types.SignedSSVMessage) error {
-	return types.NewError(types.EnvelopeDisseminationUnsupportedErrorCode, "runner does not process envelope dissemination")
-}
-
 func (r *ProposerPreferencesRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
 	return types.NewError(types.ProposerPreferencesNoPostConsensusPhaseErrorCode, "no post consensus phase for proposer preferences")
 }
 
-// expectedPreConsensusRootsAndDomain / expectedPostConsensusRootsAndDomain / executeDuty run on the
+// expectedPreConsensusRootsAndDomain / expectedPostConsensusRootsAndDomains / executeDuty run on the
 // per-slot sub-runners, never on the dispatcher.
 func (r *ProposerPreferencesRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	return nil, types.DomainError, fmt.Errorf("proposer preferences dispatcher has no frozen preference")
 }
 
-func (r *ProposerPreferencesRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return nil, [4]byte{}, fmt.Errorf("no post consensus roots for proposer preferences")
+func (r *ProposerPreferencesRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error) {
+	return nil, fmt.Errorf("no post consensus roots for proposer preferences")
 }
 
 func (r *ProposerPreferencesRunner) executeDuty(duty types.Duty) error {
@@ -293,12 +287,6 @@ func (r *ProposerPreferencesSlotRunner) ProcessConsensus(signedMsg *types.Signed
 	return types.NewError(types.ProposerPreferencesNoConsensusPhaseErrorCode, "no consensus phase for proposer preferences")
 }
 
-// ProcessEnvelopeDissemination returns an error: only the envelope-proposer runner processes
-// disseminated envelopes (SIP #94 §6).
-func (*ProposerPreferencesSlotRunner) ProcessEnvelopeDissemination(*types.SignedSSVMessage) error {
-	return types.NewError(types.EnvelopeDisseminationUnsupportedErrorCode, "runner does not process envelope dissemination")
-}
-
 func (r *ProposerPreferencesSlotRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {
 	return types.NewError(types.ProposerPreferencesNoPostConsensusPhaseErrorCode, "no post consensus phase for proposer preferences")
 }
@@ -310,9 +298,9 @@ func (r *ProposerPreferencesSlotRunner) expectedPreConsensusRootsAndDomain() ([]
 	return []ssz.HashRoot{r.ProposerPreferences}, types.DomainProposerPreferences, nil
 }
 
-// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *ProposerPreferencesSlotRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return nil, [4]byte{}, fmt.Errorf("no post consensus roots for proposer preferences")
+// expectedPostConsensusRootsAndDomains an INTERNAL function, returns the expected post-consensus roots to sign
+func (r *ProposerPreferencesSlotRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error) {
+	return nil, fmt.Errorf("no post consensus roots for proposer preferences")
 }
 
 // executeDuty steps:

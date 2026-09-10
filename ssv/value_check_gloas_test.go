@@ -42,7 +42,7 @@ func TestProposerValueCheckFGloas(t *testing.T) {
 		types.ValidatorPK(testingutils.TestingValidatorPubKey), testingutils.TestingValidatorIndex, nil,
 		testingutils.VersionByEpoch)
 
-	valid, err := (&types.ProposerConsensusData{Duty: *duty, Version: gloas.DataVersionGloas, DataSSZ: testingGloasBeaconBlockSSZ(t, duty.Slot)}).Encode()
+	valid, err := (&types.ProposerConsensusData{Duty: *duty, Version: gloas.DataVersionGloas, DataSSZ: testingutils.TestingGloasProposalDataBytes(duty.Slot)}).Encode()
 	require.NoError(t, err)
 	require.NoError(t, valueCheck(valid))
 
@@ -51,13 +51,13 @@ func TestProposerValueCheckFGloas(t *testing.T) {
 	requireErrorCode(t, valueCheck(garbage), types.UnmarshalSSZErrorCode)
 
 	// a block whose slot does not match the duty slot is rejected
-	slotMismatch, err := (&types.ProposerConsensusData{Duty: *duty, Version: gloas.DataVersionGloas, DataSSZ: testingGloasBeaconBlockSSZ(t, duty.Slot+1)}).Encode()
+	slotMismatch, err := (&types.ProposerConsensusData{Duty: *duty, Version: gloas.DataVersionGloas, DataSSZ: testingutils.TestingGloasProposalDataBytes(duty.Slot + 1)}).Encode()
 	require.NoError(t, err)
 	requireErrorCode(t, valueCheck(slotMismatch), types.ProposerBlockSlotMismatchErrorCode)
 
 	// the leader-stamped Version must agree with the duty slot's fork: a pre-Gloas Version on a Gloas
 	// slot is rejected by the explicit guard (the stamp is attacker-controlled) ...
-	preGloasVersion, err := (&types.ProposerConsensusData{Duty: *duty, Version: spec.DataVersionElectra, DataSSZ: testingGloasBeaconBlockSSZ(t, duty.Slot)}).Encode()
+	preGloasVersion, err := (&types.ProposerConsensusData{Duty: *duty, Version: spec.DataVersionElectra, DataSSZ: testingutils.TestingGloasProposalDataBytes(duty.Slot)}).Encode()
 	require.NoError(t, err)
 	requireErrorCode(t, valueCheck(preGloasVersion), types.QBFTValueInvalidErrorCode)
 

@@ -180,14 +180,22 @@ func ProposerValueCheckF(
 			if err := dutyValueCheck(&cd.Duty, network, types.BNRoleProposer, validatorPK, validatorIndex); err != nil {
 				return errors.Wrap(err, "duty invalid")
 			}
-			block, err := gloas.DecodeBeaconBlock(cd.DataSSZ)
+			proposalData, err := gloas.DecodeGloasProposalData(cd.DataSSZ)
 			if err != nil {
-				return types.WrapError(types.UnmarshalSSZErrorCode, errors.Wrap(err, "failed decoding gloas beacon block"))
+				return types.WrapError(types.UnmarshalSSZErrorCode, errors.Wrap(err, "failed decoding gloas proposal data"))
 			}
+			block := proposalData.Block
 			// The QBFT-agreed block must be for the duty's slot; without this pin the cluster could
 			// agree on a block for a different slot (SIP #94 §4). Mirrors §6's duty-slot match.
 			if block.Slot != cd.Duty.Slot {
 				return types.NewError(types.ProposerBlockSlotMismatchErrorCode, "gloas block slot does not match duty slot")
+			}
+			// payload_root MUST be zero iff the bid is not self-build (SIP #94 §4): a self-build value
+			// carries a real §6 payload_root, an external bid carries zero. An honest leader never trips it.
+			selfBuild := block.Body.SignedExecutionPayloadBid.Message.BuilderIndex == gloas.BuilderIndexSelfBuild
+			payloadZero := proposalData.PayloadRoot == phase0.Root{}
+			if selfBuild == payloadZero {
+				return types.NewError(types.QBFTValueInvalidErrorCode, "gloas payload_root presence does not match self-build bid")
 			}
 			return signer.IsBeaconBlockSlashable(sharePublicKey, block.Slot)
 		}

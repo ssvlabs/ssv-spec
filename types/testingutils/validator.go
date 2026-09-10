@@ -23,7 +23,6 @@ var BaseValidator = func(keySet *TestKeySet) *ssv.Validator {
 			types.RoleVoluntaryExit:         VoluntaryExitRunner(keySet),
 			types.RolePTCAttester:           PTCAttesterRunner(keySet),
 			types.RoleProposerPreferences:   ProposerPreferencesRunner(keySet),
-			types.RoleEnvelopeProposer:      EnvelopeProposerRunner(keySet),
 		},
 	)
 }
