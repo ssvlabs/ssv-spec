@@ -169,12 +169,14 @@ func ProposerValueCheckF(
 		// never routes through Validate()/GetBlockData(). Pre-Gloas is unchanged.
 		//
 		// The branch is on the slot's fork, not on the leader-stamped cd.Version: the stamp is
-		// attacker-controlled, so on a Gloas slot it is additionally pinned to the slot's fork below.
+		// attacker-controlled, so on a Gloas slot cd.Version is pinned to equal the slot's fork below
+		// (SIP #94 §4 says "does not equal", so a version both below and above the fork is rejected).
 		// (The reverse mismatch — a Gloas Version on a pre-Gloas slot — takes the pre-Gloas branch and
 		// is rejected by Validate()'s unknown-version error, so both mismatch directions fail and the
 		// node-side slot-based check agrees with this one on every value.)
-		if dataVersion(network.EstimatedEpochAtSlot(cd.Duty.Slot)) >= gloas.DataVersionGloas {
-			if cd.Version < gloas.DataVersionGloas {
+		slotVersion := dataVersion(network.EstimatedEpochAtSlot(cd.Duty.Slot))
+		if slotVersion >= gloas.DataVersionGloas {
+			if cd.Version != slotVersion {
 				return types.NewError(types.QBFTValueInvalidErrorCode, "value version does not match slot fork")
 			}
 			if err := dutyValueCheck(&cd.Duty, network, types.BNRoleProposer, validatorPK, validatorIndex); err != nil {

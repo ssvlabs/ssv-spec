@@ -41,11 +41,12 @@ type ProposerCalls interface {
 	GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*api.VersionedProposal, ssz.Marshaler, error)
 	// SubmitBeaconBlock submit the block to the node
 	SubmitBeaconBlock(block *api.VersionedProposal, sig phase0.BLSSignature) error
-	// GetGloasBeaconBlock returns the Gloas (ePBS) self-build beacon block for the given slot, graffiti,
-	// and randao, together with the blinded form of its own produced execution-payload envelope (SIP #94
-	// §4/§6). SSV only self-builds, so the response is BlockContents: the operator holds the envelope —
-	// hence its payload_root — from produce onward, packs payload_root into the §4 decided value, and (if
-	// it turns out to be the builder operator) publishes the reveal. Separate from GetBeaconBlock because
+	// GetGloasBeaconBlock returns the Gloas (ePBS) beacon block for the given slot, graffiti, and randao,
+	// plus the blinded form of its produced execution-payload envelope on the self-build path (SIP #94
+	// §4/§6). A self-build produce is BlockContents: the operator holds the envelope — hence its
+	// payload_root — from produce onward, packs payload_root into the §4 decided value, and (if it turns
+	// out to be the builder operator) publishes the reveal. An external bid win (p2p/builder-API) returns a
+	// bare block and a nil envelope, so payload_root is zero. Separate from GetBeaconBlock because
 	// api.VersionedProposal cannot carry a Gloas block.
 	GetGloasBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, *gloas.BlindedExecutionPayloadEnvelope, error)
 	// SubmitGloasBeaconBlock submits the signed Gloas (ePBS) block to the node (SIP #94 §4)

@@ -23,6 +23,7 @@ const SyncCommitteeAggregatorProofSpecTestType = "Sync committee aggregator proo
 
 // Documentation for happy flow tests
 const HappyFlowDoc = "Tests a full runner happy flow"
+const GloasProposerLateEnvelopeQuorumDoc = "Tests that a Gloas (ePBS) self-build proposer publishes the SIP #94 §6 reveal when the envelope root reaches quorum only after the block root: operator 3 signs block-only so the block finishes first, and the builder operator keeps accepting post-consensus packets until operator 4 completes the envelope quorum, then publishes."
 
 // Documentation for aggregator committee
 const AggregatorCommitteeDutyHappyFlowDoc = "Testing aggregator committee runner with complete duty flow for both aggregator and sync committee contribution"
