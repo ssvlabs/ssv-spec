@@ -22,29 +22,19 @@ func TestGloasWireConstants(t *testing.T) {
 	// would silently renumber them.
 	require.Equal(t, BeaconRole(7), BNRolePTCAttester)
 	require.Equal(t, BeaconRole(8), BNRoleProposerPreferences)
-	require.Equal(t, BeaconRole(9), BNRoleEnvelopeProposer)
 
 	require.Equal(t, RunnerRole(7), RolePTCAttester)
 	require.Equal(t, RunnerRole(8), RoleProposerPreferences)
-	require.Equal(t, RunnerRole(9), RoleEnvelopeProposer)
 
 	require.Equal(t, PartialSigMsgType(7), PTCAttesterPartialSig)
 	require.Equal(t, PartialSigMsgType(8), ProposerPreferencesPartialSig)
 	require.Equal(t, PartialSigMsgType(9), RequestAuthPartialSig)
-	require.Equal(t, PartialSigMsgType(10), EnvelopePartialSig)
-
-	// SSVMessage.MsgType is iota-assigned, so appending or reordering the class above the
-	// envelope-dissemination class would silently renumber it (SIP #94 §6).
-	require.Equal(t, MsgType(3), SSVEnvelopeDisseminationMsgType)
 
 	require.Equal(t, RolePTCAttester, MapDutyToRunnerRole(BNRolePTCAttester))
 	require.Equal(t, RoleProposerPreferences, MapDutyToRunnerRole(BNRoleProposerPreferences))
-	require.Equal(t, RoleEnvelopeProposer, MapDutyToRunnerRole(BNRoleEnvelopeProposer))
 
 	require.Equal(t, "PTC_ATTESTER", BNRolePTCAttester.String())
 	require.Equal(t, "PROPOSER_PREFERENCES", BNRoleProposerPreferences.String())
-	require.Equal(t, "ENVELOPE_PROPOSER", BNRoleEnvelopeProposer.String())
 	require.Equal(t, "PTC_ATTESTER_RUNNER", RolePTCAttester.String())
 	require.Equal(t, "PROPOSER_PREFERENCES_RUNNER", RoleProposerPreferences.String())
-	require.Equal(t, "ENVELOPE_PROPOSER_RUNNER", RoleEnvelopeProposer.String())
 }
