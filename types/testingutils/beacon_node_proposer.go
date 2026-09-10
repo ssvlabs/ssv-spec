@@ -55,14 +55,10 @@ var TestingBeaconBlockV = func(version spec.DataVersion) *api.VersionedProposal 
 }
 
 var TestingBeaconBlockBytesV = func(version spec.DataVersion) []byte {
-	// Gloas (ePBS §4): api.VersionedProposal cannot carry a Gloas block, so TestingBeaconBlockV has no
-	// Gloas arm — serve the bid-only fixture block's bytes directly.
+	// Gloas (ePBS §4): the decided DataSSZ is the {block, payload_root} wrapper (Option B), not the bare
+	// block — api.VersionedProposal cannot carry a Gloas block, so TestingBeaconBlockV has no Gloas arm.
 	if version == gloas.DataVersionGloas {
-		ret, err := gloas.TestingBeaconBlock(TestingDutySlotV(version)).MarshalSSZ()
-		if err != nil {
-			panic(err.Error())
-		}
-		return ret
+		return TestingGloasProposalDataBytes(TestingDutySlotV(version))
 	}
 
 	var ret []byte

@@ -25,6 +25,15 @@ var PostConsensusProposerMsgV = func(sk *bls.SecretKey, id types.OperatorID, ver
 	return postConsensusBeaconBlockMsgV(sk, id, false, false, version)
 }
 
+// PostConsensusProposerBlockOnlyMsgV keeps only the block entry, dropping the Gloas §6 envelope entry —
+// the packet a run sees when the envelope partial-sigs miss quorum. The block entry is required, so the
+// duty still finalizes (SIP #94 §4/§6). A no-op before Gloas, where the packet is block-only already.
+var PostConsensusProposerBlockOnlyMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	msg := postConsensusBeaconBlockMsgV(sk, id, false, false, version)
+	msg.Messages = msg.Messages[:1] // block entry is built first; drop any trailing envelope entry
+	return msg
+}
+
 var PostConsensusProposerTooManyRootsMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
 	ret := postConsensusBeaconBlockMsgV(sk, id, false, false, version)
 	ret.Messages = append(ret.Messages, ret.Messages[0])
@@ -72,49 +81,64 @@ var postConsensusBeaconBlockMsgV = func(
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
 
-	var root phase0.Root
+	var blockRoot phase0.Root
 	var err error
 	if version == gloas.DataVersionGloas {
-		// Gloas (ePBS §4): api.VersionedProposal cannot carry a Gloas block — the signing root is the
-		// bid-only fixture block's own hash tree root (a wrong root comes from a wrong-slot block).
+		// Gloas (ePBS §4): the block root is the bid-only fixture block's own hash tree root (a wrong root
+		// comes from a wrong-slot block).
 		slot := TestingDutySlotV(version)
 		if wrongRoot {
 			slot += 100
 		}
-		root, err = gloas.TestingBeaconBlock(slot).HashTreeRoot()
+		blockRoot, err = gloas.TestingBeaconBlock(slot).HashTreeRoot()
 	} else if wrongRoot {
-		blk := TestingWrongBeaconBlockV(version)
-		root, err = blk.Root()
+		blockRoot, err = TestingWrongBeaconBlockV(version).Root()
 	} else {
-		blk := TestingBeaconBlockV(version)
-		root, err = blk.Root()
+		blockRoot, err = TestingBeaconBlockV(version).Root()
 	}
 	if err != nil {
 		panic(err)
 	}
-	hashRoot := types.SSZ32Bytes(root)
 
-	d, _ := beacon.DomainData(1, types.DomainProposer) // epoch doesn't matter here, hard coded
-	sig, root, _ := signer.SignBeaconObject(hashRoot, d, sk.GetPublicKey().Serialize(), types.DomainProposer)
+	pk := sk.GetPublicKey().Serialize()
 	if wrongBeaconSig {
-		sig, root, _ = signer.SignBeaconObject(hashRoot, d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainProposer)
+		pk = Testing7SharesSet().ValidatorPK.Serialize()
 	}
-	blsSig := phase0.BLSSignature{}
-	copy(blsSig[:], sig)
 
-	msgs := types.PartialSignatureMessages{
-		Type: types.PostConsensusPartialSig,
-		Slot: TestingProposerDutyV(version).Slot,
-		Messages: []*types.PartialSignatureMessage{
-			{
-				PartialSignature: blsSig[:],
-				SigningRoot:      root,
-				Signer:           id,
-				ValidatorIndex:   TestingValidatorIndex,
-			},
-		},
+	// block entry, under DomainProposer
+	dProposer, _ := beacon.DomainData(1, types.DomainProposer) // epoch doesn't matter here, hard coded
+	blockSig, blockSigningRoot, _ := signer.SignBeaconObject(types.SSZ32Bytes(blockRoot), dProposer, pk, types.DomainProposer)
+	blockBls := phase0.BLSSignature{}
+	copy(blockBls[:], blockSig)
+
+	entries := []*types.PartialSignatureMessage{{
+		PartialSignature: blockBls[:],
+		SigningRoot:      blockSigningRoot,
+		Signer:           id,
+		ValidatorIndex:   TestingValidatorIndex,
+	}}
+
+	// Gloas self-build: the §6 blinded-envelope entry under DomainBeaconBuilder rides the same packet
+	// (SIP #94 §4/§6). The wrong-root / wrong-sig variants exercise the block entry only.
+	if version == gloas.DataVersionGloas && !wrongRoot && !wrongBeaconSig {
+		envelope := TestingBlindedExecutionPayloadEnvelope(TestingDutySlotV(version))
+		dBuilder, _ := beacon.DomainData(1, types.DomainBeaconBuilder)
+		envSig, envSigningRoot, _ := signer.SignBeaconObject(envelope, dBuilder, pk, types.DomainBeaconBuilder)
+		envBls := phase0.BLSSignature{}
+		copy(envBls[:], envSig)
+		entries = append(entries, &types.PartialSignatureMessage{
+			PartialSignature: envBls[:],
+			SigningRoot:      envSigningRoot,
+			Signer:           id,
+			ValidatorIndex:   TestingValidatorIndex,
+		})
 	}
-	return &msgs
+
+	return &types.PartialSignatureMessages{
+		Type:     types.PostConsensusPartialSig,
+		Slot:     TestingProposerDutyV(version).Slot,
+		Messages: entries,
+	}
 }
 
 // ==================================================

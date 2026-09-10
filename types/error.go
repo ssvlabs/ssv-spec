@@ -113,11 +113,6 @@ const (
 	ProposerPreferencesNoPostConsensusPhaseErrorCode
 	ProposerPreferencesNoPreferenceErrorCode
 	ValidatorRegistrationDeprecatedErrorCode
-	EnvelopeProposerNoConsensusPhaseErrorCode
-	EnvelopeProposerNoPostConsensusPhaseErrorCode
-	EnvelopeDisseminationDecodeErrorCode
-	EnvelopeNoSelectedEnvelopeErrorCode
-	EnvelopeDisseminationUnsupportedErrorCode
 	RequestAuthNoAuthErrorCode
 )
 

@@ -128,15 +128,5 @@ func ConsensusNotStarted() tests.SpecTest {
 		}...)
 	}
 
-	multiSpecTest.Tests = append(multiSpecTest.Tests, &StartNewRunnerDutySpecTest{
-		Name:      "envelope proposer",
-		Runner:    startRunner(testingutils.EnvelopeProposerRunner(ks), testingutils.TestingEnvelopeProposerDuty()),
-		Duty:      testingutils.TestingEnvelopeProposerNextEpochDuty(),
-		Threshold: ks.Threshold,
-		OutputMessages: []*types.PartialSignatureMessages{
-			testingutils.PreConsensusEnvelopeNextEpochMsg(ks.Shares[1], 1), // disseminates and signs when starting a new duty
-		},
-	})
-
 	return multiSpecTest
 }

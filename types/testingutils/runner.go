@@ -12,22 +12,6 @@ import (
 
 var TestingHighestDecidedSlot = phase0.Slot(0)
 
-// TestingProposedBlock derives the §4→§6 linkage facts for a slot from the fixture Gloas block, as the
-// proposer runner would record them: the block root, parent root, and the bid's execution-requests root
-// (SIP #94 §6).
-var TestingProposedBlock = func(slot phase0.Slot) ssv.ProposedBlock {
-	block := gloas.TestingBeaconBlock(slot)
-	root, err := block.HashTreeRoot()
-	if err != nil {
-		panic(err.Error())
-	}
-	return ssv.ProposedBlock{
-		BlockRoot:             root,
-		ParentRoot:            block.ParentRoot,
-		ExecutionRequestsRoot: block.Body.SignedExecutionPayloadBid.Message.ExecutionRequestsRoot,
-	}
-}
-
 // committeeVoteValueCheckF routes a committee consensus value to the fork-appropriate value check:
 // GloasBeaconVoteValueCheckF at Gloas slots (SIP #94 §2), BeaconVoteValueCheckF before. The fork must
 // be decided by the duty's slot, not by the value's shape — otherwise a pre-Gloas BeaconVote proposed
@@ -136,10 +120,6 @@ var ProposerPreferencesRunnerWithBuilderEntries = func(keySet *TestKeySet) ssv.R
 	return runner
 }
 
-var EnvelopeProposerRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleEnvelopeProposer, keySet)
-}
-
 var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(UnknownDutyType, keySet)
 }
@@ -165,14 +145,6 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 	var contr *qbft.Controller
 	// Assigned once the runner exists; the committee value check reads the running duty through it.
 	var valCheckRunner ssv.Runner
-	// The §4→§6 linkage store, shared between the envelope runner and its value check; pre-seeded with
-	// the fixture block roots at the Gloas duty slots, as if the proposer had decided them (SIP #94 §6).
-	envelopeRoots := ssv.ProposedBlocks{
-		TestingDutySlotGloas:          TestingProposedBlock(TestingDutySlotGloas),
-		TestingDutySlotGloasNextEpoch: TestingProposedBlock(TestingDutySlotGloasNextEpoch),
-		TestingEnvelopeNonBuilderSlot: TestingProposedBlock(TestingEnvelopeNonBuilderSlot),
-	}
-
 	km := NewTestingKeyManager()
 
 	if len(shareMap) > 0 {
@@ -302,16 +274,6 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 			types.DefaultGasLimit,
 			nil, // builder entries: none by default; the §5 auth-round tests set the exported BuilderEntries field
 		)
-	case types.RoleEnvelopeProposer:
-		runner, err = ssv.NewEnvelopeProposerRunner(
-			types.BeaconTestNetwork,
-			shareMap,
-			beacon,
-			net,
-			km,
-			opSigner,
-			envelopeRoots,
-		)
 	case types.RoleAggregatorCommittee:
 		runner, err = ssv.NewAggregatorCommitteeRunner(
 			types.BeaconTestNetwork,
@@ -357,14 +319,6 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	km := NewTestingKeyManager()
 	// Assigned once the runner exists; the committee value check reads the running duty through it.
 	var valCheckRunner ssv.Runner
-	// The §4→§6 linkage store, shared between the envelope runner and its value check; pre-seeded with
-	// the fixture block roots at the Gloas duty slots, as if the proposer had decided them (SIP #94 §6).
-	envelopeRoots := ssv.ProposedBlocks{
-		TestingDutySlotGloas:          TestingProposedBlock(TestingDutySlotGloas),
-		TestingDutySlotGloasNextEpoch: TestingProposedBlock(TestingDutySlotGloasNextEpoch),
-		TestingEnvelopeNonBuilderSlot: TestingProposedBlock(TestingEnvelopeNonBuilderSlot),
-	}
-
 	// Identifier
 	var identifier types.MessageID
 	if role == types.RoleCommittee || role == types.RoleAggregatorCommittee {
@@ -480,16 +434,6 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			opSigner,
 			types.DefaultGasLimit,
 			nil, // builder entries: none by default; the §5 auth-round tests set the exported BuilderEntries field
-		)
-	case types.RoleEnvelopeProposer:
-		runner, err = ssv.NewEnvelopeProposerRunner(
-			types.BeaconTestNetwork,
-			shareMap,
-			NewTestingBeaconNode(),
-			net,
-			km,
-			opSigner,
-			envelopeRoots,
 		)
 	case types.RoleAggregatorCommittee:
 		runner, err = ssv.NewAggregatorCommitteeRunner(

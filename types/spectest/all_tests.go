@@ -10,7 +10,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/envelopedissemination"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/gloasbeaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/maxmsgsize"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
@@ -137,7 +136,6 @@ var AllTests = []SpecTest{
 
 	beaconvote.BeaconVoteEncoding(),
 	gloasbeaconvote.GloasBeaconVoteEncoding(),
-	envelopedissemination.EnvelopeDisseminationEncoding(),
 	payloadattestationdata.PayloadAttestationDataEncoding(),
 	payloadattestationmessage.PayloadAttestationMessageEncoding(),
 	proposerpreferences.ProposerPreferencesEncoding(),

@@ -13,7 +13,7 @@ import (
 func TestBlindedExecutionPayloadEnvelopeRoundTrip(t *testing.T) {
 	in := &BlindedExecutionPayloadEnvelope{
 		PayloadRoot:           phase0.Root{0x01},
-		ExecutionRequests:     &ExecutionRequests{},
+		ExecutionRequestsRoot: phase0.Root{0x04},
 		BuilderIndex:          BuilderIndexSelfBuild,
 		BeaconBlockRoot:       phase0.Root{0x02},
 		ParentBeaconBlockRoot: phase0.Root{0x03},
