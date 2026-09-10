@@ -55,7 +55,12 @@ func (b *BaseRunner) FallBackAndVerifyEachSignature(container *PartialSigContain
 
 func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.PartialSignatureMessages) error {
 	if !b.hasRunningDuty() {
-		return types.NewError(types.NoRunningDutyErrorCode, "no running duty")
+		// A finished Gloas proposer keeps accepting post-consensus packets while an expected §6 envelope
+		// root has not yet reached quorum (SIP #94 §4), so an envelope quorum reached only after the block's
+		// still publishes the reveal; every other finished duty (and a never-started one) rejects.
+		if p, ok := runner.(*ProposerRunner); !ok || !p.awaitingEnvelope() {
+			return types.NewError(types.NoRunningDutyErrorCode, "no running duty")
+		}
 	}
 
 	// TODO https://github.com/ssvlabs/ssv-spec/issues/142 need to fix with this issue solution instead.
