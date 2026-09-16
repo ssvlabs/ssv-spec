@@ -168,15 +168,22 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 	cd := decidedValue.(*types.ProposerConsensusData)
 	duty := r.BaseRunner.State.StartingDuty.(*types.ValidatorDuty)
 
+	// QBFT binds the decided *message* to the running instance height, but not the value's own Duty.Slot,
+	// so without this a leader could get a value for another slot decided and make operators sign a block
+	// for a duty they are not running (SIP #94 §4). Honest values carry the running slot and never trip it.
+	if cd.Duty.Slot != duty.Slot {
+		return types.NewError(types.ProposerDecidedSlotMismatchErrorCode, "decided value duty slot does not match running duty slot")
+	}
+
 	// Post-consensus entries: the block root under DomainProposer always, and — on the Gloas self-build
 	// path — the §6 blinded-envelope root under DomainBeaconBuilder, riding the same packet (SIP #94 §4).
 	var entries []*types.PartialSignatureMessage
-	if versionForSlot(r.beacon, cd.Duty.Slot) >= gloas.DataVersionGloas {
+	if versionForSlot(r.beacon, duty.Slot) >= gloas.DataVersionGloas {
 		proposalData, err := gloas.DecodeGloasProposalData(cd.DataSSZ)
 		if err != nil {
 			return errors.Wrap(err, "could not decode Gloas proposal data from consensus data")
 		}
-		blockMsg, err := r.BaseRunner.signBeaconObject(r, duty, proposalData.Block, cd.Duty.Slot, types.DomainProposer)
+		blockMsg, err := r.BaseRunner.signBeaconObject(r, duty, proposalData.Block, duty.Slot, types.DomainProposer)
 		if err != nil {
 			return errors.Wrap(err, "could not sign Gloas block")
 		}
@@ -187,7 +194,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 			if err != nil {
 				return errors.Wrap(err, "could not derive blinded envelope")
 			}
-			envMsg, err := r.BaseRunner.signBeaconObject(r, duty, envelope, cd.Duty.Slot, types.DomainBeaconBuilder)
+			envMsg, err := r.BaseRunner.signBeaconObject(r, duty, envelope, duty.Slot, types.DomainBeaconBuilder)
 			if err != nil {
 				return errors.Wrap(err, "could not sign envelope")
 			}
@@ -198,7 +205,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 		if err != nil {
 			return errors.Wrap(err, "could not get block data")
 		}
-		blockMsg, err := r.BaseRunner.signBeaconObject(r, duty, blkToSign, cd.Duty.Slot, types.DomainProposer)
+		blockMsg, err := r.BaseRunner.signBeaconObject(r, duty, blkToSign, duty.Slot, types.DomainProposer)
 		if err != nil {
 			return errors.Wrap(err, "failed signing block")
 		}
@@ -207,7 +214,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 
 	postConsensusMsg := &types.PartialSignatureMessages{
 		Type:     types.PostConsensusPartialSig,
-		Slot:     cd.Duty.Slot,
+		Slot:     duty.Slot,
 		Messages: entries,
 	}
 
