@@ -168,11 +168,12 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 	cd := decidedValue.(*types.ProposerConsensusData)
 	duty := r.BaseRunner.State.StartingDuty.(*types.ValidatorDuty)
 
-	// QBFT binds the decided *message* to the running instance height, but not the value's own Duty.Slot,
-	// so without this a leader could get a value for another slot decided and make operators sign a block
-	// for a duty they are not running (SIP #94 §4). Honest values carry the running slot and never trip it.
+	// Backstop for the running-duty slot bind that ProposerValueCheckF enforces during consensus: an
+	// honest cluster never decides a value for another slot, but if one is decided anyway (a directly
+	// injected decided message, or >f Byzantine) this refuses to sign a block for a duty we are not
+	// running (SIP #94 §4). Honest values carry the running slot and never trip it.
 	if cd.Duty.Slot != duty.Slot {
-		return types.NewError(types.ProposerDecidedSlotMismatchErrorCode, "decided value duty slot does not match running duty slot")
+		return types.NewError(types.ProposerDutySlotMismatchErrorCode, "decided value duty slot does not match running duty slot")
 	}
 
 	// Post-consensus entries: the block root under DomainProposer always, and — on the Gloas self-build

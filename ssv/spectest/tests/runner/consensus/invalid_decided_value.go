@@ -18,11 +18,13 @@ import (
 func InvalidDecidedValue() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	consensusDataByts := func() []byte {
+		// Slot is the running duty's: the §4 running-slot bind rejects a mismatched value first, but the
+		// invalidity under test is the unknown duty role (Type 100), caught by Validate().
 		cd := &types.ProposerConsensusData{
 			Duty: types.ValidatorDuty{
 				Type:                    100,
 				PubKey:                  testingutils.TestingValidatorPubKey,
-				Slot:                    testingutils.TestingDutySlot,
+				Slot:                    testingutils.TestingDutySlotV(spec.DataVersionDeneb),
 				ValidatorIndex:          testingutils.TestingValidatorIndex,
 				CommitteeIndex:          3,
 				CommitteesAtSlot:        36,

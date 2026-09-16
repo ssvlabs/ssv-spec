@@ -149,7 +149,9 @@ func GloasBeaconVoteValueCheckF(
 }
 
 // ProposerValueCheckF validates the proposer QBFT value. dataVersion maps an epoch to its fork and
-// must describe the same chain as network — the caller owns keeping the two in agreement.
+// must describe the same chain as network — the caller owns keeping the two in agreement. runningDutySlot
+// reports the running duty's slot so a value for any other slot is rejected before consensus can commit
+// it; pass nil to skip that bind (isolated value-check tests that have no running duty).
 func ProposerValueCheckF(
 	signer types.BeaconSigner,
 	network types.BeaconNetwork,
@@ -157,11 +159,25 @@ func ProposerValueCheckF(
 	validatorIndex phase0.ValidatorIndex,
 	sharePublicKey []byte,
 	dataVersion func(phase0.Epoch) spec.DataVersion,
+	runningDutySlot func() phase0.Slot,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ProposerConsensusData{}
 		if err := cd.Decode(data); err != nil {
 			return types.WrapError(types.ProposerConsensusDataDecodeErrorCode, errors.Wrap(err, "failed decoding consensus data"))
+		}
+		// Bind the value's duty slot to the running duty (SIP #94 §4). QBFT decides whatever value the
+		// round leader proposes, so an operator that commits a value for another slot lets the instance
+		// finish on it — after which the real duty can never progress (a decided instance skips later
+		// decisions). Rejecting here keeps a wrong-slot value out of consensus, so honest operators never
+		// commit it. The ProcessConsensus guard is the post-decide backstop for anything that slips past.
+		// runningDutySlot is nil in isolated value-check tests, and reports 0 when no duty is running (a
+		// decided message reaching a runner that never started one) — both skip the bind, as there is no
+		// running slot to compare against.
+		if runningDutySlot != nil {
+			if want := runningDutySlot(); want != 0 && cd.Duty.Slot != want {
+				return types.NewError(types.ProposerDutySlotMismatchErrorCode, "consensus data duty slot does not match running duty slot")
+			}
 		}
 		// Gloas (ePBS §4): the block is opaque to the types layer — GetBlockData()/Validate() have no
 		// Gloas arm (go-eth2-client's api.VersionedProposal can't carry Gloas). Branch on the duty
