@@ -12,6 +12,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/electra"
+	eth2gloas "github.com/attestantio/go-eth2-client/spec/gloas"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 
@@ -35,18 +36,20 @@ func (c *Contributions) GetTree() (*ssz.Node, error) {
 }
 
 func (c *Contributions) HashTreeRootWith(hh ssz.HashWalker) error {
-	// taken from https://github.com/prysmaticlabs/prysm/blob/develop/encoding/ssz/htrutils.go#L97-L119
+	// *Contribution is now dynamic-ssz-generated and no longer implements fastssz's HashTreeRootWith,
+	// so append each element's HashTreeRoot() as a leaf chunk and let fastssz merkleize — same list
+	// root as the per-element composition.
 	subIndx := hh.Index()
 	num := uint64(len(*c))
 	if num > 13 {
 		return ssz.ErrIncorrectListSize
 	}
 	for _, elem := range *c {
-		{
-			if err := elem.HashTreeRootWith(hh); err != nil {
-				return err
-			}
+		root, err := elem.HashTreeRoot()
+		if err != nil {
+			return err
 		}
+		hh.Append(root[:])
 	}
 	hh.MerkleizeWithMixin(subIndx, num, 13)
 	return nil
@@ -235,7 +238,7 @@ func (cd *ProposerConsensusData) Validate() error {
 }
 
 // GetBlockData returns block data for both blinded and regular blocks
-func (cd *ProposerConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot ssz.HashRoot, err error) {
+func (cd *ProposerConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot HashRoot, err error) {
 	switch cd.Version {
 	case spec.DataVersionCapella:
 		blindedBlock := &apiv1capella.BlindedBeaconBlock{}
@@ -370,12 +373,18 @@ func (a *AggregatorCommitteeConsensusData) Validate() error {
 
 	// Ensure attestation objects are decoded correctly
 	for _, attBytes := range a.AggregatedAttestations {
-		if a.Version >= spec.DataVersionElectra {
+		switch {
+		case a.Version >= gloas.DataVersionGloas:
+			att := &eth2gloas.Attestation{}
+			if err := att.UnmarshalSSZ(attBytes); err != nil {
+				return NewError(AggCommAttestationDecodingErrorCode, "failed to unmarshal attestation")
+			}
+		case a.Version >= spec.DataVersionElectra:
 			att := &electra.Attestation{}
 			if err := att.UnmarshalSSZ(attBytes); err != nil {
 				return NewError(AggCommAttestationDecodingErrorCode, "failed to unmarshal attestation")
 			}
-		} else {
+		default:
 			att := &phase0.Attestation{}
 			if err := att.UnmarshalSSZ(attBytes); err != nil {
 				return NewError(AggCommAttestationDecodingErrorCode, "failed to unmarshal attestation")
@@ -421,7 +430,7 @@ func (a *AggregatorCommitteeConsensusData) Decode(data []byte) error {
 	return a.UnmarshalSSZ(data)
 }
 
-func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (ssz.HashRoot, error) {
+func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (HashRoot, error) {
 	switch aggProof.Version {
 	case spec.DataVersionPhase0:
 		return aggProof.Phase0, nil
@@ -438,8 +447,8 @@ func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (ss
 	case spec.DataVersionFulu:
 		return aggProof.Fulu, nil
 	case gloas.DataVersionGloas:
-		// Gloas reuses the Electra aggregate-and-proof shape (SIP #94 §2); no Gloas field on the versioned wrapper.
-		return aggProof.Electra, nil
+		// The Gloas container hashes differently from the byte-identical Electra one (SIP #94 §2).
+		return aggProof.Gloas, nil
 	default:
 		return nil, WrapError(UnknownVersionErrorCode, fmt.Errorf("unknown version %d", aggProof.Version))
 	}
@@ -498,7 +507,7 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 				panic("unhandled default case")
 			}
 
-		case spec.DataVersionElectra, spec.DataVersionFulu, gloas.DataVersionGloas:
+		case spec.DataVersionElectra, spec.DataVersionFulu:
 			agg := &electra.AggregateAndProof{
 				AggregatorIndex: aggregator.ValidatorIndex,
 				SelectionProof:  aggregator.SelectionProof,
@@ -515,13 +524,30 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 			}
 
 			switch a.Version {
-			case spec.DataVersionElectra, gloas.DataVersionGloas:
-				// Gloas reuses the Electra aggregate shape (SIP #94 §2).
+			case spec.DataVersionElectra:
 				aggregateAndProof.Electra = agg
 			case spec.DataVersionFulu:
 				aggregateAndProof.Fulu = agg
 			default:
 				panic("unhandled default case")
+			}
+
+		case gloas.DataVersionGloas:
+			// Gloas has its own container (SIP #94 §2): it serializes like Electra's, but gloas.Attestation
+			// merkleizes as a progressive container with a progressive-bitlist aggregation_bits
+			// (EIP-7688 / EIP-7916), so the aggregate-and-proof root — the aggregator's signing root —
+			// differs from Electra's.
+			att := &eth2gloas.Attestation{}
+			if err := att.UnmarshalSSZ(a.AggregatedAttestations[foundIndex]); err != nil {
+				return nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal gloas attestation: %w", err))
+			}
+			aggregateAndProof = &spec.VersionedAggregateAndProof{
+				Version: a.Version,
+				Gloas: &eth2gloas.AggregateAndProof{
+					AggregatorIndex: aggregator.ValidatorIndex,
+					SelectionProof:  aggregator.SelectionProof,
+					Aggregate:       att,
+				},
 			}
 
 		default:

@@ -1,25 +1,20 @@
 package gloas
 
 import (
+	bitfield "github.com/OffchainLabs/go-bitfield"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
-	"github.com/attestantio/go-eth2-client/spec/electra"
+	eth2gloas "github.com/attestantio/go-eth2-client/spec/gloas"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	bitfield "github.com/prysmaticlabs/go-bitfield"
 )
-
-// Regenerate with `go generate ./types/gloas/` (or `make generate-ssz`). -path is the package dir so sszgen resolves the sibling gloas
-// types the body references; --exclude-objs leaves their (already-generated) SSZ in their own files,
-// and --output collects only the body types here. Includes track go-eth2-client via `go list -m`.
-//go:generate sh -c "go run github.com/ferranbt/fastssz/sszgen --path . --include $(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/phase0,$(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/altair,$(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/capella,$(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/electra,$(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/bellatrix,$(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/deneb --objs PayloadAttestation,BeaconBlockBody,BeaconBlock,SignedBeaconBlock --exclude-objs ExecutionPayloadBid,SignedExecutionPayloadBid,PayloadAttestationData,ExecutionRequests,BuilderDepositRequest,BuilderExitRequest --output ./beacon_block_encoding.go"
 
 // PayloadAttestation is the aggregated PTC attestation the proposer includes in the block body for the
 // previous slot's payload (consensus-specs gloas) — distinct from the single-member
 // PayloadAttestationMessage SSV signs in §3. AggregationBits is a Bitvector[PTC_SIZE], PTC_SIZE = 512.
 type PayloadAttestation struct {
-	AggregationBits bitfield.Bitvector512 `ssz-size:"64"`
-	Data            *PayloadAttestationData
-	Signature       phase0.BLSSignature `ssz-size:"96"`
+	AggregationBits bitfield.Bitvector512   `dynssz-size:"PTC_SIZE/8" ssz-index:"0" ssz-size:"64"`
+	Data            *PayloadAttestationData `ssz-index:"1"`
+	Signature       phase0.BLSSignature     `ssz-index:"2"            ssz-size:"96"`
 }
 
 // BeaconBlockBody is the Gloas (ePBS) block body. Versus Electra it drops the inline execution payload,
@@ -28,20 +23,20 @@ type PayloadAttestation struct {
 // aggregate), and ParentExecutionRequests. Field order/tags match the pinned spec / go-eth2-client
 // PR #280; everything else reuses the existing fork types.
 type BeaconBlockBody struct {
-	RANDAOReveal              phase0.BLSSignature `ssz-size:"96"`
-	ETH1Data                  *phase0.ETH1Data
-	Graffiti                  [32]byte                      `ssz-size:"32"`
-	ProposerSlashings         []*phase0.ProposerSlashing    `ssz-max:"16"`
-	AttesterSlashings         []*electra.AttesterSlashing   `ssz-max:"1"`
-	Attestations              []*electra.Attestation        `ssz-max:"8"`
-	Deposits                  []*phase0.Deposit             `ssz-max:"16"`
-	VoluntaryExits            []*phase0.SignedVoluntaryExit `ssz-max:"16"`
-	SyncAggregate             *altair.SyncAggregate
-	BLSToExecutionChanges     []*capella.SignedBLSToExecutionChange `ssz-max:"16"`
-	SignedExecutionPayloadBid *SignedExecutionPayloadBid
-	PayloadAttestations       []*PayloadAttestation `ssz-max:"4"`
+	RANDAOReveal              phase0.BLSSignature                   `ssz-index:"0"  ssz-size:"96"`
+	ETH1Data                  *phase0.ETH1Data                      `ssz-index:"1"`
+	Graffiti                  [32]byte                              `ssz-index:"2"  ssz-size:"32"`
+	ProposerSlashings         []*phase0.ProposerSlashing            `ssz-index:"3"  ssz-type:"progressive-list"`
+	AttesterSlashings         []*eth2gloas.AttesterSlashing         `ssz-index:"4"  ssz-type:"progressive-list"`
+	Attestations              []*eth2gloas.Attestation              `ssz-index:"5"  ssz-type:"progressive-list"`
+	Deposits                  []*phase0.Deposit                     `ssz-index:"6"  ssz-type:"progressive-list"`
+	VoluntaryExits            []*phase0.SignedVoluntaryExit         `ssz-index:"7"  ssz-type:"progressive-list"`
+	SyncAggregate             *altair.SyncAggregate                 `ssz-index:"8"`
+	BLSToExecutionChanges     []*capella.SignedBLSToExecutionChange `ssz-index:"9"  ssz-type:"progressive-list"`
+	SignedExecutionPayloadBid *SignedExecutionPayloadBid            `ssz-index:"10"`
+	PayloadAttestations       []*PayloadAttestation                 `ssz-index:"11" ssz-type:"progressive-list"`
 	// Gloas execution requests — the EIP-8282 five-list variant, not electra's three (see execution_requests.go).
-	ParentExecutionRequests *ExecutionRequests
+	ParentExecutionRequests *ExecutionRequests `ssz-index:"12"`
 }
 
 // BeaconBlock is the Gloas (ePBS) beacon block.
@@ -69,7 +64,7 @@ func (b *SignedBeaconBlock) Decode(data []byte) error { return b.UnmarshalSSZ(da
 
 // DecodeBeaconBlock unmarshals a Gloas BeaconBlock from QBFT consensus DataSSZ. The Gloas proposer
 // path uses it in place of ProposerConsensusData.GetBlockData (which has no Gloas version); the
-// returned block doubles as the ssz.HashRoot the proposer signs.
+// returned block doubles as the types.HashRoot the proposer signs.
 func DecodeBeaconBlock(dataSSZ []byte) (*BeaconBlock, error) {
 	b := &BeaconBlock{}
 	if err := b.UnmarshalSSZ(dataSSZ); err != nil {

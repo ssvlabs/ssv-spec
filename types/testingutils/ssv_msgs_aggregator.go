@@ -3,7 +3,6 @@ package testingutils
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/ssvlabs/ssv-spec/types"
@@ -172,9 +171,9 @@ var postConsensusAggregatorMsg = func(
 		aggData = TestingWrongAggregateAndProofV(version, validatorIndex)
 	}
 
-	signed, root, _ := signer.SignBeaconObject(aggData.(ssz.HashRoot), d, sk.GetPublicKey().Serialize(), types.DomainAggregateAndProof)
+	signed, root, _ := signer.SignBeaconObject(aggData.(types.HashRoot), d, sk.GetPublicKey().Serialize(), types.DomainAggregateAndProof)
 	if wrongBeaconSig {
-		signed, root, _ = signer.SignBeaconObject(aggData.(ssz.HashRoot), d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainAggregateAndProof)
+		signed, root, _ = signer.SignBeaconObject(aggData.(types.HashRoot), d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainAggregateAndProof)
 	}
 
 	msgs := types.PartialSignatureMessages{
