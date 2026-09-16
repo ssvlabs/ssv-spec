@@ -12,12 +12,12 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// TestProposerRejectsDecidedValueForWrongSlot covers the SIP #94 §4 duty-slot binding. QBFT binds the
-// decided message to the running instance height, but nothing binds the decided value's own Duty.Slot to
-// the running duty, so without the ProcessConsensus guard a leader could get a value for another slot
-// decided and make operators sign a block for a duty they are not running. The runner runs slot Y with an
-// instance at height Y; a decided (quorum-commit) message carrying a valid value for slot Y+1 is injected
-// at height Y, so only the value's slot is wrong and the guard must reject it.
+// TestProposerRejectsDecidedValueForWrongSlot covers the SIP #94 §4 duty-slot backstop in ProcessConsensus.
+// The value check (TestProposerValueCheckFRunningSlotBind) is the primary defense — it keeps a wrong-slot
+// value out of consensus so honest operators never commit one — but this guard is the post-decide backstop
+// for anything that slips past. A decided (quorum-commit) message carrying a valid value for slot Y+1 is
+// injected directly at the running instance's height Y (bypassing the value check), and ProcessConsensus
+// must still refuse to sign a block for a duty it is not running.
 func TestProposerRejectsDecidedValueForWrongSlot(t *testing.T) {
 	ks := testingutils.Testing4SharesSet()
 	version := gloas.DataVersionGloas
@@ -60,5 +60,5 @@ func TestProposerRejectsDecidedValueForWrongSlot(t *testing.T) {
 	require.Error(t, err)
 	var typedErr *types.Error
 	require.ErrorAs(t, err, &typedErr)
-	require.Equal(t, types.ProposerDecidedSlotMismatchErrorCode, typedErr.Code)
+	require.Equal(t, types.ProposerDutySlotMismatchErrorCode, typedErr.Code)
 }
