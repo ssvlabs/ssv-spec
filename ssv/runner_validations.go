@@ -129,16 +129,12 @@ func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val types.Encod
 }
 
 // verifyExpectedPostConsensusRoots validates a post-consensus packet against per-root domains (SIP #94
-// §4): every message root must equal an expected root computed under its own domain (an unexpected root
-// rejects the whole packet), and every required root must be present. Optional roots — the Gloas proposer's
-// §6 envelope entry — may be absent, so a block-only packet stays valid.
+// §4): every message root must equal an expected root computed under its own domain, each expected root is
+// covered at most once, and every required root must be present. An unexpected root, a duplicate, or a
+// missing required root rejects the whole packet. Optional roots — the Gloas proposer's §6 envelope entry —
+// may be absent, so a block-only packet stays valid. Matching the covered set of expected roots states
+// §4's "block plus optional envelope" directly, where a bare entry count would let a duplicate block pass.
 func (b *BaseRunner) verifyExpectedPostConsensusRoots(runner Runner, psigMsgs *types.PartialSignatureMessages, expected []PostConsensusRoot) error {
-	// More entries than expected is "too many roots" — for the Gloas proposer this is also §7's ≤2 rule
-	// (block plus the optional envelope); optional roots let the count fall below len(expected).
-	if len(psigMsgs.Messages) > len(expected) {
-		return types.NewError(types.WrongRootsCountErrorCode, "wrong expected roots count")
-	}
-
 	epoch := b.BeaconNetwork.EstimatedEpochAtSlot(b.State.StartingDuty.DutySlot())
 
 	type expectedSigningRoot struct {
@@ -146,7 +142,6 @@ func (b *BaseRunner) verifyExpectedPostConsensusRoots(runner Runner, psigMsgs *t
 		optional bool
 	}
 	signingRoots := make([]expectedSigningRoot, 0, len(expected))
-	requiredTotal := 0
 	for _, e := range expected {
 		d, err := runner.GetBeaconNode().DomainData(epoch, e.Domain)
 		if err != nil {
@@ -157,29 +152,34 @@ func (b *BaseRunner) verifyExpectedPostConsensusRoots(runner Runner, psigMsgs *t
 			return errors.Wrap(err, "could not compute ETH signing root")
 		}
 		signingRoots = append(signingRoots, expectedSigningRoot{root: r, optional: e.Optional})
-		if !e.Optional {
-			requiredTotal++
-		}
 	}
 
-	requiredCovered := make(map[[32]byte]struct{})
+	// Match each message to an expected root, covering each at most once: an unexpected root, or a second
+	// entry for an already-covered one, rejects the packet.
+	covered := make(map[[32]byte]struct{})
 	for _, msg := range psigMsgs.Messages {
 		matched := false
 		for _, sr := range signingRoots {
-			if sr.root == msg.SigningRoot {
-				matched = true
-				if !sr.optional {
-					requiredCovered[sr.root] = struct{}{}
-				}
-				break
+			if sr.root != msg.SigningRoot {
+				continue
 			}
+			if _, dup := covered[sr.root]; dup {
+				return types.NewError(types.WrongRootsCountErrorCode, "duplicate expected signing root")
+			}
+			covered[sr.root] = struct{}{}
+			matched = true
+			break
 		}
 		if !matched {
 			return types.NewError(types.WrongSigningRootErrorCode, "unexpected signing root")
 		}
 	}
-	if len(requiredCovered) != requiredTotal {
-		return types.NewError(types.WrongRootsCountErrorCode, "missing required signing root")
+
+	// Every required root must be covered; optional roots (the §6 envelope) may be absent.
+	for _, sr := range signingRoots {
+		if _, ok := covered[sr.root]; !sr.optional && !ok {
+			return types.NewError(types.WrongRootsCountErrorCode, "missing required signing root")
+		}
 	}
 	return nil
 }

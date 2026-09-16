@@ -19,6 +19,13 @@ type ProposerRunner struct {
 	// produceBlockV4 response (SIP #94 §6). It is what lets the operator publish the §6 reveal when it
 	// turns out to be the builder operator — its BeaconBlockRoot equals the decided block root. Nil
 	// pre-Gloas, on an external bid, and until the Gloas produce in ProcessPreConsensus.
+	//
+	// Deliberately unexported: being the builder operator is a local, non-consensus property, so it stays
+	// out of the JSON post-state root the spec vectors compare — unlike the other runners' per-duty state
+	// (PayloadAttestationData, ProposerPreferences, BuilderRequestAuths), which is agreed and exported. A
+	// builder and a non-builder therefore finish a §6 self-build duty with identical post-state; the
+	// publish/don't-publish decision shows only in the beacon broadcast, covered by the runner tests
+	// (full-flow builder publish, seeded non-builder no-publish) rather than a state-comparison vector.
 	producedEnvelope *gloas.BlindedExecutionPayloadEnvelope
 
 	beacon         BeaconNode

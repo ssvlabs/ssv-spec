@@ -125,8 +125,12 @@ func (r *PTCAttesterRunner) ProcessPostConsensus(signedMsg *types.PartialSignatu
 
 func (r *PTCAttesterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	// Peer partials validate against the operator's own frozen observation (honest convergence): a
-	// diverging peer's root fails the expected-root check, and with no observation — the operator
-	// abstained or has not executed the duty — every peer message is rejected.
+	// diverging peer's root fails the expected-root check (WrongSigningRootErrorCode). With no observation
+	// — the operator abstained (its beacon node saw no block for the slot) or has not executed the duty —
+	// there is no reference to judge peers against, so every peer partial gets PTCAttesterNoObservation.
+	// That is an honest divergence ("my beacon node didn't see the block and theirs did"), not a peer
+	// fault, so it is meant to map to IGNORE rather than REJECT — kept distinct from a genuinely wrong
+	// root. The exact §3/§7 classification is pending on SIP #94.
 	if r.PayloadAttestationData == nil {
 		return nil, types.DomainError, types.NewError(types.PTCAttesterNoObservationErrorCode, "no frozen payload attestation data")
 	}
