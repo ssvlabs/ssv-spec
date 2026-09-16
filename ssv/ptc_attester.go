@@ -61,9 +61,6 @@ func NewPTCAttesterRunner(
 }
 
 func (r *PTCAttesterRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
-	// Clear any prior observation; executeDuty re-freezes it only if this operator attests, so an
-	// abstained or not-yet-executed duty stays nil.
-	r.PayloadAttestationData = nil
 	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty.(*types.ValidatorDuty), quorum)
 }
 
@@ -148,6 +145,11 @@ func (r *PTCAttesterRunner) expectedPostConsensusRootsAndDomains() ([]PostConsen
 //  2. freeze the observation, sign it under DomainPTCAttester and broadcast the partial signature
 //  3. once a quorum of operators converged on the same data, reconstruct and submit the message
 func (r *PTCAttesterRunner) executeDuty(duty types.Duty) error {
+	// Clear the prior observation here — after StartNewDuty's ShouldProcessNonBeaconDuty accepted the duty,
+	// not before it — so a rejected duplicate/past duty can no longer erase a still-running duty's frozen
+	// observation. It is re-frozen below only if this operator attests, so an abstained duty stays nil.
+	r.PayloadAttestationData = nil
+
 	slot := duty.DutySlot()
 
 	data, err := r.beacon.GetPayloadAttestationData(slot)
@@ -155,8 +157,8 @@ func (r *PTCAttesterRunner) executeDuty(duty types.Duty) error {
 		return errors.Wrap(err, "failed to get payload attestation data")
 	}
 	if data.BeaconBlockRoot == (phase0.Root{}) {
-		// Abstain: the duty stays running with nothing frozen, so incoming peer partials are
-		// rejected; a re-triggered duty re-observes from scratch (StartNewDuty clears the freeze).
+		// Abstain: the duty stays running with nothing frozen, so incoming peer partials are rejected;
+		// a re-triggered duty re-observes from scratch via the clear above.
 		return nil
 	}
 
