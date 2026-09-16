@@ -262,7 +262,10 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 	if err := cd.Decode(r.GetState().DecidedValue); err != nil {
 		return errors.Wrap(err, "could not create consensus data")
 	}
-	isGloas := versionForSlot(r.beacon, cd.Duty.Slot) >= gloas.DataVersionGloas
+	// Fork and epoch come from the running duty's slot, not the decided value's own Duty.Slot (the two
+	// agree once ProcessConsensus binds them); cd is used only for the block and envelope content.
+	dutySlot := r.BaseRunner.State.StartingDuty.DutySlot()
+	isGloas := versionForSlot(r.beacon, dutySlot) >= gloas.DataVersionGloas
 
 	// Classify each quorum root by its expected signing root: the block root submits the block, the §6
 	// envelope root publishes the reveal. They reconstruct independently (SIP #94 §4/§6).
@@ -270,7 +273,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 	if err != nil {
 		return err
 	}
-	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(cd.Duty.Slot)
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(dutySlot)
 	blockSigningRoot, envelopeSigningRoot, err := r.classifyPostConsensusSigningRoots(expected, epoch)
 	if err != nil {
 		return err
@@ -441,7 +444,9 @@ func (r *ProposerRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensus
 		return nil, errors.Wrap(err, "could not create consensus data")
 	}
 
-	if versionForSlot(r.beacon, cd.Duty.Slot) >= gloas.DataVersionGloas {
+	// Fork comes from the running duty's slot, not the decided value's own Duty.Slot; cd supplies only the
+	// block and envelope content the roots are derived from.
+	if versionForSlot(r.beacon, r.BaseRunner.State.StartingDuty.DutySlot()) >= gloas.DataVersionGloas {
 		proposalData, err := gloas.DecodeGloasProposalData(cd.DataSSZ)
 		if err != nil {
 			return nil, errors.Wrap(err, "could not decode Gloas proposal data from consensus data")
