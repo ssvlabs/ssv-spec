@@ -94,12 +94,15 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 
 		return b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot())
 	default:
+		// Decode still runs to reject a malformed stored value, but the slot to validate partials against
+		// is the running duty's — as in the committee/aggregator cases above — not the decided value's own
+		// Duty.Slot, so the check never depends on trusting the decided value's contents.
 		decidedValue := &types.ProposerConsensusData{}
 		if err := decidedValue.Decode(decidedValueBytes); err != nil {
 			return errors.Wrap(err, "failed to parse decided value to ProposerConsensusData")
 		}
 
-		if err := b.validatePartialSigMsgForSlot(psigMsgs, decidedValue.Duty.Slot); err != nil {
+		if err := b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot()); err != nil {
 			return err
 		}
 
