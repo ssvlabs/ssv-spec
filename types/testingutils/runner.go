@@ -57,6 +57,24 @@ func committeeDutySlotF(runner *ssv.Runner) func() phase0.Slot {
 	}
 }
 
+// proposerDutySlotF resolves the running duty's slot for the proposer value check's running-slot bind
+// (ProposerValueCheckF). It reports 0 — "no running duty" — when the runner has not started one, so the
+// bind is skipped rather than compared against a stand-in slot; a started proposal duty always has a
+// non-zero (post-genesis) slot. A missing runner means the construction site never back-patched the
+// reference, a wiring bug, so it fails loudly rather than silently skipping the bind on every value.
+func proposerDutySlotF(runner *ssv.Runner) func() phase0.Slot {
+	return func() phase0.Slot {
+		if runner == nil || *runner == nil {
+			panic("proposer value check has no runner: the value check was built without back-patching the runner reference")
+		}
+		state := (*runner).GetBaseRunner().State
+		if state == nil || state.StartingDuty == nil {
+			return 0
+		}
+		return state.StartingDuty.DutySlot()
+	}
+}
+
 var CommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleCommittee, keySet)
 }
@@ -191,7 +209,8 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 				sharePubKeys, TestBeaconVote.Source.Epoch, TestBeaconVote.Target.Epoch)
 		case types.RoleProposer:
 			valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
-				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey, VersionByEpoch)
+				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey, VersionByEpoch,
+				proposerDutySlotF(&valCheckRunner))
 		case types.RoleAggregatorCommittee:
 			valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
 		default:
@@ -349,7 +368,8 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			[]types.ShareValidatorPK{share.SharePubKey}, TestBeaconVote.Source.Epoch, TestBeaconVote.Target.Epoch)
 	case types.RoleProposer:
 		valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
-			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, share.SharePubKey, VersionByEpoch)
+			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, share.SharePubKey, VersionByEpoch,
+			proposerDutySlotF(&valCheckRunner))
 	case types.RoleAggregatorCommittee:
 		valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
 	default:
