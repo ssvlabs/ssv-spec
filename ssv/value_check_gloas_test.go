@@ -7,6 +7,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/stretchr/testify/require"
 
+	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/gloas"
@@ -40,7 +41,7 @@ func TestProposerValueCheckFGloas(t *testing.T) {
 	duty := testingutils.TestingProposerDutyV(gloas.DataVersionGloas)
 	valueCheck := ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
 		types.ValidatorPK(testingutils.TestingValidatorPubKey), testingutils.TestingValidatorIndex, nil,
-		testingutils.VersionByEpoch)
+		testingutils.VersionByEpoch, nil)
 
 	valid, err := (&types.ProposerConsensusData{Duty: *duty, Version: gloas.DataVersionGloas, DataSSZ: testingutils.TestingGloasProposalDataBytes(duty.Slot)}).Encode()
 	require.NoError(t, err)
@@ -67,6 +68,33 @@ func TestProposerValueCheckFGloas(t *testing.T) {
 	gloasVersionPreGloasSlot, err := (&types.ProposerConsensusData{Duty: *electraDuty, Version: gloas.DataVersionGloas, DataSSZ: testingGloasBeaconBlockSSZ(t, electraDuty.Slot)}).Encode()
 	require.NoError(t, err)
 	requireErrorCode(t, valueCheck(gloasVersionPreGloasSlot), types.QBFTValueInvalidErrorCode)
+}
+
+// TestProposerValueCheckFRunningSlotBind asserts the SIP #94 §4 running-duty slot bind: with a non-nil
+// slot provider, a value whose Duty.Slot is not the running duty's slot is rejected before any
+// fork-specific check, so a wrong-slot value never reaches consensus commit and cannot brick the duty by
+// deciding the instance on a slot the runner is not proposing. A provider reporting 0 (no running duty)
+// skips the bind, and nil (isolated value checks) skips it entirely.
+func TestProposerValueCheckFRunningSlotBind(t *testing.T) {
+	km := testingutils.NewTestingKeyManager()
+	duty := testingutils.TestingProposerDutyV(gloas.DataVersionGloas)
+	runningSlot := duty.Slot
+
+	value, err := (&types.ProposerConsensusData{Duty: *duty, Version: gloas.DataVersionGloas, DataSSZ: testingutils.TestingGloasProposalDataBytes(duty.Slot)}).Encode()
+	require.NoError(t, err)
+
+	checkFor := func(slotF func() phase0.Slot) qbft.ProposedValueCheckF {
+		return ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
+			types.ValidatorPK(testingutils.TestingValidatorPubKey), testingutils.TestingValidatorIndex, nil,
+			testingutils.VersionByEpoch, slotF)
+	}
+
+	// Bound to the running slot the value is for: passes.
+	require.NoError(t, checkFor(func() phase0.Slot { return runningSlot })(value))
+	// Bound to a different running slot: rejected before the fork-specific checks.
+	requireErrorCode(t, checkFor(func() phase0.Slot { return runningSlot + 1 })(value), types.ProposerDutySlotMismatchErrorCode)
+	// Provider reporting 0 (no running duty) skips the bind.
+	require.NoError(t, checkFor(func() phase0.Slot { return 0 })(value))
 }
 
 // testingGloasBeaconBlockSSZ returns the SSZ encoding of the shared minimal Gloas beacon block

@@ -112,7 +112,7 @@ const (
 	ProposerPreferencesNoPreferenceErrorCode
 	ValidatorRegistrationDeprecatedErrorCode
 	RequestAuthNoAuthErrorCode
-	ProposerDecidedSlotMismatchErrorCode
+	ProposerDutySlotMismatchErrorCode
 )
 
 type Error struct {
