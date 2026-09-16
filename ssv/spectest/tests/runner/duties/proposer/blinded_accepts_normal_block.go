@@ -42,9 +42,9 @@ func BlindedRunnerAcceptsNormalBlock() tests.SpecTest {
 				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 			},
-			BeaconBroadcastedRoots: []string{
+			BeaconBroadcastedRoots: testingutils.WithGloasEnvelopeBroadcast([]string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
-			},
+			}, version),
 		}
 	}
 

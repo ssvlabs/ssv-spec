@@ -1,8 +1,6 @@
 package valcheckduty
 
 import (
-	"encoding/json"
-
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
@@ -15,9 +13,12 @@ import (
 // WrongValidatorIndex tests duty.ValidatorIndex wrong
 func WrongValidatorIndex() tests.SpecTest {
 	consensusDataBytsF := func(cd *types.ProposerConsensusData) []byte {
+		b, err := cd.Encode()
+		if err != nil {
+			panic(err.Error())
+		}
 		cdCopy := types.ProposerConsensusData{}
-		b, _ := json.Marshal(cd)
-		if err := json.Unmarshal(b, &cdCopy); err != nil {
+		if err := cdCopy.Decode(b); err != nil {
 			panic(err.Error())
 		}
 		cdCopy.Duty.ValidatorIndex = testingutils.TestingWrongValidatorIndex
@@ -27,9 +28,12 @@ func WrongValidatorIndex() tests.SpecTest {
 	}
 
 	accdAggDataBytesF := func(cd *types.AggregatorCommitteeConsensusData) []byte {
+		b, err := cd.Encode()
+		if err != nil {
+			panic(err.Error())
+		}
 		cdCopy := types.AggregatorCommitteeConsensusData{}
-		b, _ := json.Marshal(cd)
-		if err := json.Unmarshal(b, &cdCopy); err != nil {
+		if err := cdCopy.Decode(b); err != nil {
 			panic(err.Error())
 		}
 		cdCopy.Aggregators[0].ValidatorIndex = testingutils.TestingWrongValidatorIndex
@@ -38,9 +42,12 @@ func WrongValidatorIndex() tests.SpecTest {
 		return ret
 	}
 	accdSCCDataBytesF := func(cd *types.AggregatorCommitteeConsensusData) []byte {
+		b, err := cd.Encode()
+		if err != nil {
+			panic(err.Error())
+		}
 		cdCopy := types.AggregatorCommitteeConsensusData{}
-		b, _ := json.Marshal(cd)
-		if err := json.Unmarshal(b, &cdCopy); err != nil {
+		if err := cdCopy.Decode(b); err != nil {
 			panic(err.Error())
 		}
 		cdCopy.Contributors[0].ValidatorIndex = testingutils.TestingWrongValidatorIndex
@@ -49,9 +56,12 @@ func WrongValidatorIndex() tests.SpecTest {
 		return ret
 	}
 	accdMixedDataBytesF := func(cd *types.AggregatorCommitteeConsensusData) []byte {
+		b, err := cd.Encode()
+		if err != nil {
+			panic(err.Error())
+		}
 		cdCopy := types.AggregatorCommitteeConsensusData{}
-		b, _ := json.Marshal(cd)
-		if err := json.Unmarshal(b, &cdCopy); err != nil {
+		if err := cdCopy.Decode(b); err != nil {
 			panic(err.Error())
 		}
 		cdCopy.Aggregators[0].ValidatorIndex = testingutils.TestingWrongValidatorIndex

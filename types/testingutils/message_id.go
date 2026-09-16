@@ -51,3 +51,13 @@ var VoluntaryExitMsgID = func() []byte {
 	ret := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), types.RoleVoluntaryExit)
 	return ret[:]
 }()
+
+var ProposerPreferencesMsgID = func() []byte {
+	ret := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), types.RoleProposerPreferences)
+	return ret[:]
+}()
+
+var PTCAttesterMsgID = func() []byte {
+	ret := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), types.RolePTCAttester)
+	return ret[:]
+}()

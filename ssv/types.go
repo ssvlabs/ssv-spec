@@ -9,6 +9,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/p2p"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // DutyRunners is a map of duty runners mapped by msg id hex.
@@ -40,6 +41,16 @@ type ProposerCalls interface {
 	GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*api.VersionedProposal, ssz.Marshaler, error)
 	// SubmitBeaconBlock submit the block to the node
 	SubmitBeaconBlock(block *api.VersionedProposal, sig phase0.BLSSignature) error
+	// GetGloasBeaconBlock returns the Gloas (ePBS) beacon block for the given slot, graffiti, and randao,
+	// plus the blinded form of its produced execution-payload envelope on the self-build path (SIP #94
+	// §4/§6). A self-build produce is BlockContents: the operator holds the envelope — hence its
+	// payload_root — from produce onward, packs payload_root into the §4 decided value, and (if it turns
+	// out to be the builder operator) publishes the reveal. An external bid win (p2p/builder-API) returns a
+	// bare block and a nil envelope, so payload_root is zero. Separate from GetBeaconBlock because
+	// api.VersionedProposal cannot carry a Gloas block.
+	GetGloasBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, *gloas.BlindedExecutionPayloadEnvelope, error)
+	// SubmitGloasBeaconBlock submits the signed Gloas (ePBS) block to the node (SIP #94 §4)
+	SubmitGloasBeaconBlock(block *gloas.BeaconBlock, sig phase0.BLSSignature) error
 }
 
 // AggregatorCalls interface has all attestation aggregator duty specific calls
@@ -99,6 +110,40 @@ type VersionCalls interface {
 	DataVersion(epoch phase0.Epoch) spec.DataVersion
 }
 
+// ProposerPreferencesCalls interface has all Gloas (ePBS) proposer-preferences duty specific calls (SIP #94 §5)
+type ProposerPreferencesCalls interface {
+	// ProposerDutiesDependentRoot returns the dependent root the epoch's proposer duties were computed
+	// against; the preference pins it so consumers can tell which duty assignment it was emitted for.
+	ProposerDutiesDependentRoot(epoch phase0.Epoch) (phase0.Root, error)
+	// SubmitProposerPreferences submits the reconstructed signed proposer preferences to the node
+	SubmitProposerPreferences(preferences *gloas.SignedProposerPreferences) error
+	// SubmitBuilderRequestAuth holds the reconstructed builder-request-auth signature for the proposal
+	// slot; the node forwards it to the builder as each entry's auth in the §4 produce body and,
+	// optionally, via POST /eth/v1/validator/builder_preferences (SIP #94 §5 builder-request-auth extension).
+	SubmitBuilderRequestAuth(auth *gloas.SignedBuilderRequestAuth) error
+}
+
+// EnvelopeCalls interface has the Gloas (ePBS) execution-payload envelope publish call (SIP #94 §6).
+// Under the post-consensus-fold model the envelope signature rides the §4 proposer post-consensus packet;
+// only publication remains a beacon-node call, made by the builder operator.
+type EnvelopeCalls interface {
+	// SubmitExecutionPayloadEnvelope publishes the reconstructed reveal (SIP #94 §6). The builder operator
+	// — the one whose own produceBlockV4 response holds the decided block and its full envelope — passes
+	// the blinded envelope plus the threshold-reconstructed signature (valid for the full envelope by
+	// root-equivalence); its beacon node forms the full SignedExecutionPayloadEnvelopeContents body and
+	// publishes to each of its nodes.
+	SubmitExecutionPayloadEnvelope(envelope *gloas.BlindedExecutionPayloadEnvelope, signature phase0.BLSSignature) error
+}
+
+// PTCCalls interface has all Gloas (ePBS) Payload Timeliness Committee duty specific calls (SIP #94 §3)
+type PTCCalls interface {
+	// GetPayloadAttestationData returns the slot's payload attestation data as observed by the local
+	// beacon node; a zero BeaconBlockRoot signals no block was seen for the slot — the abstain trigger.
+	GetPayloadAttestationData(slot phase0.Slot) (*gloas.PayloadAttestationData, error)
+	// SubmitPayloadAttestation submits the reconstructed payload attestation message to the node
+	SubmitPayloadAttestation(msg *gloas.PayloadAttestationMessage) error
+}
+
 type BeaconNode interface {
 	// GetBeaconNetwork returns the beacon network the node is on
 	GetBeaconNetwork() types.BeaconNetwork
@@ -109,6 +154,9 @@ type BeaconNode interface {
 	SyncCommitteeContributionCalls
 	ValidatorRegistrationCalls
 	VoluntaryExitCalls
+	PTCCalls
+	ProposerPreferencesCalls
+	EnvelopeCalls
 	DomainCalls
 	VersionCalls
 }

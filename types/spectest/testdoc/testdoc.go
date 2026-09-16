@@ -12,6 +12,48 @@ const BeaconVoteEncodingSpecTestType = "Beacon vote encoding: validation of beac
 // Documentation for BeaconVoteEncodingSpecTest
 const BeaconVoteEncodingTestDoc = "Test encoding and decoding of BeaconVote with hash tree root verification"
 
+// GloasBeaconVoteEncodingSpecTest
+const GloasBeaconVoteEncodingSpecTestType = "Gloas beacon vote encoding: validation of Gloas beacon vote encoding"
+
+// Documentation for GloasBeaconVoteEncodingSpecTest
+const GloasBeaconVoteEncodingTestDoc = "Test encoding and decoding of GloasBeaconVote (SIP #94 §2) with hash tree root verification"
+
+// PayloadAttestationDataEncodingSpecTest
+const PayloadAttestationDataEncodingSpecTestType = "Payload attestation data encoding: validation of payload attestation data encoding"
+
+// Documentation for PayloadAttestationDataEncodingSpecTest
+const PayloadAttestationDataEncodingTestDoc = "Test encoding and decoding of PayloadAttestationData (SIP #94 §3) with hash tree root verification"
+
+// PayloadAttestationMessageEncodingSpecTest
+const PayloadAttestationMessageEncodingSpecTestType = "Payload attestation message encoding: validation of payload attestation message encoding"
+
+// Documentation for PayloadAttestationMessageEncodingSpecTest
+const PayloadAttestationMessageEncodingTestDoc = "Test encoding and decoding of PayloadAttestationMessage (SIP #94 §3) with hash tree root verification"
+
+// ProposerPreferencesEncodingSpecTest
+const ProposerPreferencesEncodingSpecTestType = "Proposer preferences encoding: validation of proposer preferences encoding"
+
+// Documentation for ProposerPreferencesEncodingSpecTest
+const ProposerPreferencesEncodingTestDoc = "Test encoding and decoding of ProposerPreferences (SIP #94 §5) with hash tree root verification"
+
+// SignedProposerPreferencesEncodingSpecTest
+const SignedProposerPreferencesEncodingSpecTestType = "Signed proposer preferences encoding: validation of signed proposer preferences encoding"
+
+// Documentation for SignedProposerPreferencesEncodingSpecTest
+const SignedProposerPreferencesEncodingTestDoc = "Test encoding and decoding of SignedProposerPreferences (SIP #94 §5) with hash tree root verification"
+
+// BuilderRequestAuthEncodingSpecTest
+const BuilderRequestAuthEncodingSpecTestType = "Builder request auth encoding: validation of builder request auth encoding"
+
+// Documentation for BuilderRequestAuthEncodingSpecTest
+const BuilderRequestAuthEncodingTestDoc = "Test encoding and decoding of BuilderRequestAuth (SIP #94 §5) with hash tree root verification"
+
+// SignedBuilderRequestAuthEncodingSpecTest
+const SignedBuilderRequestAuthEncodingSpecTestType = "Signed builder request auth encoding: validation of signed builder request auth encoding"
+
+// Documentation for SignedBuilderRequestAuthEncodingSpecTest
+const SignedBuilderRequestAuthEncodingTestDoc = "Test encoding and decoding of SignedBuilderRequestAuth (SIP #94 §5) with hash tree root verification"
+
 // CommitteeMemberTest
 const CommitteeMemberTestType = "Committee member: validation of committee member quorum requirements"
 

@@ -10,6 +10,7 @@ import (
 	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -215,7 +216,8 @@ var TestingSignedAggregatorCommitteeBeaconObjectSSZRoot = func(duty *types.Aggre
 		// Get the appropriate aggregate and proof object
 		var signingRoot ssz.HashRoot
 		switch version {
-		case spec.DataVersionElectra:
+		case spec.DataVersionElectra, gloas.DataVersionGloas:
+			// Gloas reuses the Electra aggregate shape (SIP #94 §2).
 			signingRoot = aggregateAndProof.Electra
 		case spec.DataVersionFulu:
 			signingRoot = aggregateAndProof.Fulu
@@ -244,7 +246,8 @@ var TestingSignedAggregatorCommitteeBeaconObjectSSZRoot = func(duty *types.Aggre
 		// Create signed aggregate and proof
 		var signedAgg ssz.HashRoot
 		switch version {
-		case spec.DataVersionElectra:
+		case spec.DataVersionElectra, gloas.DataVersionGloas:
+			// Gloas reuses the Electra aggregate shape (SIP #94 §2).
 			signedAgg = &electra.SignedAggregateAndProof{
 				Message:   aggregateAndProof.Electra,
 				Signature: blsSig,

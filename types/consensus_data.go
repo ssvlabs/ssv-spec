@@ -14,6 +14,8 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
+
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 type Contribution struct {
@@ -128,6 +130,50 @@ func (b *BeaconVote) Decode(data []byte) error {
 func (b *BeaconVote) Validate() error {
 	if b == nil {
 		return NewError(BeaconVoteNilCheckpointErrorCode, "nil beacon vote")
+	}
+	if b.Source == nil || b.Target == nil {
+		return NewError(BeaconVoteNilCheckpointErrorCode, "nil source or target checkpoint")
+	}
+	if b.Source.Epoch >= b.Target.Epoch {
+		return NewError(AttestationSourceNotLessThanTargetErrorCode, "attestation data source >= target")
+	}
+	return nil
+}
+
+// GloasBeaconVote is the Gloas (ePBS) variant of BeaconVote — the value the CommitteeRunner agrees on
+// for Gloas slots (SIP #94 §2). It mirrors BeaconVote (BlockRoot + Source/Target checkpoints, 112 bytes)
+// and appends the BN-supplied AttestationData.Index for a fixed 120-byte SSZ encoding. In Gloas the
+// index is fork-choice-dependent (0 = payload EMPTY, 1 = FULL for non-same-slot attestations; 0 for
+// same-slot) and part of the signed attestation root, so it must travel through consensus rather than be
+// reconstructed locally. A distinct type (rather than extending BeaconVote in place) keeps pre-Gloas
+// wire bytes unchanged and makes the two forms mutually-rejecting on length: the 120B-vs-112B difference
+// fails a cross-fork decode cleanly.
+//
+// After the Gloas fork has activated on all networks and pre-Gloas slots are unreachable, a follow-up
+// SIP can retire BeaconVote and rename GloasBeaconVote back to BeaconVote.
+type GloasBeaconVote struct {
+	BlockRoot            phase0.Root `ssz-size:"32"`
+	Source               *phase0.Checkpoint
+	Target               *phase0.Checkpoint
+	AttestationDataIndex phase0.CommitteeIndex // copied from AttestationData.Index (0 or 1)
+}
+
+// Encode the GloasBeaconVote object
+func (b *GloasBeaconVote) Encode() ([]byte, error) {
+	return b.MarshalSSZ()
+}
+
+// Decode the GloasBeaconVote object
+func (b *GloasBeaconVote) Decode(data []byte) error {
+	return b.UnmarshalSSZ(data)
+}
+
+// Validate checks the following rules:
+// - Source and Target checkpoints must be non-nil
+// - Source.Epoch must be strictly less than Target.Epoch
+func (b *GloasBeaconVote) Validate() error {
+	if b == nil {
+		return NewError(BeaconVoteNilCheckpointErrorCode, "nil gloas beacon vote")
 	}
 	if b.Source == nil || b.Target == nil {
 		return NewError(BeaconVoteNilCheckpointErrorCode, "nil source or target checkpoint")
@@ -391,6 +437,9 @@ func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (ss
 		return aggProof.Electra, nil
 	case spec.DataVersionFulu:
 		return aggProof.Fulu, nil
+	case gloas.DataVersionGloas:
+		// Gloas reuses the Electra aggregate-and-proof shape (SIP #94 §2); no Gloas field on the versioned wrapper.
+		return aggProof.Electra, nil
 	default:
 		return nil, WrapError(UnknownVersionErrorCode, fmt.Errorf("unknown version %d", aggProof.Version))
 	}
@@ -449,7 +498,7 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 				panic("unhandled default case")
 			}
 
-		case spec.DataVersionElectra, spec.DataVersionFulu:
+		case spec.DataVersionElectra, spec.DataVersionFulu, gloas.DataVersionGloas:
 			agg := &electra.AggregateAndProof{
 				AggregatorIndex: aggregator.ValidatorIndex,
 				SelectionProof:  aggregator.SelectionProof,
@@ -466,7 +515,8 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 			}
 
 			switch a.Version {
-			case spec.DataVersionElectra:
+			case spec.DataVersionElectra, gloas.DataVersionGloas:
+				// Gloas reuses the Electra aggregate shape (SIP #94 §2).
 				aggregateAndProof.Electra = agg
 			case spec.DataVersionFulu:
 				aggregateAndProof.Fulu = agg
