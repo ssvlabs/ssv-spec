@@ -24,7 +24,9 @@ import (
 type ProposerPreferencesRunner struct {
 	BaseRunner *BaseRunner
 
-	// BySlot holds one sub-runner per concurrently-active proposal slot.
+	// BySlot holds one sub-runner per concurrently-active proposal slot. Entries are never removed here:
+	// the reference spec models the protocol, not the lifecycle, so bounding this map (and closing each
+	// slot's §5/§7 acceptance window) is a node-side concern — it grows with the lookahead otherwise.
 	BySlot map[phase0.Slot]*ProposerPreferencesSlotRunner
 
 	// BuilderEntries is the cluster-configured §5 builder-request-auth entry set (static config; SIP #94
@@ -450,7 +452,10 @@ func (r *ProposerPreferencesSlotRunner) processRequestAuth(signedMsg *types.Part
 // baseRequestAuthProcessing validates a RequestAuthPartialSig against the frozen auth roots under
 // DomainBuilderRequestAuth and adds it to the pre-consensus container (per-root quorum). It deliberately
 // skips the running-duty check the preference round uses: the auth round keeps collecting after the
-// preference round finishes (SIP #94 §5 — neither gates the other).
+// preference round finishes (SIP #94 §5 — neither gates the other). It does not enforce the other end of
+// the window — §5 closes collection at the proposal slot and §7 gives the role a 2-slot lateness TTL — so a
+// past slot's sub-runner keeps accepting auth partials indefinitely; closing that window (and pruning the
+// slot's BySlot entry) is a node-side lifecycle concern, like the other unbounded per-slot state here.
 func (r *ProposerPreferencesSlotRunner) baseRequestAuthProcessing(signedMsg *types.PartialSignatureMessages) (bool, [][32]byte, error) {
 	if r.BaseRunner.State == nil {
 		return false, nil, types.NewError(types.NoRunningDutyErrorCode, "no running duty")
