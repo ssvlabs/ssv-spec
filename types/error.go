@@ -115,6 +115,7 @@ const (
 	ValidatorRegistrationDeprecatedErrorCode
 	RequestAuthNoAuthErrorCode
 	ProposerDutySlotMismatchErrorCode
+	PTCAttesterWrongSlotErrorCode
 )
 
 type Error struct {

@@ -35,6 +35,6 @@ type ExecutionRequests struct {
 	Deposits        []*electra.DepositRequest       `ssz-max:"8192"`
 	Withdrawals     []*electra.WithdrawalRequest    `ssz-max:"16"`
 	Consolidations  []*electra.ConsolidationRequest `ssz-max:"2"`
-	BuilderDeposits []*BuilderDepositRequest        `ssz-max:"256"`
+	BuilderDeposits []*BuilderDepositRequest        `ssz-max:"64"`
 	BuilderExits    []*BuilderExitRequest           `ssz-max:"16"`
 }
