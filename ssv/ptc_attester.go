@@ -161,6 +161,12 @@ func (r *PTCAttesterRunner) executeDuty(duty types.Duty) error {
 		// a re-triggered duty re-observes from scratch via the clear above.
 		return nil
 	}
+	// SIP #94 §3 pins the observation's slot to the duty's. A BN answering with a different slot would
+	// otherwise be signed under the duty slot's domain and broadcast in a duty-slot packet over data for
+	// another slot; reject the mismatch rather than relabel it (a correct BN never trips this).
+	if data.Slot != slot {
+		return types.NewError(types.PTCAttesterWrongSlotErrorCode, "payload attestation data slot does not match duty slot")
+	}
 
 	r.PayloadAttestationData = data
 
