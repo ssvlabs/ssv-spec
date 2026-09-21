@@ -268,59 +268,98 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 	dutySlot := r.BaseRunner.State.StartingDuty.DutySlot()
 	isGloas := versionForSlot(r.beacon, dutySlot) >= gloas.DataVersionGloas
 
-	// Classify each quorum root by its expected signing root: the block root submits the block, the §6
-	// envelope root publishes the reveal. They reconstruct independently (SIP #94 §4/§6).
-	expected, err := r.expectedPostConsensusRootsAndDomains()
+	expectedRoots, err := r.expectedPostConsensusRootsAndDomains()
 	if err != nil {
 		return err
 	}
 	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(dutySlot)
-	blockSigningRoot, envelopeSigningRoot, err := r.classifyPostConsensusSigningRoots(expected, epoch)
+	blockSigningRoot, envelopeSigningRoot, err := r.classifyPostConsensusSigningRoots(expectedRoots, epoch)
 	if err != nil {
 		return err
 	}
 
-	for _, root := range roots {
-		sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey[:], r.GetShare().ValidatorIndex)
-		if err != nil {
-			// If the reconstructed signature verification failed, fall back to verifying each partial signature
-			r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PostConsensusContainer, root,
-				r.GetShare().Committee, r.GetShare().ValidatorIndex)
-			return errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
+	crossedQuorum := func(root [32]byte) bool {
+		for _, r := range roots {
+			if r == root {
+				return true
+			}
 		}
-		specSig := phase0.BLSSignature{}
-		copy(specSig[:], sig)
+		return false
+	}
 
-		switch {
-		case !isGloas:
-			vBlk, _, err := cd.GetBlockData()
-			if err != nil {
-				return errors.Wrap(err, "could not get block")
-			}
-			if err := r.GetBeaconNode().SubmitBeaconBlock(vBlk, specSig); err != nil {
-				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed Beacon block")
-			}
-			r.GetState().Finished = true
-		case root == blockSigningRoot:
-			proposalData, err := gloas.DecodeGloasProposalData(cd.DataSSZ)
-			if err != nil {
-				return errors.Wrap(err, "could not decode Gloas proposal data from consensus data")
-			}
-			if err := r.GetBeaconNode().SubmitGloasBeaconBlock(proposalData.Block, specSig); err != nil {
-				return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed Gloas block")
-			}
-			// The block root is the required entry, so its quorum finalizes the duty. The optional §6
-			// envelope root reconstructs independently and may complete in a later packet —
-			// ValidatePostConsensusMsg keeps admitting packets while awaitingEnvelope() holds, so the reveal
-			// is not lost (SIP #94 §4).
-			r.GetState().Finished = true
-		case root == envelopeSigningRoot:
-			if err := r.publishEnvelope(cd, specSig); err != nil {
-				return err
-			}
+	// A Gloas self-build packet carries two roots (block + optional §6 envelope) that reconstruct
+	// independently, so each is handled on its own: a failure on one must not abort the other, and a
+	// bad share dropped by the fallback re-crosses in a later packet. The block (required) is handled
+	// first regardless of packet order — it finalizes the duty, and a BN ignores an envelope whose block
+	// it has not seen (SIP #94 §4/§6). At most one of the two runs-and-fails per packet (the envelope
+	// only runs once the block is submitted), so returning either error loses nothing.
+	var blockErr, envelopeErr error
+	if crossedQuorum(blockSigningRoot) {
+		blockErr = r.submitDecidedBlock(cd, blockSigningRoot, isGloas)
+	}
+	// The optional §6 reveal publishes once the block is submitted and the envelope is at quorum. Gated on
+	// HasQuorum (not a first crossing) so an envelope quorum reached before the block is not lost;
+	// awaitingEnvelope() stops admitting packets once it is at quorum, so this publishes exactly once.
+	if isGloas && envelopeSigningRoot != ([32]byte{}) && r.GetState().Finished &&
+		r.GetState().PostConsensusContainer.HasQuorum(r.GetShare().ValidatorIndex, envelopeSigningRoot) {
+		envelopeErr = r.publishDecidedEnvelope(cd, envelopeSigningRoot)
+	}
+	if blockErr != nil {
+		return blockErr
+	}
+	return envelopeErr
+}
+
+// reconstructPostConsensusSig reconstructs the threshold signature over root from the post-consensus
+// container. On failure it falls back to verifying each partial and removing the invalid ones, so the
+// root can re-cross quorum in a later packet once the offending share is gone.
+func (r *ProposerRunner) reconstructPostConsensusSig(root [32]byte) (phase0.BLSSignature, error) {
+	sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey[:], r.GetShare().ValidatorIndex)
+	if err != nil {
+		r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PostConsensusContainer, root,
+			r.GetShare().Committee, r.GetShare().ValidatorIndex)
+		return phase0.BLSSignature{}, errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
+	}
+	var specSig phase0.BLSSignature
+	copy(specSig[:], sig)
+	return specSig, nil
+}
+
+// submitDecidedBlock reconstructs the block signature and submits the decided block, finalizing the duty.
+func (r *ProposerRunner) submitDecidedBlock(cd *types.ProposerConsensusData, root [32]byte, isGloas bool) error {
+	sig, err := r.reconstructPostConsensusSig(root)
+	if err != nil {
+		return err
+	}
+	if isGloas {
+		proposalData, err := gloas.DecodeGloasProposalData(cd.DataSSZ)
+		if err != nil {
+			return errors.Wrap(err, "could not decode Gloas proposal data from consensus data")
+		}
+		if err := r.GetBeaconNode().SubmitGloasBeaconBlock(proposalData.Block, sig); err != nil {
+			return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed Gloas block")
+		}
+	} else {
+		vBlk, _, err := cd.GetBlockData()
+		if err != nil {
+			return errors.Wrap(err, "could not get block")
+		}
+		if err := r.GetBeaconNode().SubmitBeaconBlock(vBlk, sig); err != nil {
+			return errors.Wrap(err, "could not submit to Beacon chain reconstructed signed Beacon block")
 		}
 	}
+	r.GetState().Finished = true
 	return nil
+}
+
+// publishDecidedEnvelope reconstructs the §6 envelope signature and publishes the reveal (builder operator
+// only; see publishEnvelope).
+func (r *ProposerRunner) publishDecidedEnvelope(cd *types.ProposerConsensusData, root [32]byte) error {
+	sig, err := r.reconstructPostConsensusSig(root)
+	if err != nil {
+		return err
+	}
+	return r.publishEnvelope(cd, sig)
 }
 
 // classifyPostConsensusSigningRoots computes the expected block and §6 envelope signing roots (each under
