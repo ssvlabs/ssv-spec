@@ -7,10 +7,12 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// BuilderRequestAuthWrongRoot tests that a peer whose configured builder entries disagree is rejected
-// (SIP #94 §5): its RequestAuthPartialSig container has the right count but one partial signs a divergent
-// auth data, so it fails the operator's expected-root check rather than mixing into a quorum — divergence
-// costs liveness, never a mixed signature.
+// BuilderRequestAuthWrongRoot tests SIP #94 §5/§7 per-builder isolation on the receive side (Matheus's
+// amendment): a peer whose multi-entry RequestAuthPartialSig carries one divergent (non-frozen) auth entry
+// has that entry ignored, not the whole packet rejected, so the entries that do match a frozen root still
+// collect and reach quorum. Here op2 diverges on the second entry — data0 (carried by all three) still
+// reaches quorum and submits, while data1 (which op2 replaced with the divergent entry) falls one share
+// short. The divergence costs that builder, never the slot.
 func BuilderRequestAuthWrongRoot() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
@@ -24,13 +26,18 @@ func BuilderRequestAuthWrongRoot() tests.SpecTest {
 		Runner:        testingutils.ProposerPreferencesRunnerWithBuilderEntries(ks),
 		Duty:          testingutils.TestingProposerPreferencesDuty(),
 		Messages: []*types.SignedSSVMessage{
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusBuilderRequestAuthMsg(ks.Shares[1], 1, authData))),
+			// op2's second entry signs a divergent (non-frozen) auth data; it is ignored, data0 kept.
 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusBuilderRequestAuthWrongRootMsg(ks.Shares[2], 2, data0))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusBuilderRequestAuthMsg(ks.Shares[3], 3, authData))),
 		},
 		OutputMessages: []*types.PartialSignatureMessages{
 			testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1),          // preference partial, broadcast when starting a new duty
 			testingutils.PreConsensusBuilderRequestAuthMsg(ks.Shares[1], 1, authData), // both auth partials, in one container
 		},
-		BeaconBroadcastedRoots: []string{},
-		ExpectedErrorCode:      types.WrongSigningRootErrorCode,
+		BeaconBroadcastedRoots: []string{
+			// data0 reaches quorum (op1, op2, op3); data1 falls short (op1, op3) because op2 diverged.
+			testingutils.GetSSZRootNoError(testingutils.TestingSignedBuilderRequestAuth(ks, data0, testingutils.TestingDutySlotGloas)),
+		},
 	}
 }

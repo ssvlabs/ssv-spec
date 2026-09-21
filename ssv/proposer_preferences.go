@@ -78,16 +78,25 @@ func NewProposerPreferencesRunner(
 	}, nil
 }
 
-// StartNewDuty starts an independent per-slot flow for the duty's proposal slot. A duty for a slot
-// that already has one is a re-emission (e.g. after a reorg moved the duty's dependent root): the
-// replacement freezes a freshly derived preference and starts a fresh signature container, discarding
-// the prior incarnation's.
+// StartNewDuty starts an independent per-slot flow for the duty's proposal slot. A duty for a slot that
+// already has one is a re-emission (e.g. after a reorg moved the duty's dependent root): the preference
+// round restarts on a freshly derived preference, while the builder-request-auth round's already-collected
+// shares carry over — auth roots carry no dependent_root (SIP #94 §5), so a re-emission re-freezes
+// byte-identical roots and collection continues rather than restarting from zero.
 func (r *ProposerPreferencesRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
+	slot := duty.DutySlot()
+	prev := r.BySlot[slot]
 	sub := r.NewSlotRunner()
+	// Install the sub before executing: executeDuty broadcasts the preference partial before the (best-
+	// effort, independent) auth round, so peers' preference shares must find a sub-runner to collect into
+	// regardless of how the auth round fares (SIP #94 §5 — neither round gates the other).
+	r.BySlot[slot] = sub
 	if err := sub.StartNewDuty(duty, quorum); err != nil {
 		return err
 	}
-	r.BySlot[duty.DutySlot()] = sub
+	if prev != nil {
+		sub.carryOverAuthShares(prev)
+	}
 	return nil
 }
 
@@ -350,10 +359,14 @@ func (r *ProposerPreferencesSlotRunner) executeDuty(duty types.Duty) error {
 }
 
 // executeRequestAuthRound freezes one BuilderRequestAuth per distinct configured entry data, signs each
-// under DomainBuilderRequestAuth (chain-independent), and broadcasts them together in a single
-// RequestAuthPartialSig container — one partial per frozen auth, the multi-root pre-consensus shape the
-// container and quorum machinery expect. Entries sharing data share a root; zero-length data is skipped;
-// entries are capped at MaxBuilderEntries (SIP #94 §5). No configured entries means no auth round.
+// under DomainBuilderRequestAuth (chain-independent), and broadcasts them together in a single multi-entry
+// RequestAuthPartialSig container (SIP #94 §5/§7 per Matheus's amendment: one bounded packet per slot, up
+// to MaxBuilderEntries; per-builder isolation is enforced on the receive side per entry). Entries sharing
+// data share a root; zero-length data is skipped; entries are capped at MaxBuilderEntries. The round is
+// best-effort and never fails the independent preference round (already broadcast by the caller): a
+// malformed entry that fails to sign (e.g. oversized Data) is skipped, and an auth is frozen only once its
+// share is in the outgoing container, so peer shares are never expected for an entry this operator dropped.
+// No configured entries, or none that sign, means no auth broadcast.
 func (r *ProposerPreferencesSlotRunner) executeRequestAuthRound(duty *types.ValidatorDuty, proposalSlot phase0.Slot) error {
 	r.BuilderRequestAuths = nil
 	authMsgs := &types.PartialSignatureMessages{
@@ -373,18 +386,19 @@ func (r *ProposerPreferencesSlotRunner) executeRequestAuthRound(duty *types.Vali
 		seen[string(data)] = true
 
 		auth := &gloas.BuilderRequestAuth{Data: data, Slot: proposalSlot}
-		r.BuilderRequestAuths = append(r.BuilderRequestAuths, auth)
-
 		msg, err := r.BaseRunner.signBeaconObject(r, duty, auth, proposalSlot, types.DomainBuilderRequestAuth)
 		if err != nil {
-			return errors.Wrap(err, "could not sign builder request auth")
+			continue
 		}
 		authMsgs.Messages = append(authMsgs.Messages, msg)
+		r.BuilderRequestAuths = append(r.BuilderRequestAuths, auth)
 	}
 	if len(authMsgs.Messages) == 0 {
 		return nil
 	}
-	return r.broadcastPartialSig(authMsgs)
+	// Best-effort: a broadcast failure must not fail the independent preference round.
+	_ = r.broadcastPartialSig(authMsgs)
+	return nil
 }
 
 // broadcastPartialSig operator-signs a partial-signature container into an SSVMessage and broadcasts it.
@@ -449,13 +463,20 @@ func (r *ProposerPreferencesSlotRunner) processRequestAuth(signedMsg *types.Part
 	return nil
 }
 
-// baseRequestAuthProcessing validates a RequestAuthPartialSig against the frozen auth roots under
-// DomainBuilderRequestAuth and adds it to the pre-consensus container (per-root quorum). It deliberately
-// skips the running-duty check the preference round uses: the auth round keeps collecting after the
-// preference round finishes (SIP #94 §5 — neither gates the other). It does not enforce the other end of
-// the window — §5 closes collection at the proposal slot and §7 gives the role a 2-slot lateness TTL — so a
-// past slot's sub-runner keeps accepting auth partials indefinitely; closing that window (and pruning the
-// slot's BySlot entry) is a node-side lifecycle concern, like the other unbounded per-slot state here.
+// baseRequestAuthProcessing validates a RequestAuthPartialSig against this operator's frozen auth roots
+// under DomainBuilderRequestAuth and adds the matching entries to the pre-consensus container (per-root
+// quorum). It deliberately skips the running-duty check the preference round uses: the auth round keeps
+// collecting after the preference round finishes (SIP #94 §5 — neither gates the other). It does not
+// enforce the other end of the window — §5 closes collection at the proposal slot and §7 gives the role a
+// 2-slot lateness TTL — so a past slot's sub-runner keeps accepting auth partials indefinitely; closing
+// that window (and pruning the slot's BySlot entry) is a node-side lifecycle concern, like the other
+// unbounded per-slot state here.
+//
+// Per Matheus's §5/§7 amendment the packet may carry up to MaxBuilderEntries entries: bound the count,
+// then keep only entries whose root is one of the frozen auths and ignore the rest, so a divergent entry
+// costs that builder and not the whole packet (per-builder isolation on the receive side). This is
+// auth-specific rather than the shared verifyExpectedRoot, which requires the full expected set and would
+// reject a peer that carries a subset.
 func (r *ProposerPreferencesSlotRunner) baseRequestAuthProcessing(signedMsg *types.PartialSignatureMessages) (bool, [][32]byte, error) {
 	if r.BaseRunner.State == nil {
 		return false, nil, types.NewError(types.NoRunningDutyErrorCode, "no running duty")
@@ -466,39 +487,43 @@ func (r *ProposerPreferencesSlotRunner) baseRequestAuthProcessing(signedMsg *typ
 	if err := r.BaseRunner.validateValidatorIndexInPartialSigMsg(signedMsg); err != nil {
 		return false, nil, err
 	}
-	roots, domain, err := r.expectedRequestAuthRootsAndDomain()
-	if err != nil {
-		return false, nil, err
+	if len(r.BuilderRequestAuths) == 0 {
+		return false, nil, types.NewError(types.RequestAuthNoAuthErrorCode, "no frozen builder request auths")
 	}
-	if err := r.BaseRunner.verifyExpectedRoot(r, signedMsg, roots, domain); err != nil {
-		return false, nil, err
+	if len(signedMsg.Messages) > MaxBuilderEntries {
+		return false, nil, types.NewError(types.RequestAuthWrongRootsCountErrorCode, "builder-request-auth container exceeds MaxBuilderEntries")
 	}
-	quorum, quorumRoots := r.BaseRunner.basePartialSigMsgProcessing(signedMsg, r.GetState().PreConsensusContainer)
+	matched := &types.PartialSignatureMessages{
+		Type:     signedMsg.Type,
+		Slot:     signedMsg.Slot,
+		Messages: make([]*types.PartialSignatureMessage, 0, len(signedMsg.Messages)),
+	}
+	for _, m := range signedMsg.Messages {
+		if r.authForSigningRoot(m.SigningRoot) != nil {
+			matched.Messages = append(matched.Messages, m)
+		}
+	}
+	if len(matched.Messages) == 0 {
+		return false, nil, types.NewError(types.WrongSigningRootErrorCode, "no builder-request-auth entry matches a frozen auth root")
+	}
+	quorum, quorumRoots := r.BaseRunner.basePartialSigMsgProcessing(matched, r.GetState().PreConsensusContainer)
 	return quorum, quorumRoots, nil
 }
 
-// expectedRequestAuthRootsAndDomain returns the frozen builder-request-auth roots and their domain, so
-// incoming RequestAuthPartialSig partials validate against exactly this operator's configured entries.
-func (r *ProposerPreferencesSlotRunner) expectedRequestAuthRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	if len(r.BuilderRequestAuths) == 0 {
-		return nil, types.DomainError, types.NewError(types.RequestAuthNoAuthErrorCode, "no frozen builder request auths")
+// authSigningRoot computes an auth's DomainBuilderRequestAuth signing root for the running duty's epoch.
+func (r *ProposerPreferencesSlotRunner) authSigningRoot(auth *gloas.BuilderRequestAuth) ([32]byte, error) {
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.DutySlot())
+	domain, err := r.beacon.DomainData(epoch, types.DomainBuilderRequestAuth)
+	if err != nil {
+		return [32]byte{}, err
 	}
-	roots := make([]ssz.HashRoot, 0, len(r.BuilderRequestAuths))
-	for _, auth := range r.BuilderRequestAuths {
-		roots = append(roots, auth)
-	}
-	return roots, types.DomainBuilderRequestAuth, nil
+	return types.ComputeETHSigningRoot(auth, domain)
 }
 
 // authForSigningRoot returns the frozen auth whose DomainBuilderRequestAuth signing root equals root.
 func (r *ProposerPreferencesSlotRunner) authForSigningRoot(root [32]byte) *gloas.BuilderRequestAuth {
-	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.DutySlot())
-	domain, err := r.beacon.DomainData(epoch, types.DomainBuilderRequestAuth)
-	if err != nil {
-		return nil
-	}
 	for _, auth := range r.BuilderRequestAuths {
-		signingRoot, err := types.ComputeETHSigningRoot(auth, domain)
+		signingRoot, err := r.authSigningRoot(auth)
 		if err != nil {
 			continue
 		}
@@ -507,6 +532,31 @@ func (r *ProposerPreferencesSlotRunner) authForSigningRoot(root [32]byte) *gloas
 		}
 	}
 	return nil
+}
+
+// carryOverAuthShares copies already-collected builder-request-auth partial signatures from a prior
+// same-slot sub-runner (a re-emission) into this one. Auth roots carry no dependent_root (SIP #94 §5), so
+// a re-emission re-freezes byte-identical roots; carrying the shares over lets collection continue instead
+// of restarting from zero, since peers may not resend (their receive side may dedup the repeat).
+func (r *ProposerPreferencesSlotRunner) carryOverAuthShares(prev *ProposerPreferencesSlotRunner) {
+	if prev == nil || prev.GetState() == nil || r.GetState() == nil {
+		return
+	}
+	validatorIndex := r.GetShare().ValidatorIndex
+	for _, auth := range r.BuilderRequestAuths {
+		signingRoot, err := r.authSigningRoot(auth)
+		if err != nil {
+			continue
+		}
+		for signer, sig := range prev.GetState().PreConsensusContainer.GetSignatures(validatorIndex, signingRoot) {
+			r.GetState().PreConsensusContainer.AddSignature(&types.PartialSignatureMessage{
+				PartialSignature: sig,
+				SigningRoot:      signingRoot,
+				Signer:           signer,
+				ValidatorIndex:   validatorIndex,
+			})
+		}
+	}
 }
 
 func (r *ProposerPreferencesSlotRunner) GetBaseRunner() *BaseRunner {
