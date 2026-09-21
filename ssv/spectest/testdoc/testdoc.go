@@ -241,7 +241,9 @@ const ProposerPreferencesDivergingDependentRootDoc = "Tests SIP #94 §5 honest c
 const ProposerPreferencesBuilderRequestAuthHappyFlowDoc = "Tests the SIP #94 §5 builder-request-auth round: two distinct-data entries yield two auth partials alongside the preference, and each root reaches its own quorum and submits"
 const ProposerPreferencesBuilderRequestAuthSharedDataDedupDoc = "Tests SIP #94 §5 dedup: three entries with two sharing auth data freeze two auths, not three, so the round broadcasts a two-partial container"
 const ProposerPreferencesBuilderRequestAuthCapAtMaxDoc = "Tests SIP #94 §5 MaxBuilderEntries cap: given more distinct entries than the cap, only the first MaxBuilderEntries are frozen and broadcast"
-const ProposerPreferencesBuilderRequestAuthWrongRootDoc = "Tests SIP #94 §5 divergence rejection: a peer container signing a divergent auth data fails the expected-root check rather than mixing into a quorum"
+const ProposerPreferencesBuilderRequestAuthWrongRootDoc = "Tests SIP #94 §5/§7 per-builder isolation on the receive side: a peer whose multi-entry container carries one divergent (non-frozen) auth entry has that entry ignored, not the whole packet rejected, so the entries matching a frozen root still collect and reach quorum"
+
+const ProposerPreferencesBuilderRequestAuthReemissionCarryOverDoc = "Tests SIP #94 §5 auth-share carry-over across a same-slot re-emission: auth roots carry no dependent_root, so already-collected shares carry over instead of restarting from zero (the pair to ReemissionReplacesSlot's preference reset) — two pre-re-emission shares plus one after complete the quorum and submit"
 const ProposerPreferencesBuilderRequestAuthIndependentOfPreferenceDoc = "Tests SIP #94 §5 independence: auth partials arriving after the preference round has finished still reach per-root quorum and submit"
 const NewDutyValidatorRegistrationDeprecatedDoc = "Tests that the validator registration duty is rejected from Gloas (SIP #94 §5), superseded by proposer preferences"
 

@@ -62,9 +62,10 @@ var PreConsensusBuilderRequestAuthMsg = func(msgSK *bls.SecretKey, msgID types.O
 	return builderRequestAuthMsg(msgSK, msgID, dataList, TestingDutySlotGloas)
 }
 
-// PreConsensusBuilderRequestAuthWrongRootMsg carries a container whose count matches but one partial is
-// for a divergent auth data — a valid message from a peer whose configured entries disagree, so its
-// signing root fails the operator's expected-root check rather than mixing into a quorum.
+// PreConsensusBuilderRequestAuthWrongRootMsg carries a container with one matching entry and one partial
+// for a divergent (non-frozen) auth data — a valid message from a peer whose configured entries disagree.
+// The receiver keeps the matching entry and ignores the divergent one (SIP #94 §5/§7 per-builder
+// isolation), so the divergence costs that builder, not the whole packet.
 var PreConsensusBuilderRequestAuthWrongRootMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID, matchingData []byte) *types.PartialSignatureMessages {
 	return builderRequestAuthMsg(msgSK, msgID, [][]byte{matchingData, []byte("divergent-builder-auth-data")}, TestingDutySlotGloas)
 }

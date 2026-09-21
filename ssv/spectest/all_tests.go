@@ -223,6 +223,7 @@ var AllTests = []tests.TestF{
 	proposerpreferences.BuilderRequestAuthSharedDataDedup,
 	proposerpreferences.BuilderRequestAuthCapAtMax,
 	proposerpreferences.BuilderRequestAuthWrongRoot,
+	proposerpreferences.BuilderRequestAuthReemissionCarryOver,
 	proposerpreferences.BuilderRequestAuthIndependentOfPreference,
 
 	valcheckproposer.BlindedBlock,

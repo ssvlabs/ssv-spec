@@ -116,6 +116,7 @@ const (
 	RequestAuthNoAuthErrorCode
 	ProposerDutySlotMismatchErrorCode
 	PTCAttesterWrongSlotErrorCode
+	RequestAuthWrongRootsCountErrorCode
 )
 
 type Error struct {
