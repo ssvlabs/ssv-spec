@@ -71,6 +71,10 @@ func (bn *TestingBeaconNode) GetPayloadAttestationData(slot phase0.Slot) (*gloas
 	if slot == TestingPTCAbstainSlot {
 		return &gloas.PayloadAttestationData{Slot: slot}, nil
 	}
+	if bn.wrongPayloadAttestationSlot {
+		// Answer for a different slot than requested — the §3 slot-pin mismatch (a misbehaving BN).
+		return TestingPayloadAttestationData(slot + 1), nil
+	}
 	return TestingPayloadAttestationData(slot), nil
 }
 
