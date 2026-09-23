@@ -12,6 +12,9 @@ const (
 	PostConsensusPartialSig = PartialSigMsgType(0)
 	// RandaoPartialSig is a partial signature over randao reveal
 	RandaoPartialSig = PartialSigMsgType(1)
+	// Values 2 and 3 stay reserved for the retired pre-consolidation SelectionProof /
+	// ContributionProofs partial-sig types; don't reuse the gaps.
+
 	// ValidatorRegistrationPartialSig is a partial signature over a ValidatorRegistration object
 	ValidatorRegistrationPartialSig = PartialSigMsgType(4)
 	// VoluntaryExitPartialSig is a partial signature over a VoluntaryExit object
@@ -23,7 +26,9 @@ const (
 	// ProposerPreferencesPartialSig is a partial signature over a Gloas (ePBS) ProposerPreferences object (SIP #94 §5)
 	ProposerPreferencesPartialSig = PartialSigMsgType(8)
 	// RequestAuthPartialSig is a partial signature over a builder-specs BuilderRequestAuth object,
-	// authenticating direct validator→builder requests for a proposal slot (SIP #94 §5 extension)
+	// authenticating direct validator→builder requests for a proposal slot (SIP #94 §5 extension).
+	// Carried by the RoleProposerPreferences runner (like ProposerPreferencesPartialSig); the two
+	// pre-consensus types are told apart only by their signing domain, not by PartialSigMsgType.
 	RequestAuthPartialSig = PartialSigMsgType(9)
 )
 
