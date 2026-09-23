@@ -249,12 +249,24 @@ func (r *ProposerPreferencesSlotRunner) HasRunningDuty() bool {
 }
 
 func (r *ProposerPreferencesSlotRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
-	// The builder-request-auth round rides the same duty but collects independently of the preference
-	// round — neither gates the other (SIP #94 §5).
-	if signedMsg.Type == types.RequestAuthPartialSig {
+	// This runner drives two pre-consensus rounds on the same duty (SIP #94 §5): the preference round
+	// and the builder-request-auth round. It is their sole multiplexer, so route by type and reject
+	// anything unexpected rather than treating it as a preference partial.
+	switch signedMsg.Type {
+	case types.ProposerPreferencesPartialSig:
+		return r.processPreferences(signedMsg)
+	case types.RequestAuthPartialSig:
 		return r.processRequestAuth(signedMsg)
+	default:
+		return types.NewError(types.ProposerPreferencesUnexpectedPartialSigTypeErrorCode,
+			"unexpected pre-consensus partial signature type for proposer-preferences runner")
 	}
+}
 
+// processPreferences handles a ProposerPreferencesPartialSig container (SIP #94 §5): once its partials
+// reach quorum it reconstructs the signature over the frozen ProposerPreferences and submits the
+// SignedProposerPreferences.
+func (r *ProposerPreferencesSlotRunner) processPreferences(signedMsg *types.PartialSignatureMessages) error {
 	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
 	if err != nil {
 		return errors.Wrap(err, "failed processing proposer preferences message")
