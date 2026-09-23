@@ -107,11 +107,9 @@ func GloasBeaconVoteValueCheckF(
 			return types.WrapError(types.DecodeGloasBeaconVoteErrorCode, fmt.Errorf("failed decoding gloas beacon vote: %w", err))
 		}
 
-		if bv.AttestationDataIndex > 1 {
-			return types.NewError(types.GloasBeaconVoteInvalidIndexErrorCode,
-				fmt.Sprintf("attestation data index %d must be 0 or 1", bv.AttestationDataIndex))
-		}
-
+		// Validate enforces the GloasBeaconVote invariants — non-nil checkpoints, source < target, and the
+		// same-slot AttestationDataIndex <= 1 rule (SIP #94 §2) — so they hold here and on the committee
+		// runner's post-consensus decode path alike.
 		if err := bv.Validate(); err != nil {
 			return err
 		}

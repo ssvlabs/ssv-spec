@@ -60,6 +60,15 @@ func NewValidatorRegistrationRunner(
 }
 
 func (r *ValidatorRegistrationRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
+	// From Gloas the validator registration duty is deprecated: fee recipient and gas limit travel in the §5
+	// proposer preferences instead (SIP #94 §5). Reject before baseStartNewNonBeaconDuty so a Gloas-slot duty
+	// leaves no running State and does not advance the non-beacon slot high-water mark — which would otherwise
+	// keep HasRunningDuty true forever and make a later legitimate duty fail with DutyAlreadyPassed.
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(duty.DutySlot())
+	if r.beacon.DataVersion(epoch) >= gloas.DataVersionGloas {
+		return types.NewError(types.ValidatorRegistrationDeprecatedErrorCode,
+			"validator registration is deprecated from Gloas; use proposer preferences")
+	}
 	// Note: Validator registration doesn't require any consensus, it can start a new duty even if previous one didn't finish
 	return r.BaseRunner.baseStartNewNonBeaconDuty(r, duty.(*types.ValidatorDuty), quorum)
 }
@@ -138,14 +147,8 @@ func (r *ValidatorRegistrationRunner) expectedPostConsensusRootsAndDomains() ([]
 }
 
 func (r *ValidatorRegistrationRunner) executeDuty(duty types.Duty) error {
-	// From Gloas the validator registration duty is deprecated: fee recipient and gas limit travel in
-	// the §5 proposer preferences instead (SIP #94 §5).
-	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(duty.DutySlot())
-	if r.beacon.DataVersion(epoch) >= gloas.DataVersionGloas {
-		return types.NewError(types.ValidatorRegistrationDeprecatedErrorCode,
-			"validator registration is deprecated from Gloas; use proposer preferences")
-	}
-
+	// The Gloas deprecation is enforced in StartNewDuty (before any state setup), so a Gloas duty never
+	// reaches executeDuty (SIP #94 §5).
 	vr, err := r.calculateValidatorRegistration(duty.DutySlot())
 	if err != nil {
 		return errors.Wrap(err, "could not calculate validator registration")

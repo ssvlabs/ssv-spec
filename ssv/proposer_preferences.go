@@ -91,13 +91,15 @@ func (r *ProposerPreferencesRunner) StartNewDuty(duty types.Duty, quorum uint64)
 	// effort, independent) auth round, so peers' preference shares must find a sub-runner to collect into
 	// regardless of how the auth round fares (SIP #94 §5 — neither round gates the other).
 	r.BySlot[slot] = sub
-	if err := sub.StartNewDuty(duty, quorum); err != nil {
-		return err
-	}
+	startErr := sub.StartNewDuty(duty, quorum)
+	// Carry over the prior sub's collected auth shares whenever this sub has a State (setup succeeded), even
+	// if the duty's execution then errored: auth collection is independent of the preference round (SIP #94
+	// §5), so a preference failure on a re-emission must not discard the prior sub's collected auth shares.
+	// carryOverAuthShares no-ops when either State is nil, so this is safe on a setup failure too.
 	if prev != nil {
 		sub.carryOverAuthShares(prev)
 	}
-	return nil
+	return startErr
 }
 
 // NewSlotRunner builds a sub-runner sharing the dispatcher's dependencies; StartNewDuty creates one
@@ -314,17 +316,30 @@ func (r *ProposerPreferencesSlotRunner) expectedPostConsensusRootsAndDomains() (
 	return nil, fmt.Errorf("no post consensus roots for proposer preferences")
 }
 
-// executeDuty steps:
-//  1. derive and freeze the slot's preference: the proposer-duties dependent root from the local
-//     beacon node, the share's fee recipient, and the configured target gas limit (SIP #94 §5)
-//  2. sign it under DomainProposerPreferences — the domain epoch is the proposal slot's epoch even
-//     when emitted earlier, which is what makes pre-fork emission for post-fork slots work — and
-//     broadcast the partial signature with the proposal slot
-//  3. once a quorum of operators converged on the same preference, reconstruct and submit it
-//  4. run the builder-request-auth round riding this duty (executeRequestAuthRound), independently of
-//     the preference round
+// executeDuty runs the two independent rounds this duty carries (SIP #94 §5 — neither gates the other):
+// the proposer-preferences round (executePreferenceRound) and the builder-request-auth round
+// (executeRequestAuthRound). The auth round runs even when the preference round fails — a dependent-root
+// fetch or preference-broadcast failure must not strand the auth round, whose roots carry no dependent_root.
+// The preference error is surfaced first, as it is the duty's primary output.
 func (r *ProposerPreferencesSlotRunner) executeDuty(duty types.Duty) error {
+	vDuty := duty.(*types.ValidatorDuty)
 	proposalSlot := duty.DutySlot()
+	prefErr := r.executePreferenceRound(vDuty, proposalSlot)
+	authErr := r.executeRequestAuthRound(vDuty, proposalSlot)
+	if prefErr != nil {
+		return prefErr
+	}
+	return authErr
+}
+
+// executePreferenceRound derives, signs and broadcasts the slot's ProposerPreferences (SIP #94 §5):
+//  1. freeze the preference: the proposer-duties dependent root from the local beacon node, the share's
+//     fee recipient, and the configured target gas limit
+//  2. sign it under DomainProposerPreferences — the domain epoch is the proposal slot's epoch even when
+//     emitted earlier, which is what makes pre-fork emission for post-fork slots work — and broadcast the
+//     partial signature with the proposal slot
+//  3. once a quorum of operators converged on the same preference, reconstruct and submit it
+func (r *ProposerPreferencesSlotRunner) executePreferenceRound(duty *types.ValidatorDuty, proposalSlot phase0.Slot) error {
 	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(proposalSlot)
 
 	dependentRoot, err := r.beacon.ProposerDutiesDependentRoot(epoch)
@@ -341,8 +356,7 @@ func (r *ProposerPreferencesSlotRunner) executeDuty(duty types.Duty) error {
 	}
 	r.ProposerPreferences = preferences
 
-	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.ValidatorDuty), preferences, proposalSlot,
-		types.DomainProposerPreferences)
+	msg, err := r.BaseRunner.signBeaconObject(r, duty, preferences, proposalSlot, types.DomainProposerPreferences)
 	if err != nil {
 		return errors.Wrap(err, "could not sign proposer preferences")
 	}
@@ -351,11 +365,7 @@ func (r *ProposerPreferencesSlotRunner) executeDuty(duty types.Duty) error {
 		Slot:     proposalSlot,
 		Messages: []*types.PartialSignatureMessage{msg},
 	}
-	if err := r.broadcastPartialSig(msgs); err != nil {
-		return err
-	}
-
-	return r.executeRequestAuthRound(duty.(*types.ValidatorDuty), proposalSlot)
+	return r.broadcastPartialSig(msgs)
 }
 
 // executeRequestAuthRound freezes one BuilderRequestAuth per distinct configured entry data, signs each
@@ -440,27 +450,40 @@ func (r *ProposerPreferencesSlotRunner) processRequestAuth(signedMsg *types.Part
 		return nil
 	}
 
-	// A multi-root container can push several auth roots over quorum at once; submit each.
+	// A multi-root container can push several auth roots over quorum at once. A bad share (or submit failure)
+	// for one root must not strand the others (SIP #94 §5 — roots collect independently); quorum is reported
+	// only on the first crossing, so a stranded root would never be retried. Attempt every crossed root — on a
+	// per-root failure fall back to verify-each (removing invalid shares), record the first error, and
+	// continue — and surface that first error only after all roots have been attempted.
+	var firstErr error
+	record := func(err error) {
+		if firstErr == nil {
+			firstErr = err
+		}
+	}
 	for _, root := range roots {
 		auth := r.authForSigningRoot(root)
 		if auth == nil {
-			return types.NewError(types.RequestAuthNoAuthErrorCode, "builder-request-auth quorum for an unknown root")
+			record(types.NewError(types.RequestAuthNoAuthErrorCode, "builder-request-auth quorum for an unknown root"))
+			continue
 		}
 
 		fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey[:], r.GetShare().ValidatorIndex)
 		if err != nil {
 			r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PreConsensusContainer, root, r.GetShare().Committee,
 				r.GetShare().ValidatorIndex)
-			return errors.Wrap(err, "got builder-request-auth quorum but it has invalid signatures")
+			record(errors.Wrap(err, "got builder-request-auth quorum but it has invalid signatures"))
+			continue
 		}
 		specSig := phase0.BLSSignature{}
 		copy(specSig[:], fullSig)
 
 		if err := r.beacon.SubmitBuilderRequestAuth(&gloas.SignedBuilderRequestAuth{Message: auth, Signature: specSig}); err != nil {
-			return errors.Wrap(err, "could not submit builder request auth")
+			record(errors.Wrap(err, "could not submit builder request auth"))
+			continue
 		}
 	}
-	return nil
+	return firstErr
 }
 
 // baseRequestAuthProcessing validates a RequestAuthPartialSig against this operator's frozen auth roots
