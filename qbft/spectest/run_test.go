@@ -19,6 +19,8 @@ import (
 
 func TestAll(t *testing.T) {
 	t.Parallel()
+	// Run reads the state_comparison fixtures, so stale ones fail TestAll too.
+	typescomparable.LogStaleFixturesHintOnFailure(t)
 	for _, testF := range AllTests {
 		test := testF()
 		t.Run(test.TestName(), func(t *testing.T) {
@@ -28,24 +30,13 @@ func TestAll(t *testing.T) {
 }
 
 func TestJson(t *testing.T) {
+	typescomparable.LogStaleFixturesHintOnFailure(t)
 	basedir, _ := os.Getwd()
 	specTestsDir, err := typescomparable.SpecTestsDirFrom(basedir)
 	if err != nil {
 		t.Fatalf("Failed to resolve spec-tests dir: %v", err)
 	}
 	path := filepath.Join(specTestsDir, "tests.json")
-	// Fixtures live in a single shared sibling dir (see SpecTestsDirFrom) that is
-	// regenerated per checkout and is not branch-aware, so switching branches — or
-	// changing encoding-relevant code — without rerunning the generators leaves
-	// stale fixtures that fail below as cryptic SSZ decode/encode errors. Surface
-	// that cause on failure so it is not mistaken for a code regression.
-	t.Cleanup(func() {
-		if t.Failed() {
-			t.Logf("spec-test fixtures at %s are shared per checkout and not branch-aware; "+
-				"if you switched branches or changed encoding-relevant code, regenerate with "+
-				"`make generate-jsons` and re-run before treating the failures above as real", path)
-		}
-	})
 	untypedTests := map[string]interface{}{}
 	byteValue, err := os.ReadFile(path)
 	if err != nil {
@@ -145,7 +136,7 @@ func TestJson(t *testing.T) {
 				tests[testName] = typedTest
 				typedTest.Run(t)
 			default:
-				panic("unsupported test type " + testType)
+				t.Fatalf("unsupported test type %s", testType)
 			}
 		})
 	}

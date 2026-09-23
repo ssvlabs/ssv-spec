@@ -211,6 +211,32 @@ func isSpecTestModule(module string) bool {
 	return module == "qbft" || module == "ssv" || module == "types"
 }
 
+// LogStaleFixturesHintOnFailure makes t, if it fails, log that the spec-test fixtures may be stale.
+// They live in a sibling spec-tests/<module> dir (see SpecTestsDirFrom) that is not branch-aware,
+// so switching branches or changing tests or encoding-relevant code without regenerating them
+// causes decode/encode, missing-file, state-mismatch or unknown-test failures that read like a
+// code regression. No-op in CI, which regenerates the fixtures before testing.
+func LogStaleFixturesHintOnFailure(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		return
+	}
+	basedir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get working directory: %v", err)
+	}
+	dir, err := SpecTestsDirFrom(basedir)
+	if err != nil {
+		t.Fatalf("Failed to resolve spec-tests dir: %v", err)
+	}
+	t.Cleanup(func() {
+		if t.Failed() {
+			t.Logf("spec-test fixtures under %s are not branch-aware; if you switched branches or "+
+				"changed tests or encoding-relevant code, regenerate them with `make generate-jsons` "+
+				"and re-run before treating these failures as real", dir)
+		}
+	})
+}
+
 // CompareWithJson compares the given test with the expected state from the state comparison folder
 func CompareWithJson(t *testing.T, test any, testName string, testType string) {
 	// marshal test into json
