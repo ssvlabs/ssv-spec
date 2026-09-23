@@ -46,6 +46,28 @@ var PostConsensusProposerEnvelopeFirstMsgV = func(sk *bls.SecretKey, id types.Op
 	return msg
 }
 
+// PostConsensusProposerBadEnvelopeShareMsgV signs the block entry correctly but the §6 envelope entry with a
+// different validator key (a structurally valid partial that fails beacon-sig verification), keeping both
+// signing roots. The block reconstructs while the envelope fails — pinning that a bad envelope share does not
+// strand the block (SIP #94 §4/§6). A no-op (block-only) before Gloas.
+var PostConsensusProposerBadEnvelopeShareMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	msg := postConsensusBeaconBlockMsgV(sk, id, false, false, version)
+	if len(msg.Messages) < 2 {
+		return msg // pre-Gloas: block-only, no envelope entry to corrupt
+	}
+	// Re-sign the envelope entry with a different validator key: same signing root, invalid signature.
+	signer := NewTestingKeyManager()
+	beacon := NewTestingBeaconNode()
+	envelope := TestingBlindedExecutionPayloadEnvelope(TestingDutySlotV(version))
+	dBuilder, _ := beacon.DomainData(1, types.DomainBeaconBuilder)
+	badSig, envSigningRoot, _ := signer.SignBeaconObject(envelope, dBuilder, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainBeaconBuilder)
+	badBls := phase0.BLSSignature{}
+	copy(badBls[:], badSig)
+	msg.Messages[1].PartialSignature = badBls[:]
+	msg.Messages[1].SigningRoot = envSigningRoot
+	return msg
+}
+
 var PostConsensusProposerTooManyRootsMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
 	ret := postConsensusBeaconBlockMsgV(sk, id, false, false, version)
 	ret.Messages = append(ret.Messages, ret.Messages[0])
