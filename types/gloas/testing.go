@@ -18,6 +18,9 @@ func TestingBeaconBlock(slot phase0.Slot) *BeaconBlock {
 	}
 	return &BeaconBlock{
 		Slot: slot,
+		// == testingutils.TestingValidatorIndex (gloas can't import testingutils): must match the duty's
+		// validator so the proposer-index value check (SIP #94 §4) accepts the fixture block.
+		ProposerIndex: 1,
 		Body: &BeaconBlockBody{
 			ETH1Data:      &phase0.ETH1Data{BlockHash: make([]byte, 32)},
 			SyncAggregate: &altair.SyncAggregate{SyncCommitteeBits: bitfield.NewBitvector512()},
