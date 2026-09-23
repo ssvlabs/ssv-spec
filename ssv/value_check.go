@@ -206,6 +206,12 @@ func ProposerValueCheckF(
 			if block.Slot != cd.Duty.Slot {
 				return types.NewError(types.ProposerBlockSlotMismatchErrorCode, "gloas block slot does not match duty slot")
 			}
+			// The block's proposer index must be the duty's validator — the one whose key every operator
+			// signs the block root with (SIP #94 §4). A leader stamping another index would have the cluster
+			// sign a block the beacon node rejects, losing the slot; pin it here so it fails consensus instead.
+			if block.ProposerIndex != cd.Duty.ValidatorIndex {
+				return types.NewError(types.ProposerBlockProposerIndexMismatchErrorCode, "gloas block proposer index does not match duty validator index")
+			}
 			// payload_root MUST be zero iff the bid is not self-build (SIP #94 §4): a self-build value
 			// carries a real §6 payload_root, an external bid carries zero. An honest leader never trips it.
 			selfBuild := block.Body.SignedExecutionPayloadBid.Message.BuilderIndex == gloas.BuilderIndexSelfBuild

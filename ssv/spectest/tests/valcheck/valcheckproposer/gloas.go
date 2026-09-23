@@ -17,9 +17,9 @@ import (
 // GloasBlocks covers the Gloas (ePBS, SIP #94 §4) proposer value-check rules. At a Gloas duty slot the
 // consensus value carries an opaque {block, payload_root} GloasProposalData in DataSSZ, so the value check
 // decodes it directly (never routing through the pre-Gloas Validate()/GetBlockData()), pins the block's
-// slot to the duty's and the duty's slot to the running duty's, requires payload_root to be zero iff the
-// bid is not self-build, and rejects a leader-stamped Version that disagrees with the duty slot's fork in
-// either direction.
+// slot to the duty's and its proposer index to the duty's validator, pins the duty's slot to the running
+// duty's, requires payload_root to be zero iff the bid is not self-build, and rejects a leader-stamped
+// Version that disagrees with the duty slot's fork in either direction.
 func GloasBlocks() tests.SpecTest {
 	gloasDuty := testingutils.TestingProposerDutyV(gloas.DataVersionGloas)
 	electraDuty := testingutils.TestingProposerDutyV(spec.DataVersionElectra)
@@ -40,6 +40,13 @@ func GloasBlocks() tests.SpecTest {
 		panic(err.Error())
 	}
 	electraSlotBlock, err := gloas.TestingBeaconBlock(electraDuty.Slot).MarshalSSZ()
+	if err != nil {
+		panic(err.Error())
+	}
+	// Correct slot but a proposer index that is not the duty's validator — trips the §4 proposer-index pin.
+	wrongProposerBlock := gloas.TestingBeaconBlock(gloasDuty.Slot)
+	wrongProposerBlock.ProposerIndex = gloasDuty.ValidatorIndex + 1
+	wrongProposerIndexBytes, err := (&gloas.GloasProposalData{Block: wrongProposerBlock, PayloadRoot: testingutils.TestingGloasPayloadRoot}).MarshalSSZ()
 	if err != nil {
 		panic(err.Error())
 	}
@@ -67,6 +74,16 @@ func GloasBlocks() tests.SpecTest {
 				RunnerRole:        types.RoleProposer,
 				Input:             encode(&types.ProposerConsensusData{Duty: *gloasDuty, Version: gloas.DataVersionGloas, DataSSZ: slotMismatchBlock}),
 				ExpectedErrorCode: types.ProposerBlockSlotMismatchErrorCode,
+			},
+			{
+				// SIP #94 §4: the block's proposer index must equal the duty's validator (whose key the
+				// cluster signs the block root with); a mismatch would have the cluster sign a block the
+				// beacon node rejects, losing the slot.
+				Name:              "block proposer index does not match duty validator index",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleProposer,
+				Input:             encode(&types.ProposerConsensusData{Duty: *gloasDuty, Version: gloas.DataVersionGloas, DataSSZ: wrongProposerIndexBytes}),
+				ExpectedErrorCode: types.ProposerBlockProposerIndexMismatchErrorCode,
 			},
 			{
 				// SIP #94 §4: a value for a slot other than the running duty's is rejected before consensus

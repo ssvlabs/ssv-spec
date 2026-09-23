@@ -116,6 +116,7 @@ const (
 	PTCAttesterWrongSlotErrorCode
 	RequestAuthWrongRootsCountErrorCode
 	ProposerPreferencesUnexpectedPartialSigTypeErrorCode
+	ProposerBlockProposerIndexMismatchErrorCode
 )
 
 type Error struct {
