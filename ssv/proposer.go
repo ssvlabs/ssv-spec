@@ -127,8 +127,10 @@ func (r *ProposerRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMe
 			return errors.Wrap(err, "could not marshal Gloas proposal data")
 		}
 		input = &types.ProposerConsensusData{
-			Duty:    *duty,
-			Version: gloas.DataVersionGloas,
+			Duty: *duty,
+			// Stamp the slot's fork, not the Gloas constant, so the value check's cd.Version == slotVersion
+			// pin holds at any fork the Gloas branch serves (SIP #94 §4); identical to the constant today.
+			Version: versionForSlot(r.beacon, duty.Slot),
 			DataSSZ: byts,
 		}
 	} else {

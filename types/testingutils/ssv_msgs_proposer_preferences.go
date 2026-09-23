@@ -70,11 +70,32 @@ var PreConsensusBuilderRequestAuthWrongRootMsg = func(msgSK *bls.SecretKey, msgI
 	return builderRequestAuthMsg(msgSK, msgID, [][]byte{matchingData, []byte("divergent-builder-auth-data")}, TestingDutySlotGloas)
 }
 
+// PreConsensusBuilderRequestAuthBadFirstShareMsg signs the first entry's root with the wrong validator key
+// (a structurally valid partial that fails beacon-sig verification) and the rest correctly — one packet
+// whose first auth root cannot reconstruct while the others can. It pins per-root isolation on the
+// reconstruction/submit side: a bad share for one root must not strand the others (SIP #94 §5).
+var PreConsensusBuilderRequestAuthBadFirstShareMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID, dataList [][]byte) *types.PartialSignatureMessages {
+	return builderRequestAuthMsgBadShareAt(msgSK, msgID, dataList, TestingDutySlotGloas, 0)
+}
+
 var builderRequestAuthMsg = func(
 	sk *bls.SecretKey,
 	id types.OperatorID,
 	dataList [][]byte,
 	proposalSlot phase0.Slot,
+) *types.PartialSignatureMessages {
+	return builderRequestAuthMsgBadShareAt(sk, id, dataList, proposalSlot, -1)
+}
+
+// builderRequestAuthMsgBadShareAt builds one operator's RequestAuthPartialSig container, signing every entry
+// with the operator's own key except the one at badShareAt (if in range), which is signed with a different
+// validator key so its partial fails beacon-signature verification while keeping the correct signing root.
+var builderRequestAuthMsgBadShareAt = func(
+	sk *bls.SecretKey,
+	id types.OperatorID,
+	dataList [][]byte,
+	proposalSlot phase0.Slot,
+	badShareAt int,
 ) *types.PartialSignatureMessages {
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
@@ -86,9 +107,13 @@ var builderRequestAuthMsg = func(
 		Slot:     proposalSlot,
 		Messages: []*types.PartialSignatureMessage{},
 	}
-	for _, data := range dataList {
+	for i, data := range dataList {
 		auth := TestingBuilderRequestAuth(data, proposalSlot)
 		signed, root, _ := signer.SignBeaconObject(auth, d, sk.GetPublicKey().Serialize(), types.DomainBuilderRequestAuth)
+		if i == badShareAt {
+			// Same signing root, but signed by a different validator key so the partial fails verification.
+			signed, root, _ = signer.SignBeaconObject(auth, d, Testing7SharesSet().ValidatorPK.Serialize(), types.DomainBuilderRequestAuth)
+		}
 		msgs.Messages = append(msgs.Messages, &types.PartialSignatureMessage{
 			PartialSignature: signed[:],
 			SigningRoot:      root,

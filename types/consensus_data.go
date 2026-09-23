@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/api"
@@ -169,14 +170,21 @@ func (b *GloasBeaconVote) Decode(data []byte) error {
 }
 
 // Validate checks the following rules:
-// - Source and Target checkpoints must be non-nil
-// - Source.Epoch must be strictly less than Target.Epoch
+//   - Source and Target checkpoints must be non-nil
+//   - Source.Epoch must be strictly less than Target.Epoch
+//   - AttestationDataIndex must be 0 or 1 (the Gloas same-slot rule; enforced here as well as in
+//     GloasBeaconVoteValueCheckF so a decided value that bypassed the value check — an injected decided
+//     value, or a >f Byzantine leader — can't be signed with an out-of-range index that the network rejects)
 func (b *GloasBeaconVote) Validate() error {
 	if b == nil {
 		return NewError(BeaconVoteNilCheckpointErrorCode, "nil gloas beacon vote")
 	}
 	if b.Source == nil || b.Target == nil {
 		return NewError(BeaconVoteNilCheckpointErrorCode, "nil source or target checkpoint")
+	}
+	if b.AttestationDataIndex > 1 {
+		return NewError(GloasBeaconVoteInvalidIndexErrorCode,
+			fmt.Sprintf("attestation data index %d must be 0 or 1", b.AttestationDataIndex))
 	}
 	if b.Source.Epoch >= b.Target.Epoch {
 		return NewError(AttestationSourceNotLessThanTargetErrorCode, "attestation data source >= target")
@@ -223,6 +231,34 @@ type ProposerConsensusData struct {
 	// 		total_size_without_execution_payload = KZG_PROOFS_SIZE + BLOBS_SIZE + BEACON_BLOCK_OVERHEAD + beacon_block_body_size_without_transactions
 	//		print(total_size_without_execution_payload)
 	DataSSZ []byte `ssz-max:"8388608"` // 2^23 to account for potential gas limit increases
+}
+
+// MarshalJSON serializes Version as its numeric value so a Gloas-stamped value is JSON-safe: the embedded
+// spec.DataVersion.MarshalJSON panics on out-of-enum versions (Gloas has no upstream string), which would
+// crash any node that JSON-logs a Gloas duty (SIP #94). SSZ is unaffected — the version rides as a uint64.
+func (cd *ProposerConsensusData) MarshalJSON() ([]byte, error) {
+	type alias ProposerConsensusData
+	return json.Marshal(&struct {
+		Version uint64
+		*alias
+	}{
+		Version: uint64(cd.Version),
+		alias:   (*alias)(cd),
+	})
+}
+
+// UnmarshalJSON reads the numeric Version written by MarshalJSON.
+func (cd *ProposerConsensusData) UnmarshalJSON(data []byte) error {
+	type alias ProposerConsensusData
+	aux := &struct {
+		Version uint64
+		*alias
+	}{alias: (*alias)(cd)}
+	if err := json.Unmarshal(data, aux); err != nil {
+		return err
+	}
+	cd.Version = spec.DataVersion(aux.Version)
+	return nil
 }
 
 func (cd *ProposerConsensusData) Validate() error {
@@ -328,6 +364,33 @@ type AggregatorCommitteeConsensusData struct {
 	Contributors []AssignedAggregator `ssz-max:"2048"` // 512 * 4
 	// SyncCommitteeContributions is a list of contributions, one for each subcommittee
 	SyncCommitteeContributions []altair.SyncCommitteeContribution `ssz-max:"4"`
+}
+
+// MarshalJSON serializes Version as its numeric value so a Gloas-stamped value is JSON-safe (see
+// ProposerConsensusData.MarshalJSON; the Gloas aggregator makes this reachable at the first duty).
+func (a *AggregatorCommitteeConsensusData) MarshalJSON() ([]byte, error) {
+	type alias AggregatorCommitteeConsensusData
+	return json.Marshal(&struct {
+		Version uint64
+		*alias
+	}{
+		Version: uint64(a.Version),
+		alias:   (*alias)(a),
+	})
+}
+
+// UnmarshalJSON reads the numeric Version written by MarshalJSON.
+func (a *AggregatorCommitteeConsensusData) UnmarshalJSON(data []byte) error {
+	type alias AggregatorCommitteeConsensusData
+	aux := &struct {
+		Version uint64
+		*alias
+	}{alias: (*alias)(a)}
+	if err := json.Unmarshal(data, aux); err != nil {
+		return err
+	}
+	a.Version = spec.DataVersion(aux.Version)
+	return nil
 }
 
 // Validate ensures the consensus data is internally consistent
