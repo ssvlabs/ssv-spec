@@ -29,6 +29,7 @@ import (
 var AllTests = []tests.TestF{
 	runner.FullHappyFlow,
 	runner.GloasProposerLateEnvelopeQuorum,
+	runner.GloasProposerEnvelopeFirstOrder,
 
 	postconsensus.TooManyRoots,
 	postconsensus.TooFewRoots,
@@ -225,6 +226,8 @@ var AllTests = []tests.TestF{
 	proposerpreferences.BuilderRequestAuthWrongRoot,
 	proposerpreferences.BuilderRequestAuthReemissionCarryOver,
 	proposerpreferences.BuilderRequestAuthIndependentOfPreference,
+	proposerpreferences.BuilderRequestAuthExceedsMax,
+	proposerpreferences.BuilderRequestAuthNoAuth,
 
 	valcheckproposer.BlindedBlock,
 	valcheckproposer.GloasBlocks,

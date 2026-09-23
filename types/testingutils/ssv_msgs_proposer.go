@@ -34,6 +34,18 @@ var PostConsensusProposerBlockOnlyMsgV = func(sk *bls.SecretKey, id types.Operat
 	return msg
 }
 
+// PostConsensusProposerEnvelopeFirstMsgV reverses the Gloas packet's entry order — the §6 envelope entry
+// first, the block entry second. The receiver classifies entries by matched root, not position, so both
+// must still submit; this guards against a future order-dependent rewrite (SIP #94 §4). A no-op before
+// Gloas, where the packet is block-only.
+var PostConsensusProposerEnvelopeFirstMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	msg := postConsensusBeaconBlockMsgV(sk, id, false, false, version)
+	if len(msg.Messages) == 2 {
+		msg.Messages[0], msg.Messages[1] = msg.Messages[1], msg.Messages[0]
+	}
+	return msg
+}
+
 var PostConsensusProposerTooManyRootsMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
 	ret := postConsensusBeaconBlockMsgV(sk, id, false, false, version)
 	ret.Messages = append(ret.Messages, ret.Messages[0])
