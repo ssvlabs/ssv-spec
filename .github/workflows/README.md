@@ -51,6 +51,8 @@ Fixtures resolve to `<parent-of-ssv-spec>/spec-tests/<module>` (`qbft`, `ssv`, `
 
 > **Multiple checkouts:** the path is derived from the repo root's parent and is not namespaced per checkout, so two clones or worktrees sharing a parent directory also share one `spec-tests` and overwrite each other's output. Give each checkout its own parent directory.
 
+> **Switching branches:** for the same reason the fixtures are not branch-aware — one checkout keeps a single `spec-tests` for whatever branch generated it last. Switching branches (or changing tests or encoding-relevant code) without regenerating leaves stale fixtures, and `TestAll`/`TestJson` then fail with decode/encode, missing-file, state-mismatch, or unknown-test errors that read like a code regression. Rerun `make generate-jsons` after any such change before `make test`; on failure outside CI, both tests log a note pointing at this cause.
+
 ---
 
 ## Workflows in Detail

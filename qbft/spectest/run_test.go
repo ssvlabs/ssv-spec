@@ -19,6 +19,8 @@ import (
 
 func TestAll(t *testing.T) {
 	t.Parallel()
+	// Run reads the state_comparison fixtures, so stale ones fail TestAll too.
+	typescomparable.LogStaleFixturesHintOnFailure(t)
 	for _, testF := range AllTests {
 		test := testF()
 		t.Run(test.TestName(), func(t *testing.T) {
@@ -28,6 +30,7 @@ func TestAll(t *testing.T) {
 }
 
 func TestJson(t *testing.T) {
+	typescomparable.LogStaleFixturesHintOnFailure(t)
 	basedir, _ := os.Getwd()
 	specTestsDir, err := typescomparable.SpecTestsDirFrom(basedir)
 	if err != nil {
@@ -133,7 +136,7 @@ func TestJson(t *testing.T) {
 				tests[testName] = typedTest
 				typedTest.Run(t)
 			default:
-				panic("unsupported test type " + testType)
+				t.Fatalf("unsupported test type %s", testType)
 			}
 		})
 	}
