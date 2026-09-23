@@ -167,6 +167,7 @@ const PostConsensusPostFinishDoc = "Tests post-consensus message processing afte
 const PostConsensusPreDecidedDoc = "Tests post-consensus message processing before duty is decided, expecting error"
 const PostConsensusUnknownSignerDoc = "Tests post-consensus message processing with unknown signer, expecting error"
 const PostConsensusGloasBlockOnlyDoc = "Tests that a Gloas (ePBS) self-build proposer finalizes on a block-only post-consensus packet: the SIP #94 §6 envelope root is optional, so when the envelope partial-sigs miss quorum the block partial-sigs alone still submit the block and finish the duty, broadcasting no envelope reveal."
+const GloasProposerEnvelopeFirstOrderDoc = "Tests that a Gloas (ePBS) self-build proposer submits both the block and the SIP #94 §6 envelope when peers' post-consensus packets list the envelope entry before the block entry: entries are classified by matched root, not position, so packet order does not change the outcome (a guard against a future order-dependent rewrite reintroducing a strand)."
 
 // Documentation for runner/preconsensus tests
 const PreConsensusDuplicateMsgDoc = "Tests pre-consensus message processing with duplicate messages"
@@ -245,6 +246,8 @@ const ProposerPreferencesBuilderRequestAuthWrongRootDoc = "Tests SIP #94 §5/§7
 
 const ProposerPreferencesBuilderRequestAuthReemissionCarryOverDoc = "Tests SIP #94 §5 auth-share carry-over across a same-slot re-emission: auth roots carry no dependent_root, so already-collected shares carry over instead of restarting from zero (the pair to ReemissionReplacesSlot's preference reset) — two pre-re-emission shares plus one after complete the quorum and submit"
 const ProposerPreferencesBuilderRequestAuthIndependentOfPreferenceDoc = "Tests SIP #94 §5 independence: auth partials arriving after the preference round has finished still reach per-root quorum and submit"
+const ProposerPreferencesBuilderRequestAuthExceedsMaxDoc = "Tests the SIP #94 §7 receive-side bound: a RequestAuthPartialSig container carrying more than MaxBuilderEntries entries is rejected (RequestAuthWrongRootsCountErrorCode), not partially processed"
+const ProposerPreferencesBuilderRequestAuthNoAuthDoc = "Tests SIP #94 §5: an operator with no configured builder entries froze no auth roots, so an incoming RequestAuthPartialSig is rejected (RequestAuthNoAuthErrorCode) rather than collected against an empty set"
 const NewDutyValidatorRegistrationDeprecatedDoc = "Tests that the validator registration duty is rejected from Gloas (SIP #94 §5), superseded by proposer preferences"
 
 // Documentation for ptcattester tests

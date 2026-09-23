@@ -32,6 +32,9 @@ type TestingBeaconNode struct {
 	// producesExternalBid makes the Gloas produce return a bare external-bid block and a nil envelope
 	// (SIP #94 §4), for testing the external-build path where SSV does not self-build.
 	producesExternalBid bool
+	// wrongPayloadAttestationSlot makes GetPayloadAttestationData answer with data for a different slot
+	// than requested (SIP #94 §3), for testing the PTC slot-pin rejection.
+	wrongPayloadAttestationSlot bool
 }
 
 func NewTestingBeaconNode() *TestingBeaconNode {
@@ -56,6 +59,12 @@ func (bn *TestingBeaconNode) SetAggregators(committeeIndices map[phase0.Committe
 // with a nil envelope (SIP #94 §4), exercising the external-build path instead of self-build.
 func (bn *TestingBeaconNode) SetProducesExternalBid(v bool) {
 	bn.producesExternalBid = v
+}
+
+// SetWrongPayloadAttestationSlot FOR TESTING ONLY!! makes GetPayloadAttestationData return data whose Slot
+// mismatches the requested slot (SIP #94 §3), exercising the PTC slot-pin rejection.
+func (bn *TestingBeaconNode) SetWrongPayloadAttestationSlot(v bool) {
+	bn.wrongPayloadAttestationSlot = v
 }
 
 // GetBeaconNetwork returns the beacon network the node is on
