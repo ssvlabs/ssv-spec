@@ -19,7 +19,7 @@ import (
 // §5). A validator-key BLS signature over it under DomainBuilderRequestAuth
 // — chain-independent (genesis compute_domain, like the deprecated ValidatorRegistrationV1) — yields
 // SignedBuilderRequestAuth. Data is the token agreed with the builder out of band (defaulting to the
-// builder's advertised URL bytes; zero-length is invalid), signed byte-for-byte. Slot is the proposal
+// builder URL's hostname per get_default_auth_data; zero-length is invalid), signed byte-for-byte. Slot is the proposal
 // slot the request is authorized for, never the slot it is signed at — a pure function of the proposer
 // lookahead, carrying no dependent root, so re-emissions reproduce a byte-identical signing root.
 type BuilderRequestAuth struct {
