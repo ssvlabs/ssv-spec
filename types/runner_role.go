@@ -9,7 +9,13 @@ const (
 	RoleValidatorRegistration = RunnerRole(4)
 	RoleVoluntaryExit         = RunnerRole(5)
 	RoleAggregatorCommittee   = RunnerRole(6) // Combines aggregator and sync committee contribution duties
-	RoleUnknown               = RunnerRole(-1)
+
+	// Gloas (ePBS) roles, per SIP #94. Values 1 and 3 stay reserved for the deprecated
+	// pre-consolidation aggregator / sync-committee-contribution runner roles.
+	RolePTCAttester         = RunnerRole(7)
+	RoleProposerPreferences = RunnerRole(8)
+
+	RoleUnknown = RunnerRole(-1)
 )
 
 // String returns the name of the runner role
@@ -25,6 +31,10 @@ func (r RunnerRole) String() string {
 		return "VOLUNTARY_EXIT_RUNNER"
 	case RoleAggregatorCommittee:
 		return "AGGREGATOR_COMMITTEE_RUNNER"
+	case RolePTCAttester:
+		return "PTC_ATTESTER_RUNNER"
+	case RoleProposerPreferences:
+		return "PROPOSER_PREFERENCES_RUNNER"
 	default:
 		return "UNDEFINED"
 	}

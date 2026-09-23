@@ -33,6 +33,8 @@ const MapSyncCommitteeTestDoc = "Test mapping of BNRoleSyncCommittee"
 const MapUnknownRoleTestDoc = "Test mapping of an unknown role"
 const MapValidatorRegistrationTestDoc = "Test mapping of BNRoleValidatorRegistration"
 const MapVoluntaryExitTestDoc = "Test mapping of BNRoleVoluntaryExit"
+const MapPTCAttesterTestDoc = "Test mapping of BNRolePTCAttester"
+const MapProposerPreferencesTestDoc = "Test mapping of BNRoleProposerPreferences"
 
 // EncryptionSpecTest
 const EncryptionSpecTestType = "Encryption: validation of public/private key operations and message encryption/decryption"
