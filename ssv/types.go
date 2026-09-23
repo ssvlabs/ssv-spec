@@ -101,6 +101,10 @@ type VoluntaryExitCalls interface {
 }
 
 type DomainCalls interface {
+	// DomainData returns the signing domain for the given epoch and domain type.
+	// Application-namespace domains (DomainApplicationBuilder, DomainBuilderRequestAuth) are
+	// computed genesis-style — genesis fork version and zero genesis-validators-root, ignoring
+	// epoch — whereas every other domain is fork-versioned.
 	DomainData(epoch phase0.Epoch, domain phase0.DomainType) (phase0.Domain, error)
 }
 
