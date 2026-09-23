@@ -28,6 +28,13 @@ type ProposerRunner struct {
 	// (full-flow builder publish, seeded non-builder no-publish) rather than a state-comparison vector.
 	producedEnvelope *gloas.BlindedExecutionPayloadEnvelope
 
+	// blockSubmitAttempted records that the decided block's signature reconstructed and its submit ran this
+	// duty (regardless of the submit's result). The §6 reveal is gated on this rather than on a successful
+	// submit, so it still publishes when this operator's own submit fails but the block reaches beacon nodes
+	// from other operators' submits (SIP #94 §6 "retry until they have"; a node ignores an envelope whose
+	// block it has not seen). Transient and unexported, reset per duty in StartNewDuty, like producedEnvelope.
+	blockSubmitAttempted bool
+
 	beacon         BeaconNode
 	network        Network
 	signer         types.BeaconSigner
@@ -72,6 +79,7 @@ func NewProposerRunner(
 }
 
 func (r *ProposerRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
+	r.blockSubmitAttempted = false
 	return r.BaseRunner.baseStartNewDuty(r, duty, quorum)
 }
 
@@ -290,19 +298,20 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 	}
 
 	// A Gloas self-build packet carries two roots (block + optional §6 envelope) that reconstruct
-	// independently, so each is handled on its own: a failure on one must not abort the other, and a
-	// bad share dropped by the fallback re-crosses in a later packet. The block (required) is handled
-	// first regardless of packet order — it finalizes the duty, and a BN ignores an envelope whose block
-	// it has not seen (SIP #94 §4/§6). At most one of the two runs-and-fails per packet (the envelope
-	// only runs once the block is submitted), so returning either error loses nothing.
+	// independently, so each is handled on its own: a failure on one must not abort the other, and a bad
+	// share dropped by the fallback re-crosses in a later packet. The block (required) is handled first
+	// regardless of packet order — it finalizes the duty, and a BN ignores an envelope whose block it has not
+	// seen (SIP #94 §4/§6). When both fail the block error takes precedence (the block is the primary output;
+	// the reveal is best-effort), so returning it over the envelope error loses nothing important.
 	var blockErr, envelopeErr error
 	if crossedQuorum(blockSigningRoot) {
 		blockErr = r.submitDecidedBlock(cd, blockSigningRoot, isGloas)
 	}
-	// The optional §6 reveal publishes once the block is submitted and the envelope is at quorum. Gated on
-	// HasQuorum (not a first crossing) so an envelope quorum reached before the block is not lost;
-	// awaitingEnvelope() stops admitting packets once it is at quorum, so this publishes exactly once.
-	if isGloas && envelopeSigningRoot != ([32]byte{}) && r.GetState().Finished &&
+	// The optional §6 reveal publishes once the block submit has been attempted (blockSubmitAttempted — not
+	// gated on submit success, so a failed local submit does not drop the reveal; SIP #94 §6) and the envelope
+	// is at quorum. Gated on HasQuorum (not a first crossing) so an envelope quorum reached before the block is
+	// not lost; awaitingEnvelope() stops admitting packets once it is at quorum, so this publishes exactly once.
+	if isGloas && envelopeSigningRoot != ([32]byte{}) && r.blockSubmitAttempted &&
 		r.GetState().PostConsensusContainer.HasQuorum(r.GetShare().ValidatorIndex, envelopeSigningRoot) {
 		envelopeErr = r.publishDecidedEnvelope(cd, envelopeSigningRoot)
 	}
@@ -333,6 +342,9 @@ func (r *ProposerRunner) submitDecidedBlock(cd *types.ProposerConsensusData, roo
 	if err != nil {
 		return err
 	}
+	// The block signature reconstructed, so the submit below is an attempt regardless of its result — gate
+	// the §6 reveal on this, not on submit success (see blockSubmitAttempted, SIP #94 §6).
+	r.blockSubmitAttempted = true
 	if isGloas {
 		proposalData, err := gloas.DecodeGloasProposalData(cd.DataSSZ)
 		if err != nil {

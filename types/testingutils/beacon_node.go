@@ -35,6 +35,9 @@ type TestingBeaconNode struct {
 	// wrongPayloadAttestationSlot makes GetPayloadAttestationData answer with data for a different slot
 	// than requested (SIP #94 §3), for testing the PTC slot-pin rejection.
 	wrongPayloadAttestationSlot bool
+	// failGloasBlockSubmit makes SubmitGloasBeaconBlock return an error without recording the block, for
+	// testing that the §6 reveal still publishes when this operator's own block submit fails (SIP #94 §6).
+	failGloasBlockSubmit bool
 }
 
 func NewTestingBeaconNode() *TestingBeaconNode {
@@ -65,6 +68,12 @@ func (bn *TestingBeaconNode) SetProducesExternalBid(v bool) {
 // mismatches the requested slot (SIP #94 §3), exercising the PTC slot-pin rejection.
 func (bn *TestingBeaconNode) SetWrongPayloadAttestationSlot(v bool) {
 	bn.wrongPayloadAttestationSlot = v
+}
+
+// SetFailGloasBlockSubmit FOR TESTING ONLY!! makes SubmitGloasBeaconBlock return an error without recording
+// the block, exercising the §6 reveal-on-attempt path where this operator's own block submit fails (SIP #94 §6).
+func (bn *TestingBeaconNode) SetFailGloasBlockSubmit(v bool) {
+	bn.failGloasBlockSubmit = v
 }
 
 // GetBeaconNetwork returns the beacon network the node is on
@@ -298,6 +307,9 @@ func (bn *TestingBeaconNode) SubmitExecutionPayloadEnvelope(envelope *gloas.Blin
 
 // SubmitGloasBeaconBlock records the signed Gloas (ePBS §4) block's root, mirroring SubmitBeaconBlock.
 func (bn *TestingBeaconNode) SubmitGloasBeaconBlock(block *gloas.BeaconBlock, sig phase0.BLSSignature) error {
+	if bn.failGloasBlockSubmit {
+		return fmt.Errorf("forced Gloas block submit failure")
+	}
 	sb := &gloas.SignedBeaconBlock{
 		Message:   block,
 		Signature: sig,
