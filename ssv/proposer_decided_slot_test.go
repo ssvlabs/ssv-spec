@@ -12,12 +12,12 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// TestProposerRejectsDecidedValueForWrongSlot covers the SIP #94 §4 duty-slot backstop in ProcessConsensus.
-// The value check (TestProposerValueCheckFRunningSlotBind) is the primary defense — it keeps a wrong-slot
-// value out of consensus so honest operators never commit one — but this guard is the post-decide backstop
-// for anything that slips past. A decided (quorum-commit) message carrying a valid value for slot Y+1 is
-// injected directly at the running instance's height Y (bypassing the value check), and ProcessConsensus
-// must still refuse to sign a block for a duty it is not running.
+// TestProposerRejectsDecidedValueForWrongSlot pins the SIP #94 §4 running-slot bind: a decided value whose
+// duty slot is not the running one must be rejected before the runner signs a block it is not proposing.
+// baseConsensusMsgProcessing runs the proposer value check on every decided value (via
+// validateDecidedConsensusData), so even a directly injected decided message for slot Y+1 at the running
+// height Y is caught by the value check's running-slot bind — it does not bypass the check, and there is no
+// separate ProcessConsensus backstop.
 func TestProposerRejectsDecidedValueForWrongSlot(t *testing.T) {
 	ks := testingutils.Testing4SharesSet()
 	version := gloas.DataVersionGloas
