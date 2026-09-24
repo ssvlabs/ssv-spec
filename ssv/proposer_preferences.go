@@ -85,6 +85,11 @@ func NewProposerPreferencesRunner(
 // carry; a preference root depends on the dependent_root, so its shares carry only when the re-derived
 // preference is byte-identical (same root) and are dropped when it changed. Carrying over rather than
 // resetting matters because peers dedup the re-broadcast partials (SIP §7), so a reset would not refill.
+//
+// Two re-emission edge cases are left to node-side retry rather than handled here: a root the prior sub
+// already had at quorum but failed to submit is not re-submitted (quorum fires only on the first crossing),
+// and a re-emission whose preference re-derivation fails freezes no preference and drops the round until a
+// later re-emission (the prior sub is already replaced). Both recover on a subsequent successful re-emission.
 func (r *ProposerPreferencesRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	slot := duty.DutySlot()
 	prev := r.BySlot[slot]

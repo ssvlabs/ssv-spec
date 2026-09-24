@@ -280,8 +280,10 @@ func (v *versionJSON) UnmarshalJSON(data []byte) error {
 }
 
 // MarshalJSON/UnmarshalJSON keep Version as the upstream fork string (see versionJSON) so a Gloas-stamped
-// value is JSON-safe without renumbering pre-Gloas versions, and keep the field order so pre-Gloas vectors
-// stay byte-identical. SSZ is unaffected — the version rides as a uint64.
+// value is JSON-safe without renumbering pre-Gloas versions, and list the fields explicitly to keep the key
+// order (Duty, Version, DataSSZ) so pre-Gloas vectors stay byte-identical. A new struct field must be added
+// to both overrides — TestProposerConsensusDataJSONFieldsInSync guards that. SSZ is unaffected — the version
+// rides as a uint64.
 func (cd *ProposerConsensusData) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		Duty    ValidatorDuty
