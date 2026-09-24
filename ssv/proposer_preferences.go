@@ -83,6 +83,11 @@ func NewProposerPreferencesRunner(
 // round restarts on a freshly derived preference, while the builder-request-auth round's already-collected
 // shares carry over — auth roots carry no dependent_root (SIP #94 §5), so a re-emission re-freezes
 // byte-identical roots and collection continues rather than restarting from zero.
+//
+// The preference round restarts its collection even on a byte-identical re-emission: this operator (and
+// every honest peer) re-broadcasts its preference partial on re-emission, so the fresh collection refills
+// on its own. Auth carry-over is unconditional only because auth roots never change; conditionally carrying
+// preference shares (only when the preference root is unchanged) would add fragile state for no real gain.
 func (r *ProposerPreferencesRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	slot := duty.DutySlot()
 	prev := r.BySlot[slot]
@@ -382,9 +387,9 @@ func (r *ProposerPreferencesSlotRunner) executePreferenceRound(duty *types.Valid
 
 // executeRequestAuthRound freezes one BuilderRequestAuth per distinct configured entry data, signs each
 // under DomainBuilderRequestAuth (chain-independent), and broadcasts them together in a single multi-entry
-// RequestAuthPartialSig container (SIP #94 §5/§7 per Matheus's amendment: one bounded packet per slot, up
-// to MaxBuilderEntries; per-builder isolation is enforced on the receive side per entry). Entries sharing
-// data share a root; zero-length data is skipped; entries are capped at MaxBuilderEntries. The round is
+// RequestAuthPartialSig container (SIP #94 §5/§7: one bounded packet per slot, up to MaxBuilderEntries;
+// per-builder isolation is enforced on the receive side per entry). Entries sharing data share a root;
+// zero-length data is skipped; entries are capped at MaxBuilderEntries. The round is
 // best-effort and never fails the independent preference round (already broadcast by the caller): a
 // malformed entry that fails to sign (e.g. oversized Data) is skipped, and an auth is frozen only once its
 // share is in the outgoing container, so peer shares are never expected for an entry this operator dropped.
@@ -507,7 +512,7 @@ func (r *ProposerPreferencesSlotRunner) processRequestAuth(signedMsg *types.Part
 // that window (and pruning the slot's BySlot entry) is a node-side lifecycle concern, like the other
 // unbounded per-slot state here.
 //
-// Per Matheus's §5/§7 amendment the packet may carry up to MaxBuilderEntries entries: bound the count,
+// Per SIP #94 §5/§7 the packet may carry up to MaxBuilderEntries entries: bound the count,
 // then keep only entries whose root is one of the frozen auths and ignore the rest, so a divergent entry
 // costs that builder and not the whole packet (per-builder isolation on the receive side). This is
 // auth-specific rather than the shared verifyExpectedRoot, which requires the full expected set and would

@@ -50,6 +50,11 @@ func GloasBlocks() tests.SpecTest {
 	if err != nil {
 		panic(err.Error())
 	}
+	// An external-bid value (not self-build) must carry a zero payload_root; a non-zero one trips the §4 rule.
+	externalNonZeroPayload, err := (&gloas.GloasProposalData{Block: gloas.TestingBeaconBlockExternalBuild(gloasDuty.Slot), PayloadRoot: testingutils.TestingGloasPayloadRoot}).MarshalSSZ()
+	if err != nil {
+		panic(err.Error())
+	}
 
 	return valcheck.NewMultiSpecTest(
 		"gloas blocks",
@@ -103,6 +108,15 @@ func GloasBlocks() tests.SpecTest {
 				Network:           types.BeaconTestNetwork,
 				RunnerRole:        types.RoleProposer,
 				Input:             encode(&types.ProposerConsensusData{Duty: *gloasDuty, Version: gloas.DataVersionGloas, DataSSZ: selfBuildZeroPayloadRoot}),
+				ExpectedErrorCode: types.QBFTValueInvalidErrorCode,
+			},
+			{
+				// The mirror image: an external-bid value must carry a zero payload_root (SIP #94 §4); a
+				// non-zero root trips the same presence rule.
+				Name:              "external bid with non-zero payload_root",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleProposer,
+				Input:             encode(&types.ProposerConsensusData{Duty: *gloasDuty, Version: gloas.DataVersionGloas, DataSSZ: externalNonZeroPayload}),
 				ExpectedErrorCode: types.QBFTValueInvalidErrorCode,
 			},
 			{

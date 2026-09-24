@@ -7,8 +7,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// BuilderRequestAuthWrongRoot tests SIP #94 §5/§7 per-builder isolation on the receive side (Matheus's
-// amendment): a peer whose multi-entry RequestAuthPartialSig carries one divergent (non-frozen) auth entry
+// BuilderRequestAuthWrongRoot tests SIP #94 §5/§7 per-builder isolation on the receive side: a peer whose
+// multi-entry RequestAuthPartialSig carries one divergent (non-frozen) auth entry
 // has that entry ignored, not the whole packet rejected, so the entries that do match a frozen root still
 // collect and reach quorum. Here op2 diverges on the second entry — data0 (carried by all three) still
 // reaches quorum and submits, while data1 (which op2 replaced with the divergent entry) falls one share

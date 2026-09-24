@@ -17,8 +17,9 @@ import (
 // Gloas (ePBS §4): ProposerValueCheckF branches on the fork before any type-layer validation — on a
 // Gloas slot it decodes gloas.BeaconBlock directly and never routes through
 // ProposerConsensusData.Validate()/GetBlockData() (which have no Gloas arm, since go-eth2-client's
-// api.VersionedProposal can't carry Gloas). §2's GloasBeaconVoteValueCheckF is here too. These are
-// plain unit tests; the anchor-facing generated vectors are a follow-up (risk-#6 prefix coordination).
+// api.VersionedProposal can't carry Gloas). §2's GloasBeaconVoteValueCheckF is here too. These are plain
+// unit tests for the fork-branch decisions; the portable value-check vectors live in the valcheckproposer
+// and beaconvote spec-test suites.
 
 // TestProposerConsensusDataValidateErrorsOnGloas documents why the value-check must branch on the
 // fork: the types-layer Validate() cannot handle a Gloas value and errors.
