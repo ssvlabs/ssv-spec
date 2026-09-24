@@ -79,15 +79,12 @@ func NewProposerPreferencesRunner(
 }
 
 // StartNewDuty starts an independent per-slot flow for the duty's proposal slot. A duty for a slot that
-// already has one is a re-emission (e.g. after a reorg moved the duty's dependent root): the preference
-// round restarts on a freshly derived preference, while the builder-request-auth round's already-collected
-// shares carry over — auth roots carry no dependent_root (SIP #94 §5), so a re-emission re-freezes
-// byte-identical roots and collection continues rather than restarting from zero.
-//
-// The preference round restarts its collection even on a byte-identical re-emission: this operator (and
-// every honest peer) re-broadcasts its preference partial on re-emission, so the fresh collection refills
-// on its own. Auth carry-over is unconditional only because auth roots never change; conditionally carrying
-// preference shares (only when the preference root is unchanged) would add fragile state for no real gain.
+// already has one is a re-emission (e.g. after a reorg): the replacement sub-runner re-derives and re-freezes
+// its preference, and both rounds carry the prior sub-runner's collected shares over, keyed by signing root
+// (SIP #94 §5). Auth roots carry no dependent_root, so they re-freeze byte-identical and their shares always
+// carry; a preference root depends on the dependent_root, so its shares carry only when the re-derived
+// preference is byte-identical (same root) and are dropped when it changed. Carrying over rather than
+// resetting matters because peers dedup the re-broadcast partials (SIP §7), so a reset would not refill.
 func (r *ProposerPreferencesRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	slot := duty.DutySlot()
 	prev := r.BySlot[slot]
@@ -97,12 +94,13 @@ func (r *ProposerPreferencesRunner) StartNewDuty(duty types.Duty, quorum uint64)
 	// regardless of how the auth round fares (SIP #94 §5 — neither round gates the other).
 	r.BySlot[slot] = sub
 	startErr := sub.StartNewDuty(duty, quorum)
-	// Carry over the prior sub's collected auth shares whenever this sub has a State (setup succeeded), even
-	// if the duty's execution then errored: auth collection is independent of the preference round (SIP #94
-	// §5), so a preference failure on a re-emission must not discard the prior sub's collected auth shares.
-	// carryOverAuthShares no-ops when either State is nil, so this is safe on a setup failure too.
+	// Carry the prior sub's collected shares over whenever this sub has a State (setup succeeded), even if
+	// the duty's execution then errored: the two rounds are independent (SIP #94 §5), so a failure in one
+	// must not discard the other's shares. Both carry-overs no-op when either State is nil, so this is safe
+	// on a setup failure too.
 	if prev != nil {
 		sub.carryOverAuthShares(prev)
+		sub.carryOverPreferenceShares(prev)
 	}
 	return startErr
 }
@@ -582,20 +580,52 @@ func (r *ProposerPreferencesSlotRunner) carryOverAuthShares(prev *ProposerPrefer
 	if prev == nil || prev.GetState() == nil || r.GetState() == nil {
 		return
 	}
-	validatorIndex := r.GetShare().ValidatorIndex
 	for _, auth := range r.BuilderRequestAuths {
 		signingRoot, err := r.authSigningRoot(auth)
 		if err != nil {
 			continue
 		}
-		for signer, sig := range prev.GetState().PreConsensusContainer.GetSignatures(validatorIndex, signingRoot) {
-			r.GetState().PreConsensusContainer.AddSignature(&types.PartialSignatureMessage{
-				PartialSignature: sig,
-				SigningRoot:      signingRoot,
-				Signer:           signer,
-				ValidatorIndex:   validatorIndex,
-			})
-		}
+		r.carryOverSharesForRoot(prev, signingRoot)
+	}
+}
+
+// preferenceSigningRoot is the signing root of this sub's frozen ProposerPreferences under
+// DomainProposerPreferences — the root peers sign in the preference round.
+func (r *ProposerPreferencesSlotRunner) preferenceSigningRoot() ([32]byte, error) {
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.DutySlot())
+	domain, err := r.beacon.DomainData(epoch, types.DomainProposerPreferences)
+	if err != nil {
+		return [32]byte{}, err
+	}
+	return types.ComputeETHSigningRoot(r.ProposerPreferences, domain)
+}
+
+// carryOverPreferenceShares copies the prior sub-runner's collected preference shares for this sub's frozen
+// preference root, so a re-emission that re-derives a byte-identical preference (same signing root) keeps its
+// progress. When the preference changed, the roots differ and nothing carries. Mirrors carryOverAuthShares;
+// needed because peers dedup the re-broadcast partials (SIP §7), so a reset would not refill.
+func (r *ProposerPreferencesSlotRunner) carryOverPreferenceShares(prev *ProposerPreferencesSlotRunner) {
+	if prev == nil || prev.GetState() == nil || r.GetState() == nil || r.ProposerPreferences == nil {
+		return
+	}
+	signingRoot, err := r.preferenceSigningRoot()
+	if err != nil {
+		return
+	}
+	r.carryOverSharesForRoot(prev, signingRoot)
+}
+
+// carryOverSharesForRoot copies the prior sub-runner's collected partial signatures for one signing root
+// into this sub's container. Callers guarantee both States are non-nil.
+func (r *ProposerPreferencesSlotRunner) carryOverSharesForRoot(prev *ProposerPreferencesSlotRunner, signingRoot [32]byte) {
+	validatorIndex := r.GetShare().ValidatorIndex
+	for signer, sig := range prev.GetState().PreConsensusContainer.GetSignatures(validatorIndex, signingRoot) {
+		r.GetState().PreConsensusContainer.AddSignature(&types.PartialSignatureMessage{
+			PartialSignature: sig,
+			SigningRoot:      signingRoot,
+			Signer:           signer,
+			ValidatorIndex:   validatorIndex,
+		})
 	}
 }
 

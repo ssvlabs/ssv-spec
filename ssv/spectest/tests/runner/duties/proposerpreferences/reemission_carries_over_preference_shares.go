@@ -8,12 +8,14 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// ReemissionReplacesSlot tests that re-emitting a proposal slot's duty replaces the slot's flow
-// (SIP #94 §5): the replacement freezes a freshly derived preference and starts a fresh signature
-// container. The prior incarnation had two of the three partials needed for quorum; had the
-// replacement carried its container over, the one post-re-emission partial would complete a quorum
-// and submit — so the asserted absence of a submission is what pins the replacement.
-func ReemissionReplacesSlot() tests.SpecTest {
+// ReemissionCarriesOverPreferenceShares tests SIP #94 §5 preference-share carry-over across a same-slot
+// re-emission — the pair to BuilderRequestAuthReemissionCarryOver on the auth side. The replacement
+// sub-runner re-derives a byte-identical preference (same signing root, the dependent_root being unchanged),
+// so the prior incarnation's collected shares carry over rather than resetting. The first incarnation holds
+// two of the three shares needed for quorum; after the re-emission a single further share completes the
+// quorum and submits — a reset that discarded the carried shares could not, since peers dedup the
+// re-broadcast (SIP §7).
+func ReemissionCarriesOverPreferenceShares() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// First incarnation: seeded as already emitted, with two partials aggregated (one below quorum).
@@ -30,8 +32,8 @@ func ReemissionReplacesSlot() tests.SpecTest {
 	runner.(*ssv.ProposerPreferencesRunner).BySlot[duty.Slot] = firstSub
 
 	return &tests.MsgProcessingSpecTest{
-		Name:          "proposer preferences reemission replaces slot",
-		Documentation: testdoc.ProposerPreferencesReemissionReplacesSlotDoc,
+		Name:          "proposer preferences reemission carries over preference shares",
+		Documentation: testdoc.ProposerPreferencesReemissionCarriesOverPreferenceSharesDoc,
 		Runner:        runner,
 		Duty:          duty, // the re-emission
 		Messages: []*types.SignedSSVMessage{
@@ -40,6 +42,9 @@ func ReemissionReplacesSlot() tests.SpecTest {
 		OutputMessages: []*types.PartialSignatureMessages{
 			testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1), // broadcast by the re-emission
 		},
-		BeaconBroadcastedRoots: []string{},
+		BeaconBroadcastedRoots: []string{
+			// carried op2 + op3 + the post-re-emission op1 share = quorum → the preference submits.
+			testingutils.GetSSZRootNoError(testingutils.TestingSignedProposerPreferences(ks, duty.Slot)),
+		},
 	}
 }
