@@ -149,8 +149,9 @@ func GloasBeaconVoteValueCheckF(
 
 // ProposerValueCheckF validates the proposer QBFT value. dataVersion maps an epoch to its fork and
 // must describe the same chain as network — the caller owns keeping the two in agreement. runningDutySlot
-// reports the running duty's slot so a value for any other slot is rejected before consensus can commit
-// it; pass nil to skip that bind (isolated value-check tests that have no running duty).
+// reports the running duty's slot so a value for any other slot is rejected before consensus can commit it.
+// It is the only slot guard (there is no post-decide backstop), so production callers must pass a real
+// provider; nil skips the bind and is for isolated value-check tests only.
 func ProposerValueCheckF(
 	signer types.BeaconSigner,
 	network types.BeaconNetwork,
@@ -169,8 +170,7 @@ func ProposerValueCheckF(
 		// round leader proposes, so an operator that commits a value for another slot lets the instance
 		// finish on it — after which the real duty can never progress (a decided instance skips later
 		// decisions). Rejecting here keeps a wrong-slot value out of consensus, so honest operators never
-		// commit it. The ProcessConsensus guard is the post-decide backstop for anything that slips past.
-		// runningDutySlot is nil in isolated value-check tests, and reports 0 when no duty is running (a
+		// commit it. runningDutySlot is nil in isolated value-check tests, and reports 0 when no duty is running (a
 		// decided message reaching a runner that never started one) — both skip the bind, as there is no
 		// running slot to compare against.
 		if runningDutySlot != nil {
@@ -187,8 +187,10 @@ func ProposerValueCheckF(
 		// attacker-controlled, so on a Gloas slot cd.Version is pinned to equal the slot's fork below
 		// (SIP #94 §4 says "does not equal", so a version both below and above the fork is rejected).
 		// (The reverse mismatch — a Gloas Version on a pre-Gloas slot — takes the pre-Gloas branch and
-		// is rejected by Validate()'s unknown-version error, so both mismatch directions fail and the
-		// node-side slot-based check agrees with this one on every value.)
+		// is rejected by Validate()'s unknown-version error, so both Gloas-involving mismatch directions
+		// fail. This pin is Gloas-scoped: a pre-Gloas Version mismatched with a pre-Gloas slot is not
+		// checked here — matching the pre-Gloas behavior, and the SIP §4 blanket version pin is narrowed
+		// to Gloas slots to agree with it.)
 		slotVersion := dataVersion(network.EstimatedEpochAtSlot(cd.Duty.Slot))
 		if slotVersion >= gloas.DataVersionGloas {
 			if cd.Version != slotVersion {

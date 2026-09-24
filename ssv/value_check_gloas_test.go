@@ -19,7 +19,7 @@ import (
 // ProposerConsensusData.Validate()/GetBlockData() (which have no Gloas arm, since go-eth2-client's
 // api.VersionedProposal can't carry Gloas). §2's GloasBeaconVoteValueCheckF is here too. These are plain
 // unit tests for the fork-branch decisions; the portable value-check vectors live in the valcheckproposer
-// and beaconvote spec-test suites.
+// and valcheckattestations spec-test suites.
 
 // TestProposerConsensusDataValidateErrorsOnGloas documents why the value-check must branch on the
 // fork: the types-layer Validate() cannot handle a Gloas value and errors.
