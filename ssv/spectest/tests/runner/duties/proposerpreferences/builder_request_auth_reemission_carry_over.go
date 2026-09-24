@@ -10,9 +10,9 @@ import (
 )
 
 // BuilderRequestAuthReemissionCarryOver tests SIP #94 §5 auth-share carry-over across a same-slot
-// re-emission — the pair to ReemissionReplacesSlot, which resets the preference round. Auth roots carry no
-// dependent_root, so a re-emission re-freezes byte-identical roots and already-collected auth shares carry
-// over rather than restarting from zero (peers may not resend). The first incarnation holds two of the
+// re-emission — the preference-round counterpart is ReemissionCarriesOverPreferenceShares. Auth roots carry
+// no dependent_root, so a re-emission always re-freezes byte-identical roots and already-collected auth shares
+// carry over rather than restarting from zero (peers dedup the re-broadcast, SIP §7). The first incarnation holds two of the
 // three data0 shares needed for quorum; after the re-emission a single further share completes the quorum
 // and submits — a reset that discarded the carried shares could not.
 func BuilderRequestAuthReemissionCarryOver() tests.SpecTest {

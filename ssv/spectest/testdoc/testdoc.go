@@ -237,7 +237,7 @@ const ValCheckDutyWrongValidatorPKDoc = "Tests duty value check with wrong valid
 
 // Documentation for proposerpreferences tests
 const ProposerPreferencesConcurrentLookaheadSlotsDoc = "Tests two concurrently-active proposal slots (SIP #94 §5): each is an independent per-slot flow, so both reach quorum and submit"
-const ProposerPreferencesReemissionReplacesSlotDoc = "Tests that re-emitting a proposal slot's duty replaces the slot's flow (SIP #94 §5): the prior incarnation's partials are discarded, so no quorum forms from stale aggregation"
+const ProposerPreferencesReemissionCarriesOverPreferenceSharesDoc = "Tests SIP #94 §5 preference-share carry-over across a same-slot re-emission: a byte-identical re-derived preference (unchanged dependent_root) keeps the same signing root, so already-collected shares carry over instead of resetting — two pre-re-emission shares plus one after complete the quorum and submit"
 const ProposerPreferencesDivergingDependentRootDoc = "Tests SIP #94 §5 honest convergence under a dependent-root split: a diverging peer partial is rejected and the matching minority stays below quorum"
 const ProposerPreferencesBuilderRequestAuthHappyFlowDoc = "Tests the SIP #94 §5 builder-request-auth round: two distinct-data entries yield two auth partials alongside the preference, and each root reaches its own quorum and submits"
 const ProposerPreferencesBuilderRequestAuthSharedDataDedupDoc = "Tests SIP #94 §5 dedup: three entries with two sharing auth data freeze two auths, not three, so the round broadcasts a two-partial container"
