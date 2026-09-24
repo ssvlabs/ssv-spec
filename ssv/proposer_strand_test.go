@@ -142,10 +142,12 @@ func TestProposerSubmitsBlockBeforeEnvelope(t *testing.T) {
 	base.State.RunningInstance.State.DecidedValue = cdBytes
 	base.State.DecidedValue = cdBytes
 
-	// Cross both the block and §6 envelope roots to quorum.
+	// Cross both roots to quorum with envelope-first packets (peers list the envelope entry before the block
+	// entry): if the runner submitted in packet order rather than always block-first, the crossing packet
+	// would publish the reveal before the block and fail the ordering assertion below.
 	require.NoError(t, r.ProcessPostConsensus(testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)))
-	require.NoError(t, r.ProcessPostConsensus(testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)))
-	require.NoError(t, r.ProcessPostConsensus(testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)))
+	require.NoError(t, r.ProcessPostConsensus(testingutils.PostConsensusProposerEnvelopeFirstMsgV(ks.Shares[2], 2, version)))
+	require.NoError(t, r.ProcessPostConsensus(testingutils.PostConsensusProposerEnvelopeFirstMsgV(ks.Shares[3], 3, version)))
 
 	blockRoot := testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version))
 	envelopeRoot := testingutils.GetSSZRootNoError(testingutils.TestingBlindedExecutionPayloadEnvelope(testingutils.TestingDutySlotV(version)))
