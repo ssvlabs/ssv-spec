@@ -218,7 +218,7 @@ var AllTests = []tests.TestF{
 	ptcattester.DivergingObservation,
 
 	proposerpreferences.ConcurrentLookaheadSlots,
-	proposerpreferences.ReemissionReplacesSlot,
+	proposerpreferences.ReemissionCarriesOverPreferenceShares,
 	proposerpreferences.DivergingDependentRoot,
 	proposerpreferences.BuilderRequestAuthHappyFlow,
 	proposerpreferences.BuilderRequestAuthSharedDataDedup,
