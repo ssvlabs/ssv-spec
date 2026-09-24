@@ -172,9 +172,8 @@ func (b *GloasBeaconVote) Decode(data []byte) error {
 // Validate checks the following rules:
 //   - Source and Target checkpoints must be non-nil
 //   - Source.Epoch must be strictly less than Target.Epoch
-//   - AttestationDataIndex must be 0 or 1 (the Gloas same-slot rule; enforced here as well as in
-//     GloasBeaconVoteValueCheckF so a decided value that bypassed the value check — an injected decided
-//     value, or a >f Byzantine leader — can't be signed with an out-of-range index that the network rejects)
+//   - AttestationDataIndex must be 0 or 1 (the Gloas payload-status index; SIP #94 §2). It lives here in the
+//     vote's own Validate, and GloasBeaconVoteValueCheckF enforces it by calling Validate on the decided vote.
 func (b *GloasBeaconVote) Validate() error {
 	if b == nil {
 		return NewError(BeaconVoteNilCheckpointErrorCode, "nil gloas beacon vote")
@@ -233,31 +232,70 @@ type ProposerConsensusData struct {
 	DataSSZ []byte `ssz-max:"8388608"` // 2^23 to account for potential gas limit increases
 }
 
-// MarshalJSON serializes Version as its numeric value so a Gloas-stamped value is JSON-safe: the embedded
-// spec.DataVersion.MarshalJSON panics on out-of-enum versions (Gloas has no upstream string), which would
-// crash any node that JSON-logs a Gloas duty (SIP #94). SSZ is unaffected — the version rides as a uint64.
+// marshalDataVersion renders a consensus-data Version as JSON: the upstream fork string for known versions
+// ("electra", …), and "gloas" for the SIP #94 placeholder — whose spec.DataVersion.MarshalJSON would panic,
+// since it has no upstream string, and would crash any node that JSON-logs a Gloas duty. Keeping the string
+// form leaves pre-Gloas vectors byte-identical to upstream rather than renumbering every version.
+func marshalDataVersion(v spec.DataVersion) (json.RawMessage, error) {
+	if v == gloas.DataVersionGloas {
+		return json.Marshal("gloas")
+	}
+	return v.MarshalJSON()
+}
+
+// unmarshalDataVersion reads a Version written by marshalDataVersion — the fork string ("electra", "gloas",
+// …) — and, for backward compatibility, the bare number earlier revisions wrote.
+func unmarshalDataVersion(raw json.RawMessage) (spec.DataVersion, error) {
+	var s string
+	if err := json.Unmarshal(raw, &s); err == nil {
+		if s == "gloas" {
+			return gloas.DataVersionGloas, nil
+		}
+		var v spec.DataVersion
+		if err := v.UnmarshalJSON(raw); err != nil {
+			return 0, err
+		}
+		return v, nil
+	}
+	var n uint64
+	if err := json.Unmarshal(raw, &n); err != nil {
+		return 0, err
+	}
+	return spec.DataVersion(n), nil
+}
+
+// MarshalJSON keeps the upstream fork string for Version (see marshalDataVersion) so a Gloas-stamped value
+// is JSON-safe without renumbering pre-Gloas versions. SSZ is unaffected — the version rides as a uint64.
 func (cd *ProposerConsensusData) MarshalJSON() ([]byte, error) {
+	version, err := marshalDataVersion(cd.Version)
+	if err != nil {
+		return nil, err
+	}
 	type alias ProposerConsensusData
 	return json.Marshal(&struct {
-		Version uint64
+		Version json.RawMessage
 		*alias
 	}{
-		Version: uint64(cd.Version),
+		Version: version,
 		alias:   (*alias)(cd),
 	})
 }
 
-// UnmarshalJSON reads the numeric Version written by MarshalJSON.
+// UnmarshalJSON reads the Version written by MarshalJSON (see unmarshalDataVersion).
 func (cd *ProposerConsensusData) UnmarshalJSON(data []byte) error {
 	type alias ProposerConsensusData
 	aux := &struct {
-		Version uint64
+		Version json.RawMessage
 		*alias
 	}{alias: (*alias)(cd)}
 	if err := json.Unmarshal(data, aux); err != nil {
 		return err
 	}
-	cd.Version = spec.DataVersion(aux.Version)
+	version, err := unmarshalDataVersion(aux.Version)
+	if err != nil {
+		return err
+	}
+	cd.Version = version
 	return nil
 }
 
@@ -366,30 +404,39 @@ type AggregatorCommitteeConsensusData struct {
 	SyncCommitteeContributions []altair.SyncCommitteeContribution `ssz-max:"4"`
 }
 
-// MarshalJSON serializes Version as its numeric value so a Gloas-stamped value is JSON-safe (see
-// ProposerConsensusData.MarshalJSON; the Gloas aggregator makes this reachable at the first duty).
+// MarshalJSON keeps the upstream fork string for Version (see marshalDataVersion) so a Gloas-stamped value
+// is JSON-safe without renumbering pre-Gloas versions; the Gloas aggregator makes this reachable at the
+// first duty.
 func (a *AggregatorCommitteeConsensusData) MarshalJSON() ([]byte, error) {
+	version, err := marshalDataVersion(a.Version)
+	if err != nil {
+		return nil, err
+	}
 	type alias AggregatorCommitteeConsensusData
 	return json.Marshal(&struct {
-		Version uint64
+		Version json.RawMessage
 		*alias
 	}{
-		Version: uint64(a.Version),
+		Version: version,
 		alias:   (*alias)(a),
 	})
 }
 
-// UnmarshalJSON reads the numeric Version written by MarshalJSON.
+// UnmarshalJSON reads the Version written by MarshalJSON (see unmarshalDataVersion).
 func (a *AggregatorCommitteeConsensusData) UnmarshalJSON(data []byte) error {
 	type alias AggregatorCommitteeConsensusData
 	aux := &struct {
-		Version uint64
+		Version json.RawMessage
 		*alias
 	}{alias: (*alias)(a)}
 	if err := json.Unmarshal(data, aux); err != nil {
 		return err
 	}
-	a.Version = spec.DataVersion(aux.Version)
+	version, err := unmarshalDataVersion(aux.Version)
+	if err != nil {
+		return err
+	}
+	a.Version = version
 	return nil
 }
 
