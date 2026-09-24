@@ -113,3 +113,43 @@ func TestProposerFailedBlockSubmitStillPublishesReveal(t *testing.T) {
 	require.Contains(t, broadcast, envelopeRoot, "the §6 reveal must publish even when the local block submit failed")
 	require.NotContains(t, broadcast, blockRoot, "the failed block submit is not recorded")
 }
+
+// TestProposerSubmitsBlockBeforeEnvelope pins the SIP #94 §4/§6 submit order: a Gloas self-build proposer
+// submits the block before publishing the §6 reveal (a beacon node ignores an envelope whose block it has
+// not seen). It runs the full produce + decide flow, then checks the block root is broadcast before the
+// envelope root. It is a Go unit test because BeaconBroadcastedRoots compares unordered in the spec-test
+// framework, so a vector cannot pin submit order (GloasProposerEnvelopeFirstOrder only pins that both are
+// submitted regardless of incoming packet order).
+func TestProposerSubmitsBlockBeforeEnvelope(t *testing.T) {
+	ks := testingutils.Testing4SharesSet()
+	version := gloas.DataVersionGloas
+	duty := testingutils.TestingProposerDutyV(version)
+
+	r := testingutils.ProposerRunner(ks)
+	bn := r.GetBeaconNode().(*testingutils.TestingBeaconNode)
+	base := r.GetBaseRunner()
+	base.State = ssv.NewRunnerState(ks.Threshold, duty)
+
+	// Self-build produce sets producedEnvelope and starts consensus.
+	for i := types.OperatorID(1); i <= types.OperatorID(ks.Threshold); i++ {
+		require.NoError(t, r.ProcessPreConsensus(testingutils.PreConsensusRandaoMsgV(ks.Shares[i], i, version)))
+	}
+	require.NotNil(t, base.State.RunningInstance)
+
+	cdBytes, err := testingutils.TestProposerConsensusDataV(version).Encode()
+	require.NoError(t, err)
+	base.State.RunningInstance.State.Decided = true
+	base.State.RunningInstance.State.DecidedValue = cdBytes
+	base.State.DecidedValue = cdBytes
+
+	// Cross both the block and §6 envelope roots to quorum.
+	require.NoError(t, r.ProcessPostConsensus(testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)))
+	require.NoError(t, r.ProcessPostConsensus(testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)))
+	require.NoError(t, r.ProcessPostConsensus(testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version)))
+
+	blockRoot := testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version))
+	envelopeRoot := testingutils.GetSSZRootNoError(testingutils.TestingBlindedExecutionPayloadEnvelope(testingutils.TestingDutySlotV(version)))
+	require.Len(t, bn.BroadcastedRoots, 2, "both the block and the §6 reveal are submitted")
+	require.Equal(t, blockRoot, hex.EncodeToString(bn.BroadcastedRoots[0][:]), "block is submitted first")
+	require.Equal(t, envelopeRoot, hex.EncodeToString(bn.BroadcastedRoots[1][:]), "envelope reveal is published after the block")
+}

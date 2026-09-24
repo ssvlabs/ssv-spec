@@ -2,6 +2,7 @@ package ssv
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
@@ -18,7 +19,8 @@ type ProposerRunner struct {
 	// producedEnvelope is this operator's own blinded execution-payload envelope from its Gloas
 	// produceBlockV4 response (SIP #94 §6). It is what lets the operator publish the §6 reveal when it
 	// turns out to be the builder operator — its BeaconBlockRoot equals the decided block root. Nil
-	// pre-Gloas, on an external bid, and until the Gloas produce in ProcessPreConsensus.
+	// pre-Gloas, on an external bid, until the Gloas produce in ProcessPreConsensus, and reset per duty
+	// in executeDuty.
 	//
 	// Deliberately unexported: being the builder operator is a local, non-consensus property, so it stays
 	// out of the JSON post-state root the spec vectors compare — unlike the other runners' per-duty state
@@ -32,7 +34,8 @@ type ProposerRunner struct {
 	// duty (regardless of the submit's result). The §6 reveal is gated on this rather than on a successful
 	// submit, so it still publishes when this operator's own submit fails but the block reaches beacon nodes
 	// from other operators' submits (SIP #94 §6 "retry until they have"; a node ignores an envelope whose
-	// block it has not seen). Transient and unexported, reset per duty in StartNewDuty, like producedEnvelope.
+	// block it has not seen). Transient and unexported, reset per duty in executeDuty (after the duty is
+	// accepted), like producedEnvelope.
 	blockSubmitAttempted bool
 
 	beacon         BeaconNode
@@ -79,7 +82,6 @@ func NewProposerRunner(
 }
 
 func (r *ProposerRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
-	r.blockSubmitAttempted = false
 	return r.BaseRunner.baseStartNewDuty(r, duty, quorum)
 }
 
@@ -177,14 +179,6 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 
 	cd := decidedValue.(*types.ProposerConsensusData)
 	duty := r.BaseRunner.State.StartingDuty.(*types.ValidatorDuty)
-
-	// Backstop for the running-duty slot bind that ProposerValueCheckF enforces during consensus: an
-	// honest cluster never decides a value for another slot, but if one is decided anyway (a directly
-	// injected decided message, or >f Byzantine) this refuses to sign a block for a duty we are not
-	// running (SIP #94 §4). Honest values carry the running slot and never trip it.
-	if cd.Duty.Slot != duty.Slot {
-		return types.NewError(types.ProposerDutySlotMismatchErrorCode, "decided value duty slot does not match running duty slot")
-	}
 
 	// Post-consensus entries: the block root under DomainProposer always, and — on the Gloas self-build
 	// path — the §6 blinded-envelope root under DomainBeaconBuilder, riding the same packet (SIP #94 §4).
@@ -288,15 +282,6 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 		return err
 	}
 
-	crossedQuorum := func(root [32]byte) bool {
-		for _, r := range roots {
-			if r == root {
-				return true
-			}
-		}
-		return false
-	}
-
 	// A Gloas self-build packet carries two roots (block + optional §6 envelope) that reconstruct
 	// independently, so each is handled on its own: a failure on one must not abort the other, and a bad
 	// share dropped by the fallback re-crosses in a later packet. The block (required) is handled first
@@ -304,7 +289,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 	// seen (SIP #94 §4/§6). When both fail the block error takes precedence (the block is the primary output;
 	// the reveal is best-effort), so returning it over the envelope error loses nothing important.
 	var blockErr, envelopeErr error
-	if crossedQuorum(blockSigningRoot) {
+	if slices.Contains(roots, blockSigningRoot) {
 		blockErr = r.submitDecidedBlock(cd, blockSigningRoot, isGloas)
 	}
 	// The optional §6 reveal publishes once the block submit has been attempted (blockSubmitAttempted — not
@@ -530,6 +515,12 @@ func (r *ProposerRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensus
 // 4) Once consensus decides, sign partial block and broadcast
 // 5) collect 2f+1 partial sigs, reconstruct and broadcast valid block sig to the BN
 func (r *ProposerRunner) executeDuty(duty types.Duty) error {
+	// Reset the transient per-duty §6 state here, not in StartNewDuty: executeDuty runs only after the duty
+	// is accepted, so a duty that ShouldProcessDuty rejects (a duplicate or a past slot) cannot wipe the
+	// reveal state of the duty still in flight (SIP #94 §6).
+	r.blockSubmitAttempted = false
+	r.producedEnvelope = nil
+
 	// sign partial randao
 	epoch := r.GetBeaconNode().GetBeaconNetwork().EstimatedEpochAtSlot(duty.DutySlot())
 	msg, err := r.BaseRunner.signBeaconObject(r, duty.(*types.ValidatorDuty), types.SSZUint64(epoch), duty.DutySlot(),
