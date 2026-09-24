@@ -88,3 +88,46 @@ func TestBeaconVoteValidate(t *testing.T) {
 		require.Equal(t, AttestationSourceNotLessThanTargetErrorCode, err.(*Error).Code)
 	})
 }
+
+func TestCommitteeDutyValidate(t *testing.T) {
+	t.Run("nil committee duty", func(t *testing.T) {
+		var duty *CommitteeDuty
+		err := duty.Validate()
+		require.Error(t, err)
+		require.ErrorIs(t, err, &Error{})
+		require.Equal(t, InvalidCommitteeDutyErrorCode, err.(*Error).Code)
+	})
+
+	t.Run("nil validator duty", func(t *testing.T) {
+		err := (&CommitteeDuty{
+			Slot: 1,
+			ValidatorDuties: []*ValidatorDuty{
+				nil,
+			},
+		}).Validate()
+		require.Error(t, err)
+		require.ErrorIs(t, err, &Error{})
+		require.Equal(t, InvalidCommitteeDutyErrorCode, err.(*Error).Code)
+	})
+
+	t.Run("mismatched validator duty slot", func(t *testing.T) {
+		var pubKey phase0.BLSPubKey
+		pubKey[0] = 1
+
+		err := (&CommitteeDuty{
+			Slot: 1,
+			ValidatorDuties: []*ValidatorDuty{
+				{
+					Type:                    BNRoleAttester,
+					PubKey:                  pubKey,
+					Slot:                    2,
+					CommitteeLength:         1,
+					ValidatorCommitteeIndex: 0,
+				},
+			},
+		}).Validate()
+		require.Error(t, err)
+		require.ErrorIs(t, err, &Error{})
+		require.Equal(t, InvalidCommitteeDutyErrorCode, err.(*Error).Code)
+	})
+}

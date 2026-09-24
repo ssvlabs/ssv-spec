@@ -173,4 +173,6 @@ func TestCommitteeStartDutyRejectsNilCommitteeDuty(t *testing.T) {
 	var duty *types.CommitteeDuty
 	err := committee.StartDuty(duty)
 	require.EqualError(t, err, "nil committee duty")
+	require.ErrorIs(t, err, &types.Error{})
+	require.Equal(t, types.InvalidCommitteeDutyErrorCode, err.(*types.Error).Code)
 }
