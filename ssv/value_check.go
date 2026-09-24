@@ -108,8 +108,9 @@ func GloasBeaconVoteValueCheckF(
 		}
 
 		// Validate enforces the GloasBeaconVote invariants — non-nil checkpoints, source < target, and the
-		// same-slot AttestationDataIndex <= 1 rule (SIP #94 §2) — so they hold here and on the committee
-		// runner's post-consensus decode path alike.
+		// AttestationDataIndex <= 1 payload-status rule (SIP #94 §2). The committee runner's post-consensus
+		// path validates a plain BeaconVote (baseVoteAndIndex splits the index off), so this value check is
+		// where the index rule is enforced.
 		if err := bv.Validate(); err != nil {
 			return err
 		}

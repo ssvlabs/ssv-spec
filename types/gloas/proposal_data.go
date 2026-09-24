@@ -18,7 +18,7 @@ type GloasProposalData struct {
 	PayloadRoot phase0.Root `ssz-size:"32"`
 }
 
-// DecodeGloasProposalData unmarshals the Gloas DataSSZ wrapper (SIP #94 §4), mirroring DecodeBeaconBlock.
+// DecodeGloasProposalData unmarshals the Gloas DataSSZ wrapper (SIP #94 §4).
 func DecodeGloasProposalData(dataSSZ []byte) (*GloasProposalData, error) {
 	d := &GloasProposalData{}
 	if err := d.UnmarshalSSZ(dataSSZ); err != nil {

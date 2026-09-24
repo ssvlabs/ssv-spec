@@ -59,21 +59,10 @@ type SignedBeaconBlock struct {
 	Signature phase0.BLSSignature `ssz-size:"96"`
 }
 
-// Encode/Decode are the convenience wrappers the proposer runner uses to marshal the block into the
-// QBFT DataSSZ and to publish the signed block.
+// Encode/Decode are SSZ convenience wrappers for the Gloas block and its signed form. (At a Gloas slot the
+// proposer's QBFT DataSSZ is a GloasProposalData wrapping the block, not the bare block.)
 func (b *BeaconBlock) Encode() ([]byte, error)  { return b.MarshalSSZ() }
 func (b *BeaconBlock) Decode(data []byte) error { return b.UnmarshalSSZ(data) }
 
 func (b *SignedBeaconBlock) Encode() ([]byte, error)  { return b.MarshalSSZ() }
 func (b *SignedBeaconBlock) Decode(data []byte) error { return b.UnmarshalSSZ(data) }
-
-// DecodeBeaconBlock unmarshals a Gloas BeaconBlock from QBFT consensus DataSSZ. The Gloas proposer
-// path uses it in place of ProposerConsensusData.GetBlockData (which has no Gloas version); the
-// returned block doubles as the ssz.HashRoot the proposer signs.
-func DecodeBeaconBlock(dataSSZ []byte) (*BeaconBlock, error) {
-	b := &BeaconBlock{}
-	if err := b.UnmarshalSSZ(dataSSZ); err != nil {
-		return nil, err
-	}
-	return b, nil
-}
