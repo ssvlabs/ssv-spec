@@ -3,6 +3,7 @@ package types
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/attestantio/go-eth2-client/api"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
@@ -232,70 +233,73 @@ type ProposerConsensusData struct {
 	DataSSZ []byte `ssz-max:"8388608"` // 2^23 to account for potential gas limit increases
 }
 
-// marshalDataVersion renders a consensus-data Version as JSON: the upstream fork string for known versions
-// ("electra", …), and "gloas" for the SIP #94 placeholder — whose spec.DataVersion.MarshalJSON would panic,
-// since it has no upstream string, and would crash any node that JSON-logs a Gloas duty. Keeping the string
-// form leaves pre-Gloas vectors byte-identical to upstream rather than renumbering every version.
-func marshalDataVersion(v spec.DataVersion) (json.RawMessage, error) {
-	if v == gloas.DataVersionGloas {
+// versionJSON is the JSON codec for a consensus-data Version. It keeps the upstream fork string for known
+// versions ("electra", …), writes "gloas" for the SIP #94 placeholder, and falls back to the bare number
+// for any other out-of-enum value — spec.DataVersion.MarshalJSON panics on those, which would crash a node
+// that JSON-logs such a value. Decoding accepts the string (any case), the number, and a missing/null value
+// (as version 0). Keeping the string form leaves pre-Gloas vectors byte-identical to upstream rather than
+// renumbering every version.
+type versionJSON spec.DataVersion
+
+func (v versionJSON) MarshalJSON() ([]byte, error) {
+	dv := spec.DataVersion(v)
+	switch {
+	case dv == gloas.DataVersionGloas:
 		return json.Marshal("gloas")
+	case dv.String() == "unknown": // out-of-enum: spec.DataVersion.MarshalJSON would panic
+		return json.Marshal(uint64(dv))
+	default:
+		return dv.MarshalJSON()
 	}
-	return v.MarshalJSON()
 }
 
-// unmarshalDataVersion reads a Version written by marshalDataVersion — the fork string ("electra", "gloas",
-// …) — and, for backward compatibility, the bare number earlier revisions wrote.
-func unmarshalDataVersion(raw json.RawMessage) (spec.DataVersion, error) {
+func (v *versionJSON) UnmarshalJSON(data []byte) error {
+	if len(data) == 0 || string(data) == "null" {
+		*v = 0
+		return nil
+	}
 	var s string
-	if err := json.Unmarshal(raw, &s); err == nil {
-		if s == "gloas" {
-			return gloas.DataVersionGloas, nil
+	if err := json.Unmarshal(data, &s); err == nil {
+		if strings.EqualFold(s, "gloas") {
+			*v = versionJSON(gloas.DataVersionGloas)
+			return nil
 		}
-		var v spec.DataVersion
-		if err := v.UnmarshalJSON(raw); err != nil {
-			return 0, err
+		var dv spec.DataVersion
+		if err := dv.UnmarshalJSON(data); err != nil {
+			return err
 		}
-		return v, nil
+		*v = versionJSON(dv)
+		return nil
 	}
 	var n uint64
-	if err := json.Unmarshal(raw, &n); err != nil {
-		return 0, err
+	if err := json.Unmarshal(data, &n); err != nil {
+		return err
 	}
-	return spec.DataVersion(n), nil
+	*v = versionJSON(n)
+	return nil
 }
 
-// MarshalJSON keeps the upstream fork string for Version (see marshalDataVersion) so a Gloas-stamped value
-// is JSON-safe without renumbering pre-Gloas versions. SSZ is unaffected — the version rides as a uint64.
+// MarshalJSON/UnmarshalJSON keep Version as the upstream fork string (see versionJSON) so a Gloas-stamped
+// value is JSON-safe without renumbering pre-Gloas versions, and keep the field order so pre-Gloas vectors
+// stay byte-identical. SSZ is unaffected — the version rides as a uint64.
 func (cd *ProposerConsensusData) MarshalJSON() ([]byte, error) {
-	version, err := marshalDataVersion(cd.Version)
-	if err != nil {
-		return nil, err
-	}
-	type alias ProposerConsensusData
 	return json.Marshal(&struct {
-		Version json.RawMessage
-		*alias
-	}{
-		Version: version,
-		alias:   (*alias)(cd),
-	})
+		Duty    ValidatorDuty
+		Version versionJSON
+		DataSSZ []byte
+	}{cd.Duty, versionJSON(cd.Version), cd.DataSSZ})
 }
 
-// UnmarshalJSON reads the Version written by MarshalJSON (see unmarshalDataVersion).
 func (cd *ProposerConsensusData) UnmarshalJSON(data []byte) error {
-	type alias ProposerConsensusData
 	aux := &struct {
-		Version json.RawMessage
-		*alias
-	}{alias: (*alias)(cd)}
+		Duty    ValidatorDuty
+		Version versionJSON
+		DataSSZ []byte
+	}{}
 	if err := json.Unmarshal(data, aux); err != nil {
 		return err
 	}
-	version, err := unmarshalDataVersion(aux.Version)
-	if err != nil {
-		return err
-	}
-	cd.Version = version
+	cd.Duty, cd.Version, cd.DataSSZ = aux.Duty, spec.DataVersion(aux.Version), aux.DataSSZ
 	return nil
 }
 
@@ -404,39 +408,27 @@ type AggregatorCommitteeConsensusData struct {
 	SyncCommitteeContributions []altair.SyncCommitteeContribution `ssz-max:"4"`
 }
 
-// MarshalJSON keeps the upstream fork string for Version (see marshalDataVersion) so a Gloas-stamped value
-// is JSON-safe without renumbering pre-Gloas versions; the Gloas aggregator makes this reachable at the
-// first duty.
+// MarshalJSON keeps Version as the upstream fork string (see versionJSON) so a Gloas-stamped value is
+// JSON-safe without renumbering pre-Gloas versions; the Gloas aggregator makes this reachable at the first
+// duty. Version is the struct's first field, so the embedded-alias order already matches.
 func (a *AggregatorCommitteeConsensusData) MarshalJSON() ([]byte, error) {
-	version, err := marshalDataVersion(a.Version)
-	if err != nil {
-		return nil, err
-	}
 	type alias AggregatorCommitteeConsensusData
 	return json.Marshal(&struct {
-		Version json.RawMessage
+		Version versionJSON
 		*alias
-	}{
-		Version: version,
-		alias:   (*alias)(a),
-	})
+	}{versionJSON(a.Version), (*alias)(a)})
 }
 
-// UnmarshalJSON reads the Version written by MarshalJSON (see unmarshalDataVersion).
 func (a *AggregatorCommitteeConsensusData) UnmarshalJSON(data []byte) error {
 	type alias AggregatorCommitteeConsensusData
 	aux := &struct {
-		Version json.RawMessage
+		Version versionJSON
 		*alias
 	}{alias: (*alias)(a)}
 	if err := json.Unmarshal(data, aux); err != nil {
 		return err
 	}
-	version, err := unmarshalDataVersion(aux.Version)
-	if err != nil {
-		return err
-	}
-	a.Version = version
+	a.Version = spec.DataVersion(aux.Version)
 	return nil
 }
 
