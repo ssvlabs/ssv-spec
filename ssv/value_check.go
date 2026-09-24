@@ -189,8 +189,8 @@ func ProposerValueCheckF(
 		// (The reverse mismatch — a Gloas Version on a pre-Gloas slot — takes the pre-Gloas branch and
 		// is rejected by Validate()'s unknown-version error, so both Gloas-involving mismatch directions
 		// fail. This pin is Gloas-scoped: a pre-Gloas Version mismatched with a pre-Gloas slot is not
-		// checked here — matching the pre-Gloas behavior, and the SIP §4 blanket version pin is narrowed
-		// to Gloas slots to agree with it.)
+		// checked here, matching the pre-Gloas behavior. SIP §4 still states a blanket version pin;
+		// narrowing it to Gloas slots to match this code is proposed but not yet landed.)
 		slotVersion := dataVersion(network.EstimatedEpochAtSlot(cd.Duty.Slot))
 		if slotVersion >= gloas.DataVersionGloas {
 			if cd.Version != slotVersion {
