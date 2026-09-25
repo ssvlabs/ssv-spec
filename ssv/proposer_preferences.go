@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -146,7 +145,7 @@ func (r *ProposerPreferencesRunner) ProcessPostConsensus(signedMsg *types.Partia
 
 // expectedPreConsensusRootsAndDomain / expectedPostConsensusRootsAndDomains / executeDuty run on the
 // per-slot sub-runners, never on the dispatcher.
-func (r *ProposerPreferencesRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *ProposerPreferencesRunner) expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	return nil, types.DomainError, fmt.Errorf("proposer preferences dispatcher has no frozen preference")
 }
 
@@ -324,11 +323,11 @@ func (r *ProposerPreferencesSlotRunner) ProcessPostConsensus(signedMsg *types.Pa
 	return types.NewError(types.ProposerPreferencesNoPostConsensusPhaseErrorCode, "no post consensus phase for proposer preferences")
 }
 
-func (r *ProposerPreferencesSlotRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *ProposerPreferencesSlotRunner) expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	if r.ProposerPreferences == nil {
 		return nil, types.DomainError, types.NewError(types.ProposerPreferencesNoPreferenceErrorCode, "no frozen preference")
 	}
-	return []ssz.HashRoot{r.ProposerPreferences}, types.DomainProposerPreferences, nil
+	return []types.HashRoot{r.ProposerPreferences}, types.DomainProposerPreferences, nil
 }
 
 // expectedPostConsensusRootsAndDomains an INTERNAL function, returns the expected post-consensus roots to sign
