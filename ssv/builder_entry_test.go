@@ -30,6 +30,12 @@ func TestBuilderEntryAuthData(t *testing.T) {
 		{"ipv6 literal compressed", nil, "https://[0:0:0:0:0:0:0:1]:8443/", "[::1]"},
 		{"ipv4-mapped ipv6 stays hex-only", nil, "https://[::ffff:192.0.2.1]/", "[::ffff:c000:201]"},
 
+		// Case-folding boundary between Go and upstream Python (SIP #94 §5, builder-specs #168): both fold
+		// U+212A (Kelvin sign) to ASCII "k" and accept it, but only Go folds U+0130 (İ) to ASCII — Python folds
+		// it to "i" + U+0307, fails isascii() and rejects, so U+0130 is rejected to keep the auth root aligned.
+		{"U+212A (Kelvin) folds to ascii, accepted", nil, "https://\u212Aevin.example/", "kevin.example"},
+		{"U+0130 (dotted I) rejected to match upstream", nil, "https://\u0130stanbul.example/", ""},
+
 		// No derivable ASCII hostname → no default (the auth round skips the entry).
 		{"no scheme yields no host", nil, "builder.example.com", ""},
 		{"non-ascii host must be punycode", nil, "https://exämple.com/", ""},
