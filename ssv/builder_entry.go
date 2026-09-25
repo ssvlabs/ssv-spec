@@ -41,7 +41,15 @@ func defaultAuthData(rawURL string) []byte {
 		return nil
 	}
 	// url.Hostname drops userinfo and the port and unbrackets an IPv6 literal.
-	host := strings.ToLower(u.Hostname())
+	host := u.Hostname()
+	// U+0130 (İ) is the one code point where Go's strings.ToLower and Python's str.lower disagree on the
+	// result's ASCII-ness: Go folds it to ASCII "i", but upstream's Python folds it to "i" + U+0307 (a
+	// combining dot) and rejects the host via isascii(). Reject it before lowercasing so the derived auth
+	// root can't diverge from upstream's (SIP #94 §5, builder-specs #168).
+	if strings.ContainsRune(host, '\u0130') {
+		return nil
+	}
+	host = strings.ToLower(host)
 	if host == "" || !isASCII(host) {
 		return nil
 	}

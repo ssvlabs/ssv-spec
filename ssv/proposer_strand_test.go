@@ -63,6 +63,59 @@ func TestProposerBadEnvelopeShareDoesNotStrandBlock(t *testing.T) {
 	require.Equal(t, blockRoot, hex.EncodeToString(bn.BroadcastedRoots[0][:]))
 }
 
+// TestProposerBadBlockShareDoesNotStrandEnvelope is the mirror of the bad-envelope case: the block and §6
+// envelope roots reconstruct independently, so an invalid block share — which crosses quorum-count then fails
+// reconstruction — must not strand the envelope reveal. The envelope reaches quorum while the block fails and is
+// held (the reveal gates on the block submit being attempted, not on envelope quorum alone); once a later good
+// packet re-crosses the block, the reveal still publishes, after the block (SIP #94 §4/§6). It runs the full
+// produce + decide flow because the reveal needs producedEnvelope, and is a Go unit test because the
+// reconstruction failure is an untyped BLS error the MsgProcessingSpecTest framework can't match.
+func TestProposerBadBlockShareDoesNotStrandEnvelope(t *testing.T) {
+	ks := testingutils.Testing4SharesSet()
+	version := gloas.DataVersionGloas
+	duty := testingutils.TestingProposerDutyV(version)
+
+	r := testingutils.ProposerRunner(ks)
+	bn := r.GetBeaconNode().(*testingutils.TestingBeaconNode)
+	base := r.GetBaseRunner()
+	base.State = ssv.NewRunnerState(ks.Threshold, duty)
+
+	// Self-build produce sets producedEnvelope (needed for the reveal to publish) and starts consensus.
+	for i := types.OperatorID(1); i <= types.OperatorID(ks.Threshold); i++ {
+		require.NoError(t, r.ProcessPreConsensus(testingutils.PreConsensusRandaoMsgV(ks.Shares[i], i, version)))
+	}
+	require.NotNil(t, base.State.RunningInstance)
+
+	cdBytes, err := testingutils.TestProposerConsensusDataV(version).Encode()
+	require.NoError(t, err)
+	base.State.RunningInstance.State.Decided = true
+	base.State.RunningInstance.State.DecidedValue = cdBytes
+	base.State.DecidedValue = cdBytes
+
+	// Two valid full packets (block + envelope), below the quorum of three.
+	require.NoError(t, r.ProcessPostConsensus(testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version)))
+	require.NoError(t, r.ProcessPostConsensus(testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version)))
+	require.Empty(t, bn.BroadcastedRoots, "nothing submitted before quorum")
+
+	// op3 crosses both roots to quorum-count with an invalid block share (envelope share good). Block
+	// reconstruction fails and its bad share is dropped (block back below quorum); the envelope reaches quorum but
+	// is held, because the reveal gates on the block submit being attempted — which has not happened yet.
+	err = r.ProcessPostConsensus(testingutils.PostConsensusProposerBadBlockShareMsgV(ks.Shares[3], 3, version))
+	require.Error(t, err, "block reconstruction fails on the bad share")
+	require.Contains(t, err.Error(), "invalid signatures")
+	require.Empty(t, bn.BroadcastedRoots, "envelope quorum reached but held: the block was not submitted")
+
+	// op4's good packet re-crosses the block to quorum: the block submits, and the already-quorum envelope reveal
+	// then publishes (block first). The bad block share did not strand the envelope.
+	require.NoError(t, r.ProcessPostConsensus(testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, version)))
+
+	blockRoot := testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version))
+	envelopeRoot := testingutils.GetSSZRootNoError(testingutils.TestingBlindedExecutionPayloadEnvelope(testingutils.TestingDutySlotV(version)))
+	require.Len(t, bn.BroadcastedRoots, 2, "both the block and the §6 reveal are submitted after recovery")
+	require.Equal(t, blockRoot, hex.EncodeToString(bn.BroadcastedRoots[0][:]), "block is submitted first")
+	require.Equal(t, envelopeRoot, hex.EncodeToString(bn.BroadcastedRoots[1][:]), "envelope reveal publishes after the block")
+}
+
 // TestProposerFailedBlockSubmitStillPublishesReveal pins SIP #94 §6 "retry until they have": the §6 reveal is
 // gated on the block submit being attempted, not on it succeeding, so when this operator's own block submit
 // fails — the block still reaches beacon nodes from the other operators' submits, and a node ignores an
