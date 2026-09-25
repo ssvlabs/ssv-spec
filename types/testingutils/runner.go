@@ -7,9 +7,73 @@ import (
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 var TestingHighestDecidedSlot = phase0.Slot(0)
+
+// committeeVoteValueCheckF routes a committee consensus value to the fork-appropriate value check:
+// GloasBeaconVoteValueCheckF at Gloas slots (SIP #94 §2), BeaconVoteValueCheckF before. The fork must
+// be decided by the duty's slot, not by the value's shape — otherwise a pre-Gloas BeaconVote proposed
+// at a Gloas slot would pass the check and then fail to decode in ProcessConsensus, killing the duty
+// after decision (and contradicting the GloasPreGloasVote value-check vector).
+//
+// The slot is resolved lazily because the runner, and the QBFT config holding this check, are built
+// before the duty is known: production constructs the checker per duty, so the harness reads the
+// running duty at call time.
+func committeeVoteValueCheckF(
+	signer types.BeaconSigner,
+	slotF func() phase0.Slot,
+	sharePublicKeys []types.ShareValidatorPK,
+	expectedSource phase0.Epoch,
+	expectedTarget phase0.Epoch,
+) qbft.ProposedValueCheckF {
+	return func(data []byte) error {
+		slot := slotF()
+		if VersionBySlot(slot) >= gloas.DataVersionGloas {
+			return ssv.GloasBeaconVoteValueCheckF(signer, slot, sharePublicKeys, expectedSource, expectedTarget)(data)
+		}
+		return ssv.BeaconVoteValueCheckF(signer, slot, sharePublicKeys, expectedSource, expectedTarget)(data)
+	}
+}
+
+// committeeDutySlotF resolves the running duty's slot for the committee value check.
+//
+// A missing runner means the construction site never back-patched the reference, which would silently
+// validate every duty — Gloas ones included — against TestingDutySlot's pre-Gloas fork and surface as
+// a bogus DecodeBeaconVoteErrorCode. That is a wiring bug, so fail loudly rather than fall back. Not
+// having started a duty yet is legitimate (e.g. DontStartDuty tests) and keeps the previous
+// TestingDutySlot behaviour.
+func committeeDutySlotF(runner *ssv.Runner) func() phase0.Slot {
+	return func() phase0.Slot {
+		if runner == nil || *runner == nil {
+			panic("committee value check has no runner: the value check was built without back-patching the runner reference")
+		}
+		state := (*runner).GetBaseRunner().State
+		if state == nil || state.StartingDuty == nil {
+			return TestingDutySlot
+		}
+		return state.StartingDuty.DutySlot()
+	}
+}
+
+// proposerDutySlotF resolves the running duty's slot for the proposer value check's running-slot bind
+// (ProposerValueCheckF). It reports 0 — "no running duty" — when the runner has not started one, so the
+// bind is skipped rather than compared against a stand-in slot; a started proposal duty always has a
+// non-zero (post-genesis) slot. A missing runner means the construction site never back-patched the
+// reference, a wiring bug, so it fails loudly rather than silently skipping the bind on every value.
+func proposerDutySlotF(runner *ssv.Runner) func() phase0.Slot {
+	return func() phase0.Slot {
+		if runner == nil || *runner == nil {
+			panic("proposer value check has no runner: the value check was built without back-patching the runner reference")
+		}
+		state := (*runner).GetBaseRunner().State
+		if state == nil || state.StartingDuty == nil {
+			return 0
+		}
+		return state.StartingDuty.DutySlot()
+	}
+}
 
 var CommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleCommittee, keySet)
@@ -51,6 +115,29 @@ var VoluntaryExitRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleVoluntaryExit, keySet)
 }
 
+var PTCAttesterRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.RolePTCAttester, keySet)
+}
+
+var ProposerPreferencesRunner = func(keySet *TestKeySet) ssv.Runner {
+	return baseRunner(types.RoleProposerPreferences, keySet)
+}
+
+// TestingBuilderEntries are two distinct-data builder entries for the §5 builder-request-auth round: two
+// distinct auth data means two frozen BuilderRequestAuths and two independent per-root quorums.
+var TestingBuilderEntries = []ssv.BuilderEntry{
+	{Data: []byte("builder-auth-token-1"), URL: "https://builder-1.example"},
+	{Data: []byte("builder-auth-token-2"), URL: "https://builder-2.example"},
+}
+
+// ProposerPreferencesRunnerWithBuilderEntries builds a proposer-preferences runner with TestingBuilderEntries
+// configured, so executing the duty also runs the §5 builder-request-auth round.
+var ProposerPreferencesRunnerWithBuilderEntries = func(keySet *TestKeySet) ssv.Runner {
+	runner := baseRunner(types.RoleProposerPreferences, keySet)
+	runner.(*ssv.ProposerPreferencesRunner).BuilderEntries = TestingBuilderEntries
+	return runner
+}
+
 var UnknownDutyTypeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(UnknownDutyType, keySet)
 }
@@ -74,7 +161,8 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 	var opSigner *types.OperatorSigner
 	var valCheck qbft.ProposedValueCheckF
 	var contr *qbft.Controller
-
+	// Assigned once the runner exists; the committee value check reads the running duty through it.
+	var valCheckRunner ssv.Runner
 	km := NewTestingKeyManager()
 
 	if len(shareMap) > 0 {
@@ -117,11 +205,12 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 		// Create ValueCheck
 		switch role {
 		case types.RoleCommittee:
-			valCheck = ssv.BeaconVoteValueCheckF(km, TestingDutySlot,
+			valCheck = committeeVoteValueCheckF(km, committeeDutySlotF(&valCheckRunner),
 				sharePubKeys, TestBeaconVote.Source.Epoch, TestBeaconVote.Target.Epoch)
 		case types.RoleProposer:
 			valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
-				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey)
+				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey, VersionByEpoch,
+				proposerDutySlotF(&valCheckRunner))
 		case types.RoleAggregatorCommittee:
 			valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
 		default:
@@ -184,6 +273,26 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 			km,
 			opSigner,
 		)
+	case types.RolePTCAttester:
+		runner, err = ssv.NewPTCAttesterRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			beacon,
+			net,
+			km,
+			opSigner,
+		)
+	case types.RoleProposerPreferences:
+		runner, err = ssv.NewProposerPreferencesRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			beacon,
+			net,
+			km,
+			opSigner,
+			types.DefaultGasLimit,
+			nil, // builder entries: none by default; the §5 auth-round tests set the exported BuilderEntries field
+		)
 	case types.RoleAggregatorCommittee:
 		runner, err = ssv.NewAggregatorCommitteeRunner(
 			types.BeaconTestNetwork,
@@ -212,6 +321,7 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 	default:
 		return nil, errors.New("unknown role type")
 	}
+	valCheckRunner = runner
 	return runner, err
 }
 
@@ -226,7 +336,8 @@ var baseRunner = func(role types.RunnerRole, keySet *TestKeySet) ssv.Runner {
 var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.Runner, error) {
 	share := TestingShare(keySet, TestingValidatorIndex)
 	km := NewTestingKeyManager()
-
+	// Assigned once the runner exists; the committee value check reads the running duty through it.
+	var valCheckRunner ssv.Runner
 	// Identifier
 	var identifier types.MessageID
 	if role == types.RoleCommittee || role == types.RoleAggregatorCommittee {
@@ -253,11 +364,12 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	var valCheck qbft.ProposedValueCheckF
 	switch role {
 	case types.RoleCommittee:
-		valCheck = ssv.BeaconVoteValueCheckF(km, TestingDutySlot,
+		valCheck = committeeVoteValueCheckF(km, committeeDutySlotF(&valCheckRunner),
 			[]types.ShareValidatorPK{share.SharePubKey}, TestBeaconVote.Source.Epoch, TestBeaconVote.Target.Epoch)
 	case types.RoleProposer:
 		valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
-			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, share.SharePubKey)
+			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, share.SharePubKey, VersionByEpoch,
+			proposerDutySlotF(&valCheckRunner))
 	case types.RoleAggregatorCommittee:
 		valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
 	default:
@@ -323,6 +435,26 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			km,
 			opSigner,
 		)
+	case types.RolePTCAttester:
+		runner, err = ssv.NewPTCAttesterRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+		)
+	case types.RoleProposerPreferences:
+		runner, err = ssv.NewProposerPreferencesRunner(
+			types.BeaconTestNetwork,
+			shareMap,
+			NewTestingBeaconNode(),
+			net,
+			km,
+			opSigner,
+			types.DefaultGasLimit,
+			nil, // builder entries: none by default; the §5 auth-round tests set the exported BuilderEntries field
+		)
 	case types.RoleAggregatorCommittee:
 		runner, err = ssv.NewAggregatorCommitteeRunner(
 			types.BeaconTestNetwork,
@@ -351,6 +483,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	default:
 		return nil, errors.New("unknown role type")
 	}
+	valCheckRunner = runner
 	return runner, err
 }
 
@@ -359,19 +492,6 @@ var SSVDecidingMsgsForHeight = func(consensusData *types.ProposerConsensusData, 
 	byts, _ := consensusData.Encode()
 	r, _ := qbft.HashDataRoot(byts)
 	fullData, _ := consensusData.MarshalSSZ()
-
-	return SSVDecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
-}
-
-var SSVDecidingMsgsForHeightAndBeaconVote = func(beaconVote *types.BeaconVote, msgIdentifier []byte, height qbft.Height, keySet *TestKeySet) []*types.SignedSSVMessage {
-	fullData, err := beaconVote.Encode()
-	if err != nil {
-		panic(err)
-	}
-	r, err := qbft.HashDataRoot(fullData)
-	if err != nil {
-		panic(err)
-	}
 
 	return SSVDecidingMsgsForHeightWithRoot(r, fullData, msgIdentifier, height, keySet)
 }

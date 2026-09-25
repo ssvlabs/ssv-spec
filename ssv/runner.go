@@ -20,6 +20,26 @@ type Getters interface {
 	GetNetwork() Network
 }
 
+// PostConsensusRoot pairs a post-consensus signing root with the domain it is signed under and whether it
+// is required in the packet. Most runners sign every root under one domain, all required; the Gloas
+// proposer signs the block root under DomainProposer (required) and the §6 envelope root under
+// DomainBeaconBuilder (optional — a block-only packet is still final; SIP #94 §4/§6).
+type PostConsensusRoot struct {
+	Root     ssz.HashRoot
+	Domain   phase0.DomainType
+	Optional bool
+}
+
+// SingleDomainPostConsensusRoots pairs each root with one domain, all required — the shape every runner
+// but the Gloas proposer returns from expectedPostConsensusRootsAndDomains.
+func SingleDomainPostConsensusRoots(domain phase0.DomainType, roots ...ssz.HashRoot) []PostConsensusRoot {
+	ret := make([]PostConsensusRoot, 0, len(roots))
+	for _, r := range roots {
+		ret = append(ret, PostConsensusRoot{Root: r, Domain: domain})
+	}
+	return ret
+}
+
 type Runner interface {
 	types.Encoder
 	types.Root
@@ -38,8 +58,10 @@ type Runner interface {
 
 	// expectedPreConsensusRootsAndDomain an INTERNAL function, returns the expected pre-consensus roots to sign
 	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error)
-	// expectedPostConsensusRootsAndDomain an INTERNAL function, returns the expected post-consensus roots to sign
-	expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error)
+	// expectedPostConsensusRootsAndDomains an INTERNAL function, returns the expected post-consensus roots
+	// to sign, each paired with the domain it is signed under (SIP #94 §4: the Gloas proposer signs the
+	// block root under DomainProposer and the §6 envelope root under DomainBeaconBuilder).
+	expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error)
 	// executeDuty an INTERNAL function, executes a duty.
 	executeDuty(duty types.Duty) error
 }

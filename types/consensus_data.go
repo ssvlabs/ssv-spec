@@ -1,7 +1,9 @@
 package types
 
 import (
+	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/attestantio/go-eth2-client/api"
 	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
@@ -14,6 +16,8 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
+
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 type Contribution struct {
@@ -138,6 +142,56 @@ func (b *BeaconVote) Validate() error {
 	return nil
 }
 
+// GloasBeaconVote is the Gloas (ePBS) variant of BeaconVote — the value the CommitteeRunner agrees on
+// for Gloas slots (SIP #94 §2). It mirrors BeaconVote (BlockRoot + Source/Target checkpoints, 112 bytes)
+// and appends the BN-supplied AttestationData.Index for a fixed 120-byte SSZ encoding. In Gloas the
+// index is fork-choice-dependent (0 = payload EMPTY, 1 = FULL for non-same-slot attestations; 0 for
+// same-slot) and part of the signed attestation root, so it must travel through consensus rather than be
+// reconstructed locally. A distinct type (rather than extending BeaconVote in place) keeps pre-Gloas
+// wire bytes unchanged and makes the two forms mutually-rejecting on length: the 120B-vs-112B difference
+// fails a cross-fork decode cleanly.
+//
+// After the Gloas fork has activated on all networks and pre-Gloas slots are unreachable, a follow-up
+// SIP can retire BeaconVote and rename GloasBeaconVote back to BeaconVote.
+type GloasBeaconVote struct {
+	BlockRoot            phase0.Root `ssz-size:"32"`
+	Source               *phase0.Checkpoint
+	Target               *phase0.Checkpoint
+	AttestationDataIndex phase0.CommitteeIndex // copied from AttestationData.Index (0 or 1)
+}
+
+// Encode the GloasBeaconVote object
+func (b *GloasBeaconVote) Encode() ([]byte, error) {
+	return b.MarshalSSZ()
+}
+
+// Decode the GloasBeaconVote object
+func (b *GloasBeaconVote) Decode(data []byte) error {
+	return b.UnmarshalSSZ(data)
+}
+
+// Validate checks the following rules:
+//   - Source and Target checkpoints must be non-nil
+//   - Source.Epoch must be strictly less than Target.Epoch
+//   - AttestationDataIndex must be 0 or 1 (the Gloas payload-status index; SIP #94 §2). It lives here in the
+//     vote's own Validate, and GloasBeaconVoteValueCheckF enforces it by calling Validate on the decided vote.
+func (b *GloasBeaconVote) Validate() error {
+	if b == nil {
+		return NewError(BeaconVoteNilCheckpointErrorCode, "nil gloas beacon vote")
+	}
+	if b.Source == nil || b.Target == nil {
+		return NewError(BeaconVoteNilCheckpointErrorCode, "nil source or target checkpoint")
+	}
+	if b.AttestationDataIndex > 1 {
+		return NewError(GloasBeaconVoteInvalidIndexErrorCode,
+			fmt.Sprintf("attestation data index %d must be 0 or 1", b.AttestationDataIndex))
+	}
+	if b.Source.Epoch >= b.Target.Epoch {
+		return NewError(AttestationSourceNotLessThanTargetErrorCode, "attestation data source >= target")
+	}
+	return nil
+}
+
 // ProposerConsensusData holds all relevant data about proposer duty for consensus
 type ProposerConsensusData struct {
 	// Duty max size is
@@ -177,6 +231,78 @@ type ProposerConsensusData struct {
 	// 		total_size_without_execution_payload = KZG_PROOFS_SIZE + BLOBS_SIZE + BEACON_BLOCK_OVERHEAD + beacon_block_body_size_without_transactions
 	//		print(total_size_without_execution_payload)
 	DataSSZ []byte `ssz-max:"8388608"` // 2^23 to account for potential gas limit increases
+}
+
+// versionJSON is the JSON codec for a consensus-data Version. It keeps the upstream fork string for known
+// versions ("electra", …), writes "gloas" for the SIP #94 placeholder, and falls back to the bare number
+// for any other out-of-enum value — spec.DataVersion.MarshalJSON panics on those, which would crash a node
+// that JSON-logs such a value. Decoding accepts the string (any case), the number, and a missing/null value
+// (as version 0). Keeping the string form leaves pre-Gloas vectors byte-identical to upstream rather than
+// renumbering every version.
+type versionJSON spec.DataVersion
+
+func (v versionJSON) MarshalJSON() ([]byte, error) {
+	dv := spec.DataVersion(v)
+	switch {
+	case dv == gloas.DataVersionGloas:
+		return json.Marshal("gloas")
+	case dv.String() == "unknown": // out-of-enum: spec.DataVersion.MarshalJSON would panic
+		return json.Marshal(uint64(dv))
+	default:
+		return dv.MarshalJSON()
+	}
+}
+
+func (v *versionJSON) UnmarshalJSON(data []byte) error {
+	if len(data) == 0 || string(data) == "null" {
+		*v = 0
+		return nil
+	}
+	var s string
+	if err := json.Unmarshal(data, &s); err == nil {
+		if strings.EqualFold(s, "gloas") {
+			*v = versionJSON(gloas.DataVersionGloas)
+			return nil
+		}
+		var dv spec.DataVersion
+		if err := dv.UnmarshalJSON(data); err != nil {
+			return err
+		}
+		*v = versionJSON(dv)
+		return nil
+	}
+	var n uint64
+	if err := json.Unmarshal(data, &n); err != nil {
+		return err
+	}
+	*v = versionJSON(n)
+	return nil
+}
+
+// MarshalJSON/UnmarshalJSON keep Version as the upstream fork string (see versionJSON) so a Gloas-stamped
+// value is JSON-safe without renumbering pre-Gloas versions, and list the fields explicitly to keep the key
+// order (Duty, Version, DataSSZ) so pre-Gloas vectors stay byte-identical. A new struct field must be added
+// to both overrides — TestProposerConsensusDataJSONFieldsInSync guards that. SSZ is unaffected — the version
+// rides as a uint64.
+func (cd *ProposerConsensusData) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Duty    ValidatorDuty
+		Version versionJSON
+		DataSSZ []byte
+	}{cd.Duty, versionJSON(cd.Version), cd.DataSSZ})
+}
+
+func (cd *ProposerConsensusData) UnmarshalJSON(data []byte) error {
+	aux := &struct {
+		Duty    ValidatorDuty
+		Version versionJSON
+		DataSSZ []byte
+	}{}
+	if err := json.Unmarshal(data, aux); err != nil {
+		return err
+	}
+	cd.Duty, cd.Version, cd.DataSSZ = aux.Duty, spec.DataVersion(aux.Version), aux.DataSSZ
+	return nil
 }
 
 func (cd *ProposerConsensusData) Validate() error {
@@ -282,6 +408,30 @@ type AggregatorCommitteeConsensusData struct {
 	Contributors []AssignedAggregator `ssz-max:"2048"` // 512 * 4
 	// SyncCommitteeContributions is a list of contributions, one for each subcommittee
 	SyncCommitteeContributions []altair.SyncCommitteeContribution `ssz-max:"4"`
+}
+
+// MarshalJSON keeps Version as the upstream fork string (see versionJSON) so a Gloas-stamped value is
+// JSON-safe without renumbering pre-Gloas versions; the Gloas aggregator makes this reachable at the first
+// duty. Version is the struct's first field, so the embedded-alias order already matches.
+func (a *AggregatorCommitteeConsensusData) MarshalJSON() ([]byte, error) {
+	type alias AggregatorCommitteeConsensusData
+	return json.Marshal(&struct {
+		Version versionJSON
+		*alias
+	}{versionJSON(a.Version), (*alias)(a)})
+}
+
+func (a *AggregatorCommitteeConsensusData) UnmarshalJSON(data []byte) error {
+	type alias AggregatorCommitteeConsensusData
+	aux := &struct {
+		Version versionJSON
+		*alias
+	}{alias: (*alias)(a)}
+	if err := json.Unmarshal(data, aux); err != nil {
+		return err
+	}
+	a.Version = spec.DataVersion(aux.Version)
+	return nil
 }
 
 // Validate ensures the consensus data is internally consistent
@@ -391,6 +541,9 @@ func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (ss
 		return aggProof.Electra, nil
 	case spec.DataVersionFulu:
 		return aggProof.Fulu, nil
+	case gloas.DataVersionGloas:
+		// Gloas reuses the Electra aggregate-and-proof shape (SIP #94 §2); no Gloas field on the versioned wrapper.
+		return aggProof.Electra, nil
 	default:
 		return nil, WrapError(UnknownVersionErrorCode, fmt.Errorf("unknown version %d", aggProof.Version))
 	}
@@ -449,7 +602,7 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 				panic("unhandled default case")
 			}
 
-		case spec.DataVersionElectra, spec.DataVersionFulu:
+		case spec.DataVersionElectra, spec.DataVersionFulu, gloas.DataVersionGloas:
 			agg := &electra.AggregateAndProof{
 				AggregatorIndex: aggregator.ValidatorIndex,
 				SelectionProof:  aggregator.SelectionProof,
@@ -466,7 +619,8 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 			}
 
 			switch a.Version {
-			case spec.DataVersionElectra:
+			case spec.DataVersionElectra, gloas.DataVersionGloas:
+				// Gloas reuses the Electra aggregate shape (SIP #94 §2).
 				aggregateAndProof.Electra = agg
 			case spec.DataVersionFulu:
 				aggregateAndProof.Fulu = agg

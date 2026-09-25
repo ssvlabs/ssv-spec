@@ -23,6 +23,7 @@ const SyncCommitteeAggregatorProofSpecTestType = "Sync committee aggregator proo
 
 // Documentation for happy flow tests
 const HappyFlowDoc = "Tests a full runner happy flow"
+const GloasProposerLateEnvelopeQuorumDoc = "Tests that a Gloas (ePBS) self-build proposer publishes the SIP #94 §6 reveal when the envelope root reaches quorum only after the block root: operator 3 signs block-only so the block finishes first, and the builder operator keeps accepting post-consensus packets until operator 4 completes the envelope quorum, then publishes."
 
 // Documentation for aggregator committee
 const AggregatorCommitteeDutyHappyFlowDoc = "Testing aggregator committee runner with complete duty flow for both aggregator and sync committee contribution"
@@ -165,6 +166,8 @@ const PostConsensusPartialInvalidSignatureQuorumThenValidQuorumDoc = "Tests post
 const PostConsensusPostFinishDoc = "Tests post-consensus message processing after duty is finished"
 const PostConsensusPreDecidedDoc = "Tests post-consensus message processing before duty is decided, expecting error"
 const PostConsensusUnknownSignerDoc = "Tests post-consensus message processing with unknown signer, expecting error"
+const PostConsensusGloasBlockOnlyDoc = "Tests that a Gloas (ePBS) self-build proposer finalizes on a block-only post-consensus packet: the SIP #94 §6 envelope root is optional, so when the envelope partial-sigs miss quorum the block partial-sigs alone still submit the block and finish the duty, broadcasting no envelope reveal."
+const GloasProposerEnvelopeFirstOrderDoc = "Tests that a Gloas (ePBS) self-build proposer submits both the block and the SIP #94 §6 envelope when peers' post-consensus packets list the envelope entry before the block entry: entries are classified by matched root, not position, so packet order does not change the outcome (a guard against a future order-dependent rewrite reintroducing a strand)."
 
 // Documentation for runner/preconsensus tests
 const PreConsensusDuplicateMsgDoc = "Tests pre-consensus message processing with duplicate messages"
@@ -218,6 +221,13 @@ const ValCheckAttestationValidNonSlashableSlotDoc = "Tests attestation value che
 const ValCheckAttestationValidDoc = "Tests attestation value check with valid attestation"
 const ValCheckAttestationUnmatchedSourceEpochDoc = "Tests attestation value check with unmatched expected source epoch from operator's own view (source epoch differs from expected)"
 const ValCheckAttestationUnmatchedTargetEpochDoc = "Tests attestation value check with unmatched target epoch from operator's own view (target epoch differs from expected)"
+const ValCheckGloasAttestationValidDoc = "Tests Gloas attestation value check (SIP #94 §2) with a valid GloasBeaconVote"
+const ValCheckGloasAttestationInvalidIndexDoc = "Tests Gloas attestation value check (SIP #94 §2) rejecting an attestation data index above 1 (only 0 = payload absent and 1 = payload present are valid)"
+const ValCheckGloasAttestationSourceHigherThanTargetDoc = "Tests Gloas attestation value check (SIP #94 §2) with source epoch higher than target epoch"
+const ValCheckGloasAttestationSlashableDoc = "Tests Gloas attestation value check (SIP #94 §2) with a slashable attestation"
+const ValCheckGloasAttestationUnmatchedSourceEpochDoc = "Tests Gloas attestation value check (SIP #94 §2) with unmatched expected source epoch from operator's own view (source epoch differs from expected)"
+const ValCheckGloasAttestationPreGloasVoteDoc = "Tests Gloas attestation value check (SIP #94 §2) rejecting a pre-Gloas BeaconVote (112 bytes) proposed at a Gloas slot: the fixed 120-byte GloasBeaconVote makes cross-fork values fail decoding on length"
+const CommitteeGloasPreGloasVoteDoc = "Tests that a committee duty at a Gloas slot rejects a proposal carrying a pre-Gloas BeaconVote (SIP #94 §2): the fork is selected by the duty slot, so the 112-byte value fails to decode as the fixed 120-byte GloasBeaconVote"
 
 // Documentation for valcheckduty tests
 const ValCheckDutyFarFutureDutySlotDoc = "Tests duty value check with duty slot too far in the future"
@@ -225,8 +235,28 @@ const ValCheckDutyWrongDutyTypeDoc = "Tests duty value check with wrong duty typ
 const ValCheckDutyWrongValidatorIndexDoc = "Tests duty value check with wrong validator index across different roles"
 const ValCheckDutyWrongValidatorPKDoc = "Tests duty value check with wrong validator public key across different roles"
 
+// Documentation for proposerpreferences tests
+const ProposerPreferencesConcurrentLookaheadSlotsDoc = "Tests two concurrently-active proposal slots (SIP #94 §5): each is an independent per-slot flow, so both reach quorum and submit"
+const ProposerPreferencesReemissionCarriesOverPreferenceSharesDoc = "Tests SIP #94 §5 preference-share carry-over across a same-slot re-emission: a byte-identical re-derived preference (unchanged dependent_root) keeps the same signing root, so already-collected shares carry over instead of resetting — two pre-re-emission shares plus one after complete the quorum and submit"
+const ProposerPreferencesDivergingDependentRootDoc = "Tests SIP #94 §5 honest convergence under a dependent-root split: a diverging peer partial is rejected and the matching minority stays below quorum"
+const ProposerPreferencesBuilderRequestAuthHappyFlowDoc = "Tests the SIP #94 §5 builder-request-auth round: two distinct-data entries yield two auth partials alongside the preference, and each root reaches its own quorum and submits"
+const ProposerPreferencesBuilderRequestAuthSharedDataDedupDoc = "Tests SIP #94 §5 dedup: three entries with two sharing auth data freeze two auths, not three, so the round broadcasts a two-partial container"
+const ProposerPreferencesBuilderRequestAuthCapAtMaxDoc = "Tests SIP #94 §5 MaxBuilderEntries cap: given more distinct entries than the cap, only the first MaxBuilderEntries are frozen and broadcast"
+const ProposerPreferencesBuilderRequestAuthWrongRootDoc = "Tests SIP #94 §5/§7 per-builder isolation on the receive side: a peer whose multi-entry container carries one divergent (non-frozen) auth entry has that entry ignored, not the whole packet rejected, so the entries matching a frozen root still collect and reach quorum"
+
+const ProposerPreferencesBuilderRequestAuthReemissionCarryOverDoc = "Tests SIP #94 §5 auth-share carry-over across a same-slot re-emission: auth roots carry no dependent_root, so already-collected shares carry over instead of restarting from zero (the pair to ReemissionReplacesSlot's preference reset) — two pre-re-emission shares plus one after complete the quorum and submit"
+const ProposerPreferencesBuilderRequestAuthIndependentOfPreferenceDoc = "Tests SIP #94 §5 independence: auth partials arriving after the preference round has finished still reach per-root quorum and submit"
+const ProposerPreferencesBuilderRequestAuthExceedsMaxDoc = "Tests the SIP #94 §7 receive-side bound: a RequestAuthPartialSig container carrying more than MaxBuilderEntries entries is rejected (RequestAuthWrongRootsCountErrorCode), not partially processed"
+const ProposerPreferencesBuilderRequestAuthNoAuthDoc = "Tests SIP #94 §5: an operator with no configured builder entries froze no auth roots, so an incoming RequestAuthPartialSig is rejected (RequestAuthNoAuthErrorCode) rather than collected against an empty set"
+const NewDutyValidatorRegistrationDeprecatedDoc = "Tests that the validator registration duty is rejected from Gloas (SIP #94 §5), superseded by proposer preferences"
+
+// Documentation for ptcattester tests
+const PTCAttesterAbstainDoc = "Tests the SIP #94 §3 abstain rule: no block seen for the slot, so the operator signs nothing and rejects peer partials"
+const PTCAttesterDivergingObservationDoc = "Tests SIP #94 §3 honest convergence under a minority split: a diverging peer partial is rejected and the matching minority stays below quorum"
+
 // Documentation for valcheckproposer tests
 const ValCheckProposerBlindedBlockDoc = "Tests proposer value check with blinded block data"
+const ValCheckProposerGloasBlocksDoc = "Tests Gloas proposer value check (SIP #94 §4): decodes the opaque bid-only block, pins its slot to the duty slot, rejects a Version that disagrees with the slot's fork in either direction, and consults slashing protection"
 
 // Documentation for valcheckaggcommittee
 const ValCheckAggCommitteeNoValidatorsDoc = "Tests agg committee value check with no validators"

@@ -21,6 +21,8 @@ var BaseValidator = func(keySet *TestKeySet) *ssv.Validator {
 			types.RoleAggregatorCommittee:   AggregatorCommitteeRunner(keySet),
 			types.RoleValidatorRegistration: ValidatorRegistrationRunner(keySet),
 			types.RoleVoluntaryExit:         VoluntaryExitRunner(keySet),
+			types.RolePTCAttester:           PTCAttesterRunner(keySet),
+			types.RoleProposerPreferences:   ProposerPreferencesRunner(keySet),
 		},
 	)
 }

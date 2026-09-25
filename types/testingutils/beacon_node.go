@@ -18,6 +18,7 @@ import (
 	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -28,6 +29,15 @@ type TestingBeaconNode struct {
 	BroadcastedRoots             []phase0.Root
 	SyncCommitteeAggregatorRoots map[string]bool
 	CommitteeIndexAggregators    map[phase0.CommitteeIndex]bool
+	// producesExternalBid makes the Gloas produce return a bare external-bid block and a nil envelope
+	// (SIP #94 §4), for testing the external-build path where SSV does not self-build.
+	producesExternalBid bool
+	// wrongPayloadAttestationSlot makes GetPayloadAttestationData answer with data for a different slot
+	// than requested (SIP #94 §3), for testing the PTC slot-pin rejection.
+	wrongPayloadAttestationSlot bool
+	// failGloasBlockSubmit makes SubmitGloasBeaconBlock return an error without recording the block, for
+	// testing that the §6 reveal still publishes when this operator's own block submit fails (SIP #94 §6).
+	failGloasBlockSubmit bool
 }
 
 func NewTestingBeaconNode() *TestingBeaconNode {
@@ -46,6 +56,24 @@ func (bn *TestingBeaconNode) SetSyncCommitteeAggregatorRootHexes(roots map[strin
 // SetAggregators FOR TESTING ONLY!! sets committee indices values for IsAggregator
 func (bn *TestingBeaconNode) SetAggregators(committeeIndices map[phase0.CommitteeIndex]bool) {
 	bn.CommitteeIndexAggregators = committeeIndices
+}
+
+// SetProducesExternalBid FOR TESTING ONLY!! makes GetGloasBeaconBlock return a bare external-bid block
+// with a nil envelope (SIP #94 §4), exercising the external-build path instead of self-build.
+func (bn *TestingBeaconNode) SetProducesExternalBid(v bool) {
+	bn.producesExternalBid = v
+}
+
+// SetWrongPayloadAttestationSlot FOR TESTING ONLY!! makes GetPayloadAttestationData return data whose Slot
+// mismatches the requested slot (SIP #94 §3), exercising the PTC slot-pin rejection.
+func (bn *TestingBeaconNode) SetWrongPayloadAttestationSlot(v bool) {
+	bn.wrongPayloadAttestationSlot = v
+}
+
+// SetFailGloasBlockSubmit FOR TESTING ONLY!! makes SubmitGloasBeaconBlock return an error without recording
+// the block, exercising the §6 reveal-on-attempt path where this operator's own block submit fails (SIP #94 §6).
+func (bn *TestingBeaconNode) SetFailGloasBlockSubmit(v bool) {
+	bn.failGloasBlockSubmit = v
 }
 
 // GetBeaconNetwork returns the beacon network the node is on
@@ -86,6 +114,13 @@ func (bn *TestingBeaconNode) SubmitAttestations(attestations []*spec.VersionedAt
 			root, _ = singleAttestation.HashTreeRoot()
 		case spec.DataVersionFulu:
 			singleAttestation, err := att.Fulu.ToSingleAttestation(att.ValidatorIndex)
+			if err != nil {
+				panic(err)
+			}
+			root, _ = singleAttestation.HashTreeRoot()
+		case gloas.DataVersionGloas:
+			// Gloas reuses the Electra attestation shape (SIP #94 §2).
+			singleAttestation, err := att.Electra.ToSingleAttestation(att.ValidatorIndex)
 			if err != nil {
 				panic(err)
 			}
@@ -246,6 +281,47 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig
 	return nil
 }
 
+// GetGloasBeaconBlock returns the Gloas (ePBS §4) self-build block for the slot plus its own blinded
+// envelope (SIP #94 §6) — the produce-held BlockContents. The fixture block carries the requested slot, so
+// the value check's block-slot/duty-slot pin holds for any duty slot, and the envelope is the one derived
+// from that block, so the operator publishes it as the builder operator. Under SetProducesExternalBid it
+// instead returns a bare external-bid block and a nil envelope (the §4 external-build path).
+func (bn *TestingBeaconNode) GetGloasBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, *gloas.BlindedExecutionPayloadEnvelope, error) {
+	if bn.producesExternalBid {
+		// External bid win: a bare block and no envelope, so the decided value carries a zero payload_root.
+		return gloas.TestingBeaconBlockExternalBuild(slot), nil, nil
+	}
+	return gloas.TestingBeaconBlock(slot), TestingBlindedExecutionPayloadEnvelope(slot), nil
+}
+
+// SubmitExecutionPayloadEnvelope records the published §6 reveal's root — the blinded envelope's root,
+// which by root-equivalence is the full envelope's (SIP #94 §6).
+func (bn *TestingBeaconNode) SubmitExecutionPayloadEnvelope(envelope *gloas.BlindedExecutionPayloadEnvelope, signature phase0.BLSSignature) error {
+	r, err := envelope.HashTreeRoot()
+	if err != nil {
+		return err
+	}
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	return nil
+}
+
+// SubmitGloasBeaconBlock records the signed Gloas (ePBS §4) block's root, mirroring SubmitBeaconBlock.
+func (bn *TestingBeaconNode) SubmitGloasBeaconBlock(block *gloas.BeaconBlock, sig phase0.BLSSignature) error {
+	if bn.failGloasBlockSubmit {
+		return fmt.Errorf("forced Gloas block submit failure")
+	}
+	sb := &gloas.SignedBeaconBlock{
+		Message:   block,
+		Signature: sig,
+	}
+	r, err := sb.HashTreeRoot()
+	if err != nil {
+		return err
+	}
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	return nil
+}
+
 // IsAggregator returns true if the validator is selected as an aggregator
 func (bn *TestingBeaconNode) IsAggregator(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, slotSig []byte) bool {
 	// In production, this would check the selection proof against the committee modulo
@@ -263,7 +339,7 @@ func (bn *TestingBeaconNode) IsAggregator(slot phase0.Slot, committeeIndex phase
 func (bn *TestingBeaconNode) GetAggregateAttestation(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, error) {
 	version := VersionBySlot(slot)
 	if version >= spec.DataVersionElectra {
-		return TestingElectraAggregateAndProof(TestingValidatorIndex).Aggregate, nil
+		return TestingElectraAggregateAndProofV(TestingValidatorIndex, version).Aggregate, nil
 	}
 	return TestingPhase0AggregateAndProof(TestingValidatorIndex).Aggregate, nil
 }
@@ -294,6 +370,8 @@ func (bn *TestingBeaconNode) SubmitSignedAggregateAndProof(msg *spec.VersionedSi
 		root, _ = msg.Electra.HashTreeRoot()
 	case spec.DataVersionFulu:
 		root, _ = msg.Fulu.HashTreeRoot()
+	case gloas.DataVersionGloas:
+		root, _ = msg.Electra.HashTreeRoot() // Gloas reuses the Electra aggregate shape (SIP #94 §2)
 	default:
 		panic("unsupported version")
 	}
