@@ -28,7 +28,7 @@ const (
 	// RequestAuthPartialSig is a partial signature over a builder-specs BuilderRequestAuth object,
 	// authenticating direct validator→builder requests for a proposal slot (SIP #94 §5 extension).
 	// Carried by the RoleProposerPreferences runner (like ProposerPreferencesPartialSig); the two
-	// pre-consensus types are told apart only by their signing domain, not by PartialSigMsgType.
+	// pre-consensus types are told apart by their PartialSigMsgType, each under its own signing domain.
 	RequestAuthPartialSig = PartialSigMsgType(9)
 )
 
