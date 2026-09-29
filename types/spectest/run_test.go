@@ -31,6 +31,8 @@ import (
 )
 
 func TestAll(t *testing.T) {
+	// Run reads the state_comparison fixtures, so stale ones fail TestAll too.
+	comparable.LogStaleFixturesHintOnFailure(t)
 	for _, test := range AllTests {
 		t.Run(test.TestName(), func(t *testing.T) {
 			test.Run(t)
@@ -39,6 +41,7 @@ func TestAll(t *testing.T) {
 }
 
 func TestJson(t *testing.T) {
+	comparable.LogStaleFixturesHintOnFailure(t)
 	basedir, _ := os.Getwd()
 	specTestsDir, err := comparable.SpecTestsDirFrom(basedir)
 	if err != nil {
@@ -188,7 +191,7 @@ func TestJson(t *testing.T) {
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			default:
-				t.Fatalf("unknown test")
+				t.Fatalf("unsupported test type %s", testType)
 			}
 		})
 	}
