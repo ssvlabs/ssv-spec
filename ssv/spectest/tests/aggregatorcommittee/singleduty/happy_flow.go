@@ -12,6 +12,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -76,7 +77,7 @@ func HappyFlow() tests.SpecTest {
 	}
 
 	// Add sync committee contribution test cases
-	for _, version := range []spec.DataVersion{spec.DataVersionPhase0} {
+	for _, version := range []spec.DataVersion{gloas.DataVersionGloas} {
 		// Testing with up to 20 validators instead of 30, because each testing duty has 3 subcommittees, and there are at most 64 sync committee contributors per slot
 		for _, numValidators := range []int{1, 20} {
 

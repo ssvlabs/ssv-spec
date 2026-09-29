@@ -3,13 +3,12 @@ package newduty
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -61,11 +60,11 @@ func Finished() tests.SpecTest {
 			{
 				Name: "proposer",
 				Runner: finishRunner(testingutils.ProposerRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionDeneb), true),
-				Duty:      testingutils.TestingProposerDutyNextEpochV(spec.DataVersionDeneb),
+					testingutils.TestingProposerDutyV(gloas.DataVersionGloas), true),
+				Duty:      testingutils.TestingProposerDutyNextEpochV(gloas.DataVersionGloas),
 				Threshold: ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, gloas.DataVersionGloas), // broadcasts when starting a new duty
 				},
 			},
 			{
@@ -95,15 +94,6 @@ func Finished() tests.SpecTest {
 				Threshold: ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusProposerPreferencesNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-				},
-			},
-			{
-				Name:      "validator registration",
-				Runner:    finishRunner(testingutils.ValidatorRegistrationRunner(ks), &testingutils.TestingValidatorRegistrationDuty, false),
-				Duty:      &testingutils.TestingValidatorRegistrationDutyNextEpoch,
-				Threshold: ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusValidatorRegistrationNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
 		},

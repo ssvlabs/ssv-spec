@@ -42,11 +42,6 @@ var ProposerMsgID = func() []byte {
 	return ret[:]
 }()
 
-var ValidatorRegistrationMsgID = func() []byte {
-	ret := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), types.RoleValidatorRegistration)
-	return ret[:]
-}()
-
 var VoluntaryExitMsgID = func() []byte {
 	ret := types.NewValidatorMsgID(TestingSSVDomainType, types.ValidatorPK(TestingValidatorPubKey), types.RoleVoluntaryExit)
 	return ret[:]

@@ -11,7 +11,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
-var SupportedAttestationVersions = []spec.DataVersion{spec.DataVersionPhase0, spec.DataVersionElectra, gloas.DataVersionGloas}
+var SupportedAttestationVersions = []spec.DataVersion{gloas.DataVersionGloas}
 
 // ==================================================
 // Versioned CommitteeDuty

@@ -265,24 +265,6 @@ func (r *AggregatorCommitteeRunner) GetRoot() ([32]byte, error) {
 	return ret, nil
 }
 
-// ValidatorRegistrationRunner
-func (r *ValidatorRegistrationRunner) Encode() ([]byte, error) {
-	return json.Marshal(r)
-}
-
-func (r *ValidatorRegistrationRunner) Decode(data []byte) error {
-	return json.Unmarshal(data, &r)
-}
-
-func (r *ValidatorRegistrationRunner) GetRoot() ([32]byte, error) {
-	marshaledRoot, err := r.Encode()
-	if err != nil {
-		return [32]byte{}, errors.Wrap(err, "could not encode ValidatorRegistrationRunner")
-	}
-	ret := sha256.Sum256(marshaledRoot)
-	return ret, nil
-}
-
 // ProposerPreferencesRunner
 func (r *ProposerPreferencesRunner) Encode() ([]byte, error) {
 	return json.Marshal(r)

@@ -3,13 +3,12 @@ package newduty
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -64,23 +63,14 @@ func DuplicateDutyFinished() tests.SpecTest {
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  finishRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionDeneb)),
-				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Runner:                  finishRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(gloas.DataVersionGloas)),
+				Duty:                    testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "a91e014950037e5dc2ab9e801d0170b90b82f592029a2409c2332f252368d71d",
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, gloas.DataVersionGloas), // broadcasts when starting a new duty
 				},
 				ExpectedErrorCode: types.DutyAlreadyPassedErrorCode,
-			},
-			{
-				Name: "validator registration",
-				Runner: finishTaskRunner(testingutils.ValidatorRegistrationRunner(ks),
-					&testingutils.TestingValidatorRegistrationDuty),
-				Duty:                    &testingutils.TestingValidatorRegistrationDuty,
-				Threshold:               ks.Threshold,
-				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-				ExpectedErrorCode:       expectedTaskErrorCode,
 			},
 			{
 				Name: "voluntary exit",

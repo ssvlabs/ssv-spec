@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	MaxSizeBeaconVote = 112
+	MaxSizeBeaconVote = 120
 )
 
 func maxBeaconVote() *types.BeaconVote {
@@ -24,6 +24,7 @@ func maxBeaconVote() *types.BeaconVote {
 			Epoch: 2,
 			Root:  root,
 		},
+		AttestationDataIndex: 1,
 	}
 }
 

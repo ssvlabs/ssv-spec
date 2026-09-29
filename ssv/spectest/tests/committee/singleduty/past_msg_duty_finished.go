@@ -29,7 +29,7 @@ func PastMessageDutyFinished() tests.SpecTest {
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 
-		decidedValue := testingutils.TestingBeaconVoteBytesV(version)
+		decidedValue := testingutils.TestBeaconVoteByts
 		pastSlot := testingutils.TestingDutySlotV(version) - 2
 		pastHeight := qbft.Height(pastSlot)
 

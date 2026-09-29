@@ -10,8 +10,7 @@ import (
 var SSVDecidingMsgsForCommitteeRunner = func(beaconVoteBytes []byte, ks *TestKeySet, height qbft.Height) []*types.SignedSSVMessage {
 	id := CommitteeMsgID(ks)
 
-	// consensus — beaconVoteBytes is the encoded committee value: BeaconVote (112B) or, on Gloas,
-	// GloasBeaconVote (120B, SIP #94 §2), so callers pass TestingBeaconVoteBytesV(version).
+	// consensus
 	r, err := qbft.HashDataRoot(beaconVoteBytes)
 	if err != nil {
 		panic(err)
@@ -22,8 +21,7 @@ var SSVDecidingMsgsForCommitteeRunner = func(beaconVoteBytes []byte, ks *TestKey
 var SSVDecidingMsgsForAggregatorCommitteeRunnerForKS = func(duty *types.AggregatorCommitteeDuty, ks *TestKeySet, version spec.DataVersion) []*types.SignedSSVMessage {
 	ksMap := make(map[phase0.ValidatorIndex]*TestKeySet)
 	ksMap[duty.ValidatorDuties[0].ValidatorIndex] = ks
-	slot := TestingDutySlotV(version)
-	return SSVDecidingMsgsForAggregatorCommitteeRunner(duty, ksMap, qbft.Height(slot), version)
+	return SSVDecidingMsgsForAggregatorCommitteeRunner(duty, ksMap, qbft.Height(duty.Slot), version)
 }
 
 var SSVDecidingMsgsForAggregatorCommitteeRunner = func(duty *types.AggregatorCommitteeDuty, keySetMap map[phase0.ValidatorIndex]*TestKeySet, height qbft.Height, version spec.DataVersion) []*types.SignedSSVMessage {

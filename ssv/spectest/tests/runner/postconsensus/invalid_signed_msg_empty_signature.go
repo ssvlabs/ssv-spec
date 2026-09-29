@@ -3,11 +3,10 @@ package postconsensus
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -31,26 +30,12 @@ func InvalidSignedMessageEmptySignature() tests.SpecTest {
 				Name: "proposer",
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-					testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb),
+					testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
+					testingutils.TestProposerConsensusDataV(gloas.DataVersionGloas),
 				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Duty: testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 				Messages: []*types.SignedSSVMessage{
-					emptySignature(testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 0, spec.DataVersionDeneb)))),
-				},
-				DontStartDuty:     true,
-				ExpectedErrorCode: expectedErrorCode,
-			},
-			{
-				Name: "proposer (blinded block)",
-				Runner: decideRunner(
-					testingutils.ProposerBlindedBlockRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-					testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb),
-				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-				Messages: []*types.SignedSSVMessage{
-					emptySignature(testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 0, spec.DataVersionDeneb)))),
+					emptySignature(testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 0, gloas.DataVersionGloas)))),
 				},
 				DontStartDuty:     true,
 				ExpectedErrorCode: expectedErrorCode,

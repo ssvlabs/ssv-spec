@@ -3,7 +3,6 @@ package valcheckproposer
 import (
 	"encoding/hex"
 
-	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
@@ -14,15 +13,12 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// GloasBlocks covers the Gloas (ePBS, SIP #94 §4) proposer value-check rules. At a Gloas duty slot the
-// consensus value carries an opaque {block, payload_root} GloasProposalData in DataSSZ, so the value check
-// decodes it directly (never routing through the pre-Gloas Validate()/GetBlockData()), pins the block's
-// slot to the duty's and its proposer index to the duty's validator, pins the duty's slot to the running
-// duty's, requires payload_root to be zero iff the bid is not self-build, and rejects a leader-stamped
-// Version that disagrees with the duty slot's fork in either direction.
+// GloasBlocks covers the Gloas (ePBS, SIP #94 §4) proposer value-check rules. The consensus value carries a
+// {block, payload_root} GloasProposalData in DataSSZ; the value check rejects a leader-stamped Version other
+// than Gloas, pins the block's slot to the duty's and its proposer index to the duty's validator, pins the
+// duty's slot to the running duty's, and requires payload_root to be zero iff the bid is not self-build.
 func GloasBlocks() tests.SpecTest {
 	gloasDuty := testingutils.TestingProposerDutyV(gloas.DataVersionGloas)
-	electraDuty := testingutils.TestingProposerDutyV(spec.DataVersionElectra)
 
 	encode := func(cd *types.ProposerConsensusData) []byte {
 		byts, err := cd.Encode()
@@ -36,10 +32,6 @@ func GloasBlocks() tests.SpecTest {
 	slotMismatchBlock := testingutils.TestingGloasProposalDataBytes(gloasDuty.Slot + 100)
 	// A self-build value (the fixture bid is self-build) with a zero payload_root trips the §4 presence rule.
 	selfBuildZeroPayloadRoot, err := (&gloas.GloasProposalData{Block: gloas.TestingBeaconBlock(gloasDuty.Slot)}).MarshalSSZ()
-	if err != nil {
-		panic(err.Error())
-	}
-	electraSlotBlock, err := gloas.TestingBeaconBlock(electraDuty.Slot).MarshalSSZ()
 	if err != nil {
 		panic(err.Error())
 	}
@@ -71,7 +63,7 @@ func GloasBlocks() tests.SpecTest {
 				Network:           types.BeaconTestNetwork,
 				RunnerRole:        types.RoleProposer,
 				Input:             encode(&types.ProposerConsensusData{Duty: *gloasDuty, Version: gloas.DataVersionGloas, DataSSZ: []byte("garbage")}),
-				ExpectedErrorCode: types.UnmarshalSSZErrorCode,
+				ExpectedErrorCode: types.QBFTValueInvalidErrorCode,
 			},
 			{
 				Name:              "block slot does not match duty slot",
@@ -103,6 +95,14 @@ func GloasBlocks() tests.SpecTest {
 				ExpectedErrorCode: types.ProposerDutySlotMismatchErrorCode,
 			},
 			{
+				// The value's slot is the running duty's, so the running-slot bind passes.
+				Name:       "duty slot matches running slot",
+				Network:    types.BeaconTestNetwork,
+				RunnerRole: types.RoleProposer,
+				DutySlot:   gloasDuty.Slot,
+				Input:      testingutils.TestProposerConsensusDataBytsV(gloas.DataVersionGloas),
+			},
+			{
 				// payload_root MUST be non-zero on the self-build path (SIP #94 §4); zero trips the rule.
 				Name:              "self-build with zero payload_root",
 				Network:           types.BeaconTestNetwork,
@@ -120,21 +120,12 @@ func GloasBlocks() tests.SpecTest {
 				ExpectedErrorCode: types.QBFTValueInvalidErrorCode,
 			},
 			{
-				// The leader-stamped Version is attacker-controlled, so on a Gloas slot it is pinned to
-				// the slot's fork; without this rule a mixed cluster could split on the same value.
-				Name:              "pre-gloas version on a gloas slot",
+				// The leader-stamped Version is attacker-controlled, so it is pinned to Gloas; without this
+				// rule a mixed cluster could split on the same value.
+				Name:              "non-gloas version",
 				Network:           types.BeaconTestNetwork,
 				RunnerRole:        types.RoleProposer,
-				Input:             encode(&types.ProposerConsensusData{Duty: *gloasDuty, Version: spec.DataVersionElectra, DataSSZ: gloasBlockBytes}),
-				ExpectedErrorCode: types.QBFTValueInvalidErrorCode,
-			},
-			{
-				// The reverse mismatch takes the pre-Gloas branch, where Validate() rejects the Gloas
-				// version as unknown — both mismatch directions fail.
-				Name:              "gloas version on a pre-gloas slot",
-				Network:           types.BeaconTestNetwork,
-				RunnerRole:        types.RoleProposer,
-				Input:             encode(&types.ProposerConsensusData{Duty: *electraDuty, Version: gloas.DataVersionGloas, DataSSZ: electraSlotBlock}),
+				Input:             encode(&types.ProposerConsensusData{Duty: *gloasDuty, Version: gloas.DataVersionGloas - 1, DataSSZ: gloasBlockBytes}),
 				ExpectedErrorCode: types.QBFTValueInvalidErrorCode,
 			},
 			{

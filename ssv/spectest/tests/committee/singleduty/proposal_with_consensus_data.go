@@ -10,7 +10,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -27,12 +26,6 @@ func ProposalWithConsensusData() tests.SpecTest {
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 
-		// The committee value is decoded by the slot's fork, so the decode error differs from Gloas on.
-		expectedErrorCode := types.DecodeBeaconVoteErrorCode
-		if version >= gloas.DataVersionGloas {
-			expectedErrorCode = types.DecodeGloasBeaconVoteErrorCode
-		}
-
 		slot := testingutils.TestingDutySlotV(version)
 		height := qbft.Height(slot)
 
@@ -46,7 +39,7 @@ func ProposalWithConsensusData() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestAttesterConsensusDataByts,
 						height),
 				},
-				ExpectedErrorCode: expectedErrorCode,
+				ExpectedErrorCode: types.DecodeBeaconVoteErrorCode,
 			},
 			{
 				Name:      fmt.Sprintf("%v sync committee (%s)", numValidators, version.String()),
@@ -57,7 +50,7 @@ func ProposalWithConsensusData() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestSyncCommitteeConsensusDataByts,
 						height),
 				},
-				ExpectedErrorCode: expectedErrorCode,
+				ExpectedErrorCode: types.DecodeBeaconVoteErrorCode,
 			},
 			{
 				Name:      fmt.Sprintf("%v attestations %v sync committees (%s)", numValidators, numValidators, version.String()),
@@ -68,7 +61,7 @@ func ProposalWithConsensusData() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestAttesterConsensusDataByts,
 						height),
 				},
-				ExpectedErrorCode: expectedErrorCode,
+				ExpectedErrorCode: types.DecodeBeaconVoteErrorCode,
 			},
 		}...)
 	}

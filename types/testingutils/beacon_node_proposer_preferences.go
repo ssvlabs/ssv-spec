@@ -1,6 +1,7 @@
 package testingutils
 
 import (
+	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
 	"github.com/ssvlabs/ssv-spec/types"
@@ -10,6 +11,8 @@ import (
 // ==================================================
 // Proposer Preferences (SIP #94 §5)
 // ==================================================
+
+var TestingFeeRecipient = bellatrix.ExecutionAddress(ethAddressFromHex("535953b5a6040074948cf185eaa7d2abbd66808f"))
 
 // TestingProposerDutiesDependentRoot is the dependent root the testing beacon node reports for every
 // epoch's proposer duties.

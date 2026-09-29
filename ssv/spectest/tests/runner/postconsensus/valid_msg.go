@@ -3,8 +3,6 @@ package postconsensus
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
@@ -33,19 +31,7 @@ func finishCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) 
 }
 
 func decideCommitteeRunner(r ssv.Runner, duty types.Duty, bv *types.BeaconVote) ssv.Runner {
-	// On Gloas slots the committee decides a GloasBeaconVote (SIP #94 §2), before Gloas the passed
-	// BeaconVote. Carry the caller's vote over into the Gloas shape rather than substituting a canonical
-	// one, so a deliberately-invalid vote stays invalid at Gloas slots too.
-	var value types.Encoder = bv
-	if testingutils.VersionBySlot(duty.DutySlot()) >= gloas.DataVersionGloas {
-		value = &types.GloasBeaconVote{
-			BlockRoot:            bv.BlockRoot,
-			Source:               bv.Source,
-			Target:               bv.Target,
-			AttestationDataIndex: testingutils.TestGloasBeaconVote.AttestationDataIndex,
-		}
-	}
-	bvBytes, err := value.Encode()
+	bvBytes, err := bv.Encode()
 	if err != nil {
 		panic(err)
 	}
@@ -107,48 +93,15 @@ func ValidMessage() tests.SpecTest {
 				Name: "proposer",
 				Runner: decideRunner(
 					testingutils.ProposerRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-					testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb),
+					testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
+					testingutils.TestProposerConsensusDataV(gloas.DataVersionGloas),
 				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Duty: testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, gloas.DataVersionGloas))),
 				},
 				PostDutyRunnerStateRoot: "79dea0905cae233ecfaabdf8468351ea1c88d2684009176eb4a4d3e91823e74c",
 				DontStartDuty:           true,
-			},
-			{
-				Name: "proposer (blinded block)",
-				Runner: decideRunner(
-					testingutils.ProposerBlindedBlockRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-					testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb),
-				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
-				},
-				PostDutyRunnerStateRoot: "b57fb84140f2785ed05295d294271ab6636116f8cd013d8e9a060f47976dfe3d",
-				DontStartDuty:           true,
-			},
-			{
-				Name:   "validator registration",
-				Runner: testingutils.ValidatorRegistrationRunner(ks),
-				Duty:   &testingutils.TestingValidatorRegistrationDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0))),
-				},
-				PostDutyRunnerStateRoot: "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedValidatorRegistration(ks)),
-				},
-				ExpectedErrorCode: types.ValidatorRegistrationNoPostConsensusPhaseErrorCode,
 			},
 			{
 				Name:   "voluntary exit",
@@ -158,7 +111,7 @@ func ValidMessage() tests.SpecTest {
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[2], 2))),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[3], 3))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, gloas.DataVersionGloas))),
 				},
 				PostDutyRunnerStateRoot: "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
 				OutputMessages: []*types.PartialSignatureMessages{

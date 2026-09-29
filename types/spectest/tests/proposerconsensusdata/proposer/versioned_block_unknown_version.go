@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -12,9 +13,9 @@ import (
 func VersionedBlockUnknownVersion() *ProposerSpecTest {
 	unknownDataVersion := spec.DataVersion(100)
 	cd := &types.ProposerConsensusData{
-		Duty:    *testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+		Duty:    *testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 		Version: unknownDataVersion,
-		DataSSZ: testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
+		DataSSZ: testingutils.TestingBeaconBlockBytesV(gloas.DataVersionGloas),
 	}
 
 	cdSSZ, err := cd.MarshalSSZ()
@@ -25,7 +26,6 @@ func VersionedBlockUnknownVersion() *ProposerSpecTest {
 	return NewProposerSpecTest(
 		"consensus data versioned block unknown version",
 		testdoc.ProposerSpecTestVersionedBlockUnknownVersionDoc,
-		false,
 		cdSSZ,
 		nil,
 		[32]byte{},

@@ -4,7 +4,7 @@ import (
 	"crypto/rsa"
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
@@ -40,11 +40,11 @@ func WrongDutyRole() tests.SpecTest {
 	}
 
 	// Function to get decided message with wrong ID for role
-	decidedMessage := func(role types.RunnerRole, version spec.DataVersion) *types.SignedSSVMessage {
+	decidedMessage := func(role types.RunnerRole, slot phase0.Slot) *types.SignedSSVMessage {
 		signedMessage := testingutils.TestingCommitMultiSignerMessageWithHeightAndIdentifier(
 			[]*rsa.PrivateKey{ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3]},
 			[]types.OperatorID{1, 2, 3},
-			qbft.Height(testingutils.TestingDutySlotV(version)),
+			qbft.Height(slot),
 			//testingutils.TestingDutySlot,
 			getWrongID(role))
 
@@ -69,7 +69,7 @@ func WrongDutyRole() tests.SpecTest {
 				Name:     "sync committee contribution",
 				Runner:   testingutils.AggregatorCommitteeRunner(ks),
 				Duty:     testingutils.TestingSyncCommitteeContributionDuty,
-				Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleAggregatorCommittee, spec.DataVersionPhase0)},
+				Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleAggregatorCommittee, testingutils.TestingSyncCommitteeContributionDuty.Slot)},
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
 				},
@@ -84,7 +84,7 @@ func WrongDutyRole() tests.SpecTest {
 			Name:     fmt.Sprintf("aggregator (%s)", version.String()),
 			Runner:   testingutils.AggregatorCommitteeRunner(ks),
 			Duty:     testingutils.TestingAggregatorDuty(version),
-			Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleAggregatorCommittee, version)},
+			Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleAggregatorCommittee, testingutils.TestingDutySlotV(version))},
 			OutputMessages: []*types.PartialSignatureMessages{
 				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version),
 			},
@@ -92,38 +92,19 @@ func WrongDutyRole() tests.SpecTest {
 		},
 		)
 	}
-	//
-	//// proposerV creates a test specification for versioned proposer.
-	//proposerV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
-	//	return &tests.MsgProcessingSpecTest{
-	//		Name:     fmt.Sprintf("proposer (%s)", version.String()),
-	//		Runner:   testingutils.ProposerRunner(ks),
-	//		Duty:     testingutils.TestingProposerDutyV(version),
-	//		Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleProposer)},
-	//		OutputMessages: []*types.PartialSignatureMessages{
-	//			testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
-	//		},
-	//		ExpectedErrorCode: expectedErrorCode,
-	//	}
-	//}
-	//
-	//// proposerBlindedV creates a test specification for versioned proposer with blinded block.
-	//proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
-	//	return &tests.MsgProcessingSpecTest{
-	//		Name:     fmt.Sprintf("proposer blinded block (%s)", version.String()),
-	//		Runner:   testingutils.ProposerBlindedBlockRunner(ks),
-	//		Duty:     testingutils.TestingProposerDutyV(version),
-	//		Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleProposer)},
-	//		OutputMessages: []*types.PartialSignatureMessages{
-	//			testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
-	//		},
-	//		ExpectedErrorCode: expectedErrorCode,
-	//	}
-	//}
-	//
-	//for _, v := range testingutils.SupportedBlockVersions {
-	//	multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
-	//}
+
+	for _, version := range testingutils.SupportedBlockVersions {
+		multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
+			Name:     fmt.Sprintf("proposer (%s)", version.String()),
+			Runner:   testingutils.ProposerRunner(ks),
+			Duty:     testingutils.TestingProposerDutyV(version),
+			Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleProposer, testingutils.TestingDutySlotV(version))},
+			OutputMessages: []*types.PartialSignatureMessages{
+				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
+			},
+			ExpectedErrorCode: expectedErrorCode,
+		})
+	}
 
 	return multiSpecTest
 }

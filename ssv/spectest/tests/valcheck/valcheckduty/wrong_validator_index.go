@@ -1,12 +1,11 @@
 package valcheckduty
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -96,21 +95,21 @@ func WrongValidatorIndex() tests.SpecTest {
 				Name:       "aggregator committee agg",
 				Network:    types.BeaconTestNetwork,
 				RunnerRole: types.RoleAggregatorCommittee,
-				Input:      accdAggDataBytesF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
+				Input:      accdAggDataBytesF(testingutils.TestAggregatorConsensusData(gloas.DataVersionGloas)),
 				// No error since input doesn't contain validator index
 			},
 			{
 				Name:       "aggregator committee mixed",
 				Network:    types.BeaconTestNetwork,
 				RunnerRole: types.RoleAggregatorCommittee,
-				Input:      accdMixedDataBytesF(testingutils.TestAggregatorCommitteeConsensusDataForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(spec.DataVersionElectra), spec.DataVersionElectra, nil)),
+				Input:      accdMixedDataBytesF(testingutils.TestAggregatorCommitteeConsensusDataForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(gloas.DataVersionGloas), gloas.DataVersionGloas, nil)),
 				// No error since input doesn't contain validator index
 			},
 			{
 				Name:              "proposer",
 				Network:           types.BeaconTestNetwork,
 				RunnerRole:        types.RoleProposer,
-				Input:             consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
+				Input:             consensusDataBytsF(testingutils.TestProposerConsensusDataV(gloas.DataVersionGloas)),
 				ExpectedErrorCode: expectedErrCode,
 			},
 		},

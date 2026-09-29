@@ -3,12 +3,11 @@ package consensus
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -24,7 +23,7 @@ func ValidDecided10Operators() tests.SpecTest {
 				Name:                    "sync committee contribution",
 				Runner:                  testingutils.AggregatorCommitteeRunner(ks),
 				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
-				Messages:                testingutils.SSVDecidingMsgsForAggregatorCommitteeRunnerForKS(testingutils.TestingSyncCommitteeContributionDuty, ks, spec.DataVersionPhase0),
+				Messages:                testingutils.SSVDecidingMsgsForAggregatorCommitteeRunnerForKS(testingutils.TestingSyncCommitteeContributionDuty, ks, gloas.DataVersionGloas),
 				PostDutyRunnerStateRoot: "a991b6470a8c7a55f4ce89aea91925c2d80a9a8c4258545cc2fb17cabc388719",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1),
@@ -34,23 +33,12 @@ func ValidDecided10Operators() tests.SpecTest {
 			{
 				Name:                    "proposer",
 				Runner:                  testingutils.ProposerRunner(ks),
-				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb), ks, types.RoleProposer),
+				Duty:                    testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
+				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerConsensusDataV(gloas.DataVersionGloas), ks, types.RoleProposer),
 				PostDutyRunnerStateRoot: "59422da9c9ac14226688dc638041c830f596b4e51632685bb98fd2f3f7adaf99",
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
-					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
-				},
-			},
-			{
-				Name:                    "proposer (blinded block)",
-				Runner:                  testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-				Messages:                testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb), ks, types.RoleProposer),
-				PostDutyRunnerStateRoot: "7caaccca0c2352b6b9088ac139552a2a18e14b37e4d093cdab5a57b8348b259d",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
-					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, gloas.DataVersionGloas),
+					testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, gloas.DataVersionGloas),
 				},
 			},
 		},
@@ -81,7 +69,7 @@ func ValidDecided10Operators() tests.SpecTest {
 				Name:     fmt.Sprintf("attester (%s)", version.String()),
 				Runner:   testingutils.CommitteeRunner(ks),
 				Duty:     testingutils.TestingAttesterDuty(version),
-				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
+				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestBeaconVoteByts, ks, height),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version),
 				},
@@ -90,7 +78,7 @@ func ValidDecided10Operators() tests.SpecTest {
 				Name:     fmt.Sprintf("sync committee (%s)", version.String()),
 				Runner:   testingutils.CommitteeRunner(ks),
 				Duty:     testingutils.TestingSyncCommitteeDuty(version),
-				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
+				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestBeaconVoteByts, ks, height),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version),
 				},
@@ -99,7 +87,7 @@ func ValidDecided10Operators() tests.SpecTest {
 				Name:     fmt.Sprintf("attester and sync committee (%s)", version.String()),
 				Runner:   testingutils.CommitteeRunner(ks),
 				Duty:     testingutils.TestingAttesterAndSyncCommitteeDuties(version),
-				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
+				Messages: testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestBeaconVoteByts, ks, height),
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version),
 				},

@@ -1,11 +1,10 @@
 package valcheck
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -20,20 +19,13 @@ func WrongDecoding() tests.SpecTest {
 				Name:              "committee",
 				Network:           types.BeaconTestNetwork,
 				RunnerRole:        types.RoleCommittee,
-				Input:             testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
+				Input:             testingutils.TestProposerConsensusDataBytsV(gloas.DataVersionGloas),
 				ExpectedSource:    *testingutils.TestBeaconVote.Source,
 				ExpectedTarget:    *testingutils.TestBeaconVote.Target,
 				ExpectedErrorCode: types.DecodeBeaconVoteErrorCode,
 			},
 			{
-				Name:              "aggregator committee phase0",
-				Network:           types.BeaconTestNetwork,
-				RunnerRole:        types.RoleAggregatorCommittee,
-				Input:             testingutils.TestBeaconVoteByts,
-				ExpectedErrorCode: types.AggCommConsensusDataDecodeErrorCode,
-			},
-			{
-				Name:              "aggregator committee electra",
+				Name:              "aggregator committee",
 				Network:           types.BeaconTestNetwork,
 				RunnerRole:        types.RoleAggregatorCommittee,
 				Input:             testingutils.TestBeaconVoteByts,

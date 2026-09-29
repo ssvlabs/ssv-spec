@@ -18,8 +18,6 @@ func getReflectValueForObject(obj types.Encoder) reflect.Value {
 		*types.SSVMessage, *types.SignedSSVMessage,
 		*types.ProposerConsensusData, *types.BeaconVote, *types.AggregatorCommitteeConsensusData:
 		return reflect.ValueOf(obj).Elem()
-	case *Phase0AttestationWrapper:
-		return reflect.ValueOf(obj.Attestation).Elem()
 	case *ElectraAttestationWrapper:
 		return reflect.ValueOf(obj.Attestation).Elem()
 	}

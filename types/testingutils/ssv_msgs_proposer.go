@@ -25,36 +25,30 @@ var PostConsensusProposerMsgV = func(sk *bls.SecretKey, id types.OperatorID, ver
 	return postConsensusBeaconBlockMsgV(sk, id, false, false, version)
 }
 
-// PostConsensusProposerBlockOnlyMsgV keeps only the block entry, dropping the Gloas §6 envelope entry —
-// the packet a run sees when the envelope partial-sigs miss quorum. The block entry is required, so the
-// duty still finalizes (SIP #94 §4/§6). A no-op before Gloas, where the packet is block-only already.
+// PostConsensusProposerBlockOnlyMsgV keeps only the block entry, dropping the §6 envelope entry — the packet
+// a run sees when the envelope partial-sigs miss quorum. The block entry is required, so the duty still
+// finalizes (SIP #94 §4/§6).
 var PostConsensusProposerBlockOnlyMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
 	msg := postConsensusBeaconBlockMsgV(sk, id, false, false, version)
 	msg.Messages = msg.Messages[:1] // block entry is built first; drop any trailing envelope entry
 	return msg
 }
 
-// PostConsensusProposerEnvelopeFirstMsgV reverses the Gloas packet's entry order — the §6 envelope entry
-// first, the block entry second. The receiver classifies entries by matched root, not position, so both
-// must still submit; this guards against a future order-dependent rewrite (SIP #94 §4). A no-op before
-// Gloas, where the packet is block-only.
+// PostConsensusProposerEnvelopeFirstMsgV reverses the packet's entry order — the §6 envelope entry first, the
+// block entry second. The receiver classifies entries by matched root, not position, so both must still
+// submit; this guards against a future order-dependent rewrite (SIP #94 §4).
 var PostConsensusProposerEnvelopeFirstMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
 	msg := postConsensusBeaconBlockMsgV(sk, id, false, false, version)
-	if len(msg.Messages) == 2 {
-		msg.Messages[0], msg.Messages[1] = msg.Messages[1], msg.Messages[0]
-	}
+	msg.Messages[0], msg.Messages[1] = msg.Messages[1], msg.Messages[0]
 	return msg
 }
 
 // PostConsensusProposerBadEnvelopeShareMsgV signs the block entry correctly but the §6 envelope entry with a
 // different validator key (a structurally valid partial that fails beacon-sig verification), keeping both
 // signing roots. The block reconstructs while the envelope fails — pinning that a bad envelope share does not
-// strand the block (SIP #94 §4/§6). A no-op (block-only) before Gloas.
+// strand the block (SIP #94 §4/§6).
 var PostConsensusProposerBadEnvelopeShareMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
 	msg := postConsensusBeaconBlockMsgV(sk, id, false, false, version)
-	if len(msg.Messages) < 2 {
-		return msg // pre-Gloas: block-only, no envelope entry to corrupt
-	}
 	// Re-sign the envelope entry with a different validator key: same signing root, invalid signature.
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
@@ -71,12 +65,9 @@ var PostConsensusProposerBadEnvelopeShareMsgV = func(sk *bls.SecretKey, id types
 // PostConsensusProposerBadBlockShareMsgV signs the §6 envelope entry correctly but the block entry with a
 // different validator key (a structurally valid partial that fails beacon-sig verification), keeping both
 // signing roots. The envelope reconstructs while the block fails — the mirror of the bad-envelope case,
-// pinning that a bad block share does not strand the §6 envelope (SIP #94 §4/§6). A no-op (block-only) before Gloas.
+// pinning that a bad block share does not strand the §6 envelope (SIP #94 §4/§6).
 var PostConsensusProposerBadBlockShareMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
 	msg := postConsensusBeaconBlockMsgV(sk, id, false, false, version)
-	if len(msg.Messages) < 2 {
-		return msg // pre-Gloas: block-only, no envelope to keep alive
-	}
 	// Re-sign the block entry (Messages[0]) with a different validator key: same signing root, invalid signature.
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
@@ -140,21 +131,13 @@ var postConsensusBeaconBlockMsgV = func(
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
 
-	var blockRoot phase0.Root
-	var err error
-	if version == gloas.DataVersionGloas {
-		// Gloas (ePBS §4): the block root is the bid-only fixture block's own hash tree root (a wrong root
-		// comes from a wrong-slot block).
-		slot := TestingDutySlotV(version)
-		if wrongRoot {
-			slot += 100
-		}
-		blockRoot, err = gloas.TestingBeaconBlock(slot).HashTreeRoot()
-	} else if wrongRoot {
-		blockRoot, err = TestingWrongBeaconBlockV(version).Root()
-	} else {
-		blockRoot, err = TestingBeaconBlockV(version).Root()
+	// The block root is the bid-only fixture block's own hash tree root (a wrong root comes from a wrong-slot
+	// block).
+	slot := TestingDutySlotV(version)
+	if wrongRoot {
+		slot += 100
 	}
+	blockRoot, err := gloas.TestingBeaconBlock(slot).HashTreeRoot()
 	if err != nil {
 		panic(err)
 	}
@@ -177,9 +160,9 @@ var postConsensusBeaconBlockMsgV = func(
 		ValidatorIndex:   TestingValidatorIndex,
 	}}
 
-	// Gloas self-build: the §6 blinded-envelope entry under DomainBeaconBuilder rides the same packet
-	// (SIP #94 §4/§6). The wrong-root / wrong-sig variants exercise the block entry only.
-	if version == gloas.DataVersionGloas && !wrongRoot && !wrongBeaconSig {
+	// Self-build: the §6 blinded-envelope entry under DomainBeaconBuilder rides the same packet (SIP #94 §4/§6).
+	// The wrong-root / wrong-sig variants exercise the block entry only.
+	if !wrongRoot && !wrongBeaconSig {
 		envelope := TestingBlindedExecutionPayloadEnvelope(TestingDutySlotV(version))
 		dBuilder, _ := beacon.DomainData(1, types.DomainBeaconBuilder)
 		envSig, envSigningRoot, _ := signer.SignBeaconObject(envelope, dBuilder, pk, types.DomainBeaconBuilder)

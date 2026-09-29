@@ -1,6 +1,8 @@
 package gloas
 
 import (
+	_ "embed"
+
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	bitfield "github.com/prysmaticlabs/go-bitfield"
@@ -45,3 +47,10 @@ func TestingBeaconBlockExternalBuild(slot phase0.Slot) *BeaconBlock {
 	blk.Body.SignedExecutionPayloadBid.Message.BuilderIndex = TestingExternalBuilderIndex
 	return blk
 }
+
+// TestingDevnet6SignedBeaconBlockSSZ is a real Gloas SignedBeaconBlock (slot 66) captured from lighthouse v8.2.0
+// on glamsterdam-devnet-6; its ParentExecutionRequests carries the EIP-8282 five-list ExecutionRequests (all
+// empty). For use in tests.
+//
+//go:embed testdata/devnet6_gloas_block.ssz
+var TestingDevnet6SignedBeaconBlockSSZ []byte
