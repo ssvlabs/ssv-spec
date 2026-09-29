@@ -9,10 +9,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 )
 
-// Regenerate with `go generate ./types/gloas/` (or `make generate-ssz`). The phase0 --include is resolved from the module
-// graph (`go list -m`), so it tracks go-eth2-client across dependency bumps rather than pinning.
-//go:generate sh -c "go run github.com/ferranbt/fastssz/sszgen --path ./payload_attestation.go --include $(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/phase0 --objs PayloadAttestationData,PayloadAttestationMessage"
-
 // PayloadAttestationData is the Gloas (ePBS) datum a PTC member attests to: whether the
 // execution payload for BeaconBlockRoot at Slot was present, and its blobs available.
 // Signed under DomainPTCAttester with domain epoch = epoch(Slot). Fixed 42-byte SSZ.

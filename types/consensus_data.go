@@ -7,7 +7,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/electra"
+	eth2gloas "github.com/attestantio/go-eth2-client/spec/gloas"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 
@@ -31,18 +31,20 @@ func (c *Contributions) GetTree() (*ssz.Node, error) {
 }
 
 func (c *Contributions) HashTreeRootWith(hh ssz.HashWalker) error {
-	// taken from https://github.com/prysmaticlabs/prysm/blob/develop/encoding/ssz/htrutils.go#L97-L119
+	// *Contribution is now dynamic-ssz-generated and no longer implements fastssz's HashTreeRootWith,
+	// so append each element's HashTreeRoot() as a leaf chunk and let fastssz merkleize — same list
+	// root as the per-element composition.
 	subIndx := hh.Index()
 	num := uint64(len(*c))
 	if num > 13 {
 		return ssz.ErrIncorrectListSize
 	}
 	for _, elem := range *c {
-		{
-			if err := elem.HashTreeRootWith(hh); err != nil {
-				return err
-			}
+		root, err := elem.HashTreeRoot()
+		if err != nil {
+			return err
 		}
+		hh.Append(root[:])
 	}
 	hh.MerkleizeWithMixin(subIndx, num, 13)
 	return nil
@@ -341,9 +343,9 @@ func (a *AggregatorCommitteeConsensusData) Validate() error {
 		return NewError(AggCommUnusedCommIdxErrorCode, "leftover aggregator committee index not usedAggCommittees by any aggregator")
 	}
 
-	// Ensure attestation objects are decoded correctly. Gloas reuses the Electra attestation shape (SIP #94 §2).
+	// Ensure attestation objects are decoded correctly
 	for _, attBytes := range a.AggregatedAttestations {
-		att := &electra.Attestation{}
+		att := &eth2gloas.Attestation{}
 		if err := att.UnmarshalSSZ(attBytes); err != nil {
 			return NewError(AggCommAttestationDecodingErrorCode, "failed to unmarshal attestation")
 		}
@@ -387,12 +389,11 @@ func (a *AggregatorCommitteeConsensusData) Decode(data []byte) error {
 	return a.UnmarshalSSZ(data)
 }
 
-func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (ssz.HashRoot, error) {
+func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (HashRoot, error) {
 	if aggProof.Version != gloas.DataVersionGloas {
 		return nil, WrapError(UnknownVersionErrorCode, fmt.Errorf("unknown version %d", aggProof.Version))
 	}
-	// Gloas reuses the Electra aggregate-and-proof shape (SIP #94 §2); no Gloas field on the versioned wrapper.
-	return aggProof.Electra, nil
+	return aggProof.Gloas, nil
 }
 
 // GetAggregateAndProofs returns all aggregate and proofs for the aggregator duties along with their hash roots
@@ -416,14 +417,16 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 			return nil, NewError(AggCommCommIdxMismatchErrorCode, "aggregator committee index not found for attestation")
 		}
 
-		// Gloas reuses the Electra aggregate shape (SIP #94 §2).
-		att := &electra.Attestation{}
+		// The Gloas container serializes like Electra's but merkleizes as a progressive container with a
+		// progressive-bitlist aggregation_bits (EIP-7688 / EIP-7916), so the aggregate-and-proof root — the
+		// aggregator's signing root — differs from Electra's (SIP #94 §2).
+		att := &eth2gloas.Attestation{}
 		if err := att.UnmarshalSSZ(a.AggregatedAttestations[foundIndex]); err != nil {
 			return nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal attestation: %w", err))
 		}
 		proofs = append(proofs, &spec.VersionedAggregateAndProof{
 			Version: a.Version,
-			Electra: &electra.AggregateAndProof{
+			Gloas: &eth2gloas.AggregateAndProof{
 				AggregatorIndex: aggregator.ValidatorIndex,
 				Aggregate:       att,
 				SelectionProof:  aggregator.SelectionProof,

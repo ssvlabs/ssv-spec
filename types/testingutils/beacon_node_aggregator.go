@@ -1,11 +1,11 @@
 package testingutils
 
 import (
+	"github.com/OffchainLabs/go-bitfield"
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/attestantio/go-eth2-client/spec/electra"
+	eth2gloas "github.com/attestantio/go-eth2-client/spec/gloas"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
-	"github.com/prysmaticlabs/go-bitfield"
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/gloas"
@@ -43,37 +43,38 @@ var TestingAggregatorDutyFirstSlot = func() *types.AggregatorCommitteeDuty {
 // Versioned AggregateAndProof
 // ==================================================
 //
-// Gloas reuses the Electra aggregate shape (SIP #94 §2); the attestation data carries the payload-status
-// index and the duty slot, so fixtures must match the data the runner aggregates over.
+// The Gloas AggregateAndProof (SIP #94 §2) serializes like the Electra one but has a different hash tree root. The
+// attestation data carries the payload-status index and the duty slot, so fixtures must match the data the runner
+// aggregates over.
 
 var TestingAggregateAndProofV = func(version spec.DataVersion, aggregatorIndex phase0.ValidatorIndex) ssz.Marshaler {
-	return TestingElectraAggregateAndProofV(aggregatorIndex, version)
+	return TestingGloasAggregateAndProofV(aggregatorIndex, version)
 }
 
 var TestingVersionedSignedAggregateAndProof = func(ks *TestKeySet, version spec.DataVersion) *spec.VersionedSignedAggregateAndProof {
 	return &spec.VersionedSignedAggregateAndProof{
 		Version: version,
-		Electra: TestingElectraSignedAggregateAndProofV(ks, TestingValidatorIndex, version),
+		Gloas:   TestingGloasSignedAggregateAndProofV(ks, TestingValidatorIndex, version),
 	}
 }
 
-var TestingSignedAggregateAndProof = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
-	return TestingElectraSignedAggregateAndProofV(ks, TestingValidatorIndex, version)
+var TestingSignedAggregateAndProof = func(ks *TestKeySet, version spec.DataVersion) types.HashRoot {
+	return TestingGloasSignedAggregateAndProofV(ks, TestingValidatorIndex, version)
 }
 
 var TestingAggregateAndProofBytesV = func(version spec.DataVersion, aggregatorIndex phase0.ValidatorIndex) []byte {
-	return TestingElectraAggregateAndProofBytesV(aggregatorIndex, version)
+	return TestingGloasAggregateAndProofBytesV(aggregatorIndex, version)
 }
 
 var TestingWrongAggregateAndProofV = func(version spec.DataVersion, aggregatorIndex phase0.ValidatorIndex) ssz.Marshaler {
-	return TestingWrongElectraAggregateAndProofV(aggregatorIndex, version)
+	return TestingWrongGloasAggregateAndProofV(aggregatorIndex, version)
 }
 
-var TestingElectraAggregateAndProofV = func(aggregatorIndex phase0.ValidatorIndex, version spec.DataVersion) *electra.AggregateAndProof {
-	return &electra.AggregateAndProof{
+var TestingGloasAggregateAndProofV = func(aggregatorIndex phase0.ValidatorIndex, version spec.DataVersion) *eth2gloas.AggregateAndProof {
+	return &eth2gloas.AggregateAndProof{
 		AggregatorIndex: aggregatorIndex,
 		SelectionProof:  phase0.BLSSignature{},
-		Aggregate: &electra.Attestation{
+		Aggregate: &eth2gloas.Attestation{
 			AggregationBits: bitfield.NewBitlist(128),
 			Signature:       phase0.BLSSignature{},
 			Data:            TestingAttestationData(version),
@@ -82,17 +83,17 @@ var TestingElectraAggregateAndProofV = func(aggregatorIndex phase0.ValidatorInde
 	}
 }
 
-var TestingElectraAggregateAndProofBytesV = func(aggregatorIndex phase0.ValidatorIndex, version spec.DataVersion) []byte {
-	ret, _ := TestingElectraAggregateAndProofV(aggregatorIndex, version).MarshalSSZ()
+var TestingGloasAggregateAndProofBytesV = func(aggregatorIndex phase0.ValidatorIndex, version spec.DataVersion) []byte {
+	ret, _ := TestingGloasAggregateAndProofV(aggregatorIndex, version).MarshalSSZ()
 	return ret
 }
 
-var TestingWrongElectraAggregateAndProofV = func(aggregatorIndex phase0.ValidatorIndex, version spec.DataVersion) *electra.AggregateAndProof {
-	byts, err := TestingElectraAggregateAndProofV(aggregatorIndex, version).MarshalSSZ()
+var TestingWrongGloasAggregateAndProofV = func(aggregatorIndex phase0.ValidatorIndex, version spec.DataVersion) *eth2gloas.AggregateAndProof {
+	byts, err := TestingGloasAggregateAndProofV(aggregatorIndex, version).MarshalSSZ()
 	if err != nil {
 		panic(err.Error())
 	}
-	ret := &electra.AggregateAndProof{}
+	ret := &eth2gloas.AggregateAndProof{}
 	if err := ret.UnmarshalSSZ(byts); err != nil {
 		panic(err.Error())
 	}
@@ -100,9 +101,9 @@ var TestingWrongElectraAggregateAndProofV = func(aggregatorIndex phase0.Validato
 	return ret
 }
 
-var TestingElectraSignedAggregateAndProofV = func(ks *TestKeySet, aggregatorIndex phase0.ValidatorIndex, version spec.DataVersion) *electra.SignedAggregateAndProof {
-	agg := TestingElectraAggregateAndProofV(aggregatorIndex, version)
-	return &electra.SignedAggregateAndProof{
+var TestingGloasSignedAggregateAndProofV = func(ks *TestKeySet, aggregatorIndex phase0.ValidatorIndex, version spec.DataVersion) *eth2gloas.SignedAggregateAndProof {
+	agg := TestingGloasAggregateAndProofV(aggregatorIndex, version)
+	return &eth2gloas.SignedAggregateAndProof{
 		Message:   agg,
 		Signature: signBeaconObject(agg, types.DomainAggregateAndProof, ks),
 	}

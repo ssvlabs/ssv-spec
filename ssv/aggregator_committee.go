@@ -6,9 +6,8 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/electra"
+	eth2gloas "github.com/attestantio/go-eth2-client/spec/gloas"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -604,7 +603,7 @@ func (r *AggregatorCommitteeRunner) executeDuty(duty types.Duty) error {
 }
 
 // expectedPreConsensusRootsAndDomain returns expected pre-consensus roots
-func (r *AggregatorCommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *AggregatorCommitteeRunner) expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	panic("not in use")
 }
 
@@ -1062,8 +1061,7 @@ func findValidatorsForPostConsensusRoot(
 	return types.BNRoleUnknown, nil, false
 }
 
-// constructSignedAggregateAndProof constructs a signed aggregate and proof from versioned data. Gloas reuses the
-// Electra aggregate-and-proof shape (SIP #94 §2); no Gloas field on the versioned wrapper.
+// constructSignedAggregateAndProof constructs a signed aggregate and proof from versioned data.
 func (r *AggregatorCommitteeRunner) constructSignedAggregateAndProof(
 	aggregateAndProof *spec.VersionedAggregateAndProof,
 	signature phase0.BLSSignature,
@@ -1071,13 +1069,13 @@ func (r *AggregatorCommitteeRunner) constructSignedAggregateAndProof(
 	if aggregateAndProof.Version != gloas.DataVersionGloas {
 		return nil, errors.Errorf("unknown version %s", aggregateAndProof.Version.String())
 	}
-	if aggregateAndProof.Electra == nil {
+	if aggregateAndProof.Gloas == nil {
 		return nil, errors.New("nil Gloas aggregate and proof")
 	}
 	return &spec.VersionedSignedAggregateAndProof{
 		Version: aggregateAndProof.Version,
-		Electra: &electra.SignedAggregateAndProof{
-			Message:   aggregateAndProof.Electra,
+		Gloas: &eth2gloas.SignedAggregateAndProof{
+			Message:   aggregateAndProof.Gloas,
 			Signature: signature,
 		},
 	}, nil
