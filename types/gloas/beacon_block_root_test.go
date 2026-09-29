@@ -20,12 +20,12 @@ import (
 // a non-empty progressive list, where progressive and binary merkleization actually diverge.
 func TestSignedBeaconBlockRootMatchesGoEth2Client(t *testing.T) {
 	var ours SignedBeaconBlock
-	require.NoError(t, ours.UnmarshalSSZ(devnet6GloasBlockSSZ), "decode into ssv-spec gloas type")
+	require.NoError(t, ours.UnmarshalSSZ(TestingDevnet6SignedBeaconBlockSSZ), "decode into ssv-spec gloas type")
 	ourRoot, err := ours.HashTreeRoot()
 	require.NoError(t, err)
 
 	var ref eth2gloas.SignedBeaconBlock
-	require.NoError(t, ref.UnmarshalSSZ(devnet6GloasBlockSSZ), "decode into go-eth2-client spec/gloas type")
+	require.NoError(t, ref.UnmarshalSSZ(TestingDevnet6SignedBeaconBlockSSZ), "decode into go-eth2-client spec/gloas type")
 	refRoot, err := ref.HashTreeRoot()
 	require.NoError(t, err)
 
