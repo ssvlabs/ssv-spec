@@ -123,6 +123,8 @@ var AllTests = []SpecTest{
 	duty.MapSyncCommitteeContribution(),
 	duty.MapValidatorRegistration(),
 	duty.MapVoluntaryExit(),
+	duty.MapPTCAttester(),
+	duty.MapProposerPreferences(),
 	duty.MapUnknownRole(),
 
 	beaconvote.BeaconVoteEncoding(),
