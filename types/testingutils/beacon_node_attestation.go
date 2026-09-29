@@ -1,7 +1,6 @@
 package testingutils
 
 import (
-	"github.com/OffchainLabs/go-bitfield"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
