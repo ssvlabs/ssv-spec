@@ -4,13 +4,12 @@ import (
 	"crypto/sha256"
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -30,7 +29,7 @@ func PostInvalidDecided() tests.SpecTest {
 				CommitteeLength:         128,
 				ValidatorCommitteeIndex: 11,
 			},
-			Version: spec.DataVersionPhase0,
+			Version: gloas.DataVersionGloas,
 		}
 		byts, _ := cd.Encode()
 		return byts
@@ -74,12 +73,12 @@ func PostInvalidDecided() tests.SpecTest {
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionDeneb)),
-				Duty:                    testingutils.TestingProposerDutyNextEpochV(spec.DataVersionDeneb),
+				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(gloas.DataVersionGloas)),
+				Duty:                    testingutils.TestingProposerDutyNextEpochV(gloas.DataVersionGloas),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "c002484c2c25f5d97f625b5923484a062bdadb4eb21be9715dd9ae454883d890",
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
+					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, gloas.DataVersionGloas),
 					// broadcasts when starting a new duty
 				},
 			},

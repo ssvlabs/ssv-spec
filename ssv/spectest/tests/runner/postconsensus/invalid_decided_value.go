@@ -4,12 +4,11 @@ import (
 	"crypto/rsa"
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -29,7 +28,7 @@ func InvalidDecidedValue() tests.SpecTest {
 				CommitteeLength:         128,
 				ValidatorCommitteeIndex: 11,
 			},
-			Version: spec.DataVersionPhase0,
+			Version: gloas.DataVersionGloas,
 		}
 		byts, _ := cd.Encode()
 		return byts
@@ -43,11 +42,11 @@ func InvalidDecidedValue() tests.SpecTest {
 			{
 				Name:   "proposer",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Duty:   testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, spec.DataVersionDeneb))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, gloas.DataVersionGloas))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, gloas.DataVersionGloas))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, gloas.DataVersionGloas))),
 
 					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
 						[]*rsa.PrivateKey{
@@ -58,35 +57,10 @@ func InvalidDecidedValue() tests.SpecTest {
 						testingutils.ProposerMsgID,
 						consensusDataByts(),
 					),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, gloas.DataVersionGloas))),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoMsgV(testingutils.Testing4SharesSet().Shares[1], 1, spec.DataVersionDeneb),
-				},
-				ExpectedErrorCode: expectedErrCode,
-			},
-			{
-				Name:   "proposer (blinded block)",
-				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, spec.DataVersionDeneb))),
-
-					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-						[]*rsa.PrivateKey{
-							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
-						},
-						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.ProposerMsgID,
-						consensusDataByts(),
-					),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoMsgV(testingutils.Testing4SharesSet().Shares[1], 1, spec.DataVersionDeneb),
+					testingutils.PreConsensusRandaoMsgV(testingutils.Testing4SharesSet().Shares[1], 1, gloas.DataVersionGloas),
 				},
 				ExpectedErrorCode: expectedErrCode,
 			},
@@ -179,8 +153,7 @@ func InvalidDecidedValue() tests.SpecTest {
 		// The commit is sent at the duty's own slot so it reaches the duty's runner: the invalid vote is
 		// then rejected by the value check, which is what leaves the runner without a decided value.
 		// A hardcoded height would instead be dropped for having no runner at that slot, reaching the
-		// same error without exercising the value check. The invalid vote must also be fork-shaped, or at a
-		// Gloas slot it would be rejected on container length instead of the source >= target rule.
+		// same error without exercising the value check.
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
 			{
 				Name:   fmt.Sprintf("attester (%s)", version.String()),
@@ -194,7 +167,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlotV(version)),
 						testingutils.CommitteeMsgID(ks),
-						testingutils.TestingWrongBeaconVoteBytesV(version),
+						testingutils.TestWrongBeaconVoteByts,
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version))),
 				},
@@ -212,7 +185,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlotV(version)),
 						testingutils.CommitteeMsgID(ks),
-						testingutils.TestingWrongBeaconVoteBytesV(version),
+						testingutils.TestWrongBeaconVoteByts,
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},
@@ -230,7 +203,7 @@ func InvalidDecidedValue() tests.SpecTest {
 						[]types.OperatorID{1, 2, 3},
 						qbft.Height(testingutils.TestingDutySlotV(version)),
 						testingutils.CommitteeMsgID(ks),
-						testingutils.TestingWrongBeaconVoteBytesV(version),
+						testingutils.TestWrongBeaconVoteByts,
 					),
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
 				},

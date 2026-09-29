@@ -1,8 +1,6 @@
 package valcheckduty
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
@@ -45,24 +43,22 @@ func FarFutureDutySlot() tests.SpecTest {
 				// No error since input doesn't contain slot
 			},
 			{
-				Name:       "aggregator committee phase0",
+				Name:       "aggregator committee",
 				Network:    types.BeaconTestNetwork,
 				RunnerRole: types.RoleAggregatorCommittee,
-				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(spec.DataVersionPhase0), spec.DataVersionPhase0),
+				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(gloas.DataVersionGloas), gloas.DataVersionGloas),
 				// No error since input doesn't contain slot
 			},
 			{
-				Name:       "aggregator committee electra",
+				Name:       "aggregator committee",
 				Network:    types.BeaconTestNetwork,
 				RunnerRole: types.RoleAggregatorCommittee,
-				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(spec.DataVersionElectra), spec.DataVersionElectra),
+				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(gloas.DataVersionGloas), gloas.DataVersionGloas),
 				// No error since input doesn't contain slot
 			},
 			{
-				// A far-future slot is necessarily at/after the last scheduled fork (Gloas), so the
-				// value must be Gloas-shaped — a pre-Gloas Version would trip the version/slot-fork
-				// guard before the far-future check this test pins (that guard has its own vector in
-				// valcheckproposer).
+				// The value must be Gloas-versioned — another Version would trip the version guard before
+				// the far-future check this test pins (that guard has its own vector in valcheckproposer).
 				Name:              "proposer",
 				Network:           types.BeaconTestNetwork,
 				RunnerRole:        types.RoleProposer,

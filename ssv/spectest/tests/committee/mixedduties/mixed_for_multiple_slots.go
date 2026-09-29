@@ -3,12 +3,12 @@ package committeemultipleduty
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -17,7 +17,7 @@ func MixedMultipleSlots() tests.SpecTest {
 
 	vals := testingutils.ValidatorIndexList(10)
 	ksMap := testingutils.KeySetMapForValidators(10)
-	version := spec.DataVersionElectra
+	version := gloas.DataVersionGloas
 	slot := testingutils.TestingDutySlotV(version)
 
 	slotsAmount := 10

@@ -250,6 +250,14 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 		}
 	}
 
+	var beaconNode *tests2.BeaconNodeBehaviour
+	if m["BeaconNode"] != nil {
+		byts, err := json.Marshal(m["BeaconNode"])
+		require.NoError(t, err)
+		beaconNode = &tests2.BeaconNodeBehaviour{}
+		require.NoError(t, json.Unmarshal(byts, beaconNode))
+	}
+
 	ks := testingutils.KeySetForShare(shareInstance)
 
 	runner := fixRunnerForRun(t, runnerMap, ks)
@@ -262,6 +270,7 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 		PostDutyRunnerStateRoot: m["PostDutyRunnerStateRoot"].(string),
 		ExpectedErrorCode:       int(m["ExpectedErrorCode"].(float64)),
 		OutputMessages:          outputMsgs,
+		BeaconNode:              beaconNode,
 	}
 }
 
@@ -353,24 +362,44 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		}
 	}
 
+	orderedBeaconBroadcastedRoots, _ := m["OrderedBeaconBroadcastedRoots"].(bool)
+
+	var qbftProposals [][]byte
+	if m["QBFTProposals"] != nil {
+		byts, err := json.Marshal(m["QBFTProposals"])
+		require.NoError(t, err)
+		require.NoError(t, json.Unmarshal(byts, &qbftProposals))
+	}
+
+	var beaconNode *tests2.BeaconNodeBehaviour
+	if m["BeaconNode"] != nil {
+		byts, err := json.Marshal(m["BeaconNode"])
+		require.NoError(t, err)
+		beaconNode = &tests2.BeaconNodeBehaviour{}
+		require.NoError(t, json.Unmarshal(byts, beaconNode))
+	}
+
 	ks := testingutils.KeySetForShare(shareInstance)
 
 	// runner
 	runner := fixRunnerForRun(t, runnerMap, ks)
 
 	return &tests2.MsgProcessingSpecTest{
-		Name:                    m["Name"].(string),
-		Duty:                    testDuty,
-		Runner:                  runner,
-		Messages:                msgs,
-		DecidedSlashable:        m["DecidedSlashable"].(bool),
-		PostDutyRunnerStateRoot: m["PostDutyRunnerStateRoot"].(string),
-		DontStartDuty:           m["DontStartDuty"].(bool),
-		ExpectedErrorCode:       int(m["ExpectedErrorCode"].(float64)),
-		OutputMessages:          outputMsgs,
-		BeaconBroadcastedRoots:  beaconBroadcastedRoots,
-		BeaconAggregators:       beaconAggregators,
-		BeaconAggregatorsValues: beaconAggregatorsValues,
+		Name:                          m["Name"].(string),
+		Duty:                          testDuty,
+		Runner:                        runner,
+		Messages:                      msgs,
+		DecidedSlashable:              m["DecidedSlashable"].(bool),
+		PostDutyRunnerStateRoot:       m["PostDutyRunnerStateRoot"].(string),
+		DontStartDuty:                 m["DontStartDuty"].(bool),
+		ExpectedErrorCode:             int(m["ExpectedErrorCode"].(float64)),
+		OutputMessages:                outputMsgs,
+		BeaconBroadcastedRoots:        beaconBroadcastedRoots,
+		OrderedBeaconBroadcastedRoots: orderedBeaconBroadcastedRoots,
+		QBFTProposals:                 qbftProposals,
+		BeaconAggregators:             beaconAggregators,
+		BeaconAggregatorsValues:       beaconAggregatorsValues,
+		BeaconNode:                    beaconNode,
 	}
 }
 
@@ -547,6 +576,8 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller, ks *testingutils.TestKeySet) *qbft.Controller {
 	config := testingutils.TestingConfig(ks)
 	config.ValueCheckF = runner.GetValCheckF()
+	// QBFT broadcasts go to the runner's network, as in the constructed runners, so QBFTProposals see them.
+	config.Network = runner.GetNetwork()
 	newContr := qbft.NewController(
 		contr.Identifier,
 		contr.CommitteeMember,
@@ -659,10 +690,6 @@ func baseRunnerForRole(role types.RunnerRole, base *ssv.BaseRunner, ks *testingu
 	case types.RoleAggregatorCommittee:
 		ret := testingutils.AggregatorCommitteeRunner(ks)
 		ret.(*ssv.AggregatorCommitteeRunner).BaseRunner = base
-		return ret
-	case types.RoleValidatorRegistration:
-		ret := testingutils.ValidatorRegistrationRunner(ks)
-		ret.(*ssv.ValidatorRegistrationRunner).BaseRunner = base
 		return ret
 	case types.RoleVoluntaryExit:
 		ret := testingutils.VoluntaryExitRunner(ks)

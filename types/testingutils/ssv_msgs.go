@@ -1,9 +1,8 @@
 package testingutils
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -29,15 +28,15 @@ var EncodeAggregatorCommitteeConsensusDataTest = func(cd *types.AggregatorCommit
 
 var TestConsensusUnkownDutyTypeData = &types.ProposerConsensusData{
 	Duty:    TestingUnknownDutyType,
-	DataSSZ: TestingAttestationDataBytes(spec.DataVersionPhase0),
-	Version: spec.DataVersionPhase0,
+	DataSSZ: TestingAttestationDataBytes(gloas.DataVersionGloas),
+	Version: gloas.DataVersionGloas,
 }
 var TestConsensusUnkownDutyTypeDataByts, _ = TestConsensusUnkownDutyTypeData.Encode()
 
 var TestConsensusWrongDutyPKData = &types.ProposerConsensusData{
 	Duty:    TestingWrongDutyPK,
-	DataSSZ: TestingAttestationDataBytes(spec.DataVersionPhase0),
-	Version: spec.DataVersionPhase0,
+	DataSSZ: TestingAttestationDataBytes(gloas.DataVersionGloas),
+	Version: gloas.DataVersionGloas,
 }
 var TestConsensusWrongDutyPKDataByts, _ = TestConsensusWrongDutyPKData.Encode()
 

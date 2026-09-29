@@ -7,10 +7,8 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -213,56 +211,16 @@ var TestingSignedAggregatorCommitteeBeaconObjectSSZRoot = func(duty *types.Aggre
 		beacon := NewTestingBeaconNode()
 		d, _ := beacon.DomainData(1, types.DomainAggregateAndProof)
 
-		// Get the appropriate aggregate and proof object
-		var signingRoot ssz.HashRoot
-		switch version {
-		case spec.DataVersionElectra, gloas.DataVersionGloas:
-			// Gloas reuses the Electra aggregate shape (SIP #94 §2).
-			signingRoot = aggregateAndProof.Electra
-		case spec.DataVersionFulu:
-			signingRoot = aggregateAndProof.Fulu
-		default:
-			// Get the appropriate version field
-			switch aggregateAndProof.Version {
-			case spec.DataVersionPhase0:
-				signingRoot = aggregateAndProof.Phase0
-			case spec.DataVersionAltair:
-				signingRoot = aggregateAndProof.Altair
-			case spec.DataVersionBellatrix:
-				signingRoot = aggregateAndProof.Bellatrix
-			case spec.DataVersionCapella:
-				signingRoot = aggregateAndProof.Capella
-			case spec.DataVersionDeneb:
-				signingRoot = aggregateAndProof.Deneb
-			}
-		}
-
-		sig, _, _ := signer.SignBeaconObject(signingRoot, d, ks.ValidatorPK.Serialize(), types.DomainAggregateAndProof)
+		// Gloas reuses the Electra aggregate shape (SIP #94 §2).
+		sig, _, _ := signer.SignBeaconObject(aggregateAndProof.Electra, d, ks.ValidatorPK.Serialize(), types.DomainAggregateAndProof)
 
 		// Convert signature to BLSSignature
 		var blsSig phase0.BLSSignature
 		copy(blsSig[:], sig)
 
-		// Create signed aggregate and proof
-		var signedAgg ssz.HashRoot
-		switch version {
-		case spec.DataVersionElectra, gloas.DataVersionGloas:
-			// Gloas reuses the Electra aggregate shape (SIP #94 §2).
-			signedAgg = &electra.SignedAggregateAndProof{
-				Message:   aggregateAndProof.Electra,
-				Signature: blsSig,
-			}
-		case spec.DataVersionFulu:
-			signedAgg = &electra.SignedAggregateAndProof{
-				Message:   aggregateAndProof.Fulu,
-				Signature: blsSig,
-			}
-		default:
-			// For pre-electra versions, use phase0
-			signedAgg = &phase0.SignedAggregateAndProof{
-				Message:   aggregateAndProof.Phase0,
-				Signature: blsSig,
-			}
+		signedAgg := &electra.SignedAggregateAndProof{
+			Message:   aggregateAndProof.Electra,
+			Signature: blsSig,
 		}
 
 		ret = append(ret, GetSSZRootNoError(signedAgg))

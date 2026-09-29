@@ -1,7 +1,7 @@
 package proposerconsensusdata
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
@@ -12,7 +12,7 @@ func ProposerNoJustifications() *ProposerConsensusDataTest {
 
 	// To-do: add error when pre-consensus justification check is added.
 
-	cd := testingutils.TestProposerConsensusDataV(spec.DataVersionCapella)
+	cd := testingutils.TestProposerConsensusDataV(gloas.DataVersionGloas)
 
 	return NewProposerConsensusDataTest(
 		"proposer no justification",

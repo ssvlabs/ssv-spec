@@ -9,6 +9,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -20,22 +21,6 @@ func FullHappyFlow() tests.SpecTest {
 		"full happy flow",
 		testdoc.HappyFlowDoc,
 		[]*tests.MsgProcessingSpecTest{
-			{
-				Name:   "validator registration",
-				Runner: testingutils.ValidatorRegistrationRunner(ks),
-				Duty:   &testingutils.TestingValidatorRegistrationDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3))),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedValidatorRegistration(ks)),
-				},
-			},
 			{
 				Name:   "voluntary exit",
 				Runner: testingutils.VoluntaryExitRunner(ks),
@@ -133,7 +118,7 @@ func FullHappyFlow() tests.SpecTest {
 		Duty:   sccDuty,
 		Messages: append(
 			// consensus
-			testingutils.SSVDecidingMsgsForAggregatorCommitteeRunner(sccDuty, sccKsMap, qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionPhase0)), spec.DataVersionPhase0),
+			testingutils.SSVDecidingMsgsForAggregatorCommitteeRunner(sccDuty, sccKsMap, qbft.Height(sccDuty.Slot), gloas.DataVersionGloas),
 			[]*types.SignedSSVMessage{ // post consensus
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[1], 1, ks))),
 				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSyncCommitteeContributionMsg(ks.Shares[2], 2, ks))),
@@ -199,7 +184,7 @@ func FullHappyFlow() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterDuty(version),
 				Messages: append(
 					// consensus
-					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
+					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestBeaconVoteByts, ks, height),
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, version))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationMsg(ks.Shares[2], 2, version))),
@@ -219,7 +204,7 @@ func FullHappyFlow() tests.SpecTest {
 				Duty:   testingutils.TestingSyncCommitteeDuty(version),
 				Messages: append(
 					// consensus
-					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
+					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestBeaconVoteByts, ks, height),
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[1], 1, version))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusSyncCommitteeMsg(ks.Shares[2], 2, version))),
@@ -239,7 +224,7 @@ func FullHappyFlow() tests.SpecTest {
 				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties(version),
 				Messages: append(
 					// consensus
-					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestingBeaconVoteBytesV(version), ks, height),
+					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestBeaconVoteByts, ks, height),
 					[]*types.SignedSSVMessage{ // post consensus
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[1], 1, version))),
 						testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgCommittee(ks, nil, testingutils.PostConsensusAttestationAndSyncCommitteeMsg(ks.Shares[2], 2, version))),
@@ -281,32 +266,8 @@ func FullHappyFlow() tests.SpecTest {
 		}
 	}
 
-	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
-	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
-		return &tests.MsgProcessingSpecTest{
-			Name:   fmt.Sprintf("proposer blinded block (%s)", version.String()),
-			Runner: testingutils.ProposerBlindedBlockRunner(ks),
-			Duty:   testingutils.TestingProposerDutyV(version),
-			Messages: append(
-				testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.RoleProposer), // consensus
-				[]*types.SignedSSVMessage{ // post consensus
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[2], 2, version))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[3], 3, version))),
-				}...,
-			),
-			OutputMessages: []*types.PartialSignatureMessages{
-				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
-				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
-			},
-			BeaconBroadcastedRoots: testingutils.WithGloasEnvelopeBroadcast([]string{
-				testingutils.GetSSZRootNoError(testingutils.TestingSignedBlindedBeaconBlockV(ks, version)),
-			}, version),
-		}
-	}
-
 	for _, v := range testingutils.SupportedBlockVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v)}...)
 	}
 
 	return multiSpecTest

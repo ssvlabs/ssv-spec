@@ -1,7 +1,6 @@
 package ssv
 
 import (
-	"github.com/attestantio/go-eth2-client/api"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -37,20 +36,12 @@ type AttesterCalls interface {
 
 // ProposerCalls interface has all block proposer duty specific calls
 type ProposerCalls interface {
-	// GetBeaconBlock returns beacon block by the given slot, graffiti, and randao.
-	GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*api.VersionedProposal, ssz.Marshaler, error)
-	// SubmitBeaconBlock submit the block to the node
-	SubmitBeaconBlock(block *api.VersionedProposal, sig phase0.BLSSignature) error
-	// GetGloasBeaconBlock returns the Gloas (ePBS) beacon block for the given slot, graffiti, and randao,
-	// plus the blinded form of its produced execution-payload envelope on the self-build path (SIP #94
-	// §4/§6). A self-build produce is BlockContents: the operator holds the envelope — hence its
-	// payload_root — from produce onward, packs payload_root into the §4 decided value, and (if it turns
-	// out to be the builder operator) publishes the reveal. An external bid win (p2p/builder-API) returns a
-	// bare block and a nil envelope, so payload_root is zero. Separate from GetBeaconBlock because
-	// api.VersionedProposal cannot carry a Gloas block.
-	GetGloasBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, *gloas.BlindedExecutionPayloadEnvelope, error)
-	// SubmitGloasBeaconBlock submits the signed Gloas (ePBS) block to the node (SIP #94 §4)
-	SubmitGloasBeaconBlock(block *gloas.BeaconBlock, sig phase0.BLSSignature) error
+	// GetBeaconBlock returns the beacon block for the given slot, graffiti, and randao. A self-build produce also
+	// returns the blinded form of its execution-payload envelope, whose payload_root rides in the §4 decided value
+	// and which the builder operator later reveals (SIP #94 §4/§6); an external bid win returns a nil envelope.
+	GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, *gloas.BlindedExecutionPayloadEnvelope, error)
+	// SubmitBeaconBlock submits the signed block to the node (SIP #94 §4)
+	SubmitBeaconBlock(block *gloas.BeaconBlock, sig phase0.BLSSignature) error
 }
 
 // AggregatorCalls interface has all attestation aggregator duty specific calls
@@ -88,12 +79,6 @@ type SyncCommitteeContributionCalls interface {
 	SubmitSignedContributionAndProof(contribution *altair.SignedContributionAndProof) error
 }
 
-// ValidatorRegistrationCalls interface has all validator registration duty specific calls
-type ValidatorRegistrationCalls interface {
-	// SubmitValidatorRegistration submits a validator registration
-	SubmitValidatorRegistration(registration *api.VersionedSignedValidatorRegistration) error
-}
-
 // VoluntaryExitCalls interface has all validator voluntary exit duty specific calls
 type VoluntaryExitCalls interface {
 	// SubmitVoluntaryExit submits a validator voluntary exit
@@ -106,12 +91,6 @@ type DomainCalls interface {
 	// computed genesis-style — genesis fork version and zero genesis-validators-root, ignoring
 	// epoch — whereas every other domain is fork-versioned.
 	DomainData(epoch phase0.Epoch, domain phase0.DomainType) (phase0.Domain, error)
-}
-
-type VersionCalls interface {
-	// DataVersion returns a data version for the given epoch.
-	// In practice, for performance, responses can be cached in order not to always trigger an API call.
-	DataVersion(epoch phase0.Epoch) spec.DataVersion
 }
 
 // ProposerPreferencesCalls interface has all Gloas (ePBS) proposer-preferences duty specific calls (SIP #94 §5)
@@ -156,11 +135,9 @@ type BeaconNode interface {
 	AggregatorCalls
 	SyncCommitteeCalls
 	SyncCommitteeContributionCalls
-	ValidatorRegistrationCalls
 	VoluntaryExitCalls
 	PTCCalls
 	ProposerPreferencesCalls
 	EnvelopeCalls
 	DomainCalls
-	VersionCalls
 }

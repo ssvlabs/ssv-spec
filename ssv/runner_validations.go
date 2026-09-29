@@ -55,9 +55,8 @@ func (b *BaseRunner) FallBackAndVerifyEachSignature(container *PartialSigContain
 
 func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.PartialSignatureMessages) error {
 	if !b.hasRunningDuty() {
-		// A finished Gloas proposer keeps accepting post-consensus packets while an expected §6 envelope
-		// root has not yet reached quorum (SIP #94 §4), so an envelope quorum reached only after the block's
-		// still publishes the reveal; every other finished duty (and a never-started one) rejects.
+		// A finished proposer keeps accepting post-consensus packets while its §6 envelope root is short of
+		// quorum (SIP #94 §4); every other finished or never-started duty rejects.
 		if p, ok := runner.(*ProposerRunner); !ok || !p.awaitingEnvelope() {
 			return types.NewError(types.NoRunningDutyErrorCode, "no running duty")
 		}
@@ -78,10 +77,8 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 
 	switch runner.(type) {
 	case *CommitteeRunner:
-		// The decided value is a GloasBeaconVote at Gloas slots (SIP #94 §2), a BeaconVote before;
-		// decode the shape the duty's fork mandates so a cross-fork value is rejected here too.
-		decidedVote := committeeVoteForSlot(runner.GetBeaconNode(), b.State.StartingDuty.DutySlot())
-		if err := decidedVote.Decode(decidedValueBytes); err != nil {
+		decidedValue := &types.BeaconVote{}
+		if err := decidedValue.Decode(decidedValueBytes); err != nil {
 			return errors.Wrap(err, "failed to parse decided value to BeaconData")
 		}
 
@@ -131,12 +128,10 @@ func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val types.Encod
 	return nil
 }
 
-// verifyExpectedPostConsensusRoots validates a post-consensus packet against per-root domains (SIP #94
-// §4): every message root must equal an expected root computed under its own domain, each expected root is
-// covered at most once, and every required root must be present. An unexpected root, a duplicate, or a
-// missing required root rejects the whole packet. Optional roots — the Gloas proposer's §6 envelope entry —
-// may be absent, so a block-only packet stays valid. Matching the covered set of expected roots states
-// §4's "block plus optional envelope" directly, where a bare entry count would let a duplicate block pass.
+// verifyExpectedPostConsensusRoots validates a post-consensus packet against per-root domains (SIP #94 §4): every
+// message root must equal an expected root under its own domain, each expected root is covered at most once, and
+// every required root must be present; anything else rejects the whole packet. An optional root (the proposer's §6
+// envelope entry) may be absent, so a block-only packet stays valid.
 func (b *BaseRunner) verifyExpectedPostConsensusRoots(runner Runner, psigMsgs *types.PartialSignatureMessages, expected []PostConsensusRoot) error {
 	epoch := b.BeaconNetwork.EstimatedEpochAtSlot(b.State.StartingDuty.DutySlot())
 

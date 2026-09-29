@@ -29,7 +29,7 @@ func PastMessageDutyNotFinished() tests.SpecTest {
 
 	for _, version := range testingutils.SupportedAttestationVersions {
 
-		decidedValue := testingutils.TestingBeaconVoteBytesV(version)
+		decidedValue := testingutils.TestBeaconVoteByts
 		pastHeight := qbft.Height(testingutils.TestingDutySlotV(version) - 2)
 
 		bumpHeight := func(c *ssv.Committee, previousDuty types.Duty) *ssv.Committee {

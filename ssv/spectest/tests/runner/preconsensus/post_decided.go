@@ -11,6 +11,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -53,10 +54,10 @@ func PostDecided() tests.SpecTest {
 	// Aggregator committee duty
 
 	// SC Duty
-	scDuty := testingutils.TestingAggregatorCommitteeDuty([]int{}, validators, spec.DataVersionAltair)
+	scDuty := testingutils.TestingAggregatorCommitteeDuty([]int{}, validators, gloas.DataVersionGloas)
 	height := qbft.Height(scDuty.Slot)
 	msgID := testingutils.AggregatorCommitteeMsgID(ks)
-	scConsensusData := testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(scDuty, spec.DataVersionAltair)
+	scConsensusData := testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(scDuty, gloas.DataVersionGloas)
 
 	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 		Name:   "sync committee aggregator selection proof",
@@ -82,7 +83,7 @@ func PostDecided() tests.SpecTest {
 		},
 		OutputMessages: []*types.PartialSignatureMessages{
 			testingutils.PreConsensusAggregatorCommitteeMsgForDuty(scDuty, ksMap, 1),
-			testingutils.PostConsensusAggregatorCommitteeMsgForDuty(scDuty, ksMap, 1, spec.DataVersionAltair),
+			testingutils.PostConsensusAggregatorCommitteeMsgForDuty(scDuty, ksMap, 1, gloas.DataVersionGloas),
 		},
 	})
 	for _, version := range testingutils.SupportedAggregatorVersions {
@@ -176,30 +177,8 @@ func PostDecided() tests.SpecTest {
 		}
 	}
 
-	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
-	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
-		return &tests.MsgProcessingSpecTest{
-			Name: fmt.Sprintf("randao blinded block (%s)", version.String()),
-			Runner: decideRunner(
-				testingutils.ProposerBlindedBlockRunner(ks),
-				testingutils.TestingProposerDutyV(version),
-				testingutils.TestProposerBlindedBlockConsensusDataV(version),
-				[]*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version),
-					testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, version),
-					testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, version),
-				},
-			),
-			Duty: testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SignedSSVMessage{
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version))),
-			},
-			DontStartDuty: true,
-		}
-	}
-
 	for _, v := range testingutils.SupportedBlockVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v)}...)
 	}
 
 	return multiSpecTest

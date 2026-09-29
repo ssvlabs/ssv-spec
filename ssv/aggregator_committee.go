@@ -121,10 +121,8 @@ func (r *AggregatorCommitteeRunner) ProcessPreConsensus(signedMsg *types.Partial
 		return errors.Wrap(err, "could not get expected pre-consensus roots")
 	}
 
-	duty := r.BaseRunner.State.StartingDuty.(*types.AggregatorCommitteeDuty)
-	epoch := r.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(duty.Slot)
 	consensusData := &types.AggregatorCommitteeConsensusData{
-		Version: r.beacon.DataVersion(epoch),
+		Version: gloas.DataVersionGloas,
 	}
 	hasAnyAggregatorForNewQuorum := false
 
@@ -1064,72 +1062,25 @@ func findValidatorsForPostConsensusRoot(
 	return types.BNRoleUnknown, nil, false
 }
 
-// constructSignedAggregateAndProof constructs a signed aggregate and proof from versioned data
+// constructSignedAggregateAndProof constructs a signed aggregate and proof from versioned data. Gloas reuses the
+// Electra aggregate-and-proof shape (SIP #94 §2); no Gloas field on the versioned wrapper.
 func (r *AggregatorCommitteeRunner) constructSignedAggregateAndProof(
 	aggregateAndProof *spec.VersionedAggregateAndProof,
 	signature phase0.BLSSignature,
 ) (*spec.VersionedSignedAggregateAndProof, error) {
-	ret := &spec.VersionedSignedAggregateAndProof{
+	if aggregateAndProof.Version != gloas.DataVersionGloas {
+		return nil, errors.Errorf("unknown version %s", aggregateAndProof.Version.String())
+	}
+	if aggregateAndProof.Electra == nil {
+		return nil, errors.New("nil Gloas aggregate and proof")
+	}
+	return &spec.VersionedSignedAggregateAndProof{
 		Version: aggregateAndProof.Version,
-	}
-
-	switch ret.Version {
-	case spec.DataVersionPhase0:
-		ret.Phase0 = &phase0.SignedAggregateAndProof{
-			Message:   aggregateAndProof.Phase0,
-			Signature: signature,
-		}
-	case spec.DataVersionAltair:
-		ret.Altair = &phase0.SignedAggregateAndProof{
-			Message:   aggregateAndProof.Altair,
-			Signature: signature,
-		}
-	case spec.DataVersionBellatrix:
-		ret.Bellatrix = &phase0.SignedAggregateAndProof{
-			Message:   aggregateAndProof.Bellatrix,
-			Signature: signature,
-		}
-	case spec.DataVersionCapella:
-		ret.Capella = &phase0.SignedAggregateAndProof{
-			Message:   aggregateAndProof.Capella,
-			Signature: signature,
-		}
-	case spec.DataVersionDeneb:
-		ret.Deneb = &phase0.SignedAggregateAndProof{
-			Message:   aggregateAndProof.Deneb,
-			Signature: signature,
-		}
-	case spec.DataVersionElectra:
-		if aggregateAndProof.Electra == nil {
-			return nil, errors.New("nil Electra aggregate and proof")
-		}
-		ret.Electra = &electra.SignedAggregateAndProof{
+		Electra: &electra.SignedAggregateAndProof{
 			Message:   aggregateAndProof.Electra,
 			Signature: signature,
-		}
-	case spec.DataVersionFulu:
-		if aggregateAndProof.Fulu == nil {
-			return nil, errors.New("nil Fulu aggregate and proof")
-		}
-		ret.Fulu = &electra.SignedAggregateAndProof{
-			Message:   aggregateAndProof.Fulu,
-			Signature: signature,
-		}
-	case gloas.DataVersionGloas:
-		// Gloas reuses the Electra aggregate-and-proof shape (SIP #94 §2); no Gloas field on the versioned wrapper.
-		if aggregateAndProof.Electra == nil {
-			return nil, errors.New("nil Electra aggregate and proof")
-		}
-		ret.Electra = &electra.SignedAggregateAndProof{
-			Message:   aggregateAndProof.Electra,
-			Signature: signature,
-		}
-
-	default:
-		return nil, errors.Errorf("unknown version %s", ret.Version.String())
-	}
-
-	return ret, nil
+		},
+	}, nil
 }
 
 func (r *AggregatorCommitteeRunner) RecordSubmission(role types.BeaconRole, validatorIndex phase0.ValidatorIndex, root [32]byte) {

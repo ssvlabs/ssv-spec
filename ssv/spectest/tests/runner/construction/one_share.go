@@ -16,11 +16,10 @@ func OneShare() tests.SpecTest {
 
 	// No errors since one share must be valid for all runners
 	expectedErrors := map[types.RunnerRole]string{
-		types.RoleCommittee:             "",
-		types.RoleProposer:              "",
-		types.RoleAggregatorCommittee:   "",
-		types.RoleValidatorRegistration: "",
-		types.RoleVoluntaryExit:         "",
+		types.RoleCommittee:           "",
+		types.RoleProposer:            "",
+		types.RoleAggregatorCommittee: "",
+		types.RoleVoluntaryExit:       "",
 	}
 
 	return NewRunnerConstructionSpecTest(

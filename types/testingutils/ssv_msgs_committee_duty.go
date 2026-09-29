@@ -213,7 +213,7 @@ var postConsensusAttestationMsg = func(
 	validatorIndex phase0.ValidatorIndex,
 ) *types.PartialSignatureMessages {
 
-	sampleAttData := TestingAttestationData(spec.DataVersionPhase0)
+	sampleAttData := TestingAttestationData(gloas.DataVersionGloas)
 
 	signer := NewTestingKeyManager()
 	beacon := NewTestingBeaconNode()
@@ -221,22 +221,14 @@ var postConsensusAttestationMsg = func(
 
 	attData := &phase0.AttestationData{
 		Slot:            slot,
-		Index:           TestingCommitteeIndex,
+		Index:           sampleAttData.Index, // SIP #94 §2: the payload-status index, matching TestBeaconVote
 		BeaconBlockRoot: sampleAttData.BeaconBlockRoot,
 		Source:          sampleAttData.Source,
 		Target:          sampleAttData.Target,
 	}
 
-	version := VersionBySlot(slot)
-	if version >= spec.DataVersionElectra {
-		attData.Index = 0
-	}
-	if version >= gloas.DataVersionGloas {
-		attData.Index = 1 // SIP #94 §2: Gloas carries the payload-status index (1 = payload present, matching TestGloasBeaconVote)
-	}
-
 	if wrongRoot {
-		attData = TestingWrongAttestationData(spec.DataVersionPhase0)
+		attData = TestingWrongAttestationData(gloas.DataVersionGloas)
 	}
 
 	signed, root, _ := signer.SignBeaconObject(attData, d, sk.GetPublicKey().Serialize(), types.DomainAttester)

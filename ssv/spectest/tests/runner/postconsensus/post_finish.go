@@ -3,11 +3,10 @@ package postconsensus
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -21,29 +20,18 @@ func PostFinish() tests.SpecTest {
 		testdoc.PostConsensusPostFinishDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
+				// An external bid win: no §6 envelope root, so the finished duty accepts nothing further. (A
+				// self-build proposer keeps accepting packets past the block until the envelope reaches quorum;
+				// see GloasProposerLateEnvelopeQuorum.)
 				Name: "proposer",
 				Runner: finishRunner(
 					testingutils.ProposerRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-					testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb),
+					testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
+					testingutils.TestProposerExternalBidConsensusDataV(gloas.DataVersionGloas),
 				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Duty: testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, spec.DataVersionDeneb))),
-				},
-				DontStartDuty:     true,
-				ExpectedErrorCode: errCode,
-			},
-			{
-				Name: "proposer (blinded block)",
-				Runner: finishRunner(
-					testingutils.ProposerBlindedBlockRunner(ks),
-					testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-					testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb),
-				),
-				Duty: testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, spec.DataVersionDeneb))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[4], 4, gloas.DataVersionGloas))),
 				},
 				DontStartDuty:     true,
 				ExpectedErrorCode: errCode,

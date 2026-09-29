@@ -13,10 +13,9 @@ const (
 	// RandaoPartialSig is a partial signature over randao reveal
 	RandaoPartialSig = PartialSigMsgType(1)
 	// Values 2 and 3 stay reserved for the retired pre-consolidation SelectionProof /
-	// ContributionProofs partial-sig types; don't reuse the gaps.
+	// ContributionProofs partial-sig types, and 4 for the ValidatorRegistration partial-sig type
+	// retired at Gloas; don't reuse the gaps.
 
-	// ValidatorRegistrationPartialSig is a partial signature over a ValidatorRegistration object
-	ValidatorRegistrationPartialSig = PartialSigMsgType(4)
 	// VoluntaryExitPartialSig is a partial signature over a VoluntaryExit object
 	VoluntaryExitPartialSig = PartialSigMsgType(5)
 	// AggregatorCommitteePartialSig is a partial signature for combined aggregator and sync committee selection proofs

@@ -7,20 +7,13 @@ import (
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/types"
-	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 var TestingHighestDecidedSlot = phase0.Slot(0)
 
-// committeeVoteValueCheckF routes a committee consensus value to the fork-appropriate value check:
-// GloasBeaconVoteValueCheckF at Gloas slots (SIP #94 §2), BeaconVoteValueCheckF before. The fork must
-// be decided by the duty's slot, not by the value's shape — otherwise a pre-Gloas BeaconVote proposed
-// at a Gloas slot would pass the check and then fail to decode in ProcessConsensus, killing the duty
-// after decision (and contradicting the GloasPreGloasVote value-check vector).
-//
-// The slot is resolved lazily because the runner, and the QBFT config holding this check, are built
-// before the duty is known: production constructs the checker per duty, so the harness reads the
-// running duty at call time.
+// committeeVoteValueCheckF is BeaconVoteValueCheckF at the running duty's slot, which goes into the slashability
+// data. The slot resolves at call time because the runner and its QBFT config are built before the duty is
+// known (production builds the check per duty).
 func committeeVoteValueCheckF(
 	signer types.BeaconSigner,
 	slotF func() phase0.Slot,
@@ -29,20 +22,15 @@ func committeeVoteValueCheckF(
 	expectedTarget phase0.Epoch,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
-		slot := slotF()
-		if VersionBySlot(slot) >= gloas.DataVersionGloas {
-			return ssv.GloasBeaconVoteValueCheckF(signer, slot, sharePublicKeys, expectedSource, expectedTarget)(data)
-		}
-		return ssv.BeaconVoteValueCheckF(signer, slot, sharePublicKeys, expectedSource, expectedTarget)(data)
+		return ssv.BeaconVoteValueCheckF(signer, slotF(), sharePublicKeys, expectedSource, expectedTarget)(data)
 	}
 }
 
 // committeeDutySlotF resolves the running duty's slot for the committee value check.
 //
 // A missing runner means the construction site never back-patched the reference, which would silently
-// validate every duty — Gloas ones included — against TestingDutySlot's pre-Gloas fork and surface as
-// a bogus DecodeBeaconVoteErrorCode. That is a wiring bug, so fail loudly rather than fall back. Not
-// having started a duty yet is legitimate (e.g. DontStartDuty tests) and keeps the previous
+// validate every duty against TestingDutySlot. That is a wiring bug, so fail loudly rather than fall back.
+// Not having started a duty yet is legitimate (e.g. DontStartDuty tests) and keeps the previous
 // TestingDutySlot behaviour.
 func committeeDutySlotF(runner *ssv.Runner) func() phase0.Slot {
 	return func() phase0.Slot {
@@ -99,16 +87,8 @@ var ProposerRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleProposer, keySet)
 }
 
-var ProposerBlindedBlockRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleProposer, keySet)
-}
-
 var SyncCommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleCommittee, keySet)
-}
-
-var ValidatorRegistrationRunner = func(keySet *TestKeySet) ssv.Runner {
-	return baseRunner(types.RoleValidatorRegistration, keySet)
 }
 
 var VoluntaryExitRunner = func(keySet *TestKeySet) ssv.Runner {
@@ -209,7 +189,7 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 				sharePubKeys, TestBeaconVote.Source.Epoch, TestBeaconVote.Target.Epoch)
 		case types.RoleProposer:
 			valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
-				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey, VersionByEpoch,
+				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey,
 				proposerDutySlotF(&valCheckRunner))
 		case types.RoleAggregatorCommittee:
 			valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
@@ -253,16 +233,6 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 			opSigner,
 			valCheck,
 			TestingHighestDecidedSlot,
-		)
-	case types.RoleValidatorRegistration:
-		runner, err = ssv.NewValidatorRegistrationRunner(
-			types.BeaconTestNetwork,
-			shareMap,
-			beacon,
-			net,
-			km,
-			opSigner,
-			types.DefaultGasLimit,
 		)
 	case types.RoleVoluntaryExit:
 		runner, err = ssv.NewVoluntaryExitRunner(
@@ -368,7 +338,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			[]types.ShareValidatorPK{share.SharePubKey}, TestBeaconVote.Source.Epoch, TestBeaconVote.Target.Epoch)
 	case types.RoleProposer:
 		valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
-			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, share.SharePubKey, VersionByEpoch,
+			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, share.SharePubKey,
 			proposerDutySlotF(&valCheckRunner))
 	case types.RoleAggregatorCommittee:
 		valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
@@ -415,16 +385,6 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 			opSigner,
 			valCheck,
 			TestingHighestDecidedSlot,
-		)
-	case types.RoleValidatorRegistration:
-		runner, err = ssv.NewValidatorRegistrationRunner(
-			types.BeaconTestNetwork,
-			shareMap,
-			NewTestingBeaconNode(),
-			net,
-			km,
-			opSigner,
-			types.DefaultGasLimit,
 		)
 	case types.RoleVoluntaryExit:
 		runner, err = ssv.NewVoluntaryExitRunner(

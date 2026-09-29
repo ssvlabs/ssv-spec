@@ -4,25 +4,23 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
+	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // Gloas (ePBS) proposer fixtures for the §4 post-consensus-fold envelope path (SIP #94 §4/§6).
 
-// WithGloasEnvelopeBroadcast appends the §6 envelope publish root to a proposer duty's expected beacon
-// broadcast roots at a Gloas self-build slot, and returns them unchanged before Gloas (SIP #94 §4/§6).
+// WithGloasEnvelopeBroadcast appends the §6 envelope publish root to a self-build proposer duty's expected
+// beacon broadcast roots (SIP #94 §4/§6).
 var WithGloasEnvelopeBroadcast = func(roots []string, version spec.DataVersion) []string {
-	if version == gloas.DataVersionGloas {
-		return append(roots, GetSSZRootNoError(TestingBlindedExecutionPayloadEnvelope(TestingDutySlotV(version))))
-	}
-	return roots
+	return append(roots, GetSSZRootNoError(TestingBlindedExecutionPayloadEnvelope(TestingDutySlotV(version))))
 }
 
 // TestingGloasPayloadRoot is the self-build payload_root the fixture proposer carries in its decided value
 // (hash_tree_root(envelope.payload) node-side). Non-zero, so it satisfies the §4 self-build value check.
 var TestingGloasPayloadRoot = phase0.Root{0x50, 0x51, 0x52}
 
-// TestingGloasProposalData is the decided value's DataSSZ payload at a Gloas slot: the fixture block plus
+// TestingGloasProposalData is the decided value's DataSSZ payload: the fixture block plus
 // TestingGloasPayloadRoot (SIP #94 §4).
 var TestingGloasProposalData = func(slot phase0.Slot) *gloas.GloasProposalData {
 	return &gloas.GloasProposalData{
@@ -54,5 +52,19 @@ var TestingBlindedExecutionPayloadEnvelope = func(slot phase0.Slot) *gloas.Blind
 		BuilderIndex:          gloas.BuilderIndexSelfBuild,
 		BeaconBlockRoot:       root,
 		ParentBeaconBlockRoot: block.ParentRoot,
+	}
+}
+
+// TestProposerExternalBidConsensusDataV is the decided value of an external bid win (SIP #94 §4): the bare
+// external-bid block with a zero payload_root, so the post-consensus packet carries the block entry only.
+var TestProposerExternalBidConsensusDataV = func(version spec.DataVersion) *types.ProposerConsensusData {
+	byts, err := (&gloas.GloasProposalData{Block: gloas.TestingBeaconBlockExternalBuild(TestingDutySlotV(version))}).MarshalSSZ()
+	if err != nil {
+		panic(err.Error())
+	}
+	return &types.ProposerConsensusData{
+		Duty:    *TestingProposerDutyV(version),
+		Version: version,
+		DataSSZ: byts,
 	}
 }

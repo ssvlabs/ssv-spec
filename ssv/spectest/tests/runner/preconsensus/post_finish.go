@@ -39,19 +39,6 @@ func PostFinish() tests.SpecTest {
 		testdoc.PreConsensusPostFinishDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
-				Name: "validator registration",
-				Runner: finishRunner(
-					testingutils.ValidatorRegistrationRunner(ks),
-					&testingutils.TestingValidatorRegistrationDuty,
-				),
-				Duty: &testingutils.TestingValidatorRegistrationDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1))),
-				},
-				DontStartDuty:     true,
-				ExpectedErrorCode: types.NoRunningDutyErrorCode,
-			},
-			{
 				Name: "voluntary exit",
 				Runner: finishRunner(
 					testingutils.VoluntaryExitRunner(ks),
@@ -158,25 +145,8 @@ func PostFinish() tests.SpecTest {
 		}
 	}
 
-	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
-	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
-		return &tests.MsgProcessingSpecTest{
-			Name: fmt.Sprintf("randao blinded block (%s)", version.String()),
-			Runner: finishRunner(
-				testingutils.ProposerBlindedBlockRunner(ks),
-				testingutils.TestingProposerDutyV(version),
-			),
-			Duty: testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SignedSSVMessage{
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[4], ks.Shares[4], 4, 4, version))),
-			},
-			DontStartDuty:     true,
-			ExpectedErrorCode: types.NoRunningDutyErrorCode,
-		}
-	}
-
 	for _, v := range testingutils.SupportedBlockVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v)}...)
 	}
 
 	return multiSpecTest

@@ -11,7 +11,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
-var SupportedAggregatorVersions = []spec.DataVersion{spec.DataVersionPhase0, spec.DataVersionElectra, gloas.DataVersionGloas}
+var SupportedAggregatorVersions = []spec.DataVersion{gloas.DataVersionGloas}
 
 // ==================================================
 // Versioned Aggregator Duty
@@ -31,7 +31,7 @@ var TestingAggregatorDutyNextEpoch = func(version spec.DataVersion) *types.Aggre
 }
 
 var TestingAggregatorDutyFirstSlot = func() *types.AggregatorCommitteeDuty {
-	d := TestingAggregatorCommitteeDutyOnlyAggregator(spec.DataVersionPhase0)
+	d := TestingAggregatorCommitteeDutyOnlyAggregator(gloas.DataVersionGloas)
 	d.Slot = 0
 	for i := range d.ValidatorDuties {
 		d.ValidatorDuties[i].Slot = 0
@@ -42,127 +42,33 @@ var TestingAggregatorDutyFirstSlot = func() *types.AggregatorCommitteeDuty {
 // ==================================================
 // Versioned AggregateAndProof
 // ==================================================
+//
+// Gloas reuses the Electra aggregate shape (SIP #94 §2); the attestation data carries the payload-status
+// index and the duty slot, so fixtures must match the data the runner aggregates over.
 
 var TestingAggregateAndProofV = func(version spec.DataVersion, aggregatorIndex phase0.ValidatorIndex) ssz.Marshaler {
-	if version >= spec.DataVersionElectra {
-		return TestingElectraAggregateAndProofV(aggregatorIndex, version)
-	}
-	return TestingPhase0AggregateAndProof(aggregatorIndex)
+	return TestingElectraAggregateAndProofV(aggregatorIndex, version)
 }
 
 var TestingVersionedSignedAggregateAndProof = func(ks *TestKeySet, version spec.DataVersion) *spec.VersionedSignedAggregateAndProof {
-
-	switch version {
-	case spec.DataVersionPhase0:
-		return &spec.VersionedSignedAggregateAndProof{
-			Version: version,
-			Phase0:  TestingPhase0SignedAggregateAndProof(ks, TestingValidatorIndex),
-		}
-
-	case spec.DataVersionAltair:
-		return &spec.VersionedSignedAggregateAndProof{
-			Version: version,
-			Altair:  TestingPhase0SignedAggregateAndProof(ks, TestingValidatorIndex),
-		}
-
-	case spec.DataVersionBellatrix:
-		return &spec.VersionedSignedAggregateAndProof{
-			Version:   version,
-			Bellatrix: TestingPhase0SignedAggregateAndProof(ks, TestingValidatorIndex),
-		}
-
-	case spec.DataVersionCapella:
-		return &spec.VersionedSignedAggregateAndProof{
-			Version: version,
-			Capella: TestingPhase0SignedAggregateAndProof(ks, TestingValidatorIndex),
-		}
-	case spec.DataVersionDeneb:
-		return &spec.VersionedSignedAggregateAndProof{
-			Version: version,
-			Deneb:   TestingPhase0SignedAggregateAndProof(ks, TestingValidatorIndex),
-		}
-	case spec.DataVersionElectra:
-		return &spec.VersionedSignedAggregateAndProof{
-			Version: version,
-			Electra: TestingElectraSignedAggregateAndProofV(ks, TestingValidatorIndex, version),
-		}
-	case spec.DataVersionFulu:
-		return &spec.VersionedSignedAggregateAndProof{
-			Version: version,
-			Fulu:    TestingElectraSignedAggregateAndProofV(ks, TestingValidatorIndex, version),
-		}
-	case gloas.DataVersionGloas:
-		// Gloas reuses the Electra aggregate shape (SIP #94 §2).
-		return &spec.VersionedSignedAggregateAndProof{
-			Version: version,
-			Electra: TestingElectraSignedAggregateAndProofV(ks, TestingValidatorIndex, version),
-		}
-	default:
-		panic("unknown data version")
+	return &spec.VersionedSignedAggregateAndProof{
+		Version: version,
+		Electra: TestingElectraSignedAggregateAndProofV(ks, TestingValidatorIndex, version),
 	}
 }
 
 var TestingSignedAggregateAndProof = func(ks *TestKeySet, version spec.DataVersion) ssz.HashRoot {
-	switch version {
-	case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
-		return TestingPhase0SignedAggregateAndProof(ks, TestingValidatorIndex)
-	case spec.DataVersionElectra, spec.DataVersionFulu, gloas.DataVersionGloas:
-		return TestingElectraSignedAggregateAndProofV(ks, TestingValidatorIndex, version)
-	default:
-		panic("unknown data version")
-	}
+	return TestingElectraSignedAggregateAndProofV(ks, TestingValidatorIndex, version)
 }
 
 var TestingAggregateAndProofBytesV = func(version spec.DataVersion, aggregatorIndex phase0.ValidatorIndex) []byte {
-	if version >= spec.DataVersionElectra {
-		return TestingElectraAggregateAndProofBytesV(aggregatorIndex, version)
-	}
-	return TestingPhase0AggregateAndProofBytes(aggregatorIndex)
+	return TestingElectraAggregateAndProofBytesV(aggregatorIndex, version)
 }
 
 var TestingWrongAggregateAndProofV = func(version spec.DataVersion, aggregatorIndex phase0.ValidatorIndex) ssz.Marshaler {
-	if version >= spec.DataVersionElectra {
-		return TestingWrongElectraAggregateAndProofV(aggregatorIndex, version)
-	}
-	return TestingWrongPhase0AggregateAndProof(aggregatorIndex)
+	return TestingWrongElectraAggregateAndProofV(aggregatorIndex, version)
 }
 
-// phase0.AggregateAndProof
-
-var TestingPhase0AggregateAndProof = func(aggregatorIndex phase0.ValidatorIndex) *phase0.AggregateAndProof {
-	return &phase0.AggregateAndProof{
-		AggregatorIndex: aggregatorIndex,
-		SelectionProof:  phase0.BLSSignature{},
-		Aggregate: &phase0.Attestation{
-			AggregationBits: bitfield.NewBitlist(128),
-			Signature:       phase0.BLSSignature{},
-			Data:            TestingAttestationData(spec.DataVersionPhase0),
-		},
-	}
-}
-var TestingPhase0AggregateAndProofBytes = func(aggregatorIndex phase0.ValidatorIndex) []byte {
-	ret, _ := TestingPhase0AggregateAndProof(aggregatorIndex).MarshalSSZ()
-	return ret
-}
-
-var TestingWrongPhase0AggregateAndProof = func(aggregatorIndex phase0.ValidatorIndex) *phase0.AggregateAndProof {
-	byts, err := TestingPhase0AggregateAndProof(aggregatorIndex).MarshalSSZ()
-	if err != nil {
-		panic(err.Error())
-	}
-	ret := &phase0.AggregateAndProof{}
-	if err := ret.UnmarshalSSZ(byts); err != nil {
-		panic(err.Error())
-	}
-	ret.AggregatorIndex = 100
-	return ret
-}
-
-// electra.AggregateAndProof
-
-// TestingElectraAggregateAndProofV builds the Electra-shaped AggregateAndProof for the given fork.
-// The version matters from Gloas on: the attestation data carries the payload-status index and the
-// Gloas duty slot (SIP #94 §2), so fixtures must match the data the runner aggregates over.
 var TestingElectraAggregateAndProofV = func(aggregatorIndex phase0.ValidatorIndex, version spec.DataVersion) *electra.AggregateAndProof {
 	return &electra.AggregateAndProof{
 		AggregatorIndex: aggregatorIndex,
@@ -192,14 +98,6 @@ var TestingWrongElectraAggregateAndProofV = func(aggregatorIndex phase0.Validato
 	}
 	ret.AggregatorIndex = 100
 	return ret
-}
-
-var TestingPhase0SignedAggregateAndProof = func(ks *TestKeySet, aggregatorIndex phase0.ValidatorIndex) *phase0.SignedAggregateAndProof {
-	agg := TestingPhase0AggregateAndProof(aggregatorIndex)
-	return &phase0.SignedAggregateAndProof{
-		Message:   agg,
-		Signature: signBeaconObject(agg, types.DomainAggregateAndProof, ks),
-	}
 }
 
 var TestingElectraSignedAggregateAndProofV = func(ks *TestKeySet, aggregatorIndex phase0.ValidatorIndex, version spec.DataVersion) *electra.SignedAggregateAndProof {

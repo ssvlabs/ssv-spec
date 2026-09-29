@@ -9,12 +9,15 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/blindedexecutionpayloadenvelope"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedbeaconblock"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedexecutionpayloadbid"
+
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/maxmsgsize"
 
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/gloasbeaconvote"
 
 	"github.com/stretchr/testify/require"
 
@@ -33,7 +36,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedproposerpreferences"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssz"
 	comparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
@@ -77,12 +79,6 @@ func TestJson(t *testing.T) {
 		t.Run(testName, func(t *testing.T) {
 			testType := strings.Split(name, "_")[0]
 			switch testType {
-			case reflect.TypeOf(&ssz.SSZSpecTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &ssz.SSZSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
 			case reflect.TypeOf(&consensusdataproposer.ProposerSpecTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
@@ -179,16 +175,28 @@ func TestJson(t *testing.T) {
 				typedTest := &beaconvote.EncodingTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
-			case reflect.TypeOf(&gloasbeaconvote.EncodingTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &gloasbeaconvote.EncodingTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
 			case reflect.TypeOf(&payloadattestationdata.EncodingTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &payloadattestationdata.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&signedbeaconblock.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &signedbeaconblock.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&signedexecutionpayloadbid.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &signedexecutionpayloadbid.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&blindedexecutionpayloadenvelope.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &blindedexecutionpayloadenvelope.EncodingTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			case reflect.TypeOf(&payloadattestationmessage.EncodingTest{}).String():

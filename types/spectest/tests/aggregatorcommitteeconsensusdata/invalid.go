@@ -1,8 +1,8 @@
 package aggregatorcommitteeconsensusdata
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -11,7 +11,7 @@ import (
 func InvalidAggregatorValidationNoValidators() *AggregatorCommitteeConsensusDataTest {
 
 	cd := types.AggregatorCommitteeConsensusData{
-		Version: spec.DataVersionPhase0,
+		Version: gloas.DataVersionGloas,
 	}
 	return NewAggregatorCommitteeConsensusDataTest(
 		"invalid aggregator data with no validators",
@@ -24,7 +24,7 @@ func InvalidAggregatorValidationNoValidators() *AggregatorCommitteeConsensusData
 // InvalidAggregatorValidationCommitteeIndexesLength tests an invalid consensus data with wrong CommitteeIndexes length
 func InvalidAggregatorValidationCommitteeIndexesLength() *AggregatorCommitteeConsensusDataTest {
 
-	cd := testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)
+	cd := testingutils.TestAggregatorConsensusData(gloas.DataVersionGloas)
 
 	cd.AggregatorsCommitteeIndexes = append(cd.AggregatorsCommitteeIndexes, cd.AggregatorsCommitteeIndexes...)
 
@@ -39,7 +39,7 @@ func InvalidAggregatorValidationCommitteeIndexesLength() *AggregatorCommitteeCon
 // InvalidAggregatorValidationDuplicateCommitteeIndex tests an invalid consensus data with duplicated CommitteeIndex
 func InvalidAggregatorValidationDuplicateCommitteeIndex() *AggregatorCommitteeConsensusDataTest {
 
-	cd := testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)
+	cd := testingutils.TestAggregatorConsensusData(gloas.DataVersionGloas)
 
 	cd.AggregatorsCommitteeIndexes = append(cd.AggregatorsCommitteeIndexes, cd.AggregatorsCommitteeIndexes[0])
 	cd.AggregatedAttestations = append(cd.AggregatedAttestations, cd.AggregatedAttestations[0])
@@ -55,7 +55,7 @@ func InvalidAggregatorValidationDuplicateCommitteeIndex() *AggregatorCommitteeCo
 // InvalidAggregatorValidationMissingCommitteeIndex tests an invalid consensus data in which an aggregator's committee index is missing from the existing CommitteeIndex set
 func InvalidAggregatorValidationMissingCommitteeIndex() *AggregatorCommitteeConsensusDataTest {
 
-	cd := testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)
+	cd := testingutils.TestAggregatorConsensusData(gloas.DataVersionGloas)
 
 	maxCommIndex := cd.AggregatorsCommitteeIndexes[0]
 	for _, idx := range cd.AggregatorsCommitteeIndexes {
@@ -76,7 +76,7 @@ func InvalidAggregatorValidationMissingCommitteeIndex() *AggregatorCommitteeCons
 // InvalidAggregatorValidationUnusedCommitteeIndex tests an invalid consensus data in which a committee index is left unused
 func InvalidAggregatorValidationUnusedCommitteeIndex() *AggregatorCommitteeConsensusDataTest {
 
-	cd := testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)
+	cd := testingutils.TestAggregatorConsensusData(gloas.DataVersionGloas)
 
 	maxCommIndex := cd.AggregatorsCommitteeIndexes[0]
 	for _, idx := range cd.AggregatorsCommitteeIndexes {
@@ -96,33 +96,33 @@ func InvalidAggregatorValidationUnusedCommitteeIndex() *AggregatorCommitteeConse
 	)
 }
 
-// InvalidAggregatorValidationPhase0AttestationDecoding tests an invalid consensus data in which an attestation fails to decode
-func InvalidAggregatorValidationPhase0AttestationDecoding() *AggregatorCommitteeConsensusDataTest {
+// InvalidAggregatorValidationAttestationDecoding tests an invalid consensus data in which an attestation fails to decode
+func InvalidAggregatorValidationAttestationDecoding() *AggregatorCommitteeConsensusDataTest {
 
-	cd := testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)
+	cd := testingutils.TestAggregatorConsensusData(gloas.DataVersionGloas)
 
 	cd.AggregatedAttestations[0] = []byte{0x01, 0x02, 0x03} // invalid attestation bytes
 
 	return NewAggregatorCommitteeConsensusDataTest(
-		"invalid aggregator data with phase0 attestation decoding error",
-		testdoc.AggregatorCommitteeConsensusDataTestInvalidPhase0AttestationDecodingDoc,
+		"invalid aggregator data with attestation decoding error",
+		testdoc.AggregatorCommitteeConsensusDataTestInvalidAttestationDecodingDoc,
 		*cd,
 		types.AggCommAttestationDecodingErrorCode,
 	)
 }
 
-// InvalidAggregatorValidationPhase0AttestationDecoding tests an invalid consensus data in which an attestation fails to decode
-func InvalidAggregatorValidationElectraAttestationDecoding() *AggregatorCommitteeConsensusDataTest {
+// InvalidAggregatorValidationNonGloasVersion tests an invalid consensus data whose Version is not Gloas
+func InvalidAggregatorValidationNonGloasVersion() *AggregatorCommitteeConsensusDataTest {
 
-	cd := testingutils.TestAggregatorConsensusData(spec.DataVersionElectra)
+	cd := testingutils.TestAggregatorConsensusData(gloas.DataVersionGloas)
 
-	cd.AggregatedAttestations[0] = []byte{0x01, 0x02, 0x03} // invalid attestation bytes
+	cd.Version = gloas.DataVersionGloas - 1
 
 	return NewAggregatorCommitteeConsensusDataTest(
-		"invalid aggregator data with electra attestation decoding error",
-		testdoc.AggregatorCommitteeConsensusDataTestInvalidElectraAttestationDecodingDoc,
+		"invalid aggregator data with non-gloas version",
+		testdoc.AggregatorCommitteeConsensusDataTestInvalidNonGloasVersionDoc,
 		*cd,
-		types.AggCommAttestationDecodingErrorCode,
+		types.UnknownVersionErrorCode,
 	)
 }
 

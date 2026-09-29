@@ -113,19 +113,8 @@ func FutureDecidedNoInstance() tests.SpecTest {
 		}
 	}
 
-	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
-	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
-		return &tests.MsgProcessingSpecTest{
-			Name:          fmt.Sprintf("proposer blinded block (%s)", version.String()),
-			Runner:        testingutils.ProposerBlindedBlockRunner(ks),
-			Duty:          testingutils.TestingProposerDutyV(version),
-			DontStartDuty: true,
-			Messages:      []*types.SignedSSVMessage{getDecidedMessage(types.RoleProposer, qbft.Height(testingutils.TestingDutySlotV(version))+1)},
-		}
-	}
-
 	for _, v := range testingutils.SupportedBlockVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v)}...)
 	}
 
 	return multiSpecTest

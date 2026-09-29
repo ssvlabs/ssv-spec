@@ -8,14 +8,9 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// GloasProposerEnvelopeFirstOrder tests that a Gloas (ePBS) self-build proposer submits both the block and
-// the §6 envelope when peers' post-consensus packets list the envelope entry before the block entry
-// (SIP #94 §4/§6). The runner classifies entries by matched root, not position, so incoming packet order
-// does not change the outcome — a guard against a future order-dependent rewrite (an early return or
-// positional iteration) dropping a root and reintroducing a strand. (The block-before-envelope submit order
-// is pinned separately by the TestProposerSubmitsBlockBeforeEnvelope unit test, since BeaconBroadcastedRoots
-// compares unordered.) The full flow runs so the self-build produce sets the envelope the reveal publishes;
-// operators 2 and 3 send envelope-first packets, and both roots reach quorum on operator 3's packet.
+// GloasProposerEnvelopeFirstOrder tests that the block submits before the §6 reveal whatever the packet entry
+// order (SIP #94 §4/§6): entries are matched by root, and a beacon node ignores an envelope whose block it has not
+// seen. Operators 2 and 3 list the envelope entry first, and both roots cross quorum on operator 3's packet.
 func GloasProposerEnvelopeFirstOrder() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	version := gloas.DataVersionGloas
@@ -40,5 +35,6 @@ func GloasProposerEnvelopeFirstOrder() tests.SpecTest {
 		BeaconBroadcastedRoots: testingutils.WithGloasEnvelopeBroadcast([]string{
 			testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
 		}, version),
+		OrderedBeaconBroadcastedRoots: true,
 	}
 }

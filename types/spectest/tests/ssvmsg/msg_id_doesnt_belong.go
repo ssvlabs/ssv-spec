@@ -14,8 +14,8 @@ func MsgIDDoesntBelongs() *SSVMessageTest {
 		[]types.MessageID{
 			types.NewValidatorMsgID(testingutils.TestingSSVDomainType, types.ValidatorPK(testingutils.TestingWrongValidatorPubKey), types.RoleProposer),
 			types.NewValidatorMsgID(types.DomainType{0x99, 0x99, 0x99, 0x99}, types.ValidatorPK(testingutils.TestingWrongValidatorPubKey), types.RoleProposer),
-			types.NewValidatorMsgID(testingutils.TestingSSVDomainType, types.ValidatorPK(testingutils.TestingWrongValidatorPubKey), types.RoleValidatorRegistration),
-			types.NewValidatorMsgID(types.DomainType{0x99, 0x99, 0x99, 0x99}, types.ValidatorPK(testingutils.TestingWrongValidatorPubKey), types.RoleValidatorRegistration),
+			types.NewValidatorMsgID(testingutils.TestingSSVDomainType, types.ValidatorPK(testingutils.TestingWrongValidatorPubKey), types.RoleVoluntaryExit),
+			types.NewValidatorMsgID(types.DomainType{0x99, 0x99, 0x99, 0x99}, types.ValidatorPK(testingutils.TestingWrongValidatorPubKey), types.RoleVoluntaryExit),
 		},
 		false,
 	)

@@ -3,6 +3,10 @@ package spectest
 import (
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/blindedexecutionpayloadenvelope"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedbeaconblock"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedexecutionpayloadbid"
+
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/aggregatorcommitteeconsensusdata"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beaconvote"
@@ -10,7 +14,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/duty"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/gloasbeaconvote"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/maxmsgsize"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/payloadattestationdata"
@@ -23,7 +26,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedproposerpreferences"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssz"
 )
 
 type SpecTest interface {
@@ -58,43 +60,25 @@ var AllTests = []SpecTest{
 	proposerconsensusdata.InvalidDuty(),
 
 	proposerconsensusdata.ProposerConsensusDataEncoding(),
-	proposerconsensusdata.BlindedProposerConsensusDataEncoding(),
-	proposerconsensusdata.CapellaBlockValidation(),
-	proposerconsensusdata.CapellaBlindedBlockValidation(),
+	proposerconsensusdata.GloasBlockValidation(),
+	proposerconsensusdata.InvalidGloasBlockValidation(),
+	proposerconsensusdata.NonGloasVersionValidation(),
 	proposerconsensusdata.ProposerNoJustifications(),
-	proposerconsensusdata.InvalidCapellaBlindedBlockValidation(),
-	proposerconsensusdata.InvalidCapellaBlockValidation(),
-	proposerconsensusdata.DenebBlockValidation(),
-	proposerconsensusdata.DenebBlindedBlockValidation(),
-	proposerconsensusdata.InvalidDenebBlockValidation(),
-	proposerconsensusdata.InvalidDenebBlindedBlockValidation(),
-	proposerconsensusdata.ElectraBlockValidation(),
-	proposerconsensusdata.ElectraBlindedBlockValidation(),
-	proposerconsensusdata.InvalidElectraBlockValidation(),
-	proposerconsensusdata.InvalidElectraBlindedBlockValidation(),
-	proposerconsensusdata.FuluBlockValidation(),
-	proposerconsensusdata.FuluBlindedBlockValidation(),
-	proposerconsensusdata.InvalidFuluBlockValidation(),
-	proposerconsensusdata.InvalidFuluBlindedBlockValidation(),
 
-	proposerconsensusdata.WrongDutyTypeValidatorRegistration(),
 	proposerconsensusdata.WrongDutyTypeVoluntaryExit(),
 
-	aggregatorcommitteeconsensusdata.Phase0AggregatorConsensusDataEncoding(),
-	aggregatorcommitteeconsensusdata.ElectraAggregatorConsensusDataEncoding(),
+	aggregatorcommitteeconsensusdata.AggregatorConsensusDataEncoding(),
 	aggregatorcommitteeconsensusdata.SyncCommitteeContributionConsensusDataEncoding(),
 
-	aggregatorcommitteeconsensusdata.Phase0AggregatorValidation(),
-	aggregatorcommitteeconsensusdata.Phase0AggregatorNoJustifications(),
-	aggregatorcommitteeconsensusdata.ElectraAggregatorValidation(),
-	aggregatorcommitteeconsensusdata.ElectraAggregatorNoJustifications(),
+	aggregatorcommitteeconsensusdata.AggregatorValidation(),
+	aggregatorcommitteeconsensusdata.AggregatorNoJustifications(),
 	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationCommitteeIndexesLength(),
 	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationNoValidators(),
 	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationDuplicateCommitteeIndex(),
 	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationMissingCommitteeIndex(),
 	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationUnusedCommitteeIndex(),
-	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationPhase0AttestationDecoding(),
-	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationElectraAttestationDecoding(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationAttestationDecoding(),
+	aggregatorcommitteeconsensusdata.InvalidAggregatorValidationNonGloasVersion(),
 
 	aggregatorcommitteeconsensusdata.SyncCommitteeContributionValidation(),
 	aggregatorcommitteeconsensusdata.SyncCommitteeContributionNoJustifications(),
@@ -103,13 +87,8 @@ var AllTests = []SpecTest{
 	aggregatorcommitteeconsensusdata.InvalidSyncCommitteeContributionUnusedSubnet(),
 
 	consensusdataproposer.VersionedBlockValidation(),
-	consensusdataproposer.VersionedBlindedBlockValidation(),
 	consensusdataproposer.VersionedBlockUnknownVersion(),
-	consensusdataproposer.VersionedBlindedBlockUnknownVersion(),
 	consensusdataproposer.VersionedBlockConsensusDataNil(),
-	consensusdataproposer.VersionedBlindedBlockConsensusDataNil(),
-
-	ssz.SSZWithdrawalsMarshaling(),
 
 	beacon.DepositData(),
 
@@ -128,16 +107,18 @@ var AllTests = []SpecTest{
 	duty.MapAggregator(),
 	duty.MapSyncCommittee(),
 	duty.MapSyncCommitteeContribution(),
-	duty.MapValidatorRegistration(),
 	duty.MapVoluntaryExit(),
 	duty.MapPTCAttester(),
 	duty.MapProposerPreferences(),
 	duty.MapUnknownRole(),
 
 	beaconvote.BeaconVoteEncoding(),
-	gloasbeaconvote.GloasBeaconVoteEncoding(),
 	payloadattestationdata.PayloadAttestationDataEncoding(),
 	payloadattestationmessage.PayloadAttestationMessageEncoding(),
+	signedbeaconblock.SignedBeaconBlockEncoding(),
+	signedbeaconblock.SignedBeaconBlockDevnet6Encoding(),
+	signedexecutionpayloadbid.SignedExecutionPayloadBidEncoding(),
+	blindedexecutionpayloadenvelope.BlindedExecutionPayloadEnvelopeEncoding(),
 	proposerpreferences.ProposerPreferencesEncoding(),
 	signedproposerpreferences.SignedProposerPreferencesEncoding(),
 	builderrequestauth.BuilderRequestAuthEncoding(),
@@ -146,7 +127,6 @@ var AllTests = []SpecTest{
 	maxmsgsize.MaxConsensusData(),
 	maxmsgsize.MaxBeaconVote(),
 	maxmsgsize.MaxAggregatorCommitteeConsensusData(),
-	maxmsgsize.MaxPhase0Attestation(),
 	maxmsgsize.MaxElectraAttestation(),
 	maxmsgsize.MaxQBFTMessageWithNoJustification(),
 	maxmsgsize.MaxQBFTMessageWith1Justification(),

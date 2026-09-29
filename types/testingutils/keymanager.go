@@ -34,9 +34,8 @@ type TestingKeyStorage struct {
 type TestingKeyManager struct {
 	keyStorage     *TestingKeyStorage
 	slashableSlots map[string][]phase0.Slot // Validator Key -> List of slots
-	// recordAttestations turns IsAttestationSlashable into a double-vote detector: it remembers the
-	// first attestation data it is asked about per (validator key, slot) and reports any later,
-	// different data for that slot as slashable. Off by default so it cannot affect existing tests.
+	// recordAttestations makes IsAttestationSlashable detect double votes: any attestation data differing from
+	// the one signed (seeded) or first seen per (validator key, slot) is slashable. Off by default.
 	recordAttestations bool
 	seenAttestations   map[string]map[phase0.Slot][32]byte
 }
@@ -58,16 +57,25 @@ func NewTestingKeyManagerWithSlashableSlots(slashableSlots map[string][]phase0.S
 	}
 }
 
-// NewTestingKeyManagerRecordingAttestations returns a key manager that detects double votes: the first
-// attestation data it sees for a (validator key, slot) is remembered, and any later data differing from
-// it at that slot is slashable. Real slashing protection compares the whole attestation data, which is
-// what makes the Gloas rule of carrying the decided attestation index into that data observable.
-func NewTestingKeyManagerRecordingAttestations() *TestingKeyManager {
+// NewTestingKeyManagerWithSignedAttestations returns a double-vote-detecting key manager seeded with the
+// attestation data each share key (hex) has already signed (see recordAttestations).
+func NewTestingKeyManagerWithSignedAttestations(slashableSlots map[string][]phase0.Slot, signed map[string][]*phase0.AttestationData) *TestingKeyManager {
+	seen := map[string]map[phase0.Slot][32]byte{}
+	for pk, datas := range signed {
+		seen[pk] = map[phase0.Slot][32]byte{}
+		for _, data := range datas {
+			root, err := data.HashTreeRoot()
+			if err != nil {
+				panic(err)
+			}
+			seen[pk][data.Slot] = root
+		}
+	}
 	return &TestingKeyManager{
 		keyStorage:         NewTestingKeyStorage(),
-		slashableSlots:     map[string][]phase0.Slot{},
+		slashableSlots:     slashableSlots,
 		recordAttestations: true,
-		seenAttestations:   map[string]map[phase0.Slot][32]byte{},
+		seenAttestations:   seen,
 	}
 }
 

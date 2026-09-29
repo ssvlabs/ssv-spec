@@ -13,7 +13,6 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/consensus"
 	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposerpreferences"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/ptcattester"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
@@ -30,6 +29,10 @@ var AllTests = []tests.TestF{
 	runner.FullHappyFlow,
 	runner.GloasProposerLateEnvelopeQuorum,
 	runner.GloasProposerEnvelopeFirstOrder,
+	runner.GloasProposerBadEnvelopeShare,
+	runner.GloasProposerBadBlockShare,
+	runner.GloasProposerFailedBlockSubmit,
+	runner.GloasProposerExternalBid,
 
 	postconsensus.TooManyRoots,
 	postconsensus.TooFewRoots,
@@ -85,7 +88,6 @@ var AllTests = []tests.TestF{
 	newduty.DuplicateDutyFinished,
 	newduty.DuplicateDutyNotFinished,
 	newduty.FirstHeight,
-	newduty.ValidatorRegistrationDeprecated,
 
 	committee.InvalidSig,
 	committee.CommitteeIDMismatch,
@@ -104,7 +106,6 @@ var AllTests = []tests.TestF{
 	committeesingleduty.WrongMessageID,
 	committeesingleduty.StartWithNoSharesForDuty,
 	committeesingleduty.MissingSomeShares,
-	committeesingleduty.GloasPreGloasVote,
 
 	committeemultipleduty.SequencedDecidedDuties,
 	committeemultipleduty.SequencedHappyFlowDuties,
@@ -134,6 +135,7 @@ var AllTests = []tests.TestF{
 	consensus.ValidMessage,
 	consensus.InvalidSignature,
 	consensus.DecidedSlashableAttestation,
+	consensus.DecidedValueWrongSlot,
 	consensus.NoSigners,
 	consensus.NonUniqueSigners,
 	consensus.ZeroSigner,
@@ -145,11 +147,6 @@ var AllTests = []tests.TestF{
 	synccommitteeaggregator.SomeAggregatorQuorum,
 	synccommitteeaggregator.NoneAggregatorQuorum,
 	synccommitteeaggregator.AllAggregatorQuorum,
-
-	proposer.ProposeBlindedBlockDecidedRegular,
-	proposer.ProposeRegularBlockDecidedBlinded,
-	proposer.BlindedRunnerAcceptsNormalBlock,
-	proposer.NormalProposerAcceptsBlindedBlock,
 
 	preconsensus.NoRunningDuty,
 	preconsensus.TooFewRoots,
@@ -207,15 +204,12 @@ var AllTests = []tests.TestF{
 	valcheckattestations.MinoritySlashable,
 	valcheckattestations.MajoritySlashable,
 	valcheckattestations.ValidNonSlashableSlot,
-	valcheckattestations.GloasValid,
-	valcheckattestations.GloasInvalidIndex,
-	valcheckattestations.GloasSourceHigherThanTarget,
-	valcheckattestations.GloasSlashable,
-	valcheckattestations.GloasUnmatchedSourceEpoch,
-	valcheckattestations.GloasPreGloasVote,
+	valcheckattestations.InvalidIndex,
+	valcheckattestations.CrossIndexEquivocation,
 
 	ptcattester.Abstain,
 	ptcattester.DivergingObservation,
+	ptcattester.Observation,
 
 	proposerpreferences.ConcurrentLookaheadSlots,
 	proposerpreferences.ReemissionCarriesOverPreferenceShares,
@@ -228,8 +222,10 @@ var AllTests = []tests.TestF{
 	proposerpreferences.BuilderRequestAuthIndependentOfPreference,
 	proposerpreferences.BuilderRequestAuthExceedsMax,
 	proposerpreferences.BuilderRequestAuthNoAuth,
+	proposerpreferences.BuilderRequestAuthBadShare,
+	proposerpreferences.BuilderRequestAuthURLFallback,
+	proposerpreferences.UnexpectedPartialSigType,
 
-	valcheckproposer.BlindedBlock,
 	valcheckproposer.GloasBlocks,
 
 	valcheckaggcommittee.NoValidator,
