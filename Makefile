@@ -1,7 +1,7 @@
 GOPATH?=$(shell go env GOPATH)
 TEST_PKG?=./...
 # Keep in sync with the version pinned in .github/workflows/lint.yaml
-GOLANGCI_LINT_VERSION?=v2.12.2
+GOLANGCI_LINT_VERSION?=v2.14.0
 
 .PHONY: lint-prepare
 lint-prepare:
