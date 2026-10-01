@@ -246,6 +246,14 @@ func CompareBroadcastedBeaconMsgs(t *testing.T, expectedRoots []string, broadcas
 	}
 }
 
+// CompareBroadcastedBeaconMsgsInOrder is CompareBroadcastedBeaconMsgs for a vector that pins submit order.
+func CompareBroadcastedBeaconMsgsInOrder(t *testing.T, expectedRoots []string, broadcastedRoots []phase0.Root) {
+	require.Len(t, broadcastedRoots, len(expectedRoots))
+	for i, r := range expectedRoots {
+		require.Equalf(t, r, hex.EncodeToString(broadcastedRoots[i][:]), "broadcasted beacon root %d out of order", i)
+	}
+}
+
 func CompareConsensusData(t *testing.T, expectedData [][]byte, actualData [][]byte) {
 	require.Len(t, actualData, len(expectedData))
 	// expectedData should be compared to actualData in order

@@ -1,12 +1,11 @@
 package committeesingleduty
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -22,7 +21,7 @@ func StartWithNoSharesForDuty() tests.SpecTest {
 		testingutils.BaseCommittee(ksMapFor1Validator),
 		[]interface{}{
 			// Duty for validator of index 2
-			testingutils.TestingAttesterDutyForValidators(spec.DataVersionElectra, []int{2}),
+			testingutils.TestingAttesterDutyForValidators(gloas.DataVersionGloas, []int{2}),
 		},
 		"",
 		nil,

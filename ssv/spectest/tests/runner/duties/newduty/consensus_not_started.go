@@ -3,11 +3,11 @@ package newduty
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -15,6 +15,12 @@ import (
 func ConsensusNotStarted() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
+	startPreferencesRunner := func(r ssv.Runner, duty *types.ValidatorDuty) ssv.Runner {
+		sub := r.(*ssv.ProposerPreferencesRunner).NewSlotRunner()
+		sub.BaseRunner.State = ssv.NewRunnerState(3, duty)
+		r.(*ssv.ProposerPreferencesRunner).BySlot[duty.Slot] = sub
+		return r
+	}
 	startRunner := func(r ssv.Runner, duty types.Duty) ssv.Runner {
 		r.GetBaseRunner().State = ssv.NewRunnerState(3, duty)
 		return r
@@ -36,11 +42,11 @@ func ConsensusNotStarted() tests.SpecTest {
 			},
 			{
 				Name:      "proposer",
-				Runner:    startRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionDeneb)),
-				Duty:      testingutils.TestingProposerDutyNextEpochV(spec.DataVersionDeneb),
+				Runner:    startRunner(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(gloas.DataVersionGloas)),
+				Duty:      testingutils.TestingProposerDutyNextEpochV(gloas.DataVersionGloas),
 				Threshold: ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
+					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, gloas.DataVersionGloas),
 					// broadcasts when starting a new duty
 				},
 			},
@@ -54,12 +60,23 @@ func ConsensusNotStarted() tests.SpecTest {
 				},
 			},
 			{
-				Name:      "validator registration",
-				Runner:    startRunner(testingutils.ValidatorRegistrationRunner(ks), &testingutils.TestingValidatorRegistrationDuty),
-				Duty:      &testingutils.TestingValidatorRegistrationDutyNextEpoch,
+				Name:      "ptc attestation",
+				Runner:    startRunner(testingutils.PTCAttesterRunner(ks), testingutils.TestingPTCAttesterDuty()),
+				Duty:      testingutils.TestingPTCAttesterNextEpochDuty(),
 				Threshold: ks.Threshold,
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusValidatorRegistrationNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusPTCNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+			},
+			{
+				// §5 state lives in the per-slot sub-runners: the still-running prior duty is seeded
+				// into BySlot, and the next-epoch duty starts its own independent slot flow beside it.
+				Name:      "proposer preferences",
+				Runner:    startPreferencesRunner(testingutils.ProposerPreferencesRunner(ks), testingutils.TestingProposerPreferencesDuty()),
+				Duty:      testingutils.TestingProposerPreferencesNextEpochDuty(),
+				Threshold: ks.Threshold,
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusProposerPreferencesNextEpochMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 			},
 		},

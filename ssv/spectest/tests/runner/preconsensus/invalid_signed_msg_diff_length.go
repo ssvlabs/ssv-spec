@@ -3,11 +3,10 @@ package preconsensus
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -29,39 +28,13 @@ func InvalidSignedMessageDifferentLength() tests.SpecTest {
 			{
 				Name:   "randao",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Duty:   testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 				Messages: []*types.SignedSSVMessage{
-					diffLength(testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionDeneb)))),
+					diffLength(testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, gloas.DataVersionGloas)))),
 				},
 				PostDutyRunnerStateRoot: "56eafcb33392ded888a0fefe30ba49e52aa00ab36841cb10c9dc1aa2935af347",
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
-				},
-				ExpectedErrorCode: expectedErrorCode,
-			},
-			{
-				Name:   "randao (blinded block)",
-				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-				Messages: []*types.SignedSSVMessage{
-					diffLength(testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionDeneb)))),
-				},
-				PostDutyRunnerStateRoot: "2ce3241658f324f352c77909f4043934eedf38e939ae638c5ce6acf28e965646",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
-				},
-				ExpectedErrorCode: expectedErrorCode,
-			},
-			{
-				Name:   "validator registration",
-				Runner: testingutils.ValidatorRegistrationRunner(ks),
-				Duty:   &testingutils.TestingValidatorRegistrationDuty,
-				Messages: []*types.SignedSSVMessage{
-					diffLength(testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1)))),
-				},
-				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, gloas.DataVersionGloas), // broadcasts when starting a new duty
 				},
 				ExpectedErrorCode: expectedErrorCode,
 			},
@@ -75,6 +48,32 @@ func InvalidSignedMessageDifferentLength() tests.SpecTest {
 				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
 				OutputMessages: []*types.PartialSignatureMessages{
 					testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedErrorCode: expectedErrorCode,
+			},
+			{
+				Name:   "ptc attestation",
+				Runner: testingutils.PTCAttesterRunner(ks),
+				Duty:   testingutils.TestingPTCAttesterDuty(),
+				Messages: []*types.SignedSSVMessage{
+					diffLength(testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgPTCAttester(nil, testingutils.PreConsensusPTCMsg(ks.Shares[1], 1)))),
+				},
+				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusPTCMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedErrorCode: expectedErrorCode,
+			},
+			{
+				Name:   "proposer preferences",
+				Runner: testingutils.ProposerPreferencesRunner(ks),
+				Duty:   testingutils.TestingProposerPreferencesDuty(),
+				Messages: []*types.SignedSSVMessage{
+					diffLength(testingutils.SignedSSVMessageWithSigner(1, ks.OperatorKeys[1], testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1)))),
+				},
+				PostDutyRunnerStateRoot: "2ac409163b617c79a2a11d3919d6834d24c5c32f06113237a12afcf43e7757a0",
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 				},
 				ExpectedErrorCode: expectedErrorCode,
 			},

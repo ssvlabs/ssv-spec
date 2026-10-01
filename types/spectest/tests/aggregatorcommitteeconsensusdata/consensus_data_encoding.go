@@ -1,8 +1,8 @@
 package aggregatorcommitteeconsensusdata
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -27,18 +27,11 @@ func ConsensusDataEncoding(name, documentation string, cd *types.AggregatorCommi
 	)
 }
 
-func Phase0AggregatorConsensusDataEncoding() *EncodingTest {
+func AggregatorConsensusDataEncoding() *EncodingTest {
 	return ConsensusDataEncoding(
-		"phase0 aggregation encoding",
-		testdoc.AggregatorCommitteeConsensusDataEncodingTestPhase0AggregatorDoc,
-		testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0),
-	)
-}
-func ElectraAggregatorConsensusDataEncoding() *EncodingTest {
-	return ConsensusDataEncoding(
-		"electra aggregation encoding",
-		testdoc.AggregatorCommitteeConsensusDataEncodingTestElectraAggregatorDoc,
-		testingutils.TestAggregatorConsensusData(spec.DataVersionElectra),
+		"aggregation encoding",
+		testdoc.AggregatorCommitteeConsensusDataEncodingTestAggregatorDoc,
+		testingutils.TestAggregatorConsensusData(gloas.DataVersionGloas),
 	)
 }
 func SyncCommitteeContributionConsensusDataEncoding() *EncodingTest {

@@ -9,6 +9,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -29,7 +30,7 @@ func PostDecided() tests.SpecTest {
 				Runner: testingutils.AggregatorCommitteeRunner(ks),
 				Duty:   testingutils.TestingSyncCommitteeContributionDuty,
 				Messages: append(
-					testingutils.SSVDecidingMsgsForAggregatorCommitteeRunnerForKS(testingutils.TestingSyncCommitteeContributionDuty, ks, spec.DataVersionPhase0),
+					testingutils.SSVDecidingMsgsForAggregatorCommitteeRunnerForKS(testingutils.TestingSyncCommitteeContributionDuty, ks, gloas.DataVersionGloas),
 					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), qbft.Height(sccSlot), testingutils.TestingAggregatorCommitteeMsgID[:], testingutils.TestSyncCommitteeContributionConsensusDataByts),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
@@ -71,7 +72,7 @@ func PostDecided() tests.SpecTest {
 				Runner: testingutils.CommitteeRunner(ks),
 				Duty:   testingutils.TestingAttesterDuty(version),
 				Messages: append(
-					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, height),
+					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestBeaconVoteByts, ks, height),
 					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), height, testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
@@ -84,7 +85,7 @@ func PostDecided() tests.SpecTest {
 				Runner: testingutils.CommitteeRunner(ks),
 				Duty:   testingutils.TestingSyncCommitteeDuty(version),
 				Messages: append(
-					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, height),
+					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestBeaconVoteByts, ks, height),
 					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), height, testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
@@ -97,7 +98,7 @@ func PostDecided() tests.SpecTest {
 				Runner: testingutils.CommitteeRunner(ks),
 				Duty:   testingutils.TestingAttesterAndSyncCommitteeDuties(version),
 				Messages: append(
-					testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, height),
+					testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestBeaconVoteByts, ks, height),
 					testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4], types.OperatorID(4), height, testingutils.CommitteeMsgID(ks), testingutils.TestBeaconVoteByts),
 				),
 				OutputMessages: []*types.PartialSignatureMessages{
@@ -128,28 +129,8 @@ func PostDecided() tests.SpecTest {
 		}
 	}
 
-	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
-	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
-		return &tests.MsgProcessingSpecTest{
-			Name:   fmt.Sprintf("proposer blinded block (%s)", version.String()),
-			Runner: testingutils.ProposerBlindedBlockRunner(ks),
-			Duty:   testingutils.TestingProposerDutyV(version),
-			Messages: append(
-				testingutils.SSVDecidingMsgsV(testingutils.TestProposerBlindedBlockConsensusDataV(version), ks, types.RoleProposer),
-				testingutils.TestingCommitMessageWithHeightIdentifierAndFullData(ks.OperatorKeys[4],
-					types.OperatorID(4), qbft.Height(testingutils.TestingDutySlotV(version)), testingutils.ProposerMsgID,
-					testingutils.TestProposerBlindedBlockConsensusDataBytsV(version)),
-			),
-			OutputMessages: []*types.PartialSignatureMessages{
-				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
-				testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
-			},
-			ExpectedErrorCode: expectedErrCode,
-		}
-	}
-
 	for _, v := range testingutils.SupportedBlockVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v)}...)
 	}
 
 	return multiSpecTest

@@ -6,16 +6,16 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 
-	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 var TestingSignedSSVMessageSignature = []byte{1, 2, 3, 4}
 
 var TestingSignedSSVMessage = func(sk *bls.SecretKey, operatorID types.OperatorID, rsaSK *rsa.PrivateKey) *types.SignedSSVMessage {
 	// SignedPartialSigMessage
-	signedPartialSig := PreConsensusSelectionProofMsg(sk, sk, operatorID, operatorID, spec.DataVersionPhase0)
+	signedPartialSig := PreConsensusSelectionProofMsg(sk, sk, operatorID, operatorID, gloas.DataVersionGloas)
 	signedPartialSigByts, err := signedPartialSig.Encode()
 	if err != nil {
 		panic(err.Error())

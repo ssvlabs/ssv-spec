@@ -20,21 +20,31 @@ func NoRunningDuty() tests.SpecTest {
 		testdoc.PreConsensusNoRunningDutyDoc,
 		[]*tests.MsgProcessingSpecTest{
 			{
-				Name:   "validator registration",
-				Runner: testingutils.ValidatorRegistrationRunner(ks),
-				Duty:   &testingutils.TestingValidatorRegistrationDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1))),
-				},
-				DontStartDuty:     true,
-				ExpectedErrorCode: types.NoRunningDutyErrorCode,
-			},
-			{
 				Name:   "voluntary exit",
 				Runner: testingutils.VoluntaryExitRunner(ks),
 				Duty:   &testingutils.TestingVoluntaryExitDuty,
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgVoluntaryExit(nil, testingutils.PreConsensusVoluntaryExitMsg(ks.Shares[1], 1))),
+				},
+				DontStartDuty:     true,
+				ExpectedErrorCode: types.NoRunningDutyErrorCode,
+			},
+			{
+				Name:   "ptc attestation",
+				Runner: testingutils.PTCAttesterRunner(ks),
+				Duty:   testingutils.TestingPTCAttesterDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPTCAttester(nil, testingutils.PreConsensusPTCMsg(ks.Shares[1], 1))),
+				},
+				DontStartDuty:     true,
+				ExpectedErrorCode: types.NoRunningDutyErrorCode,
+			},
+			{
+				Name:   "proposer preferences",
+				Runner: testingutils.ProposerPreferencesRunner(ks),
+				Duty:   testingutils.TestingProposerPreferencesDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1))),
 				},
 				DontStartDuty:     true,
 				ExpectedErrorCode: types.NoRunningDutyErrorCode,
@@ -93,22 +103,8 @@ func NoRunningDuty() tests.SpecTest {
 		}
 	}
 
-	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
-	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
-		return &tests.MsgProcessingSpecTest{
-			Name:   fmt.Sprintf("proposer blinded block (%s)", version.String()),
-			Runner: testingutils.ProposerBlindedBlockRunner(ks),
-			Duty:   testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SignedSSVMessage{
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version))),
-			},
-			DontStartDuty:     true,
-			ExpectedErrorCode: types.NoRunningDutyErrorCode,
-		}
-	}
-
 	for _, v := range testingutils.SupportedBlockVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v)}...)
 	}
 
 	return multiSpecTest

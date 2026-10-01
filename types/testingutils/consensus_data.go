@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -24,9 +25,9 @@ var TestAggregatorConsensusDataByts = func(version spec.DataVersion) []byte {
 
 // Used only as invalid test case
 var TestAttesterConsensusData = &types.ProposerConsensusData{
-	Duty:    *TestingAttesterDuty(spec.DataVersionPhase0).ValidatorDuties[0],
-	DataSSZ: TestingAttestationDataBytes(spec.DataVersionPhase0),
-	Version: spec.DataVersionPhase0,
+	Duty:    *TestingAttesterDuty(gloas.DataVersionGloas).ValidatorDuties[0],
+	DataSSZ: TestingAttestationDataBytes(gloas.DataVersionGloas),
+	Version: gloas.DataVersionGloas,
 }
 var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.Encode()
 
@@ -36,9 +37,9 @@ var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.Encode()
 
 // Used only as invalid test case
 var TestSyncCommitteeConsensusData = &types.ProposerConsensusData{
-	Duty:    *TestingSyncCommitteeDuty(spec.DataVersionPhase0).ValidatorDuties[0],
+	Duty:    *TestingSyncCommitteeDuty(gloas.DataVersionGloas).ValidatorDuties[0],
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
-	Version: spec.DataVersionPhase0,
+	Version: gloas.DataVersionGloas,
 }
 var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encode()
 
@@ -61,30 +62,16 @@ var TestProposerConsensusDataBytsV = func(version spec.DataVersion) []byte {
 	return byts
 }
 
-var TestProposerBlindedBlockConsensusDataV = func(version spec.DataVersion) *types.ProposerConsensusData {
-	return &types.ProposerConsensusData{
-		Duty:    *TestingProposerDutyV(version),
-		Version: version,
-		DataSSZ: TestingBlindedBeaconBlockBytesV(version),
-	}
-}
-
-var TestProposerBlindedBlockConsensusDataBytsV = func(version spec.DataVersion) []byte {
-	cd := TestProposerBlindedBlockConsensusDataV(version)
-	byts, _ := cd.Encode()
-	return byts
-}
-
 // ==================================================
 // Sync Committee Contribution
 // ==================================================
 
 var TestSyncCommitteeContributionConsensusDataF = func() *types.AggregatorCommitteeConsensusData {
-	return TestAggregatorCommitteeConsensusDataForDuty(TestingAggregatorCommitteeDutyOnlySyncCommittee(), spec.DataVersionPhase0, nil)
+	return TestAggregatorCommitteeConsensusDataForDuty(TestingAggregatorCommitteeDutyOnlySyncCommittee(), gloas.DataVersionGloas, nil)
 }
 
 var TestSyncCommitteeContributionConsensusDataForDuty = func(duty *types.AggregatorCommitteeDuty) *types.AggregatorCommitteeConsensusData {
-	return TestAggregatorCommitteeConsensusDataForDuty(duty, spec.DataVersionPhase0, nil)
+	return TestAggregatorCommitteeConsensusDataForDuty(duty, gloas.DataVersionGloas, nil)
 }
 
 var TestSyncCommitteeContributionConsensusData = TestSyncCommitteeContributionConsensusDataF()

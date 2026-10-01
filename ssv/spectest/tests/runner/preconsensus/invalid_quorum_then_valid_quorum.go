@@ -9,6 +9,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -21,24 +22,6 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 		"pre consensus invalid quorum then valid quorum",
 		testdoc.PreConsensusInvalidQuorumThenValidQuorumDoc,
 		[]*tests.MsgProcessingSpecTest{
-			{
-				Name:   "validator registration",
-				Runner: testingutils.ValidatorRegistrationRunner(ks),
-				Duty:   &testingutils.TestingValidatorRegistrationDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationWrongBeaconSigMsg(ks.Shares[1], 1))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[4], 4))),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedValidatorRegistration(ks)),
-				},
-				ExpectedErrorCode: expectedErrorCode,
-			},
 			{
 				Name:   "voluntary exit",
 				Runner: testingutils.VoluntaryExitRunner(ks),
@@ -57,6 +40,42 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 				},
 				ExpectedErrorCode: expectedErrorCode,
 			},
+			{
+				Name:   "ptc attestation",
+				Runner: testingutils.PTCAttesterRunner(ks),
+				Duty:   testingutils.TestingPTCAttesterDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPTCAttester(nil, testingutils.PreConsensusPTCWrongBeaconSigMsg(ks.Shares[1], 1))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPTCAttester(nil, testingutils.PreConsensusPTCMsg(ks.Shares[2], 2))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPTCAttester(nil, testingutils.PreConsensusPTCMsg(ks.Shares[3], 3))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPTCAttester(nil, testingutils.PreConsensusPTCMsg(ks.Shares[4], 4))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusPTCMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedPayloadAttestationMessage(ks)),
+				},
+				ExpectedErrorCode: expectedErrorCode,
+			},
+			{
+				Name:   "proposer preferences",
+				Runner: testingutils.ProposerPreferencesRunner(ks),
+				Duty:   testingutils.TestingProposerPreferencesDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusProposerPreferencesWrongBeaconSigMsg(ks.Shares[1], 1))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[2], 2))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[3], 3))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[4], 4))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				BeaconBroadcastedRoots: []string{
+					testingutils.GetSSZRootNoError(testingutils.TestingSignedProposerPreferences(ks, testingutils.TestingDutySlotGloas)),
+				},
+				ExpectedErrorCode: expectedErrorCode,
+			},
 		},
 		ks,
 	)
@@ -65,7 +84,7 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 	sccDuty := testingutils.TestingSyncCommitteeContributionDuty
 	sccSlot := sccDuty.Slot
 	msgID := testingutils.TestingAggregatorCommitteeMsgID
-	sccConsensusData := testingutils.TestAggregatorCommitteeConsensusDataForDuty(sccDuty, spec.DataVersionPhase0, nil)
+	sccConsensusData := testingutils.TestAggregatorCommitteeConsensusDataForDuty(sccDuty, gloas.DataVersionGloas, nil)
 	sccCDBytes, err := sccConsensusData.Encode()
 	if err != nil {
 		panic(err)
@@ -172,37 +191,8 @@ func InvalidQuorumThenValidQuorum() tests.SpecTest {
 		}
 	}
 
-	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
-	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
-		duty := testingutils.TestingProposerDutyV(version)
-		slot := duty.Slot
-		cd := testingutils.TestProposerBlindedBlockConsensusDataV(version)
-		cdBytes, err := cd.Encode()
-		if err != nil {
-			panic(err)
-		}
-		msgID := testingutils.ProposerMsgID
-		return &tests.MsgProcessingSpecTest{
-			Name:   fmt.Sprintf("randao blinded block (%s)", version.String()),
-			Runner: testingutils.ProposerBlindedBlockRunner(ks),
-			Duty:   testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SignedSSVMessage{
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoWrongBeaconSigMsgV(ks.Shares[1], 1, version))),
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, version))),
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, version))),
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[4], 4, version))),
-				// Proposal
-				testingutils.SignedSSVMessageWithSignerAndFullData(1, ks.OperatorKeys[1], testingutils.SSVMsgProposer(testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], 1, msgID[:], cdBytes, qbft.Height(slot)), nil), cdBytes),
-			},
-			OutputMessages: []*types.PartialSignatureMessages{
-				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
-			},
-			ExpectedErrorCode: expectedErrorCode,
-		}
-	}
-
 	for _, v := range testingutils.SupportedBlockVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v)}...)
 	}
 
 	return multiSpecTest

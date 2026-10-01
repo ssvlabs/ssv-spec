@@ -54,7 +54,6 @@ func TestWireConstants(t *testing.T) {
 			{"BNRoleProposer", BNRoleProposer, 2},
 			{"BNRoleSyncCommittee", BNRoleSyncCommittee, 3},
 			{"BNRoleSyncCommitteeContribution", BNRoleSyncCommitteeContribution, 4},
-			{"BNRoleValidatorRegistration", BNRoleValidatorRegistration, 5},
 			{"BNRoleVoluntaryExit", BNRoleVoluntaryExit, 6},
 			{"BNRolePTCAttester", BNRolePTCAttester, 7},
 			{"BNRoleProposerPreferences", BNRoleProposerPreferences, 8},
@@ -72,7 +71,6 @@ func TestWireConstants(t *testing.T) {
 		}{
 			{"RoleCommittee", RoleCommittee, 0},
 			{"RoleProposer", RoleProposer, 2},
-			{"RoleValidatorRegistration", RoleValidatorRegistration, 4},
 			{"RoleVoluntaryExit", RoleVoluntaryExit, 5},
 			{"RoleAggregatorCommittee", RoleAggregatorCommittee, 6},
 			{"RolePTCAttester", RolePTCAttester, 7},
@@ -91,7 +89,6 @@ func TestWireConstants(t *testing.T) {
 		}{
 			{"PostConsensusPartialSig", PostConsensusPartialSig, 0},
 			{"RandaoPartialSig", RandaoPartialSig, 1},
-			{"ValidatorRegistrationPartialSig", ValidatorRegistrationPartialSig, 4},
 			{"VoluntaryExitPartialSig", VoluntaryExitPartialSig, 5},
 			{"AggregatorCommitteePartialSig", AggregatorCommitteePartialSig, 6},
 			{"PTCAttesterPartialSig", PTCAttesterPartialSig, 7},
@@ -113,7 +110,6 @@ func TestWireConstants(t *testing.T) {
 			{BNRoleProposer, RoleProposer},
 			{BNRoleAggregator, RoleAggregatorCommittee},
 			{BNRoleSyncCommitteeContribution, RoleAggregatorCommittee},
-			{BNRoleValidatorRegistration, RoleValidatorRegistration},
 			{BNRoleVoluntaryExit, RoleVoluntaryExit},
 			{BNRolePTCAttester, RolePTCAttester},
 			{BNRoleProposerPreferences, RoleProposerPreferences},
@@ -130,14 +126,12 @@ func TestWireConstants(t *testing.T) {
 		require.Equal(t, "PROPOSER", BNRoleProposer.String())
 		require.Equal(t, "SYNC_COMMITTEE", BNRoleSyncCommittee.String())
 		require.Equal(t, "SYNC_COMMITTEE_CONTRIBUTION", BNRoleSyncCommitteeContribution.String())
-		require.Equal(t, "VALIDATOR_REGISTRATION", BNRoleValidatorRegistration.String())
 		require.Equal(t, "VOLUNTARY_EXIT", BNRoleVoluntaryExit.String())
 		require.Equal(t, "PTC_ATTESTER", BNRolePTCAttester.String())
 		require.Equal(t, "PROPOSER_PREFERENCES", BNRoleProposerPreferences.String())
 
 		require.Equal(t, "COMMITTEE_RUNNER", RoleCommittee.String())
 		require.Equal(t, "PROPOSER_RUNNER", RoleProposer.String())
-		require.Equal(t, "VALIDATOR_REGISTRATION_RUNNER", RoleValidatorRegistration.String())
 		require.Equal(t, "VOLUNTARY_EXIT_RUNNER", RoleVoluntaryExit.String())
 		require.Equal(t, "AGGREGATOR_COMMITTEE_RUNNER", RoleAggregatorCommittee.String())
 		require.Equal(t, "PTC_ATTESTER_RUNNER", RolePTCAttester.String())

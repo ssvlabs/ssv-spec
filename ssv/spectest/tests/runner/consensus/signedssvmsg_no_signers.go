@@ -3,13 +3,12 @@ package consensus
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/qbft"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -49,57 +48,18 @@ func NoSigners() tests.SpecTest {
 			{
 				Name:   "proposer",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Duty:   testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, spec.DataVersionDeneb))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, gloas.DataVersionGloas))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, gloas.DataVersionGloas))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, gloas.DataVersionGloas))),
 					noSigners(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.ProposerMsgID, testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
-						qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)))),
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.ProposerMsgID, testingutils.TestProposerConsensusDataBytsV(gloas.DataVersionGloas),
+						qbft.Height(testingutils.TestingDutySlotV(gloas.DataVersionGloas)))),
 				},
 				PostDutyRunnerStateRoot: "01694261367dff43d4e85ebbfb1dd5d5081c78832ff693d77f300e0f8ffee071",
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
-				},
-				ExpectedErrorCode: expectedErrorCode,
-			},
-			{
-				Name:   "proposer (blinded block)",
-				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[2], 2, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoMsgV(ks.Shares[3], 3, spec.DataVersionDeneb))),
-					noSigners(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.ProposerMsgID, testingutils.TestProposerBlindedBlockConsensusDataBytsV(spec.DataVersionDeneb),
-						qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)))),
-				},
-				PostDutyRunnerStateRoot: "755134a5855f13a1e4a15b4b2a034a172c21f88a2af99e247d2cf4818aea30fe",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
-				},
-				ExpectedErrorCode: expectedErrorCode,
-			},
-			{
-				Name:   "validator registration",
-				Runner: testingutils.ValidatorRegistrationRunner(ks),
-				Duty:   &testingutils.TestingValidatorRegistrationDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[2], 2))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[3], 3))),
-					noSigners(testingutils.TestingProposalMessageWithIdentifierAndFullData(
-						ks.OperatorKeys[1], types.OperatorID(1), testingutils.ValidatorRegistrationMsgID, testingutils.TestAttesterConsensusDataByts,
-						qbft.Height(testingutils.TestingDutySlot))),
-				},
-				PostDutyRunnerStateRoot: "ec573732e70b70808972c43acb5ead6443cff06ba30d8abb51e37ac82ffe0727",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-				},
-				BeaconBroadcastedRoots: []string{
-					testingutils.GetSSZRootNoError(testingutils.TestingSignedValidatorRegistration(ks)),
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, gloas.DataVersionGloas),
 				},
 				ExpectedErrorCode: expectedErrorCode,
 			},

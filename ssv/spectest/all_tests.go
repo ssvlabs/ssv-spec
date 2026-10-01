@@ -13,7 +13,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/consensus"
 	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposerpreferences"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/ptcattester"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/postconsensus"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/preconsensus"
@@ -26,6 +27,12 @@ import (
 
 var AllTests = []tests.TestF{
 	runner.FullHappyFlow,
+	runner.GloasProposerLateEnvelopeQuorum,
+	runner.GloasProposerEnvelopeFirstOrder,
+	runner.GloasProposerBadEnvelopeShare,
+	runner.GloasProposerBadBlockShare,
+	runner.GloasProposerFailedBlockSubmit,
+	runner.GloasProposerExternalBid,
 
 	postconsensus.TooManyRoots,
 	postconsensus.TooFewRoots,
@@ -53,6 +60,7 @@ var AllTests = []tests.TestF{
 	postconsensus.Quorum7Operators,
 	postconsensus.Quorum10Operators,
 	postconsensus.Quorum13Operators,
+	postconsensus.GloasBlockOnlyQuorum,
 	postconsensus.InvalidDecidedValue,
 	postconsensus.InvalidThenQuorum,
 	postconsensus.InvalidQuorumThenValidQuorum,
@@ -127,6 +135,7 @@ var AllTests = []tests.TestF{
 	consensus.ValidMessage,
 	consensus.InvalidSignature,
 	consensus.DecidedSlashableAttestation,
+	consensus.DecidedValueWrongSlot,
 	consensus.NoSigners,
 	consensus.NonUniqueSigners,
 	consensus.ZeroSigner,
@@ -138,11 +147,6 @@ var AllTests = []tests.TestF{
 	synccommitteeaggregator.SomeAggregatorQuorum,
 	synccommitteeaggregator.NoneAggregatorQuorum,
 	synccommitteeaggregator.AllAggregatorQuorum,
-
-	proposer.ProposeBlindedBlockDecidedRegular,
-	proposer.ProposeRegularBlockDecidedBlinded,
-	proposer.BlindedRunnerAcceptsNormalBlock,
-	proposer.NormalProposerAcceptsBlindedBlock,
 
 	preconsensus.NoRunningDuty,
 	preconsensus.TooFewRoots,
@@ -200,8 +204,29 @@ var AllTests = []tests.TestF{
 	valcheckattestations.MinoritySlashable,
 	valcheckattestations.MajoritySlashable,
 	valcheckattestations.ValidNonSlashableSlot,
+	valcheckattestations.InvalidIndex,
+	valcheckattestations.CrossIndexEquivocation,
 
-	valcheckproposer.BlindedBlock,
+	ptcattester.Abstain,
+	ptcattester.DivergingObservation,
+	ptcattester.Observation,
+
+	proposerpreferences.ConcurrentLookaheadSlots,
+	proposerpreferences.ReemissionCarriesOverPreferenceShares,
+	proposerpreferences.DivergingDependentRoot,
+	proposerpreferences.BuilderRequestAuthHappyFlow,
+	proposerpreferences.BuilderRequestAuthSharedDataDedup,
+	proposerpreferences.BuilderRequestAuthCapAtMax,
+	proposerpreferences.BuilderRequestAuthWrongRoot,
+	proposerpreferences.BuilderRequestAuthReemissionCarryOver,
+	proposerpreferences.BuilderRequestAuthIndependentOfPreference,
+	proposerpreferences.BuilderRequestAuthExceedsMax,
+	proposerpreferences.BuilderRequestAuthNoAuth,
+	proposerpreferences.BuilderRequestAuthBadShare,
+	proposerpreferences.BuilderRequestAuthURLFallback,
+	proposerpreferences.UnexpectedPartialSigType,
+
+	valcheckproposer.GloasBlocks,
 
 	valcheckaggcommittee.NoValidator,
 	valcheckaggcommittee.Valid,

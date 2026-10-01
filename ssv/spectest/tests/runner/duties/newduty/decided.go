@@ -100,21 +100,8 @@ func PostDecided() tests.SpecTest {
 		}
 	}
 
-	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
-	proposerBlindedV := func(version spec.DataVersion) *StartNewRunnerDutySpecTest {
-		return &StartNewRunnerDutySpecTest{
-			Name:      fmt.Sprintf("proposer blinded block (%s)", version.String()),
-			Runner:    decidedRunner(testingutils.ProposerBlindedBlockRunner(ks), testingutils.TestingProposerDutyV(version)),
-			Duty:      testingutils.TestingProposerDutyNextEpochV(version),
-			Threshold: ks.Threshold,
-			OutputMessages: []*types.PartialSignatureMessages{
-				testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, version), // broadcasts when starting a new duty
-			},
-		}
-	}
-
 	for _, v := range testingutils.SupportedBlockVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{proposerV(v), proposerBlindedV(v)}...)
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*StartNewRunnerDutySpecTest{proposerV(v)}...)
 	}
 
 	return multiSpecTest

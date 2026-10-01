@@ -1,19 +1,17 @@
 package types
 
 import (
+	"encoding/json"
 	"fmt"
+	"strings"
 
-	"github.com/attestantio/go-eth2-client/api"
-	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
-	apiv1deneb "github.com/attestantio/go-eth2-client/api/v1/deneb"
-	apiv1electra "github.com/attestantio/go-eth2-client/api/v1/electra"
-	apiv1fulu "github.com/attestantio/go-eth2-client/api/v1/fulu"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
+
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 type Contribution struct {
@@ -105,11 +103,15 @@ func (c Contributions) SizeSSZ() int {
 	return size
 }
 
-// BeaconVote is used as the data to be agreed on consensus for the CommitteeRunner
+// BeaconVote is the value the CommitteeRunner agrees on (SIP #94 §2): the head block root, the FFG checkpoints,
+// and the BN-supplied AttestationData.Index (120-byte SSZ). The index is the fork-choice payload status (0 =
+// EMPTY, 1 = FULL; 0 for a same-slot attestation) and part of the signed attestation root, so it travels
+// through consensus.
 type BeaconVote struct {
-	BlockRoot phase0.Root `ssz-size:"32"`
-	Source    *phase0.Checkpoint
-	Target    *phase0.Checkpoint
+	BlockRoot            phase0.Root `ssz-size:"32"`
+	Source               *phase0.Checkpoint
+	Target               *phase0.Checkpoint
+	AttestationDataIndex phase0.CommitteeIndex // copied from AttestationData.Index (0 or 1)
 }
 
 // Encode the BeaconVote object
@@ -123,14 +125,19 @@ func (b *BeaconVote) Decode(data []byte) error {
 }
 
 // Validate checks the following rules:
-// - Source and Target checkpoints must be non-nil
-// - Source.Epoch must be strictly less than Target.Epoch
+//   - Source and Target checkpoints must be non-nil
+//   - AttestationDataIndex must be 0 or 1 (the payload status; SIP #94 §2)
+//   - Source.Epoch must be strictly less than Target.Epoch
 func (b *BeaconVote) Validate() error {
 	if b == nil {
 		return NewError(BeaconVoteNilCheckpointErrorCode, "nil beacon vote")
 	}
 	if b.Source == nil || b.Target == nil {
 		return NewError(BeaconVoteNilCheckpointErrorCode, "nil source or target checkpoint")
+	}
+	if b.AttestationDataIndex > 1 {
+		return NewError(BeaconVoteInvalidIndexErrorCode,
+			fmt.Sprintf("attestation data index %d must be 0 or 1", b.AttestationDataIndex))
 	}
 	if b.Source.Epoch >= b.Target.Epoch {
 		return NewError(AttestationSourceNotLessThanTargetErrorCode, "attestation data source >= target")
@@ -142,114 +149,100 @@ func (b *BeaconVote) Validate() error {
 type ProposerConsensusData struct {
 	// Duty max size is
 	// 			8 + 48 + 6*8 + 13*8 + 1 = 209
-	Duty    ValidatorDuty
+	Duty ValidatorDuty
+	// Version is the proposal's fork; it must be Gloas (see GetBlockData).
 	Version spec.DataVersion
-	// DataSSZ's max size if the size of the biggest object Deneb.BlockContents.
-	// Per definition, Deneb.BlockContents has a field for transaction of size 2^50.
-	// We do not need to support such a big DataSSZ size as 2^50 represents 1000X the actual block gas limit
-	// Upcoming 40M gas limit produces 40M / 16 (call data cost) = 2,500,000 bytes (https://eips.ethereum.org/EIPS/eip-4488)
-	// Explanation on why transaction sizes are so big https://github.com/ethereum/consensus-specs/pull/2686
-	// Adding to the rest of the data (see script below), we have: 3,291,849 + 2,500,000  = 5,791,849 bytes ~<= 2^23
-	// Python script for Deneb.BlockContents without transactions:
-	// 		# Constants
-	// 		KZG_PROOFS_SIZE = 9 * 48  # KZGProofs size
-	// 		BLOBS_SIZE = 9 * 131072  # Blobs size
-	// 		BEACON_BLOCK_OVERHEAD = 2 * 32 + 2 * 8  # Additional overhead for BeaconBlock
-	// 		# Components of BeaconBlockBody
-	// 		ETH1_DATA_SIZE = 96 + 2 * 32 + 8 + 32  # ETH1Data
-	// 		PROPOSER_SLASHING_SIZE = 16 * (2 * (96 + 3 * 32 + 2 * 8))  # ProposerSlashing
-	// 		ATTESTER_SLASHING_SIZE = 2 * (2 * (2048 + 96 + (2 * 8 + 32 + 2 * (8 + 32))))  # AttesterSlashing
-	// 		ATTESTATION_SIZE = 128 * (2048 + 96 + (2 * 8 + 32 + 2 * (8 + 32)))  # Attestation
-	// 		DEPOSIT_SIZE = 16 * (33 * 32 + 48 + 32 + 8 + 96)  # Deposit
-	// 		SIGNED_VOLUNTARY_EXIT_SIZE = 16 * (96 + 2 * 8)  # SignedVoluntaryExit
-	// 		SYNC_AGGREGATE_SIZE = 64 + 96  # SyncAggregate
-	// 		EXECUTION_PAYLOAD_NO_TRANSACTIONS = 32 + 20 + 2*32 + 256 + 32 + 4*8 + 3*32 + 16 * (2*8 + 20 + 8) + 8 + 8
-	// 		BLS_TO_EXECUTION_CHANGES_SIZE = 16 * (96 + (8 + 48 + 20))  # BLSToExecutionChanges
-	// 		KZG_COMMITMENT_SIZE = 4096 * 48  # KZGCommitment
-	//		EXECUTION_REQUESTS_SIZE = (1 + 8192 * (1 + 48 + 32 + 8 + 96 + 8)) + (1 + 16 * (1 + 20 + 48 + 8)) + (1 + 2 * (1 + 20 +  48 + 48)) # Deposits + Withdrawls + Consolidations
-	// 		# BeaconBlockBody total size without transactions
-	// 		beacon_block_body_size_without_transactions = (
-	// 		    ETH1_DATA_SIZE + PROPOSER_SLASHING_SIZE + ATTESTER_SLASHING_SIZE +
-	// 		    ATTESTATION_SIZE + DEPOSIT_SIZE + SIGNED_VOLUNTARY_EXIT_SIZE +
-	// 		    SYNC_AGGREGATE_SIZE + EXECUTION_PAYLOAD_NO_TRANSACTIONS + BLS_TO_EXECUTION_CHANGES_SIZE + KZG_COMMITMENT_SIZE + EXECUTION_REQUESTS_SIZE
-	// 		)
-	// 		# Total size of Deneb.BlockContents and BeaconBlock without transactions
-	// 		total_size_without_execution_payload = KZG_PROOFS_SIZE + BLOBS_SIZE + BEACON_BLOCK_OVERHEAD + beacon_block_body_size_without_transactions
-	//		print(total_size_without_execution_payload)
-	DataSSZ []byte `ssz-max:"8388608"` // 2^23 to account for potential gas limit increases
+	// DataSSZ is the SSZ-encoded gloas.GloasProposalData: the block plus the §6 payload_root (SIP #94 §4). A Gloas
+	// block carries a payload bid rather than the payload, so it stays far below this bound (2^23, kept from the
+	// pre-Gloas BlockContents sizing).
+	DataSSZ []byte `ssz-max:"8388608"`
+}
+
+// versionJSON is the JSON codec for a consensus-data Version: "gloas" for the SIP #94 placeholder, the upstream
+// fork string for other known versions, and the bare number for any other out-of-enum value (on which
+// spec.DataVersion.MarshalJSON panics). Decoding accepts the string (any case), the number, and a missing/null
+// value (as version 0).
+type versionJSON spec.DataVersion
+
+func (v versionJSON) MarshalJSON() ([]byte, error) {
+	dv := spec.DataVersion(v)
+	switch {
+	case dv == gloas.DataVersionGloas:
+		return json.Marshal("gloas")
+	case dv.String() == "unknown": // out-of-enum: spec.DataVersion.MarshalJSON would panic
+		return json.Marshal(uint64(dv))
+	default:
+		return dv.MarshalJSON()
+	}
+}
+
+func (v *versionJSON) UnmarshalJSON(data []byte) error {
+	if len(data) == 0 || string(data) == "null" {
+		*v = 0
+		return nil
+	}
+	var s string
+	if err := json.Unmarshal(data, &s); err == nil {
+		if strings.EqualFold(s, "gloas") {
+			*v = versionJSON(gloas.DataVersionGloas)
+			return nil
+		}
+		var dv spec.DataVersion
+		if err := dv.UnmarshalJSON(data); err != nil {
+			return err
+		}
+		*v = versionJSON(dv)
+		return nil
+	}
+	var n uint64
+	if err := json.Unmarshal(data, &n); err != nil {
+		return err
+	}
+	*v = versionJSON(n)
+	return nil
+}
+
+// MarshalJSON/UnmarshalJSON write Version through versionJSON, listing the fields explicitly to keep the key
+// order (Duty, Version, DataSSZ); a new struct field must be added to both (TestProposerConsensusDataJSONFieldsInSync).
+func (cd *ProposerConsensusData) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Duty    ValidatorDuty
+		Version versionJSON
+		DataSSZ []byte
+	}{cd.Duty, versionJSON(cd.Version), cd.DataSSZ})
+}
+
+func (cd *ProposerConsensusData) UnmarshalJSON(data []byte) error {
+	aux := &struct {
+		Duty    ValidatorDuty
+		Version versionJSON
+		DataSSZ []byte
+	}{}
+	if err := json.Unmarshal(data, aux); err != nil {
+		return err
+	}
+	cd.Duty, cd.Version, cd.DataSSZ = aux.Duty, spec.DataVersion(aux.Version), aux.DataSSZ
+	return nil
 }
 
 func (cd *ProposerConsensusData) Validate() error {
 	if cd.Duty.Type != BNRoleProposer {
-
 		return NewError(UnknownDutyRoleDataErrorCode, "unknown duty role")
 	}
-	_, _, err := cd.GetBlockData()
+	_, err := cd.GetBlockData()
 	return err
 }
 
-// GetBlockData returns block data for both blinded and regular blocks
-func (cd *ProposerConsensusData) GetBlockData() (blk *api.VersionedProposal, signingRoot ssz.HashRoot, err error) {
-	switch cd.Version {
-	case spec.DataVersionCapella:
-		blindedBlock := &apiv1capella.BlindedBeaconBlock{}
-		blindedErr := blindedBlock.UnmarshalSSZ(cd.DataSSZ)
-		if blindedErr == nil {
-			return &api.VersionedProposal{Version: cd.Version, Blinded: true, CapellaBlinded: blindedBlock}, blindedBlock, nil
-		}
-
-		regularBlock := &capella.BeaconBlock{}
-		regularErr := regularBlock.UnmarshalSSZ(cd.DataSSZ)
-		if regularErr == nil {
-			return &api.VersionedProposal{Capella: regularBlock, Version: cd.Version}, regularBlock, nil
-		}
-
-		return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz (blinded err: %w, regular err: %w)", blindedErr, regularErr))
-	case spec.DataVersionDeneb:
-		blindedBlock := &apiv1deneb.BlindedBeaconBlock{}
-		blindedErr := blindedBlock.UnmarshalSSZ(cd.DataSSZ)
-		if blindedErr == nil {
-			return &api.VersionedProposal{Version: cd.Version, Blinded: true, DenebBlinded: blindedBlock}, blindedBlock, nil
-		}
-
-		regularContents := &apiv1deneb.BlockContents{}
-		regularErr := regularContents.UnmarshalSSZ(cd.DataSSZ)
-		if regularErr == nil {
-			return &api.VersionedProposal{Deneb: regularContents, Version: cd.Version}, regularContents.Block, nil
-		}
-
-		return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz (blinded err: %w, regular err: %w)", blindedErr, regularErr))
-	case spec.DataVersionElectra:
-		blindedBlock := &apiv1electra.BlindedBeaconBlock{}
-		blindedErr := blindedBlock.UnmarshalSSZ(cd.DataSSZ)
-		if blindedErr == nil {
-			return &api.VersionedProposal{Version: cd.Version, Blinded: true, ElectraBlinded: blindedBlock}, blindedBlock, nil
-		}
-
-		regularContents := &apiv1electra.BlockContents{}
-		regularErr := regularContents.UnmarshalSSZ(cd.DataSSZ)
-		if regularErr == nil {
-			return &api.VersionedProposal{Electra: regularContents, Version: cd.Version}, regularContents.Block, nil
-		}
-
-		return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz (blinded err: %w, regular err: %w)", blindedErr, regularErr))
-	case spec.DataVersionFulu:
-		blindedBlock := &apiv1electra.BlindedBeaconBlock{}
-		blindedErr := blindedBlock.UnmarshalSSZ(cd.DataSSZ)
-		if blindedErr == nil {
-			return &api.VersionedProposal{Version: cd.Version, Blinded: true, FuluBlinded: blindedBlock}, blindedBlock, nil
-		}
-
-		regularContents := &apiv1fulu.BlockContents{}
-		regularErr := regularContents.UnmarshalSSZ(cd.DataSSZ)
-		if regularErr == nil {
-			return &api.VersionedProposal{Fulu: regularContents, Version: cd.Version}, regularContents.Block, nil
-		}
-
-		return nil, nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal ssz (blinded err: %w, regular err: %w)", blindedErr, regularErr))
-	default:
-		return nil, nil, WrapError(UnknownBlockVersionErrorCode, fmt.Errorf("unknown block version %d", cd.Version))
+// GetBlockData decodes the proposal: the Gloas block and the §6 payload_root carried with it (SIP #94 §4).
+func (cd *ProposerConsensusData) GetBlockData() (*gloas.GloasProposalData, error) {
+	if cd.Version != gloas.DataVersionGloas {
+		return nil, WrapError(UnknownBlockVersionErrorCode, fmt.Errorf("unknown block version %d", cd.Version))
 	}
+	proposalData, err := gloas.DecodeGloasProposalData(cd.DataSSZ)
+	if err != nil {
+		return nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("could not unmarshal gloas proposal data: %w", err))
+	}
+	return proposalData, nil
 }
 
 func (cd *ProposerConsensusData) Encode() ([]byte, error) {
@@ -284,8 +277,34 @@ type AggregatorCommitteeConsensusData struct {
 	SyncCommitteeContributions []altair.SyncCommitteeContribution `ssz-max:"4"`
 }
 
+// MarshalJSON writes Version through versionJSON so a Gloas-stamped value is JSON-safe. Version is the
+// struct's first field, so the embedded-alias order already matches.
+func (a *AggregatorCommitteeConsensusData) MarshalJSON() ([]byte, error) {
+	type alias AggregatorCommitteeConsensusData
+	return json.Marshal(&struct {
+		Version versionJSON
+		*alias
+	}{versionJSON(a.Version), (*alias)(a)})
+}
+
+func (a *AggregatorCommitteeConsensusData) UnmarshalJSON(data []byte) error {
+	type alias AggregatorCommitteeConsensusData
+	aux := &struct {
+		Version versionJSON
+		*alias
+	}{alias: (*alias)(a)}
+	if err := json.Unmarshal(data, aux); err != nil {
+		return err
+	}
+	a.Version = spec.DataVersion(aux.Version)
+	return nil
+}
+
 // Validate ensures the consensus data is internally consistent
 func (a *AggregatorCommitteeConsensusData) Validate() error {
+	if a.Version != gloas.DataVersionGloas {
+		return WrapError(UnknownVersionErrorCode, fmt.Errorf("unknown version %d", a.Version))
+	}
 
 	// Ensure at least one validator
 	if len(a.Aggregators) == 0 && len(a.Contributors) == 0 {
@@ -322,18 +341,11 @@ func (a *AggregatorCommitteeConsensusData) Validate() error {
 		return NewError(AggCommUnusedCommIdxErrorCode, "leftover aggregator committee index not usedAggCommittees by any aggregator")
 	}
 
-	// Ensure attestation objects are decoded correctly
+	// Ensure attestation objects are decoded correctly. Gloas reuses the Electra attestation shape (SIP #94 §2).
 	for _, attBytes := range a.AggregatedAttestations {
-		if a.Version >= spec.DataVersionElectra {
-			att := &electra.Attestation{}
-			if err := att.UnmarshalSSZ(attBytes); err != nil {
-				return NewError(AggCommAttestationDecodingErrorCode, "failed to unmarshal attestation")
-			}
-		} else {
-			att := &phase0.Attestation{}
-			if err := att.UnmarshalSSZ(attBytes); err != nil {
-				return NewError(AggCommAttestationDecodingErrorCode, "failed to unmarshal attestation")
-			}
+		att := &electra.Attestation{}
+		if err := att.UnmarshalSSZ(attBytes); err != nil {
+			return NewError(AggCommAttestationDecodingErrorCode, "failed to unmarshal attestation")
 		}
 	}
 
@@ -376,35 +388,22 @@ func (a *AggregatorCommitteeConsensusData) Decode(data []byte) error {
 }
 
 func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (ssz.HashRoot, error) {
-	switch aggProof.Version {
-	case spec.DataVersionPhase0:
-		return aggProof.Phase0, nil
-	case spec.DataVersionAltair:
-		return aggProof.Altair, nil
-	case spec.DataVersionBellatrix:
-		return aggProof.Bellatrix, nil
-	case spec.DataVersionCapella:
-		return aggProof.Capella, nil
-	case spec.DataVersionDeneb:
-		return aggProof.Deneb, nil
-	case spec.DataVersionElectra:
-		return aggProof.Electra, nil
-	case spec.DataVersionFulu:
-		return aggProof.Fulu, nil
-	default:
+	if aggProof.Version != gloas.DataVersionGloas {
 		return nil, WrapError(UnknownVersionErrorCode, fmt.Errorf("unknown version %d", aggProof.Version))
 	}
+	// Gloas reuses the Electra aggregate-and-proof shape (SIP #94 §2); no Gloas field on the versioned wrapper.
+	return aggProof.Electra, nil
 }
 
 // GetAggregateAndProofs returns all aggregate and proofs for the aggregator duties along with their hash roots
 func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.VersionedAggregateAndProof, error) {
+	if a.Version != gloas.DataVersionGloas {
+		return nil, WrapError(UnknownVersionErrorCode, fmt.Errorf("unknown version %d", a.Version))
+	}
 
 	proofs := make([]*spec.VersionedAggregateAndProof, 0, len(a.Aggregators))
 
 	for _, aggregator := range a.Aggregators {
-		// Decode attestation based on version
-		var aggregateAndProof *spec.VersionedAggregateAndProof
-
 		// Get index for validator in a.AggregatedAttestations
 		foundIndex := -1
 		for idx, committeeIndex := range a.AggregatorsCommitteeIndexes {
@@ -417,68 +416,19 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 			return nil, NewError(AggCommCommIdxMismatchErrorCode, "aggregator committee index not found for attestation")
 		}
 
-		switch a.Version {
-		case spec.DataVersionPhase0, spec.DataVersionAltair, spec.DataVersionBellatrix, spec.DataVersionCapella, spec.DataVersionDeneb:
-			agg := &phase0.AggregateAndProof{
-				AggregatorIndex: aggregator.ValidatorIndex,
-				SelectionProof:  aggregator.SelectionProof,
-			}
-			// Unmarshal the attestation
-			att := &phase0.Attestation{}
-			if err := att.UnmarshalSSZ(a.AggregatedAttestations[foundIndex]); err != nil {
-				return nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal attestation: %w", err))
-			}
-			agg.Aggregate = att
-
-			aggregateAndProof = &spec.VersionedAggregateAndProof{
-				Version: a.Version,
-			}
-			// Set the appropriate version field and store hash root
-			switch a.Version {
-			case spec.DataVersionPhase0:
-				aggregateAndProof.Phase0 = agg
-			case spec.DataVersionAltair:
-				aggregateAndProof.Altair = agg
-			case spec.DataVersionBellatrix:
-				aggregateAndProof.Bellatrix = agg
-			case spec.DataVersionCapella:
-				aggregateAndProof.Capella = agg
-			case spec.DataVersionDeneb:
-				aggregateAndProof.Deneb = agg
-			default:
-				panic("unhandled default case")
-			}
-
-		case spec.DataVersionElectra, spec.DataVersionFulu:
-			agg := &electra.AggregateAndProof{
-				AggregatorIndex: aggregator.ValidatorIndex,
-				SelectionProof:  aggregator.SelectionProof,
-			}
-			// Unmarshal the attestation
-			att := &electra.Attestation{}
-			if err := att.UnmarshalSSZ(a.AggregatedAttestations[foundIndex]); err != nil {
-				return nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal electra attestation: %w", err))
-			}
-			agg.Aggregate = att
-
-			aggregateAndProof = &spec.VersionedAggregateAndProof{
-				Version: a.Version,
-			}
-
-			switch a.Version {
-			case spec.DataVersionElectra:
-				aggregateAndProof.Electra = agg
-			case spec.DataVersionFulu:
-				aggregateAndProof.Fulu = agg
-			default:
-				panic("unhandled default case")
-			}
-
-		default:
-			return nil, WrapError(UnknownBlockVersionErrorCode, fmt.Errorf("unsupported version %s", a.Version.String()))
+		// Gloas reuses the Electra aggregate shape (SIP #94 §2).
+		att := &electra.Attestation{}
+		if err := att.UnmarshalSSZ(a.AggregatedAttestations[foundIndex]); err != nil {
+			return nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal attestation: %w", err))
 		}
-
-		proofs = append(proofs, aggregateAndProof)
+		proofs = append(proofs, &spec.VersionedAggregateAndProof{
+			Version: a.Version,
+			Electra: &electra.AggregateAndProof{
+				AggregatorIndex: aggregator.ValidatorIndex,
+				Aggregate:       att,
+				SelectionProof:  aggregator.SelectionProof,
+			},
+		})
 	}
 
 	return proofs, nil

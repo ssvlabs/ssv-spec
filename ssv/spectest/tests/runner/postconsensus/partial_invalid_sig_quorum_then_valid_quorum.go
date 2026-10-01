@@ -3,10 +3,10 @@ package postconsensus
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -30,7 +30,7 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 	)
 
 	// Aggregator committee duty
-	sccDuty := testingutils.TestingAggregatorCommitteeDuty(nil, validatorsIndexList, spec.DataVersionPhase0)
+	sccDuty := testingutils.TestingAggregatorCommitteeDuty(nil, validatorsIndexList, gloas.DataVersionGloas)
 	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 		Name: "sync committee contribution",
 		Runner: decideAggregatorCommitteeRunner(
@@ -40,13 +40,13 @@ func PartialInvalidSigQuorumThenValidQuorum() tests.SpecTest {
 		),
 		Duty: sccDuty,
 		Messages: []*types.SignedSSVMessage{
-			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusPartiallyWrongSCCMsgForKeySet(ksMap, 1, spec.DataVersionPhase0, false, true))),
-			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSCCMsgForKeySet(ksMap, 2, spec.DataVersionPhase0))),
-			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSCCMsgForKeySet(ksMap, 3, spec.DataVersionPhase0))),
-			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSCCMsgForKeySet(ksMap, 4, spec.DataVersionPhase0))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusPartiallyWrongSCCMsgForKeySet(ksMap, 1, gloas.DataVersionGloas, false, true))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSCCMsgForKeySet(ksMap, 2, gloas.DataVersionGloas))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSCCMsgForKeySet(ksMap, 3, gloas.DataVersionGloas))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgSyncCommitteeContribution(nil, testingutils.PostConsensusSCCMsgForKeySet(ksMap, 4, gloas.DataVersionGloas))),
 		},
 		DontStartDuty:          true,
-		BeaconBroadcastedRoots: testingutils.TestingSignedAggregatorCommitteeBeaconObjectSSZRoot(sccDuty, ksMap, spec.DataVersionPhase0),
+		BeaconBroadcastedRoots: testingutils.TestingSignedAggregatorCommitteeBeaconObjectSSZRoot(sccDuty, ksMap, gloas.DataVersionGloas),
 		ExpectedErrorCode:      aggCmmErrorCode,
 	})
 

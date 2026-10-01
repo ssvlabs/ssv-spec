@@ -36,13 +36,16 @@ type MsgProcessingSpecTest struct {
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
 	OutputMessages         []*types.PartialSignatureMessages
 	BeaconBroadcastedRoots []string
-	DontStartDuty          bool // if set to true will not start a duty for the runner
-	ExpectedErrorCode      int
-	PrivateKeys            *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
-	QBFTProposals          [][]byte                     `json:"QBFTProposals,omitempty"` // optional consensus data (full data) of QBFT proposal messages expected to be sent.
+	// OrderedBeaconBroadcastedRoots makes BeaconBroadcastedRoots compare in submit order rather than as a set.
+	OrderedBeaconBroadcastedRoots bool
+	DontStartDuty                 bool // if set to true will not start a duty for the runner
+	ExpectedErrorCode             int
+	PrivateKeys                   *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+	QBFTProposals                 [][]byte                     `json:"QBFTProposals,omitempty"` // optional consensus data (full data) of QBFT proposal messages expected to be sent.
 	// Beacon node extra data
 	BeaconAggregators       []phase0.CommitteeIndex `json:"BeaconAggregators,omitempty"`
 	BeaconAggregatorsValues []bool                  `json:"BeaconAggregatorsValues,omitempty"`
+	BeaconNode              *BeaconNodeBehaviour    `json:"BeaconNode,omitempty"`
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {
@@ -86,7 +89,11 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	testingutils.ComparePartialSignatureOutputMessages(t, test.OutputMessages, network.BroadcastedMsgs, committee)
 
 	// test beacon broadcasted msgs
-	testingutils.CompareBroadcastedBeaconMsgs(t, test.BeaconBroadcastedRoots, beaconNetwork.BroadcastedRoots)
+	if test.OrderedBeaconBroadcastedRoots {
+		testingutils.CompareBroadcastedBeaconMsgsInOrder(t, test.BeaconBroadcastedRoots, beaconNetwork.BroadcastedRoots)
+	} else {
+		testingutils.CompareBroadcastedBeaconMsgs(t, test.BeaconBroadcastedRoots, beaconNetwork.BroadcastedRoots)
+	}
 
 	// If len(test.QBFTProposals) > 0, check for proposals matching
 	if len(test.QBFTProposals) > 0 {
@@ -124,6 +131,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 	}
 
 	test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode).SetAggregators(test.BeaconAggregatorsMap())
+	test.BeaconNode.Apply(test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode))
 
 	var v *ssv.Validator
 	var c *ssv.Committee
@@ -236,10 +244,12 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 		runner = &ssv.ProposerRunner{}
 	case *ssv.AggregatorCommitteeRunner:
 		runner = &ssv.AggregatorCommitteeRunner{}
-	case *ssv.ValidatorRegistrationRunner:
-		runner = &ssv.ValidatorRegistrationRunner{}
 	case *ssv.VoluntaryExitRunner:
 		runner = &ssv.VoluntaryExitRunner{}
+	case *ssv.PTCAttesterRunner:
+		runner = &ssv.PTCAttesterRunner{}
+	case *ssv.ProposerPreferencesRunner:
+		runner = &ssv.ProposerPreferencesRunner{}
 	default:
 		t.Fatalf("unknown runner type")
 	}
@@ -271,35 +281,41 @@ type MsgProcessingSpecTestAlias struct {
 	Name   string
 	Runner ssv.Runner
 	// No duty from type types.Duty
-	Messages                []*types.SignedSSVMessage
-	DecidedSlashable        bool
-	PostDutyRunnerStateRoot string
-	PostDutyRunnerState     types.Root `json:"-"`
-	OutputMessages          []*types.PartialSignatureMessages
-	BeaconBroadcastedRoots  []string
-	DontStartDuty           bool
-	ExpectedErrorCode       int
-	ValidatorDuty           *types.ValidatorDuty           `json:"ValidatorDuty,omitempty"`
-	CommitteeDuty           *types.CommitteeDuty           `json:"CommitteeDuty,omitempty"`
-	AggregatorCommitteeDuty *types.AggregatorCommitteeDuty `json:"AggregatorCommitteeDuty,omitempty"`
-	BeaconAggregators       []phase0.CommitteeIndex        `json:"BeaconAggregators,omitempty"`
-	BeaconAggregatorsValues []bool                         `json:"BeaconAggregatorsValues,omitempty"`
+	Messages                      []*types.SignedSSVMessage
+	DecidedSlashable              bool
+	PostDutyRunnerStateRoot       string
+	PostDutyRunnerState           types.Root `json:"-"`
+	OutputMessages                []*types.PartialSignatureMessages
+	BeaconBroadcastedRoots        []string
+	OrderedBeaconBroadcastedRoots bool `json:"OrderedBeaconBroadcastedRoots,omitempty"`
+	DontStartDuty                 bool
+	ExpectedErrorCode             int
+	QBFTProposals                 [][]byte                       `json:"QBFTProposals,omitempty"`
+	ValidatorDuty                 *types.ValidatorDuty           `json:"ValidatorDuty,omitempty"`
+	CommitteeDuty                 *types.CommitteeDuty           `json:"CommitteeDuty,omitempty"`
+	AggregatorCommitteeDuty       *types.AggregatorCommitteeDuty `json:"AggregatorCommitteeDuty,omitempty"`
+	BeaconAggregators             []phase0.CommitteeIndex        `json:"BeaconAggregators,omitempty"`
+	BeaconAggregatorsValues       []bool                         `json:"BeaconAggregatorsValues,omitempty"`
+	BeaconNode                    *BeaconNodeBehaviour           `json:"BeaconNode,omitempty"`
 }
 
 func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
 	alias := &MsgProcessingSpecTestAlias{
-		Name:                    t.Name,
-		Runner:                  t.Runner,
-		Messages:                t.Messages,
-		DecidedSlashable:        t.DecidedSlashable,
-		PostDutyRunnerStateRoot: t.PostDutyRunnerStateRoot,
-		PostDutyRunnerState:     t.PostDutyRunnerState,
-		OutputMessages:          t.OutputMessages,
-		BeaconBroadcastedRoots:  t.BeaconBroadcastedRoots,
-		DontStartDuty:           t.DontStartDuty,
-		ExpectedErrorCode:       t.ExpectedErrorCode,
-		BeaconAggregators:       t.BeaconAggregators,
-		BeaconAggregatorsValues: t.BeaconAggregatorsValues,
+		Name:                          t.Name,
+		Runner:                        t.Runner,
+		Messages:                      t.Messages,
+		DecidedSlashable:              t.DecidedSlashable,
+		PostDutyRunnerStateRoot:       t.PostDutyRunnerStateRoot,
+		PostDutyRunnerState:           t.PostDutyRunnerState,
+		OutputMessages:                t.OutputMessages,
+		BeaconBroadcastedRoots:        t.BeaconBroadcastedRoots,
+		OrderedBeaconBroadcastedRoots: t.OrderedBeaconBroadcastedRoots,
+		DontStartDuty:                 t.DontStartDuty,
+		ExpectedErrorCode:             t.ExpectedErrorCode,
+		QBFTProposals:                 t.QBFTProposals,
+		BeaconAggregators:             t.BeaconAggregators,
+		BeaconAggregatorsValues:       t.BeaconAggregatorsValues,
+		BeaconNode:                    t.BeaconNode,
 	}
 
 	if t.Duty != nil {
@@ -334,10 +350,13 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	t.PostDutyRunnerState = aux.PostDutyRunnerState
 	t.OutputMessages = aux.OutputMessages
 	t.BeaconBroadcastedRoots = aux.BeaconBroadcastedRoots
+	t.OrderedBeaconBroadcastedRoots = aux.OrderedBeaconBroadcastedRoots
 	t.DontStartDuty = aux.DontStartDuty
 	t.ExpectedErrorCode = aux.ExpectedErrorCode
+	t.QBFTProposals = aux.QBFTProposals
 	t.BeaconAggregators = aux.BeaconAggregators
 	t.BeaconAggregatorsValues = aux.BeaconAggregatorsValues
+	t.BeaconNode = aux.BeaconNode
 
 	// Determine which type of duty was marshaled
 	if aux.ValidatorDuty != nil {
