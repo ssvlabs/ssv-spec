@@ -120,10 +120,6 @@ func (c *Controller) UponExistingInstanceMsg(msg *ProcessingMessage) (*types.Sig
 		return nil, nil
 	}
 
-	if err := c.broadcastDecided(decidedMsg); err != nil {
-		// no need to fail processing instance deciding if failed to save/ broadcast
-		fmt.Printf("%s\n", err.Error())
-	}
 	return decidedMsg, nil
 }
 
@@ -167,15 +163,6 @@ func (c *Controller) forceStopAllInstanceExceptCurrent() {
 			i.ForceStop()
 		}
 	}
-}
-
-func (c *Controller) broadcastDecided(aggregatedCommit *types.SignedSSVMessage) error {
-
-	if err := c.GetConfig().GetNetwork().Broadcast(aggregatedCommit.SSVMessage.GetID(), aggregatedCommit); err != nil {
-		// We do not return error here, just Log broadcasting error.
-		return errors.Wrap(err, "could not broadcast decided")
-	}
-	return nil
 }
 
 func (c *Controller) GetConfig() IConfig {
