@@ -1,6 +1,6 @@
 module github.com/ssvlabs/ssv-spec
 
-go 1.22
+go 1.26.0
 
 require (
 	github.com/attestantio/go-eth2-client v0.27.0
@@ -13,7 +13,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prysmaticlabs/go-bitfield v0.0.0-20240618144021-706c95b2dd15
 	github.com/stretchr/testify v1.9.0
-	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56
+	golang.org/x/exp v0.0.0-20260908205506-85c1c2202aba
 )
 
 require (
