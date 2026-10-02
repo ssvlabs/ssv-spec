@@ -28,6 +28,7 @@ const HappyFlowDoc = "Tests a full runner happy flow"
 const AggregatorCommitteeDutyHappyFlowDoc = "Testing aggregator committee runner with complete duty flow for both aggregator and sync committee contribution"
 const AggregatorCommitteeDutyMaxValidatorsDoc = "Testing aggregator committee runner with complete duty flow for both aggregator and sync committee contribution and the maximum number of validators"
 const AggregatorCommitteeDutyWithDifferentSlotsDoc = "Testing aggregator committee runner with duties that have different slots"
+const AggregatorCommitteeDutyWithWrongBeaconRoleDoc = "Testing aggregator committee runner with a duty that holds an attester duty for an owned validator, expecting an error"
 
 // Documentation for committee/multipleduty tests
 const CommitteeSequencedHappyFlowDutiesDoc = "Tests complete happy flow execution for sequences of duties including consensus and post-consensus phases"
@@ -46,6 +47,8 @@ const CommitteeProposalWithConsensusDataDoc = "Tests committee behavior when pro
 const CommitteeStartDutyDoc = "Tests basic duty starting for attestations and sync committees without consensus messages"
 const CommitteeStartNoDutyDoc = "Tests committee behavior when starting with an empty duty (no attestation or sync committee duties)"
 const CommitteeStartWithNoSharesForDutyDoc = "Tests committee behavior when starting a duty for validators that the committee doesn't have shares for"
+const CommitteeStartDutySkipsForeignDutyDoc = "Tests that starting a duty drops, unvalidated, a malformed validator duty for a validator the committee has no share for, and starts the runner with only its own validator duties"
+const CommitteeStartNilDutyDoc = "Tests committee behavior when starting a nil committee duty (a null input, decoded as a nil CommitteeDuty), expecting an error"
 const CommitteeHappyFlowDoc = "Tests complete duty execution flow including consensus and post-consensus phases for attestations and sync committees"
 const CommitteeMissingSomeSharesDoc = "Tests complete duty execution for a committee that only has shares for a fraction of the duty's validators"
 const CommitteePastMsgDutyDoesNotExistDoc = "Tests committee behavior when processing past proposal messages for a duty that doesn't exist"
