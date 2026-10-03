@@ -32,7 +32,7 @@ func MsgValidation(runner ssv.Runner) MsgValidatorFunc {
 				return pubsub.ValidationReject
 			}
 		case types.SSVPartialSignatureMsgType:
-			if validatePartialSigMsg(runner, signedSSVMsg.SSVMessage.Data) != nil {
+			if validatePartialSigMsg(runner, signedSSVMsg) != nil {
 				return pubsub.ValidationReject
 			}
 		default:
@@ -90,16 +90,28 @@ func validateConsensusMsg(runner ssv.Runner, signedMsg *types.SignedSSVMessage) 
 	return errors.New("unknown instance")
 }
 
-func validatePartialSigMsg(runner ssv.Runner, data []byte) error {
-	signedMsg := &types.PartialSignatureMessages{}
-	if err := signedMsg.Decode(data); err != nil {
+func validatePartialSigMsg(runner ssv.Runner, signedMsg *types.SignedSSVMessage) error {
+	partialSigMsg := &types.PartialSignatureMessages{}
+	if err := signedMsg.Validate(); err != nil {
+		return err
+	}
+	if len(signedMsg.OperatorIDs) != 1 {
+		return errors.New("partial signature msg allows 1 signer")
+	}
+	if err := types.Verify(signedMsg, runner.GetBaseRunner().QBFTController.CommitteeMember.Committee); err != nil {
+		return types.WrapError(types.MessageSignatureInvalidErrorCode, fmt.Errorf("msg signature invalid: %w", err))
+	}
+	if err := partialSigMsg.Decode(signedMsg.SSVMessage.Data); err != nil {
+		return err
+	}
+	if err := partialSigMsg.ValidateForSigner(signedMsg.OperatorIDs[0]); err != nil {
 		return err
 	}
 
-	if signedMsg.Type == types.PostConsensusPartialSig {
-		return runner.GetBaseRunner().ValidatePostConsensusMsg(runner, signedMsg)
+	if partialSigMsg.Type == types.PostConsensusPartialSig {
+		return runner.GetBaseRunner().ValidatePostConsensusMsg(runner, partialSigMsg)
 	}
-	return runner.GetBaseRunner().ValidatePreConsensusMsg(runner, signedMsg)
+	return runner.GetBaseRunner().ValidatePreConsensusMsg(runner, partialSigMsg)
 }
 
 func validateFutureMsg(
