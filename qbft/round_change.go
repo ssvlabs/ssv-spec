@@ -44,15 +44,9 @@ func (i *Instance) uponRoundChange(
 
 	if justifiedRoundChangeMsg != nil {
 
-		roundChangeJustificationSignedMessages, _ := justifiedRoundChangeMsg.QBFTMessage.GetRoundChangeJustifications() // no need to check error, check on isValidRoundChange
-
-		roundChangeJustification := make([]*ProcessingMessage, 0)
-		for _, rcSignedMessage := range roundChangeJustificationSignedMessages {
-			rc, err := NewProcessingMessage(rcSignedMessage)
-			if err != nil {
-				return errors.Wrap(err, "could not create ProcessingMessage from round change justification")
-			}
-			roundChangeJustification = append(roundChangeJustification, rc)
+		roundChangeJustification, err := justifiedRoundChangeMsg.QBFTMessage.RoundChangeJustificationProcessingMessages()
+		if err != nil {
+			return errors.Wrap(err, "could not decode round change justification")
 		}
 
 		proposal, err := CreateProposal(
@@ -144,15 +138,9 @@ func hasReceivedProposalJustificationForLeadingRound(
 			valueToPropose = containerRoundChangeMessage.SignedMessage.FullData
 		}
 
-		roundChangeSignedMessagesJustification, _ := containerRoundChangeMessage.QBFTMessage.GetRoundChangeJustifications() // no need to check error, checked on isValidRoundChange
-
-		roundChangeJustification := make([]*ProcessingMessage, 0)
-		for _, signedMessage := range roundChangeSignedMessagesJustification {
-			msg, err := NewProcessingMessage(signedMessage)
-			if err != nil {
-				return nil, nil, errors.Wrap(err, "could not create ProcessingMessage from round change justification")
-			}
-			roundChangeJustification = append(roundChangeJustification, msg)
+		roundChangeJustification, err := containerRoundChangeMessage.QBFTMessage.RoundChangeJustificationProcessingMessages()
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "could not decode round change justification")
 		}
 
 		if isProposalJustificationForLeadingRound(
@@ -272,15 +260,9 @@ func validRoundChangeForDataIgnoreSignature(
 		}
 
 		// validate prepare message justifications
-		prepareSignedMsgs, _ := msg.QBFTMessage.GetRoundChangeJustifications() // no need to check error, checked on msg.QBFTMessage.Validate()
-
-		prepareMsgs := make([]*ProcessingMessage, 0)
-		for _, signedMessage := range prepareSignedMsgs {
-			msg, err := NewProcessingMessage(signedMessage)
-			if err != nil {
-				return errors.Wrap(err, "could not create ProcessingMessage from prepare message in round change justification")
-			}
-			prepareMsgs = append(prepareMsgs, msg)
+		prepareMsgs, err := msg.QBFTMessage.RoundChangeJustificationProcessingMessages()
+		if err != nil {
+			return errors.Wrap(err, "could not decode prepare message in round change justification")
 		}
 
 		for _, pm := range prepareMsgs {
