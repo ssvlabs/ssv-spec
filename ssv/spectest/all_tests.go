@@ -225,6 +225,9 @@ var AllTests = []tests.TestF{
 	proposerpreferences.BuilderRequestAuthBadShare,
 	proposerpreferences.BuilderRequestAuthURLFallback,
 	proposerpreferences.UnexpectedPartialSigType,
+	proposerpreferences.PartialsBeforeDutyStartRetained,
+	proposerpreferences.RetainedPartialsAppliedAtDutyStart,
+	proposerpreferences.RetainedDivergingPartialDropped,
 
 	valcheckproposer.GloasBlocks,
 

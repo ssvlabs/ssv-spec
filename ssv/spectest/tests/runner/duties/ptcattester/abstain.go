@@ -9,8 +9,7 @@ import (
 
 // Abstain tests the SIP #94 §3 abstain rule: the beacon node reports no block for the slot (a zero
 // BeaconBlockRoot), so the operator freezes, signs and broadcasts nothing, and with no frozen
-// observation every incoming peer partial signature is rejected. The duty stays running: a
-// re-triggered duty would re-observe from scratch.
+// observation every incoming peer partial signature is rejected. The duty stays running.
 func Abstain() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
