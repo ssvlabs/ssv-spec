@@ -28,12 +28,13 @@ type ProposerPreferencesRunner struct {
 	// closing a slot's §5/§7 acceptance window at its late end, is node-side lifecycle.
 	BySlot map[phase0.Slot]*ProposerPreferencesSlotRunner
 
-	// PendingPartials holds, per proposal slot, the partials that arrived before this operator's duty for
-	// that slot started. SIP #94 §5 requires keeping them: operators emit at different times within the §7
-	// earliness window and a peer's partial is delivered once (§7 dedups repeats), so dropping them could
-	// cost a late starter its quorum. StartNewDuty checks, applies and releases a slot's entries. Bounding
-	// the map is node-side, like BySlot. Omitted from JSON when empty, so runners holding none keep their
-	// state roots.
+	// PendingPartials keeps every partial received, per proposal slot, as single-entry messages that
+	// StartNewDuty replays into the slot's new sub-runner. A peer's partial is delivered once (§7 dedups
+	// repeats), so this is how a late-starting duty gets the partials that arrived before it (SIP #94 §5)
+	// and a re-emission gets those its predecessor rejected under a since-changed preference. Entries are
+	// deduplicated by (signer, signing root) and capped per slot at the committee size times
+	// maxPendingPartialsPerSigner; pruning past slots is node-side, like BySlot. Omitted from JSON when
+	// empty, so runners holding none keep their state roots.
 	PendingPartials map[phase0.Slot][]*types.PartialSignatureMessages `json:"PendingPartials,omitempty"`
 
 	// BuilderEntries is the cluster-configured §5 builder-request-auth entry set (static config; SIP #94
@@ -49,6 +50,14 @@ type ProposerPreferencesRunner struct {
 
 	gasLimit uint64
 }
+
+// MaxProposerPreferencesDistinctRoots is SIP #94 §7's per-signer budget of distinct preference roots per
+// proposal slot; extra roots come from re-emissions after a preference-input change.
+const MaxProposerPreferencesDistinctRoots = 4
+
+// maxPendingPartialsPerSigner caps a slot's PendingPartials per committee member at the §7 per-signer
+// budgets: MaxProposerPreferencesDistinctRoots preference roots plus MaxBuilderEntries request-auth roots.
+const maxPendingPartialsPerSigner = MaxProposerPreferencesDistinctRoots + MaxBuilderEntries
 
 func NewProposerPreferencesRunner(
 	beaconNetwork types.BeaconNetwork,
@@ -86,17 +95,17 @@ func NewProposerPreferencesRunner(
 	}, nil
 }
 
-// StartNewDuty runs the duty's proposal slot in a fresh sub-runner, then applies the partials retained for
-// that slot (PendingPartials).
+// StartNewDuty runs the duty's proposal slot in a fresh sub-runner, then replays the slot's
+// PendingPartials into it.
 //
 // A duty for a slot that already has a sub-runner is a re-emission (e.g. after a reorg). The fresh sub
-// re-derives its roots and carries the prior sub's collected shares over per signing root, as re-broadcast
-// partials are deduped (SIP #94 §7) and would not refill a reset. Auth roots carry no dependent_root, so
-// their shares always carry; preference shares carry only if the re-derived preference is unchanged.
+// re-derives its roots and carries the prior sub's collected shares over per signing root, so a quorum
+// already reached does not fire (and submit) again. Auth roots carry no dependent_root, so their shares
+// always carry; preference shares carry only if the re-derived preference is unchanged.
 //
 // Left to node-side retry: a root the prior sub had at quorum but failed to submit is not re-submitted
-// (quorum fires once), and a re-emission whose preference derivation fails drops that round until a later
-// re-emission.
+// (quorum fires once), and a re-emission whose preference derivation fails has no preference round until
+// a later re-emission.
 func (r *ProposerPreferencesRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	slot := duty.DutySlot()
 	prev := r.BySlot[slot]
@@ -110,20 +119,12 @@ func (r *ProposerPreferencesRunner) StartNewDuty(duty types.Duty, quorum uint64)
 		sub.carryOverAuthShares(prev)
 		sub.carryOverPreferenceShares(prev)
 	}
-	// Apply each retained partial as if it just arrived: a failing one (e.g. a diverging peer) is dropped
-	// without stopping the rest, and the first failure is returned after the duty's own error.
-	pending := r.PendingPartials[slot]
-	delete(r.PendingPartials, slot)
-	var pendingErr error
-	for _, msg := range pending {
-		if err := sub.ProcessPreConsensus(msg); err != nil && pendingErr == nil {
-			pendingErr = errors.Wrap(err, "failed applying a retained partial signature")
-		}
+	// Replay each retained partial as if it just arrived. One that fails its checks (e.g. a diverging
+	// peer's) is skipped and does not fail the duty.
+	for _, msg := range r.PendingPartials[slot] {
+		_ = sub.ProcessPreConsensus(msg)
 	}
-	if startErr != nil {
-		return startErr
-	}
-	return pendingErr
+	return startErr
 }
 
 // NewSlotRunner builds a sub-runner sharing the dispatcher's dependencies; StartNewDuty creates one
@@ -143,14 +144,49 @@ func (r *ProposerPreferencesRunner) HasRunningDuty() bool {
 	return false
 }
 
-// ProcessPreConsensus routes the message to its proposal slot's sub-runner, or retains it in PendingPartials
-// if that slot's duty has not started here yet (SIP #94 §5).
+// ProcessPreConsensus retains the message's partials for its proposal slot (PendingPartials), then routes
+// it to the slot's sub-runner if that slot's duty has started here.
 func (r *ProposerPreferencesRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
-	if sub, ok := r.BySlot[signedMsg.Slot]; ok {
-		return sub.ProcessPreConsensus(signedMsg)
+	// Reject any type other than the duty's two rounds before retaining it, so it takes no room.
+	if signedMsg.Type != types.ProposerPreferencesPartialSig && signedMsg.Type != types.RequestAuthPartialSig {
+		return types.NewError(types.ProposerPreferencesUnexpectedPartialSigTypeErrorCode,
+			"unexpected pre-consensus partial signature type for proposer-preferences runner")
 	}
-	r.PendingPartials[signedMsg.Slot] = append(r.PendingPartials[signedMsg.Slot], signedMsg)
-	return nil
+	r.retainPartials(signedMsg)
+
+	sub, ok := r.BySlot[signedMsg.Slot]
+	if !ok {
+		// Its duty has not started here yet; StartNewDuty replays the retained partials once it does.
+		return nil
+	}
+	return sub.ProcessPreConsensus(signedMsg)
+}
+
+// retainPartials adds each of the message's partials to its slot's PendingPartials as a single-entry
+// message, skipping a (signer, signing root) already retained and any beyond the slot's cap. The two types
+// sign under different domains, so one keyspace serves both.
+func (r *ProposerPreferencesRunner) retainPartials(signedMsg *types.PartialSignatureMessages) {
+	for _, msg := range signedMsg.Messages {
+		r.retainPartial(signedMsg, msg)
+	}
+}
+
+// retainPartial adds one partial of signedMsg to PendingPartials (see retainPartials).
+func (r *ProposerPreferencesRunner) retainPartial(signedMsg *types.PartialSignatureMessages, msg *types.PartialSignatureMessage) {
+	retained := r.PendingPartials[signedMsg.Slot]
+	for _, existing := range retained {
+		if existing.Messages[0].Signer == msg.Signer && existing.Messages[0].SigningRoot == msg.SigningRoot {
+			return
+		}
+	}
+	if len(retained) >= len(r.GetShare().Committee)*maxPendingPartialsPerSigner {
+		return
+	}
+	r.PendingPartials[signedMsg.Slot] = append(retained, &types.PartialSignatureMessages{
+		Type:     signedMsg.Type,
+		Slot:     signedMsg.Slot,
+		Messages: []*types.PartialSignatureMessage{msg},
+	})
 }
 
 func (r *ProposerPreferencesRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) error {
@@ -592,8 +628,8 @@ func (r *ProposerPreferencesSlotRunner) authForSigningRoot(root [32]byte) *gloas
 
 // carryOverAuthShares copies already-collected builder-request-auth partial signatures from a prior
 // same-slot sub-runner (a re-emission) into this one. Auth roots carry no dependent_root (SIP #94 §5), so
-// a re-emission re-freezes byte-identical roots; carrying the shares over lets collection continue instead
-// of restarting from zero, since peers may not resend (their receive side may dedup the repeat).
+// a re-emission re-freezes byte-identical roots, and a root already at quorum stays there without firing
+// (and submitting) again when the retained partials are replayed.
 func (r *ProposerPreferencesSlotRunner) carryOverAuthShares(prev *ProposerPreferencesSlotRunner) {
 	if prev == nil || prev.GetState() == nil || r.GetState() == nil {
 		return
@@ -620,8 +656,7 @@ func (r *ProposerPreferencesSlotRunner) preferenceSigningRoot() ([32]byte, error
 
 // carryOverPreferenceShares copies the prior sub-runner's collected preference shares for this sub's frozen
 // preference root, so a re-emission that re-derives a byte-identical preference (same signing root) keeps its
-// progress. When the preference changed, the roots differ and nothing carries. Mirrors carryOverAuthShares;
-// needed because peers dedup the re-broadcast partials (SIP §7), so a reset would not refill.
+// progress, as in carryOverAuthShares. When the preference changed, the roots differ and nothing carries.
 func (r *ProposerPreferencesSlotRunner) carryOverPreferenceShares(prev *ProposerPreferencesSlotRunner) {
 	if prev == nil || prev.GetState() == nil || r.GetState() == nil || r.ProposerPreferences == nil {
 		return
