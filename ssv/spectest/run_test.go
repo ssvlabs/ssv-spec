@@ -624,9 +624,9 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 }
 
 // fixRunnerRoleSpecificState restores runner state living outside BaseRunner (baseRunnerForRole
-// rebuilds only that): the PTC attester's frozen observation and the proposer-preferences
-// dispatcher's per-slot sub-runners, whose own sub-state is grafted onto dependency-complete
-// sub-runners the same way.
+// rebuilds only that): the PTC attester's frozen observation, and the proposer-preferences
+// dispatcher's retained partials and per-slot sub-runners (each grafted onto a dependency-complete
+// sub-runner the same way).
 func fixRunnerRoleSpecificState(t *testing.T, runner ssv.Runner, runnerMap map[string]interface{}, ks *testingutils.TestKeySet) {
 	switch r := runner.(type) {
 	case *ssv.PTCAttesterRunner:
@@ -644,6 +644,12 @@ func fixRunnerRoleSpecificState(t *testing.T, runner ssv.Runner, runnerMap map[s
 			entries := []ssv.BuilderEntry{}
 			require.NoError(t, json.Unmarshal(byts, &entries))
 			r.BuilderEntries = entries
+		}
+		if pendingRaw, ok := runnerMap["PendingPartials"]; ok && pendingRaw != nil {
+			byts, _ := json.Marshal(pendingRaw)
+			pending := map[phase0.Slot][]*types.PartialSignatureMessages{}
+			require.NoError(t, json.Unmarshal(byts, &pending))
+			r.PendingPartials = pending
 		}
 		raw, ok := runnerMap["BySlot"].(map[string]interface{})
 		if !ok {

@@ -245,6 +245,9 @@ const ProposerPreferencesBuilderRequestAuthReemissionCarryOverDoc = "Tests SIP #
 const ProposerPreferencesBuilderRequestAuthIndependentOfPreferenceDoc = "Tests SIP #94 §5 independence: auth partials arriving after the preference round has finished still reach per-root quorum and submit"
 const ProposerPreferencesBuilderRequestAuthExceedsMaxDoc = "Tests the SIP #94 §7 receive-side bound: a RequestAuthPartialSig container carrying more than MaxBuilderEntries entries is rejected (RequestAuthWrongRootsCountErrorCode), not partially processed"
 const ProposerPreferencesBuilderRequestAuthNoAuthDoc = "Tests SIP #94 §5: an operator with no configured builder entries froze no auth roots, so an incoming RequestAuthPartialSig is rejected (RequestAuthNoAuthErrorCode) rather than collected against an empty set"
+const ProposerPreferencesPartialsBeforeDutyStartRetainedDoc = "Tests SIP #94 §5: preference and request-auth partials for a proposal slot whose duty has not started yet are retained for that slot, not rejected"
+const ProposerPreferencesRetainedPartialsAppliedAtDutyStartDoc = "Tests SIP #94 §5 for a late starter: partials retained before the duty started are applied when it starts, so the operator's own share completes each quorum and all three roots submit"
+const ProposerPreferencesRetainedDivergingPartialDroppedDoc = "Tests that retained partials (SIP #94 §5) are checked one at a time when the duty starts: a diverging one is dropped with its error returned, while the matching ones still apply and reach quorum"
 
 // Documentation for ptcattester tests
 const PTCAttesterAbstainDoc = "Tests the SIP #94 §3 abstain rule: no block seen for the slot, so the operator signs nothing and rejects peer partials"
