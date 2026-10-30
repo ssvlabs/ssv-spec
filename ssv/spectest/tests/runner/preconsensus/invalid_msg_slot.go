@@ -64,6 +64,19 @@ func InvalidMessageSlot() tests.SpecTest {
 				// is in the future.
 				ExpectedErrorCode: types.PartialSigMessageInvalidSlotErrorCode,
 			},
+			{
+				Name:   "proposer preferences",
+				Runner: testingutils.ProposerPreferencesRunner(ks),
+				Duty:   testingutils.TestingProposerPreferencesDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, invalidateSlot(testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1)))),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				// §5 messages address a proposal slot's flow by their slot, so one for another slot is retained
+				// for that slot until its duty starts (SIP #94 §5), not rejected.
+			},
 		},
 		ks,
 	)

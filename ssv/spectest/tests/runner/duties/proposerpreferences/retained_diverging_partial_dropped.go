@@ -10,7 +10,7 @@ import (
 
 // RetainedDivergingPartialDropped tests that retained partials (SIP #94 §5) are checked one at a time when
 // the duty starts: the first, from a peer whose preference diverged, fails the expected-root check and is
-// dropped with its error returned, while the two matching ones behind it still apply and reach quorum.
+// skipped without failing the duty, while the two matching ones behind it still apply and reach quorum.
 func RetainedDivergingPartialDropped() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
@@ -38,9 +38,8 @@ func RetainedDivergingPartialDropped() tests.SpecTest {
 			testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},
 		BeaconBroadcastedRoots: []string{
-			// retained op3 + op4 + this operator's op1 share = quorum; op2's diverging share was dropped.
+			// retained op3 + op4 + this operator's op1 share = quorum; op2's diverging share was skipped.
 			testingutils.GetSSZRootNoError(testingutils.TestingSignedProposerPreferences(ks, testingutils.TestingDutySlotGloas)),
 		},
-		ExpectedErrorCode: types.WrongSigningRootErrorCode,
 	}
 }
