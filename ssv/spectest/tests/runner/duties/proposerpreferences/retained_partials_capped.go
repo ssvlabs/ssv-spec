@@ -10,20 +10,15 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// RetainedPartialsCapped tests the cap on a slot's retained partials (SIP #94 §5/§7): the committee size
-// times the per-signer root budget (MaxProposerPreferencesDistinctRoots + MaxBuilderEntries). A peer sends
-// one distinct auth partial more than that before the duty starts, and the excess one is not retained.
+// RetainedPartialsCapped tests the per-signer cap on a slot's retained partials (SIP #94 §5/§7): the §7
+// per-signer root budget, MaxProposerPreferencesDistinctRoots + MaxBuilderEntries. A peer sends one distinct
+// auth partial more than that before the duty starts, and the excess one is not retained.
 func RetainedPartialsCapped() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	limit := len(ks.Committee()) * (ssv.MaxProposerPreferencesDistinctRoots + ssv.MaxBuilderEntries)
 	var messages []*types.SignedSSVMessage
-	for sent := 0; sent <= limit; {
-		var authData [][]byte
-		for ; len(authData) < ssv.MaxBuilderEntries && sent <= limit; sent++ {
-			authData = append(authData, []byte(fmt.Sprintf("builder-auth-token-%d", sent)))
-		}
-		messages = append(messages, testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusBuilderRequestAuthMsg(ks.Shares[2], 2, authData))))
+	for _, msg := range distinctAuthPartials(ks, 2, ssv.MaxProposerPreferencesDistinctRoots+ssv.MaxBuilderEntries+1) {
+		messages = append(messages, testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, msg)))
 	}
 
 	return &tests.MsgProcessingSpecTest{
@@ -34,4 +29,18 @@ func RetainedPartialsCapped() tests.SpecTest {
 		Messages:      messages,
 		DontStartDuty: true,
 	}
+}
+
+// distinctAuthPartials returns count distinct request-auth partials from one signer, packed MaxBuilderEntries
+// to a message.
+func distinctAuthPartials(ks *testingutils.TestKeySet, signer types.OperatorID, count int) []*types.PartialSignatureMessages {
+	var msgs []*types.PartialSignatureMessages
+	for sent := 0; sent < count; {
+		var authData [][]byte
+		for ; len(authData) < ssv.MaxBuilderEntries && sent < count; sent++ {
+			authData = append(authData, []byte(fmt.Sprintf("builder-auth-token-%d", sent)))
+		}
+		msgs = append(msgs, testingutils.PreConsensusBuilderRequestAuthMsg(ks.Shares[signer], signer, authData))
+	}
+	return msgs
 }

@@ -32,9 +32,9 @@ type ProposerPreferencesRunner struct {
 	// StartNewDuty replays into the slot's new sub-runner. A peer's partial is delivered once (§7 dedups
 	// repeats), so this is how a late-starting duty gets the partials that arrived before it (SIP #94 §5)
 	// and a re-emission gets those its predecessor rejected under a since-changed preference. Entries are
-	// deduplicated by (signer, signing root) and capped per slot at the committee size times
-	// maxPendingPartialsPerSigner; pruning past slots is node-side, like BySlot. Omitted from JSON when
-	// empty, so runners holding none keep their state roots.
+	// deduplicated by (signer, signing root) and capped at maxPendingPartialsPerSigner per signer and slot;
+	// the slot is the sender's choice, so pruning past slots (node-side, like BySlot) is what bounds the
+	// map. Omitted from JSON when empty, so runners holding none keep their state roots.
 	PendingPartials map[phase0.Slot][]*types.PartialSignatureMessages `json:"PendingPartials,omitempty"`
 
 	// BuilderEntries is the cluster-configured §5 builder-request-auth entry set (static config; SIP #94
@@ -55,8 +55,9 @@ type ProposerPreferencesRunner struct {
 // proposal slot; extra roots come from re-emissions after a preference-input change.
 const MaxProposerPreferencesDistinctRoots = 4
 
-// maxPendingPartialsPerSigner caps a slot's PendingPartials per committee member at the §7 per-signer
-// budgets: MaxProposerPreferencesDistinctRoots preference roots plus MaxBuilderEntries request-auth roots.
+// maxPendingPartialsPerSigner caps a signer's PendingPartials per slot at the §7 per-signer budgets combined:
+// MaxProposerPreferencesDistinctRoots preference roots plus MaxBuilderEntries request-auth roots. §7 message
+// validation enforces the two budgets separately.
 const maxPendingPartialsPerSigner = MaxProposerPreferencesDistinctRoots + MaxBuilderEntries
 
 func NewProposerPreferencesRunner(
@@ -120,11 +121,22 @@ func (r *ProposerPreferencesRunner) StartNewDuty(duty types.Duty, quorum uint64)
 		sub.carryOverPreferenceShares(prev)
 	}
 	// Replay each retained partial as if it just arrived. One that fails its checks (e.g. a diverging
-	// peer's) is skipped and does not fail the duty.
+	// peer's) is skipped. A failure to reconstruct or submit a quorum it completes is returned, as on the
+	// live path, after the duty's own error.
+	var replayErr error
 	for _, msg := range r.PendingPartials[slot] {
-		_ = sub.ProcessPreConsensus(msg)
+		roots, err := sub.collectPartials(msg)
+		if err != nil {
+			continue
+		}
+		if err := sub.submitQuorumRoots(msg.Type, roots); err != nil && replayErr == nil {
+			replayErr = err
+		}
 	}
-	return startErr
+	if startErr != nil {
+		return startErr
+	}
+	return replayErr
 }
 
 // NewSlotRunner builds a sub-runner sharing the dispatcher's dependencies; StartNewDuty creates one
@@ -163,23 +175,29 @@ func (r *ProposerPreferencesRunner) ProcessPreConsensus(signedMsg *types.Partial
 }
 
 // retainPartials adds each of the message's partials to its slot's PendingPartials as a single-entry
-// message, skipping a (signer, signing root) already retained and any beyond the slot's cap. The two types
-// sign under different domains, so one keyspace serves both.
+// message, skipping a (signer, signing root) already retained and any beyond the signer's cap. The two
+// types sign under different domains, so one keyspace serves both.
 func (r *ProposerPreferencesRunner) retainPartials(signedMsg *types.PartialSignatureMessages) {
 	for _, msg := range signedMsg.Messages {
 		r.retainPartial(signedMsg, msg)
 	}
 }
 
-// retainPartial adds one partial of signedMsg to PendingPartials (see retainPartials).
+// retainPartial adds one partial of signedMsg to PendingPartials (see retainPartials). The cap counts per
+// signer, so a faulty operator cannot crowd out the others' partials.
 func (r *ProposerPreferencesRunner) retainPartial(signedMsg *types.PartialSignatureMessages, msg *types.PartialSignatureMessage) {
 	retained := r.PendingPartials[signedMsg.Slot]
+	perSigner := 0
 	for _, existing := range retained {
-		if existing.Messages[0].Signer == msg.Signer && existing.Messages[0].SigningRoot == msg.SigningRoot {
+		if existing.Messages[0].Signer != msg.Signer {
+			continue
+		}
+		if existing.Messages[0].SigningRoot == msg.SigningRoot {
 			return
 		}
+		perSigner++
 	}
-	if len(retained) >= len(r.GetShare().Committee)*maxPendingPartialsPerSigner {
+	if perSigner >= maxPendingPartialsPerSigner {
 		return
 	}
 	r.PendingPartials[signedMsg.Slot] = append(retained, &types.PartialSignatureMessages{
@@ -309,43 +327,64 @@ func (r *ProposerPreferencesSlotRunner) HasRunningDuty() bool {
 	return r.BaseRunner.hasRunningDuty()
 }
 
+// ProcessPreConsensus collects the message's partials, then reconstructs and submits whatever they bring
+// to quorum.
 func (r *ProposerPreferencesSlotRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
-	// This runner drives two pre-consensus rounds on the same duty (SIP #94 §5): the preference round
-	// and the builder-request-auth round. It is their sole multiplexer, so route by type and reject
-	// anything unexpected rather than treating it as a preference partial.
-	switch signedMsg.Type {
-	case types.ProposerPreferencesPartialSig:
-		return r.processPreferences(signedMsg)
-	case types.RequestAuthPartialSig:
-		return r.processRequestAuth(signedMsg)
-	default:
-		return types.NewError(types.ProposerPreferencesUnexpectedPartialSigTypeErrorCode,
-			"unexpected pre-consensus partial signature type for proposer-preferences runner")
+	roots, err := r.collectPartials(signedMsg)
+	if err != nil {
+		return err
 	}
+	return r.submitQuorumRoots(signedMsg.Type, roots)
 }
 
-// processPreferences handles a ProposerPreferencesPartialSig container (SIP #94 §5): once its partials
-// reach quorum it reconstructs the signature over the frozen ProposerPreferences and submits the
-// SignedProposerPreferences.
-func (r *ProposerPreferencesSlotRunner) processPreferences(signedMsg *types.PartialSignatureMessages) error {
-	quorum, roots, err := r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg)
-	if err != nil {
-		return errors.Wrap(err, "failed processing proposer preferences message")
+// collectPartials validates the message and adds its partials to the pre-consensus container, returning
+// the roots that just reached quorum (each reported once, on its first crossing). It routes by type between
+// the duty's two rounds (SIP #94 §5) and rejects any other type rather than treat it as a preference partial.
+func (r *ProposerPreferencesSlotRunner) collectPartials(signedMsg *types.PartialSignatureMessages) ([][32]byte, error) {
+	var quorum bool
+	var roots [][32]byte
+	var err error
+	switch signedMsg.Type {
+	case types.ProposerPreferencesPartialSig:
+		if quorum, roots, err = r.BaseRunner.basePreConsensusMsgProcessing(r, signedMsg); err != nil {
+			return nil, errors.Wrap(err, "failed processing proposer preferences message")
+		}
+	case types.RequestAuthPartialSig:
+		if quorum, roots, err = r.baseRequestAuthProcessing(signedMsg); err != nil {
+			return nil, errors.Wrap(err, "failed processing builder request auth message")
+		}
+	default:
+		return nil, types.NewError(types.ProposerPreferencesUnexpectedPartialSigTypeErrorCode,
+			"unexpected pre-consensus partial signature type for proposer-preferences runner")
 	}
-
-	// quorum returns true only once (first time quorum achieved)
 	if !quorum {
+		return nil, nil
+	}
+	return roots, nil
+}
+
+// submitQuorumRoots reconstructs and submits what the roots that just reached quorum sign: the preference,
+// or a SignedBuilderRequestAuth per auth root.
+func (r *ProposerPreferencesSlotRunner) submitQuorumRoots(msgType types.PartialSigMsgType, roots [][32]byte) error {
+	if len(roots) == 0 {
 		return nil
 	}
+	if msgType == types.RequestAuthPartialSig {
+		return r.submitRequestAuths(roots)
+	}
+	// only 1 root, verified in basePreConsensusMsgProcessing
+	return r.submitPreferences(roots[0])
+}
 
+// submitPreferences reconstructs the signature over the frozen ProposerPreferences once its root reached
+// quorum, and submits the SignedProposerPreferences (SIP #94 §5).
+func (r *ProposerPreferencesSlotRunner) submitPreferences(root [32]byte) error {
 	// Defensive: peer partials are validated against the frozen preference, so a quorum without one
 	// should be unreachable.
 	if r.ProposerPreferences == nil {
 		return types.NewError(types.ProposerPreferencesNoPreferenceErrorCode, "reached quorum without a frozen preference")
 	}
 
-	// only 1 root, verified in basePreConsensusMsgProcessing
-	root := roots[0]
 	fullSig, err := r.GetState().ReconstructBeaconSig(r.GetState().PreConsensusContainer, root, r.GetShare().ValidatorPubKey[:], r.GetShare().ValidatorIndex)
 	if err != nil {
 		// If the reconstructed signature verification failed, fall back to verifying each partial signature
@@ -510,24 +549,12 @@ func (r *ProposerPreferencesSlotRunner) broadcastPartialSig(msgs *types.PartialS
 	return nil
 }
 
-// processRequestAuth handles a RequestAuthPartialSig container (SIP #94 §5): it collects its partials
-// against the frozen auth roots — independently of the preference round and of the runner's finished
-// state, since auth collection continues until the proposal slot — and reconstructs and submits one
-// SignedBuilderRequestAuth per root that reaches quorum.
-func (r *ProposerPreferencesSlotRunner) processRequestAuth(signedMsg *types.PartialSignatureMessages) error {
-	quorum, roots, err := r.baseRequestAuthProcessing(signedMsg)
-	if err != nil {
-		return errors.Wrap(err, "failed processing builder request auth message")
-	}
-	if !quorum {
-		return nil
-	}
-
-	// A multi-root container can push several auth roots over quorum at once. A bad share (or submit failure)
-	// for one root must not strand the others (SIP #94 §5 — roots collect independently); quorum is reported
-	// only on the first crossing, so a stranded root would never be retried. Attempt every crossed root — on a
-	// per-root failure fall back to verify-each (removing invalid shares), record the first error, and
-	// continue — and surface that first error only after all roots have been attempted.
+// submitRequestAuths reconstructs and submits a SignedBuilderRequestAuth per auth root that reached quorum
+// (SIP #94 §5).
+func (r *ProposerPreferencesSlotRunner) submitRequestAuths(roots [][32]byte) error {
+	// One packet can push several auth roots over quorum, and quorum fires once per root, so a bad share or
+	// a submit failure on one root must not strand the others: attempt every root, falling back to
+	// verify-each (which drops invalid shares) when one fails to reconstruct, and return the first error.
 	var firstErr error
 	record := func(err error) {
 		if firstErr == nil {

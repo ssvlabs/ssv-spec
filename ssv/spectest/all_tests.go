@@ -229,6 +229,8 @@ var AllTests = []tests.TestF{
 	proposerpreferences.RetainedAuthPartialsAppliedAtDutyStart,
 	proposerpreferences.RetainedDuplicatePartialsDropped,
 	proposerpreferences.RetainedPartialsCapped,
+	proposerpreferences.RetainedPartialsCapIsolatesSigners,
+	proposerpreferences.RetainedPartialReconstructFailureReturned,
 	proposerpreferences.RetainedDivergingPartialDropped,
 	proposerpreferences.ReemissionAppliesPartialsPriorPreferenceRejected,
 
