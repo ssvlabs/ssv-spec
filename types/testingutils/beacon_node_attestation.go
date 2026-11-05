@@ -67,8 +67,8 @@ var TestingWrongAttestationData = func(version spec.DataVersion) *phase0.Attesta
 // Versioned Attestation Response
 // ==================================================
 //
-// The runner submits the Electra-shaped attestation (Gloas reuses it, SIP #94 §2), which the testing beacon
-// node records as the on-wire SingleAttestation.
+// The runner submits the Gloas attestation container, which the testing beacon node converts to the on-wire
+// electra.SingleAttestation (go-eth2-client's ToSingleAttestation) and records its root.
 
 var TestingAttestationResponseBeaconObject = func(ks *TestKeySet, version spec.DataVersion) types.HashRoot {
 	return TestingAttestationResponseBeaconObjectForValidatorIndex(ks, version, TestingValidatorIndex)

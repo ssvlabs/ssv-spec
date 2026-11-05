@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
-	"github.com/attestantio/go-eth2-client/spec/capella"
 	ssz "github.com/ferranbt/fastssz"
 )
 
@@ -87,38 +86,6 @@ func (b SSZTransactions) HashTreeRootWith(hh ssz.HashWalker) error {
 
 // HashTreeRoot --
 func (b SSZTransactions) HashTreeRoot() ([32]byte, error) {
-	return ssz.HashWithDefaultHasher(b)
-}
-
-// SSZWithdrawals --
-type SSZWithdrawals []*capella.Withdrawal
-
-func (b SSZWithdrawals) GetTree() (*ssz.Node, error) {
-	return ssz.ProofTree(b)
-}
-
-func (b SSZWithdrawals) HashTreeRootWith(hh ssz.HashWalker) error {
-	// *capella.Withdrawal is now dynamic-ssz-generated (go-eth2-client Gloas migration) and no
-	// longer implements fastssz's HashTreeRootWith, so append each element's HashTreeRoot() as a
-	// leaf chunk and let fastssz merkleize — same list root as the per-element composition.
-	subIndx := hh.Index()
-	num := uint64(len(b))
-	if num > 16 {
-		return ssz.ErrIncorrectListSize
-	}
-	for _, elem := range b {
-		root, err := elem.HashTreeRoot()
-		if err != nil {
-			return err
-		}
-		hh.Append(root[:])
-	}
-	hh.MerkleizeWithMixin(subIndx, num, 16)
-	return nil
-}
-
-// HashTreeRoot --
-func (b SSZWithdrawals) HashTreeRoot() ([32]byte, error) {
 	return ssz.HashWithDefaultHasher(b)
 }
 
