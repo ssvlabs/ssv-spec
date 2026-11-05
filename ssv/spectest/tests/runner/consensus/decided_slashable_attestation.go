@@ -1,11 +1,11 @@
 package consensus
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
-
+	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -18,8 +18,8 @@ func DecidedSlashableAttestation() tests.SpecTest {
 		"decide on slashable attestation",
 		testdoc.ConsensusDecidedSlashableAttestationDoc,
 		testingutils.CommitteeRunner(ks),
-		testingutils.TestingAttesterDuty(spec.DataVersionPhase0),
-		testingutils.SSVDecidingMsgsForCommitteeRunner(&testingutils.TestBeaconVote, ks, testingutils.TestingDutySlot),
+		testingutils.TestingAttesterDuty(gloas.DataVersionGloas),
+		testingutils.SSVDecidingMsgsForCommitteeRunner(testingutils.TestBeaconVoteByts, ks, qbft.Height(testingutils.TestingDutySlotV(gloas.DataVersionGloas))),
 		true,
 		"",
 		nil,

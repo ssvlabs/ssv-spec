@@ -1,18 +1,17 @@
 package consensusdataproposer
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// VersionedBlockConsensusDataNil tests an invalid consensus data with Deneb block
+// VersionedBlockConsensusDataNil tests an invalid consensus data with nil Gloas proposal data
 func VersionedBlockConsensusDataNil() *ProposerSpecTest {
 	cd := &types.ProposerConsensusData{
-		Duty:    *testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-		Version: spec.DataVersionDeneb,
+		Duty:    *testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
+		Version: gloas.DataVersionGloas,
 		DataSSZ: nil,
 	}
 
@@ -24,7 +23,6 @@ func VersionedBlockConsensusDataNil() *ProposerSpecTest {
 	return NewProposerSpecTest(
 		"consensus data versioned block corrupted consensus data",
 		testdoc.ProposerSpecTestVersionedBlockConsensusDataNilDoc,
-		false,
 		cdSSZ,
 		nil,
 		[32]byte{},

@@ -4,13 +4,12 @@ import (
 	"crypto/rsa"
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/qbft"
 
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -18,24 +17,27 @@ import (
 func InvalidDecidedValue() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	consensusDataByts := func() []byte {
+		// Slot is the running duty's: the §4 running-slot bind rejects a mismatched value first, but the
+		// invalidity under test is the unknown duty role (Type 100), caught by Validate().
 		cd := &types.ProposerConsensusData{
 			Duty: types.ValidatorDuty{
 				Type:                    100,
 				PubKey:                  testingutils.TestingValidatorPubKey,
-				Slot:                    testingutils.TestingDutySlot,
+				Slot:                    testingutils.TestingDutySlotV(gloas.DataVersionGloas),
 				ValidatorIndex:          testingutils.TestingValidatorIndex,
 				CommitteeIndex:          3,
 				CommitteesAtSlot:        36,
 				CommitteeLength:         128,
 				ValidatorCommitteeIndex: 11,
 			},
-			Version: spec.DataVersionPhase0,
+			Version: gloas.DataVersionGloas,
 		}
 		byts, _ := cd.Encode()
 		return byts
 	}
 	aggregatorCommmitteeConsensusDataByts := func() []byte {
-		cd := &types.AggregatorCommitteeConsensusData{}
+		// A well-versioned value with no validators, so the invalidity under test is the missing validators.
+		cd := &types.AggregatorCommitteeConsensusData{Version: gloas.DataVersionGloas}
 		byts, _ := cd.Encode()
 		return byts
 	}
@@ -85,48 +87,24 @@ func InvalidDecidedValue() tests.SpecTest {
 			{
 				Name:   "proposer",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Duty:   testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, spec.DataVersionDeneb))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, gloas.DataVersionGloas))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, gloas.DataVersionGloas))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, gloas.DataVersionGloas))),
 
 					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
 						[]*rsa.PrivateKey{
 							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 						},
 						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
+						qbft.Height(testingutils.TestingDutySlotV(gloas.DataVersionGloas)),
 						testingutils.ProposerMsgID,
 						consensusDataByts(),
 					),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
-				},
-				ExpectedErrorCode: expectedErrCode,
-			},
-			{
-				Name:   "proposer (blinded block)",
-				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, spec.DataVersionDeneb))),
-
-					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-						[]*rsa.PrivateKey{
-							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
-						},
-						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)),
-						testingutils.ProposerMsgID,
-						consensusDataByts(),
-					),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb),
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, gloas.DataVersionGloas),
 				},
 				ExpectedErrorCode: expectedErrCode,
 			},

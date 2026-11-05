@@ -38,8 +38,8 @@ func (r *testRunner) ProcessPostConsensus(*types.PartialSignatureMessages) error
 func (r *testRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	return nil, phase0.DomainType{}, nil
 }
-func (r *testRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	return nil, phase0.DomainType{}, nil
+func (r *testRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error) {
+	return nil, nil
 }
 func (r *testRunner) executeDuty(types.Duty) error { return nil }
 func (r *testRunner) StartNewDuty(duty types.Duty, quorum uint64) error {

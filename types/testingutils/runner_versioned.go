@@ -7,19 +7,21 @@ import (
 	"github.com/ssvlabs/ssv-spec/types"
 )
 
-var SSVDecidingMsgsForCommitteeRunner = func(beaconVote *types.BeaconVote, ks *TestKeySet, height qbft.Height) []*types.SignedSSVMessage {
+var SSVDecidingMsgsForCommitteeRunner = func(beaconVoteBytes []byte, ks *TestKeySet, height qbft.Height) []*types.SignedSSVMessage {
 	id := CommitteeMsgID(ks)
 
 	// consensus
-	qbftMsgs := SSVDecidingMsgsForHeightAndBeaconVote(beaconVote, id[:], height, ks)
-	return qbftMsgs
+	r, err := qbft.HashDataRoot(beaconVoteBytes)
+	if err != nil {
+		panic(err)
+	}
+	return SSVDecidingMsgsForHeightWithRoot(r, beaconVoteBytes, id[:], height, ks)
 }
 
 var SSVDecidingMsgsForAggregatorCommitteeRunnerForKS = func(duty *types.AggregatorCommitteeDuty, ks *TestKeySet, version spec.DataVersion) []*types.SignedSSVMessage {
 	ksMap := make(map[phase0.ValidatorIndex]*TestKeySet)
 	ksMap[duty.ValidatorDuties[0].ValidatorIndex] = ks
-	slot := TestingDutySlotV(version)
-	return SSVDecidingMsgsForAggregatorCommitteeRunner(duty, ksMap, qbft.Height(slot), version)
+	return SSVDecidingMsgsForAggregatorCommitteeRunner(duty, ksMap, qbft.Height(duty.Slot), version)
 }
 
 var SSVDecidingMsgsForAggregatorCommitteeRunner = func(duty *types.AggregatorCommitteeDuty, keySetMap map[phase0.ValidatorIndex]*TestKeySet, height qbft.Height, version spec.DataVersion) []*types.SignedSSVMessage {

@@ -1,12 +1,11 @@
 package valcheckaggcommittee
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -18,28 +17,22 @@ func Valid() tests.SpecTest {
 		testdoc.ValCheckAggCommitteeValidDoc,
 		[]*valcheck.SpecTest{
 			{
-				Name:       "aggregator phase0",
+				Name:       "aggregator",
 				Network:    types.BeaconTestNetwork,
 				RunnerRole: types.RoleAggregatorCommittee,
-				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyOnlyAggregator(spec.DataVersionPhase0), spec.DataVersionPhase0),
-			},
-			{
-				Name:       "aggregator electra",
-				Network:    types.BeaconTestNetwork,
-				RunnerRole: types.RoleAggregatorCommittee,
-				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyOnlyAggregator(spec.DataVersionElectra), spec.DataVersionElectra),
+				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyOnlyAggregator(gloas.DataVersionGloas), gloas.DataVersionGloas),
 			},
 			{
 				Name:       "sync committee contribution",
 				Network:    types.BeaconTestNetwork,
 				RunnerRole: types.RoleAggregatorCommittee,
-				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyOnlySyncCommittee(), spec.DataVersionElectra),
+				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyOnlySyncCommittee(), gloas.DataVersionGloas),
 			},
 			{
 				Name:       "mixed",
 				Network:    types.BeaconTestNetwork,
 				RunnerRole: types.RoleAggregatorCommittee,
-				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(spec.DataVersionElectra), spec.DataVersionElectra),
+				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(gloas.DataVersionGloas), gloas.DataVersionGloas),
 			},
 		},
 	)

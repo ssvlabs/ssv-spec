@@ -132,8 +132,9 @@ func CommitteeInputForDuty(duty *types.CommitteeDuty, slot phase0.Slot, ksMap ma
 
 	ret := make([]*types.SignedSSVMessage, 0)
 
-	// QBFT
-	qbftMsgs := SSVDecidingMsgsForHeightWithRoot(sha256.Sum256(TestBeaconVoteByts), TestBeaconVoteByts, msgID, qbft.Height(slot), sampleKeySet)
+	// QBFT — decide the committee value (BeaconVote, SIP #94 §2).
+	voteBytes := TestBeaconVoteByts
+	qbftMsgs := SSVDecidingMsgsForHeightWithRoot(sha256.Sum256(voteBytes), voteBytes, msgID, qbft.Height(slot), sampleKeySet)
 	ret = append(ret, qbftMsgs...)
 
 	// Post-consensus

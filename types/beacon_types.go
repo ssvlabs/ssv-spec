@@ -59,7 +59,7 @@ const (
 	BNRoleSyncCommittee
 	BNRoleSyncCommitteeContribution
 
-	BNRoleValidatorRegistration
+	_ // 5 is reserved: the validator-registration duty, retired at Gloas for §5 proposer preferences
 	BNRoleVoluntaryExit
 
 	// Gloas (ePBS) roles, per SIP #94.
@@ -82,8 +82,6 @@ func (r BeaconRole) String() string {
 		return "SYNC_COMMITTEE"
 	case BNRoleSyncCommitteeContribution:
 		return "SYNC_COMMITTEE_CONTRIBUTION"
-	case BNRoleValidatorRegistration:
-		return "VALIDATOR_REGISTRATION"
 	case BNRoleVoluntaryExit:
 		return "VOLUNTARY_EXIT"
 	case BNRolePTCAttester:
@@ -134,8 +132,6 @@ func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
 		return RoleProposer
 	case BNRoleAggregator, BNRoleSyncCommitteeContribution:
 		return RoleAggregatorCommittee
-	case BNRoleValidatorRegistration:
-		return RoleValidatorRegistration
 	case BNRoleVoluntaryExit:
 		return RoleVoluntaryExit
 	case BNRolePTCAttester:

@@ -9,6 +9,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/blindedexecutionpayloadenvelope"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedbeaconblock"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedexecutionpayloadbid"
+
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/committeemember"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/maxmsgsize"
 
@@ -19,14 +23,19 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/aggregatorcommitteeconsensusdata"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/beacon"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/builderrequestauth"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/encryption"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/partialsigmessage"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/payloadattestationdata"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/payloadattestationmessage"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerconsensusdata"
 	consensusdataproposer "github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerconsensusdata/proposer"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/proposerpreferences"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/share"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedbuilderrequestauth"
+	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedproposerpreferences"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/signedssvmsg"
 	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssvmsg"
-	"github.com/ssvlabs/ssv-spec/types/spectest/tests/ssz"
 	comparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
 
@@ -70,12 +79,6 @@ func TestJson(t *testing.T) {
 		t.Run(testName, func(t *testing.T) {
 			testType := strings.Split(name, "_")[0]
 			switch testType {
-			case reflect.TypeOf(&ssz.SSZSpecTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &ssz.SSZSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
 			case reflect.TypeOf(&consensusdataproposer.ProposerSpecTest{}).String():
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
@@ -170,6 +173,60 @@ func TestJson(t *testing.T) {
 				byts, err := json.Marshal(test)
 				require.NoError(t, err)
 				typedTest := &beaconvote.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&payloadattestationdata.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &payloadattestationdata.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&signedbeaconblock.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &signedbeaconblock.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&signedexecutionpayloadbid.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &signedexecutionpayloadbid.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&blindedexecutionpayloadenvelope.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &blindedexecutionpayloadenvelope.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&payloadattestationmessage.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &payloadattestationmessage.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&proposerpreferences.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &proposerpreferences.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&signedproposerpreferences.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &signedproposerpreferences.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&builderrequestauth.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &builderrequestauth.EncodingTest{}
+				require.NoError(t, json.Unmarshal(byts, &typedTest))
+				typedTest.Run(t)
+			case reflect.TypeOf(&signedbuilderrequestauth.EncodingTest{}).String():
+				byts, err := json.Marshal(test)
+				require.NoError(t, err)
+				typedTest := &signedbuilderrequestauth.EncodingTest{}
 				require.NoError(t, json.Unmarshal(byts, &typedTest))
 				typedTest.Run(t)
 			case reflect.TypeOf(&maxmsgsize.StructureSizeTest{}).String():

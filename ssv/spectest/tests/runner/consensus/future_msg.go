@@ -3,12 +3,11 @@ package consensus
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -57,37 +56,12 @@ func FutureMessage() tests.SpecTest {
 			{
 				Name:   "proposer",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Duty:   testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 				Messages: []*types.SignedSSVMessage{
-					futureMsgF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb), testingutils.ProposerMsgID),
+					futureMsgF(testingutils.TestProposerConsensusDataV(gloas.DataVersionGloas), testingutils.ProposerMsgID),
 				},
 				DontStartDuty:     true,
 				ExpectedErrorCode: expectedErrorCode,
-			},
-			{
-				Name:   "proposer (blinded block)",
-				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-				Messages: []*types.SignedSSVMessage{
-					futureMsgF(testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionDeneb),
-						testingutils.ProposerMsgID),
-				},
-				DontStartDuty:     true,
-				ExpectedErrorCode: expectedErrorCode,
-			},
-			{
-				Name:   "validator registration",
-				Runner: testingutils.ValidatorRegistrationRunner(ks),
-				Duty:   &testingutils.TestingValidatorRegistrationDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.TestingProposalMessageWithIdentifierAndFullData(ks.OperatorKeys[1], types.OperatorID(1),
-						testingutils.ValidatorRegistrationMsgID, testingutils.TestAttesterConsensusDataByts,
-						qbft.Height(testingutils.TestingDutySlot)),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
-				},
-				ExpectedErrorCode: types.ValidatorRegistrationNoConsensusPhaseErrorCode,
 			},
 			{
 				Name:   "voluntary exit",

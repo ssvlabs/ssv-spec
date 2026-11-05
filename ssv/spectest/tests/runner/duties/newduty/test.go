@@ -33,6 +33,7 @@ type StartNewRunnerDutySpecTest struct {
 	OutputMessages          []*types.PartialSignatureMessages
 	ExpectedErrorCode       int
 	PrivateKeys             *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+	BeaconNode              *tests.BeaconNodeBehaviour   `json:"BeaconNode,omitempty"`
 }
 
 func (test *StartNewRunnerDutySpecTest) TestName() string {
@@ -114,6 +115,7 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 // runPreTesting runs the spec logic before testing the output
 // It simply starts a new duty
 func (test *StartNewRunnerDutySpecTest) runPreTesting() error {
+	test.BeaconNode.Apply(test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode))
 	err := test.Runner.StartNewDuty(test.Duty, test.Threshold)
 	return err
 }
@@ -157,6 +159,13 @@ func (mTest *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error
 				err,
 			)
 		}
+		if _, duplicate := ret[test.Name]; duplicate {
+			// State comparisons are keyed by sub-test name, so a duplicate would silently overwrite the
+			// earlier one and its fixture. Placeholder fork versions are a way to hit this: any
+			// DataVersion outside go-eth2-client's enum stringifies to "unknown", so two of them would
+			// name their sub-tests identically.
+			return nil, fmt.Errorf("duplicate sub-test name %q", test.Name)
+		}
 		ret[test.Name] = test.Runner
 	}
 	return ret, nil
@@ -180,10 +189,12 @@ func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, nam
 		runner = &ssv.AggregatorCommitteeRunner{}
 	case *ssv.ProposerRunner:
 		runner = &ssv.ProposerRunner{}
-	case *ssv.ValidatorRegistrationRunner:
-		runner = &ssv.ValidatorRegistrationRunner{}
 	case *ssv.VoluntaryExitRunner:
 		runner = &ssv.VoluntaryExitRunner{}
+	case *ssv.PTCAttesterRunner:
+		runner = &ssv.PTCAttesterRunner{}
+	case *ssv.ProposerPreferencesRunner:
+		runner = &ssv.ProposerPreferencesRunner{}
 	default:
 		t.Fatalf("unknown runner type")
 	}
@@ -214,6 +225,7 @@ func (t *StartNewRunnerDutySpecTest) MarshalJSON() ([]byte, error) {
 		ValidatorDuty           *types.ValidatorDuty           `json:"ValidatorDuty,omitempty"`
 		CommitteeDuty           *types.CommitteeDuty           `json:"CommitteeDuty,omitempty"`
 		AggregatorCommitteeDuty *types.AggregatorCommitteeDuty `json:"AggregatorCommitteeDuty,omitempty"`
+		BeaconNode              *tests.BeaconNodeBehaviour     `json:"BeaconNode,omitempty"`
 	}
 
 	alias := &StartNewRunnerDutySpecTestAlias{
@@ -223,6 +235,7 @@ func (t *StartNewRunnerDutySpecTest) MarshalJSON() ([]byte, error) {
 		PostDutyRunnerState:     t.PostDutyRunnerState,
 		OutputMessages:          t.OutputMessages,
 		ExpectedErrorCode:       t.ExpectedErrorCode,
+		BeaconNode:              t.BeaconNode,
 	}
 
 	if t.Duty != nil {
@@ -250,10 +263,11 @@ func (t *StartNewRunnerDutySpecTest) UnmarshalJSON(data []byte) error {
 		PostDutyRunnerStateRoot string
 		PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 		OutputMessages          []*types.PartialSignatureMessages
-		ExpectedError           int
+		ExpectedErrorCode       int
 		ValidatorDuty           *types.ValidatorDuty           `json:"ValidatorDuty,omitempty"`
 		CommitteeDuty           *types.CommitteeDuty           `json:"CommitteeDuty,omitempty"`
 		AggregatorCommitteeDuty *types.AggregatorCommitteeDuty `json:"AggregatorCommitteeDuty,omitempty"`
+		BeaconNode              *tests.BeaconNodeBehaviour     `json:"BeaconNode,omitempty"`
 	}
 
 	aux := &StartNewRunnerDutySpecTestAlias{}
@@ -268,7 +282,8 @@ func (t *StartNewRunnerDutySpecTest) UnmarshalJSON(data []byte) error {
 	t.PostDutyRunnerStateRoot = aux.PostDutyRunnerStateRoot
 	t.PostDutyRunnerState = aux.PostDutyRunnerState
 	t.OutputMessages = aux.OutputMessages
-	t.ExpectedErrorCode = aux.ExpectedError
+	t.ExpectedErrorCode = aux.ExpectedErrorCode
+	t.BeaconNode = aux.BeaconNode
 
 	// Determine which type of duty was marshaled
 	if aux.ValidatorDuty != nil {

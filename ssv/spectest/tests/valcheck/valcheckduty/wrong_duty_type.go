@@ -1,12 +1,11 @@
 package valcheckduty
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -32,24 +31,17 @@ func WrongDutyType() tests.SpecTest {
 				// No error since input doesn't contain duty type
 			},
 			{
-				Name:       "aggregator committee phase0",
+				Name:       "aggregator committee",
 				Network:    types.BeaconTestNetwork,
 				RunnerRole: types.RoleAggregatorCommittee,
-				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(spec.DataVersionPhase0), spec.DataVersionPhase0),
-				// No error since input doesn't contain duty type
-			},
-			{
-				Name:       "aggregator committee electra",
-				Network:    types.BeaconTestNetwork,
-				RunnerRole: types.RoleAggregatorCommittee,
-				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(spec.DataVersionElectra), spec.DataVersionElectra),
+				Input:      testingutils.TestAggregatorCommitteeConsensusDataBytesForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(gloas.DataVersionGloas), gloas.DataVersionGloas),
 				// No error since input doesn't contain duty type
 			},
 			{
 				Name:              "proposer",
 				Network:           types.BeaconTestNetwork,
 				RunnerRole:        types.RoleProposer,
-				Input:             consensusDataBytsWithIncorrectTypeF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
+				Input:             consensusDataBytsWithIncorrectTypeF(testingutils.TestProposerConsensusDataV(gloas.DataVersionGloas)),
 				ExpectedErrorCode: types.QBFTValueInvalidErrorCode,
 			},
 		},

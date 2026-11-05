@@ -1,8 +1,8 @@
 package proposerconsensusdata
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
@@ -31,13 +31,6 @@ func ProposerConsensusDataEncoding() *EncodingTest {
 	return ConsensusDataEncoding(
 		"proposer encoding",
 		testdoc.ProposerConsensusDataEncodingTestProposerDoc,
-		testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionCapella),
-	)
-}
-func BlindedProposerConsensusDataEncoding() *EncodingTest {
-	return ConsensusDataEncoding(
-		"blinded proposer encoding",
-		testdoc.ProposerConsensusDataEncodingTestBlindedProposerDoc,
-		testingutils.TestProposerBlindedBlockConsensusDataV(spec.DataVersionCapella),
+		testingutils.TestProposerConsensusDataV(gloas.DataVersionGloas),
 	)
 }

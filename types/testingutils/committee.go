@@ -77,24 +77,40 @@ var BaseCommitteeWithCreatorFieldsFromRunner = func(keySetMap map[phase0.Validat
 
 	commRunnerSample := CommitteeRunnerWithShareMap(shareMap).(*ssv.CommitteeRunner)
 	createCommitteeRunnerF := func(shareMap map[phase0.ValidatorIndex]*types.Share) ssv.Runner {
+		// The committee creates one runner per duty, so each runner needs its own value check bound to
+		// that duty's slot — reusing the sample's check would validate every duty against the sample's
+		// (never started) duty and so pick the wrong fork. Mirrors production building the checker per
+		// duty. The sample's config is copied so only the value check differs.
+		var created ssv.Runner
+		sharePubKeys := make([]types.ShareValidatorPK, 0, len(shareMap))
+		for _, share := range shareMap {
+			sharePubKeys = append(sharePubKeys, share.SharePubKey)
+		}
+		valCheck := committeeVoteValueCheckF(commRunnerSample.GetSigner(), committeeDutySlotF(&created),
+			sharePubKeys, TestBeaconVote.Source.Epoch, TestBeaconVote.Target.Epoch)
+
+		config := *commRunnerSample.BaseRunner.QBFTController.GetConfig().(*qbft.Config)
+		config.ValueCheckF = valCheck
+
 		runner, err := ssv.NewCommitteeRunner(
 			commRunnerSample.BaseRunner.BeaconNetwork,
 			shareMap,
 			qbft.NewController(
 				commRunnerSample.BaseRunner.QBFTController.Identifier,
 				commRunnerSample.BaseRunner.QBFTController.CommitteeMember,
-				commRunnerSample.BaseRunner.QBFTController.GetConfig(),
+				&config,
 				TestingOperatorSigner(keySetSample),
 			),
 			NewTestingBeaconNode(),
 			NewTestingNetwork(1, keySetSample.OperatorKeys[1]),
 			commRunnerSample.GetSigner(),
 			commRunnerSample.GetOperatorSigner(),
-			commRunnerSample.GetValCheckF(),
+			valCheck,
 		)
 		if err != nil {
 			panic(err)
 		}
+		created = runner
 		return runner
 	}
 

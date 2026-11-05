@@ -3,10 +3,10 @@ package postconsensus
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -86,21 +86,21 @@ func MixedCommittees() tests.SpecTest {
 	}
 
 	// Aggregator committee duty
-	sccCommitteeDuty := testingutils.TestingAggCommitteeDutyWithMixedCommitteeIndexes(validatorsIndexList, nil, spec.DataVersionPhase0)
+	sccCommitteeDuty := testingutils.TestingAggCommitteeDutyWithMixedCommitteeIndexes(validatorsIndexList, nil, gloas.DataVersionGloas)
 	multiSpecTest.Tests = append(multiSpecTest.Tests, &tests.MsgProcessingSpecTest{
 		Name: "sync committee contributor",
 		Runner: decideAggregatorCommitteeRunner(
 			testingutils.AggregatorCommitteeRunnerWithShareMap(shareMap),
 			sccCommitteeDuty,
-			testingutils.TestAggregatorCommitteeConsensusDataForDuty(sccCommitteeDuty, spec.DataVersionPhase0, nil),
+			testingutils.TestAggregatorCommitteeConsensusDataForDuty(sccCommitteeDuty, gloas.DataVersionGloas, nil),
 		),
 		Duty: sccCommitteeDuty,
 		Messages: []*types.SignedSSVMessage{
-			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMsgForDuty(sccCommitteeDuty, ksMap, 1, spec.DataVersionPhase0))),
-			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMsgForDuty(sccCommitteeDuty, ksMap, 2, spec.DataVersionPhase0))),
-			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMsgForDuty(sccCommitteeDuty, ksMap, 3, spec.DataVersionPhase0))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMsgForDuty(sccCommitteeDuty, ksMap, 1, gloas.DataVersionGloas))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMsgForDuty(sccCommitteeDuty, ksMap, 2, gloas.DataVersionGloas))),
+			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgAggregatorCommittee(ks, nil, testingutils.PostConsensusAggregatorCommitteeMsgForDuty(sccCommitteeDuty, ksMap, 3, gloas.DataVersionGloas))),
 		},
-		BeaconBroadcastedRoots: testingutils.TestingSignedAggregatorCommitteeBeaconObjectSSZRoot(sccCommitteeDuty, ksMap, spec.DataVersionPhase0),
+		BeaconBroadcastedRoots: testingutils.TestingSignedAggregatorCommitteeBeaconObjectSSZRoot(sccCommitteeDuty, ksMap, gloas.DataVersionGloas),
 		DontStartDuty:          true,
 	})
 

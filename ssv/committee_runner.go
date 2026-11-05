@@ -13,6 +13,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 type CommitteeRunner struct {
@@ -108,14 +109,11 @@ func (cr CommitteeRunner) ProcessConsensus(msg *types.SignedSSVMessage) error {
 		Messages: []*types.PartialSignatureMessage{},
 	}
 
-	epoch := cr.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(duty.DutySlot())
-	version := cr.beacon.DataVersion(epoch)
-
 	beaconVote := decidedValue.(*types.BeaconVote)
 	for _, validatorDuty := range duty.(*types.CommitteeDuty).ValidatorDuties {
 		switch validatorDuty.Type {
 		case types.BNRoleAttester:
-			attestationData := constructAttestationData(beaconVote, validatorDuty, version)
+			attestationData := constructAttestationData(beaconVote, validatorDuty)
 			partialMsg, err := cr.BaseRunner.signBeaconObject(cr, validatorDuty, attestationData, validatorDuty.DutySlot(),
 				types.DomainAttester)
 			if err != nil {
@@ -385,7 +383,7 @@ func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, 
 
 // This function signature returns only one domain type... but we can have mixed domains
 // instead we rely on expectedPostConsensusRootsAndBeaconObjects that is called later
-func (cr CommitteeRunner) expectedPostConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (cr CommitteeRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error) {
 	panic("not in use")
 }
 
@@ -401,6 +399,10 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	beaconObjects = make(map[phase0.ValidatorIndex]map[[32]byte]interface{})
 	duty := cr.BaseRunner.State.StartingDuty.(*types.CommitteeDuty)
 	beaconVoteData := cr.BaseRunner.State.DecidedValue
+
+	slot := duty.DutySlot()
+	epoch := cr.beacon.GetBeaconNetwork().EstimatedEpochAtSlot(slot)
+
 	beaconVote := &types.BeaconVote{}
 	if err := beaconVote.Decode(beaconVoteData); err != nil {
 		return nil, nil, nil, errors.Wrap(err, "could not decode beacon vote")
@@ -408,11 +410,6 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 	if err := beaconVote.Validate(); err != nil {
 		return nil, nil, nil, errors.Wrap(err, "invalid beacon vote")
 	}
-
-	slot := duty.DutySlot()
-	epoch := cr.GetBaseRunner().BeaconNetwork.EstimatedEpochAtSlot(slot)
-
-	dataVersion := cr.beacon.DataVersion(epoch)
 
 	for _, validatorDuty := range duty.ValidatorDuties {
 		if validatorDuty == nil {
@@ -423,11 +420,8 @@ func (cr *CommitteeRunner) expectedPostConsensusRootsAndBeaconObjects() (
 		case types.BNRoleAttester:
 
 			// Attestation object
-			attestationData := constructAttestationData(beaconVote, validatorDuty, dataVersion)
-			attestationResponse, err := ConstructVersionedAttestationWithoutSignature(attestationData, dataVersion, validatorDuty)
-			if err != nil {
-				continue
-			}
+			attestationData := constructAttestationData(beaconVote, validatorDuty)
+			attestationResponse := ConstructVersionedAttestationWithoutSignature(attestationData, validatorDuty)
 
 			// Root
 			domain, err := cr.GetBeaconNode().DomainData(epoch, types.DomainAttester)
@@ -483,13 +477,15 @@ func (cr CommitteeRunner) executeDuty(duty types.Duty) error {
 		return errors.Wrap(err, "failed to get attestation data")
 	}
 
-	vote := &types.BeaconVote{
-		BlockRoot: attData.BeaconBlockRoot,
-		Source:    attData.Source,
-		Target:    attData.Target,
+	// The consensus value carries the BN-supplied attestation index (SIP #94 §2).
+	input := &types.BeaconVote{
+		BlockRoot:            attData.BeaconBlockRoot,
+		Source:               attData.Source,
+		Target:               attData.Target,
+		AttestationDataIndex: attData.Index,
 	}
 
-	if err := cr.BaseRunner.decide(cr, duty.DutySlot(), vote); err != nil {
+	if err := cr.BaseRunner.decide(cr, slot, input); err != nil {
 		return errors.Wrap(err, "can't start new duty runner instance for duty")
 	}
 	return nil
@@ -503,73 +499,29 @@ func (cr CommitteeRunner) GetOperatorSigner() *types.OperatorSigner {
 	return cr.operatorSigner
 }
 
-func constructAttestationData(vote *types.BeaconVote, duty *types.ValidatorDuty, version spec.DataVersion) *phase0.AttestationData {
-	attData := &phase0.AttestationData{
-		Slot:            duty.Slot,
-		Index:           duty.CommitteeIndex,
+func constructAttestationData(vote *types.BeaconVote, duty *types.ValidatorDuty) *phase0.AttestationData {
+	return &phase0.AttestationData{
+		Slot: duty.Slot,
+		// The decided payload-status value (0/1), not a committee index (SIP #94 §2).
+		Index:           vote.AttestationDataIndex,
 		BeaconBlockRoot: vote.BlockRoot,
 		Source:          vote.Source,
 		Target:          vote.Target,
 	}
-
-	if version >= spec.DataVersionElectra {
-		attData.Index = 0 // EIP-7549: Index should be set to 0
-	}
-
-	return attData
 }
 
+// VersionedAttestationWithSignature inserts the reconstructed signature. spec.VersionedAttestation has no Gloas
+// field, so Gloas reuses the Electra container under the Gloas version tag (a local API wrapper, not wire
+// format; SIP #94 §2).
 func VersionedAttestationWithSignature(att *spec.VersionedAttestation, specSig phase0.BLSSignature) (*spec.VersionedAttestation, error) {
-	switch att.Version {
-	case spec.DataVersionPhase0:
-		if att.Phase0 == nil {
-			return att, fmt.Errorf("no Phase0 attestation")
-		}
-		att.Phase0.Signature = specSig
-	case spec.DataVersionAltair:
-		if att.Altair == nil {
-			return att, fmt.Errorf("no Altair attestation")
-		}
-		att.Altair.Signature = specSig
-	case spec.DataVersionBellatrix:
-		if att.Bellatrix == nil {
-			return att, fmt.Errorf("no Bellatrix attestation")
-		}
-		att.Bellatrix.Signature = specSig
-	case spec.DataVersionCapella:
-		if att.Capella == nil {
-			return att, fmt.Errorf("no Capella attestation")
-		}
-		att.Capella.Signature = specSig
-	case spec.DataVersionDeneb:
-		if att.Deneb == nil {
-			return att, fmt.Errorf("no Deneb attestation")
-		}
-		att.Deneb.Signature = specSig
-	case spec.DataVersionElectra:
-		if att.Electra == nil {
-			return att, fmt.Errorf("no Electra attestation")
-		}
-		att.Electra.Signature = specSig
-	case spec.DataVersionFulu:
-		if att.Fulu == nil {
-			return att, fmt.Errorf("no Fulu attestation")
-		}
-		att.Fulu.Signature = specSig
-	default:
+	if att.Version != gloas.DataVersionGloas {
 		return nil, fmt.Errorf("unknown version: %s", att.Version)
 	}
-
-	return att, nil
-}
-
-func ConstructPhase0AttestationWithoutSignature(attestationData *phase0.AttestationData, validatorDuty *types.ValidatorDuty) *phase0.Attestation {
-	aggregationBitfield := bitfield.NewBitlist(validatorDuty.CommitteeLength)
-	aggregationBitfield.SetBitAt(validatorDuty.ValidatorCommitteeIndex, true)
-	return &phase0.Attestation{
-		Data:            attestationData,
-		AggregationBits: aggregationBitfield,
+	if att.Electra == nil {
+		return att, fmt.Errorf("no Gloas attestation")
 	}
+	att.Electra.Signature = specSig
+	return att, nil
 }
 
 func ConstructElectraAttestationWithoutSignature(attestationData *phase0.AttestationData, validatorDuty *types.ValidatorDuty) *electra.Attestation {
@@ -586,35 +538,12 @@ func ConstructElectraAttestationWithoutSignature(attestationData *phase0.Attesta
 	}
 }
 
-func ConstructVersionedAttestationWithoutSignature(attestationData *phase0.AttestationData, dataVersion spec.DataVersion, validatorDuty *types.ValidatorDuty) (*spec.VersionedAttestation, error) {
-	ret := &spec.VersionedAttestation{
-		Version:        dataVersion,
+// ConstructVersionedAttestationWithoutSignature builds the unsigned attestation in the Electra container under the
+// Gloas version tag (see VersionedAttestationWithSignature).
+func ConstructVersionedAttestationWithoutSignature(attestationData *phase0.AttestationData, validatorDuty *types.ValidatorDuty) *spec.VersionedAttestation {
+	return &spec.VersionedAttestation{
+		Version:        gloas.DataVersionGloas,
 		ValidatorIndex: &validatorDuty.ValidatorIndex,
-	}
-
-	switch dataVersion {
-	case spec.DataVersionPhase0:
-		ret.Phase0 = ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)
-		return ret, nil
-	case spec.DataVersionAltair:
-		ret.Altair = ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)
-		return ret, nil
-	case spec.DataVersionBellatrix:
-		ret.Bellatrix = ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)
-		return ret, nil
-	case spec.DataVersionCapella:
-		ret.Capella = ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)
-		return ret, nil
-	case spec.DataVersionDeneb:
-		ret.Deneb = ConstructPhase0AttestationWithoutSignature(attestationData, validatorDuty)
-		return ret, nil
-	case spec.DataVersionElectra:
-		ret.Electra = ConstructElectraAttestationWithoutSignature(attestationData, validatorDuty)
-		return ret, nil
-	case spec.DataVersionFulu:
-		ret.Fulu = ConstructElectraAttestationWithoutSignature(attestationData, validatorDuty)
-		return ret, nil
-	default:
-		return nil, fmt.Errorf("unknown version")
+		Electra:        ConstructElectraAttestationWithoutSignature(attestationData, validatorDuty),
 	}
 }

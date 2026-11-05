@@ -137,26 +137,8 @@ func UnknownSigner() tests.SpecTest {
 		}
 	}
 
-	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
-	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
-		return &tests.MsgProcessingSpecTest{
-			Name: fmt.Sprintf("proposer blinded block (%s)", version.String()),
-			Runner: decideRunner(
-				testingutils.ProposerBlindedBlockRunner(ks),
-				testingutils.TestingProposerDutyV(version),
-				testingutils.TestProposerBlindedBlockConsensusDataV(version),
-			),
-			Duty: testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SignedSSVMessage{
-				testingutils.SignedSSVMessageWithSigner(5, ks.OperatorKeys[1], testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 5, version))),
-			},
-			DontStartDuty:     true,
-			ExpectedErrorCode: expectedErrorCode,
-		}
-	}
-
 	for _, v := range testingutils.SupportedBlockVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v)}...)
 	}
 
 	return multiSpecTest

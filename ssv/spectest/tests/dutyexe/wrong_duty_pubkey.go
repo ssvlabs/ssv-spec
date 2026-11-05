@@ -68,22 +68,8 @@ func WrongDutyPubKey() tests.SpecTest {
 		}
 	}
 
-	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
-	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
-		return &tests.MsgProcessingSpecTest{
-			Name:     fmt.Sprintf("proposer blinded block (%s)", version.String()),
-			Runner:   testingutils.ProposerBlindedBlockRunner(ks),
-			Duty:     testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SignedSSVMessage{decidedMessage(types.RoleProposer)},
-			OutputMessages: []*types.PartialSignatureMessages{
-				testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
-			},
-			ExpectedErrorCode: expectedErrorCode,
-		}
-	}
-
 	for _, v := range testingutils.SupportedBlockVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v)}...)
 	}
 
 	return multiSpecTest

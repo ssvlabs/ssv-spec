@@ -3,13 +3,12 @@ package newduty
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -72,12 +71,12 @@ func PostWrongDecided() tests.SpecTest {
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionDeneb), qbft.Height(testingutils.TestingDutySlotV(spec.DataVersionDeneb)+50)),
-				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Runner:                  decideWrong(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(gloas.DataVersionGloas), qbft.Height(testingutils.TestingDutySlotV(gloas.DataVersionGloas)+50)),
+				Duty:                    testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "fd8de7873c9cf83ec9366f856f4b8d81d77c215f935185d90cea8be8dcb44089",
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, gloas.DataVersionGloas), // broadcasts when starting a new duty
 				},
 				ExpectedErrorCode: types.DutyAlreadyPassedErrorCode,
 			},

@@ -1,23 +1,23 @@
 package valcheckduty
 
 import (
-	"encoding/json"
-
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
 // WrongValidatorIndex tests duty.ValidatorIndex wrong
 func WrongValidatorIndex() tests.SpecTest {
 	consensusDataBytsF := func(cd *types.ProposerConsensusData) []byte {
+		b, err := cd.Encode()
+		if err != nil {
+			panic(err.Error())
+		}
 		cdCopy := types.ProposerConsensusData{}
-		b, _ := json.Marshal(cd)
-		if err := json.Unmarshal(b, &cdCopy); err != nil {
+		if err := cdCopy.Decode(b); err != nil {
 			panic(err.Error())
 		}
 		cdCopy.Duty.ValidatorIndex = testingutils.TestingWrongValidatorIndex
@@ -27,9 +27,12 @@ func WrongValidatorIndex() tests.SpecTest {
 	}
 
 	accdAggDataBytesF := func(cd *types.AggregatorCommitteeConsensusData) []byte {
+		b, err := cd.Encode()
+		if err != nil {
+			panic(err.Error())
+		}
 		cdCopy := types.AggregatorCommitteeConsensusData{}
-		b, _ := json.Marshal(cd)
-		if err := json.Unmarshal(b, &cdCopy); err != nil {
+		if err := cdCopy.Decode(b); err != nil {
 			panic(err.Error())
 		}
 		cdCopy.Aggregators[0].ValidatorIndex = testingutils.TestingWrongValidatorIndex
@@ -38,9 +41,12 @@ func WrongValidatorIndex() tests.SpecTest {
 		return ret
 	}
 	accdSCCDataBytesF := func(cd *types.AggregatorCommitteeConsensusData) []byte {
+		b, err := cd.Encode()
+		if err != nil {
+			panic(err.Error())
+		}
 		cdCopy := types.AggregatorCommitteeConsensusData{}
-		b, _ := json.Marshal(cd)
-		if err := json.Unmarshal(b, &cdCopy); err != nil {
+		if err := cdCopy.Decode(b); err != nil {
 			panic(err.Error())
 		}
 		cdCopy.Contributors[0].ValidatorIndex = testingutils.TestingWrongValidatorIndex
@@ -49,9 +55,12 @@ func WrongValidatorIndex() tests.SpecTest {
 		return ret
 	}
 	accdMixedDataBytesF := func(cd *types.AggregatorCommitteeConsensusData) []byte {
+		b, err := cd.Encode()
+		if err != nil {
+			panic(err.Error())
+		}
 		cdCopy := types.AggregatorCommitteeConsensusData{}
-		b, _ := json.Marshal(cd)
-		if err := json.Unmarshal(b, &cdCopy); err != nil {
+		if err := cdCopy.Decode(b); err != nil {
 			panic(err.Error())
 		}
 		cdCopy.Aggregators[0].ValidatorIndex = testingutils.TestingWrongValidatorIndex
@@ -86,21 +95,21 @@ func WrongValidatorIndex() tests.SpecTest {
 				Name:       "aggregator committee agg",
 				Network:    types.BeaconTestNetwork,
 				RunnerRole: types.RoleAggregatorCommittee,
-				Input:      accdAggDataBytesF(testingutils.TestAggregatorConsensusData(spec.DataVersionPhase0)),
+				Input:      accdAggDataBytesF(testingutils.TestAggregatorConsensusData(gloas.DataVersionGloas)),
 				// No error since input doesn't contain validator index
 			},
 			{
 				Name:       "aggregator committee mixed",
 				Network:    types.BeaconTestNetwork,
 				RunnerRole: types.RoleAggregatorCommittee,
-				Input:      accdMixedDataBytesF(testingutils.TestAggregatorCommitteeConsensusDataForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(spec.DataVersionElectra), spec.DataVersionElectra, nil)),
+				Input:      accdMixedDataBytesF(testingutils.TestAggregatorCommitteeConsensusDataForDuty(testingutils.TestingAggregatorCommitteeDutyMixed(gloas.DataVersionGloas), gloas.DataVersionGloas, nil)),
 				// No error since input doesn't contain validator index
 			},
 			{
 				Name:              "proposer",
 				Network:           types.BeaconTestNetwork,
 				RunnerRole:        types.RoleProposer,
-				Input:             consensusDataBytsF(testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb)),
+				Input:             consensusDataBytsF(testingutils.TestProposerConsensusDataV(gloas.DataVersionGloas)),
 				ExpectedErrorCode: expectedErrCode,
 			},
 		},

@@ -1,11 +1,11 @@
 package committeemultipleduty
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/committee"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -14,7 +14,7 @@ func SameSlot() tests.SpecTest {
 
 	vals := testingutils.ValidatorIndexList(10)
 	ksMap := testingutils.KeySetMapForValidators(10)
-	version := spec.DataVersionElectra
+	version := gloas.DataVersionGloas
 	slot := testingutils.TestingDutySlotV(version)
 
 	// Committee duty and Aggregator committee duty on same slot

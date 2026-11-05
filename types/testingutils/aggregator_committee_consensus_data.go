@@ -41,30 +41,16 @@ func TestAggregatorCommitteeConsensusDataForDuty(duty *types.AggregatorCommittee
 
 		switch validatorDuty.Type {
 		case types.BNRoleAggregator:
-			// Create attestation for this validator based on version
-			var marshaledAtt []byte
-
-			if version >= spec.DataVersionElectra {
-				// For Electra and newer versions, create an electra.Attestation with CommitteeBits
-				attestation := &electra.Attestation{
-					AggregationBits: bitfield.NewBitlist(128),
-					Signature:       phase0.BLSSignature{},
-					Data:            TestingAttestationData(version),
-					CommitteeBits:   bitfield.NewBitvector64(),
-				}
-				// Leave AggregationBits empty for testing
-				// Leave CommitteeBits empty for testing - in reality they would be set
-				marshaledAtt, _ = attestation.MarshalSSZ()
-			} else {
-				// For pre-Electra, create a phase0.Attestation
-				attestation := &phase0.Attestation{
-					AggregationBits: bitfield.NewBitlist(128),
-					Signature:       phase0.BLSSignature{},
-					Data:            TestingAttestationData(version),
-				}
-				// Leave AggregationBits empty for testing
-				marshaledAtt, _ = attestation.MarshalSSZ()
+			// Create attestation for this validator (Gloas reuses the Electra shape, SIP #94 §2)
+			attestation := &electra.Attestation{
+				AggregationBits: bitfield.NewBitlist(128),
+				Signature:       phase0.BLSSignature{},
+				Data:            TestingAttestationData(version),
+				CommitteeBits:   bitfield.NewBitvector64(),
 			}
+			// Leave AggregationBits empty for testing
+			// Leave CommitteeBits empty for testing - in reality they would be set
+			marshaledAtt, _ := attestation.MarshalSSZ()
 
 			blsSig := phase0.BLSSignature{}
 			if signingEnabled {

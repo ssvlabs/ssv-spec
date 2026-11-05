@@ -1,8 +1,8 @@
 package maxmsgsize
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 )
 
@@ -36,7 +36,7 @@ func maxConsensusData() *types.ProposerConsensusData {
 
 	return &types.ProposerConsensusData{
 		Duty:    maxValidatorDuty(),
-		Version: spec.DataVersionAltair,
+		Version: gloas.DataVersionGloas,
 		DataSSZ: maxDataSSZ(),
 	}
 }
