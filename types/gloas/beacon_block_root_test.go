@@ -15,9 +15,9 @@ import (
 // drift that the round-trip and wire tests would miss: serialization can byte-match while HTR
 // diverges, which is exactly the class of bug (wrong progressive root) this migration fixes.
 //
-// This exercises the progressive *container* merkleization (the block body). The devnet block's
-// progressive *lists* are all empty, so TestExecutionPayloadBidRootMatchesGoEth2Client below covers
-// a non-empty progressive list, where progressive and binary merkleization actually diverge.
+// This exercises the progressive container merkleization (the block body) and, because an empty
+// progressive list already hashes differently from an empty bounded list, a progressive-list tag drift on
+// any body list too. TestExecutionPayloadBidRootMatchesGoEth2Client below adds a non-empty list.
 func TestSignedBeaconBlockRootMatchesGoEth2Client(t *testing.T) {
 	var ours SignedBeaconBlock
 	require.NoError(t, ours.UnmarshalSSZ(TestingDevnet6SignedBeaconBlockSSZ), "decode into ssv-spec gloas type")

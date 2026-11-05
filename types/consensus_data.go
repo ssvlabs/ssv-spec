@@ -33,7 +33,7 @@ func (c *Contributions) GetTree() (*ssz.Node, error) {
 func (c *Contributions) HashTreeRootWith(hh ssz.HashWalker) error {
 	// *Contribution is now dynamic-ssz-generated and no longer implements fastssz's HashTreeRootWith,
 	// so append each element's HashTreeRoot() as a leaf chunk and let fastssz merkleize — same list
-	// root as the per-element composition.
+	// root as the per-element composition, though GetTree() can no longer prove into an element's fields.
 	subIndx := hh.Index()
 	num := uint64(len(*c))
 	if num > 13 {
