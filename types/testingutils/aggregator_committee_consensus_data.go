@@ -1,11 +1,11 @@
 package testingutils
 
 import (
+	"github.com/OffchainLabs/go-bitfield"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/electra"
+	eth2gloas "github.com/attestantio/go-eth2-client/spec/gloas"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	"github.com/prysmaticlabs/go-bitfield"
 
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -41,8 +41,8 @@ func TestAggregatorCommitteeConsensusDataForDuty(duty *types.AggregatorCommittee
 
 		switch validatorDuty.Type {
 		case types.BNRoleAggregator:
-			// Create attestation for this validator (Gloas reuses the Electra shape, SIP #94 §2)
-			attestation := &electra.Attestation{
+			// Create attestation for this validator
+			attestation := &eth2gloas.Attestation{
 				AggregationBits: bitfield.NewBitlist(128),
 				Signature:       phase0.BLSSignature{},
 				Data:            TestingAttestationData(version),

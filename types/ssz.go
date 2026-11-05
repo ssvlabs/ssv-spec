@@ -5,9 +5,15 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
-	"github.com/attestantio/go-eth2-client/spec/capella"
 	ssz "github.com/ferranbt/fastssz"
 )
+
+// HashRoot is the minimal interface needed to sign/merkleize a beacon object: just
+// HashTreeRoot(). fastssz's HashRoot also requires GetTree(), which dynamic-ssz
+// types (go-eth2-client Gloas, the regenerated gloas package) do not implement.
+type HashRoot interface {
+	HashTreeRoot() ([32]byte, error)
+}
 
 type SSZUint64 uint64
 
@@ -80,34 +86,6 @@ func (b SSZTransactions) HashTreeRootWith(hh ssz.HashWalker) error {
 
 // HashTreeRoot --
 func (b SSZTransactions) HashTreeRoot() ([32]byte, error) {
-	return ssz.HashWithDefaultHasher(b)
-}
-
-// SSZWithdrawals --
-type SSZWithdrawals []*capella.Withdrawal
-
-func (b SSZWithdrawals) GetTree() (*ssz.Node, error) {
-	return ssz.ProofTree(b)
-}
-
-func (b SSZWithdrawals) HashTreeRootWith(hh ssz.HashWalker) error {
-	// taken from https://github.com/attestantio/go-eth2-client/blob/bc14358487b6d32cb45feef14b170458abc5d14a/spec/capella/executionpayload_ssz.go#L332-L346
-	subIndx := hh.Index()
-	num := uint64(len(b))
-	if num > 16 {
-		return ssz.ErrIncorrectListSize
-	}
-	for _, elem := range b {
-		if err := elem.HashTreeRootWith(hh); err != nil {
-			return err
-		}
-	}
-	hh.MerkleizeWithMixin(subIndx, num, 16)
-	return nil
-}
-
-// HashTreeRoot --
-func (b SSZWithdrawals) HashTreeRoot() ([32]byte, error) {
 	return ssz.HashWithDefaultHasher(b)
 }
 

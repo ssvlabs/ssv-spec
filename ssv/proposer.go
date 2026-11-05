@@ -5,7 +5,6 @@ import (
 	"slices"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -386,9 +385,9 @@ func deriveBlindedEnvelope(d *gloas.GloasProposalData) (*gloas.BlindedExecutionP
 	}, nil
 }
 
-func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.GetState().StartingDuty.DutySlot())
-	return []ssz.HashRoot{types.SSZUint64(epoch)}, types.DomainRandao, nil
+	return []types.HashRoot{types.SSZUint64(epoch)}, types.DomainRandao, nil
 }
 
 // expectedPostConsensusRootsAndDomains an INTERNAL function, returns the decided proposal's post-consensus

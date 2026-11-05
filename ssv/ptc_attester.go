@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
@@ -120,7 +119,7 @@ func (r *PTCAttesterRunner) ProcessPostConsensus(signedMsg *types.PartialSignatu
 	return types.NewError(types.PTCAttesterNoPostConsensusPhaseErrorCode, "no post consensus phase for ptc attestation")
 }
 
-func (r *PTCAttesterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (r *PTCAttesterRunner) expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	// Peer partials validate against the operator's own frozen observation (honest convergence): a
 	// diverging peer's root fails the expected-root check (WrongSigningRootErrorCode). With no observation
 	// — the operator abstained (its beacon node saw no block for the slot) or has not executed the duty —
@@ -131,7 +130,7 @@ func (r *PTCAttesterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot
 	if r.PayloadAttestationData == nil {
 		return nil, types.DomainError, types.NewError(types.PTCAttesterNoObservationErrorCode, "no frozen payload attestation data")
 	}
-	return []ssz.HashRoot{r.PayloadAttestationData}, types.DomainPTCAttester, nil
+	return []types.HashRoot{r.PayloadAttestationData}, types.DomainPTCAttester, nil
 }
 
 // expectedPostConsensusRootsAndDomains an INTERNAL function, returns the expected post-consensus roots to sign

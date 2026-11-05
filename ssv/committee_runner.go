@@ -3,13 +3,12 @@ package ssv
 import (
 	"fmt"
 
+	"github.com/OffchainLabs/go-bitfield"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/electra"
+	eth2gloas "github.com/attestantio/go-eth2-client/spec/gloas"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 	"github.com/pkg/errors"
-	"github.com/prysmaticlabs/go-bitfield"
 
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -377,7 +376,7 @@ func findValidators(
 }
 
 // Unneeded since no preconsensus phase
-func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
+func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]types.HashRoot, phase0.DomainType, error) {
 	panic("not in use")
 }
 
@@ -510,40 +509,40 @@ func constructAttestationData(vote *types.BeaconVote, duty *types.ValidatorDuty)
 	}
 }
 
-// VersionedAttestationWithSignature inserts the reconstructed signature. spec.VersionedAttestation has no Gloas
-// field, so Gloas reuses the Electra container under the Gloas version tag (a local API wrapper, not wire
-// format; SIP #94 §2).
+// VersionedAttestationWithSignature inserts the reconstructed signature.
 func VersionedAttestationWithSignature(att *spec.VersionedAttestation, specSig phase0.BLSSignature) (*spec.VersionedAttestation, error) {
 	if att.Version != gloas.DataVersionGloas {
 		return nil, fmt.Errorf("unknown version: %s", att.Version)
 	}
-	if att.Electra == nil {
+	if att.Gloas == nil {
 		return att, fmt.Errorf("no Gloas attestation")
 	}
-	att.Electra.Signature = specSig
+	att.Gloas.Signature = specSig
 	return att, nil
 }
 
-func ConstructElectraAttestationWithoutSignature(attestationData *phase0.AttestationData, validatorDuty *types.ValidatorDuty) *electra.Attestation {
+// ConstructGloasAttestationWithoutSignature builds the Gloas attestation container (SIP #94 §2). It serializes like
+// the Electra one but merkleizes as a progressive container with a progressive-bitlist aggregation_bits
+// (EIP-7688 / EIP-7916), so its hash tree root, and the aggregate-and-proof signing root built on it, differs.
+func ConstructGloasAttestationWithoutSignature(attestationData *phase0.AttestationData, validatorDuty *types.ValidatorDuty) *eth2gloas.Attestation {
 	aggregationBitfield := bitfield.NewBitlist(validatorDuty.CommitteeLength)
 	aggregationBitfield.SetBitAt(validatorDuty.ValidatorCommitteeIndex, true)
 
 	committeeBits := bitfield.NewBitvector64()
 	committeeBits.SetBitAt(uint64(validatorDuty.CommitteeIndex), true)
 
-	return &electra.Attestation{
+	return &eth2gloas.Attestation{
 		Data:            attestationData,
 		AggregationBits: aggregationBitfield,
 		CommitteeBits:   committeeBits,
 	}
 }
 
-// ConstructVersionedAttestationWithoutSignature builds the unsigned attestation in the Electra container under the
-// Gloas version tag (see VersionedAttestationWithSignature).
+// ConstructVersionedAttestationWithoutSignature builds the unsigned Gloas attestation.
 func ConstructVersionedAttestationWithoutSignature(attestationData *phase0.AttestationData, validatorDuty *types.ValidatorDuty) *spec.VersionedAttestation {
 	return &spec.VersionedAttestation{
 		Version:        gloas.DataVersionGloas,
 		ValidatorIndex: &validatorDuty.ValidatorIndex,
-		Electra:        ConstructElectraAttestationWithoutSignature(attestationData, validatorDuty),
+		Gloas:          ConstructGloasAttestationWithoutSignature(attestationData, validatorDuty),
 	}
 }
