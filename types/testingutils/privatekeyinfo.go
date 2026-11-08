@@ -54,7 +54,7 @@ func BuildPrivateKeyInfo(ks *TestKeySet) *PrivateKeyInfo {
 			ETHAddress    string
 			EncryptionKey string
 		}{
-			SK:            dkgOperator.SK.D.String(),
+			SK:            dkgOperator.SK.D.String(), //nolint:staticcheck // SA1019: fixture format is the decimal scalar
 			ETHAddress:    dkgOperator.ETHAddress.Hex(),
 			EncryptionKey: exportRsaPrivateKey(dkgOperator.EncryptionKey),
 		}
