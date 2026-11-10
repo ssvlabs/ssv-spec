@@ -99,6 +99,8 @@ const (
 	InvalidCommitteeMemberErrorCode
 	InvalidValidatorDutyErrorCode
 	BeaconVoteNilCheckpointErrorCode
+	ProposerBlockSlotMismatchErrorCode
+	ProposerBlockProposerIndexMismatchErrorCode
 )
 
 type Error struct {

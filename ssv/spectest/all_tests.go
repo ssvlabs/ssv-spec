@@ -190,6 +190,8 @@ var AllTests = []tests.TestF{
 	valcheckduty.WrongValidatorPK,
 	valcheckduty.WrongDutyType,
 	valcheckduty.FarFutureDutySlot,
+	valcheckduty.ProposerBlockSlotMismatch,
+	valcheckduty.ProposerBlockProposerIndexMismatch,
 
 	valcheckattestations.Slashable,
 	valcheckattestations.SourceHigherThanTarget,
