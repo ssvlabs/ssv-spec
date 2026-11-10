@@ -116,6 +116,16 @@ func ProposerValueCheckF(
 		if err != nil {
 			return errors.Wrap(err, "failed to get slot from block data")
 		}
+		if slot != cd.Duty.Slot {
+			return types.NewError(types.ProposerBlockSlotMismatchErrorCode, "block slot does not match duty slot")
+		}
+		proposerIndex, err := blockData.ProposerIndex()
+		if err != nil {
+			return errors.Wrap(err, "failed to get proposer index from block data")
+		}
+		if proposerIndex != cd.Duty.ValidatorIndex {
+			return types.NewError(types.ProposerBlockProposerIndexMismatchErrorCode, "block proposer index does not match duty validator index")
+		}
 		return signer.IsBeaconBlockSlashable(sharePublicKey, slot)
 	}
 }

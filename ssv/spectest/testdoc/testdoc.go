@@ -222,6 +222,8 @@ const ValCheckAttestationUnmatchedTargetEpochDoc = "Tests attestation value chec
 // Documentation for valcheckduty tests
 const ValCheckDutyFarFutureDutySlotDoc = "Tests duty value check with duty slot too far in the future"
 const ValCheckDutyWrongDutyTypeDoc = "Tests duty value check with wrong duty type"
+const ValCheckDutyProposerBlockSlotMismatchDoc = "Tests proposer value check rejects a block whose slot differs from the duty slot"
+const ValCheckDutyProposerBlockProposerIndexMismatchDoc = "Tests proposer value check rejects a block whose proposer index differs from the duty validator index"
 const ValCheckDutyWrongValidatorIndexDoc = "Tests duty value check with wrong validator index across different roles"
 const ValCheckDutyWrongValidatorPKDoc = "Tests duty value check with wrong validator public key across different roles"
 
