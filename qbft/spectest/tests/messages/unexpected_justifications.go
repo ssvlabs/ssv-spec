@@ -8,8 +8,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// RoundChangeNotPreparedWithJustifications tests a not prepared round change that carries round change justifications
-func RoundChangeNotPreparedWithJustifications() tests.SpecTest {
+// RoundChangeNotPreparedUnexpectedJustifications tests a not prepared round change that carries round change justifications
+func RoundChangeNotPreparedUnexpectedJustifications() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	justifications := testingutils.MarshalJustifications([]*types.SignedSSVMessage{
 		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
@@ -27,8 +27,8 @@ func RoundChangeNotPreparedWithJustifications() tests.SpecTest {
 	})
 
 	return tests.NewMsgSpecTest(
-		"rc not prepared with justifications",
-		testdoc.MessagesRCNotPreparedWithJustificationsDoc,
+		"rc not prepared unexpected justifications",
+		testdoc.MessagesRCNotPreparedUnexpectedJustificationsDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
@@ -76,11 +76,20 @@ func withPrepareJustifications(msgType qbft.MessageType, name string) tests.Spec
 	)
 }
 
+// PrepareWithRoundChangeJustifications tests a prepare message that carries round change justifications
+func PrepareWithRoundChangeJustifications() tests.SpecTest {
+	return withRoundChangeJustifications(qbft.PrepareMsgType, "prepare with rc justifications")
+}
+
 // CommitWithRoundChangeJustifications tests a commit message that carries round change justifications
 func CommitWithRoundChangeJustifications() tests.SpecTest {
+	return withRoundChangeJustifications(qbft.CommitMsgType, "commit with rc justifications")
+}
+
+func withRoundChangeJustifications(msgType qbft.MessageType, name string) tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	msg := testingutils.SignQBFTMsg(ks.OperatorKeys[1], types.OperatorID(1), &qbft.Message{
-		MsgType:    qbft.CommitMsgType,
+		MsgType:    msgType,
 		Height:     qbft.FirstHeight,
 		Round:      qbft.FirstRound,
 		Identifier: testingutils.TestingIdentifier,
@@ -91,8 +100,8 @@ func CommitWithRoundChangeJustifications() tests.SpecTest {
 	})
 
 	return tests.NewMsgSpecTest(
-		"commit with rc justifications",
-		testdoc.MessagesCommitWithRoundChangeJustificationsDoc,
+		name,
+		testdoc.MessagesNonProposalWithRoundChangeJustificationsDoc,
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
@@ -124,7 +133,7 @@ func RoundChangeJustificationWithFullData() tests.SpecTest {
 		[]*types.SignedSSVMessage{msg},
 		nil,
 		nil,
-		types.UnexpectedJustificationErrorCode,
+		types.JustificationWithFullDataErrorCode,
 		ks,
 	)
 }

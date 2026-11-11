@@ -100,6 +100,7 @@ const (
 	InvalidValidatorDutyErrorCode
 	BeaconVoteNilCheckpointErrorCode
 	UnexpectedJustificationErrorCode
+	JustificationWithFullDataErrorCode
 )
 
 type Error struct {
