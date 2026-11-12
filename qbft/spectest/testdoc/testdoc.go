@@ -99,6 +99,9 @@ const MessagesValidHashDataRootDoc = "Test a valid hash data root for QBFT messa
 const MessagesRCNotPreparedUnexpectedJustificationsDoc = "Test that a not prepared round change message carrying round change justifications is rejected."
 const MessagesNonProposalWithPrepareJustificationsDoc = "Test that a non-proposal message carrying prepare justifications is rejected."
 const MessagesNonProposalWithRoundChangeJustificationsDoc = "Test that a prepare or commit message carrying round change justifications is rejected."
+const MessagesPrepareWithMalformedPrepareJustificationDoc = "Test that a prepare message carrying a prepare justification that can't be decoded is rejected for carrying it, before it is decoded."
+const MessagesRCNotPreparedMalformedJustificationDoc = "Test that a not prepared round change message carrying a round change justification that can't be decoded is rejected for carrying it, before it is decoded."
+const MessagesRCPreparedWithPrepareJustificationsDoc = "Test that a prepared round change message carrying prepare justifications is rejected."
 const MessagesRCJustificationWithFullDataDoc = "Test that a round change whose justifications carry full data is rejected."
 const MessagesRoundChangeJustificationUnmarshalingDoc = "Test unmarshalling round change justifications from QBFT proposal message."
 const MessagesRoundChangePreparedDoc = "Test round change message with prepared value and justifications."
@@ -147,6 +150,8 @@ const PrepareFutureRoundDoc = "Test prepare message for a round greater than the
 const PrepareHappyFlowDoc = "Test a complete prepare happy flow with proposal and prepare quorum"
 
 // Documentation for Proposal tests
+const ProposalPrepareJustificationNestedJustificationDoc = "Test proposal for round > 1 that was prepared previously, where a prepare message in its prepare justifications itself carries prepare justifications, expecting error."
+const ProposalRCJustificationNestedPrepareJustificationDoc = "Test proposal for round > 1 that was prepared previously, where a prepare message in the justification of an embedded round change itself carries prepare justifications, expecting error."
 const ProposalPreparedPreviouslyJustificationDoc = "Test proposal for round > 1 that was prepared previously with valid quorum of round change messages justification, expecting full consensus flow."
 const ProposalPreparedPreviouslyNoPrepareJustificationQuorumDoc = "Test proposal for round > 1 that was prepared previously but lacks quorum of prepare messages in justification, expecting validation error."
 const ProposalPreparedPreviouslyNoRCJustificationQuorumDoc = "Test proposal for round > 1 that was prepared previously but lacks quorum of round change messages in justification, expecting validation error."

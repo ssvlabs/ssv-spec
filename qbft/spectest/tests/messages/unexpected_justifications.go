@@ -110,6 +110,80 @@ func withRoundChangeJustifications(msgType qbft.MessageType, name string) tests.
 	)
 }
 
+// PrepareWithMalformedPrepareJustification tests a prepare message that carries a prepare justification that can't
+// be decoded. The message is rejected for carrying the justification, before it is decoded.
+func PrepareWithMalformedPrepareJustification() tests.SpecTest {
+	ks := testingutils.Testing4SharesSet()
+	msg := testingutils.SignQBFTMsg(ks.OperatorKeys[1], types.OperatorID(1), &qbft.Message{
+		MsgType:              qbft.PrepareMsgType,
+		Height:               qbft.FirstHeight,
+		Round:                qbft.FirstRound,
+		Identifier:           testingutils.TestingIdentifier,
+		Root:                 testingutils.TestingQBFTRootData,
+		PrepareJustification: [][]byte{{1}},
+	})
+
+	return tests.NewMsgSpecTest(
+		"prepare with malformed prepare justification",
+		testdoc.MessagesPrepareWithMalformedPrepareJustificationDoc,
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		types.UnexpectedJustificationErrorCode,
+		ks,
+	)
+}
+
+// RoundChangeNotPreparedMalformedJustification tests a not prepared round change that carries a round change
+// justification that can't be decoded. The message is rejected for carrying the justification, before it is decoded.
+func RoundChangeNotPreparedMalformedJustification() tests.SpecTest {
+	ks := testingutils.Testing4SharesSet()
+	msg := testingutils.TestingRoundChangeMessageWithParams(
+		ks.OperatorKeys[1], types.OperatorID(1), 2, qbft.FirstHeight, testingutils.TestingQBFTRootData, qbft.NoRound,
+		[][]byte{{1}})
+
+	return tests.NewMsgSpecTest(
+		"rc not prepared malformed justification",
+		testdoc.MessagesRCNotPreparedMalformedJustificationDoc,
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		types.UnexpectedJustificationErrorCode,
+		ks,
+	)
+}
+
+// RoundChangePreparedWithPrepareJustifications tests a prepared round change, with valid round change
+// justifications, that also carries prepare justifications
+func RoundChangePreparedWithPrepareJustifications() tests.SpecTest {
+	ks := testingutils.Testing4SharesSet()
+	prepareMsgs := []*types.SignedSSVMessage{
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[1], types.OperatorID(1)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[2], types.OperatorID(2)),
+		testingutils.TestingPrepareMessage(ks.OperatorKeys[3], types.OperatorID(3)),
+	}
+	msg := testingutils.SignQBFTMsg(ks.OperatorKeys[1], types.OperatorID(1), &qbft.Message{
+		MsgType:                  qbft.RoundChangeMsgType,
+		Height:                   qbft.FirstHeight,
+		Round:                    2,
+		Identifier:               testingutils.TestingIdentifier,
+		Root:                     testingutils.TestingQBFTRootData,
+		DataRound:                qbft.FirstRound,
+		RoundChangeJustification: testingutils.MarshalJustifications(prepareMsgs),
+		PrepareJustification:     testingutils.MarshalJustifications(prepareMsgs[:1]),
+	})
+
+	return tests.NewMsgSpecTest(
+		"rc prepared with prepare justifications",
+		testdoc.MessagesRCPreparedWithPrepareJustificationsDoc,
+		[]*types.SignedSSVMessage{msg},
+		nil,
+		nil,
+		types.UnexpectedJustificationErrorCode,
+		ks,
+	)
+}
+
 // RoundChangeJustificationWithFullData tests a prepared round change whose prepare justifications carry full data
 func RoundChangeJustificationWithFullData() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
