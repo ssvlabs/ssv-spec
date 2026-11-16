@@ -101,6 +101,7 @@ const (
 	BeaconVoteNilCheckpointErrorCode
 	ProposerBlockSlotMismatchErrorCode
 	ProposerBlockProposerIndexMismatchErrorCode
+	ProposerDutySlotMismatchErrorCode
 )
 
 type Error struct {

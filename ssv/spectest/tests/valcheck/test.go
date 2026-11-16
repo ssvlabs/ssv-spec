@@ -19,7 +19,7 @@ type SpecTest struct {
 	Documentation     string
 	Network           types.BeaconNetwork
 	RunnerRole        types.RunnerRole
-	DutySlot          phase0.Slot // DutySlot is used only for the RoleCommittee since the BeaconVoteValueCheckF requires the duty's slot
+	DutySlot          phase0.Slot // Running duty slot: the RoleCommittee vote check's slot, and the RoleProposer running-slot check (0 skips the proposer check, so leave it unset unless testing that check)
 	Input             []byte
 	ExpectedSource    phase0.Checkpoint        // Specify expected source epoch for beacon vote value check
 	ExpectedTarget    phase0.Checkpoint        // Specify expected target epoch for beacon vote value check
@@ -66,7 +66,8 @@ func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueChe
 		return ssv.BeaconVoteValueCheckF(signer, test.DutySlot, shareValidatorsPK, test.ExpectedSource.Epoch,
 			test.ExpectedTarget.Epoch)
 	case types.RoleProposer:
-		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex, nil)
+		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex, nil,
+			func() phase0.Slot { return test.DutySlot })
 	case types.RoleAggregatorCommittee:
 		return ssv.AggregatorCommitteeValueCheckF(signer, test.Network)
 	default:

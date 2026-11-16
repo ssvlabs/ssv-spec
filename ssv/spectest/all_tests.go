@@ -116,6 +116,7 @@ var AllTests = []tests.TestF{
 	consensus.FutureDecidedNoInstance,
 	consensus.FutureDecided,
 	consensus.InvalidDecidedValue,
+	consensus.DecidedValueWrongSlot,
 	consensus.FutureMessage,
 	consensus.PastMessage,
 	consensus.PostFinish,
@@ -190,8 +191,6 @@ var AllTests = []tests.TestF{
 	valcheckduty.WrongValidatorPK,
 	valcheckduty.WrongDutyType,
 	valcheckduty.FarFutureDutySlot,
-	valcheckduty.ProposerBlockSlotMismatch,
-	valcheckduty.ProposerBlockProposerIndexMismatch,
 
 	valcheckattestations.Slashable,
 	valcheckattestations.SourceHigherThanTarget,
@@ -204,6 +203,9 @@ var AllTests = []tests.TestF{
 	valcheckattestations.ValidNonSlashableSlot,
 
 	valcheckproposer.BlindedBlock,
+	valcheckproposer.ProposerBlockSlotMismatch,
+	valcheckproposer.ProposerBlockProposerIndexMismatch,
+	valcheckproposer.RunningDutySlotMismatch,
 
 	valcheckaggcommittee.NoValidator,
 	valcheckaggcommittee.Valid,

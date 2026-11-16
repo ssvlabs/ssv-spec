@@ -87,17 +87,29 @@ func BeaconVoteValueCheckF(
 	}
 }
 
+// ProposerValueCheckF validates the proposer QBFT value. runningDutySlot reports the slot of the duty this
+// runner is running, so a value for any other slot is rejected: the value's duty comes from the leader, so the
+// block-vs-duty checks below alone can't stop duty and block slots being shifted together. A nil provider skips
+// the check and is for isolated value-check tests only.
 func ProposerValueCheckF(
 	signer types.BeaconSigner,
 	network types.BeaconNetwork,
 	validatorPK types.ValidatorPK,
 	validatorIndex phase0.ValidatorIndex,
 	sharePublicKey []byte,
+	runningDutySlot func() phase0.Slot,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		cd := &types.ProposerConsensusData{}
 		if err := cd.Decode(data); err != nil {
 			return types.WrapError(types.ProposerConsensusDataDecodeErrorCode, errors.Wrap(err, "failed decoding consensus data"))
+		}
+		// A nil provider or a 0 slot (no running duty) skips the check.
+		if runningDutySlot != nil {
+			if want := runningDutySlot(); want != 0 && cd.Duty.Slot != want {
+				return types.NewError(types.ProposerDutySlotMismatchErrorCode,
+					fmt.Sprintf("consensus data duty slot %d does not match running duty slot %d", cd.Duty.Slot, want))
+			}
 		}
 		if err := cd.Validate(); err != nil {
 			return types.NewError(types.QBFTValueInvalidErrorCode, fmt.Sprintf("invalid value: %v", err.Error()))
@@ -117,14 +129,17 @@ func ProposerValueCheckF(
 			return errors.Wrap(err, "failed to get slot from block data")
 		}
 		if slot != cd.Duty.Slot {
-			return types.NewError(types.ProposerBlockSlotMismatchErrorCode, "block slot does not match duty slot")
+			return types.NewError(types.ProposerBlockSlotMismatchErrorCode,
+				fmt.Sprintf("block slot %d does not match duty slot %d", slot, cd.Duty.Slot))
 		}
 		proposerIndex, err := blockData.ProposerIndex()
 		if err != nil {
 			return errors.Wrap(err, "failed to get proposer index from block data")
 		}
 		if proposerIndex != cd.Duty.ValidatorIndex {
-			return types.NewError(types.ProposerBlockProposerIndexMismatchErrorCode, "block proposer index does not match duty validator index")
+			return types.NewError(types.ProposerBlockProposerIndexMismatchErrorCode,
+				fmt.Sprintf("block proposer index %d does not match duty validator index %d",
+					proposerIndex, cd.Duty.ValidatorIndex))
 		}
 		return signer.IsBeaconBlockSlashable(sharePublicKey, slot)
 	}
