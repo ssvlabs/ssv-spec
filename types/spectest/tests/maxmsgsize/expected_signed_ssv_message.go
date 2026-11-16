@@ -10,8 +10,8 @@ const (
 	ExpectedSizeCommitSignedSSVMessage                   = 484
 	ExpectedSizeDecidedSignedSSVMessage                  = 1020
 	ExpectedSizeRoundChangeSignedSSVMessage              = 1948
-	ExpectedSizeProposalSignedSSVMessage                 = 7916
-	ExpectedSizePartialSignatureMessagesSignedSSVMessage = 628
+	ExpectedSizeProposalSignedSSVMessage                 = 7924
+	ExpectedSizePartialSignatureMessagesSignedSSVMessage = 636
 )
 
 func expectedFullData() []byte {

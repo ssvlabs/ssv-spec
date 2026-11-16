@@ -1,7 +1,7 @@
 package proposerconsensusdata
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
@@ -16,8 +16,8 @@ func InvalidDuty() *ProposerConsensusDataTest {
 			Type:   types.BeaconRole(100),
 			PubKey: testingutils.TestingValidatorPubKey,
 		},
-		Version: spec.DataVersionCapella,
-		DataSSZ: testingutils.TestingAttestationDataBytes(spec.DataVersionCapella),
+		Version: gloas.DataVersionGloas,
+		DataSSZ: testingutils.TestingBeaconBlockBytesV(gloas.DataVersionGloas),
 	}
 
 	return NewProposerConsensusDataTest(

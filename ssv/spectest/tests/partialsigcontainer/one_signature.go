@@ -1,10 +1,10 @@
 package partialsigcontainer
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -14,7 +14,7 @@ func OneSignature() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// Create PartialSignatureMessage for testing
-	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, spec.DataVersionPhase0)
+	msg := testingutils.PostConsensusAttestationMsg(ks.Shares[1], 1, gloas.DataVersionGloas)
 	msgs := []*types.PartialSignatureMessage{msg.Messages[0]}
 
 	// Verify the reconstructed signature

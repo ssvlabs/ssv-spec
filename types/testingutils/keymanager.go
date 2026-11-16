@@ -34,6 +34,10 @@ type TestingKeyStorage struct {
 type TestingKeyManager struct {
 	keyStorage     *TestingKeyStorage
 	slashableSlots map[string][]phase0.Slot // Validator Key -> List of slots
+	// recordAttestations makes IsAttestationSlashable detect double votes: any attestation data differing from
+	// the one signed (seeded) or first seen per (validator key, slot) is slashable. Off by default.
+	recordAttestations bool
+	seenAttestations   map[string]map[phase0.Slot][32]byte
 }
 
 var (
@@ -50,6 +54,28 @@ func NewTestingKeyManagerWithSlashableSlots(slashableSlots map[string][]phase0.S
 	return &TestingKeyManager{
 		keyStorage:     NewTestingKeyStorage(),
 		slashableSlots: slashableSlots,
+	}
+}
+
+// NewTestingKeyManagerWithSignedAttestations returns a double-vote-detecting key manager seeded with the
+// attestation data each share key (hex) has already signed (see recordAttestations).
+func NewTestingKeyManagerWithSignedAttestations(slashableSlots map[string][]phase0.Slot, signed map[string][]*phase0.AttestationData) *TestingKeyManager {
+	seen := map[string]map[phase0.Slot][32]byte{}
+	for pk, datas := range signed {
+		seen[pk] = map[phase0.Slot][32]byte{}
+		for _, data := range datas {
+			root, err := data.HashTreeRoot()
+			if err != nil {
+				panic(err)
+			}
+			seen[pk][data.Slot] = root
+		}
+	}
+	return &TestingKeyManager{
+		keyStorage:         NewTestingKeyStorage(),
+		slashableSlots:     slashableSlots,
+		recordAttestations: true,
+		seenAttestations:   seen,
 	}
 }
 
@@ -113,6 +139,26 @@ func (km *TestingKeyManager) IsAttestationSlashable(pk types.ShareValidatorPK, d
 			return types.NewError(types.SlashableAttestationErrorCode, "slashable attestation")
 		}
 	}
+
+	if km.recordAttestations {
+		root, err := data.HashTreeRoot()
+		if err != nil {
+			return err
+		}
+		perSlot, ok := km.seenAttestations[entry]
+		if !ok {
+			perSlot = map[phase0.Slot][32]byte{}
+			km.seenAttestations[entry] = perSlot
+		}
+		if seen, ok := perSlot[data.Slot]; ok {
+			if seen != root {
+				return types.NewError(types.SlashableAttestationErrorCode, "slashable attestation")
+			}
+		} else {
+			perSlot[data.Slot] = root
+		}
+	}
+
 	return nil
 }
 
@@ -128,8 +174,15 @@ func (km *TestingKeyManager) SignRoot(data types.Root, sigType types.SignatureTy
 	return nil, errors.New("pk not found")
 }
 
-// IsBeaconBlockSlashable returns error if the given block is slashable
+// IsBeaconBlockSlashable returns an error if the share has the slot marked slashable, mirroring
+// IsAttestationSlashable's use of the slashable-slots store.
 func (km *TestingKeyManager) IsBeaconBlockSlashable(pk []byte, slot phase0.Slot) error {
+	entry := hex.EncodeToString(pk)
+	for _, slashableSlot := range km.slashableSlots[entry] {
+		if slashableSlot == slot {
+			return types.NewError(types.SlashableProposalErrorCode, "slashable proposal")
+		}
+	}
 	return nil
 }
 

@@ -1,12 +1,12 @@
 package committee
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -24,7 +24,7 @@ func WrongRole() tests.SpecTest {
 
 	// Setup msg params
 	commMsgID := testingutils.CommitteeMsgID(ks)
-	version := spec.DataVersionElectra
+	version := gloas.DataVersionGloas
 	height := qbft.Height(testingutils.TestingDutySlotV(version))
 
 	// Function to change runner role

@@ -1,21 +1,27 @@
 package consensusdataproposer
 
 import (
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// VersionedBlockValidation tests a valid consensus data with Deneb block
+// VersionedBlockValidation tests a valid consensus data with a Gloas block
 func VersionedBlockValidation() *ProposerSpecTest {
-	expectedCdRoot, err := testingutils.TestProposerConsensusDataV(spec.DataVersionDeneb).HashTreeRoot()
+	version := gloas.DataVersionGloas
+
+	expectedCdRoot, err := testingutils.TestProposerConsensusDataV(version).HashTreeRoot()
 	if err != nil {
 		panic(err.Error())
 	}
 
-	expectedBlkRoot, err := testingutils.TestingBeaconBlockV(spec.DataVersionDeneb).Root()
+	block := gloas.TestingBeaconBlock(testingutils.TestingDutySlotV(version))
+	expectedBlkRoot, err := block.HashTreeRoot()
+	if err != nil {
+		panic(err.Error())
+	}
+	blockSSZ, err := block.MarshalSSZ()
 	if err != nil {
 		panic(err.Error())
 	}
@@ -23,9 +29,8 @@ func VersionedBlockValidation() *ProposerSpecTest {
 	return NewProposerSpecTest(
 		"consensus data versioned block validation",
 		testdoc.ProposerSpecTestVersionedBlockValidationDoc,
-		false,
-		testingutils.TestProposerConsensusDataBytsV(spec.DataVersionDeneb),
-		testingutils.TestingBeaconBlockBytesV(spec.DataVersionDeneb),
+		testingutils.TestProposerConsensusDataBytsV(version),
+		blockSSZ,
 		types.ExpectedBlkRoot(expectedBlkRoot),
 		types.ExpectedCdRoot(expectedCdRoot),
 		0,

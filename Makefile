@@ -31,3 +31,4 @@ generate-ssz:
 	@go generate ./qbft/
 	@go generate ./ssv/
 	@go generate ./types/
+	@go generate ./types/gloas/

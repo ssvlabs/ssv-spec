@@ -4,20 +4,13 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/api"
-	apiv1capella "github.com/attestantio/go-eth2-client/api/v1/capella"
-	apiv1deneb "github.com/attestantio/go-eth2-client/api/v1/deneb"
-	apiv1electra "github.com/attestantio/go-eth2-client/api/v1/electra"
-	apiv1fulu "github.com/attestantio/go-eth2-client/api/v1/fulu"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/capella"
-	"github.com/attestantio/go-eth2-client/spec/deneb"
-	"github.com/attestantio/go-eth2-client/spec/electra"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -28,6 +21,12 @@ type TestingBeaconNode struct {
 	BroadcastedRoots             []phase0.Root
 	SyncCommitteeAggregatorRoots map[string]bool
 	CommitteeIndexAggregators    map[phase0.CommitteeIndex]bool
+	// producesExternalBid makes GetBeaconBlock return a bare external-bid block and no envelope (SIP #94 §4).
+	producesExternalBid bool
+	// wrongPayloadAttestationSlot makes GetPayloadAttestationData answer for another slot (SIP #94 §3).
+	wrongPayloadAttestationSlot bool
+	// failBlockSubmit makes SubmitBeaconBlock fail without recording the block (SIP #94 §6 reveal-on-attempt).
+	failBlockSubmit bool
 }
 
 func NewTestingBeaconNode() *TestingBeaconNode {
@@ -48,6 +47,21 @@ func (bn *TestingBeaconNode) SetAggregators(committeeIndices map[phase0.Committe
 	bn.CommitteeIndexAggregators = committeeIndices
 }
 
+// SetProducesExternalBid FOR TESTING ONLY!! sets producesExternalBid
+func (bn *TestingBeaconNode) SetProducesExternalBid(v bool) {
+	bn.producesExternalBid = v
+}
+
+// SetWrongPayloadAttestationSlot FOR TESTING ONLY!! sets wrongPayloadAttestationSlot
+func (bn *TestingBeaconNode) SetWrongPayloadAttestationSlot(v bool) {
+	bn.wrongPayloadAttestationSlot = v
+}
+
+// SetFailBlockSubmit FOR TESTING ONLY!! sets failBlockSubmit
+func (bn *TestingBeaconNode) SetFailBlockSubmit(v bool) {
+	bn.failBlockSubmit = v
+}
+
 // GetBeaconNetwork returns the beacon network the node is on
 func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 	return types.BeaconTestNetwork
@@ -55,53 +69,26 @@ func (bn *TestingBeaconNode) GetBeaconNetwork() types.BeaconNetwork {
 
 // GetAttestationData returns attestation data by the given slot and committee index
 func (bn *TestingBeaconNode) GetAttestationData(slot phase0.Slot) (*phase0.AttestationData, spec.DataVersion, error) {
-	version := VersionBySlot(slot)
-	data := *TestingAttestationData(version)
+	data := *TestingAttestationData(gloas.DataVersionGloas)
 	data.Slot = slot
-	return &data, version, nil
+	return &data, gloas.DataVersionGloas, nil
 }
 
 // SubmitAttestations submit attestations to the node
-// Note: The test is concerned with what should be sent on the wire. Thus, electra Attestations are converted into a SingleAttestation object as in the Ethereum spec.
+// Note: The test is concerned with what should be sent on the wire. Thus, attestations are converted into a
+// SingleAttestation object as in the Ethereum spec (Gloas reuses the Electra shape, SIP #94 §2).
 func (bn *TestingBeaconNode) SubmitAttestations(attestations []*spec.VersionedAttestation) error {
 	for _, att := range attestations {
-		var root [32]byte
-
-		switch att.Version {
-		case spec.DataVersionPhase0:
-			root, _ = att.Phase0.HashTreeRoot()
-		case spec.DataVersionAltair:
-			root, _ = att.Altair.HashTreeRoot()
-		case spec.DataVersionBellatrix:
-			root, _ = att.Bellatrix.HashTreeRoot()
-		case spec.DataVersionCapella:
-			root, _ = att.Capella.HashTreeRoot()
-		case spec.DataVersionDeneb:
-			root, _ = att.Deneb.HashTreeRoot()
-		case spec.DataVersionElectra:
-			singleAttestation, err := att.Electra.ToSingleAttestation(att.ValidatorIndex)
-			if err != nil {
-				panic(err)
-			}
-			root, _ = singleAttestation.HashTreeRoot()
-		case spec.DataVersionFulu:
-			singleAttestation, err := att.Fulu.ToSingleAttestation(att.ValidatorIndex)
-			if err != nil {
-				panic(err)
-			}
-			root, _ = singleAttestation.HashTreeRoot()
-		default:
+		if att.Version != gloas.DataVersionGloas {
 			panic("unsupported version")
 		}
-
+		singleAttestation, err := att.Electra.ToSingleAttestation(att.ValidatorIndex)
+		if err != nil {
+			panic(err)
+		}
+		root, _ := singleAttestation.HashTreeRoot()
 		bn.BroadcastedRoots = append(bn.BroadcastedRoots, root)
 	}
-	return nil
-}
-
-func (bn *TestingBeaconNode) SubmitValidatorRegistration(registration *api.VersionedSignedValidatorRegistration) error {
-	r, _ := registration.V1.HashTreeRoot()
-	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
 
@@ -112,136 +99,41 @@ func (bn *TestingBeaconNode) SubmitVoluntaryExit(voluntaryExit *phase0.SignedVol
 	return nil
 }
 
-// GetBeaconBlock returns beacon block by the given slot, graffiti, and randao.
-func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*api.VersionedProposal, ssz.Marshaler, error) {
-	version := VersionBySlot(slot)
-	vBlk := TestingBeaconBlockV(version)
-
-	switch version {
-	case spec.DataVersionCapella:
-		return vBlk, vBlk.Capella, nil
-	case spec.DataVersionDeneb:
-		return vBlk, vBlk.Deneb, nil
-	case spec.DataVersionElectra:
-		return vBlk, vBlk.Electra, nil
-	case spec.DataVersionFulu:
-		return vBlk, vBlk.Fulu, nil
-	default:
-		return nil, nil, fmt.Errorf("unsupported version %s", version)
+// GetBeaconBlock returns the self-build fixture block for the slot plus the blinded envelope derived from it, so
+// this operator is the builder operator; under SetProducesExternalBid, a bare external-bid block and no envelope
+// (SIP #94 §4/§6).
+func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, *gloas.BlindedExecutionPayloadEnvelope, error) {
+	if bn.producesExternalBid {
+		// External bid win: a bare block and no envelope, so the decided value carries a zero payload_root.
+		return gloas.TestingBeaconBlockExternalBuild(slot), nil, nil
 	}
+	return gloas.TestingBeaconBlock(slot), TestingBlindedExecutionPayloadEnvelope(slot), nil
 }
 
-// SubmitBeaconBlock submit the block (blinded or full) to the node
-func (bn *TestingBeaconNode) SubmitBeaconBlock(block *api.VersionedProposal, sig phase0.BLSSignature) error {
-	var r [32]byte
-
-	if block.Blinded {
-		// Handle blinded blocks
-		switch block.Version {
-		case spec.DataVersionCapella:
-			if block.CapellaBlinded == nil {
-				return fmt.Errorf("%s blinded block is nil", block.Version.String())
-			}
-			sb := &apiv1capella.SignedBlindedBeaconBlock{
-				Message:   block.CapellaBlinded,
-				Signature: sig,
-			}
-			r, _ = sb.HashTreeRoot()
-		case spec.DataVersionDeneb:
-			if block.DenebBlinded == nil {
-				return fmt.Errorf("%s blinded block is nil", block.Version.String())
-			}
-			sb := &apiv1deneb.SignedBlindedBeaconBlock{
-				Message:   block.DenebBlinded,
-				Signature: sig,
-			}
-			r, _ = sb.HashTreeRoot()
-		case spec.DataVersionElectra:
-			if block.ElectraBlinded == nil {
-				return fmt.Errorf("%s blinded block is nil", block.Version.String())
-			}
-			sb := &apiv1electra.SignedBlindedBeaconBlock{
-				Message:   block.ElectraBlinded,
-				Signature: sig,
-			}
-			r, _ = sb.HashTreeRoot()
-		case spec.DataVersionFulu:
-			if block.FuluBlinded == nil {
-				return fmt.Errorf("%s blinded block is nil", block.Version.String())
-			}
-			sb := &apiv1electra.SignedBlindedBeaconBlock{
-				Message:   block.FuluBlinded,
-				Signature: sig,
-			}
-			r, _ = sb.HashTreeRoot()
-		default:
-			return fmt.Errorf("unknown blinded block version %d", block.Version)
-		}
-	} else {
-		// Handle full blocks
-		switch block.Version {
-		case spec.DataVersionCapella:
-			if block.Capella == nil {
-				return fmt.Errorf("%s block is nil", block.Version.String())
-			}
-			sb := &capella.SignedBeaconBlock{
-				Message:   block.Capella,
-				Signature: sig,
-			}
-			r, _ = sb.HashTreeRoot()
-		case spec.DataVersionDeneb:
-			if block.Deneb == nil {
-				return fmt.Errorf("%s block contents is nil", block.Version.String())
-			}
-			if block.Deneb.Block == nil {
-				return fmt.Errorf("%s block is nil", block.Version.String())
-			}
-			sb := &apiv1deneb.SignedBlockContents{
-				SignedBlock: &deneb.SignedBeaconBlock{
-					Message:   block.Deneb.Block,
-					Signature: sig,
-				},
-				KZGProofs: block.Deneb.KZGProofs,
-				Blobs:     block.Deneb.Blobs,
-			}
-			r, _ = sb.HashTreeRoot()
-		case spec.DataVersionElectra:
-			if block.Electra == nil {
-				return fmt.Errorf("%s block contents is nil", block.Version.String())
-			}
-			if block.Electra.Block == nil {
-				return fmt.Errorf("%s block is nil", block.Version.String())
-			}
-			sb := &apiv1electra.SignedBlockContents{
-				SignedBlock: &electra.SignedBeaconBlock{
-					Message:   block.Electra.Block,
-					Signature: sig,
-				},
-				KZGProofs: block.Electra.KZGProofs,
-				Blobs:     block.Electra.Blobs,
-			}
-			r, _ = sb.HashTreeRoot()
-		case spec.DataVersionFulu:
-			if block.Fulu == nil {
-				return fmt.Errorf("%s block contents is nil", block.Version.String())
-			}
-			if block.Fulu.Block == nil {
-				return fmt.Errorf("%s block is nil", block.Version.String())
-			}
-			sb := &apiv1fulu.SignedBlockContents{
-				SignedBlock: &electra.SignedBeaconBlock{
-					Message:   block.Fulu.Block,
-					Signature: sig,
-				},
-				KZGProofs: block.Fulu.KZGProofs,
-				Blobs:     block.Fulu.Blobs,
-			}
-			r, _ = sb.HashTreeRoot()
-		default:
-			return types.WrapError(types.UnknownBlockVersionErrorCode, fmt.Errorf("unknown block version %d", block.Version))
-		}
+// SubmitBeaconBlock records the signed block's root.
+func (bn *TestingBeaconNode) SubmitBeaconBlock(block *gloas.BeaconBlock, sig phase0.BLSSignature) error {
+	if bn.failBlockSubmit {
+		return fmt.Errorf("forced block submit failure")
 	}
+	sb := &gloas.SignedBeaconBlock{
+		Message:   block,
+		Signature: sig,
+	}
+	r, err := sb.HashTreeRoot()
+	if err != nil {
+		return err
+	}
+	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
+	return nil
+}
 
+// SubmitExecutionPayloadEnvelope records the published §6 reveal's root — the blinded envelope's root,
+// which by root-equivalence is the full envelope's (SIP #94 §6).
+func (bn *TestingBeaconNode) SubmitExecutionPayloadEnvelope(envelope *gloas.BlindedExecutionPayloadEnvelope, signature phase0.BLSSignature) error {
+	r, err := envelope.HashTreeRoot()
+	if err != nil {
+		return err
+	}
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
 }
@@ -261,43 +153,21 @@ func (bn *TestingBeaconNode) IsAggregator(slot phase0.Slot, committeeIndex phase
 
 // GetAggregateAttestation returns the aggregate attestation for the given slot and committee
 func (bn *TestingBeaconNode) GetAggregateAttestation(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, error) {
-	version := VersionBySlot(slot)
-	if version >= spec.DataVersionElectra {
-		return TestingElectraAggregateAndProof(TestingValidatorIndex).Aggregate, nil
-	}
-	return TestingPhase0AggregateAndProof(TestingValidatorIndex).Aggregate, nil
+	return TestingElectraAggregateAndProofV(TestingValidatorIndex, gloas.DataVersionGloas).Aggregate, nil
 }
 
 // SubmitAggregateSelectionProof returns an AggregateAndProof object
 // Deprecated: Use IsAggregator and GetAggregateAttestation instead. Kept for backward compatibility.
 func (bn *TestingBeaconNode) SubmitAggregateSelectionProof(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, index phase0.ValidatorIndex, slotSig []byte) (ssz.Marshaler, spec.DataVersion, error) {
-	version := VersionBySlot(slot)
-	return TestingAggregateAndProofV(version, TestingValidatorIndex), version, nil
+	return TestingAggregateAndProofV(gloas.DataVersionGloas, TestingValidatorIndex), gloas.DataVersionGloas, nil
 }
 
 // SubmitSignedAggregateAndProof broadcasts a signed aggregator msg
 func (bn *TestingBeaconNode) SubmitSignedAggregateAndProof(msg *spec.VersionedSignedAggregateAndProof) error {
-	var root [32]byte
-
-	switch msg.Version {
-	case spec.DataVersionPhase0:
-		root, _ = msg.Phase0.HashTreeRoot()
-	case spec.DataVersionAltair:
-		root, _ = msg.Altair.HashTreeRoot()
-	case spec.DataVersionBellatrix:
-		root, _ = msg.Bellatrix.HashTreeRoot()
-	case spec.DataVersionCapella:
-		root, _ = msg.Capella.HashTreeRoot()
-	case spec.DataVersionDeneb:
-		root, _ = msg.Deneb.HashTreeRoot()
-	case spec.DataVersionElectra:
-		root, _ = msg.Electra.HashTreeRoot()
-	case spec.DataVersionFulu:
-		root, _ = msg.Fulu.HashTreeRoot()
-	default:
+	if msg.Version != gloas.DataVersionGloas {
 		panic("unsupported version")
 	}
-
+	root, _ := msg.Electra.HashTreeRoot() // Gloas reuses the Electra aggregate shape (SIP #94 §2)
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, root)
 	return nil
 }
@@ -314,7 +184,7 @@ func (bn *TestingBeaconNode) SubmitMultipleSignedAggregateAndProof(msg []*spec.V
 
 // GetSyncMessageBlockRoot returns beacon block root for sync committee
 func (bn *TestingBeaconNode) GetSyncMessageBlockRoot(slot phase0.Slot) (phase0.Root, spec.DataVersion, error) {
-	return TestingSyncCommitteeBlockRoot, spec.DataVersionPhase0, nil
+	return TestingSyncCommitteeBlockRoot, gloas.DataVersionGloas, nil
 }
 
 // SubmitSyncMessage submits a signed sync committee msg
@@ -351,7 +221,7 @@ func (bn *TestingBeaconNode) SyncCommitteeSubnetID(index phase0.CommitteeIndex) 
 
 // GetSyncCommitteeContribution returns
 func (bn *TestingBeaconNode) GetSyncCommitteeContribution(slot phase0.Slot, selectionProofs []phase0.BLSSignature, subnetIDs []uint64) (ssz.Marshaler, spec.DataVersion, error) {
-	return &TestingContributionsData, spec.DataVersionBellatrix, nil
+	return &TestingContributionsData, gloas.DataVersionGloas, nil
 }
 
 // SubmitSignedContributionAndProof broadcasts to the network
@@ -364,8 +234,4 @@ func (bn *TestingBeaconNode) SubmitSignedContributionAndProof(contribution *alta
 func (bn *TestingBeaconNode) DomainData(epoch phase0.Epoch, domain phase0.DomainType) (phase0.Domain, error) {
 	// epoch is used to calculate fork version, here we hard code it
 	return types.ComputeETHDomain(domain, types.GenesisForkVersion, types.GenesisValidatorsRoot)
-}
-
-func (bn *TestingBeaconNode) DataVersion(epoch phase0.Epoch) spec.DataVersion {
-	return VersionByEpoch(epoch)
 }
