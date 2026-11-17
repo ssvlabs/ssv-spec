@@ -99,6 +99,8 @@ const (
 	InvalidCommitteeMemberErrorCode
 	InvalidValidatorDutyErrorCode
 	BeaconVoteNilCheckpointErrorCode
+	UnexpectedJustificationErrorCode
+	JustificationWithFullDataErrorCode
 	ProposerBlockSlotMismatchErrorCode
 	ProposerBlockProposerIndexMismatchErrorCode
 	ProposerDutySlotMismatchErrorCode

@@ -95,17 +95,27 @@ func (msg *Message) Validate() error {
 	if len(msg.Identifier) != 56 {
 		return types.NewError(types.MessageIdentifierInvalidErrorCode, "message identifier is invalid")
 	}
-	if _, err := msg.GetRoundChangeJustifications(); err != nil {
-		return err
-	}
-	if _, err := msg.GetPrepareJustifications(); err != nil {
-		return err
-	}
 	if msg.MsgType > RoundChangeMsgType {
 		return types.NewError(types.MessageTypeInvalidErrorCode, "message type is invalid")
 	}
 	if msg.Round == NoRound {
 		return types.NewError(types.MessageRoundInvalidErrorCode, "message round is invalid")
+	}
+	// Only a proposal carries prepare justifications, and only a proposal or a prepared round change carries
+	// round change justifications.
+	if msg.MsgType != ProposalMsgType {
+		if len(msg.PrepareJustification) > 0 {
+			return types.NewError(types.UnexpectedJustificationErrorCode, "unexpected prepare justification")
+		}
+		if len(msg.RoundChangeJustification) > 0 && !msg.RoundChangePrepared() {
+			return types.NewError(types.UnexpectedJustificationErrorCode, "unexpected round change justification")
+		}
+	}
+	if _, err := msg.GetRoundChangeJustifications(); err != nil {
+		return err
+	}
+	if _, err := msg.GetPrepareJustifications(); err != nil {
+		return err
 	}
 	return nil
 }
@@ -124,6 +134,10 @@ func unmarshalJustifications(data [][]byte) ([]*types.SignedSSVMessage, error) {
 		sMsg := &types.SignedSSVMessage{}
 		if err := sMsg.UnmarshalSSZ(d); err != nil {
 			return nil, types.WrapError(types.UnmarshalSSZErrorCode, fmt.Errorf("unmarshal justification: %w", err))
+		}
+		// Justifications are embedded without full data (see MarshalJustifications)
+		if len(sMsg.FullData) > 0 {
+			return nil, types.NewError(types.JustificationWithFullDataErrorCode, "justification with full data")
 		}
 		ret[i] = sMsg
 	}
