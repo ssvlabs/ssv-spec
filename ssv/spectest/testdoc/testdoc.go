@@ -91,6 +91,7 @@ const ConsensusPostDecidedDoc = "Tests consensus message processing after duty i
 const ConsensusFutureDecidedNoInstanceDoc = "Tests consensus decided message processing with future messages when no instance exists"
 const ConsensusFutureMessageDoc = "Tests consensus message processing with future messages"
 const ConsensusInvalidDecidedValueDoc = "Tests consensus message processing with invalid decided values"
+const ConsensusDecidedValueWrongSlotDoc = "Tests that a decided proposer value whose duty slot and block slot are shifted together away from the running duty's slot is rejected and no post-consensus signature is produced"
 const ConsensusDecidedSlashableAttestationDoc = "Test that attempting to sign a slashable attestation results in an error"
 const ConsensusFutureDecidedDoc = "Tests consensus decided message processing with future messages"
 
@@ -227,6 +228,9 @@ const ValCheckDutyWrongValidatorPKDoc = "Tests duty value check with wrong valid
 
 // Documentation for valcheckproposer tests
 const ValCheckProposerBlindedBlockDoc = "Tests proposer value check with blinded block data"
+const ValCheckProposerBlockSlotMismatchDoc = "Tests proposer value check rejects a block whose slot differs from the duty slot"
+const ValCheckProposerBlockProposerIndexMismatchDoc = "Tests proposer value check rejects a block whose proposer index differs from the duty validator index"
+const ValCheckProposerRunningDutySlotMismatchDoc = "Tests proposer value check rejects a value whose duty slot and block slot are shifted together away from the running duty slot, and accepts one at the running duty slot"
 
 // Documentation for valcheckaggcommittee
 const ValCheckAggCommitteeNoValidatorsDoc = "Tests agg committee value check with no validators"

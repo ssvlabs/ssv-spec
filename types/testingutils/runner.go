@@ -11,6 +11,22 @@ import (
 
 var TestingHighestDecidedSlot = phase0.Slot(0)
 
+// proposerDutySlotF resolves the running duty's slot for ProposerValueCheckF's running-slot check. It reports 0
+// ("no running duty") when the runner has not started one, so the check is skipped. A missing runner means the
+// construction site never back-patched the reference, a wiring bug, so it panics.
+func proposerDutySlotF(runner *ssv.Runner) func() phase0.Slot {
+	return func() phase0.Slot {
+		if runner == nil || *runner == nil {
+			panic("proposer value check has no runner: the value check was built without back-patching the runner reference")
+		}
+		state := (*runner).GetBaseRunner().State
+		if state == nil || state.StartingDuty == nil {
+			return 0
+		}
+		return state.StartingDuty.DutySlot()
+	}
+}
+
 var CommitteeRunner = func(keySet *TestKeySet) ssv.Runner {
 	return baseRunner(types.RoleCommittee, keySet)
 }
@@ -74,6 +90,7 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 	var opSigner *types.OperatorSigner
 	var valCheck qbft.ProposedValueCheckF
 	var contr *qbft.Controller
+	var valCheckRunner ssv.Runner
 
 	km := NewTestingKeyManager()
 
@@ -121,7 +138,8 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 				sharePubKeys, TestBeaconVote.Source.Epoch, TestBeaconVote.Target.Epoch)
 		case types.RoleProposer:
 			valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
-				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey)
+				(types.ValidatorPK)(shareInstance.ValidatorPubKey), shareInstance.ValidatorIndex, shareInstance.SharePubKey,
+				proposerDutySlotF(&valCheckRunner))
 		case types.RoleAggregatorCommittee:
 			valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
 		default:
@@ -212,6 +230,7 @@ var ConstructBaseRunnerWithShareMapAndBeaconNode = func(role types.RunnerRole, s
 	default:
 		return nil, errors.New("unknown role type")
 	}
+	valCheckRunner = runner
 	return runner, err
 }
 
@@ -251,13 +270,15 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 
 	// Create ValueCheck
 	var valCheck qbft.ProposedValueCheckF
+	var valCheckRunner ssv.Runner
 	switch role {
 	case types.RoleCommittee:
 		valCheck = ssv.BeaconVoteValueCheckF(km, TestingDutySlot,
 			[]types.ShareValidatorPK{share.SharePubKey}, TestBeaconVote.Source.Epoch, TestBeaconVote.Target.Epoch)
 	case types.RoleProposer:
 		valCheck = ssv.ProposerValueCheckF(km, types.BeaconTestNetwork,
-			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, share.SharePubKey)
+			(types.ValidatorPK)(TestingValidatorPubKey), TestingValidatorIndex, share.SharePubKey,
+			proposerDutySlotF(&valCheckRunner))
 	case types.RoleAggregatorCommittee:
 		valCheck = ssv.AggregatorCommitteeValueCheckF(km, types.BeaconTestNetwork)
 	default:
@@ -351,6 +372,7 @@ var ConstructBaseRunner = func(role types.RunnerRole, keySet *TestKeySet) (ssv.R
 	default:
 		return nil, errors.New("unknown role type")
 	}
+	valCheckRunner = runner
 	return runner, err
 }
 

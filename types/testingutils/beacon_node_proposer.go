@@ -304,8 +304,9 @@ var TestingBeaconBlockCapella = func() *capella.BeaconBlock {
 	if err != nil {
 		panic(err)
 	}
-	// using TestingDutySlotCapella to keep the consistency with TestingProposerDutyV Capella slot
+	// match TestingProposerDutyV Capella slot and validator index
 	res.Slot = TestingDutySlotCapella
+	res.ProposerIndex = TestingValidatorIndex
 	return &res
 }()
 
@@ -357,8 +358,9 @@ var TestingBlockContentsDeneb = func() *apiv1deneb.BlockContents {
 	if err := json.Unmarshal(denebBlockContents, &res); err != nil {
 		panic(err)
 	}
-	// using ForkEpochPraterDeneb to keep the consistency with TestingProposerDutyV Deneb slot
-	res.Block.Slot = ForkEpochPraterDeneb
+	// match TestingProposerDutyV Deneb slot and validator index
+	res.Block.Slot = TestingDutySlotDeneb
+	res.Block.ProposerIndex = TestingValidatorIndex
 	return &res
 }()
 
@@ -414,8 +416,9 @@ var TestingBlockContentsElectra = func() *apiv1electra.BlockContents {
 		panic(err)
 	}
 
-	// using ForkEpochPraterElectra to keep the consistency with TestingProposerDutyV Electra slot
-	beaconBlock.Slot = ForkEpochPraterElectra
+	// match TestingProposerDutyV Electra slot and validator index
+	beaconBlock.Slot = TestingDutySlotElectra
+	beaconBlock.ProposerIndex = TestingValidatorIndex
 
 	denebBlockContents := TestingBlockContentsDeneb
 
@@ -479,8 +482,9 @@ var TestingBlockContentsFulu = func() *apiv1fulu.BlockContents {
 		panic(err)
 	}
 
-	// using ForkEpochFulu to keep the consistency with TestingProposerDutyV Fulu slot
-	beaconBlock.Slot = ForkEpochFulu
+	// match TestingProposerDutyV Fulu slot and validator index
+	beaconBlock.Slot = TestingDutySlotFulu
+	beaconBlock.ProposerIndex = TestingValidatorIndex
 
 	denebBlockContents := TestingBlockContentsDeneb
 
