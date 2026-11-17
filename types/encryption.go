@@ -30,7 +30,7 @@ func GenerateKey() ([]byte, []byte, error) {
 
 // Decrypt with secret key (base64) and bytes, return the encrypted key string
 func Decrypt(sk *rsa.PrivateKey, cipherText []byte) ([]byte, error) {
-	decrypted, err := rsa.DecryptPKCS1v15(rand.Reader, sk, cipherText)
+	decrypted, err := rsa.DecryptPKCS1v15(rand.Reader, sk, cipherText) //nolint:staticcheck // SA1019: PKCS#1 v1.5 is the share-encryption scheme fixed by the protocol
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to decrypt key")
 	}
@@ -39,7 +39,7 @@ func Decrypt(sk *rsa.PrivateKey, cipherText []byte) ([]byte, error) {
 
 // Encrypt with secret key (base64) the bytes, return the encrypted key string
 func Encrypt(pk *rsa.PublicKey, plainText []byte) ([]byte, error) {
-	encrypted, err := rsa.EncryptPKCS1v15(rand.Reader, pk, plainText)
+	encrypted, err := rsa.EncryptPKCS1v15(rand.Reader, pk, plainText) //nolint:staticcheck // SA1019: PKCS#1 v1.5 is the share-encryption scheme fixed by the protocol
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to decrypt key")
 	}

@@ -1,6 +1,6 @@
 module github.com/ssvlabs/ssv-spec
 
-go 1.22
+go 1.27
 
 require (
 	github.com/attestantio/go-eth2-client v0.27.0
