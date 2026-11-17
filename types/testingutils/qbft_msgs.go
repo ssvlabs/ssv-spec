@@ -46,17 +46,22 @@ var MultiSignQBFTMsg = func(sks []*rsa.PrivateKey, ids []types.OperatorID, msg *
 }
 
 var SignQBFTMsg = func(sk *rsa.PrivateKey, id types.OperatorID, msg *qbft.Message) *types.SignedSSVMessage {
+	return SignQBFTMsgWithMsgID(sk, id, msg, msg.Identifier)
+}
+
+// SignQBFTMsgWithMsgID signs msg like SignQBFTMsg, with the SSVMessage MsgID set to msgID instead of msg.Identifier
+var SignQBFTMsgWithMsgID = func(sk *rsa.PrivateKey, id types.OperatorID, msg *qbft.Message, msgID []byte) *types.SignedSSVMessage {
 	encodedMsg, err := msg.Encode()
 	if err != nil {
 		panic(err)
 	}
 
-	msgID := [56]byte{}
-	copy(msgID[:], msg.Identifier)
+	ssvMsgID := [56]byte{}
+	copy(ssvMsgID[:], msgID)
 
 	ssvMsg := &types.SSVMessage{
 		MsgType: types.SSVConsensusMsgType,
-		MsgID:   msgID,
+		MsgID:   ssvMsgID,
 		Data:    encodedMsg,
 	}
 

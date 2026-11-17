@@ -263,6 +263,10 @@ func validRoundChangeForDataIgnoreSignature(
 		return types.NewError(types.SignerIsNotInCommitteeErrorCode, "signer not in committee")
 	}
 
+	if err := validIdentifier(msg, state.ID); err != nil {
+		return err
+	}
+
 	// Addition to formal spec
 	// We add this extra tests on the msg itself to filter round change msgs with invalid justifications, before they are inserted into msg containers
 	if msg.QBFTMessage.RoundChangePrepared() {
@@ -286,6 +290,7 @@ func validRoundChangeForDataIgnoreSignature(
 		for _, pm := range prepareMsgs {
 			if err := validSignedPrepareForHeightRoundAndRootVerifySignature(
 				pm,
+				state.ID,
 				state.Height,
 				msg.QBFTMessage.DataRound,
 				msg.QBFTMessage.Root,
