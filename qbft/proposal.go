@@ -202,6 +202,7 @@ func isProposalJustification(
 			for _, pm := range prepareMsgs {
 				if err := validSignedPrepareForHeightRoundAndRootVerifySignature(
 					pm,
+					state.ID,
 					height,
 					rcMsg.QBFTMessage.DataRound,
 					rcMsg.QBFTMessage.Root,

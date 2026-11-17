@@ -63,6 +63,7 @@ func getRoundChangeJustification(state *State, prepareMsgContainer *MsgContainer
 	for _, msg := range prepareMsgs {
 		if err := validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 			msg,
+			state.ID,
 			state.Height,
 			state.LastPreparedRound,
 			r,
@@ -82,6 +83,7 @@ func getRoundChangeJustification(state *State, prepareMsgContainer *MsgContainer
 // https://entethalliance.github.io/client-spec/qbft_spec.html#dfn-qbftspecification
 func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 	msg *ProcessingMessage,
+	identifier []byte,
 	height Height,
 	round Round,
 	root [32]byte,
@@ -113,17 +115,29 @@ func validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 		return types.NewError(types.SignerIsNotInCommitteeErrorCode, "signer not in committee")
 	}
 
+	return validIdentifier(msg, identifier)
+}
+
+// Addition to formal spec
+// validIdentifier checks that both the QBFT message Identifier and the SSV message MsgID equal the
+// instance identifier. Prepare and round change messages are also accepted as justifications nested in
+// other messages, which the controller's identifier check doesn't cover.
+func validIdentifier(msg *ProcessingMessage, identifier []byte) error {
+	if !bytes.Equal(msg.QBFTMessage.Identifier, identifier) || !bytes.Equal(msg.SignedMessage.SSVMessage.MsgID[:], identifier) {
+		return types.NewError(types.MessageIdentifierInvalidErrorCode, "message doesn't belong to instance")
+	}
 	return nil
 }
 
 func validSignedPrepareForHeightRoundAndRootVerifySignature(
 	msg *ProcessingMessage,
+	identifier []byte,
 	height Height,
 	round Round,
 	root [32]byte,
 	operators []*types.Operator) error {
 
-	if err := validSignedPrepareForHeightRoundAndRootIgnoreSignature(msg, height, round, root, operators); err != nil {
+	if err := validSignedPrepareForHeightRoundAndRootIgnoreSignature(msg, identifier, height, round, root, operators); err != nil {
 		return err
 	}
 

@@ -144,6 +144,7 @@ func (i *Instance) BaseMsgValidation(msg *ProcessingMessage) error {
 		}
 		return validSignedPrepareForHeightRoundAndRootIgnoreSignature(
 			msg,
+			i.State.ID,
 			i.State.Height,
 			i.State.Round,
 			proposedMsg.QBFTMessage.Root,
