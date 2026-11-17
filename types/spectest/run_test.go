@@ -48,7 +48,8 @@ func TestJson(t *testing.T) {
 		t.Fatalf("Failed to resolve spec-tests dir: %v", err)
 	}
 	path := filepath.Join(specTestsDir, "tests.json")
-	untypedTests := map[string]interface{}{}
+	// Raw, so each test decodes straight into its type; a generic decode rounds uint64s through float64
+	untypedTests := map[string]json.RawMessage{}
 	byteValue, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -66,133 +67,50 @@ func TestJson(t *testing.T) {
 
 	fmt.Printf("running %d tests\n", len(untypedTests))
 	for name, test := range untypedTests {
-		testName := test.(map[string]interface{})["Name"].(string)
-		t.Run(testName, func(t *testing.T) {
+		var header struct{ Name string }
+		require.NoError(t, json.Unmarshal(test, &header))
+		t.Run(header.Name, func(t *testing.T) {
 			testType := strings.Split(name, "_")[0]
-			switch testType {
-			case reflect.TypeOf(&ssz.SSZSpecTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &ssz.SSZSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&consensusdataproposer.ProposerSpecTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &consensusdataproposer.ProposerSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&proposerconsensusdata.EncodingTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &proposerconsensusdata.EncodingTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&partialsigmessage.EncodingTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &partialsigmessage.EncodingTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&share.EncodingTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &share.EncodingTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&ssvmsg.EncodingTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &ssvmsg.EncodingTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&encryption.EncryptionSpecTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &encryption.EncryptionSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&beacon.DepositDataSpecTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &beacon.DepositDataSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&signedssvmsg.EncodingTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &signedssvmsg.EncodingTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&signedssvmsg.SignedSSVMessageTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &signedssvmsg.SignedSSVMessageTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&proposerconsensusdata.ProposerConsensusDataTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &proposerconsensusdata.ProposerConsensusDataTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&partialsigmessage.MsgSpecTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &partialsigmessage.MsgSpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&share.ShareTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &share.ShareTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&committeemember.CommitteeMemberTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &committeemember.CommitteeMemberTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&ssvmsg.SSVMessageTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &ssvmsg.SSVMessageTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&duty.DutySpecTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &duty.DutySpecTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&beaconvote.EncodingTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &beaconvote.EncodingTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&maxmsgsize.StructureSizeTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &maxmsgsize.StructureSizeTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&aggregatorcommitteeconsensusdata.AggregatorCommitteeConsensusDataTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &aggregatorcommitteeconsensusdata.AggregatorCommitteeConsensusDataTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			case reflect.TypeOf(&aggregatorcommitteeconsensusdata.EncodingTest{}).String():
-				byts, err := json.Marshal(test)
-				require.NoError(t, err)
-				typedTest := &aggregatorcommitteeconsensusdata.EncodingTest{}
-				require.NoError(t, json.Unmarshal(byts, &typedTest))
-				typedTest.Run(t)
-			default:
+			typedTest := newJSONTest(testType)
+			if typedTest == nil {
 				t.Fatalf("unsupported test type %s", testType)
 			}
+			require.NoError(t, json.Unmarshal(test, typedTest))
+			typedTest.Run(t)
 		})
 	}
+}
+
+// newJSONTest returns an empty test of the type a tests.json key starts with, or nil if unsupported.
+func newJSONTest(testType string) SpecTest {
+	for _, test := range []SpecTest{
+		&ssz.SSZSpecTest{},
+		&consensusdataproposer.ProposerSpecTest{},
+		&proposerconsensusdata.EncodingTest{},
+		&partialsigmessage.EncodingTest{},
+		&share.EncodingTest{},
+		&ssvmsg.EncodingTest{},
+		&encryption.EncryptionSpecTest{},
+		&beacon.DepositDataSpecTest{},
+		&signedssvmsg.EncodingTest{},
+		&signedssvmsg.SignedSSVMessageTest{},
+		&proposerconsensusdata.ProposerConsensusDataTest{},
+		&partialsigmessage.MsgSpecTest{},
+		&committeemember.CommitteeMemberTest{},
+		&ssvmsg.SSVMessageTest{},
+		&duty.DutySpecTest{},
+		&beaconvote.EncodingTest{},
+		&maxmsgsize.StructureSizeTest{},
+		&aggregatorcommitteeconsensusdata.AggregatorCommitteeConsensusDataTest{},
+		&aggregatorcommitteeconsensusdata.EncodingTest{},
+		&beaconvote.ValidationTest{},
+		&committeemember.ValidationTest{},
+		&share.ValidationTest{},
+		&duty.ValidationTest{},
+	} {
+		if reflect.TypeOf(test).String() == testType {
+			return test
+		}
+	}
+	return nil
 }

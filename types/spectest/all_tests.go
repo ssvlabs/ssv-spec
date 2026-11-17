@@ -39,11 +39,20 @@ var AllTests = []SpecTest{
 	partialsigmessage.InconsistentSignedMessage(),
 
 	share.Encoding(),
+	share.Valid(),
+	share.ZeroValidatorPubKey(),
+	share.UnknownDomain(),
 
 	committeemember.HasQuorum(),
 	committeemember.HasQuorum3f1(),
 	committeemember.NoQuorumDuplicate(),
 	committeemember.QuorumWithDuplicate(),
+	committeemember.Valid(),
+	committeemember.FaultyNodesMismatch(),
+	committeemember.InvalidOperator(),
+	committeemember.DuplicateOperator(),
+	committeemember.CommitteeIDMismatch(),
+	committeemember.UnknownDomain(),
 
 	encryption.SimpleEncrypt(),
 	encryption.EncryptBLSSK(),
@@ -115,6 +124,8 @@ var AllTests = []SpecTest{
 	signedssvmsg.NoSignatures(),
 	signedssvmsg.SignersAndSignaturesWithDifferentLength(),
 	signedssvmsg.NonUniqueSigner(),
+	signedssvmsg.InvalidSSVMessageType(),
+	signedssvmsg.InvalidSSVMessageRole(),
 
 	duty.MapAttester(),
 	duty.MapProposer(),
@@ -127,7 +138,15 @@ var AllTests = []SpecTest{
 	duty.MapProposerPreferences(),
 	duty.MapUnknownRole(),
 
+	duty.Valid(),
+	duty.SyncCommitteeZeroCommitteeMetadata(),
+	duty.UnknownType(),
+	duty.CommitteeIndexOutOfBounds(),
+
 	beaconvote.BeaconVoteEncoding(),
+	beaconvote.Valid(),
+	beaconvote.NilCheckpoint(),
+	beaconvote.SourceNotLessThanTarget(),
 
 	maxmsgsize.MaxConsensusData(),
 	maxmsgsize.MaxBeaconVote(),

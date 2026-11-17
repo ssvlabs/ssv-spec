@@ -13,6 +13,15 @@ import (
 var TestingSSVDomainType = types.JatoTestnet
 var TestingForkData = types.ForkData{Epoch: TestingDutyEpoch, Domain: TestingSSVDomainType}
 
+// TestingKnownDomainTypes lists every domain DomainType.IsKnown accepts
+var TestingKnownDomainTypes = []types.DomainType{
+	types.GenesisMainnet, types.AlanMainnet, types.BooleMainnet,
+	types.PrimusTestnet,
+	types.ShifuTestnet, types.ShifuV2Testnet,
+	types.JatoTestnet, types.JatoV2Testnet, types.JatoAlanTestnet,
+}
+var TestingUnknownDomainType = types.DomainType{0xaa, 0xbb, 0xcc, 0xdd}
+
 // ==================================================
 // Consensus Data - Invalid Types
 // ==================================================

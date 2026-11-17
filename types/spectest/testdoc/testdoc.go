@@ -12,6 +12,14 @@ const BeaconVoteEncodingSpecTestType = "Beacon vote encoding: validation of beac
 // Documentation for BeaconVoteEncodingSpecTest
 const BeaconVoteEncodingTestDoc = "Test encoding and decoding of BeaconVote with hash tree root verification"
 
+// BeaconVoteValidationTest
+const BeaconVoteValidationTestType = "Beacon vote validation: validation of beacon vote checkpoints"
+
+// Documentation for BeaconVoteValidationTest
+const BeaconVoteValidationValidDoc = "Test that a beacon vote with source epoch below target epoch is accepted"
+const BeaconVoteValidationNilCheckpointDoc = "Test validation error for a nil beacon vote and beacon votes with a nil source and/or target checkpoint"
+const BeaconVoteValidationSourceNotLessThanTargetDoc = "Test validation error for beacon votes whose source epoch is greater than or equal to the target epoch"
+
 // CommitteeMemberTest
 const CommitteeMemberTestType = "Committee member: validation of committee member quorum requirements"
 
@@ -20,6 +28,17 @@ const HasQuorum3f1TestDoc = "Test that committee member has quorum with 3f+1 uni
 const HasQuorumTestDoc = "Test that committee member has quorum with 2f+1 unique signers should be accepted"
 const NoQuorumDuplicateTestDoc = "Test that committee member has no quorum when signers include duplicates should be rejected"
 const QuorumWithDuplicateTestDoc = "Test that committee member has quorum with 2f+1 unique signers even when duplicates are present should be accepted"
+
+// CommitteeMemberValidationTest
+const CommitteeMemberValidationTestType = "Committee member validation: validation of committee member fields and committee"
+
+// Documentation for CommitteeMemberValidationTest
+const CommitteeMemberValidationValidDoc = "Test that a valid committee member is accepted for every known domain type"
+const CommitteeMemberValidationFaultyNodesMismatchDoc = "Test validation error for a committee member whose FaultyNodes doesn't satisfy n == 3f+1"
+const CommitteeMemberValidationInvalidOperatorDoc = "Test validation error for committee members with a committee operator that has ID 0 or is nil"
+const CommitteeMemberValidationDuplicateOperatorDoc = "Test validation error for a committee member whose committee repeats an operator ID"
+const CommitteeMemberValidationCommitteeIDMismatchDoc = "Test validation error for a committee member whose CommitteeID doesn't match its committee's operator IDs"
+const CommitteeMemberValidationUnknownDomainDoc = "Test validation error for a committee member with a domain type not defined in the spec"
 
 // DutySpecTest
 const DutySpecTestType = "Duty: validation of beacon role to runner role conversion"
@@ -35,6 +54,15 @@ const MapValidatorRegistrationTestDoc = "Test mapping of BNRoleValidatorRegistra
 const MapVoluntaryExitTestDoc = "Test mapping of BNRoleVoluntaryExit"
 const MapPTCAttesterTestDoc = "Test mapping of BNRolePTCAttester"
 const MapProposerPreferencesTestDoc = "Test mapping of BNRoleProposerPreferences"
+
+// ValidatorDutyValidationTest
+const ValidatorDutyValidationTestType = "Validator duty validation: validation of validator duty fields"
+
+// Documentation for ValidatorDutyValidationTest
+const ValidatorDutyValidationValidDoc = "Test that a valid attester validator duty is accepted"
+const ValidatorDutyValidationSyncCommitteeZeroCommitteeMetadataDoc = "Test that sync committee and sync committee contribution duties are accepted with zero CommitteeLength and ValidatorCommitteeIndex"
+const ValidatorDutyValidationUnknownTypeDoc = "Test validation error for a validator duty whose beacon role doesn't map to a runner role"
+const ValidatorDutyValidationCommitteeIndexOutOfBoundsDoc = "Test validation error for an attester duty whose ValidatorCommitteeIndex is not below CommitteeLength"
 
 // EncryptionSpecTest
 const EncryptionSpecTestType = "Encryption: validation of public/private key operations and message encryption/decryption"
@@ -87,10 +115,13 @@ const StructureSizeTestMaxSignedSSVMessageFromPartialSignatureMessagesDoc = "Tes
 const StructureSizeTestMaxSSVMessageFromQBFTMessageDoc = "Test the maximum size of an SSVMessage containing a QBFT message with 2 justifications"
 const StructureSizeTestMaxSSVMessageFromPartialSignatureMessagesDoc = "Test the maximum size of an SSVMessage containing partial signature messages"
 
-// ShareTest
-const ShareTestType = "Share: testing message signing and quorum verification"
+// ShareValidationTest
+const ShareValidationTestType = "Share validation: validation of share fields and committee"
 
-// ShareTestType has no tests
+// Documentation for ShareValidationTest
+const ShareValidationValidDoc = "Test that a valid share is accepted for every known domain type"
+const ShareValidationZeroValidatorPubKeyDoc = "Test validation error for a share with an all-zero validator public key"
+const ShareValidationUnknownDomainDoc = "Test validation error for a share with a domain type not defined in the spec"
 
 // SSVMessageTest
 const SSVMessageTestType = "SSV message validation: testing message ID ownership and routing logic"
@@ -111,6 +142,8 @@ const SignedSSVMessageTestNoSignaturesDoc = "Test validation error for signed SS
 const SignedSSVMessageTestZeroSignerDoc = "Test validation error for signed SSV message with zero signer ID"
 const SignedSSVMessageTestNoSignersDoc = "Test validation error for signed SSV message with no signers"
 const SignedSSVMessageTestNilSSVMessageDoc = "Test validation error for signed SSV message with nil SSVMessage"
+const SignedSSVMessageTestInvalidSSVMessageTypeDoc = "Test validation error for signed SSV message whose SSVMessage has an unknown message type"
+const SignedSSVMessageTestInvalidSSVMessageRoleDoc = "Test validation error for signed SSV message whose SSVMessage MsgID encodes a negative (unknown) role"
 
 // MsgSpecTest
 const MsgSpecTestType = "Partial signature messages: validation of partial signature messages"

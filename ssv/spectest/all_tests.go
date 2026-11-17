@@ -87,6 +87,8 @@ var AllTests = []tests.TestF{
 
 	committeesingleduty.StartDuty,
 	committeesingleduty.StartNoDuty,
+	committeesingleduty.StartNilDuty,
+	committeesingleduty.StartDutySkipsForeignDuty,
 	committeesingleduty.ValidBeaconVote,
 	committeesingleduty.WrongBeaconVote,
 	committeesingleduty.Decided,
@@ -108,6 +110,7 @@ var AllTests = []tests.TestF{
 
 	aggregatorcommitteesingleduty.HappyFlow,
 	aggregatorcommitteesingleduty.DutyWithDifferentSlots,
+	aggregatorcommitteesingleduty.DutyWithWrongBeaconRole,
 	aggregatorcommitteesingleduty.MaxValidators,
 
 	committeemixedduties.SameSlot,
