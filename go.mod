@@ -2,6 +2,8 @@ module github.com/ssvlabs/ssv-spec
 
 go 1.22
 
+toolchain go1.27.3
+
 require (
 	github.com/attestantio/go-eth2-client v0.27.0
 	github.com/ethereum/go-ethereum v1.14.8
