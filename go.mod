@@ -6,7 +6,7 @@ require (
 	github.com/attestantio/go-eth2-client v0.27.0
 	github.com/ethereum/go-ethereum v1.14.8
 	github.com/ferranbt/fastssz v0.1.4
-	github.com/google/go-cmp v0.6.0
+	github.com/google/go-cmp v0.7.0
 	github.com/herumi/bls-eth-go-binary v1.29.1
 	github.com/libp2p/go-libp2p v0.36.1
 	github.com/libp2p/go-libp2p-pubsub v0.11.0
