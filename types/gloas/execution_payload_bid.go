@@ -37,7 +37,7 @@ func (b *BuilderIndex) UnmarshalJSON(input []byte) error {
 // ExecutionPayloadBid is the Gloas (ePBS) bid the proposer commits to in the block body, replacing the
 // inline execution payload of pre-Gloas blocks: the block carries only this commitment, and the payload
 // itself ships separately in the envelope (§6). For self-build, BuilderIndex is BuilderIndexSelfBuild.
-// Fields match the pinned spec / go-eth2-client PR #280.
+// Fields match the pinned spec and go-eth2-client's gloas.ExecutionPayloadBid.
 type ExecutionPayloadBid struct {
 	ParentBlockHash       phase0.Hash32              `ssz-index:"0"  ssz-size:"32"`
 	ParentBlockRoot       phase0.Root                `ssz-index:"1"  ssz-size:"32"`

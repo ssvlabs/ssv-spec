@@ -15,8 +15,9 @@ import (
 // payload_root from the decided value, execution_requests_root from the bid — and threshold-signs its root
 // under DomainBeaconBuilder as a second entry of the block's post-consensus packet, no separate round.
 // Blinding keeps the payload and the unbounded requests list off the SSV wire. The full envelope/payload
-// types are not vendored here (node-side only); the root-equivalence property is exercised by the node's
-// tests against its full types. The dynssz-generated encoder lives in blindedexecutionpayloadenvelope_ssz.go.
+// types are not defined here (node-side only); the root-equivalence property is pinned against
+// go-eth2-client's full ExecutionPayloadEnvelope in beacon_block_root_test.go. The dynssz-generated encoder
+// lives in blindedexecutionpayloadenvelope_ssz.go.
 type BlindedExecutionPayloadEnvelope struct {
 	PayloadRoot           phase0.Root  `ssz-index:"0" ssz-size:"32"`
 	ExecutionRequestsRoot phase0.Root  `ssz-index:"1" ssz-size:"32"`

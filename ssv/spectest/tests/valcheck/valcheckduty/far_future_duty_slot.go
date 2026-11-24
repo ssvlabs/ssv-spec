@@ -12,8 +12,7 @@ import (
 // FarFutureDutySlot tests duty.Slot higher than expected
 func FarFutureDutySlot() tests.SpecTest {
 	consensusDataBytsF := func(cd *types.ProposerConsensusData) []byte {
-		// Deep-copy via SSZ, not JSON: the Gloas placeholder version is outside go-eth2-client's
-		// enum, and spec.DataVersion.MarshalJSON panics on out-of-enum values.
+		// Deep-copy through an SSZ round trip.
 		b, err := cd.Encode()
 		if err != nil {
 			panic(err.Error())

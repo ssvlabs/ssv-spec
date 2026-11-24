@@ -20,8 +20,8 @@ type PayloadAttestation struct {
 // BeaconBlockBody is the Gloas (ePBS) block body. Versus Electra it drops the inline execution payload,
 // execution requests, and blob KZG commitments (the payload and blobs now ship in the §6 envelope) and
 // adds SignedExecutionPayloadBid (the payload commitment), PayloadAttestations (the previous slot's PTC
-// aggregate), and ParentExecutionRequests. Field order/tags match the pinned spec / go-eth2-client
-// PR #280; everything else reuses the existing fork types.
+// aggregate), and ParentExecutionRequests. Field order/tags match the pinned spec and go-eth2-client's
+// gloas.BeaconBlockBody; everything else reuses the existing fork types.
 type BeaconBlockBody struct {
 	RANDAOReveal              phase0.BLSSignature                   `ssz-index:"0"  ssz-size:"96"`
 	ETH1Data                  *phase0.ETH1Data                      `ssz-index:"1"`
