@@ -167,6 +167,7 @@ const GloasProposerBadEnvelopeShareDoc = "Tests that a bad SIP #94 §6 envelope 
 const GloasProposerBadBlockShareDoc = "Tests that a bad block share does not strand the SIP #94 §6 envelope: the envelope quorum is held until the block submit is attempted, then both submit, block first"
 const GloasProposerFailedBlockSubmitDoc = "Tests that the SIP #94 §6 reveal publishes when this operator's own block submit fails: it gates on the submit being attempted, not on it succeeding"
 const GloasProposerFailedEnvelopeSignDoc = "Tests that an operator whose signer fails on the SIP #94 §6 envelope root still broadcasts its block share: the post-consensus packet goes out block-only and the signing error is returned"
+const GloasProposerNotBuilderOperatorDoc = "Tests that only the builder operator publishes the SIP #94 §6 reveal: an operator whose own produce was another self-build block, or an external bid, signs both post-consensus roots and submits the decided block but publishes no envelope"
 const GloasProposerExternalBidDoc = "Tests the SIP #94 §4 external-build produce path: an external bid win returns a bare block and no envelope, so the proposed value carries a zero payload_root"
 
 // Documentation for runner/preconsensus tests
@@ -254,6 +255,7 @@ const ProposerPreferencesRetainedPartialsCapIsolatesSignersDoc = "Tests that the
 const ProposerPreferencesRetainedPartialReconstructFailureReturnedDoc = "Tests that replaying retained partials (SIP #94 §5) returns the failure to reconstruct a quorum it completes, as the live path does, and drops the bad share so a later share re-crosses quorum and submits"
 const ProposerPreferencesRetainedDivergingPartialDroppedDoc = "Tests that retained partials (SIP #94 §5) are checked one at a time when the duty starts: a diverging one is skipped without failing the duty, while the matching ones still apply and reach quorum"
 const ProposerPreferencesReemissionAppliesPartialsPriorPreferenceRejectedDoc = "Tests SIP #94 §5 across a dependent-root change: partials the stale incarnation rejected are still retained, and the re-emission replays them, reaching quorum and submitting"
+const ProposerPreferencesNoPreferenceDoc = "Tests a duty whose preference round froze nothing (SIP #94 §5): the dependent-root request fails, so nothing is signed or broadcast, and a peer partial is rejected (ProposerPreferencesNoPreferenceErrorCode) while staying retained"
 const ProposerPreferencesReemissionAfterSubmitStaysFinishedDoc = "Tests a same-slot re-emission after the preference was submitted (SIP #94 §5): the byte-identical re-derived preference carries the prior quorum and its completion over, so nothing is submitted again, the slot stays finished, and a late partial is rejected"
 const ProposerPreferencesMalformedPartialsNotRetainedDoc = "Tests that a malformed packet (SIP #94 §5/§7) is rejected before any of its partials is retained: two preference partials, more request-auth partials than MaxBuilderEntries, and a partial for an unknown validator, each arriving before its slot's duty has started"
 

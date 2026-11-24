@@ -75,6 +75,34 @@ func ValidMessage() tests.SpecTest {
 				},
 				ExpectedErrorCode: types.ValidatorExitNoConsensusPhaseErrorCode,
 			},
+			{
+				Name:   "ptc attestation",
+				Runner: testingutils.PTCAttesterRunner(ks),
+				Duty:   testingutils.TestingPTCAttesterDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.TestingProposalMessageWithIdentifierAndFullData(
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.PTCAttesterMsgID, testingutils.TestAttesterConsensusDataByts,
+						qbft.Height(testingutils.TestingDutySlotGloas)),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusPTCMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedErrorCode: types.PTCAttesterNoConsensusPhaseErrorCode,
+			},
+			{
+				Name:   "proposer preferences",
+				Runner: testingutils.ProposerPreferencesRunner(ks),
+				Duty:   testingutils.TestingProposerPreferencesDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.TestingProposalMessageWithIdentifierAndFullData(
+						ks.OperatorKeys[1], types.OperatorID(1), testingutils.ProposerPreferencesMsgID, testingutils.TestAttesterConsensusDataByts,
+						qbft.Height(testingutils.TestingDutySlotGloas)),
+				},
+				OutputMessages: []*types.PartialSignatureMessages{
+					testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
+				},
+				ExpectedErrorCode: types.ProposerPreferencesNoConsensusPhaseErrorCode,
+			},
 		},
 		ks,
 	)

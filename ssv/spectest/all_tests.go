@@ -34,6 +34,7 @@ var AllTests = []tests.TestF{
 	runner.GloasProposerFailedBlockSubmit,
 	runner.GloasProposerFailedEnvelopeSign,
 	runner.GloasProposerExternalBid,
+	runner.GloasProposerNotBuilderOperator,
 
 	postconsensus.TooManyRoots,
 	postconsensus.TooFewRoots,
@@ -235,6 +236,7 @@ var AllTests = []tests.TestF{
 	proposerpreferences.RetainedDivergingPartialDropped,
 	proposerpreferences.ReemissionAppliesPartialsPriorPreferenceRejected,
 	proposerpreferences.ReemissionAfterSubmitStaysFinished,
+	proposerpreferences.NoPreference,
 	proposerpreferences.MalformedPartialsNotRetained,
 
 	valcheckproposer.GloasBlocks,

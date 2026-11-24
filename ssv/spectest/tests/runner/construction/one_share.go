@@ -20,6 +20,8 @@ func OneShare() tests.SpecTest {
 		types.RoleProposer:            "",
 		types.RoleAggregatorCommittee: "",
 		types.RoleVoluntaryExit:       "",
+		types.RolePTCAttester:         "",
+		types.RoleProposerPreferences: "",
 	}
 
 	return NewRunnerConstructionSpecTest(

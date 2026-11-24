@@ -1,6 +1,8 @@
 package testingutils
 
 import (
+	"fmt"
+
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
@@ -77,8 +79,12 @@ var TestingSignedBuilderRequestAuth = func(ks *TestKeySet, data []byte, proposal
 	}
 }
 
-// ProposerDutiesDependentRoot returns the fixture dependent root for any epoch
+// ProposerDutiesDependentRoot returns the fixture dependent root for any epoch, or fails under
+// SetFailProposerDutiesDependentRoot.
 func (bn *TestingBeaconNode) ProposerDutiesDependentRoot(epoch phase0.Epoch) (phase0.Root, error) {
+	if bn.failProposerDutiesDependentRoot {
+		return phase0.Root{}, fmt.Errorf("forced proposer duties dependent root failure")
+	}
 	return TestingProposerDutiesDependentRoot, nil
 }
 

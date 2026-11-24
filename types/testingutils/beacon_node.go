@@ -23,10 +23,15 @@ type TestingBeaconNode struct {
 	CommitteeIndexAggregators    map[phase0.CommitteeIndex]bool
 	// producesExternalBid makes GetBeaconBlock return a bare external-bid block and no envelope (SIP #94 §4).
 	producesExternalBid bool
+	// producesOtherSelfBuildBlock makes GetBeaconBlock return a self-build block other than the fixture's, with
+	// its own envelope: the produce of an operator that is not the builder operator (SIP #94 §6).
+	producesOtherSelfBuildBlock bool
 	// wrongPayloadAttestationSlot makes GetPayloadAttestationData answer for another slot (SIP #94 §3).
 	wrongPayloadAttestationSlot bool
 	// failBlockSubmit makes SubmitBeaconBlock fail without recording the block (SIP #94 §6 reveal-on-attempt).
 	failBlockSubmit bool
+	// failProposerDutiesDependentRoot makes ProposerDutiesDependentRoot fail (SIP #94 §5).
+	failProposerDutiesDependentRoot bool
 }
 
 func NewTestingBeaconNode() *TestingBeaconNode {
@@ -52,6 +57,11 @@ func (bn *TestingBeaconNode) SetProducesExternalBid(v bool) {
 	bn.producesExternalBid = v
 }
 
+// SetProducesOtherSelfBuildBlock FOR TESTING ONLY!! sets producesOtherSelfBuildBlock
+func (bn *TestingBeaconNode) SetProducesOtherSelfBuildBlock(v bool) {
+	bn.producesOtherSelfBuildBlock = v
+}
+
 // SetWrongPayloadAttestationSlot FOR TESTING ONLY!! sets wrongPayloadAttestationSlot
 func (bn *TestingBeaconNode) SetWrongPayloadAttestationSlot(v bool) {
 	bn.wrongPayloadAttestationSlot = v
@@ -60,6 +70,11 @@ func (bn *TestingBeaconNode) SetWrongPayloadAttestationSlot(v bool) {
 // SetFailBlockSubmit FOR TESTING ONLY!! sets failBlockSubmit
 func (bn *TestingBeaconNode) SetFailBlockSubmit(v bool) {
 	bn.failBlockSubmit = v
+}
+
+// SetFailProposerDutiesDependentRoot FOR TESTING ONLY!! sets failProposerDutiesDependentRoot
+func (bn *TestingBeaconNode) SetFailProposerDutiesDependentRoot(v bool) {
+	bn.failProposerDutiesDependentRoot = v
 }
 
 // GetBeaconNetwork returns the beacon network the node is on
@@ -100,12 +115,18 @@ func (bn *TestingBeaconNode) SubmitVoluntaryExit(voluntaryExit *phase0.SignedVol
 }
 
 // GetBeaconBlock returns the self-build fixture block for the slot plus the blinded envelope derived from it, so
-// this operator is the builder operator; under SetProducesExternalBid, a bare external-bid block and no envelope
-// (SIP #94 §4/§6).
+// this operator is the builder operator; under SetProducesExternalBid, a bare external-bid block and no envelope;
+// under SetProducesOtherSelfBuildBlock, another self-build block and its envelope (SIP #94 §4/§6).
 func (bn *TestingBeaconNode) GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, *gloas.BlindedExecutionPayloadEnvelope, error) {
 	if bn.producesExternalBid {
 		// External bid win: a bare block and no envelope, so the decided value carries a zero payload_root.
 		return gloas.TestingBeaconBlockExternalBuild(slot), nil, nil
+	}
+	if bn.producesOtherSelfBuildBlock {
+		// A self-build other than the fixture's: once the fixture block is decided, this operator's own envelope
+		// is for a different block.
+		block := TestingOtherSelfBuildBeaconBlock(slot)
+		return block, testingBlindedExecutionPayloadEnvelopeFor(block), nil
 	}
 	return gloas.TestingBeaconBlock(slot), TestingBlindedExecutionPayloadEnvelope(slot), nil
 }

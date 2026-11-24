@@ -17,6 +17,8 @@ func ManyShares() tests.SpecTest {
 		types.RoleProposer:            "must have one share",
 		types.RoleAggregatorCommittee: "", // No errors since it can handle multiple shares
 		types.RoleVoluntaryExit:       "must have one share",
+		types.RolePTCAttester:         "must have one share",
+		types.RoleProposerPreferences: "must have one share",
 	}
 
 	return NewRunnerConstructionSpecTest(

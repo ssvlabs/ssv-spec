@@ -41,7 +41,12 @@ var TestingGloasProposalDataBytes = func(slot phase0.Slot) []byte {
 // from the decided value exactly as the runner derives it (SIP #94 §6): payload_root from the decided
 // value, execution_requests_root from the bid, the block's root and parent root.
 var TestingBlindedExecutionPayloadEnvelope = func(slot phase0.Slot) *gloas.BlindedExecutionPayloadEnvelope {
-	block := gloas.TestingBeaconBlock(slot)
+	return testingBlindedExecutionPayloadEnvelopeFor(gloas.TestingBeaconBlock(slot))
+}
+
+// testingBlindedExecutionPayloadEnvelopeFor derives the §6 blinded envelope of a self-build block carrying
+// TestingGloasPayloadRoot.
+func testingBlindedExecutionPayloadEnvelopeFor(block *gloas.BeaconBlock) *gloas.BlindedExecutionPayloadEnvelope {
 	root, err := block.HashTreeRoot()
 	if err != nil {
 		panic(err.Error())
@@ -53,6 +58,15 @@ var TestingBlindedExecutionPayloadEnvelope = func(slot phase0.Slot) *gloas.Blind
 		BeaconBlockRoot:       root,
 		ParentBeaconBlockRoot: block.ParentRoot,
 	}
+}
+
+// TestingOtherSelfBuildBeaconBlock is a self-build block for the slot that differs from the fixture block
+// (gloas.TestingBeaconBlock) in its graffiti only: what an operator whose own produce is not the decided block
+// holds, so the envelope it produced is not the decided block's (SIP #94 §6).
+var TestingOtherSelfBuildBeaconBlock = func(slot phase0.Slot) *gloas.BeaconBlock {
+	block := gloas.TestingBeaconBlock(slot)
+	block.Body.Graffiti = [32]byte{0x07, 0x1e, 0x12}
+	return block
 }
 
 // TestProposerExternalBidConsensusDataV is the decided value of an external bid win (SIP #94 §4): the bare
