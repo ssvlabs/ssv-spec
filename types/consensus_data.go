@@ -3,7 +3,6 @@ package types
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
@@ -160,22 +159,18 @@ type ProposerConsensusData struct {
 	DataSSZ []byte `ssz-max:"8388608"`
 }
 
-// versionJSON is the JSON codec for a consensus-data Version: "gloas" for the SIP #94 placeholder, the upstream
-// fork string for other known versions, and the bare number for any other out-of-enum value (on which
-// spec.DataVersion.MarshalJSON panics). Decoding accepts the string (any case), the number, and a missing/null
-// value (as version 0).
+// versionJSON is the JSON codec for a consensus-data Version: go-eth2-client's fork string for a version it
+// names, and the bare number for any other (0 included), which go-eth2-client would write as "unknown" and
+// could not read back. Decoding accepts the string (any case), the number, and a missing/null value (as
+// version 0).
 type versionJSON spec.DataVersion
 
 func (v versionJSON) MarshalJSON() ([]byte, error) {
 	dv := spec.DataVersion(v)
-	switch {
-	case dv == gloas.DataVersionGloas:
-		return json.Marshal("gloas")
-	case dv.String() == "unknown": // out-of-enum: spec.DataVersion.MarshalJSON would panic
+	if dv.String() == "unknown" { // no fork string that reads back
 		return json.Marshal(uint64(dv))
-	default:
-		return dv.MarshalJSON()
 	}
+	return dv.MarshalJSON()
 }
 
 func (v *versionJSON) UnmarshalJSON(data []byte) error {
@@ -185,10 +180,6 @@ func (v *versionJSON) UnmarshalJSON(data []byte) error {
 	}
 	var s string
 	if err := json.Unmarshal(data, &s); err == nil {
-		if strings.EqualFold(s, "gloas") {
-			*v = versionJSON(gloas.DataVersionGloas)
-			return nil
-		}
 		var dv spec.DataVersion
 		if err := dv.UnmarshalJSON(data); err != nil {
 			return err
@@ -279,8 +270,8 @@ type AggregatorCommitteeConsensusData struct {
 	SyncCommitteeContributions []altair.SyncCommitteeContribution `ssz-max:"4"`
 }
 
-// MarshalJSON writes Version through versionJSON so a Gloas-stamped value is JSON-safe. Version is the
-// struct's first field, so the embedded-alias order already matches.
+// MarshalJSON writes Version through versionJSON, as ProposerConsensusData does. Version is the struct's first
+// field, so the embedded-alias order already matches.
 func (a *AggregatorCommitteeConsensusData) MarshalJSON() ([]byte, error) {
 	type alias AggregatorCommitteeConsensusData
 	return json.Marshal(&struct {
