@@ -25,7 +25,8 @@ type BuilderExitRequest struct {
 // ExecutionRequests is the Gloas execution requests: the Electra three (deposits, withdrawals,
 // consolidations) plus the EIP-8282 builder deposit/exit requests. A Gloas CL encodes all five lists, so
 // electra.ExecutionRequests (three) marshals a block two offsets short and a Gloas CL rejects the §4 submit
-// as invalid SSZ — hence this five-list variant. List bounds are the spec MAX_* values.
+// as invalid SSZ — hence this five-list variant. The lists are progressive lists (EIP-7916), which carry
+// no type-level bound.
 type ExecutionRequests struct {
 	Deposits        []*electra.DepositRequest       `ssz-index:"0" ssz-type:"progressive-list"`
 	Withdrawals     []*electra.WithdrawalRequest    `ssz-index:"1" ssz-type:"progressive-list"`
