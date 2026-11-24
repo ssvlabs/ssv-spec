@@ -514,11 +514,12 @@ func (r *ProposerPreferencesSlotRunner) executePreferenceRound(duty *types.Valid
 // under DomainBuilderRequestAuth (chain-independent), and broadcasts them together in a single multi-entry
 // RequestAuthPartialSig container (SIP #94 §5/§7: one bounded packet per slot, up to MaxBuilderEntries;
 // per-builder isolation is enforced on the receive side per entry). Entries sharing data share a root;
-// zero-length data is skipped; entries are capped at MaxBuilderEntries. The round is
-// best-effort and never fails the independent preference round (already broadcast by the caller): a
-// malformed entry that fails to sign (e.g. oversized Data) is skipped, and an auth is frozen only once its
-// share is in the outgoing container, so peer shares are never expected for an entry this operator dropped.
-// No configured entries, or none that sign, means no auth broadcast.
+// zero-length data is skipped; entries are capped at MaxBuilderEntries. A malformed entry that fails to sign
+// (e.g. oversized Data) is skipped rather than failing the round, and an auth is frozen only once its share is
+// in the outgoing container, so peer shares are never expected for an entry this operator dropped. No
+// configured entries, or none that sign, means no auth broadcast. A failure to broadcast the container is
+// returned: the independent preference round, already broadcast by the caller, is unaffected, and executeDuty
+// reports its error first.
 func (r *ProposerPreferencesSlotRunner) executeRequestAuthRound(duty *types.ValidatorDuty, proposalSlot phase0.Slot) error {
 	r.BuilderRequestAuths = nil
 	authMsgs := &types.PartialSignatureMessages{
@@ -548,9 +549,7 @@ func (r *ProposerPreferencesSlotRunner) executeRequestAuthRound(duty *types.Vali
 	if len(authMsgs.Messages) == 0 {
 		return nil
 	}
-	// Best-effort: a broadcast failure must not fail the independent preference round.
-	_ = r.broadcastPartialSig(authMsgs)
-	return nil
+	return r.broadcastPartialSig(authMsgs)
 }
 
 // broadcastPartialSig operator-signs a partial-signature container into an SSVMessage and broadcasts it.
