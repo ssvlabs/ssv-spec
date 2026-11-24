@@ -81,10 +81,11 @@ type sszContainer interface {
 // TestPopulatedContainersMatchGoEth2Client extends the two tests above to every container this package shares
 // with go-eth2-client, each fully populated: every list is non-empty, the five ExecutionRequests lists
 // included, and some are long enough to reach past the first subtrees of a progressive list. The devnet block
-// leaves its lists empty, which checks each list's own kind but nothing about what goes into it: the element
-// containers (the builder deposit and exit requests, the payload attestations) and the merkleization of a
-// non-empty list are only exercised here. Each value's encoding must decode into go-eth2-client's type, encode
-// back to the same bytes, and hash to the same root.
+// leaves its lists empty, which checks each list's own kind but nothing about what goes into it, and the bid
+// test above fills only the commitments list. So the element containers (the builder deposit and exit
+// requests, the payload attestations) and the merkleization of every other non-empty list are only exercised
+// here. Each value's encoding must decode into go-eth2-client's type, encode back to the same bytes, and hash
+// to the same root.
 //
 // Both sides are merkleized by the same library (dynamic-ssz), so this pins the containers' shape and tags,
 // not the library.
