@@ -102,7 +102,8 @@ func NewProposerPreferencesRunner(
 // A duty for a slot that already has a sub-runner is a re-emission (e.g. after a reorg). The fresh sub
 // re-derives its roots and carries the prior sub's collected shares over per signing root, so a quorum
 // already reached does not fire (and submit) again. Auth roots carry no dependent_root, so their shares
-// always carry; preference shares carry only if the re-derived preference is unchanged.
+// always carry; preference shares carry only if the re-derived preference is unchanged, in which case a
+// preference the prior sub already submitted leaves the fresh sub finished.
 //
 // Left to node-side retry: a root the prior sub had at quorum but failed to submit is not re-submitted
 // (quorum fires once), and a re-emission whose preference derivation fails has no preference round until
@@ -708,7 +709,10 @@ func (r *ProposerPreferencesSlotRunner) preferenceSigningRoot() ([32]byte, error
 
 // carryOverPreferenceShares copies the prior sub-runner's collected preference shares for this sub's frozen
 // preference root, so a re-emission that re-derives a byte-identical preference (same signing root) keeps its
-// progress, as in carryOverAuthShares. When the preference changed, the roots differ and nothing carries.
+// progress, as in carryOverAuthShares. Completion is part of that progress: if the prior sub already submitted
+// this preference, this sub is finished too, so the slot does not report a running duty again and late shares
+// for the submitted preference are rejected as for any finished duty. When the preference changed, the roots
+// differ and nothing carries.
 func (r *ProposerPreferencesSlotRunner) carryOverPreferenceShares(prev *ProposerPreferencesSlotRunner) {
 	if prev == nil || prev.GetState() == nil || r.GetState() == nil || r.ProposerPreferences == nil {
 		return
@@ -718,6 +722,14 @@ func (r *ProposerPreferencesSlotRunner) carryOverPreferenceShares(prev *Proposer
 		return
 	}
 	r.carryOverSharesForRoot(prev, signingRoot)
+
+	// A sub-runner is finished only once it submitted its frozen preference (submitPreferences).
+	if !prev.GetState().Finished || prev.ProposerPreferences == nil {
+		return
+	}
+	if prevSigningRoot, err := prev.preferenceSigningRoot(); err == nil && prevSigningRoot == signingRoot {
+		r.GetState().Finished = true
+	}
 }
 
 // carryOverSharesForRoot copies the prior sub-runner's collected partial signatures for one signing root

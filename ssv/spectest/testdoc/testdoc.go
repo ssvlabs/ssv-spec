@@ -254,6 +254,7 @@ const ProposerPreferencesRetainedPartialsCapIsolatesSignersDoc = "Tests that the
 const ProposerPreferencesRetainedPartialReconstructFailureReturnedDoc = "Tests that replaying retained partials (SIP #94 §5) returns the failure to reconstruct a quorum it completes, as the live path does, and drops the bad share so a later share re-crosses quorum and submits"
 const ProposerPreferencesRetainedDivergingPartialDroppedDoc = "Tests that retained partials (SIP #94 §5) are checked one at a time when the duty starts: a diverging one is skipped without failing the duty, while the matching ones still apply and reach quorum"
 const ProposerPreferencesReemissionAppliesPartialsPriorPreferenceRejectedDoc = "Tests SIP #94 §5 across a dependent-root change: partials the stale incarnation rejected are still retained, and the re-emission replays them, reaching quorum and submitting"
+const ProposerPreferencesReemissionAfterSubmitStaysFinishedDoc = "Tests a same-slot re-emission after the preference was submitted (SIP #94 §5): the byte-identical re-derived preference carries the prior quorum and its completion over, so nothing is submitted again, the slot stays finished, and a late partial is rejected"
 const ProposerPreferencesMalformedPartialsNotRetainedDoc = "Tests that a malformed packet (SIP #94 §5/§7) is rejected before any of its partials is retained: two preference partials, more request-auth partials than MaxBuilderEntries, and a partial for an unknown validator, each arriving before its slot's duty has started"
 
 // Documentation for ptcattester tests
