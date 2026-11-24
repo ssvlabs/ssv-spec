@@ -212,6 +212,10 @@ func (r *ProposerPreferencesRunner) retainPartials(signedMsg *types.PartialSigna
 // retainPartial adds one partial of signedMsg to PendingPartials (see retainPartials). The cap counts per
 // signer, so a faulty operator cannot crowd out the others' partials.
 func (r *ProposerPreferencesRunner) retainPartial(signedMsg *types.PartialSignatureMessages, msg *types.PartialSignatureMessage) {
+	// The map is omitted from JSON when empty, so a dispatcher rebuilt from JSON holds a nil one.
+	if r.PendingPartials == nil {
+		r.PendingPartials = map[phase0.Slot][]*types.PartialSignatureMessages{}
+	}
 	retained := r.PendingPartials[signedMsg.Slot]
 	perSigner := 0
 	for _, existing := range retained {

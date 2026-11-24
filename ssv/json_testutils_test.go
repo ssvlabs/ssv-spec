@@ -225,3 +225,39 @@ func TestStateEncodeDecodeRoundTrip(t *testing.T) {
 	require.True(t, ok)
 	require.Equal(t, phase0.Slot(55), decodedDuty.Slot)
 }
+
+// A dispatcher holding no retained partials omits PendingPartials from its JSON, so one rebuilt through Decode
+// has a nil map and must still be able to retain the next partial it receives.
+func TestProposerPreferencesRunnerRetainsPartialsAfterDecode(t *testing.T) {
+	t.Parallel()
+
+	const validatorIndex = phase0.ValidatorIndex(1)
+	const slot = phase0.Slot(12)
+
+	original := &ProposerPreferencesRunner{
+		BaseRunner: &BaseRunner{
+			RunnerRoleType: types.RoleProposerPreferences,
+			Share:          map[phase0.ValidatorIndex]*types.Share{validatorIndex: {ValidatorIndex: validatorIndex}},
+		},
+		BySlot:          map[phase0.Slot]*ProposerPreferencesSlotRunner{},
+		PendingPartials: map[phase0.Slot][]*types.PartialSignatureMessages{},
+	}
+	payload, err := original.Encode()
+	require.NoError(t, err)
+
+	decoded := &ProposerPreferencesRunner{}
+	require.NoError(t, decoded.Decode(payload))
+	require.Nil(t, decoded.PendingPartials)
+
+	partial := &types.PartialSignatureMessages{
+		Type: types.ProposerPreferencesPartialSig,
+		Slot: slot,
+		Messages: []*types.PartialSignatureMessage{{
+			PartialSignature: make([]byte, 96),
+			Signer:           1,
+			ValidatorIndex:   validatorIndex,
+		}},
+	}
+	require.NoError(t, decoded.ProcessPreConsensus(partial))
+	require.Len(t, decoded.PendingPartials[slot], 1)
+}
