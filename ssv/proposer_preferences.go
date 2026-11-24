@@ -160,8 +160,7 @@ func (r *ProposerPreferencesRunner) HasRunningDuty() bool {
 // ProcessPreConsensus retains the message's partials for its proposal slot (PendingPartials), then routes
 // it to the slot's sub-runner if that slot's duty has started here.
 func (r *ProposerPreferencesRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
-	// Reject a packet no sub-runner would accept before retaining it, so it takes no room and none of its
-	// partials is replayed.
+	// Reject a malformed packet before retaining it, so it takes no room and none of its partials is replayed.
 	if err := r.validatePartialsPacket(signedMsg); err != nil {
 		return err
 	}
@@ -175,11 +174,15 @@ func (r *ProposerPreferencesRunner) ProcessPreConsensus(signedMsg *types.Partial
 	return sub.ProcessPreConsensus(signedMsg)
 }
 
-// validatePartialsPacket applies the packet-level checks that do not depend on what the slot's sub-runner
-// froze: the type is one of the duty's two rounds, the partials are valid, from one signer and for this
-// runner's validator, and their number is within the type's bound (SIP #94 §7: one preference partial, up to
-// MaxBuilderEntries request-auth partials). A sub-runner rejects a packet failing any of them whole, so they
-// must hold before the packet is split into PendingPartials, whose partials the replay applies one at a time.
+// validatePartialsPacket checks the packet as a whole: the type is one of the duty's two rounds, the partials
+// are valid, from one signer and for this runner's validator, and their number is within the type's bound
+// (SIP #94 §7: one preference partial, up to MaxBuilderEntries request-auth partials). A sub-runner rejects a
+// packet failing any of these whole, so they must hold before the packet is split into PendingPartials, whose
+// partials the replay applies one at a time.
+//
+// What a sub-runner checks beyond these is left to it. Whether its duty is running and the roots are the ones
+// it froze depends on its state. That the signer is a committee member holds or fails for a lone partial as
+// for its packet, and Validator.ProcessMessage settles it before the runner is reached.
 func (r *ProposerPreferencesRunner) validatePartialsPacket(signedMsg *types.PartialSignatureMessages) error {
 	if signedMsg.Type != types.ProposerPreferencesPartialSig && signedMsg.Type != types.RequestAuthPartialSig {
 		return types.NewError(types.ProposerPreferencesUnexpectedPartialSigTypeErrorCode,
