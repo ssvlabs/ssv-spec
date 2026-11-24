@@ -38,6 +38,9 @@ type TestingKeyManager struct {
 	// the one signed (seeded) or first seen per (validator key, slot) is slashable. Off by default.
 	recordAttestations bool
 	seenAttestations   map[string]map[phase0.Slot][32]byte
+	// failEnvelopeSigning makes SignBeaconObject fail under DomainBeaconBuilder, the §6 envelope root's domain
+	// (SIP #94 §4): a signer that cannot sign that root.
+	failEnvelopeSigning bool
 }
 
 var (
@@ -122,6 +125,11 @@ func NewTestingKeyStorage() *TestingKeyStorage {
 	return keyStorageInstance
 }
 
+// SetFailEnvelopeSigning FOR TESTING ONLY!! sets failEnvelopeSigning
+func (km *TestingKeyManager) SetFailEnvelopeSigning(v bool) {
+	km.failEnvelopeSigning = v
+}
+
 // AddSlashableDataRoot adds a slashable slot for the validator to the key manager
 func (km *TestingKeyManager) AddSlashableSlot(pk types.ShareValidatorPK, slot phase0.Slot) {
 	entry := hex.EncodeToString(pk)
@@ -187,6 +195,10 @@ func (km *TestingKeyManager) IsBeaconBlockSlashable(pk []byte, slot phase0.Slot)
 }
 
 func (km *TestingKeyManager) SignBeaconObject(obj ssz.HashRoot, domain phase0.Domain, pk []byte, domainType phase0.DomainType) (types.Signature, [32]byte, error) {
+	if km.failEnvelopeSigning && domainType == types.DomainBeaconBuilder {
+		return nil, [32]byte{}, errors.New("forced envelope signing failure")
+	}
+
 	mu.Lock()
 	defer mu.Unlock()
 

@@ -166,6 +166,7 @@ const GloasProposerEnvelopeFirstOrderDoc = "Tests that a Gloas self-build propos
 const GloasProposerBadEnvelopeShareDoc = "Tests that a bad SIP #94 §6 envelope share does not strand the block: the block submits while the envelope fails reconstruction and is not published"
 const GloasProposerBadBlockShareDoc = "Tests that a bad block share does not strand the SIP #94 §6 envelope: the envelope quorum is held until the block submit is attempted, then both submit, block first"
 const GloasProposerFailedBlockSubmitDoc = "Tests that the SIP #94 §6 reveal publishes when this operator's own block submit fails: it gates on the submit being attempted, not on it succeeding"
+const GloasProposerFailedEnvelopeSignDoc = "Tests that an operator whose signer fails on the SIP #94 §6 envelope root still broadcasts its block share: the post-consensus packet goes out block-only and the signing error is returned"
 const GloasProposerExternalBidDoc = "Tests the SIP #94 §4 external-build produce path: an external bid win returns a bare block and no envelope, so the proposed value carries a zero payload_root"
 
 // Documentation for runner/preconsensus tests

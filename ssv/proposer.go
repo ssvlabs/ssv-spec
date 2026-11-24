@@ -156,11 +156,20 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 	if err != nil {
 		return err
 	}
+	// A required root that fails to sign fails the round. An optional one (the §6 envelope root) is left out of
+	// the packet instead: receivers do not require that entry, so the failure costs this operator its envelope
+	// share and never its block share (SIP #94 §4). Its error is returned once the packet is broadcast.
 	entries := make([]*types.PartialSignatureMessage, 0, len(roots))
+	var envelopeSignErr error
 	for _, root := range roots {
 		msg, err := r.BaseRunner.signBeaconObject(r, duty, root.Root, duty.Slot, root.Domain)
 		if err != nil {
-			return errors.Wrap(err, "failed signing post-consensus root")
+			err = errors.Wrap(err, "failed signing post-consensus root")
+			if !root.Optional {
+				return err
+			}
+			envelopeSignErr = types.WrapError(types.ProposerEnvelopeSignFailedErrorCode, err)
+			continue
 		}
 		entries = append(entries, msg)
 	}
@@ -198,7 +207,7 @@ func (r *ProposerRunner) ProcessConsensus(signedMsg *types.SignedSSVMessage) err
 	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
 		return errors.Wrap(err, "can't broadcast partial post consensus sig")
 	}
-	return nil
+	return envelopeSignErr
 }
 
 func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureMessages) error {

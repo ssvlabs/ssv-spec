@@ -46,6 +46,8 @@ type MsgProcessingSpecTest struct {
 	BeaconAggregators       []phase0.CommitteeIndex `json:"BeaconAggregators,omitempty"`
 	BeaconAggregatorsValues []bool                  `json:"BeaconAggregatorsValues,omitempty"`
 	BeaconNode              *BeaconNodeBehaviour    `json:"BeaconNode,omitempty"`
+	// Signer extra data
+	Signer *SignerBehaviour `json:"Signer,omitempty"`
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {
@@ -132,6 +134,9 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 
 	test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode).SetAggregators(test.BeaconAggregatorsMap())
 	test.BeaconNode.Apply(test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode))
+	if test.Signer != nil {
+		test.Signer.Apply(test.Runner.GetSigner().(*testingutils.TestingKeyManager))
+	}
 
 	var v *ssv.Validator
 	var c *ssv.Committee
@@ -297,6 +302,7 @@ type MsgProcessingSpecTestAlias struct {
 	BeaconAggregators             []phase0.CommitteeIndex        `json:"BeaconAggregators,omitempty"`
 	BeaconAggregatorsValues       []bool                         `json:"BeaconAggregatorsValues,omitempty"`
 	BeaconNode                    *BeaconNodeBehaviour           `json:"BeaconNode,omitempty"`
+	Signer                        *SignerBehaviour               `json:"Signer,omitempty"`
 }
 
 func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
@@ -316,6 +322,7 @@ func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
 		BeaconAggregators:             t.BeaconAggregators,
 		BeaconAggregatorsValues:       t.BeaconAggregatorsValues,
 		BeaconNode:                    t.BeaconNode,
+		Signer:                        t.Signer,
 	}
 
 	if t.Duty != nil {
@@ -357,6 +364,7 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	t.BeaconAggregators = aux.BeaconAggregators
 	t.BeaconAggregatorsValues = aux.BeaconAggregatorsValues
 	t.BeaconNode = aux.BeaconNode
+	t.Signer = aux.Signer
 
 	// Determine which type of duty was marshaled
 	if aux.ValidatorDuty != nil {

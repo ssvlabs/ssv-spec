@@ -118,6 +118,7 @@ const (
 	ProposerPreferencesUnexpectedPartialSigTypeErrorCode
 	ProposerBlockProposerIndexMismatchErrorCode
 	ProposerBlockSubmitFailedErrorCode
+	ProposerEnvelopeSignFailedErrorCode
 )
 
 type Error struct {
