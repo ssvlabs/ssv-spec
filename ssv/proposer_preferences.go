@@ -159,10 +159,10 @@ func (r *ProposerPreferencesRunner) HasRunningDuty() bool {
 // ProcessPreConsensus retains the message's partials for its proposal slot (PendingPartials), then routes
 // it to the slot's sub-runner if that slot's duty has started here.
 func (r *ProposerPreferencesRunner) ProcessPreConsensus(signedMsg *types.PartialSignatureMessages) error {
-	// Reject any type other than the duty's two rounds before retaining it, so it takes no room.
-	if signedMsg.Type != types.ProposerPreferencesPartialSig && signedMsg.Type != types.RequestAuthPartialSig {
-		return types.NewError(types.ProposerPreferencesUnexpectedPartialSigTypeErrorCode,
-			"unexpected pre-consensus partial signature type for proposer-preferences runner")
+	// Reject a packet no sub-runner would accept before retaining it, so it takes no room and none of its
+	// partials is replayed.
+	if err := r.validatePartialsPacket(signedMsg); err != nil {
+		return err
 	}
 	r.retainPartials(signedMsg)
 
@@ -172,6 +172,31 @@ func (r *ProposerPreferencesRunner) ProcessPreConsensus(signedMsg *types.Partial
 		return nil
 	}
 	return sub.ProcessPreConsensus(signedMsg)
+}
+
+// validatePartialsPacket applies the packet-level checks that do not depend on what the slot's sub-runner
+// froze: the type is one of the duty's two rounds, the partials are valid, from one signer and for this
+// runner's validator, and their number is within the type's bound (SIP #94 §7: one preference partial, up to
+// MaxBuilderEntries request-auth partials). A sub-runner rejects a packet failing any of them whole, so they
+// must hold before the packet is split into PendingPartials, whose partials the replay applies one at a time.
+func (r *ProposerPreferencesRunner) validatePartialsPacket(signedMsg *types.PartialSignatureMessages) error {
+	if signedMsg.Type != types.ProposerPreferencesPartialSig && signedMsg.Type != types.RequestAuthPartialSig {
+		return types.NewError(types.ProposerPreferencesUnexpectedPartialSigTypeErrorCode,
+			"unexpected pre-consensus partial signature type for proposer-preferences runner")
+	}
+	if err := signedMsg.Validate(); err != nil {
+		return errors.Wrap(err, "PartialSignatureMessages invalid")
+	}
+	if err := r.BaseRunner.validateValidatorIndexInPartialSigMsg(signedMsg); err != nil {
+		return err
+	}
+	if signedMsg.Type == types.ProposerPreferencesPartialSig && len(signedMsg.Messages) != 1 {
+		return types.NewError(types.WrongRootsCountErrorCode, "proposer-preferences container must carry one partial")
+	}
+	if signedMsg.Type == types.RequestAuthPartialSig && len(signedMsg.Messages) > MaxBuilderEntries {
+		return types.NewError(types.RequestAuthWrongRootsCountErrorCode, "builder-request-auth container exceeds MaxBuilderEntries")
+	}
+	return nil
 }
 
 // retainPartials adds each of the message's partials to its slot's PendingPartials as a single-entry
