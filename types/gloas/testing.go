@@ -5,6 +5,10 @@ import (
 
 	bitfield "github.com/OffchainLabs/go-bitfield"
 	"github.com/attestantio/go-eth2-client/spec/altair"
+	"github.com/attestantio/go-eth2-client/spec/capella"
+	"github.com/attestantio/go-eth2-client/spec/deneb"
+	"github.com/attestantio/go-eth2-client/spec/electra"
+	eth2gloas "github.com/attestantio/go-eth2-client/spec/gloas"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 )
 
@@ -45,6 +49,85 @@ func TestingBeaconBlock(slot phase0.Slot) *BeaconBlock {
 			ParentExecutionRequests: &ExecutionRequests{},
 		},
 	}
+}
+
+// TestingBlockLists is the number of elements in each of a block's limited lists (see ValidateListLimits), for
+// TestingBeaconBlockWithLists.
+type TestingBlockLists struct {
+	ProposerSlashings, AttesterSlashings, Attestations, Deposits, VoluntaryExits, BLSToExecutionChanges int
+	PayloadAttestations                                                                                 int
+	WithdrawalRequests, ConsolidationRequests, BuilderDepositRequests, BuilderExitRequests              int
+	BlobKZGCommitments                                                                                  int
+}
+
+// TestingBeaconBlockWithLists returns TestingBeaconBlock for the slot with the given number of elements in each
+// of its limited lists. The elements are empty but complete, so the block encodes. For use in tests.
+func TestingBeaconBlockWithLists(slot phase0.Slot, lists TestingBlockLists) *BeaconBlock {
+	attestationData := func() *phase0.AttestationData {
+		return &phase0.AttestationData{Source: &phase0.Checkpoint{}, Target: &phase0.Checkpoint{}}
+	}
+	header := func() *phase0.SignedBeaconBlockHeader {
+		return &phase0.SignedBeaconBlockHeader{Message: &phase0.BeaconBlockHeader{}}
+	}
+
+	block := TestingBeaconBlock(slot)
+	body := block.Body
+	for i := 0; i < lists.ProposerSlashings; i++ {
+		body.ProposerSlashings = append(body.ProposerSlashings, &phase0.ProposerSlashing{SignedHeader1: header(), SignedHeader2: header()})
+	}
+	for i := 0; i < lists.AttesterSlashings; i++ {
+		body.AttesterSlashings = append(body.AttesterSlashings, &eth2gloas.AttesterSlashing{
+			Attestation1: &eth2gloas.IndexedAttestation{Data: attestationData()},
+			Attestation2: &eth2gloas.IndexedAttestation{Data: attestationData()},
+		})
+	}
+	for i := 0; i < lists.Attestations; i++ {
+		body.Attestations = append(body.Attestations, &eth2gloas.Attestation{
+			AggregationBits: bitfield.NewBitlist(1),
+			Data:            attestationData(),
+			CommitteeBits:   bitfield.NewBitvector64(),
+		})
+	}
+	for i := 0; i < lists.Deposits; i++ {
+		proof := make([][]byte, 33)
+		for j := range proof {
+			proof[j] = make([]byte, 32)
+		}
+		body.Deposits = append(body.Deposits, &phase0.Deposit{
+			Proof: proof,
+			Data:  &phase0.DepositData{WithdrawalCredentials: make([]byte, 32)},
+		})
+	}
+	for i := 0; i < lists.VoluntaryExits; i++ {
+		body.VoluntaryExits = append(body.VoluntaryExits, &phase0.SignedVoluntaryExit{Message: &phase0.VoluntaryExit{}})
+	}
+	for i := 0; i < lists.BLSToExecutionChanges; i++ {
+		body.BLSToExecutionChanges = append(body.BLSToExecutionChanges, &capella.SignedBLSToExecutionChange{Message: &capella.BLSToExecutionChange{}})
+	}
+	for i := 0; i < lists.PayloadAttestations; i++ {
+		body.PayloadAttestations = append(body.PayloadAttestations, &PayloadAttestation{
+			AggregationBits: bitfield.NewBitvector512(),
+			Data:            &PayloadAttestationData{},
+		})
+	}
+
+	requests := body.ParentExecutionRequests
+	for i := 0; i < lists.WithdrawalRequests; i++ {
+		requests.Withdrawals = append(requests.Withdrawals, &electra.WithdrawalRequest{})
+	}
+	for i := 0; i < lists.ConsolidationRequests; i++ {
+		requests.Consolidations = append(requests.Consolidations, &electra.ConsolidationRequest{})
+	}
+	for i := 0; i < lists.BuilderDepositRequests; i++ {
+		requests.BuilderDeposits = append(requests.BuilderDeposits, &BuilderDepositRequest{})
+	}
+	for i := 0; i < lists.BuilderExitRequests; i++ {
+		requests.BuilderExits = append(requests.BuilderExits, &BuilderExitRequest{})
+	}
+
+	bid := body.SignedExecutionPayloadBid.Message
+	bid.BlobKZGCommitments = make([]deneb.KZGCommitment, lists.BlobKZGCommitments)
+	return block
 }
 
 // TestingExternalBuilderIndex is a non-self-build BuilderIndex for the §4 external-bid path — any value

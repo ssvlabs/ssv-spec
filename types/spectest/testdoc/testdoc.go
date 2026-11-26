@@ -215,6 +215,7 @@ const ProposerConsensusDataTestType = "Validator consensus data: validation of v
 // Documentation for ProposerConsensusDataTest
 const ProposerConsensusDataTestGloasBlockDoc = "Test validation of valid consensus data with Gloas block"
 const ProposerConsensusDataTestInvalidGloasBlockDoc = "Test validation error for invalid consensus data with empty Gloas proposal data"
+const ProposerConsensusDataTestGloasBlockListOverLimitDoc = "Test validation error for consensus data whose Gloas block holds a list over its limit"
 const ProposerConsensusDataTestNonGloasVersionDoc = "Test validation error for consensus data whose version is not Gloas"
 const ProposerConsensusDataTestProposerNoJustificationsDoc = "Test proposer consensus data with no pre-consensus justifications"
 const ProposerConsensusDataTestVoluntaryExitDoc = "Test validation error for voluntary exit consensus data which has no consensus data"

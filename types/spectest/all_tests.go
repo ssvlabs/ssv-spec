@@ -62,6 +62,7 @@ var AllTests = []SpecTest{
 	proposerconsensusdata.ProposerConsensusDataEncoding(),
 	proposerconsensusdata.GloasBlockValidation(),
 	proposerconsensusdata.InvalidGloasBlockValidation(),
+	proposerconsensusdata.GloasBlockListOverLimitValidation(),
 	proposerconsensusdata.NonGloasVersionValidation(),
 	proposerconsensusdata.ProposerNoJustifications(),
 

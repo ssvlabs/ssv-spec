@@ -47,3 +47,26 @@ func NonGloasVersionValidation() *ProposerConsensusDataTest {
 		types.UnknownBlockVersionErrorCode,
 	)
 }
+
+// GloasBlockListOverLimitValidation tests an invalid consensus data whose block holds one attestation more than
+// a Gloas block may. The list is progressive, so the block decodes, and the limit is checked on its own
+// (SIP #94 §4).
+func GloasBlockListOverLimitValidation() *ProposerConsensusDataTest {
+	version := gloas.DataVersionGloas
+	duty := testingutils.TestingProposerDutyV(version)
+
+	dataSSZ, err := (&gloas.GloasProposalData{
+		Block:       gloas.TestingBeaconBlockWithLists(duty.Slot, gloas.TestingBlockLists{Attestations: 9}), // one over MAX_ATTESTATIONS_ELECTRA
+		PayloadRoot: testingutils.TestingGloasPayloadRoot,
+	}).MarshalSSZ()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return NewProposerConsensusDataTest(
+		"gloas block list over limit",
+		testdoc.ProposerConsensusDataTestGloasBlockListOverLimitDoc,
+		types.ProposerConsensusData{Duty: *duty, Version: version, DataSSZ: dataSSZ},
+		types.ProposerBlockListLimitErrorCode,
+	)
+}

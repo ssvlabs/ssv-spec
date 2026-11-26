@@ -218,12 +218,23 @@ func (cd *ProposerConsensusData) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// Validate checks the following rules:
+//   - the duty is a proposer duty
+//   - the proposal decodes as Gloas proposal data (see GetBlockData)
+//   - none of the block's lists is over its Gloas limit. They are progressive lists, which decoding does not
+//     bound, and the beacon chain rejects a block over any of them (gloas.BeaconBlock.ValidateListLimits)
 func (cd *ProposerConsensusData) Validate() error {
 	if cd.Duty.Type != BNRoleProposer {
 		return NewError(UnknownDutyRoleDataErrorCode, "unknown duty role")
 	}
-	_, err := cd.GetBlockData()
-	return err
+	proposal, err := cd.GetBlockData()
+	if err != nil {
+		return err
+	}
+	if err := proposal.Block.ValidateListLimits(); err != nil {
+		return WrapError(ProposerBlockListLimitErrorCode, err)
+	}
+	return nil
 }
 
 // GetBlockData decodes the proposal: the Gloas block and the §6 payload_root carried with it (SIP #94 §4).
