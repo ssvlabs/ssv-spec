@@ -8,9 +8,10 @@ import (
 )
 
 // BuilderEntry is one cluster-configured direct-builder connection for the builder-request-auth extension
-// (SIP #94 §5). Data is the token agreed with the builder out of band, signed byte-for-byte; when empty it
-// defaults to the builder URL's hostname (see AuthData). Entries MUST be byte-identical across all
-// operators, and SSV caps them at MaxBuilderEntries per validator.
+// (SIP #94 §5). Data is the token agreed with the builder out of band, signed byte-for-byte. A nil Data means
+// none was agreed, and the entry signs the default derived from the builder URL's hostname (see AuthData). A
+// configured zero-length Data is invalid, not a request for that default. Entries MUST be byte-identical
+// across all operators, and SSV caps them at MaxBuilderEntries per validator.
 type BuilderEntry struct {
 	Data []byte
 	URL  string
@@ -20,14 +21,18 @@ type BuilderEntry struct {
 // the beacon-API's MAX_BUILDER_ENTRIES (64) that bounds the §7 message-validation budget.
 const MaxBuilderEntries = 8
 
-// AuthData returns the bytes signed for this entry: the configured Data, or — when Data is empty — the
-// default derived from URL per the upstream get_default_auth_data rule (SIP #94 §5, builder-specs #168):
-// the URL's hostname, lowercased ASCII, dropping scheme, userinfo, port, path, query and fragment, with an
-// IPv6 literal in RFC 5952 compressed hex-only form inside brackets. It returns nil when neither is
-// available (an internationalized hostname must be supplied in punycode); the auth round skips an empty
-// result as invalid.
+// AuthData returns the bytes signed for this entry: the configured Data, or — when none is configured (a nil
+// Data) — the default derived from URL per the upstream get_default_auth_data rule (SIP #94 §5, builder-specs
+// #168): the URL's hostname, lowercased ASCII, dropping scheme, userinfo, port, path, query and fragment,
+// with an IPv6 literal in RFC 5952 compressed hex-only form inside brackets. It returns nil for a configured
+// zero-length Data, which is invalid rather than a request for the default (SIP #94 §5), and when no default
+// can be derived (an internationalized hostname must be supplied in punycode, and a zoned IPv6 literal is
+// invalid); the auth round skips an empty result.
 func (e BuilderEntry) AuthData() []byte {
-	if len(e.Data) > 0 {
+	if e.Data != nil {
+		if len(e.Data) == 0 {
+			return nil
+		}
 		return e.Data
 	}
 	return defaultAuthData(e.URL)

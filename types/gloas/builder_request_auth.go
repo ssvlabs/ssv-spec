@@ -15,6 +15,10 @@ import (
 // from the module graph (`go list -m`), so it tracks go-eth2-client across dependency bumps.
 //go:generate sh -c "go run github.com/ferranbt/fastssz/sszgen --path ./builder_request_auth.go --include $(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/phase0 --objs BuilderRequestAuth,SignedBuilderRequestAuth"
 
+// MaxBuilderAuthDataSize is the upstream MAX_BUILDER_AUTH_DATA_SIZE: the most bytes BuilderRequestAuth.Data may
+// hold (the ssz-max of its tag). Longer data cannot be hashed, so it cannot be signed.
+const MaxBuilderAuthDataSize = 4096
+
 // BuilderRequestAuth authenticates a cluster's direct request to a builder for a proposal slot (SIP #94
 // §5). A validator-key BLS signature over it under DomainBuilderRequestAuth
 // — chain-independent (genesis compute_domain, like the deprecated ValidatorRegistrationV1) — yields

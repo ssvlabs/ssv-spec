@@ -227,6 +227,7 @@ var AllTests = []tests.TestF{
 	proposerpreferences.BuilderRequestAuthNoAuth,
 	proposerpreferences.BuilderRequestAuthBadShare,
 	proposerpreferences.BuilderRequestAuthURLFallback,
+	proposerpreferences.BuilderRequestAuthData,
 	proposerpreferences.UnexpectedPartialSigType,
 	proposerpreferences.RetainedPartialsAppliedAtDutyStart,
 	proposerpreferences.RetainedAuthPartialsAppliedAtDutyStart,
