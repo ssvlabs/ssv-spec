@@ -51,10 +51,7 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "f8f6de434622433553716a8d16abf43d92ddad8fd33f0350c39f87d12e30d7e2",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
-				ExpectedErrorCode: expectedErrorCode,
+				ExpectedErrorCode:       expectedErrorCode,
 			},
 			{
 				Name:                    "proposer",
@@ -62,10 +59,7 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 				Duty:                    testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "914d74606f9de8a2425b875d248532564e1770a6320f923ecad1dd12998b1158",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, gloas.DataVersionGloas), // broadcasts when starting a new duty
-				},
-				ExpectedErrorCode: types.DutyAlreadyPassedErrorCode,
+				ExpectedErrorCode:       types.DutyAlreadyPassedErrorCode,
 			},
 			{
 				Name: "voluntary exit",
@@ -98,10 +92,7 @@ func DuplicateDutyNotFinished() tests.SpecTest {
 			Duty:                    testingutils.TestingAggregatorDuty(version),
 			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: "c47ae8ab2b504bcf0439e541f2d9d04138ccb45fee9411e12da9fd857a46a5b6",
-			OutputMessages: []*types.PartialSignatureMessages{
-				testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
-			},
-			ExpectedErrorCode: expectedVersionedErrorCode,
+			ExpectedErrorCode:       expectedVersionedErrorCode,
 		},
 		)
 	}

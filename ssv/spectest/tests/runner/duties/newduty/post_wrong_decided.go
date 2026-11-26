@@ -64,10 +64,7 @@ func PostWrongDecided() tests.SpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "4fce8afe24a8f812c9daccfb54c8247771c88b48d161b06901669d1e23ce7a0d",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusContributionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
-				ExpectedErrorCode: expectedErrorCode,
+				ExpectedErrorCode:       expectedErrorCode,
 			},
 			{
 				Name:                    "proposer",
@@ -75,10 +72,7 @@ func PostWrongDecided() tests.SpecTest {
 				Duty:                    testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "fd8de7873c9cf83ec9366f856f4b8d81d77c215f935185d90cea8be8dcb44089",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, gloas.DataVersionGloas), // broadcasts when starting a new duty
-				},
-				ExpectedErrorCode: types.DutyAlreadyPassedErrorCode,
+				ExpectedErrorCode:       types.DutyAlreadyPassedErrorCode,
 			},
 		},
 		ks,
@@ -97,10 +91,7 @@ func PostWrongDecided() tests.SpecTest {
 			Duty:                    testingutils.TestingAggregatorDuty(version),
 			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: "533fa28f89164dc4a26bdd4e2cd55cca8c17375d3e88251f2480ae727ced1ee1",
-			OutputMessages: []*types.PartialSignatureMessages{
-				testingutils.PreConsensusSelectionProofMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
-			},
-			ExpectedErrorCode: expectedVersionedErrorCode,
+			ExpectedErrorCode:       expectedVersionedErrorCode,
 		},
 		)
 	}

@@ -51,51 +51,50 @@ func (test *StartNewRunnerDutySpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	err := test.runPreTesting()
 	tests.AssertErrorCode(t, test.ExpectedErrorCode, err)
 
-	// test output message
+	// test output message: every broadcast partial-signature container against the expected one in its place.
+	// The count is compared even when nothing was broadcast, so an expected message that never went out fails.
 	broadcastedSignedMsgs := test.Runner.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
 	broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
-	if len(broadcastedMsgs) > 0 {
-		index := 0
-		for _, msg := range broadcastedMsgs {
-			if msg.MsgType != types.SSVPartialSignatureMsgType {
-				continue
+	index := 0
+	for _, msg := range broadcastedMsgs {
+		if msg.MsgType != types.SSVPartialSignatureMsgType {
+			continue
+		}
+		require.Less(t, index, len(test.OutputMessages), "unexpected output msg")
+
+		msg1 := &types.PartialSignatureMessages{}
+		require.NoError(t, msg1.Decode(msg.Data))
+		msg2 := test.OutputMessages[index]
+		require.Len(t, msg1.Messages, len(msg2.Messages))
+
+		// messages are not guaranteed to be in order so we map them and then test all roots to be equal
+		roots := make(map[string]string)
+		for i, partialSigMsg2 := range msg2.Messages {
+			r2, err := partialSigMsg2.GetRoot()
+			require.NoError(t, err)
+			if _, found := roots[hex.EncodeToString(r2[:])]; !found {
+				roots[hex.EncodeToString(r2[:])] = ""
+			} else {
+				roots[hex.EncodeToString(r2[:])] = hex.EncodeToString(r2[:])
 			}
 
-			msg1 := &types.PartialSignatureMessages{}
-			require.NoError(t, msg1.Decode(msg.Data))
-			msg2 := test.OutputMessages[index]
-			require.Len(t, msg1.Messages, len(msg2.Messages))
+			partialSigMsg1 := msg1.Messages[i]
+			r1, err := partialSigMsg1.GetRoot()
+			require.NoError(t, err)
 
-			// messages are not guaranteed to be in order so we map them and then test all roots to be equal
-			roots := make(map[string]string)
-			for i, partialSigMsg2 := range msg2.Messages {
-				r2, err := partialSigMsg2.GetRoot()
-				require.NoError(t, err)
-				if _, found := roots[hex.EncodeToString(r2[:])]; !found {
-					roots[hex.EncodeToString(r2[:])] = ""
-				} else {
-					roots[hex.EncodeToString(r2[:])] = hex.EncodeToString(r2[:])
-				}
-
-				partialSigMsg1 := msg1.Messages[i]
-				r1, err := partialSigMsg1.GetRoot()
-				require.NoError(t, err)
-
-				if _, found := roots[hex.EncodeToString(r1[:])]; !found {
-					roots[hex.EncodeToString(r1[:])] = ""
-				} else {
-					roots[hex.EncodeToString(r1[:])] = hex.EncodeToString(r1[:])
-				}
+			if _, found := roots[hex.EncodeToString(r1[:])]; !found {
+				roots[hex.EncodeToString(r1[:])] = ""
+			} else {
+				roots[hex.EncodeToString(r1[:])] = hex.EncodeToString(r1[:])
 			}
-			for k, v := range roots {
-				require.EqualValues(t, k, v, "missing output msg")
-			}
-
-			index++
+		}
+		for k, v := range roots {
+			require.EqualValues(t, k, v, "missing output msg")
 		}
 
-		require.Len(t, test.OutputMessages, index)
+		index++
 	}
+	require.Len(t, test.OutputMessages, index)
 
 	// post root
 	postRoot, err := test.Runner.GetRoot()

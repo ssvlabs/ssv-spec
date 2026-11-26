@@ -14,27 +14,22 @@ import (
 func Observation() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	// A runner already executing the duty, with its observation frozen.
+	// A runner already executing the duty, with its observation frozen. The state is set rather than reached by
+	// starting the duty here, so the runner the JSON holds has broadcast what a run from the JSON has: nothing.
 	running := testingutils.PTCAttesterRunner(ks)
-	if err := running.StartNewDuty(testingutils.TestingPTCAttesterDuty(), ks.Threshold); err != nil {
-		panic(err.Error())
-	}
-	if running.(*ssv.PTCAttesterRunner).PayloadAttestationData == nil {
-		panic("running duty froze no observation")
-	}
+	running.GetBaseRunner().State = ssv.NewRunnerState(ks.Threshold, testingutils.TestingPTCAttesterDuty())
+	running.(*ssv.PTCAttesterRunner).PayloadAttestationData = testingutils.TestingPayloadAttestationData(testingutils.TestingDutySlotGloas)
 
 	return newduty.NewMultiStartNewRunnerDutySpecTest(
 		"ptc attestation observation",
 		testdoc.PTCAttesterObservationDoc,
 		[]*newduty.StartNewRunnerDutySpecTest{
 			{
-				Name:      "rejected duplicate duty keeps observation",
-				Runner:    running,
-				Duty:      testingutils.TestingPTCAttesterDuty(),
-				Threshold: ks.Threshold,
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusPTCMsg(ks.Shares[1], 1), // broadcast by the running duty
-				},
+				// The post-state pins the observation; the rejected duty signs and broadcasts nothing.
+				Name:              "rejected duplicate duty keeps observation",
+				Runner:            running,
+				Duty:              testingutils.TestingPTCAttesterDuty(),
+				Threshold:         ks.Threshold,
 				ExpectedErrorCode: types.DutyAlreadyPassedErrorCode,
 			},
 			{
