@@ -22,7 +22,8 @@ func committeeVoteValueCheckF(
 	expectedTarget phase0.Epoch,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
-		return ssv.BeaconVoteValueCheckF(signer, slotF(), sharePublicKeys, expectedSource, expectedTarget)(data)
+		// No view of the slot's block: the testing runners skip the same-slot rule (SIP #94 §2).
+		return ssv.BeaconVoteValueCheckF(signer, slotF(), sharePublicKeys, expectedSource, expectedTarget, nil)(data)
 	}
 }
 

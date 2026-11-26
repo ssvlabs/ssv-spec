@@ -122,6 +122,7 @@ const (
 	ProposerBidSlotMismatchErrorCode
 	ProposerBidParentRootMismatchErrorCode
 	ProposerPreferencesBroadcastFailedErrorCode
+	BeaconVoteSameSlotIndexErrorCode
 )
 
 type Error struct {

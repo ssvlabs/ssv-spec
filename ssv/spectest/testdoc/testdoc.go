@@ -227,6 +227,7 @@ const ValCheckAttestationValidDoc = "Tests attestation value check with valid at
 const ValCheckAttestationUnmatchedSourceEpochDoc = "Tests attestation value check with unmatched expected source epoch from operator's own view (source epoch differs from expected)"
 const ValCheckAttestationUnmatchedTargetEpochDoc = "Tests attestation value check with unmatched target epoch from operator's own view (target epoch differs from expected)"
 const ValCheckAttestationInvalidIndexDoc = "Tests attestation value check rejecting an attestation data index above 1 (SIP #94 §2)"
+const ValCheckAttestationSameSlotIndexDoc = "Tests the same-slot rule of the attestation value check (SIP #94 §2): an operator whose own view establishes that the voted block was proposed in the duty's slot rejects index 1 for it, and accepts index 0 for it, index 1 for another block, and index 1 when it has no such view"
 const ValCheckAttestationCrossIndexEquivocationDoc = "Tests that the decided attestation index goes into the slashability data (SIP #94 §2): a vote differing from a signed one only in the index is a double vote"
 
 // Documentation for valcheckduty tests

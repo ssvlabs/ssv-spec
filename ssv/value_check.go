@@ -39,14 +39,23 @@ func dutyValueCheck(
 }
 
 // BeaconVoteValueCheckF validates the committee QBFT value (SIP #94 §2): the vote's invariants, the expected
-// checkpoints, and slashability. The slashability data carries the decided attestation index, so a vote that
-// differs from a signed one only in the index is a double vote.
+// checkpoints, the same-slot rule, and slashability. The slashability data carries the decided attestation
+// index, so a vote that differs from a signed one only in the index is a double vote.
+//
+// sameSlotBlock reports whether this operator's own view establishes that the block with the given root was
+// proposed at slot, for instance from a head event naming that root and slot. A vote for such a block attests
+// in the block's own slot, where the index must be 0: one with index 1 is rejected, so the round changes
+// instead of the cluster signing an attestation the network rejects (a SHOULD in SIP #94 §2). The view must be
+// the one the operator had when the instance started: QBFT runs this check again on justified re-proposals and
+// on decided values, and an operator that learned the block's slot in between would reject a value it had
+// already prepared. An operator without such a view passes nil, which skips the rule.
 func BeaconVoteValueCheckF(
 	signer types.BeaconSigner,
 	slot phase0.Slot,
 	sharePublicKeys []types.ShareValidatorPK,
 	expectedSource phase0.Epoch,
 	expectedTarget phase0.Epoch,
+	sameSlotBlock func(blockRoot phase0.Root) bool,
 ) qbft.ProposedValueCheckF {
 	return func(data []byte) error {
 		bv := types.BeaconVote{}
@@ -68,6 +77,11 @@ func BeaconVoteValueCheckF(
 			return types.NewError(types.CheckpointMismatch,
 				fmt.Sprintf("attestation data target checkpoint %d does not match expected %d",
 					bv.Target.Epoch, expectedTarget))
+		}
+
+		if bv.AttestationDataIndex != 0 && sameSlotBlock != nil && sameSlotBlock(bv.BlockRoot) {
+			return types.NewError(types.BeaconVoteSameSlotIndexErrorCode,
+				"attestation data index must be 0 for a block of the attestation's own slot")
 		}
 
 		attestationData := &phase0.AttestationData{

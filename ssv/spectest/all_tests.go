@@ -212,6 +212,7 @@ var AllTests = []tests.TestF{
 	valcheckattestations.ValidNonSlashableSlot,
 	valcheckattestations.InvalidIndex,
 	valcheckattestations.CrossIndexEquivocation,
+	valcheckattestations.SameSlotIndex,
 
 	ptcattester.Abstain,
 	ptcattester.DivergingObservation,

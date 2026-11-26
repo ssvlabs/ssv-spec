@@ -1,6 +1,7 @@
 package valcheck
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -28,6 +29,9 @@ type SpecTest struct {
 	// signed; a differing attestation data for a recorded slot is a double vote.
 	SignedAttestations map[string][]*phase0.AttestationData `json:"SignedAttestations,omitempty"`
 	ShareValidatorsPK  []types.ShareValidatorPK             `json:"ShareValidatorsPK,omitempty"` // Optional. Specify validators shares for beacon vote value check
+	// SameSlotBlockRoots are the roots of the blocks this operator knows to have been proposed at DutySlot, for
+	// the beacon vote value check's same-slot rule (SIP #94 §2). None means it has no such view.
+	SameSlotBlockRoots []phase0.Root `json:"SameSlotBlockRoots,omitempty"`
 	ExpectedErrorCode  int
 	AnyError           bool
 	PrivateKeys        *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
@@ -68,8 +72,14 @@ func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueChe
 	}
 	switch test.RunnerRole {
 	case types.RoleCommittee:
+		var sameSlotBlock func(phase0.Root) bool
+		if len(test.SameSlotBlockRoots) > 0 {
+			sameSlotBlock = func(blockRoot phase0.Root) bool {
+				return slices.Contains(test.SameSlotBlockRoots, blockRoot)
+			}
+		}
 		return ssv.BeaconVoteValueCheckF(signer, test.DutySlot, shareValidatorsPK, test.ExpectedSource.Epoch,
-			test.ExpectedTarget.Epoch)
+			test.ExpectedTarget.Epoch, sameSlotBlock)
 	case types.RoleProposer:
 		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex,
 			shareValidatorsPK[0], func() phase0.Slot { return test.DutySlot })

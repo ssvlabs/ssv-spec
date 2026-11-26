@@ -128,6 +128,7 @@ func TestErrorCodes(t *testing.T) {
 		{"ProposerBidSlotMismatchErrorCode", ProposerBidSlotMismatchErrorCode, 112},
 		{"ProposerBidParentRootMismatchErrorCode", ProposerBidParentRootMismatchErrorCode, 113},
 		{"ProposerPreferencesBroadcastFailedErrorCode", ProposerPreferencesBroadcastFailedErrorCode, 114},
+		{"BeaconVoteSameSlotIndexErrorCode", BeaconVoteSameSlotIndexErrorCode, 115},
 	} {
 		require.Equal(t, tc.want, tc.got, tc.name)
 	}
