@@ -245,6 +245,7 @@ var AllTests = []tests.TestF{
 	proposerpreferences.ReemissionAppliesPartialsPriorPreferenceRejected,
 	proposerpreferences.ReemissionAfterSubmitStaysFinished,
 	proposerpreferences.NoPreference,
+	proposerpreferences.RoundFailures,
 	proposerpreferences.MalformedPartialsNotRetained,
 
 	valcheckproposer.GloasBlocks,

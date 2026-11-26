@@ -576,7 +576,7 @@ func (r *ProposerPreferencesSlotRunner) broadcastPartialSig(msgs *types.PartialS
 		SSVMessage:  ssvMsg,
 	}
 	if err := r.GetNetwork().Broadcast(msgToBroadcast.SSVMessage.GetID(), msgToBroadcast); err != nil {
-		return errors.Wrap(err, "can't broadcast partial signature")
+		return types.WrapError(types.ProposerPreferencesBroadcastFailedErrorCode, errors.Wrap(err, "can't broadcast partial signature"))
 	}
 	return nil
 }

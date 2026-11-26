@@ -121,6 +121,7 @@ const (
 	ProposerEnvelopeSignFailedErrorCode
 	ProposerBidSlotMismatchErrorCode
 	ProposerBidParentRootMismatchErrorCode
+	ProposerPreferencesBroadcastFailedErrorCode
 )
 
 type Error struct {

@@ -51,6 +51,8 @@ type MsgProcessingSpecTest struct {
 	BeaconNode              *BeaconNodeBehaviour    `json:"BeaconNode,omitempty"`
 	// Signer extra data
 	Signer *SignerBehaviour `json:"Signer,omitempty"`
+	// Network extra data
+	Network *NetworkBehaviour `json:"Network,omitempty"`
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {
@@ -140,6 +142,7 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 	if test.Signer != nil {
 		test.Signer.Apply(test.Runner.GetSigner().(*testingutils.TestingKeyManager))
 	}
+	test.Network.Apply(test.Runner.GetNetwork().(*testingutils.TestingNetwork))
 
 	var v *ssv.Validator
 	var c *ssv.Committee
@@ -328,6 +331,7 @@ type MsgProcessingSpecTestAlias struct {
 	BeaconAggregatorsValues       []bool                         `json:"BeaconAggregatorsValues,omitempty"`
 	BeaconNode                    *BeaconNodeBehaviour           `json:"BeaconNode,omitempty"`
 	Signer                        *SignerBehaviour               `json:"Signer,omitempty"`
+	Network                       *NetworkBehaviour              `json:"Network,omitempty"`
 }
 
 func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
@@ -349,6 +353,7 @@ func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
 		BeaconAggregatorsValues:       t.BeaconAggregatorsValues,
 		BeaconNode:                    t.BeaconNode,
 		Signer:                        t.Signer,
+		Network:                       t.Network,
 	}
 
 	if t.Duty != nil {
@@ -392,6 +397,7 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	t.BeaconAggregatorsValues = aux.BeaconAggregatorsValues
 	t.BeaconNode = aux.BeaconNode
 	t.Signer = aux.Signer
+	t.Network = aux.Network
 
 	// Determine which type of duty was marshaled
 	if aux.ValidatorDuty != nil {

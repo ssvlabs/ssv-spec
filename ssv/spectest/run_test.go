@@ -395,6 +395,14 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		require.NoError(t, json.Unmarshal(byts, signer))
 	}
 
+	var network *tests2.NetworkBehaviour
+	if m["Network"] != nil {
+		byts, err := json.Marshal(m["Network"])
+		require.NoError(t, err)
+		network = &tests2.NetworkBehaviour{}
+		require.NoError(t, json.Unmarshal(byts, network))
+	}
+
 	ks := testingutils.KeySetForShare(shareInstance)
 
 	// runner
@@ -418,6 +426,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		BeaconAggregatorsValues:       beaconAggregatorsValues,
 		BeaconNode:                    beaconNode,
 		Signer:                        signer,
+		Network:                       network,
 	}
 }
 
