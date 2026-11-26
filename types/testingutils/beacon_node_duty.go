@@ -20,20 +20,20 @@ const (
 )
 
 // Util function for signing a beacon object with the appropriate domain
-// signBeaconObjectAtSlot is the validator's signature over obj under the domain for the epoch of slot: what the
-// cluster's shares reconstruct to.
-var signBeaconObjectAtSlot = func(obj ssz.HashRoot, domainType phase0.DomainType, ks *TestKeySet, slot phase0.Slot) phase0.BLSSignature {
-	domain, _ := NewTestingBeaconNode().DomainData(types.BeaconTestNetwork.EstimatedEpochAtSlot(slot), domainType)
-	ret, _, _ := NewTestingKeyManager().SignBeaconObject(obj, domain, ks.ValidatorPK.Serialize(), domainType)
-
-	blsSig := phase0.BLSSignature{}
-	copy(blsSig[:], ret)
-
-	return blsSig
+var signBeaconObject = func(obj ssz.HashRoot, domainType phase0.DomainType, ks *TestKeySet) phase0.BLSSignature {
+	return signBeaconObjectAtEpoch(obj, domainType, ks, 1)
 }
 
-var signBeaconObject = func(obj ssz.HashRoot, domainType phase0.DomainType, ks *TestKeySet) phase0.BLSSignature {
-	domain, _ := NewTestingBeaconNode().DomainData(1, domainType)
+// signBeaconObjectAtSlot is signBeaconObject under the domain for the epoch of slot, for the slots whose epoch
+// has a domain of its own (see TestingEpochDependentFrom).
+var signBeaconObjectAtSlot = func(obj ssz.HashRoot, domainType phase0.DomainType, ks *TestKeySet, slot phase0.Slot) phase0.BLSSignature {
+	return signBeaconObjectAtEpoch(obj, domainType, ks, types.BeaconTestNetwork.EstimatedEpochAtSlot(slot))
+}
+
+// signBeaconObjectAtEpoch is the validator's signature over obj under the epoch's domain: what the cluster's
+// shares reconstruct to.
+func signBeaconObjectAtEpoch(obj ssz.HashRoot, domainType phase0.DomainType, ks *TestKeySet, epoch phase0.Epoch) phase0.BLSSignature {
+	domain, _ := NewTestingBeaconNode().DomainData(epoch, domainType)
 	ret, _, _ := NewTestingKeyManager().SignBeaconObject(obj, domain, ks.ValidatorPK.Serialize(), domainType)
 
 	blsSig := phase0.BLSSignature{}

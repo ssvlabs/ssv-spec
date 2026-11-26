@@ -31,15 +31,10 @@ func BeaconVoteEncoding() *EncodingTest {
 // same vote without its AttestationDataIndex, 112 bytes to the Gloas vote's 120, and the two encodings reject
 // each other on length.
 func BeaconVotePreGloasEncoding() *EncodingTest {
-	byts, err := testingutils.TestBeaconVote.Encode()
-	if err != nil {
-		panic(err.Error())
-	}
-
 	test := NewEncodingTest(
 		"beacon vote pre-gloas encoding",
 		testdoc.BeaconVotePreGloasEncodingTestDoc,
-		byts[:testingutils.PreGloasBeaconVoteSize],
+		testingutils.TestPreGloasBeaconVoteByts,
 		[32]byte{},
 	)
 	test.DecodeFails = true
