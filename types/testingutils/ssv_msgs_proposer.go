@@ -3,6 +3,7 @@ package testingutils
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+	ssz "github.com/ferranbt/fastssz"
 	"github.com/herumi/bls-eth-go-binary/bls"
 
 	"github.com/ssvlabs/ssv-spec/types"
@@ -91,6 +92,48 @@ var PostConsensusProposerBadSharesMsgV = func(sk *bls.SecretKey, id types.Operat
 	msg := PostConsensusProposerBadBlockShareMsgV(sk, id, version)
 	msg.Messages[1] = PostConsensusProposerBadEnvelopeShareMsgV(sk, id, version).Messages[1]
 	return msg
+}
+
+// PostConsensusProposerEnvelopeOnlyMsgV keeps only the §6 envelope entry, dropping the block entry. The block
+// root must be present in a post-consensus packet, so receivers reject it (SIP #94 §4).
+var PostConsensusProposerEnvelopeOnlyMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	msg := postConsensusBeaconBlockMsgV(sk, id, false, false, version)
+	msg.Messages = msg.Messages[1:] // the block entry is built first
+	return msg
+}
+
+// PostConsensusProposerMsgFor is an operator's post-consensus packet for a decided proposal (SIP #94 §4): the
+// block entry and, when the bid is self-build, the §6 envelope entry, each under its own domain for the epoch
+// of the block's slot. Unlike PostConsensusProposerMsgV it is not tied to the fixture block and slot.
+var PostConsensusProposerMsgFor = func(sk *bls.SecretKey, id types.OperatorID, proposal *gloas.GloasProposalData) *types.PartialSignatureMessages {
+	signer := NewTestingKeyManager()
+	beacon := NewTestingBeaconNode()
+	epoch := types.BeaconTestNetwork.EstimatedEpochAtSlot(proposal.Block.Slot)
+	pk := sk.GetPublicKey().Serialize()
+
+	entry := func(obj ssz.HashRoot, domainType phase0.DomainType) *types.PartialSignatureMessage {
+		d, _ := beacon.DomainData(epoch, domainType)
+		sig, signingRoot, err := signer.SignBeaconObject(obj, d, pk, domainType)
+		if err != nil {
+			panic(err.Error())
+		}
+		return &types.PartialSignatureMessage{
+			PartialSignature: sig,
+			SigningRoot:      signingRoot,
+			Signer:           id,
+			ValidatorIndex:   TestingValidatorIndex,
+		}
+	}
+
+	entries := []*types.PartialSignatureMessage{entry(proposal.Block, types.DomainProposer)}
+	if proposal.Block.Body.SignedExecutionPayloadBid.Message.BuilderIndex == gloas.BuilderIndexSelfBuild {
+		entries = append(entries, entry(TestingBlindedExecutionPayloadEnvelopeOf(proposal), types.DomainBeaconBuilder))
+	}
+	return &types.PartialSignatureMessages{
+		Type:     types.PostConsensusPartialSig,
+		Slot:     proposal.Block.Slot,
+		Messages: entries,
+	}
 }
 
 var PostConsensusProposerTooManyRootsMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {

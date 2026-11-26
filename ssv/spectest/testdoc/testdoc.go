@@ -169,7 +169,8 @@ const GloasProposerBadSharesDoc = "Tests that one operator's bad block share and
 const GloasProposerFailedBlockSubmitDoc = "Tests that the SIP #94 §6 reveal publishes when this operator's own block submit fails: it gates on the submit being attempted, not on it succeeding"
 const GloasProposerFailedEnvelopeSignDoc = "Tests that an operator whose signer fails on the SIP #94 §6 envelope root still broadcasts its block share: the post-consensus packet goes out block-only and the signing error is returned"
 const GloasProposerNotBuilderOperatorDoc = "Tests that only the builder operator publishes the SIP #94 §6 reveal: an operator whose own produce was another self-build block, or an external bid, signs both post-consensus roots and submits the decided block but publishes no envelope"
-const GloasProposerExternalBidDoc = "Tests the SIP #94 §4 external-build produce path: an external bid win returns a bare block and no envelope, so the proposed value carries a zero payload_root"
+const GloasProposerExternalBidDoc = "Tests the SIP #94 §4 external-build path end to end: an external bid win returns a bare block and no envelope, so the proposed value carries a zero payload_root, the post-consensus packet carries the block entry alone, the block is submitted and no reveal is published"
+const GloasProposerEnvelopeOnlyPacketDoc = "Tests that the block root must be present in a post-consensus packet (SIP #94 §4): a packet carrying the envelope entry alone is rejected whole"
 
 // Documentation for runner/preconsensus tests
 const PreConsensusDuplicateMsgDoc = "Tests pre-consensus message processing with duplicate messages"

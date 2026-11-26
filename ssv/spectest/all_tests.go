@@ -35,6 +35,7 @@ var AllTests = []tests.TestF{
 	runner.GloasProposerFailedBlockSubmit,
 	runner.GloasProposerFailedEnvelopeSign,
 	runner.GloasProposerExternalBid,
+	runner.GloasProposerEnvelopeOnlyPacket,
 	runner.GloasProposerNotBuilderOperator,
 
 	postconsensus.TooManyRoots,

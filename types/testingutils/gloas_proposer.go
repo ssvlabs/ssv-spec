@@ -16,12 +16,7 @@ import (
 // expected beacon broadcast roots (SIP #94 §4/§6): the fixture envelope under the signature the cluster's
 // shares reconstruct to.
 var WithGloasEnvelopeBroadcast = func(roots []string, ks *TestKeySet, version spec.DataVersion) []string {
-	envelope := TestingBlindedExecutionPayloadEnvelope(TestingDutySlotV(version))
-	root, err := signedEnvelopeRoot(envelope, signBeaconObject(envelope, types.DomainBeaconBuilder, ks))
-	if err != nil {
-		panic(err.Error())
-	}
-	return append(roots, hex.EncodeToString(root[:]))
+	return append(roots, TestingSignedEnvelopeRootOf(ks, TestingGloasProposalData(TestingDutySlotV(version))))
 }
 
 // TestingGloasPayloadRoot is the self-build payload_root the fixture proposer carries in its decided value
@@ -55,17 +50,43 @@ var TestingBlindedExecutionPayloadEnvelope = func(slot phase0.Slot) *gloas.Blind
 // testingBlindedExecutionPayloadEnvelopeFor derives the §6 blinded envelope of a self-build block carrying
 // TestingGloasPayloadRoot.
 func testingBlindedExecutionPayloadEnvelopeFor(block *gloas.BeaconBlock) *gloas.BlindedExecutionPayloadEnvelope {
-	root, err := block.HashTreeRoot()
+	return TestingBlindedExecutionPayloadEnvelopeOf(&gloas.GloasProposalData{Block: block, PayloadRoot: TestingGloasPayloadRoot})
+}
+
+// TestingBlindedExecutionPayloadEnvelopeOf derives the §6 blinded envelope of a self-build proposal, field by
+// field as SIP #94 §6 lists them.
+var TestingBlindedExecutionPayloadEnvelopeOf = func(proposal *gloas.GloasProposalData) *gloas.BlindedExecutionPayloadEnvelope {
+	root, err := proposal.Block.HashTreeRoot()
 	if err != nil {
 		panic(err.Error())
 	}
 	return &gloas.BlindedExecutionPayloadEnvelope{
-		PayloadRoot:           TestingGloasPayloadRoot,
-		ExecutionRequestsRoot: block.Body.SignedExecutionPayloadBid.Message.ExecutionRequestsRoot,
+		PayloadRoot:           proposal.PayloadRoot,
+		ExecutionRequestsRoot: proposal.Block.Body.SignedExecutionPayloadBid.Message.ExecutionRequestsRoot,
 		BuilderIndex:          gloas.BuilderIndexSelfBuild,
 		BeaconBlockRoot:       root,
-		ParentBeaconBlockRoot: block.ParentRoot,
+		ParentBeaconBlockRoot: proposal.Block.ParentRoot,
 	}
+}
+
+// TestingSignedBeaconBlockOf is a proposal's block under the signature the cluster's shares reconstruct to, for
+// the epoch of the block's slot.
+var TestingSignedBeaconBlockOf = func(ks *TestKeySet, proposal *gloas.GloasProposalData) *gloas.SignedBeaconBlock {
+	return &gloas.SignedBeaconBlock{
+		Message:   proposal.Block,
+		Signature: signBeaconObjectAtSlot(proposal.Block, types.DomainProposer, ks, proposal.Block.Slot),
+	}
+}
+
+// TestingSignedEnvelopeRootOf is the hex root of a self-build proposal's published §6 reveal: its blinded
+// envelope under the signature the cluster's shares reconstruct to (see signedEnvelopeRoot).
+var TestingSignedEnvelopeRootOf = func(ks *TestKeySet, proposal *gloas.GloasProposalData) string {
+	envelope := TestingBlindedExecutionPayloadEnvelopeOf(proposal)
+	root, err := signedEnvelopeRoot(envelope, signBeaconObjectAtSlot(envelope, types.DomainBeaconBuilder, ks, proposal.Block.Slot))
+	if err != nil {
+		panic(err.Error())
+	}
+	return hex.EncodeToString(root[:])
 }
 
 // TestingOtherSelfBuildBeaconBlock is a self-build block for the slot that differs from the fixture block
