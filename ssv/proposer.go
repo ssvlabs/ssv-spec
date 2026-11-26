@@ -230,9 +230,10 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 	}
 
 	// The block and the optional §6 envelope reconstruct independently: a failure on one never aborts the other,
-	// and a share the fallback drops re-crosses quorum in a later packet. The block goes first whatever the packet
-	// order, since it finalizes the duty and a beacon node ignores an envelope whose block it has not seen
-	// (SIP #94 §4/§6). If both fail, the block error is returned.
+	// and a root the fallback takes below quorum re-crosses it in a later packet (see reconstructPostConsensusSig
+	// for one it leaves at quorum). The block goes first whatever the packet order, since it finalizes the duty
+	// and a beacon node ignores an envelope whose block it has not seen (SIP #94 §4/§6). If both fail, the block
+	// error is returned.
 	var blockErr, envelopeErr error
 	if slices.Contains(roots, blockSigningRoot) {
 		blockErr = r.submitDecidedBlock(proposal, blockSigningRoot)
@@ -251,14 +252,21 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 }
 
 // reconstructPostConsensusSig reconstructs the threshold signature over root from the post-consensus
-// container. On failure it falls back to verifying each partial and removing the invalid ones, so the
-// root can re-cross quorum in a later packet once the offending share is gone.
+// container. On failure it falls back to verifying each partial and removing the invalid ones. If the valid
+// ones left are still a quorum, it reconstructs from them: such a root never drops below quorum, so no later
+// packet would cross it again. Otherwise the root re-crosses quorum in a later packet.
 func (r *ProposerRunner) reconstructPostConsensusSig(root [32]byte) (phase0.BLSSignature, error) {
-	sig, err := r.GetState().ReconstructBeaconSig(r.GetState().PostConsensusContainer, root, r.GetShare().ValidatorPubKey[:], r.GetShare().ValidatorIndex)
+	container := r.GetState().PostConsensusContainer
+	validatorIndex := r.GetShare().ValidatorIndex
+	sig, err := r.GetState().ReconstructBeaconSig(container, root, r.GetShare().ValidatorPubKey[:], validatorIndex)
 	if err != nil {
-		r.BaseRunner.FallBackAndVerifyEachSignature(r.GetState().PostConsensusContainer, root,
-			r.GetShare().Committee, r.GetShare().ValidatorIndex)
-		return phase0.BLSSignature{}, errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
+		r.BaseRunner.FallBackAndVerifyEachSignature(container, root, r.GetShare().Committee, validatorIndex)
+		if container.HasQuorum(validatorIndex, root) {
+			sig, err = r.GetState().ReconstructBeaconSig(container, root, r.GetShare().ValidatorPubKey[:], validatorIndex)
+		}
+		if err != nil {
+			return phase0.BLSSignature{}, errors.Wrap(err, "got post-consensus quorum but it has invalid signatures")
+		}
 	}
 	var specSig phase0.BLSSignature
 	copy(specSig[:], sig)

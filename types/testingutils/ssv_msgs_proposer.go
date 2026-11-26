@@ -84,6 +84,15 @@ var PostConsensusProposerBadBlockShareMsgV = func(sk *bls.SecretKey, id types.Op
 	return msg
 }
 
+// PostConsensusProposerBadSharesMsgV signs both entries with a different validator key, keeping both signing
+// roots: an operator whose block share and §6 envelope share are both bad. Each root must drop the share and
+// still reconstruct from the others (SIP #94 §4/§6).
+var PostConsensusProposerBadSharesMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
+	msg := PostConsensusProposerBadBlockShareMsgV(sk, id, version)
+	msg.Messages[1] = PostConsensusProposerBadEnvelopeShareMsgV(sk, id, version).Messages[1]
+	return msg
+}
+
 var PostConsensusProposerTooManyRootsMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
 	ret := postConsensusBeaconBlockMsgV(sk, id, false, false, version)
 	ret.Messages = append(ret.Messages, ret.Messages[0])

@@ -31,6 +31,7 @@ var AllTests = []tests.TestF{
 	runner.GloasProposerEnvelopeFirstOrder,
 	runner.GloasProposerBadEnvelopeShare,
 	runner.GloasProposerBadBlockShare,
+	runner.GloasProposerBadShares,
 	runner.GloasProposerFailedBlockSubmit,
 	runner.GloasProposerFailedEnvelopeSign,
 	runner.GloasProposerExternalBid,
