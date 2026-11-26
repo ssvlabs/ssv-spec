@@ -11,6 +11,7 @@ const BeaconVoteEncodingSpecTestType = "Beacon vote encoding: validation of beac
 
 // Documentation for BeaconVoteEncodingSpecTest
 const BeaconVoteEncodingTestDoc = "Test encoding and decoding of BeaconVote (SIP #94 §2) with hash tree root verification"
+const BeaconVotePreGloasEncodingTestDoc = "Test that the pre-Gloas 112-byte encoding of a vote, without its AttestationDataIndex, does not decode as the 120-byte BeaconVote (SIP #94 §2)"
 
 // PayloadAttestationDataEncodingSpecTest
 const PayloadAttestationDataEncodingSpecTestType = "Payload attestation data encoding: validation of payload attestation data encoding"
@@ -87,6 +88,7 @@ const MapSyncCommitteeContributionTestDoc = "Test mapping of BNRoleSyncCommittee
 const MapSyncCommitteeTestDoc = "Test mapping of BNRoleSyncCommittee"
 const MapUnknownRoleTestDoc = "Test mapping of an unknown role"
 const MapVoluntaryExitTestDoc = "Test mapping of BNRoleVoluntaryExit"
+const MapValidatorRegistrationTestDoc = "Test that the validator-registration duty, deprecated at Gloas (SIP #94 §5), maps to no runner"
 const MapPTCAttesterTestDoc = "Test mapping of BNRolePTCAttester"
 const MapProposerPreferencesTestDoc = "Test mapping of BNRoleProposerPreferences"
 

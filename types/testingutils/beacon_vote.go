@@ -25,6 +25,13 @@ var TestBeaconVote = types.BeaconVote{
 }
 var TestBeaconVoteByts, _ = TestBeaconVote.Encode()
 
+// PreGloasBeaconVoteSize is the length of a vote's pre-Gloas encoding: the Gloas one without the trailing
+// AttestationDataIndex (SIP #94 §2).
+const PreGloasBeaconVoteSize = 112
+
+// TestPreGloasBeaconVoteByts is TestBeaconVote in its pre-Gloas encoding, which no longer decodes.
+var TestPreGloasBeaconVoteByts = TestBeaconVoteByts[:PreGloasBeaconVoteSize]
+
 // TestWrongBeaconVote is deliberately invalid (source epoch >= target epoch).
 var TestWrongBeaconVote = types.BeaconVote{
 	BlockRoot: phase0.Root{1, 2, 3, 4},

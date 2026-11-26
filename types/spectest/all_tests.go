@@ -108,11 +108,13 @@ var AllTests = []SpecTest{
 	duty.MapSyncCommittee(),
 	duty.MapSyncCommitteeContribution(),
 	duty.MapVoluntaryExit(),
+	duty.MapValidatorRegistration(),
 	duty.MapPTCAttester(),
 	duty.MapProposerPreferences(),
 	duty.MapUnknownRole(),
 
 	beaconvote.BeaconVoteEncoding(),
+	beaconvote.BeaconVotePreGloasEncoding(),
 	payloadattestationdata.PayloadAttestationDataEncoding(),
 	payloadattestationmessage.PayloadAttestationMessageEncoding(),
 	signedbeaconblock.SignedBeaconBlockEncoding(),

@@ -16,6 +16,8 @@ type EncodingTest struct {
 	Documentation string
 	Data          []byte
 	ExpectedRoot  [32]byte
+	// DecodeFails marks data that must not decode as a BeaconVote. ExpectedRoot is unused then.
+	DecodeFails bool `json:",omitempty"`
 }
 
 func (test *EncodingTest) TestName() string {
@@ -25,6 +27,11 @@ func (test *EncodingTest) TestName() string {
 func (test *EncodingTest) Run(t *testing.T) {
 	// decode
 	decoded := &types.BeaconVote{}
+	if test.DecodeFails {
+		require.Error(t, decoded.Decode(test.Data))
+		comparable2.CompareWithJson(t, test, test.TestName(), reflect2.TypeOf(test).String())
+		return
+	}
 	require.NoError(t, decoded.Decode(test.Data))
 
 	// encode
