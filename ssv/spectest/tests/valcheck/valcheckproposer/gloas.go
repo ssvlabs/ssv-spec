@@ -16,7 +16,8 @@ import (
 // GloasBlocks covers the Gloas (ePBS, SIP #94 §4) proposer value-check rules. The consensus value carries a
 // {block, payload_root} GloasProposalData in DataSSZ; the value check rejects a leader-stamped Version other
 // than Gloas, pins the block's slot to the duty's and its proposer index to the duty's validator, pins the
-// duty's slot to the running duty's, and requires payload_root to be zero iff the bid is not self-build.
+// bid's slot and parent root to the block's, pins the duty's slot to the running duty's, and requires
+// payload_root to be zero iff the bid is not self-build.
 func GloasBlocks() tests.SpecTest {
 	gloasDuty := testingutils.TestingProposerDutyV(gloas.DataVersionGloas)
 
@@ -39,6 +40,19 @@ func GloasBlocks() tests.SpecTest {
 	wrongProposerBlock := gloas.TestingBeaconBlock(gloasDuty.Slot)
 	wrongProposerBlock.ProposerIndex = gloasDuty.ValidatorIndex + 1
 	wrongProposerIndexBytes, err := (&gloas.GloasProposalData{Block: wrongProposerBlock, PayloadRoot: testingutils.TestingGloasPayloadRoot}).MarshalSSZ()
+	if err != nil {
+		panic(err.Error())
+	}
+	// A bid for another slot, and a bid on another parent, in a block that is otherwise the fixture's.
+	bidSlotMismatchBlock := gloas.TestingBeaconBlock(gloasDuty.Slot)
+	bidSlotMismatchBlock.Body.SignedExecutionPayloadBid.Message.Slot = gloasDuty.Slot - 1
+	bidSlotMismatchBytes, err := (&gloas.GloasProposalData{Block: bidSlotMismatchBlock, PayloadRoot: testingutils.TestingGloasPayloadRoot}).MarshalSSZ()
+	if err != nil {
+		panic(err.Error())
+	}
+	bidParentMismatchBlock := gloas.TestingBeaconBlock(gloasDuty.Slot)
+	bidParentMismatchBlock.Body.SignedExecutionPayloadBid.Message.ParentBlockRoot = gloas.TestingStateRoot
+	bidParentMismatchBytes, err := (&gloas.GloasProposalData{Block: bidParentMismatchBlock, PayloadRoot: testingutils.TestingGloasPayloadRoot}).MarshalSSZ()
 	if err != nil {
 		panic(err.Error())
 	}
@@ -81,6 +95,23 @@ func GloasBlocks() tests.SpecTest {
 				RunnerRole:        types.RoleProposer,
 				Input:             encode(&types.ProposerConsensusData{Duty: *gloasDuty, Version: gloas.DataVersionGloas, DataSSZ: wrongProposerIndexBytes}),
 				ExpectedErrorCode: types.ProposerBlockProposerIndexMismatchErrorCode,
+			},
+			{
+				// The bid must be for the block's slot: the beacon chain rejects a block whose bid names
+				// another slot, so signing it would lose the slot at publication.
+				Name:              "bid slot does not match block slot",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleProposer,
+				Input:             encode(&types.ProposerConsensusData{Duty: *gloasDuty, Version: gloas.DataVersionGloas, DataSSZ: bidSlotMismatchBytes}),
+				ExpectedErrorCode: types.ProposerBidSlotMismatchErrorCode,
+			},
+			{
+				// The bid must build on the block's parent, for the same reason.
+				Name:              "bid parent block root does not match block parent root",
+				Network:           types.BeaconTestNetwork,
+				RunnerRole:        types.RoleProposer,
+				Input:             encode(&types.ProposerConsensusData{Duty: *gloasDuty, Version: gloas.DataVersionGloas, DataSSZ: bidParentMismatchBytes}),
+				ExpectedErrorCode: types.ProposerBidParentRootMismatchErrorCode,
 			},
 			{
 				// SIP #94 §4: a value for a slot other than the running duty's is rejected before consensus

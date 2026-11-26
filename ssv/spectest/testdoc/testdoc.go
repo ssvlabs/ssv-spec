@@ -266,7 +266,7 @@ const PTCAttesterObservationDoc = "Tests the SIP #94 §3 observation lifecycle a
 const PTCAttesterDivergingObservationDoc = "Tests SIP #94 §3 honest convergence under a minority split: a diverging peer partial is rejected and the matching minority stays below quorum"
 
 // Documentation for valcheckproposer tests
-const ValCheckProposerGloasBlocksDoc = "Tests the Gloas proposer value check (SIP #94 §4): the Version pin, the block slot and proposer index pins, the running-slot bind, the payload_root presence rule, and slashing protection"
+const ValCheckProposerGloasBlocksDoc = "Tests the Gloas proposer value check (SIP #94 §4): the Version pin, the block slot and proposer index pins, the bid slot and parent root pins, the running-slot bind, the payload_root presence rule, and slashing protection"
 
 // Documentation for valcheckaggcommittee
 const ValCheckAggCommitteeNoValidatorsDoc = "Tests agg committee value check with no validators"

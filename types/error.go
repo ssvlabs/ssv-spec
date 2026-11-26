@@ -119,6 +119,8 @@ const (
 	ProposerBlockProposerIndexMismatchErrorCode
 	ProposerBlockSubmitFailedErrorCode
 	ProposerEnvelopeSignFailedErrorCode
+	ProposerBidSlotMismatchErrorCode
+	ProposerBidParentRootMismatchErrorCode
 )
 
 type Error struct {

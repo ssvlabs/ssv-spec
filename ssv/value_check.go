@@ -136,8 +136,18 @@ func ProposerValueCheckF(
 		if block.ProposerIndex != cd.Duty.ValidatorIndex {
 			return types.NewError(types.ProposerBlockProposerIndexMismatchErrorCode, "block proposer index does not match duty validator index")
 		}
+		// The bid must be this block's: for its slot and on its parent. The beacon chain rejects a block whose bid
+		// names another slot or parent (process_execution_payload_bid), so, as with the proposer index, signing
+		// such a value would lose the slot at publication instead of changing round.
+		bid := block.Body.SignedExecutionPayloadBid.Message
+		if bid.Slot != block.Slot {
+			return types.NewError(types.ProposerBidSlotMismatchErrorCode, "bid slot does not match block slot")
+		}
+		if bid.ParentBlockRoot != block.ParentRoot {
+			return types.NewError(types.ProposerBidParentRootMismatchErrorCode, "bid parent block root does not match block parent root")
+		}
 		// payload_root is non-zero iff the bid is self-build (SIP #94 §4).
-		selfBuild := block.Body.SignedExecutionPayloadBid.Message.BuilderIndex == gloas.BuilderIndexSelfBuild
+		selfBuild := bid.BuilderIndex == gloas.BuilderIndexSelfBuild
 		payloadZero := proposalData.PayloadRoot == phase0.Root{}
 		if selfBuild == payloadZero {
 			return types.NewError(types.QBFTValueInvalidErrorCode, "payload_root presence does not match self-build bid")

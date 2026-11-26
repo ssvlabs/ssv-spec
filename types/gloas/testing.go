@@ -8,11 +8,19 @@ import (
 	bitfield "github.com/prysmaticlabs/go-bitfield"
 )
 
+// TestingParentRoot and TestingStateRoot are the fixture block's parent and state roots. They are non-zero and
+// differ, so a §6 envelope that takes its parent_beacon_block_root from anything but the block's parent root has
+// another root (SIP #94 §6).
+var (
+	TestingParentRoot = phase0.Root{0x70, 0x61, 0x72, 0x65, 0x6e, 0x74}
+	TestingStateRoot  = phase0.Root{0x73, 0x74, 0x61, 0x74, 0x65}
+)
+
 // TestingBeaconBlock returns a minimal self-build Gloas BeaconBlock for the slot, with the required
-// fixed-size body fields populated so it round-trips through SSZ. The bid commits the execution-requests
-// root of an empty ExecutionRequests; the §6 blinded envelope derived from the decided block copies that
-// same root straight from the bid (SIP #94 §6), so its post-consensus signing root is well-defined. For
-// use in tests.
+// fixed-size body fields populated so it round-trips through SSZ. The bid is for the block's slot and parent,
+// as the proposer value check requires (SIP #94 §4), and commits the execution-requests root of an empty
+// ExecutionRequests; the §6 blinded envelope derived from the decided block copies that same root straight
+// from the bid (SIP #94 §6), so its post-consensus signing root is well-defined. For use in tests.
 func TestingBeaconBlock(slot phase0.Slot) *BeaconBlock {
 	requestsRoot, err := (&ExecutionRequests{}).HashTreeRoot()
 	if err != nil {
@@ -23,11 +31,15 @@ func TestingBeaconBlock(slot phase0.Slot) *BeaconBlock {
 		// == testingutils.TestingValidatorIndex (gloas can't import testingutils): must match the duty's
 		// validator so the proposer-index value check (SIP #94 §4) accepts the fixture block.
 		ProposerIndex: 1,
+		ParentRoot:    TestingParentRoot,
+		StateRoot:     TestingStateRoot,
 		Body: &BeaconBlockBody{
 			ETH1Data:      &phase0.ETH1Data{BlockHash: make([]byte, 32)},
 			SyncAggregate: &altair.SyncAggregate{SyncCommitteeBits: bitfield.NewBitvector512()},
 			SignedExecutionPayloadBid: &SignedExecutionPayloadBid{Message: &ExecutionPayloadBid{
+				ParentBlockRoot:       TestingParentRoot,
 				BuilderIndex:          BuilderIndexSelfBuild,
+				Slot:                  slot,
 				ExecutionRequestsRoot: requestsRoot,
 			}},
 			ParentExecutionRequests: &ExecutionRequests{},
