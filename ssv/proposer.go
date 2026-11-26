@@ -1,6 +1,7 @@
 package ssv
 
 import (
+	"bytes"
 	"fmt"
 	"slices"
 
@@ -27,6 +28,10 @@ type ProposerRunner struct {
 	// the result. The §6 reveal gates on it rather than on a successful submit, since the block still reaches
 	// beacon nodes through the other operators (SIP #94 §6). Reset per duty in executeDuty.
 	blockSubmitAttempted bool
+
+	// decided is what the post-consensus round derives from the decided value (see decidedPostConsensus).
+	// Unexported like the fields above: it is derived, so it stays out of the post-state root.
+	decided *decidedProposal
 
 	beacon         BeaconNode
 	network        Network
@@ -220,11 +225,7 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 		return nil
 	}
 
-	proposal, err := r.decidedProposal()
-	if err != nil {
-		return err
-	}
-	blockSigningRoot, envelopeSigningRoot, err := r.postConsensusSigningRoots(proposal)
+	decided, err := r.decidedPostConsensus()
 	if err != nil {
 		return err
 	}
@@ -235,15 +236,15 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 	// and a beacon node ignores an envelope whose block it has not seen (SIP #94 §4/§6). If both fail, the block
 	// error is returned.
 	var blockErr, envelopeErr error
-	if slices.Contains(roots, blockSigningRoot) {
-		blockErr = r.submitDecidedBlock(proposal, blockSigningRoot)
+	if slices.Contains(roots, decided.blockRoot) {
+		blockErr = r.submitDecidedBlock(decided.proposal, decided.blockRoot)
 	}
 	// The reveal publishes once the block submit was attempted and the envelope is at quorum. HasQuorum (rather
 	// than a first crossing) keeps an envelope quorum reached before the block; awaitingEnvelope stops admitting
 	// packets once the envelope is at quorum, so the reveal publishes once.
-	if envelopeSigningRoot != ([32]byte{}) && r.blockSubmitAttempted &&
-		r.GetState().PostConsensusContainer.HasQuorum(r.GetShare().ValidatorIndex, envelopeSigningRoot) {
-		envelopeErr = r.publishDecidedEnvelope(proposal, envelopeSigningRoot)
+	if decided.envelopeRoot != ([32]byte{}) && r.blockSubmitAttempted &&
+		r.GetState().PostConsensusContainer.HasQuorum(r.GetShare().ValidatorIndex, decided.envelopeRoot) {
+		envelopeErr = r.publishDecidedEnvelope(decided.proposal, decided.envelopeRoot)
 	}
 	if blockErr != nil {
 		return blockErr
@@ -298,45 +299,63 @@ func (r *ProposerRunner) publishDecidedEnvelope(proposal *gloas.GloasProposalDat
 	return r.publishEnvelope(proposal, sig)
 }
 
-// decidedProposal decodes the decided value's Gloas proposal data.
-func (r *ProposerRunner) decidedProposal() (*gloas.GloasProposalData, error) {
+// decidedProposal is what the post-consensus round derives from a decided value: the proposal it carries, and
+// the signing roots the round collects shares for.
+type decidedProposal struct {
+	// value and slot are the decided value and the duty slot the rest was derived for.
+	value []byte
+	slot  phase0.Slot
+
+	proposal *gloas.GloasProposalData
+	// blockRoot is the block's signing root under DomainProposer, and envelopeRoot the §6 envelope's under
+	// DomainBeaconBuilder, both for the duty's epoch. envelopeRoot is zero when the proposal expects no envelope
+	// entry (an external bid).
+	blockRoot, envelopeRoot [32]byte
+}
+
+// decidedPostConsensus decodes the decided value and computes the signing roots of its post-consensus roots.
+// This is the one place that does either: validating a packet, acting on a quorum and awaitingEnvelope all read
+// its result, which is kept for as long as the decided value and the duty stay the same.
+func (r *ProposerRunner) decidedPostConsensus() (*decidedProposal, error) {
+	state := r.GetState()
+	slot := state.StartingDuty.DutySlot()
+	if r.decided != nil && r.decided.slot == slot && bytes.Equal(r.decided.value, state.DecidedValue) {
+		return r.decided, nil
+	}
+
 	cd := &types.ProposerConsensusData{}
-	if err := cd.Decode(r.GetState().DecidedValue); err != nil {
+	if err := cd.Decode(state.DecidedValue); err != nil {
 		return nil, errors.Wrap(err, "could not create consensus data")
 	}
 	proposal, err := cd.GetBlockData()
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get block data")
 	}
-	return proposal, nil
-}
-
-// postConsensusSigningRoots computes the proposal's post-consensus signing roots for the running duty's epoch:
-// the block's under DomainProposer and the §6 envelope's under DomainBeaconBuilder. envelope is zero when the
-// proposal expects no envelope entry (an external bid).
-func (r *ProposerRunner) postConsensusSigningRoots(proposal *gloas.GloasProposalData) (block, envelope [32]byte, err error) {
-	expected, err := postConsensusRoots(proposal)
+	expectedRoots, err := postConsensusRoots(proposal)
 	if err != nil {
-		return block, envelope, err
+		return nil, err
 	}
-	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(r.BaseRunner.State.StartingDuty.DutySlot())
-	for _, e := range expected {
-		d, err := r.GetBeaconNode().DomainData(epoch, e.Domain)
+
+	decided := &decidedProposal{value: state.DecidedValue, slot: slot, proposal: proposal}
+	epoch := r.BaseRunner.BeaconNetwork.EstimatedEpochAtSlot(slot)
+	for _, expectedRoot := range expectedRoots {
+		domain, err := r.GetBeaconNode().DomainData(epoch, expectedRoot.Domain)
 		if err != nil {
-			return block, envelope, errors.Wrap(err, "could not get post-consensus root domain")
+			return nil, errors.Wrap(err, "could not get post-consensus root domain")
 		}
-		sr, err := types.ComputeETHSigningRoot(e.Root, d)
+		signingRoot, err := types.ComputeETHSigningRoot(expectedRoot.Root, domain)
 		if err != nil {
-			return block, envelope, errors.Wrap(err, "could not compute ETH signing root")
+			return nil, errors.Wrap(err, "could not compute ETH signing root")
 		}
-		switch e.Domain {
+		switch expectedRoot.Domain {
 		case types.DomainProposer:
-			block = sr
+			decided.blockRoot = signingRoot
 		case types.DomainBeaconBuilder:
-			envelope = sr
+			decided.envelopeRoot = signingRoot
 		}
 	}
-	return block, envelope, nil
+	r.decided = decided
+	return decided, nil
 }
 
 // publishEnvelope publishes the §6 reveal, but only for the builder operator: the one whose own produced
@@ -370,21 +389,17 @@ func (r *ProposerRunner) publishEnvelope(proposal *gloas.GloasProposalData, sig 
 // awaitingEnvelope reports whether the decided value expects a §6 envelope root that has not reached
 // post-consensus quorum yet. While it holds, a finished proposer keeps accepting post-consensus packets
 // (ValidatePostConsensusMsg), so an envelope quorum completing after the block's still publishes the reveal
-// (SIP #94 §4). Derived from state on each call, so it needs no per-duty reset.
+// (SIP #94 §4). It reads the state on each call, so it needs no per-duty reset.
 func (r *ProposerRunner) awaitingEnvelope() bool {
 	state := r.GetState()
 	if state == nil || len(state.DecidedValue) == 0 {
 		return false
 	}
-	proposal, err := r.decidedProposal()
-	if err != nil {
+	decided, err := r.decidedPostConsensus()
+	if err != nil || decided.envelopeRoot == ([32]byte{}) {
 		return false
 	}
-	_, envelope, err := r.postConsensusSigningRoots(proposal)
-	if err != nil || envelope == ([32]byte{}) {
-		return false
-	}
-	return !state.PostConsensusContainer.HasQuorum(r.GetShare().ValidatorIndex, envelope)
+	return !state.PostConsensusContainer.HasQuorum(r.GetShare().ValidatorIndex, decided.envelopeRoot)
 }
 
 // deriveBlindedEnvelope builds the §6 blinded envelope from the decided value: the block plus payload_root
@@ -408,14 +423,28 @@ func (r *ProposerRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, p
 	return []ssz.HashRoot{types.SSZUint64(epoch)}, types.DomainRandao, nil
 }
 
-// expectedPostConsensusRootsAndDomains an INTERNAL function, returns the decided proposal's post-consensus
-// roots (see postConsensusRoots).
-func (r *ProposerRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error) {
-	proposal, err := r.decidedProposal()
+// expectedPostConsensusSigningRoots an INTERNAL function, returns the signing roots of the decided proposal's
+// post-consensus roots: the block's, which a packet must carry, and on self-build the §6 envelope's, which it
+// may (see postConsensusRoots).
+func (r *ProposerRunner) expectedPostConsensusSigningRoots() ([]PostConsensusSigningRoot, error) {
+	decided, err := r.decidedPostConsensus()
 	if err != nil {
 		return nil, err
 	}
-	return postConsensusRoots(proposal)
+	expectedRoots := []PostConsensusSigningRoot{{Root: decided.blockRoot}}
+	if decided.envelopeRoot != ([32]byte{}) {
+		expectedRoots = append(expectedRoots, PostConsensusSigningRoot{Root: decided.envelopeRoot, Optional: true})
+	}
+	return expectedRoots, nil
+}
+
+// PostConsensusRoot is an object the proposer's post-consensus round signs, with the domain to sign it under
+// and whether the round can do without it: the block root under DomainProposer is required, and the §6 envelope
+// root under DomainBeaconBuilder is optional (SIP #94 §4/§6).
+type PostConsensusRoot struct {
+	Root     ssz.HashRoot
+	Domain   phase0.DomainType
+	Optional bool
 }
 
 // postConsensusRoots returns the roots the post-consensus round signs for a proposal: the block root under

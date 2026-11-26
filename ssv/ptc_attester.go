@@ -234,8 +234,8 @@ func (r *PTCAttesterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot
 	return []ssz.HashRoot{r.PayloadAttestationData}, types.DomainPTCAttester, nil
 }
 
-// expectedPostConsensusRootsAndDomains an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *PTCAttesterRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error) {
+// expectedPostConsensusSigningRoots an INTERNAL function, returns the expected post-consensus roots to sign
+func (r *PTCAttesterRunner) expectedPostConsensusSigningRoots() ([]PostConsensusSigningRoot, error) {
 	return nil, fmt.Errorf("no post consensus roots for ptc attestation")
 }
 

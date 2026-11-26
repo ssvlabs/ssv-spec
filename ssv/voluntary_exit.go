@@ -118,8 +118,8 @@ func (r *VoluntaryExitRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRo
 	return []ssz.HashRoot{vr}, types.DomainVoluntaryExit, nil
 }
 
-// expectedPostConsensusRootsAndDomains an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *VoluntaryExitRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error) {
+// expectedPostConsensusSigningRoots an INTERNAL function, returns the expected post-consensus roots to sign
+func (r *VoluntaryExitRunner) expectedPostConsensusSigningRoots() ([]PostConsensusSigningRoot, error) {
 	return nil, fmt.Errorf("no post consensus roots for voluntary exit")
 }
 

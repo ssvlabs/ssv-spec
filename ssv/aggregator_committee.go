@@ -608,8 +608,8 @@ func (r *AggregatorCommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.
 	panic("not in use")
 }
 
-// expectedPostConsensusRootsAndDomains returns expected post-consensus roots
-func (r *AggregatorCommitteeRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error) {
+// expectedPostConsensusSigningRoots returns expected post-consensus roots
+func (r *AggregatorCommitteeRunner) expectedPostConsensusSigningRoots() ([]PostConsensusSigningRoot, error) {
 	panic("not in use")
 }
 

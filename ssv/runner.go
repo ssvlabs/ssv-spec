@@ -20,12 +20,11 @@ type Getters interface {
 	GetNetwork() Network
 }
 
-// PostConsensusRoot pairs a post-consensus signing root with its domain and whether the packet must carry it.
-// The proposer signs the block root under DomainProposer (required) and the §6 envelope root under
-// DomainBeaconBuilder (optional: a block-only packet is still final; SIP #94 §4/§6).
-type PostConsensusRoot struct {
-	Root     ssz.HashRoot
-	Domain   phase0.DomainType
+// PostConsensusSigningRoot is a signing root a post-consensus packet is checked against, and whether the packet
+// must carry it. The proposer's packet must carry the block's and may carry the §6 envelope's: a block-only
+// packet is still final (SIP #94 §4/§6).
+type PostConsensusSigningRoot struct {
+	Root     [32]byte
 	Optional bool
 }
 
@@ -47,9 +46,9 @@ type Runner interface {
 
 	// expectedPreConsensusRootsAndDomain an INTERNAL function, returns the expected pre-consensus roots to sign
 	expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error)
-	// expectedPostConsensusRootsAndDomains an INTERNAL function, returns the expected post-consensus roots
-	// to sign, each with its domain
-	expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error)
+	// expectedPostConsensusSigningRoots an INTERNAL function, returns the signing roots a post-consensus
+	// packet is checked against, each computed under its own domain
+	expectedPostConsensusSigningRoots() ([]PostConsensusSigningRoot, error)
 	// executeDuty an INTERNAL function, executes a duty.
 	executeDuty(duty types.Duty) error
 }

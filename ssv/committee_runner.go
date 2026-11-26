@@ -383,7 +383,7 @@ func (cr CommitteeRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, 
 
 // This function signature returns only one domain type... but we can have mixed domains
 // instead we rely on expectedPostConsensusRootsAndBeaconObjects that is called later
-func (cr CommitteeRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error) {
+func (cr CommitteeRunner) expectedPostConsensusSigningRoots() ([]PostConsensusSigningRoot, error) {
 	panic("not in use")
 }
 

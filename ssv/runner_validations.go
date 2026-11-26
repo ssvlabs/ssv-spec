@@ -91,14 +91,16 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 
 		return b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot())
 	default:
-		// Decode still runs to reject a malformed stored value, but the slot to validate partials against
-		// is the running duty's — as in the committee/aggregator cases above — not the decided value's own
-		// Duty.Slot, so the check never depends on trusting the decided value's contents.
-		decidedValue := &types.ProposerConsensusData{}
-		if err := decidedValue.Decode(decidedValueBytes); err != nil {
-			return errors.Wrap(err, "failed to parse decided value to ProposerConsensusData")
+		// The runner derives the roots from its decided value, which rejects a malformed one. That comes first,
+		// as the decode it replaces did.
+		expectedRoots, err := runner.expectedPostConsensusSigningRoots()
+		if err != nil {
+			return errors.Wrap(err, "failed to derive the post-consensus roots of the decided value")
 		}
 
+		// The slot to validate partials against is the running duty's — as in the committee/aggregator cases
+		// above — not the decided value's own Duty.Slot, so the check never depends on trusting the decided
+		// value's contents.
 		if err := b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot()); err != nil {
 			return err
 		}
@@ -107,12 +109,7 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 			return err
 		}
 
-		expected, err := runner.expectedPostConsensusRootsAndDomains()
-		if err != nil {
-			return err
-		}
-
-		return b.verifyExpectedPostConsensusRoots(runner, psigMsgs, expected)
+		return b.verifyExpectedPostConsensusRoots(psigMsgs, expectedRoots)
 	}
 }
 
@@ -128,43 +125,24 @@ func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val types.Encod
 	return nil
 }
 
-// verifyExpectedPostConsensusRoots validates a post-consensus packet against per-root domains (SIP #94 §4): every
-// message root must equal an expected root under its own domain, each expected root is covered at most once, and
-// every required root must be present; anything else rejects the whole packet. An optional root (the proposer's §6
+// verifyExpectedPostConsensusRoots validates a post-consensus packet against the expected signing roots (SIP #94
+// §4): every message root must equal an expected root, each expected root is covered at most once, and every
+// required root must be present; anything else rejects the whole packet. An optional root (the proposer's §6
 // envelope entry) may be absent, so a block-only packet stays valid.
-func (b *BaseRunner) verifyExpectedPostConsensusRoots(runner Runner, psigMsgs *types.PartialSignatureMessages, expected []PostConsensusRoot) error {
-	epoch := b.BeaconNetwork.EstimatedEpochAtSlot(b.State.StartingDuty.DutySlot())
-
-	type expectedSigningRoot struct {
-		root     [32]byte
-		optional bool
-	}
-	signingRoots := make([]expectedSigningRoot, 0, len(expected))
-	for _, e := range expected {
-		d, err := runner.GetBeaconNode().DomainData(epoch, e.Domain)
-		if err != nil {
-			return errors.Wrap(err, "could not get post-consensus root domain")
-		}
-		r, err := types.ComputeETHSigningRoot(e.Root, d)
-		if err != nil {
-			return errors.Wrap(err, "could not compute ETH signing root")
-		}
-		signingRoots = append(signingRoots, expectedSigningRoot{root: r, optional: e.Optional})
-	}
-
+func (b *BaseRunner) verifyExpectedPostConsensusRoots(psigMsgs *types.PartialSignatureMessages, expectedRoots []PostConsensusSigningRoot) error {
 	// Match each message to an expected root, covering each at most once: an unexpected root, or a second
 	// entry for an already-covered one, rejects the packet.
 	covered := make(map[[32]byte]struct{})
 	for _, msg := range psigMsgs.Messages {
 		matched := false
-		for _, sr := range signingRoots {
-			if sr.root != msg.SigningRoot {
+		for _, expectedRoot := range expectedRoots {
+			if expectedRoot.Root != msg.SigningRoot {
 				continue
 			}
-			if _, dup := covered[sr.root]; dup {
+			if _, dup := covered[expectedRoot.Root]; dup {
 				return types.NewError(types.WrongRootsCountErrorCode, "duplicate expected signing root")
 			}
-			covered[sr.root] = struct{}{}
+			covered[expectedRoot.Root] = struct{}{}
 			matched = true
 			break
 		}
@@ -174,8 +152,8 @@ func (b *BaseRunner) verifyExpectedPostConsensusRoots(runner Runner, psigMsgs *t
 	}
 
 	// Every required root must be covered; optional roots (the §6 envelope) may be absent.
-	for _, sr := range signingRoots {
-		if _, ok := covered[sr.root]; !sr.optional && !ok {
+	for _, expectedRoot := range expectedRoots {
+		if _, ok := covered[expectedRoot.Root]; !expectedRoot.Optional && !ok {
 			return types.NewError(types.WrongRootsCountErrorCode, "missing required signing root")
 		}
 	}

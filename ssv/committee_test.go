@@ -38,7 +38,7 @@ func (r *testRunner) ProcessPostConsensus(*types.PartialSignatureMessages) error
 func (r *testRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	return nil, phase0.DomainType{}, nil
 }
-func (r *testRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error) {
+func (r *testRunner) expectedPostConsensusSigningRoots() ([]PostConsensusSigningRoot, error) {
 	return nil, nil
 }
 func (r *testRunner) executeDuty(types.Duty) error { return nil }

@@ -248,13 +248,13 @@ func (r *ProposerPreferencesRunner) ProcessPostConsensus(signedMsg *types.Partia
 	return types.NewError(types.ProposerPreferencesNoPostConsensusPhaseErrorCode, "no post consensus phase for proposer preferences")
 }
 
-// expectedPreConsensusRootsAndDomain / expectedPostConsensusRootsAndDomains / executeDuty run on the
+// expectedPreConsensusRootsAndDomain / expectedPostConsensusSigningRoots / executeDuty run on the
 // per-slot sub-runners, never on the dispatcher.
 func (r *ProposerPreferencesRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
 	return nil, types.DomainError, fmt.Errorf("proposer preferences dispatcher has no frozen preference")
 }
 
-func (r *ProposerPreferencesRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error) {
+func (r *ProposerPreferencesRunner) expectedPostConsensusSigningRoots() ([]PostConsensusSigningRoot, error) {
 	return nil, fmt.Errorf("no post consensus roots for proposer preferences")
 }
 
@@ -456,8 +456,8 @@ func (r *ProposerPreferencesSlotRunner) expectedPreConsensusRootsAndDomain() ([]
 	return []ssz.HashRoot{r.ProposerPreferences}, types.DomainProposerPreferences, nil
 }
 
-// expectedPostConsensusRootsAndDomains an INTERNAL function, returns the expected post-consensus roots to sign
-func (r *ProposerPreferencesSlotRunner) expectedPostConsensusRootsAndDomains() ([]PostConsensusRoot, error) {
+// expectedPostConsensusSigningRoots an INTERNAL function, returns the expected post-consensus roots to sign
+func (r *ProposerPreferencesSlotRunner) expectedPostConsensusSigningRoots() ([]PostConsensusSigningRoot, error) {
 	return nil, fmt.Errorf("no post consensus roots for proposer preferences")
 }
 
