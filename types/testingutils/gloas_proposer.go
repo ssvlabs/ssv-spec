@@ -1,6 +1,8 @@
 package testingutils
 
 import (
+	"encoding/hex"
+
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
@@ -10,10 +12,16 @@ import (
 
 // Gloas (ePBS) proposer fixtures for the §4 post-consensus-fold envelope path (SIP #94 §4/§6).
 
-// WithGloasEnvelopeBroadcast appends the §6 envelope publish root to a self-build proposer duty's expected
-// beacon broadcast roots (SIP #94 §4/§6).
-var WithGloasEnvelopeBroadcast = func(roots []string, version spec.DataVersion) []string {
-	return append(roots, GetSSZRootNoError(TestingBlindedExecutionPayloadEnvelope(TestingDutySlotV(version))))
+// WithGloasEnvelopeBroadcast appends the root of the published §6 reveal to a self-build proposer duty's
+// expected beacon broadcast roots (SIP #94 §4/§6): the fixture envelope under the signature the cluster's
+// shares reconstruct to.
+var WithGloasEnvelopeBroadcast = func(roots []string, ks *TestKeySet, version spec.DataVersion) []string {
+	envelope := TestingBlindedExecutionPayloadEnvelope(TestingDutySlotV(version))
+	root, err := signedEnvelopeRoot(envelope, signBeaconObject(envelope, types.DomainBeaconBuilder, ks))
+	if err != nil {
+		panic(err.Error())
+	}
+	return append(roots, hex.EncodeToString(root[:]))
 }
 
 // TestingGloasPayloadRoot is the self-build payload_root the fixture proposer carries in its decided value

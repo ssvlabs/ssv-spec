@@ -32,7 +32,7 @@ func GloasProposerFailedBlockSubmit() tests.SpecTest {
 			testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, version),
 			testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, version),
 		},
-		BeaconBroadcastedRoots: testingutils.WithGloasEnvelopeBroadcast(nil, version),
+		BeaconBroadcastedRoots: testingutils.WithGloasEnvelopeBroadcast(nil, ks, version),
 		BeaconNode:             &tests.BeaconNodeBehaviour{FailBlockSubmit: true},
 		ExpectedErrorCode:      types.ProposerBlockSubmitFailedErrorCode,
 	}

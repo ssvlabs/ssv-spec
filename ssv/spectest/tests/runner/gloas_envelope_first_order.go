@@ -34,7 +34,7 @@ func GloasProposerEnvelopeFirstOrder() tests.SpecTest {
 		},
 		BeaconBroadcastedRoots: testingutils.WithGloasEnvelopeBroadcast([]string{
 			testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
-		}, version),
+		}, ks, version),
 		OrderedBeaconBroadcastedRoots: true,
 	}
 }

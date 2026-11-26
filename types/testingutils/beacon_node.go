@@ -148,15 +148,31 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *gloas.BeaconBlock, sig pha
 	return nil
 }
 
-// SubmitExecutionPayloadEnvelope records the published §6 reveal's root — the blinded envelope's root,
-// which by root-equivalence is the full envelope's (SIP #94 §6).
+// SubmitExecutionPayloadEnvelope records the root of the published §6 reveal, signature included, as
+// SubmitBeaconBlock does for the block: the signed envelope's root (see signedEnvelopeRoot).
 func (bn *TestingBeaconNode) SubmitExecutionPayloadEnvelope(envelope *gloas.BlindedExecutionPayloadEnvelope, signature phase0.BLSSignature) error {
-	r, err := envelope.HashTreeRoot()
+	r, err := signedEnvelopeRoot(envelope, signature)
 	if err != nil {
 		return err
 	}
 	bn.BroadcastedRoots = append(bn.BroadcastedRoots, r)
 	return nil
+}
+
+// signedEnvelopeRoot is hash_tree_root(SignedExecutionPayloadEnvelope{message, signature}) of the envelope a
+// blinded one stands for: the blinded envelope hashes to the full envelope's root (SIP #94 §6), so the root of
+// the container holding it and the signature is the full signed envelope's too.
+func signedEnvelopeRoot(envelope *gloas.BlindedExecutionPayloadEnvelope, signature phase0.BLSSignature) (phase0.Root, error) {
+	messageRoot, err := envelope.HashTreeRoot()
+	if err != nil {
+		return phase0.Root{}, err
+	}
+	hh := ssz.NewHasher()
+	indx := hh.Index()
+	hh.PutBytes(messageRoot[:])
+	hh.PutBytes(signature[:])
+	hh.Merkleize(indx)
+	return hh.HashRoot()
 }
 
 // IsAggregator returns true if the validator is selected as an aggregator

@@ -38,7 +38,7 @@ func GloasProposerFailedEnvelopeSign() tests.SpecTest {
 		},
 		BeaconBroadcastedRoots: testingutils.WithGloasEnvelopeBroadcast([]string{
 			testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
-		}, version),
+		}, ks, version),
 		Signer:            &tests.SignerBehaviour{FailEnvelopeSigning: true},
 		ExpectedErrorCode: types.ProposerEnvelopeSignFailedErrorCode,
 	}

@@ -192,7 +192,7 @@ func PostFinish() tests.SpecTest {
 			},
 			BeaconBroadcastedRoots: testingutils.WithGloasEnvelopeBroadcast([]string{
 				testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
-			}, version),
+			}, ks, version),
 			ExpectedErrorCode: types.SkipConsensusMessageAsInstanceIsDecidedErrorCode,
 		}
 	}

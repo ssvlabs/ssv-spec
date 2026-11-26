@@ -35,7 +35,7 @@ func GloasProposerBadBlockShare() tests.SpecTest {
 		},
 		BeaconBroadcastedRoots: testingutils.WithGloasEnvelopeBroadcast([]string{
 			testingutils.GetSSZRootNoError(testingutils.TestingSignedBeaconBlockV(ks, version)),
-		}, version),
+		}, ks, version),
 		OrderedBeaconBroadcastedRoots: true,
 		ExpectedErrorCode:             types.ReconstructSignatureErrorCode,
 	}
