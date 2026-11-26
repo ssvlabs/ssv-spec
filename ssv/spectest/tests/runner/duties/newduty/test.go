@@ -95,6 +95,10 @@ func (test *StartNewRunnerDutySpecTest) RunAsPartOfMultiTest(t *testing.T) {
 		index++
 	}
 	require.Len(t, test.OutputMessages, index)
+	for _, share := range test.Runner.GetBaseRunner().Share {
+		testingutils.ComparePartialSignatureOutputMessageIDs(t, testingutils.OutputMessageID(share, test.Duty), broadcastedSignedMsgs)
+		break
+	}
 
 	// post root
 	postRoot, err := test.Runner.GetRoot()

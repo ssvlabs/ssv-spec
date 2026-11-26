@@ -94,6 +94,7 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 
 	// test output message
 	testingutils.ComparePartialSignatureOutputMessages(t, test.OutputMessages, network.BroadcastedMsgs, committee)
+	testingutils.ComparePartialSignatureOutputMessageIDs(t, test.outputMessageID(), network.BroadcastedMsgs)
 
 	// test beacon broadcasted msgs
 	if test.OrderedBeaconBroadcastedRoots {
@@ -115,6 +116,14 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	if test.PostDutyRunnerStateRoot != hex.EncodeToString(postRoot[:]) {
 		t.Errorf("post runner state not equal: %v", cmp.Diff(test.Runner, test.PostDutyRunnerState, cmp.Exporter(func(p reflect.Type) bool { return true })))
 	}
+}
+
+// outputMessageID is the MessageID the duty's partial-signature messages go out under.
+func (test *MsgProcessingSpecTest) outputMessageID() types.MessageID {
+	for _, share := range test.Runner.GetBaseRunner().Share {
+		return testingutils.OutputMessageID(share, test.Duty)
+	}
+	panic("No share in base runner for tests")
 }
 
 // Run as an individual test

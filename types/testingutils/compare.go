@@ -45,6 +45,29 @@ func ComparePartialSignatureOutputMessages(t *testing.T, expectedMessages []*typ
 	}
 }
 
+// OutputMessageID returns the MessageID a duty's partial-signature messages go out under: the duty's runner role
+// with the validator's public key for a validator duty (SIP #94 §3/§7 for the PTC and proposer-preferences
+// roles), and with the committee's ID for a committee duty. It is derived from the duty and the share, not from
+// the runner, so that it checks what the runner derives.
+func OutputMessageID(share *types.Share, duty types.Duty) types.MessageID {
+	if validatorDuty, ok := duty.(*types.ValidatorDuty); ok {
+		return types.NewValidatorMsgID(share.DomainType, types.ValidatorPK(validatorDuty.PubKey), duty.RunnerRole())
+	}
+	operatorIDs := make([]types.OperatorID, 0, len(share.Committee))
+	for _, member := range share.Committee {
+		operatorIDs = append(operatorIDs, member.Signer)
+	}
+	return types.NewCommitteeMsgID(share.DomainType, types.GetCommitteeID(operatorIDs), duty.RunnerRole())
+}
+
+// ComparePartialSignatureOutputMessageIDs checks that every broadcast partial-signature message carries the
+// expected MessageID.
+func ComparePartialSignatureOutputMessageIDs(t *testing.T, expected types.MessageID, broadcastedSignedMsgs []*types.SignedSSVMessage) {
+	for _, msg := range filterPartialSigs(ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)) {
+		require.Equal(t, hex.EncodeToString(expected[:]), hex.EncodeToString(msg.MsgID[:]), "output message ID")
+	}
+}
+
 // ComparePartialSignatureOutputMessagesStrictOrder compares output messages with strict ordering
 // Both the order of messages and the order of partial signatures within each message must match
 func ComparePartialSignatureOutputMessagesStrictOrder(t *testing.T, expectedMessages []*types.PartialSignatureMessages, broadcastedSignedMsgs []*types.SignedSSVMessage, committee []*types.Operator) {
