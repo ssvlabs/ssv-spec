@@ -32,9 +32,10 @@ type ProposerPreferencesRunner struct {
 	// StartNewDuty replays into the slot's new sub-runner. A peer's partial is delivered once (§7 dedups
 	// repeats), so this is how a late-starting duty gets the partials that arrived before it (SIP #94 §5)
 	// and a re-emission gets those its predecessor rejected under a since-changed preference. Entries are
-	// deduplicated by (signer, signing root) and capped at maxPendingPartialsPerSigner per signer and slot;
-	// the slot is the sender's choice, so pruning past slots (node-side, like BySlot) is what bounds the
-	// map. Omitted from JSON when empty, so runners holding none keep their state roots.
+	// deduplicated by (signer, signing root) and capped at maxPendingPartialsPerSigner per signer and slot,
+	// which bounds a slot. The slot is the sender's choice and can be ahead of the current one, so pruning
+	// past slots does not bound the map: the §7 message-validation window on the slot does, and it is
+	// outside the spec. Omitted from JSON when empty, so runners holding none keep their state roots.
 	PendingPartials map[phase0.Slot][]*types.PartialSignatureMessages `json:"PendingPartials,omitempty"`
 
 	// BuilderEntries is the cluster-configured §5 builder-request-auth entry set (static config; SIP #94

@@ -241,7 +241,8 @@ func (r *PTCAttesterRunner) expectedPostConsensusSigningRoots() ([]PostConsensus
 
 // executeDuty steps:
 //  1. observe the slot's payload attestation data from the local beacon node; a zero BeaconBlockRoot
-//     means no block was seen — abstain, freezing, signing and broadcasting nothing (SIP #94 §3)
+//     means no block was seen — abstain, freezing, signing and broadcasting nothing (SIP #94 §3). This is
+//     the only observation: it must be final when the beacon node returns it (see PTCCalls)
 //  2. freeze the observation, sign it under DomainPTCAttester and broadcast the partial signature
 //  3. once a quorum of operators converged on the same data, reconstruct and submit the message
 func (r *PTCAttesterRunner) executeDuty(duty types.Duty) error {
