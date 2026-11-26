@@ -13,6 +13,12 @@ to run validators in a decentralized and trustless way.
 ## SSV Spec
 This repo contains the spec for SSV.Network node.
 
+### Fork scope
+
+The spec describes the network from the Gloas fork on (ePBS, [SIP #94](https://github.com/ssvlabs/SIPs/pull/94)). Its types, runners and vectors assume the fork has activated, and it leaves the transition across the fork to implementations. An implementation that still runs pre-Gloas slots keeps what the spec dropped for them itself: the 112-byte `BeaconVote`, the pre-Gloas proposer and aggregator paths, and the validator-registration duty. For the pre-Gloas spec and its vectors, use the last commit before the Gloas change, here and in the vectors mirror ([ssvlabs/spec-tests](https://github.com/ssvlabs/spec-tests)).
+
+**Do not consume this commit on its own.** The Gloas containers are still merkleized positionally here, so the roots of the block, the §6 envelope and the Gloas aggregate-and-proof are not the progressive roots Gloas specifies (EIP-7688), and a signature over them does not verify on chain. The move of these types to `dynamic-ssz` ([#643](https://github.com/ssvlabs/ssv-spec/pull/643)) fixes the roots. Take the spec, and its vectors, from that change on.
+
 ### SSVMessage
 SSV network message is called SSVMessage, it includes a MessageID and MsgType to route messages within the SSV node code, and, data for the actual message (QBFT/ pre/ Post consensus messages for example).
 
