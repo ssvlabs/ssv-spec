@@ -190,7 +190,7 @@ const PreConsensusInvalidSignedMessageDoc = "Tests pre-consensus message process
 const PreConsensusInvalidThenQuorumDoc = "Tests pre-consensus message processing with an invalid message then a valid quorum, expecting error then successful termination"
 const PreConsensusInvalidQuorumDoc = "Tests pre-consensus message processing with a quorum that has as invalid message, and ensures that it does not start consensus"
 const PreConsensusNilMsgDoc = "Tests pre-consensus message processing with nil SignedSSVMessage, expecting error"
-const PreConsensusNoRunningDutyDoc = "Tests pre-consensus message processing when there is no running duty, expecting error"
+const PreConsensusNoRunningDutyDoc = "Tests pre-consensus message processing when there is no running duty: an error, except for the PTC and proposer-preferences runners, which retain the partial for its slot's duty (SIP #94 §3/§5)"
 const PreConsensusPostDecidedDoc = "Tests pre-consensus message processing after duty is decided"
 const PreConsensusPostFinishDoc = "Tests pre-consensus message processing after duty is finished"
 const PreConsensusPostQuorumDoc = "Tests pre-consensus message processing after quorum is reached"
@@ -264,6 +264,12 @@ const ProposerPreferencesMalformedPartialsNotRetainedDoc = "Tests that a malform
 // Documentation for ptcattester tests
 const PTCAttesterAbstainDoc = "Tests the SIP #94 §3 abstain rule: no block seen for the slot, so the operator signs nothing and rejects peer partials"
 const PTCAttesterObservationDoc = "Tests the SIP #94 §3 observation lifecycle at duty start: a rejected duplicate duty keeps the running duty's frozen observation, and payload attestation data for another slot is rejected without freezing anything"
+const PTCAttesterRetainedPartialsAppliedAtDutyStartDoc = "Tests SIP #94 §3 retention: three peers' partials that arrive before this operator's duty starts are retained and, once its observation is frozen, replayed, reaching quorum and submitting the payload attestation message"
+const PTCAttesterRetainedDivergingPartialDroppedDoc = "Tests that retained PTC partials (SIP #94 §3) are checked against the observation once it is frozen: a diverging one is skipped without failing the duty, while the matching ones still apply and reach quorum with this operator's own"
+const PTCAttesterRetainedPartialsOnePerSignerDoc = "Tests that a signer has one retained PTC partial per slot (SIP #94 §3/§7): its first is kept and a later one is not, so a diverging partial followed by a matching one leaves the quorum one share short"
+const PTCAttesterRetainedPartialReconstructFailureReturnedDoc = "Tests that replaying retained PTC partials (SIP #94 §3) returns the failure to reconstruct a quorum it completes, as the live path does, and drops the bad share so a later share re-crosses quorum and submits"
+const PTCAttesterRetainedPartialsBySlotDoc = "Tests which duty start uses, keeps or drops a slot's retained PTC partials (SIP #94 §3): an abstaining duty reconstructs nothing from them, a duty for an earlier slot keeps them, and a duty for a later slot drops them"
+const PTCAttesterMalformedPartialsNotRetainedDoc = "Tests that a malformed PTC packet arriving before the duty starts (SIP #94 §3/§7) is rejected and not retained: one with two partials, and one for an unknown validator"
 const PTCAttesterDivergingObservationDoc = "Tests SIP #94 §3 honest convergence under a minority split: a diverging peer partial is rejected and the matching minority stays below quorum"
 
 // Documentation for valcheckproposer tests

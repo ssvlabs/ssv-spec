@@ -1,7 +1,6 @@
 package proposerpreferences
 
 import (
-	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -19,19 +18,18 @@ func RetainedAuthPartialsAppliedAtDutyStart() tests.SpecTest {
 	authData := [][]byte{data0, data1}
 
 	// The peers' partials arrive before the duty starts, so the dispatcher retains them.
-	runner := testingutils.ProposerPreferencesRunnerWithBuilderEntries(ks)
+	var preDuty []*types.SignedSSVMessage
 	for _, opID := range []types.OperatorID{2, 3, 4} {
-		if err := runner.(*ssv.ProposerPreferencesRunner).ProcessPreConsensus(testingutils.PreConsensusBuilderRequestAuthMsg(ks.Shares[opID], opID, authData)); err != nil {
-			panic(err.Error())
-		}
+		preDuty = append(preDuty, testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusBuilderRequestAuthMsg(ks.Shares[opID], opID, authData))))
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:          "proposer preferences retained auth partials applied at duty start",
-		Documentation: testdoc.ProposerPreferencesRetainedAuthPartialsAppliedAtDutyStartDoc,
-		Runner:        runner,
-		Duty:          testingutils.TestingProposerPreferencesDuty(),
-		Messages:      []*types.SignedSSVMessage{}, // the duty start replays the retained partials
+		Name:            "proposer preferences retained auth partials applied at duty start",
+		Documentation:   testdoc.ProposerPreferencesRetainedAuthPartialsAppliedAtDutyStartDoc,
+		Runner:          testingutils.ProposerPreferencesRunnerWithBuilderEntries(ks),
+		Duty:            testingutils.TestingProposerPreferencesDuty(),
+		PreDutyMessages: preDuty,
+		Messages:        []*types.SignedSSVMessage{}, // the duty start replays the retained partials
 		OutputMessages: []*types.PartialSignatureMessages{
 			testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1),          // preference partial, broadcast when starting a new duty
 			testingutils.PreConsensusBuilderRequestAuthMsg(ks.Shares[1], 1, authData), // both auth partials, in one container

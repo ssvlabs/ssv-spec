@@ -316,13 +316,21 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		panic("no beacon or committee duty")
 	}
 
-	msgs := make([]*types.SignedSSVMessage, 0)
-	for _, msg := range m["Messages"].([]interface{}) {
-		byts, _ := json.Marshal(msg)
-		typedMsg := &types.SignedSSVMessage{}
-		require.NoError(t, json.Unmarshal(byts, typedMsg))
-		msgs = append(msgs, typedMsg)
+	signedMsgs := func(field string) []*types.SignedSSVMessage {
+		ret := make([]*types.SignedSSVMessage, 0)
+		if m[field] == nil {
+			return ret
+		}
+		for _, msg := range m[field].([]interface{}) {
+			byts, _ := json.Marshal(msg)
+			typedMsg := &types.SignedSSVMessage{}
+			require.NoError(t, json.Unmarshal(byts, typedMsg))
+			ret = append(ret, typedMsg)
+		}
+		return ret
 	}
+	preDutyMsgs := signedMsgs("PreDutyMessages")
+	msgs := signedMsgs("Messages")
 
 	outputMsgs := make([]*types.PartialSignatureMessages, 0)
 	if m["OutputMessages"] != nil {
@@ -396,6 +404,7 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		Name:                          m["Name"].(string),
 		Duty:                          testDuty,
 		Runner:                        runner,
+		PreDutyMessages:               preDutyMsgs,
 		Messages:                      msgs,
 		DecidedSlashable:              m["DecidedSlashable"].(bool),
 		PostDutyRunnerStateRoot:       m["PostDutyRunnerStateRoot"].(string),
@@ -633,9 +642,9 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 }
 
 // fixRunnerRoleSpecificState restores runner state living outside BaseRunner (baseRunnerForRole
-// rebuilds only that): the PTC attester's frozen observation, and the proposer-preferences
-// dispatcher's retained partials and per-slot sub-runners (each grafted onto a dependency-complete
-// sub-runner the same way).
+// rebuilds only that): the PTC attester's frozen observation and retained partials, and the
+// proposer-preferences dispatcher's retained partials and per-slot sub-runners (each grafted onto a
+// dependency-complete sub-runner the same way).
 func fixRunnerRoleSpecificState(t *testing.T, runner ssv.Runner, runnerMap map[string]interface{}, ks *testingutils.TestKeySet) {
 	switch r := runner.(type) {
 	case *ssv.PTCAttesterRunner:
@@ -645,6 +654,7 @@ func fixRunnerRoleSpecificState(t *testing.T, runner ssv.Runner, runnerMap map[s
 			require.NoError(t, json.Unmarshal(byts, data))
 			r.PayloadAttestationData = data
 		}
+		r.PendingPartials = pendingPartialsFromMap(t, runnerMap)
 	case *ssv.ProposerPreferencesRunner:
 		// Restore the §5 builder-entry config first: NewSlotRunner below (and any re-run of the duty)
 		// reads it off the dispatcher to re-freeze the auth round.
@@ -654,12 +664,7 @@ func fixRunnerRoleSpecificState(t *testing.T, runner ssv.Runner, runnerMap map[s
 			require.NoError(t, json.Unmarshal(byts, &entries))
 			r.BuilderEntries = entries
 		}
-		if pendingRaw, ok := runnerMap["PendingPartials"]; ok && pendingRaw != nil {
-			byts, _ := json.Marshal(pendingRaw)
-			pending := map[phase0.Slot][]*types.PartialSignatureMessages{}
-			require.NoError(t, json.Unmarshal(byts, &pending))
-			r.PendingPartials = pending
-		}
+		r.PendingPartials = pendingPartialsFromMap(t, runnerMap)
 		raw, ok := runnerMap["BySlot"].(map[string]interface{})
 		if !ok {
 			return
@@ -690,6 +695,20 @@ func fixRunnerRoleSpecificState(t *testing.T, runner ssv.Runner, runnerMap map[s
 			r.BySlot[subBase.State.StartingDuty.DutySlot()] = sub
 		}
 	}
+}
+
+// pendingPartialsFromMap decodes a runner's retained partials. They are omitted from the JSON when there are
+// none, and the result is then nil, as it is for a runner decoded from that JSON: the constructor's empty map
+// would hide a runner that cannot retain into the nil one.
+func pendingPartialsFromMap(t *testing.T, runnerMap map[string]interface{}) map[phase0.Slot][]*types.PartialSignatureMessages {
+	raw, ok := runnerMap["PendingPartials"]
+	if !ok || raw == nil {
+		return nil
+	}
+	byts, _ := json.Marshal(raw)
+	pending := map[phase0.Slot][]*types.PartialSignatureMessages{}
+	require.NoError(t, json.Unmarshal(byts, &pending))
+	return pending
 }
 
 func baseRunnerForRole(role types.RunnerRole, base *ssv.BaseRunner, ks *testingutils.TestKeySet) ssv.Runner {

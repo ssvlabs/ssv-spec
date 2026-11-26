@@ -1,7 +1,6 @@
 package proposerpreferences
 
 import (
-	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -16,22 +15,21 @@ func RetainedPartialReconstructFailureReturned() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// The peers' partials arrive before the duty starts, so the dispatcher retains them; op4's last.
-	runner := testingutils.ProposerPreferencesRunner(ks)
+	var preDuty []*types.SignedSSVMessage
 	for _, msg := range []*types.PartialSignatureMessages{
 		testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[2], 2),
 		testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[3], 3),
 		testingutils.PreConsensusProposerPreferencesWrongBeaconSigMsg(ks.Shares[4], 4),
 	} {
-		if err := runner.(*ssv.ProposerPreferencesRunner).ProcessPreConsensus(msg); err != nil {
-			panic(err.Error())
-		}
+		preDuty = append(preDuty, testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, msg)))
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:          "proposer preferences retained partial reconstruct failure returned",
-		Documentation: testdoc.ProposerPreferencesRetainedPartialReconstructFailureReturnedDoc,
-		Runner:        runner,
-		Duty:          testingutils.TestingProposerPreferencesDuty(),
+		Name:            "proposer preferences retained partial reconstruct failure returned",
+		Documentation:   testdoc.ProposerPreferencesRetainedPartialReconstructFailureReturnedDoc,
+		Runner:          testingutils.ProposerPreferencesRunner(ks),
+		Duty:            testingutils.TestingProposerPreferencesDuty(),
+		PreDutyMessages: preDuty,
 		Messages: []*types.SignedSSVMessage{
 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1))),
 		},

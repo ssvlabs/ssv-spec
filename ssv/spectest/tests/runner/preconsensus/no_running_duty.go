@@ -11,7 +11,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// NoRunningDuty tests a valid partial pre consensus msg before duty starts
+// NoRunningDuty tests a valid partial pre consensus msg before duty starts: rejected, except by the PTC and
+// proposer-preferences runners, which retain it for its slot's duty (SIP #94 §3/§5).
 func NoRunningDuty() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
@@ -36,8 +37,8 @@ func NoRunningDuty() tests.SpecTest {
 				Messages: []*types.SignedSSVMessage{
 					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPTCAttester(nil, testingutils.PreConsensusPTCMsg(ks.Shares[1], 1))),
 				},
-				DontStartDuty:     true,
-				ExpectedErrorCode: types.NoRunningDutyErrorCode,
+				DontStartDuty: true,
+				// Retained for the slot until its duty starts (SIP #94 §3), so no error.
 			},
 			{
 				Name:   "proposer preferences",

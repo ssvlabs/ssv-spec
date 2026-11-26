@@ -24,25 +24,26 @@ func ReemissionAppliesPartialsPriorPreferenceRejected() tests.SpecTest {
 	staleSub.ProposerPreferences.DependentRoot = testingutils.TestingBlockRoot
 	runner.(*ssv.ProposerPreferencesRunner).BySlot[duty.Slot] = staleSub
 
-	// The peers' partials over the current dependent root: the first incarnation rejects them, the
-	// dispatcher retains them.
+	// The peers' partials over the current dependent root arrive before the re-emission: the first incarnation
+	// rejects each (the expected error), and the dispatcher retains them.
+	var preDuty []*types.SignedSSVMessage
 	for _, opID := range []types.OperatorID{2, 3, 4} {
-		if err := runner.(*ssv.ProposerPreferencesRunner).ProcessPreConsensus(testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[opID], opID)); err == nil {
-			panic("the stale incarnation accepted a partial over the current dependent root")
-		}
+		preDuty = append(preDuty, testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[opID], opID))))
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:          "proposer preferences reemission applies partials prior preference rejected",
-		Documentation: testdoc.ProposerPreferencesReemissionAppliesPartialsPriorPreferenceRejectedDoc,
-		Runner:        runner,
-		Duty:          duty,                        // the re-emission, on the current dependent root
-		Messages:      []*types.SignedSSVMessage{}, // the duty start replays the retained partials
+		Name:            "proposer preferences reemission applies partials prior preference rejected",
+		Documentation:   testdoc.ProposerPreferencesReemissionAppliesPartialsPriorPreferenceRejectedDoc,
+		Runner:          runner,
+		Duty:            duty, // the re-emission, on the current dependent root
+		PreDutyMessages: preDuty,
+		Messages:        []*types.SignedSSVMessage{}, // the duty start replays the retained partials
 		OutputMessages: []*types.PartialSignatureMessages{
 			testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1), // broadcast by the re-emission
 		},
 		BeaconBroadcastedRoots: []string{
 			testingutils.GetSSZRootNoError(testingutils.TestingSignedProposerPreferences(ks, duty.Slot)),
 		},
+		ExpectedErrorCode: types.WrongSigningRootErrorCode,
 	}
 }

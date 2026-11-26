@@ -1,7 +1,6 @@
 package proposerpreferences
 
 import (
-	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
@@ -15,19 +14,18 @@ func RetainedPartialsAppliedAtDutyStart() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
 	// The peers' partials arrive before the duty starts, so the dispatcher retains them.
-	runner := testingutils.ProposerPreferencesRunner(ks)
+	var preDuty []*types.SignedSSVMessage
 	for _, opID := range []types.OperatorID{2, 3, 4} {
-		if err := runner.(*ssv.ProposerPreferencesRunner).ProcessPreConsensus(testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[opID], opID)); err != nil {
-			panic(err.Error())
-		}
+		preDuty = append(preDuty, testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[opID], opID))))
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:          "proposer preferences retained partials applied at duty start",
-		Documentation: testdoc.ProposerPreferencesRetainedPartialsAppliedAtDutyStartDoc,
-		Runner:        runner,
-		Duty:          testingutils.TestingProposerPreferencesDuty(),
-		Messages:      []*types.SignedSSVMessage{}, // the duty start replays the retained partials
+		Name:            "proposer preferences retained partials applied at duty start",
+		Documentation:   testdoc.ProposerPreferencesRetainedPartialsAppliedAtDutyStartDoc,
+		Runner:          testingutils.ProposerPreferencesRunner(ks),
+		Duty:            testingutils.TestingProposerPreferencesDuty(),
+		PreDutyMessages: preDuty,
+		Messages:        []*types.SignedSSVMessage{}, // the duty start replays the retained partials
 		OutputMessages: []*types.PartialSignatureMessages{
 			testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1), // broadcasts when starting a new duty
 		},

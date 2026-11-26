@@ -28,7 +28,10 @@ type MsgProcessingSpecTest struct {
 	Documentation string
 	Runner        ssv.Runner
 	Duty          types.Duty
-	Messages      []*types.SignedSSVMessage `json:"-"`
+	// PreDutyMessages are processed before the duty starts: what a late-starting operator has already received
+	// from its peers (SIP #94 §3/§5). Messages are processed after it.
+	PreDutyMessages []*types.SignedSSVMessage `json:"-"`
+	Messages        []*types.SignedSSVMessage `json:"-"`
 	// DecidedSlashable makes the decided value slashable. Simulates consensus instances running in parallel.
 	DecidedSlashable        bool
 	PostDutyRunnerStateRoot string
@@ -145,8 +148,15 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 	case *ssv.CommitteeRunner:
 		c = testingutils.BaseCommitteeWithRunner(ketSetMap, test.Runner.(*ssv.CommitteeRunner))
 
+		for _, msg := range test.PreDutyMessages {
+			if err := c.ProcessMessage(msg); err != nil {
+				lastErr = err
+			}
+		}
 		if !test.DontStartDuty {
-			lastErr = c.StartDuty(test.Duty.(*types.CommitteeDuty))
+			if err := c.StartDuty(test.Duty.(*types.CommitteeDuty)); err != nil {
+				lastErr = err
+			}
 		} else {
 			c.CommitteeRunners[test.Duty.DutySlot()] = test.Runner.(*ssv.CommitteeRunner)
 		}
@@ -172,8 +182,15 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 	case *ssv.AggregatorCommitteeRunner:
 		c = testingutils.BaseAggregatorCommitteeWithRunner(ketSetMap, test.Runner.(*ssv.AggregatorCommitteeRunner))
 
+		for _, msg := range test.PreDutyMessages {
+			if err := c.ProcessMessage(msg); err != nil {
+				lastErr = err
+			}
+		}
 		if !test.DontStartDuty {
-			lastErr = c.StartDuty(test.Duty.(*types.AggregatorCommitteeDuty))
+			if err := c.StartDuty(test.Duty.(*types.AggregatorCommitteeDuty)); err != nil {
+				lastErr = err
+			}
 		} else {
 			c.AggregatorCommitteeRunners[test.Duty.DutySlot()] = test.Runner.(*ssv.AggregatorCommitteeRunner)
 		}
@@ -201,8 +218,15 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 		v.DutyRunners[test.Runner.GetBaseRunner().RunnerRoleType] = test.Runner
 		v.Network = test.Runner.GetNetwork()
 
+		for _, msg := range test.PreDutyMessages {
+			if err := v.ProcessMessage(msg); err != nil {
+				lastErr = err
+			}
+		}
 		if !test.DontStartDuty {
-			lastErr = v.StartDuty(test.Duty)
+			if err := v.StartDuty(test.Duty); err != nil {
+				lastErr = err
+			}
 		}
 		for _, msg := range test.Messages {
 			err := v.ProcessMessage(msg)
@@ -286,6 +310,7 @@ type MsgProcessingSpecTestAlias struct {
 	Name   string
 	Runner ssv.Runner
 	// No duty from type types.Duty
+	PreDutyMessages               []*types.SignedSSVMessage `json:"PreDutyMessages,omitempty"`
 	Messages                      []*types.SignedSSVMessage
 	DecidedSlashable              bool
 	PostDutyRunnerStateRoot       string
@@ -309,6 +334,7 @@ func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
 	alias := &MsgProcessingSpecTestAlias{
 		Name:                          t.Name,
 		Runner:                        t.Runner,
+		PreDutyMessages:               t.PreDutyMessages,
 		Messages:                      t.Messages,
 		DecidedSlashable:              t.DecidedSlashable,
 		PostDutyRunnerStateRoot:       t.PostDutyRunnerStateRoot,
@@ -352,6 +378,7 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	t.Name = aux.Name
 	t.Runner = aux.Runner
 	t.DecidedSlashable = aux.DecidedSlashable
+	t.PreDutyMessages = aux.PreDutyMessages
 	t.Messages = aux.Messages
 	t.PostDutyRunnerStateRoot = aux.PostDutyRunnerStateRoot
 	t.PostDutyRunnerState = aux.PostDutyRunnerState

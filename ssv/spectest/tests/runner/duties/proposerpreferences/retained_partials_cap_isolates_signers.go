@@ -14,25 +14,23 @@ import (
 func RetainedPartialsCapIsolatesSigners() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	// Everything below arrives before the duty starts, so the dispatcher retains it: op2's flood, then ops 3
-	// and 4's preference partials.
-	runner := testingutils.ProposerPreferencesRunner(ks)
-	msgs := append(
+	// Everything below arrives before the duty starts, so the dispatcher decides what to retain of it: op2's
+	// flood, then ops 3 and 4's preference partials.
+	var preDuty []*types.SignedSSVMessage
+	for _, msg := range append(
 		distinctAuthPartials(ks, 2, len(ks.Committee())*(ssv.MaxProposerPreferencesDistinctRoots+ssv.MaxBuilderEntries)),
 		testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[3], 3),
 		testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[4], 4),
-	)
-	for _, msg := range msgs {
-		if err := runner.(*ssv.ProposerPreferencesRunner).ProcessPreConsensus(msg); err != nil {
-			panic(err.Error())
-		}
+	) {
+		preDuty = append(preDuty, testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, msg)))
 	}
 
 	return &tests.MsgProcessingSpecTest{
-		Name:          "proposer preferences retained partials cap isolates signers",
-		Documentation: testdoc.ProposerPreferencesRetainedPartialsCapIsolatesSignersDoc,
-		Runner:        runner,
-		Duty:          testingutils.TestingProposerPreferencesDuty(),
+		Name:            "proposer preferences retained partials cap isolates signers",
+		Documentation:   testdoc.ProposerPreferencesRetainedPartialsCapIsolatesSignersDoc,
+		Runner:          testingutils.ProposerPreferencesRunner(ks),
+		Duty:            testingutils.TestingProposerPreferencesDuty(),
+		PreDutyMessages: preDuty,
 		Messages: []*types.SignedSSVMessage{
 			testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1))),
 		},

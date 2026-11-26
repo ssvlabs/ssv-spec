@@ -213,6 +213,12 @@ var AllTests = []tests.TestF{
 	ptcattester.Abstain,
 	ptcattester.DivergingObservation,
 	ptcattester.Observation,
+	ptcattester.RetainedPartialsAppliedAtDutyStart,
+	ptcattester.RetainedDivergingPartialDropped,
+	ptcattester.RetainedPartialsOnePerSigner,
+	ptcattester.RetainedPartialReconstructFailureReturned,
+	ptcattester.RetainedPartialsBySlot,
+	ptcattester.MalformedPartialsNotRetained,
 
 	proposerpreferences.ConcurrentLookaheadSlots,
 	proposerpreferences.ReemissionCarriesOverPreferenceShares,
