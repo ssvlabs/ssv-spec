@@ -140,7 +140,7 @@ func MaxGloasAttestation() *StructureSizeTest {
 		testdoc.StructureSizeTestMaxGloasAttestationDoc,
 		maxGloasAttestation(),
 		16621,
-		// The aggregation bits have no ssz-max tag to be equal to, so the tag check has nothing to hold them to.
+		// Not a tag maximum: the aggregation bits are a progressive bitlist, with no ssz-max tag to be at.
 		false,
 	)
 }

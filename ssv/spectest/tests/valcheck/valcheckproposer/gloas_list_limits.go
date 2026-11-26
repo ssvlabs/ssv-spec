@@ -9,10 +9,10 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// GloasBlockListLimits covers the list limits of a proposed Gloas block (SIP #94 §4). The block's lists are
-// progressive, so no bound comes with their types and decoding checks none; the beacon chain asserts the limits
-// in its state transition and rejects a block over any of them. The value check rejects such a block too, so
-// that the round changes instead of the cluster signing a block that loses the slot at publication.
+// GloasBlockListLimits covers the list limits of a proposed Gloas block (SIP #94 §4; see
+// gloas.BeaconBlock.ValidateListLimits). The value check rejects a block the beacon chain would reject for a
+// list over its limit, so that the round changes instead of the cluster signing a block that loses the slot at
+// publication.
 //
 // One case holds every list at its limit and is accepted. Each other case has one list a single element over
 // its limit, in an otherwise empty block, and is rejected.

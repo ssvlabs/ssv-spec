@@ -3,13 +3,13 @@ package gloas
 import "fmt"
 
 // The list limits of a Gloas block, from consensus-specs at the snapshot SIP #94 pins. The block's lists are
-// progressive (EIP-7916): their types carry no bound, so decoding one checks none. The beacon chain asserts
-// these in its state transition instead (process_operations and apply_parent_execution_payload), and rejects a
-// block over any of them.
+// progressive (EIP-7916), so their types carry no bound and decoding checks none: the beacon chain asserts the
+// limits in its state transition (process_operations, apply_parent_execution_payload) and rejects a block over
+// any of them.
 //
-// Two lists have no limit here. A payload's deposit requests have none in the state transition either. The
-// attestations' aggregation bits and the slashings' attesting indices are bounded by the committees of the
-// beacon state, which the spec does not have.
+// Not limited here: a payload's deposit requests, which the state transition does not limit either, and the
+// attestations' aggregation bits and the slashings' attesting indices, whose bound is the beacon state's
+// committees, which the spec does not have.
 const (
 	MaxProposerSlashings     = 16 // MAX_PROPOSER_SLASHINGS
 	MaxAttesterSlashings     = 1  // MAX_ATTESTER_SLASHINGS_ELECTRA
