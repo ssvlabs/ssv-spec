@@ -12,16 +12,21 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// InvalidDecidedValue tests an invalid decided value
+// InvalidDecidedValue tests an invalid decided value: the runner rejects it, so it holds no decided value when
+// a post-consensus message arrives. Each commit is sent at the duty's own slot, so that it reaches the duty's
+// instance and it is the value that is rejected. A commit at any other height is dropped for its height and
+// reaches the same error without the value being looked at.
 func InvalidDecidedValue() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
+	// An invalid value for the duty's own slot: it carries an unknown duty type and no block.
+	dutySlot := testingutils.TestingDutySlotV(gloas.DataVersionGloas)
 	consensusDataByts := func() []byte {
 		cd := &types.ProposerConsensusData{
 			Duty: types.ValidatorDuty{
 				Type:                    100,
 				PubKey:                  testingutils.TestingValidatorPubKey,
-				Slot:                    testingutils.TestingDutySlot,
+				Slot:                    dutySlot,
 				ValidatorIndex:          testingutils.TestingValidatorIndex,
 				CommitteeIndex:          3,
 				CommitteesAtSlot:        36,
@@ -53,7 +58,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 						},
 						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
+						qbft.Height(testingutils.TestingProposerDutyV(gloas.DataVersionGloas).DutySlot()),
 						testingutils.ProposerMsgID,
 						consensusDataByts(),
 					),
@@ -83,7 +88,7 @@ func InvalidDecidedValue() tests.SpecTest {
 					ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 				},
 				[]types.OperatorID{1, 2, 3},
-				qbft.Height(testingutils.TestingDutySlot),
+				qbft.Height(testingutils.TestingSyncCommitteeContributionDuty.DutySlot()),
 				testingutils.TestingAggregatorCommitteeMsgID[:],
 				consensusDataByts(),
 			),
@@ -110,7 +115,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 						},
 						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
+						qbft.Height(testingutils.TestingAggregatorDuty(version).DutySlot()),
 						testingutils.TestingAggregatorCommitteeMsgID[:],
 						consensusDataByts(),
 					),
@@ -135,7 +140,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 						},
 						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
+						qbft.Height(testingutils.TestingAggregatorCommitteeDutyMixed(version).DutySlot()),
 						testingutils.TestingAggregatorCommitteeMsgID[:],
 						consensusDataByts(),
 					),
@@ -150,10 +155,6 @@ func InvalidDecidedValue() tests.SpecTest {
 	}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
-		// The commit is sent at the duty's own slot so it reaches the duty's runner: the invalid vote is
-		// then rejected by the value check, which is what leaves the runner without a decided value.
-		// A hardcoded height would instead be dropped for having no runner at that slot, reaching the
-		// same error without exercising the value check.
 		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{
 			{
 				Name:   fmt.Sprintf("attester (%s)", version.String()),
