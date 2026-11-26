@@ -4,6 +4,7 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 
+	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
@@ -20,7 +21,25 @@ const (
 	TestingDutySlotGloas          = ForkEpochGloas*32 + 12
 	TestingDutySlotGloasNextEpoch = TestingDutySlotGloas + 32
 	TestingDutySlotGloasInvalid   = TestingDutySlotGloas + 50
+
+	// TestingEpochDependentFrom is the first epoch from which the testing beacon node's answers depend on the
+	// epoch they are asked for: from it on, every epoch has a fork version of its own (TestingForkVersion) and a
+	// proposer-duties dependent root of its own (TestingProposerDutiesDependentRootAt). The epochs before it,
+	// where the other fixtures' slots lie, share one of each.
+	TestingEpochDependentFrom = ForkEpochGloas + 100
+	// TestingDutySlotEpochDependent is a duty slot past TestingEpochDependentFrom. A duty there pins the epoch
+	// its runner asks the beacon node for: the answer for any other epoch gives another signing root.
+	TestingDutySlotEpochDependent = (TestingEpochDependentFrom+1)*32 + 12
 )
+
+// TestingForkVersion is the fork version the testing beacon node computes an epoch's signing domains with.
+func TestingForkVersion(epoch phase0.Epoch) phase0.Version {
+	if epoch < TestingEpochDependentFrom {
+		return types.GenesisForkVersion
+	}
+	n := uint64(epoch-TestingEpochDependentFrom) + 1
+	return phase0.Version{0xfe, byte(n), byte(n >> 8), byte(n >> 16)}
+}
 
 var TestingDutyEpochV = func(version spec.DataVersion) phase0.Epoch {
 	if version != gloas.DataVersionGloas {

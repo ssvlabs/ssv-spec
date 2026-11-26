@@ -1,6 +1,7 @@
 package testingutils
 
 import (
+	"encoding/binary"
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
@@ -16,13 +17,23 @@ import (
 
 var TestingFeeRecipient = bellatrix.ExecutionAddress(ethAddressFromHex("535953b5a6040074948cf185eaa7d2abbd66808f"))
 
-// TestingProposerDutiesDependentRoot is the dependent root the testing beacon node reports for every
-// epoch's proposer duties.
+// TestingProposerDutiesDependentRoot is the dependent root the testing beacon node reports for the proposer
+// duties of every epoch before TestingEpochDependentFrom.
 var TestingProposerDutiesDependentRoot = phase0.Root{0xde, 0x9e, 0x4d, 0xe1}
+
+// TestingProposerDutiesDependentRootAt is the dependent root the testing beacon node reports for an epoch's
+// proposer duties: from TestingEpochDependentFrom on, each epoch has its own.
+func TestingProposerDutiesDependentRootAt(epoch phase0.Epoch) phase0.Root {
+	root := TestingProposerDutiesDependentRoot
+	if epoch >= TestingEpochDependentFrom {
+		binary.LittleEndian.PutUint64(root[8:], uint64(epoch))
+	}
+	return root
+}
 
 var TestingProposerPreferences = func(proposalSlot phase0.Slot) *gloas.ProposerPreferences {
 	return &gloas.ProposerPreferences{
-		DependentRoot:  TestingProposerDutiesDependentRoot,
+		DependentRoot:  TestingProposerDutiesDependentRootAt(types.BeaconTestNetwork.EstimatedEpochAtSlot(proposalSlot)),
 		ProposalSlot:   proposalSlot,
 		ValidatorIndex: TestingValidatorIndex,
 		FeeRecipient:   TestingFeeRecipient,
@@ -35,15 +46,20 @@ var TestingSignedProposerPreferences = func(ks *TestKeySet, proposalSlot phase0.
 	preferences := TestingProposerPreferences(proposalSlot)
 	return &gloas.SignedProposerPreferences{
 		Message:   preferences,
-		Signature: signBeaconObject(preferences, types.DomainProposerPreferences, ks),
+		Signature: signBeaconObjectAtSlot(preferences, types.DomainProposerPreferences, ks, proposalSlot),
 	}
 }
 
 var TestingProposerPreferencesDuty = func() *types.ValidatorDuty {
+	return TestingProposerPreferencesDutyForSlot(TestingDutySlotGloas)
+}
+
+// TestingProposerPreferencesDutyForSlot is the proposer-preferences duty of a proposal slot.
+var TestingProposerPreferencesDutyForSlot = func(proposalSlot phase0.Slot) *types.ValidatorDuty {
 	return &types.ValidatorDuty{
 		Type:           types.BNRoleProposerPreferences,
 		PubKey:         TestingValidatorPubKey,
-		Slot:           TestingDutySlotGloas,
+		Slot:           proposalSlot,
 		ValidatorIndex: TestingValidatorIndex,
 	}
 }
@@ -79,13 +95,13 @@ var TestingSignedBuilderRequestAuth = func(ks *TestKeySet, data []byte, proposal
 	}
 }
 
-// ProposerDutiesDependentRoot returns the fixture dependent root for any epoch, or fails under
-// SetFailProposerDutiesDependentRoot.
+// ProposerDutiesDependentRoot returns the epoch's fixture dependent root (TestingProposerDutiesDependentRootAt),
+// or fails under SetFailProposerDutiesDependentRoot.
 func (bn *TestingBeaconNode) ProposerDutiesDependentRoot(epoch phase0.Epoch) (phase0.Root, error) {
 	if bn.failProposerDutiesDependentRoot {
 		return phase0.Root{}, fmt.Errorf("forced proposer duties dependent root failure")
 	}
-	return TestingProposerDutiesDependentRoot, nil
+	return TestingProposerDutiesDependentRootAt(epoch), nil
 }
 
 // SubmitProposerPreferences records the signed proposer preferences' root

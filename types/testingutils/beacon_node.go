@@ -268,7 +268,12 @@ func (bn *TestingBeaconNode) SubmitSignedContributionAndProof(contribution *alta
 	return nil
 }
 
+// DomainData returns the signing domain for the epoch's fork version (TestingForkVersion). The
+// application-namespace domains are the exception: they are chain-independent, so they take the genesis fork
+// version and a zero genesis validators root whatever the epoch (see ssv.DomainCalls).
 func (bn *TestingBeaconNode) DomainData(epoch phase0.Epoch, domain phase0.DomainType) (phase0.Domain, error) {
-	// epoch is used to calculate fork version, here we hard code it
-	return types.ComputeETHDomain(domain, types.GenesisForkVersion, types.GenesisValidatorsRoot)
+	if domain == types.DomainApplicationBuilder || domain == types.DomainBuilderRequestAuth {
+		return types.ComputeETHDomain(domain, types.GenesisForkVersion, phase0.Root{})
+	}
+	return types.ComputeETHDomain(domain, TestingForkVersion(epoch), types.GenesisValidatorsRoot)
 }

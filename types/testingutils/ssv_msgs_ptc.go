@@ -23,6 +23,11 @@ var PreConsensusPTCMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *typ
 	return ptcMsg(msgSK, msgID, 1, false, TestingDutySlotGloas, false)
 }
 
+// PreConsensusPTCMsgForSlot is an operator's PTC partial for a slot's duty.
+var PreConsensusPTCMsgForSlot = func(msgSK *bls.SecretKey, msgID types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
+	return ptcMsg(msgSK, msgID, 1, false, slot, false)
+}
+
 var PreConsensusPTCTooFewRootsMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.PartialSignatureMessages {
 	return ptcMsg(msgSK, msgID, 0, false, TestingDutySlotGloas, false)
 }

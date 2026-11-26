@@ -23,6 +23,11 @@ var PreConsensusProposerPreferencesMsg = func(msgSK *bls.SecretKey, msgID types.
 	return proposerPreferencesMsg(msgSK, msgID, 1, false, TestingDutySlotGloas, false)
 }
 
+// PreConsensusProposerPreferencesMsgForSlot is an operator's preference partial for a proposal slot.
+var PreConsensusProposerPreferencesMsgForSlot = func(msgSK *bls.SecretKey, msgID types.OperatorID, proposalSlot phase0.Slot) *types.PartialSignatureMessages {
+	return proposerPreferencesMsg(msgSK, msgID, 1, false, proposalSlot, false)
+}
+
 var PreConsensusProposerPreferencesTooFewRootsMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID) *types.PartialSignatureMessages {
 	return proposerPreferencesMsg(msgSK, msgID, 0, false, TestingDutySlotGloas, false)
 }
@@ -60,6 +65,11 @@ var PreConsensusProposerPreferencesWrongRootMsg = func(msgSK *bls.SecretKey, msg
 // per configured entry data, all riding one message (the multi-root pre-consensus shape).
 var PreConsensusBuilderRequestAuthMsg = func(msgSK *bls.SecretKey, msgID types.OperatorID, dataList [][]byte) *types.PartialSignatureMessages {
 	return builderRequestAuthMsg(msgSK, msgID, dataList, TestingDutySlotGloas)
+}
+
+// PreConsensusBuilderRequestAuthMsgForSlot is PreConsensusBuilderRequestAuthMsg for a proposal slot.
+var PreConsensusBuilderRequestAuthMsgForSlot = func(msgSK *bls.SecretKey, msgID types.OperatorID, dataList [][]byte, proposalSlot phase0.Slot) *types.PartialSignatureMessages {
+	return builderRequestAuthMsg(msgSK, msgID, dataList, proposalSlot)
 }
 
 // PreConsensusBuilderRequestAuthWrongRootMsg carries a container with one matching entry and one partial

@@ -2,6 +2,7 @@ package testingutils
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
+	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
@@ -40,10 +41,15 @@ var TestingSignedBeaconBlockV = func(ks *TestKeySet, version spec.DataVersion) s
 // ==================================================
 
 var TestingProposerDutyV = func(version spec.DataVersion) *types.ValidatorDuty {
+	return TestingProposerDutyForSlot(TestingDutySlotV(version))
+}
+
+// TestingProposerDutyForSlot is the proposer duty of a slot.
+var TestingProposerDutyForSlot = func(slot phase0.Slot) *types.ValidatorDuty {
 	duty := &types.ValidatorDuty{
 		Type:           types.BNRoleProposer,
 		PubKey:         TestingValidatorPubKey,
-		Slot:           TestingDutySlotV(version),
+		Slot:           slot,
 		ValidatorIndex: TestingValidatorIndex,
 		// ISSUE 233: We are initializing unused struct fields here
 		CommitteeIndex:          3,

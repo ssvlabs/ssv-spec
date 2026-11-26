@@ -35,10 +35,15 @@ var TestingDivergingPayloadAttestationData = func(slot phase0.Slot) *gloas.Paylo
 }
 
 var TestingPTCAttesterDuty = func() *types.ValidatorDuty {
+	return TestingPTCAttesterDutyForSlot(TestingDutySlotGloas)
+}
+
+// TestingPTCAttesterDutyForSlot is the PTC duty of a slot.
+var TestingPTCAttesterDutyForSlot = func(slot phase0.Slot) *types.ValidatorDuty {
 	return &types.ValidatorDuty{
 		Type:           types.BNRolePTCAttester,
 		PubKey:         TestingValidatorPubKey,
-		Slot:           TestingDutySlotGloas,
+		Slot:           slot,
 		ValidatorIndex: TestingValidatorIndex,
 	}
 }
@@ -57,11 +62,16 @@ var TestingPTCAttesterNextEpochDuty = func() *types.ValidatorDuty {
 
 // TestingSignedPayloadAttestationMessage is the reconstructed message the runner submits on quorum.
 var TestingSignedPayloadAttestationMessage = func(ks *TestKeySet) *gloas.PayloadAttestationMessage {
-	data := TestingPayloadAttestationData(TestingDutySlotGloas)
+	return TestingSignedPayloadAttestationMessageForSlot(ks, TestingDutySlotGloas)
+}
+
+// TestingSignedPayloadAttestationMessageForSlot is TestingSignedPayloadAttestationMessage for a slot's duty.
+var TestingSignedPayloadAttestationMessageForSlot = func(ks *TestKeySet, slot phase0.Slot) *gloas.PayloadAttestationMessage {
+	data := TestingPayloadAttestationData(slot)
 	return &gloas.PayloadAttestationMessage{
 		ValidatorIndex: TestingValidatorIndex,
 		Data:           data,
-		Signature:      signBeaconObject(data, types.DomainPTCAttester, ks),
+		Signature:      signBeaconObjectAtSlot(data, types.DomainPTCAttester, ks, slot),
 	}
 }
 

@@ -247,6 +247,27 @@ var PreConsensusRandaoMsgV = func(sk *bls.SecretKey, id types.OperatorID, versio
 	return randaoMsgV(sk, id, false, TestingDutyEpochV(version), 1, false, version)
 }
 
+// PreConsensusRandaoMsgForSlot is an operator's randao partial for a slot's proposer duty: the reveal of the
+// slot's epoch, under the domain for that epoch.
+var PreConsensusRandaoMsgForSlot = func(sk *bls.SecretKey, id types.OperatorID, slot phase0.Slot) *types.PartialSignatureMessages {
+	epoch := types.BeaconTestNetwork.EstimatedEpochAtSlot(slot)
+	d, _ := NewTestingBeaconNode().DomainData(epoch, types.DomainRandao)
+	signed, root, err := NewTestingKeyManager().SignBeaconObject(types.SSZUint64(epoch), d, sk.GetPublicKey().Serialize(), types.DomainRandao)
+	if err != nil {
+		panic(err.Error())
+	}
+	return &types.PartialSignatureMessages{
+		Type: types.RandaoPartialSig,
+		Slot: slot,
+		Messages: []*types.PartialSignatureMessage{{
+			PartialSignature: signed,
+			SigningRoot:      root,
+			Signer:           id,
+			ValidatorIndex:   TestingValidatorIndex,
+		}},
+	}
+}
+
 var PreConsensusRandaoNextEpochMsgV = func(sk *bls.SecretKey, id types.OperatorID, version spec.DataVersion) *types.PartialSignatureMessages {
 	return randaoMsgV(sk, id, false, TestingDutyEpochV(version)+1, 1, false, version)
 }

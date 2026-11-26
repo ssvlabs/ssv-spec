@@ -37,6 +37,7 @@ var AllTests = []tests.TestF{
 	runner.GloasProposerExternalBid,
 	runner.GloasProposerEnvelopeOnlyPacket,
 	runner.GloasProposerNotBuilderOperator,
+	runner.DomainEpoch,
 
 	postconsensus.TooManyRoots,
 	postconsensus.TooFewRoots,
