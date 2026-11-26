@@ -137,11 +137,15 @@ func (r *PTCAttesterRunner) awaitsDuty(slot phase0.Slot) bool {
 }
 
 // validatePartialsPacket applies the checks that need no frozen observation: the partials are valid, from one
-// signer and for this runner's validator, and the packet carries the one partial of a PTC duty (SIP #94 §7).
-// The running duty applies them too, and checks the root against its observation.
+// signer of the committee and for this runner's validator, and the packet carries the one partial of a PTC
+// duty (SIP #94 §7). The running duty applies them too, and checks the root against its observation. With the
+// signer a committee member and one partial kept for each, a slot retains no more partials than the committee
+// has operators.
 func (r *PTCAttesterRunner) validatePartialsPacket(signedMsg *types.PartialSignatureMessages) error {
-	if err := signedMsg.Validate(); err != nil {
-		return errors.Wrap(err, "PartialSignatureMessages invalid")
+	// Against the message's own slot, this checks all but the slot: no duty has started for it to be compared
+	// with.
+	if err := r.BaseRunner.validatePartialSigMsgForSlot(signedMsg, signedMsg.Slot); err != nil {
+		return err
 	}
 	if err := r.BaseRunner.validateValidatorIndexInPartialSigMsg(signedMsg); err != nil {
 		return err
