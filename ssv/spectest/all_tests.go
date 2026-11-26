@@ -36,6 +36,7 @@ var AllTests = []tests.TestF{
 	runner.GloasProposerFailedEnvelopeSign,
 	runner.GloasProposerExternalBid,
 	runner.GloasProposerEnvelopeOnlyPacket,
+	runner.GloasProposerJustifiedValueReproposed,
 	runner.GloasProposerNotBuilderOperator,
 	runner.DomainEpoch,
 

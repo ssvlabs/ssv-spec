@@ -171,6 +171,7 @@ const GloasProposerFailedEnvelopeSignDoc = "Tests that an operator whose signer 
 const GloasProposerNotBuilderOperatorDoc = "Tests that only the builder operator publishes the SIP #94 §6 reveal: an operator whose own produce was another self-build block, or an external bid, signs both post-consensus roots and submits the decided block but publishes no envelope"
 const GloasProposerExternalBidDoc = "Tests the SIP #94 §4 external-build path end to end: an external bid win returns a bare block and no envelope, so the proposed value carries a zero payload_root, the post-consensus packet carries the block entry alone, the block is submitted and no reveal is published"
 const DomainEpochDoc = "Tests the epoch the Gloas duties sign for (SIP #94 §3/§5/§6): the epoch of the duty's slot, which is the proposal slot for the proposer-preferences duty, whose dependent root is that epoch's too; each duty runs its happy flow in an epoch whose fork version and dependent root differ from every other epoch's"
+const GloasProposerJustifiedValueReproposedDoc = "Tests that a justified value is re-proposed unchanged, payload_root included, whatever the re-proposing leader's own bid was (SIP #94 §4): an operator whose own produce is an external bid leads the next round and proposes the self-build value its peers prepared"
 const GloasProposerEnvelopeOnlyPacketDoc = "Tests that the block root must be present in a post-consensus packet (SIP #94 §4): a packet carrying the envelope entry alone is rejected whole"
 
 // Documentation for runner/preconsensus tests
