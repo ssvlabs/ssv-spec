@@ -21,34 +21,6 @@ type Contribution struct {
 // Contributions --
 type Contributions []*Contribution
 
-func (c *Contributions) HashTreeRoot() ([32]byte, error) {
-	return ssz.HashWithDefaultHasher(c)
-}
-
-func (c *Contributions) GetTree() (*ssz.Node, error) {
-	return ssz.ProofTree(c)
-}
-
-func (c *Contributions) HashTreeRootWith(hh ssz.HashWalker) error {
-	// *Contribution is now dynamic-ssz-generated and no longer implements fastssz's HashTreeRootWith,
-	// so append each element's HashTreeRoot() as a leaf chunk and let fastssz merkleize — same list
-	// root as the per-element composition, though GetTree() can no longer prove into an element's fields.
-	subIndx := hh.Index()
-	num := uint64(len(*c))
-	if num > 13 {
-		return ssz.ErrIncorrectListSize
-	}
-	for _, elem := range *c {
-		root, err := elem.HashTreeRoot()
-		if err != nil {
-			return err
-		}
-		hh.Append(root[:])
-	}
-	hh.MerkleizeWithMixin(subIndx, num, 13)
-	return nil
-}
-
 // UnmarshalSSZ --
 func (c *Contributions) UnmarshalSSZ(buf []byte) error {
 	num, err := ssz.DecodeDynamicLength(buf, 13)
