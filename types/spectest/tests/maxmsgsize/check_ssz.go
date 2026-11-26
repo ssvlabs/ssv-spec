@@ -18,7 +18,7 @@ func getReflectValueForObject(obj types.Encoder) reflect.Value {
 		*types.SSVMessage, *types.SignedSSVMessage,
 		*types.ProposerConsensusData, *types.BeaconVote, *types.AggregatorCommitteeConsensusData:
 		return reflect.ValueOf(obj).Elem()
-	case *ElectraAttestationWrapper:
+	case *GloasAttestationWrapper:
 		return reflect.ValueOf(obj.Attestation).Elem()
 	}
 	panic("unknown type")

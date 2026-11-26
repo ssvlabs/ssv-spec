@@ -16,9 +16,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          # Not sourced from go.mod like the other workflows: go.mod still says 1.22 here, and this check has
-          # only ever run with Go 1.25.
-          go-version: 1.25.x
+          go-version-file: go.mod
 
       - name: Download dependencies
         run: go mod download

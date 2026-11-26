@@ -10,10 +10,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 )
 
-// Regenerate with `go generate ./types/gloas/` (or `make generate-ssz`). The phase0/bellatrix --include is resolved from the module
-// graph (`go list -m`), so it tracks go-eth2-client across dependency bumps rather than pinning.
-//go:generate sh -c "go run github.com/ferranbt/fastssz/sszgen --path ./proposer_preferences.go --include $(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/phase0,$(go list -m -f '{{.Dir}}' github.com/attestantio/go-eth2-client)/spec/bellatrix --objs ProposerPreferences,SignedProposerPreferences"
-
 // ProposerPreferences is the Gloas (ePBS) preference a proposer broadcasts for an upcoming
 // proposal slot (SIP #94 §5): the fee recipient and target gas limit builders must honor, pinned to
 // the proposer-lookahead seed via DependentRoot. Signed under DomainProposerPreferences with domain

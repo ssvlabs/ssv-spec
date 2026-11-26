@@ -178,9 +178,7 @@ func (mTest *MultiCommitteeSpecTest) GetPostState() (interface{}, error) {
 		}
 		if _, duplicate := ret[test.Name]; duplicate {
 			// State comparisons are keyed by sub-test name, so a duplicate would silently overwrite the
-			// earlier one and its fixture. Placeholder fork versions are a way to hit this: any
-			// DataVersion outside go-eth2-client's enum stringifies to "unknown", so two of them would
-			// name their sub-tests identically.
+			// earlier one and its fixture.
 			return nil, fmt.Errorf("duplicate sub-test name %q", test.Name)
 		}
 		ret[test.Name] = test.Committee

@@ -253,9 +253,11 @@ var AllTests = []tests.TestF{
 	proposerpreferences.MalformedPartialsNotRetained,
 
 	valcheckproposer.GloasBlocks,
+	valcheckproposer.GloasBlockListLimits,
 
 	valcheckaggcommittee.NoValidator,
 	valcheckaggcommittee.Valid,
+	valcheckaggcommittee.LongAggregationBits,
 
 	valcheck.WrongDecoding,
 

@@ -18,6 +18,7 @@ const PayloadAttestationDataEncodingSpecTestType = "Payload attestation data enc
 
 // Documentation for PayloadAttestationDataEncodingSpecTest
 const PayloadAttestationDataEncodingTestDoc = "Test encoding and decoding of PayloadAttestationData (SIP #94 §3) with hash tree root verification"
+const PayloadAttestationDataInvalidBooleanTestDoc = "Test that a PayloadAttestationData whose payload_present byte is neither 0 nor 1 does not decode"
 
 // PayloadAttestationMessageEncodingSpecTest
 const PayloadAttestationMessageEncodingSpecTestType = "Payload attestation message encoding: validation of payload attestation message encoding"
@@ -128,7 +129,7 @@ const StructureSizeTestExpectedPartialSignatureSignedSSVMessageDoc = "Test the e
 const StructureSizeTestMaxBeaconVoteDoc = "Test the maximum size of a beacon vote with source and target checkpoints"
 const StructureSizeTestMaxConsensusDataDoc = "Test the maximum size of a validator consensus data with maximum SSZ data"
 const StructureSizeTestMaxAggregatorCommitteeConsensusDataDoc = "Test the maximum size of an aggregator committee consensus data with maximum SSZ data"
-const StructureSizeTestMaxElectraAttestationDoc = "Test the maximum size of an electra attestation with maximum SSZ data"
+const StructureSizeTestMaxGloasAttestationDoc = "Test the encoded size of the largest Gloas attestation the beacon chain produces: aggregation bits for every validator of every committee of a slot"
 const StructureSizeTestMaxPartialSignatureMessageDoc = "Test the maximum size of a single partial signature message"
 const StructureSizeTestMaxPartialSignatureMessagesDoc = "Test the maximum size of partial signature messages collection"
 const StructureSizeTestMaxPartialSignatureMessagesForPreConsensusDoc = "Test the maximum size of partial signature messages for pre-consensus phase"
@@ -215,6 +216,7 @@ const ProposerConsensusDataTestType = "Validator consensus data: validation of v
 // Documentation for ProposerConsensusDataTest
 const ProposerConsensusDataTestGloasBlockDoc = "Test validation of valid consensus data with Gloas block"
 const ProposerConsensusDataTestInvalidGloasBlockDoc = "Test validation error for invalid consensus data with empty Gloas proposal data"
+const ProposerConsensusDataTestGloasBlockListOverLimitDoc = "Test validation error for consensus data whose Gloas block holds a list over its limit"
 const ProposerConsensusDataTestNonGloasVersionDoc = "Test validation error for consensus data whose version is not Gloas"
 const ProposerConsensusDataTestProposerNoJustificationsDoc = "Test proposer consensus data with no pre-consensus justifications"
 const ProposerConsensusDataTestVoluntaryExitDoc = "Test validation error for voluntary exit consensus data which has no consensus data"

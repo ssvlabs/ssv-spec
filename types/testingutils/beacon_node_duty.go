@@ -4,7 +4,6 @@ import (
 	"encoding/hex"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
-	ssz "github.com/ferranbt/fastssz"
 
 	"github.com/ssvlabs/ssv-spec/types"
 )
@@ -20,19 +19,19 @@ const (
 )
 
 // Util function for signing a beacon object with the appropriate domain
-var signBeaconObject = func(obj ssz.HashRoot, domainType phase0.DomainType, ks *TestKeySet) phase0.BLSSignature {
+var signBeaconObject = func(obj types.HashRoot, domainType phase0.DomainType, ks *TestKeySet) phase0.BLSSignature {
 	return signBeaconObjectAtEpoch(obj, domainType, ks, 1)
 }
 
 // signBeaconObjectAtSlot is signBeaconObject under the domain for the epoch of slot, for the slots whose epoch
 // has a domain of its own (see TestingEpochDependentFrom).
-var signBeaconObjectAtSlot = func(obj ssz.HashRoot, domainType phase0.DomainType, ks *TestKeySet, slot phase0.Slot) phase0.BLSSignature {
+var signBeaconObjectAtSlot = func(obj types.HashRoot, domainType phase0.DomainType, ks *TestKeySet, slot phase0.Slot) phase0.BLSSignature {
 	return signBeaconObjectAtEpoch(obj, domainType, ks, types.BeaconTestNetwork.EstimatedEpochAtSlot(slot))
 }
 
 // signBeaconObjectAtEpoch is the validator's signature over obj under the epoch's domain: what the cluster's
 // shares reconstruct to.
-func signBeaconObjectAtEpoch(obj ssz.HashRoot, domainType phase0.DomainType, ks *TestKeySet, epoch phase0.Epoch) phase0.BLSSignature {
+func signBeaconObjectAtEpoch(obj types.HashRoot, domainType phase0.DomainType, ks *TestKeySet, epoch phase0.Epoch) phase0.BLSSignature {
 	domain, _ := NewTestingBeaconNode().DomainData(epoch, domainType)
 	ret, _, _ := NewTestingKeyManager().SignBeaconObject(obj, domain, ks.ValidatorPK.Serialize(), domainType)
 
@@ -43,7 +42,7 @@ func signBeaconObjectAtEpoch(obj ssz.HashRoot, domainType phase0.DomainType, ks 
 }
 
 // Util inline function for getting the SSZ root of an object
-func GetSSZRootNoError(obj ssz.HashRoot) string {
+func GetSSZRootNoError(obj types.HashRoot) string {
 	r, _ := obj.HashTreeRoot()
 	return hex.EncodeToString(r[:])
 }

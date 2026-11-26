@@ -3,11 +3,10 @@ package types
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/electra"
+	eth2gloas "github.com/attestantio/go-eth2-client/spec/gloas"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	ssz "github.com/ferranbt/fastssz"
 
@@ -21,32 +20,6 @@ type Contribution struct {
 
 // Contributions --
 type Contributions []*Contribution
-
-func (c *Contributions) HashTreeRoot() ([32]byte, error) {
-	return ssz.HashWithDefaultHasher(c)
-}
-
-func (c *Contributions) GetTree() (*ssz.Node, error) {
-	return ssz.ProofTree(c)
-}
-
-func (c *Contributions) HashTreeRootWith(hh ssz.HashWalker) error {
-	// taken from https://github.com/prysmaticlabs/prysm/blob/develop/encoding/ssz/htrutils.go#L97-L119
-	subIndx := hh.Index()
-	num := uint64(len(*c))
-	if num > 13 {
-		return ssz.ErrIncorrectListSize
-	}
-	for _, elem := range *c {
-		{
-			if err := elem.HashTreeRootWith(hh); err != nil {
-				return err
-			}
-		}
-	}
-	hh.MerkleizeWithMixin(subIndx, num, 13)
-	return nil
-}
 
 // UnmarshalSSZ --
 func (c *Contributions) UnmarshalSSZ(buf []byte) error {
@@ -158,22 +131,18 @@ type ProposerConsensusData struct {
 	DataSSZ []byte `ssz-max:"8388608"`
 }
 
-// versionJSON is the JSON codec for a consensus-data Version: "gloas" for the SIP #94 placeholder, the upstream
-// fork string for other known versions, and the bare number for any other out-of-enum value (on which
-// spec.DataVersion.MarshalJSON panics). Decoding accepts the string (any case), the number, and a missing/null
-// value (as version 0).
+// versionJSON is the JSON codec for a consensus-data Version: go-eth2-client's fork string for a version it
+// names, and the bare number for any other (0 included), which go-eth2-client would write as "unknown" and
+// could not read back. Decoding accepts the string (any case), the number, and a missing/null value (as
+// version 0).
 type versionJSON spec.DataVersion
 
 func (v versionJSON) MarshalJSON() ([]byte, error) {
 	dv := spec.DataVersion(v)
-	switch {
-	case dv == gloas.DataVersionGloas:
-		return json.Marshal("gloas")
-	case dv.String() == "unknown": // out-of-enum: spec.DataVersion.MarshalJSON would panic
+	if dv.String() == "unknown" { // no fork string that reads back
 		return json.Marshal(uint64(dv))
-	default:
-		return dv.MarshalJSON()
 	}
+	return dv.MarshalJSON()
 }
 
 func (v *versionJSON) UnmarshalJSON(data []byte) error {
@@ -183,10 +152,6 @@ func (v *versionJSON) UnmarshalJSON(data []byte) error {
 	}
 	var s string
 	if err := json.Unmarshal(data, &s); err == nil {
-		if strings.EqualFold(s, "gloas") {
-			*v = versionJSON(gloas.DataVersionGloas)
-			return nil
-		}
 		var dv spec.DataVersion
 		if err := dv.UnmarshalJSON(data); err != nil {
 			return err
@@ -225,12 +190,23 @@ func (cd *ProposerConsensusData) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// Validate checks the following rules:
+//   - the duty is a proposer duty
+//   - the proposal decodes as Gloas proposal data (see GetBlockData)
+//   - none of the block's lists is over its Gloas limit. They are progressive lists, which decoding does not
+//     bound, and the beacon chain rejects a block over any of them (gloas.BeaconBlock.ValidateListLimits)
 func (cd *ProposerConsensusData) Validate() error {
 	if cd.Duty.Type != BNRoleProposer {
 		return NewError(UnknownDutyRoleDataErrorCode, "unknown duty role")
 	}
-	_, err := cd.GetBlockData()
-	return err
+	proposal, err := cd.GetBlockData()
+	if err != nil {
+		return err
+	}
+	if err := proposal.Block.ValidateListLimits(); err != nil {
+		return WrapError(ProposerBlockListLimitErrorCode, err)
+	}
+	return nil
 }
 
 // GetBlockData decodes the proposal: the Gloas block and the §6 payload_root carried with it (SIP #94 §4).
@@ -277,8 +253,8 @@ type AggregatorCommitteeConsensusData struct {
 	SyncCommitteeContributions []altair.SyncCommitteeContribution `ssz-max:"4"`
 }
 
-// MarshalJSON writes Version through versionJSON so a Gloas-stamped value is JSON-safe. Version is the
-// struct's first field, so the embedded-alias order already matches.
+// MarshalJSON writes Version through versionJSON, as ProposerConsensusData does. Version is the struct's first
+// field, so the embedded-alias order already matches.
 func (a *AggregatorCommitteeConsensusData) MarshalJSON() ([]byte, error) {
 	type alias AggregatorCommitteeConsensusData
 	return json.Marshal(&struct {
@@ -341,9 +317,9 @@ func (a *AggregatorCommitteeConsensusData) Validate() error {
 		return NewError(AggCommUnusedCommIdxErrorCode, "leftover aggregator committee index not usedAggCommittees by any aggregator")
 	}
 
-	// Ensure attestation objects are decoded correctly. Gloas reuses the Electra attestation shape (SIP #94 §2).
+	// Ensure attestation objects are decoded correctly
 	for _, attBytes := range a.AggregatedAttestations {
-		att := &electra.Attestation{}
+		att := &eth2gloas.Attestation{}
 		if err := att.UnmarshalSSZ(attBytes); err != nil {
 			return NewError(AggCommAttestationDecodingErrorCode, "failed to unmarshal attestation")
 		}
@@ -387,12 +363,11 @@ func (a *AggregatorCommitteeConsensusData) Decode(data []byte) error {
 	return a.UnmarshalSSZ(data)
 }
 
-func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (ssz.HashRoot, error) {
+func GetAggregateAndProofHashRoot(aggProof *spec.VersionedAggregateAndProof) (HashRoot, error) {
 	if aggProof.Version != gloas.DataVersionGloas {
 		return nil, WrapError(UnknownVersionErrorCode, fmt.Errorf("unknown version %d", aggProof.Version))
 	}
-	// Gloas reuses the Electra aggregate-and-proof shape (SIP #94 §2); no Gloas field on the versioned wrapper.
-	return aggProof.Electra, nil
+	return aggProof.Gloas, nil
 }
 
 // GetAggregateAndProofs returns all aggregate and proofs for the aggregator duties along with their hash roots
@@ -416,14 +391,16 @@ func (a *AggregatorCommitteeConsensusData) GetAggregateAndProofs() ([]*spec.Vers
 			return nil, NewError(AggCommCommIdxMismatchErrorCode, "aggregator committee index not found for attestation")
 		}
 
-		// Gloas reuses the Electra aggregate shape (SIP #94 §2).
-		att := &electra.Attestation{}
+		// The Gloas container serializes like Electra's but merkleizes as a progressive container with a
+		// progressive-bitlist aggregation_bits (EIP-7688 / EIP-7916), so the aggregate-and-proof root — the
+		// aggregator's signing root — differs from Electra's (SIP #94 §2).
+		att := &eth2gloas.Attestation{}
 		if err := att.UnmarshalSSZ(a.AggregatedAttestations[foundIndex]); err != nil {
 			return nil, WrapError(UnmarshalSSZErrorCode, fmt.Errorf("failed to unmarshal attestation: %w", err))
 		}
 		proofs = append(proofs, &spec.VersionedAggregateAndProof{
 			Version: a.Version,
-			Electra: &electra.AggregateAndProof{
+			Gloas: &eth2gloas.AggregateAndProof{
 				AggregatorIndex: aggregator.ValidatorIndex,
 				Aggregate:       att,
 				SelectionProof:  aggregator.SelectionProof,
