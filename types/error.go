@@ -39,8 +39,8 @@ const (
 	ReconstructSignatureErrorCode
 	SlashableAttestationErrorCode
 	DecidedWrongInstanceErrorCode
-	ValidatorRegistrationNoConsensusPhaseErrorCode
-	ValidatorRegistrationNoPostConsensusPhaseErrorCode
+	_ // reserved: retired validator-registration runner
+	_ // reserved: retired validator-registration runner
 	ValidatorExitNoConsensusPhaseErrorCode
 	ValidatorExitNoPostConsensusPhaseErrorCode
 	SSVMessageHasInvalidSignatureErrorCode
@@ -101,6 +101,28 @@ const (
 	BeaconVoteNilCheckpointErrorCode
 	UnexpectedJustificationErrorCode
 	JustificationWithFullDataErrorCode
+
+	ProposerBlockSlotMismatchErrorCode
+	BeaconVoteInvalidIndexErrorCode
+	SlashableProposalErrorCode
+	PTCAttesterNoConsensusPhaseErrorCode
+	PTCAttesterNoPostConsensusPhaseErrorCode
+	PTCAttesterNoObservationErrorCode
+	ProposerPreferencesNoConsensusPhaseErrorCode
+	ProposerPreferencesNoPostConsensusPhaseErrorCode
+	ProposerPreferencesNoPreferenceErrorCode
+	RequestAuthNoAuthErrorCode
+	ProposerDutySlotMismatchErrorCode
+	PTCAttesterWrongSlotErrorCode
+	RequestAuthWrongRootsCountErrorCode
+	ProposerPreferencesUnexpectedPartialSigTypeErrorCode
+	ProposerBlockProposerIndexMismatchErrorCode
+	ProposerBlockSubmitFailedErrorCode
+	ProposerEnvelopeSignFailedErrorCode
+	ProposerBidSlotMismatchErrorCode
+	ProposerBidParentRootMismatchErrorCode
+	ProposerPreferencesBroadcastFailedErrorCode
+	BeaconVoteSameSlotIndexErrorCode
 )
 
 type Error struct {

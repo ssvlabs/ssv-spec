@@ -3,11 +3,10 @@ package newduty
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -32,11 +31,11 @@ func Valid() tests.SpecTest {
 			{
 				Name:                    "proposer",
 				Runner:                  testingutils.ProposerRunner(ks),
-				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Duty:                    testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "56eafcb33392ded888a0fefe30ba49e52aa00ab36841cb10c9dc1aa2935af347",
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
+					testingutils.PreConsensusRandaoMsgV(ks.Shares[1], 1, gloas.DataVersionGloas), // broadcasts when starting a new duty
 				},
 			},
 		},

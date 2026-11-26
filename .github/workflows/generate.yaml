@@ -1,0 +1,34 @@
+name: Generated code
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "*" ]
+
+jobs:
+
+  ssz-up-to-date:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          # Not sourced from go.mod like the other workflows: go.mod still says 1.22 here, and this check has
+          # only ever run with Go 1.25.
+          go-version: 1.25.x
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Regenerate SSZ encoders
+        run: make generate-ssz
+
+      - name: Fail if generated code is out of date
+        run: |
+          if ! git diff --exit-code; then
+            echo "::error::Generated code is out of date — run 'make generate-ssz' and commit the result."
+            exit 1
+          fi

@@ -158,7 +158,7 @@ var TestingSyncCommitteeContributionNexEpochDuty = func() *types.AggregatorCommi
 
 var TestingSyncCommitteeContributionDutyWithValidatorContributionIndices = func(contributionIndices []types.ValidatorSyncCommitteeIndex) *types.AggregatorCommitteeDuty {
 	return TestingAggregatorCommitteeDutyWithParams(
-		TestingDutySlotV(spec.DataVersionPhase0),
+		TestingDutySlot,
 		[]int{},
 		[]int{TestingValidatorIndex},
 		TestingCommitteeIndex,

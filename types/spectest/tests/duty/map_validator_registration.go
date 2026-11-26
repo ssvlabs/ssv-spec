@@ -5,12 +5,16 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
 )
 
-// MapValidatorRegistration tests mapping of BNRoleValidatorRegistration.
+// validatorRegistrationBeaconRole is the reserved beacon role of the validator-registration duty.
+const validatorRegistrationBeaconRole = types.BeaconRole(5)
+
+// MapValidatorRegistration tests that the validator-registration duty maps to no runner: SIP #94 §5 deprecates
+// it at Gloas in favour of proposer preferences, and its beacon role value stays reserved.
 func MapValidatorRegistration() *DutySpecTest {
 	return NewDutySpecTest(
 		"map validator registration role",
 		testdoc.MapValidatorRegistrationTestDoc,
-		types.BNRoleValidatorRegistration,
-		types.RoleValidatorRegistration,
+		validatorRegistrationBeaconRole,
+		types.RoleUnknown,
 	)
 }

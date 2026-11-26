@@ -3,13 +3,12 @@ package newduty
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
@@ -52,21 +51,15 @@ func PostFutureDecided() tests.SpecTest {
 				Duty:                    testingutils.TestingSyncCommitteeContributionDuty,
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "0c2bf5b2570aad7da85cfe5aa81361524a727265c22b41e72e7e9ff2f9b2c215",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusContributionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1), // broadcasts when starting a new duty
-				},
-				ExpectedErrorCode: expectedErrorCode,
+				ExpectedErrorCode:       expectedErrorCode,
 			},
 			{
 				Name:                    "proposer",
-				Runner:                  futureDecide(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(spec.DataVersionDeneb)),
-				Duty:                    testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Runner:                  futureDecide(testingutils.ProposerRunner(ks), testingutils.TestingProposerDutyV(gloas.DataVersionGloas)),
+				Duty:                    testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 				Threshold:               ks.Threshold,
 				PostDutyRunnerStateRoot: "fdaaa35d42c3001cd891209a44b921fa64320be238794e01633661e16c4f5e02",
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoNextEpochMsgV(ks.Shares[1], 1, spec.DataVersionDeneb), // broadcasts when starting a new duty
-				},
-				ExpectedErrorCode: types.DutyAlreadyPassedErrorCode,
+				ExpectedErrorCode:       types.DutyAlreadyPassedErrorCode,
 			},
 		},
 		ks,
@@ -82,10 +75,7 @@ func PostFutureDecided() tests.SpecTest {
 			Duty:                    testingutils.TestingAggregatorDuty(version),
 			Threshold:               ks.Threshold,
 			PostDutyRunnerStateRoot: "892d0c2842a81d163c59e53302085f7bb2753cc4fcb46593bfeb569ec39e8928",
-			OutputMessages: []*types.PartialSignatureMessages{
-				testingutils.PreConsensusSelectionProofNextEpochMsg(ks.Shares[1], ks.Shares[1], 1, 1, version), // broadcasts when starting a new duty
-			},
-			ExpectedErrorCode: expectedVersionedErrorCode,
+			ExpectedErrorCode:       expectedVersionedErrorCode,
 		},
 		)
 	}

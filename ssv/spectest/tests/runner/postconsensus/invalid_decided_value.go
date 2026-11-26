@@ -4,32 +4,36 @@ import (
 	"crypto/rsa"
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec"
-
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/testdoc"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// InvalidDecidedValue tests an invalid decided value
+// InvalidDecidedValue tests an invalid decided value: the runner rejects it, so it holds no decided value when
+// a post-consensus message arrives. Each commit is sent at the duty's own slot, so that it reaches the duty's
+// instance and it is the value that is rejected. A commit at any other height is dropped for its height and
+// reaches the same error without the value being looked at.
 func InvalidDecidedValue() tests.SpecTest {
 
 	ks := testingutils.Testing4SharesSet()
+	// An invalid value for the duty's own slot: it carries an unknown duty type and no block.
+	dutySlot := testingutils.TestingDutySlotV(gloas.DataVersionGloas)
 	consensusDataByts := func() []byte {
 		cd := &types.ProposerConsensusData{
 			Duty: types.ValidatorDuty{
 				Type:                    100,
 				PubKey:                  testingutils.TestingValidatorPubKey,
-				Slot:                    testingutils.TestingDutySlot,
+				Slot:                    dutySlot,
 				ValidatorIndex:          testingutils.TestingValidatorIndex,
 				CommitteeIndex:          3,
 				CommitteesAtSlot:        36,
 				CommitteeLength:         128,
 				ValidatorCommitteeIndex: 11,
 			},
-			Version: spec.DataVersionPhase0,
+			Version: gloas.DataVersionGloas,
 		}
 		byts, _ := cd.Encode()
 		return byts
@@ -43,50 +47,25 @@ func InvalidDecidedValue() tests.SpecTest {
 			{
 				Name:   "proposer",
 				Runner: testingutils.ProposerRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
+				Duty:   testingutils.TestingProposerDutyV(gloas.DataVersionGloas),
 				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, spec.DataVersionDeneb))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, gloas.DataVersionGloas))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, gloas.DataVersionGloas))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, gloas.DataVersionGloas))),
 
 					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
 						[]*rsa.PrivateKey{
 							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 						},
 						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
+						qbft.Height(testingutils.TestingProposerDutyV(gloas.DataVersionGloas).DutySlot()),
 						testingutils.ProposerMsgID,
 						consensusDataByts(),
 					),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, gloas.DataVersionGloas))),
 				},
 				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoMsgV(testingutils.Testing4SharesSet().Shares[1], 1, spec.DataVersionDeneb),
-				},
-				ExpectedErrorCode: expectedErrCode,
-			},
-			{
-				Name:   "proposer (blinded block)",
-				Runner: testingutils.ProposerBlindedBlockRunner(ks),
-				Duty:   testingutils.TestingProposerDutyV(spec.DataVersionDeneb),
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[2], ks.Shares[2], 2, 2, spec.DataVersionDeneb))),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[3], ks.Shares[3], 3, 3, spec.DataVersionDeneb))),
-
-					testingutils.TestingCommitMultiSignerMessageWithHeightIdentifierAndFullData(
-						[]*rsa.PrivateKey{
-							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
-						},
-						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
-						testingutils.ProposerMsgID,
-						consensusDataByts(),
-					),
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PostConsensusProposerMsgV(ks.Shares[1], 1, spec.DataVersionDeneb))),
-				},
-				OutputMessages: []*types.PartialSignatureMessages{
-					testingutils.PreConsensusRandaoMsgV(testingutils.Testing4SharesSet().Shares[1], 1, spec.DataVersionDeneb),
+					testingutils.PreConsensusRandaoMsgV(testingutils.Testing4SharesSet().Shares[1], 1, gloas.DataVersionGloas),
 				},
 				ExpectedErrorCode: expectedErrCode,
 			},
@@ -109,7 +88,7 @@ func InvalidDecidedValue() tests.SpecTest {
 					ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 				},
 				[]types.OperatorID{1, 2, 3},
-				qbft.Height(testingutils.TestingDutySlot),
+				qbft.Height(testingutils.TestingSyncCommitteeContributionDuty.DutySlot()),
 				testingutils.TestingAggregatorCommitteeMsgID[:],
 				consensusDataByts(),
 			),
@@ -136,7 +115,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 						},
 						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
+						qbft.Height(testingutils.TestingAggregatorDuty(version).DutySlot()),
 						testingutils.TestingAggregatorCommitteeMsgID[:],
 						consensusDataByts(),
 					),
@@ -161,7 +140,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 						},
 						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
+						qbft.Height(testingutils.TestingAggregatorCommitteeDutyMixed(version).DutySlot()),
 						testingutils.TestingAggregatorCommitteeMsgID[:],
 						consensusDataByts(),
 					),
@@ -187,7 +166,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 						},
 						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
+						qbft.Height(testingutils.TestingDutySlotV(version)),
 						testingutils.CommitteeMsgID(ks),
 						testingutils.TestWrongBeaconVoteByts,
 					),
@@ -205,7 +184,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 						},
 						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
+						qbft.Height(testingutils.TestingDutySlotV(version)),
 						testingutils.CommitteeMsgID(ks),
 						testingutils.TestWrongBeaconVoteByts,
 					),
@@ -223,7 +202,7 @@ func InvalidDecidedValue() tests.SpecTest {
 							ks.OperatorKeys[1], ks.OperatorKeys[2], ks.OperatorKeys[3],
 						},
 						[]types.OperatorID{1, 2, 3},
-						qbft.Height(testingutils.TestingDutySlot),
+						qbft.Height(testingutils.TestingDutySlotV(version)),
 						testingutils.CommitteeMsgID(ks),
 						testingutils.TestWrongBeaconVoteByts,
 					),

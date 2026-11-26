@@ -3,6 +3,9 @@ package testingutils
 import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
+
+	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // ==================================================
@@ -10,176 +13,57 @@ import (
 // ==================================================
 
 const (
-	ForkEpochFulu = 242000
+	// ForkEpochGloas is a test-only value (arbitrary, like a testnet fork epoch); adjust to match the node's
+	// config if cross-repo slot parity is wanted.
+	ForkEpochGloas = 250000
 
-	ForkEpochPraterElectra = 232000
+	TestingDutyEpochGloas         = ForkEpochGloas
+	TestingDutySlotGloas          = ForkEpochGloas*32 + 12
+	TestingDutySlotGloasNextEpoch = TestingDutySlotGloas + 32
+	TestingDutySlotGloasInvalid   = TestingDutySlotGloas + 50
 
-	ForkEpochPraterDeneb = 231680
-
-	// ForkEpochPraterCapella Goerli taken from https://github.com/ethereum/execution-specs/blob/37a8f892341eb000e56e962a051a87e05a2e4443/network-upgrades/mainnet-upgrades/shanghai.md?plain=1#L18
-	ForkEpochPraterCapella = 162304
-
-	ForkEpochBellatrix = 144896
-
-	ForkEpochAltair = 74240
-
-	ForkEpochPhase0 = 0
-
-	TestingDutyEpochPhase0         = TestingDutyEpoch
-	TestingDutySlotPhase0          = TestingDutySlot
-	TestingDutySlotPhase0NextEpoch = TestingDutySlot2
-	TestingDutySlotPhase0Invalid   = TestingDutySlotPhase0 + 50
-
-	TestingDutyEpochAltair         = ForkEpochAltair
-	TestingDutySlotAltair          = ForkEpochAltair * 32
-	TestingDutySlotAltairNextEpoch = TestingDutySlotAltair + 32
-	TestingDutySlotAltairInvalid   = TestingDutySlotAltair + 50
-
-	TestingDutyEpochBellatrix         = ForkEpochBellatrix
-	TestingDutySlotBellatrix          = ForkEpochBellatrix * 32
-	TestingDutySlotBellatrixNextEpoch = TestingDutySlotBellatrix + 32
-	TestingDutySlotBellatrixInvalid   = TestingDutySlotBellatrix + 50
-
-	TestingDutyEpochCapella         = ForkEpochPraterCapella
-	TestingDutySlotCapella          = ForkEpochPraterCapella * 32
-	TestingDutySlotCapellaNextEpoch = TestingDutySlotCapella + 32
-	TestingDutySlotCapellaInvalid   = TestingDutySlotCapella + 50
-
-	TestingDutyEpochDeneb         = ForkEpochPraterDeneb
-	TestingDutySlotDeneb          = ForkEpochPraterDeneb * 32
-	TestingDutySlotDenebNextEpoch = TestingDutySlotDeneb + 32
-	TestingDutySlotDenebInvalid   = TestingDutySlotDeneb + 50
-
-	TestingDutyEpochElectra         = ForkEpochPraterElectra
-	TestingDutySlotElectra          = ForkEpochPraterElectra*32 + 12
-	TestingDutySlotElectraNextEpoch = TestingDutySlotElectra + 32
-	TestingDutySlotElectraInvalid   = TestingDutySlotElectra + 50
-
-	TestingDutyEpochFulu         = ForkEpochFulu
-	TestingDutySlotFulu          = ForkEpochFulu*32 + 12
-	TestingDutySlotFuluNextEpoch = TestingDutySlotFulu + 32
-	TestingDutySlotFuluInvalid   = TestingDutySlotFulu + 50
+	// TestingEpochDependentFrom is the first epoch for which the testing beacon node has a fork version
+	// (TestingForkVersion) and a proposer-duties dependent root (TestingProposerDutiesDependentRootAt) of its
+	// own. The epochs before it, where the other fixtures' slots lie, share one of each.
+	TestingEpochDependentFrom = ForkEpochGloas + 100
+	// TestingDutySlotEpochDependent is a duty slot past TestingEpochDependentFrom. A duty there pins the epoch
+	// its runner asks the beacon node for: the answer for any other epoch gives another signing root.
+	TestingDutySlotEpochDependent = (TestingEpochDependentFrom+1)*32 + 12
 )
 
-var TestingDutyEpochV = func(version spec.DataVersion) phase0.Epoch {
-	switch version {
-	case spec.DataVersionPhase0:
-		return TestingDutyEpochPhase0
-	case spec.DataVersionAltair:
-		return TestingDutyEpochAltair
-	case spec.DataVersionBellatrix:
-		return TestingDutyEpochBellatrix
-	case spec.DataVersionCapella:
-		return TestingDutyEpochCapella
-	case spec.DataVersionDeneb:
-		return TestingDutyEpochDeneb
-	case spec.DataVersionElectra:
-		return TestingDutyEpochElectra
-	case spec.DataVersionFulu:
-		return TestingDutyEpochFulu
+// TestingForkVersion is the fork version the testing beacon node computes an epoch's signing domains with.
+func TestingForkVersion(epoch phase0.Epoch) phase0.Version {
+	if epoch < TestingEpochDependentFrom {
+		return types.GenesisForkVersion
+	}
+	n := uint64(epoch-TestingEpochDependentFrom) + 1
+	return phase0.Version{0xfe, byte(n), byte(n >> 8), byte(n >> 16)}
+}
 
-	default:
+var TestingDutyEpochV = func(version spec.DataVersion) phase0.Epoch {
+	if version != gloas.DataVersionGloas {
 		panic("unsupported version")
 	}
+	return TestingDutyEpochGloas
 }
 
 var TestingDutySlotV = func(version spec.DataVersion) phase0.Slot {
-	switch version {
-	case spec.DataVersionPhase0:
-		return TestingDutySlotPhase0
-	case spec.DataVersionAltair:
-		return TestingDutySlotAltair
-	case spec.DataVersionBellatrix:
-		return TestingDutySlotBellatrix
-	case spec.DataVersionCapella:
-		return TestingDutySlotCapella
-	case spec.DataVersionDeneb:
-		return TestingDutySlotDeneb
-	case spec.DataVersionElectra:
-		return TestingDutySlotElectra
-	case spec.DataVersionFulu:
-		return TestingDutySlotFulu
-
-	default:
+	if version != gloas.DataVersionGloas {
 		panic("unsupported version")
 	}
+	return TestingDutySlotGloas
 }
 
 var TestingDutySlotNextEpochV = func(version spec.DataVersion) phase0.Slot {
-	switch version {
-	case spec.DataVersionPhase0:
-		return TestingDutySlotPhase0NextEpoch
-	case spec.DataVersionAltair:
-		return TestingDutySlotAltairNextEpoch
-	case spec.DataVersionBellatrix:
-		return TestingDutySlotBellatrixNextEpoch
-	case spec.DataVersionCapella:
-		return TestingDutySlotCapellaNextEpoch
-	case spec.DataVersionDeneb:
-		return TestingDutySlotDenebNextEpoch
-	case spec.DataVersionElectra:
-		return TestingDutySlotElectraNextEpoch
-	case spec.DataVersionFulu:
-		return TestingDutySlotFuluNextEpoch
-
-	default:
+	if version != gloas.DataVersionGloas {
 		panic("unsupported version")
 	}
+	return TestingDutySlotGloasNextEpoch
 }
 
 var TestingInvalidDutySlotV = func(version spec.DataVersion) phase0.Slot {
-	switch version {
-	case spec.DataVersionPhase0:
-		return TestingDutySlotPhase0Invalid
-	case spec.DataVersionAltair:
-		return TestingDutySlotAltairInvalid
-	case spec.DataVersionBellatrix:
-		return TestingDutySlotBellatrixInvalid
-	case spec.DataVersionCapella:
-		return TestingDutySlotCapellaInvalid
-	case spec.DataVersionDeneb:
-		return TestingDutySlotDenebInvalid
-	case spec.DataVersionElectra:
-		return TestingDutySlotElectraInvalid
-	case spec.DataVersionFulu:
-		return TestingDutySlotFuluInvalid
-
-	default:
+	if version != gloas.DataVersionGloas {
 		panic("unsupported version")
 	}
-}
-
-var VersionBySlot = func(slot phase0.Slot) spec.DataVersion {
-	if slot < ForkEpochAltair*32 {
-		return spec.DataVersionPhase0
-	} else if slot < ForkEpochBellatrix*32 {
-		return spec.DataVersionAltair
-	} else if slot < ForkEpochPraterCapella*32 {
-		return spec.DataVersionBellatrix
-	} else if slot < ForkEpochPraterDeneb*32 {
-		return spec.DataVersionCapella
-	} else if slot < ForkEpochPraterElectra*32 {
-		return spec.DataVersionDeneb
-	} else if slot < ForkEpochFulu*32 {
-		return spec.DataVersionElectra
-	}
-
-	return spec.DataVersionFulu
-}
-
-var VersionByEpoch = func(epoch phase0.Epoch) spec.DataVersion {
-	if epoch < ForkEpochAltair {
-		return spec.DataVersionPhase0
-	} else if epoch < ForkEpochBellatrix {
-		return spec.DataVersionAltair
-	} else if epoch < ForkEpochPraterCapella {
-		return spec.DataVersionBellatrix
-	} else if epoch < ForkEpochPraterDeneb {
-		return spec.DataVersionCapella
-	} else if epoch < ForkEpochPraterElectra {
-		return spec.DataVersionDeneb
-	} else if epoch < ForkEpochFulu {
-		return spec.DataVersionElectra
-	}
-	return spec.DataVersionFulu
+	return TestingDutySlotGloasInvalid
 }

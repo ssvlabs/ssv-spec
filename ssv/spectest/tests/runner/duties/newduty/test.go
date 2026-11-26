@@ -33,6 +33,7 @@ type StartNewRunnerDutySpecTest struct {
 	OutputMessages          []*types.PartialSignatureMessages
 	ExpectedErrorCode       int
 	PrivateKeys             *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+	BeaconNode              *tests.BeaconNodeBehaviour   `json:"BeaconNode,omitempty"`
 }
 
 func (test *StartNewRunnerDutySpecTest) TestName() string {
@@ -50,50 +51,53 @@ func (test *StartNewRunnerDutySpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	err := test.runPreTesting()
 	tests.AssertErrorCode(t, test.ExpectedErrorCode, err)
 
-	// test output message
+	// test output message: every broadcast partial-signature container against the expected one in its place.
+	// The count is compared even when nothing was broadcast, so an expected message that never went out fails.
 	broadcastedSignedMsgs := test.Runner.GetNetwork().(*testingutils.TestingNetwork).BroadcastedMsgs
 	broadcastedMsgs := testingutils.ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)
-	if len(broadcastedMsgs) > 0 {
-		index := 0
-		for _, msg := range broadcastedMsgs {
-			if msg.MsgType != types.SSVPartialSignatureMsgType {
-				continue
+	index := 0
+	for _, msg := range broadcastedMsgs {
+		if msg.MsgType != types.SSVPartialSignatureMsgType {
+			continue
+		}
+		require.Less(t, index, len(test.OutputMessages), "unexpected output msg")
+
+		msg1 := &types.PartialSignatureMessages{}
+		require.NoError(t, msg1.Decode(msg.Data))
+		msg2 := test.OutputMessages[index]
+		require.Len(t, msg1.Messages, len(msg2.Messages))
+
+		// messages are not guaranteed to be in order so we map them and then test all roots to be equal
+		roots := make(map[string]string)
+		for i, partialSigMsg2 := range msg2.Messages {
+			r2, err := partialSigMsg2.GetRoot()
+			require.NoError(t, err)
+			if _, found := roots[hex.EncodeToString(r2[:])]; !found {
+				roots[hex.EncodeToString(r2[:])] = ""
+			} else {
+				roots[hex.EncodeToString(r2[:])] = hex.EncodeToString(r2[:])
 			}
 
-			msg1 := &types.PartialSignatureMessages{}
-			require.NoError(t, msg1.Decode(msg.Data))
-			msg2 := test.OutputMessages[index]
-			require.Len(t, msg1.Messages, len(msg2.Messages))
+			partialSigMsg1 := msg1.Messages[i]
+			r1, err := partialSigMsg1.GetRoot()
+			require.NoError(t, err)
 
-			// messages are not guaranteed to be in order so we map them and then test all roots to be equal
-			roots := make(map[string]string)
-			for i, partialSigMsg2 := range msg2.Messages {
-				r2, err := partialSigMsg2.GetRoot()
-				require.NoError(t, err)
-				if _, found := roots[hex.EncodeToString(r2[:])]; !found {
-					roots[hex.EncodeToString(r2[:])] = ""
-				} else {
-					roots[hex.EncodeToString(r2[:])] = hex.EncodeToString(r2[:])
-				}
-
-				partialSigMsg1 := msg1.Messages[i]
-				r1, err := partialSigMsg1.GetRoot()
-				require.NoError(t, err)
-
-				if _, found := roots[hex.EncodeToString(r1[:])]; !found {
-					roots[hex.EncodeToString(r1[:])] = ""
-				} else {
-					roots[hex.EncodeToString(r1[:])] = hex.EncodeToString(r1[:])
-				}
+			if _, found := roots[hex.EncodeToString(r1[:])]; !found {
+				roots[hex.EncodeToString(r1[:])] = ""
+			} else {
+				roots[hex.EncodeToString(r1[:])] = hex.EncodeToString(r1[:])
 			}
-			for k, v := range roots {
-				require.EqualValues(t, k, v, "missing output msg")
-			}
-
-			index++
+		}
+		for k, v := range roots {
+			require.EqualValues(t, k, v, "missing output msg")
 		}
 
-		require.Len(t, test.OutputMessages, index)
+		index++
+	}
+	require.Len(t, test.OutputMessages, index)
+	for _, share := range test.Runner.GetBaseRunner().Share {
+		testingutils.ComparePartialSignatureOutputMessageIDs(t, testingutils.OutputMessageID(share, test.Duty), broadcastedSignedMsgs)
+		break
 	}
 
 	// post root
@@ -114,6 +118,7 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 // runPreTesting runs the spec logic before testing the output
 // It simply starts a new duty
 func (test *StartNewRunnerDutySpecTest) runPreTesting() error {
+	test.BeaconNode.Apply(test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode))
 	err := test.Runner.StartNewDuty(test.Duty, test.Threshold)
 	return err
 }
@@ -157,6 +162,13 @@ func (mTest *MultiStartNewRunnerDutySpecTest) GetPostState() (interface{}, error
 				err,
 			)
 		}
+		if _, duplicate := ret[test.Name]; duplicate {
+			// State comparisons are keyed by sub-test name, so a duplicate would silently overwrite the
+			// earlier one and its fixture. Placeholder fork versions are a way to hit this: any
+			// DataVersion outside go-eth2-client's enum stringifies to "unknown", so two of them would
+			// name their sub-tests identically.
+			return nil, fmt.Errorf("duplicate sub-test name %q", test.Name)
+		}
 		ret[test.Name] = test.Runner
 	}
 	return ret, nil
@@ -180,10 +192,12 @@ func overrideStateComparison(t *testing.T, test *StartNewRunnerDutySpecTest, nam
 		runner = &ssv.AggregatorCommitteeRunner{}
 	case *ssv.ProposerRunner:
 		runner = &ssv.ProposerRunner{}
-	case *ssv.ValidatorRegistrationRunner:
-		runner = &ssv.ValidatorRegistrationRunner{}
 	case *ssv.VoluntaryExitRunner:
 		runner = &ssv.VoluntaryExitRunner{}
+	case *ssv.PTCAttesterRunner:
+		runner = &ssv.PTCAttesterRunner{}
+	case *ssv.ProposerPreferencesRunner:
+		runner = &ssv.ProposerPreferencesRunner{}
 	default:
 		t.Fatalf("unknown runner type")
 	}
@@ -214,6 +228,7 @@ func (t *StartNewRunnerDutySpecTest) MarshalJSON() ([]byte, error) {
 		ValidatorDuty           *types.ValidatorDuty           `json:"ValidatorDuty,omitempty"`
 		CommitteeDuty           *types.CommitteeDuty           `json:"CommitteeDuty,omitempty"`
 		AggregatorCommitteeDuty *types.AggregatorCommitteeDuty `json:"AggregatorCommitteeDuty,omitempty"`
+		BeaconNode              *tests.BeaconNodeBehaviour     `json:"BeaconNode,omitempty"`
 	}
 
 	alias := &StartNewRunnerDutySpecTestAlias{
@@ -223,6 +238,7 @@ func (t *StartNewRunnerDutySpecTest) MarshalJSON() ([]byte, error) {
 		PostDutyRunnerState:     t.PostDutyRunnerState,
 		OutputMessages:          t.OutputMessages,
 		ExpectedErrorCode:       t.ExpectedErrorCode,
+		BeaconNode:              t.BeaconNode,
 	}
 
 	if t.Duty != nil {
@@ -250,10 +266,11 @@ func (t *StartNewRunnerDutySpecTest) UnmarshalJSON(data []byte) error {
 		PostDutyRunnerStateRoot string
 		PostDutyRunnerState     types.Root `json:"-"` // Field is ignored by encoding/json
 		OutputMessages          []*types.PartialSignatureMessages
-		ExpectedError           int
+		ExpectedErrorCode       int
 		ValidatorDuty           *types.ValidatorDuty           `json:"ValidatorDuty,omitempty"`
 		CommitteeDuty           *types.CommitteeDuty           `json:"CommitteeDuty,omitempty"`
 		AggregatorCommitteeDuty *types.AggregatorCommitteeDuty `json:"AggregatorCommitteeDuty,omitempty"`
+		BeaconNode              *tests.BeaconNodeBehaviour     `json:"BeaconNode,omitempty"`
 	}
 
 	aux := &StartNewRunnerDutySpecTestAlias{}
@@ -268,7 +285,8 @@ func (t *StartNewRunnerDutySpecTest) UnmarshalJSON(data []byte) error {
 	t.PostDutyRunnerStateRoot = aux.PostDutyRunnerStateRoot
 	t.PostDutyRunnerState = aux.PostDutyRunnerState
 	t.OutputMessages = aux.OutputMessages
-	t.ExpectedErrorCode = aux.ExpectedError
+	t.ExpectedErrorCode = aux.ExpectedErrorCode
+	t.BeaconNode = aux.BeaconNode
 
 	// Determine which type of duty was marshaled
 	if aux.ValidatorDuty != nil {

@@ -24,6 +24,7 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/partialsigcontainer"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/valcheck"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 	comparable "github.com/ssvlabs/ssv-spec/types/testingutils/comparable"
 )
@@ -249,6 +250,14 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 		}
 	}
 
+	var beaconNode *tests2.BeaconNodeBehaviour
+	if m["BeaconNode"] != nil {
+		byts, err := json.Marshal(m["BeaconNode"])
+		require.NoError(t, err)
+		beaconNode = &tests2.BeaconNodeBehaviour{}
+		require.NoError(t, json.Unmarshal(byts, beaconNode))
+	}
+
 	ks := testingutils.KeySetForShare(shareInstance)
 
 	runner := fixRunnerForRun(t, runnerMap, ks)
@@ -261,6 +270,7 @@ func newRunnerDutySpecTestFromMap(t *testing.T, m map[string]interface{}) *newdu
 		PostDutyRunnerStateRoot: m["PostDutyRunnerStateRoot"].(string),
 		ExpectedErrorCode:       int(m["ExpectedErrorCode"].(float64)),
 		OutputMessages:          outputMsgs,
+		BeaconNode:              beaconNode,
 	}
 }
 
@@ -306,13 +316,21 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		panic("no beacon or committee duty")
 	}
 
-	msgs := make([]*types.SignedSSVMessage, 0)
-	for _, msg := range m["Messages"].([]interface{}) {
-		byts, _ := json.Marshal(msg)
-		typedMsg := &types.SignedSSVMessage{}
-		require.NoError(t, json.Unmarshal(byts, typedMsg))
-		msgs = append(msgs, typedMsg)
+	signedMsgs := func(field string) []*types.SignedSSVMessage {
+		ret := make([]*types.SignedSSVMessage, 0)
+		if m[field] == nil {
+			return ret
+		}
+		for _, msg := range m[field].([]interface{}) {
+			byts, _ := json.Marshal(msg)
+			typedMsg := &types.SignedSSVMessage{}
+			require.NoError(t, json.Unmarshal(byts, typedMsg))
+			ret = append(ret, typedMsg)
+		}
+		return ret
 	}
+	preDutyMsgs := signedMsgs("PreDutyMessages")
+	msgs := signedMsgs("Messages")
 
 	outputMsgs := make([]*types.PartialSignatureMessages, 0)
 	if m["OutputMessages"] != nil {
@@ -352,24 +370,63 @@ func msgProcessingSpecTestFromMap(t *testing.T, m map[string]interface{}) *tests
 		}
 	}
 
+	orderedBeaconBroadcastedRoots, _ := m["OrderedBeaconBroadcastedRoots"].(bool)
+
+	var qbftProposals [][]byte
+	if m["QBFTProposals"] != nil {
+		byts, err := json.Marshal(m["QBFTProposals"])
+		require.NoError(t, err)
+		require.NoError(t, json.Unmarshal(byts, &qbftProposals))
+	}
+
+	var beaconNode *tests2.BeaconNodeBehaviour
+	if m["BeaconNode"] != nil {
+		byts, err := json.Marshal(m["BeaconNode"])
+		require.NoError(t, err)
+		beaconNode = &tests2.BeaconNodeBehaviour{}
+		require.NoError(t, json.Unmarshal(byts, beaconNode))
+	}
+
+	var signer *tests2.SignerBehaviour
+	if m["Signer"] != nil {
+		byts, err := json.Marshal(m["Signer"])
+		require.NoError(t, err)
+		signer = &tests2.SignerBehaviour{}
+		require.NoError(t, json.Unmarshal(byts, signer))
+	}
+
+	var network *tests2.NetworkBehaviour
+	if m["Network"] != nil {
+		byts, err := json.Marshal(m["Network"])
+		require.NoError(t, err)
+		network = &tests2.NetworkBehaviour{}
+		require.NoError(t, json.Unmarshal(byts, network))
+	}
+
 	ks := testingutils.KeySetForShare(shareInstance)
 
 	// runner
 	runner := fixRunnerForRun(t, runnerMap, ks)
 
 	return &tests2.MsgProcessingSpecTest{
-		Name:                    m["Name"].(string),
-		Duty:                    testDuty,
-		Runner:                  runner,
-		Messages:                msgs,
-		DecidedSlashable:        m["DecidedSlashable"].(bool),
-		PostDutyRunnerStateRoot: m["PostDutyRunnerStateRoot"].(string),
-		DontStartDuty:           m["DontStartDuty"].(bool),
-		ExpectedErrorCode:       int(m["ExpectedErrorCode"].(float64)),
-		OutputMessages:          outputMsgs,
-		BeaconBroadcastedRoots:  beaconBroadcastedRoots,
-		BeaconAggregators:       beaconAggregators,
-		BeaconAggregatorsValues: beaconAggregatorsValues,
+		Name:                          m["Name"].(string),
+		Duty:                          testDuty,
+		Runner:                        runner,
+		PreDutyMessages:               preDutyMsgs,
+		Messages:                      msgs,
+		DecidedSlashable:              m["DecidedSlashable"].(bool),
+		PostDutyRunnerStateRoot:       m["PostDutyRunnerStateRoot"].(string),
+		DontStartDuty:                 m["DontStartDuty"].(bool),
+		ExpectedErrorCode:             int(m["ExpectedErrorCode"].(float64)),
+		OutputMessages:                outputMsgs,
+		BeaconBroadcastedRoots:        beaconBroadcastedRoots,
+		OrderedBeaconBroadcastedRoots: orderedBeaconBroadcastedRoots,
+		QBFTProposals:                 qbftProposals,
+		BeaconAggregators:             beaconAggregators,
+		BeaconAggregatorsValues:       beaconAggregatorsValues,
+		BeaconNode:                    beaconNode,
+		Signer:                        signer,
+		Network:                       network,
 	}
 }
 
@@ -523,6 +580,7 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 	require.NoError(t, json.Unmarshal(byts, &base))
 
 	ret := baseRunnerForRole(base.RunnerRoleType, base, ks)
+	fixRunnerRoleSpecificState(t, ret, runnerMap, ks)
 
 	if ret.GetBaseRunner().QBFTController != nil {
 		ret.GetBaseRunner().QBFTController = fixControllerForRun(t, ret, ret.GetBaseRunner().QBFTController, ks)
@@ -545,6 +603,8 @@ func fixRunnerForRun(t *testing.T, runnerMap map[string]interface{}, ks *testing
 func fixControllerForRun(t *testing.T, runner ssv.Runner, contr *qbft.Controller, ks *testingutils.TestKeySet) *qbft.Controller {
 	config := testingutils.TestingConfig(ks)
 	config.ValueCheckF = runner.GetValCheckF()
+	// QBFT broadcasts go to the runner's network, as in the constructed runners, so QBFTProposals see them.
+	config.Network = runner.GetNetwork()
 	newContr := qbft.NewController(
 		contr.Identifier,
 		contr.CommitteeMember,
@@ -590,6 +650,75 @@ func fixInstanceForRun(t *testing.T, inst *qbft.Instance, contr *qbft.Controller
 	return newInst
 }
 
+// fixRunnerRoleSpecificState restores runner state living outside BaseRunner (baseRunnerForRole
+// rebuilds only that): the PTC attester's frozen observation and retained partials, and the
+// proposer-preferences dispatcher's retained partials and per-slot sub-runners (each grafted onto a
+// dependency-complete sub-runner the same way).
+func fixRunnerRoleSpecificState(t *testing.T, runner ssv.Runner, runnerMap map[string]interface{}, ks *testingutils.TestKeySet) {
+	switch r := runner.(type) {
+	case *ssv.PTCAttesterRunner:
+		if raw, ok := runnerMap["PayloadAttestationData"]; ok && raw != nil {
+			byts, _ := json.Marshal(raw)
+			data := &gloas.PayloadAttestationData{}
+			require.NoError(t, json.Unmarshal(byts, data))
+			r.PayloadAttestationData = data
+		}
+		r.PendingPartials = pendingPartialsFromMap(t, runnerMap)
+	case *ssv.ProposerPreferencesRunner:
+		// Restore the §5 builder-entry config first: NewSlotRunner below (and any re-run of the duty)
+		// reads it off the dispatcher to re-freeze the auth round.
+		if entriesRaw, ok := runnerMap["BuilderEntries"]; ok && entriesRaw != nil {
+			byts, _ := json.Marshal(entriesRaw)
+			entries := []ssv.BuilderEntry{}
+			require.NoError(t, json.Unmarshal(byts, &entries))
+			r.BuilderEntries = entries
+		}
+		r.PendingPartials = pendingPartialsFromMap(t, runnerMap)
+		raw, ok := runnerMap["BySlot"].(map[string]interface{})
+		if !ok {
+			return
+		}
+		for _, subRaw := range raw {
+			subMap, ok := subRaw.(map[string]interface{})
+			if !ok || subMap["BaseRunner"] == nil {
+				continue
+			}
+			subBase := &ssv.BaseRunner{}
+			byts, _ := json.Marshal(subMap["BaseRunner"])
+			require.NoError(t, json.Unmarshal(byts, subBase))
+
+			sub := r.NewSlotRunner()
+			sub.BaseRunner = subBase
+			if prefRaw, ok := subMap["ProposerPreferences"]; ok && prefRaw != nil {
+				byts, _ := json.Marshal(prefRaw)
+				pref := &gloas.ProposerPreferences{}
+				require.NoError(t, json.Unmarshal(byts, pref))
+				sub.ProposerPreferences = pref
+			}
+			if authsRaw, ok := subMap["BuilderRequestAuths"]; ok && authsRaw != nil {
+				byts, _ := json.Marshal(authsRaw)
+				auths := []*gloas.BuilderRequestAuth{}
+				require.NoError(t, json.Unmarshal(byts, &auths))
+				sub.BuilderRequestAuths = auths
+			}
+			r.BySlot[subBase.State.StartingDuty.DutySlot()] = sub
+		}
+	}
+}
+
+// pendingPartialsFromMap decodes a runner's retained partials, nil when the JSON omits them. Nil, and not the
+// constructor's empty map, so that the run retains into a nil map as a runner decoded from JSON does.
+func pendingPartialsFromMap(t *testing.T, runnerMap map[string]interface{}) map[phase0.Slot][]*types.PartialSignatureMessages {
+	raw, ok := runnerMap["PendingPartials"]
+	if !ok || raw == nil {
+		return nil
+	}
+	byts, _ := json.Marshal(raw)
+	pending := map[phase0.Slot][]*types.PartialSignatureMessages{}
+	require.NoError(t, json.Unmarshal(byts, &pending))
+	return pending
+}
+
 func baseRunnerForRole(role types.RunnerRole, base *ssv.BaseRunner, ks *testingutils.TestKeySet) ssv.Runner {
 	switch role {
 	case types.RoleCommittee:
@@ -604,13 +733,17 @@ func baseRunnerForRole(role types.RunnerRole, base *ssv.BaseRunner, ks *testingu
 		ret := testingutils.AggregatorCommitteeRunner(ks)
 		ret.(*ssv.AggregatorCommitteeRunner).BaseRunner = base
 		return ret
-	case types.RoleValidatorRegistration:
-		ret := testingutils.ValidatorRegistrationRunner(ks)
-		ret.(*ssv.ValidatorRegistrationRunner).BaseRunner = base
-		return ret
 	case types.RoleVoluntaryExit:
 		ret := testingutils.VoluntaryExitRunner(ks)
 		ret.(*ssv.VoluntaryExitRunner).BaseRunner = base
+		return ret
+	case types.RolePTCAttester:
+		ret := testingutils.PTCAttesterRunner(ks)
+		ret.(*ssv.PTCAttesterRunner).BaseRunner = base
+		return ret
+	case types.RoleProposerPreferences:
+		ret := testingutils.ProposerPreferencesRunner(ks)
+		ret.(*ssv.ProposerPreferencesRunner).BaseRunner = base
 		return ret
 	case testingutils.UnknownDutyType:
 		ret := testingutils.UnknownDutyTypeRunner(ks)

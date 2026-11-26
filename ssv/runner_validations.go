@@ -55,7 +55,11 @@ func (b *BaseRunner) FallBackAndVerifyEachSignature(container *PartialSigContain
 
 func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.PartialSignatureMessages) error {
 	if !b.hasRunningDuty() {
-		return types.NewError(types.NoRunningDutyErrorCode, "no running duty")
+		// A finished proposer keeps accepting post-consensus packets while its §6 envelope root is short of
+		// quorum (SIP #94 §4); every other finished or never-started duty rejects.
+		if p, ok := runner.(*ProposerRunner); !ok || !p.awaitingEnvelope() {
+			return types.NewError(types.NoRunningDutyErrorCode, "no running duty")
+		}
 	}
 
 	// TODO https://github.com/ssvlabs/ssv-spec/issues/142 need to fix with this issue solution instead.
@@ -87,12 +91,16 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 
 		return b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot())
 	default:
-		decidedValue := &types.ProposerConsensusData{}
-		if err := decidedValue.Decode(decidedValueBytes); err != nil {
-			return errors.Wrap(err, "failed to parse decided value to ProposerConsensusData")
+		// Deriving the roots decodes the decided value, so a malformed one is rejected before the packet is checked.
+		expectedRoots, err := runner.expectedPostConsensusSigningRoots()
+		if err != nil {
+			return errors.Wrap(err, "failed to derive the post-consensus roots of the decided value")
 		}
 
-		if err := b.validatePartialSigMsgForSlot(psigMsgs, decidedValue.Duty.Slot); err != nil {
+		// The slot to validate partials against is the running duty's — as in the committee/aggregator cases
+		// above — not the decided value's own Duty.Slot, so the check never depends on trusting the decided
+		// value's contents.
+		if err := b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot()); err != nil {
 			return err
 		}
 
@@ -100,12 +108,7 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 			return err
 		}
 
-		roots, domain, err := runner.expectedPostConsensusRootsAndDomain()
-		if err != nil {
-			return err
-		}
-
-		return b.verifyExpectedRoot(runner, psigMsgs, roots, domain)
+		return b.verifyExpectedPostConsensusRoots(psigMsgs, expectedRoots)
 	}
 }
 
@@ -118,6 +121,41 @@ func (b *BaseRunner) validateDecidedConsensusData(runner Runner, val types.Encod
 		return errors.Wrap(err, "decided value is invalid")
 	}
 
+	return nil
+}
+
+// verifyExpectedPostConsensusRoots validates a post-consensus packet against the expected signing roots (SIP #94
+// §4): every message root must equal an expected root, each expected root is covered at most once, and every
+// required root must be present; anything else rejects the whole packet. An optional root (the proposer's §6
+// envelope entry) may be absent, so a block-only packet stays valid.
+func (b *BaseRunner) verifyExpectedPostConsensusRoots(psigMsgs *types.PartialSignatureMessages, expectedRoots []PostConsensusSigningRoot) error {
+	// Match each message to an expected root, covering each at most once: an unexpected root, or a second
+	// entry for an already-covered one, rejects the packet.
+	covered := make(map[[32]byte]struct{})
+	for _, msg := range psigMsgs.Messages {
+		matched := false
+		for _, expectedRoot := range expectedRoots {
+			if expectedRoot.Root != msg.SigningRoot {
+				continue
+			}
+			if _, dup := covered[expectedRoot.Root]; dup {
+				return types.NewError(types.WrongRootsCountErrorCode, "duplicate expected signing root")
+			}
+			covered[expectedRoot.Root] = struct{}{}
+			matched = true
+			break
+		}
+		if !matched {
+			return types.NewError(types.WrongSigningRootErrorCode, "unexpected signing root")
+		}
+	}
+
+	// Every required root must be covered; optional roots (the §6 envelope) may be absent.
+	for _, expectedRoot := range expectedRoots {
+		if _, ok := covered[expectedRoot.Root]; !expectedRoot.Optional && !ok {
+			return types.NewError(types.WrongRootsCountErrorCode, "missing required signing root")
+		}
+	}
 	return nil
 }
 

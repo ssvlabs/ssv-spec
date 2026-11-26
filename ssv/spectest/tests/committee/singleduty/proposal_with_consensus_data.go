@@ -22,8 +22,6 @@ func ProposalWithConsensusData() tests.SpecTest {
 	validatorsIndexList := testingutils.ValidatorIndexList(numValidators)
 	ksMap := testingutils.KeySetMapForValidators(numValidators)
 
-	expectedErrorCode := types.DecodeBeaconVoteErrorCode
-
 	tests := []*committee.CommitteeSpecTest{}
 
 	for _, version := range testingutils.SupportedAttestationVersions {
@@ -41,7 +39,7 @@ func ProposalWithConsensusData() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestAttesterConsensusDataByts,
 						height),
 				},
-				ExpectedErrorCode: expectedErrorCode,
+				ExpectedErrorCode: types.DecodeBeaconVoteErrorCode,
 			},
 			{
 				Name:      fmt.Sprintf("%v sync committee (%s)", numValidators, version.String()),
@@ -52,7 +50,7 @@ func ProposalWithConsensusData() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestSyncCommitteeConsensusDataByts,
 						height),
 				},
-				ExpectedErrorCode: expectedErrorCode,
+				ExpectedErrorCode: types.DecodeBeaconVoteErrorCode,
 			},
 			{
 				Name:      fmt.Sprintf("%v attestations %v sync committees (%s)", numValidators, numValidators, version.String()),
@@ -63,7 +61,7 @@ func ProposalWithConsensusData() tests.SpecTest {
 						ks.OperatorKeys[1], types.OperatorID(1), msgID, testingutils.TestAttesterConsensusDataByts,
 						height),
 				},
-				ExpectedErrorCode: expectedErrorCode,
+				ExpectedErrorCode: types.DecodeBeaconVoteErrorCode,
 			},
 		}...)
 	}

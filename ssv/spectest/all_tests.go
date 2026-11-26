@@ -13,7 +13,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/consensus"
 	runnerconstruction "github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/construction"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/newduty"
-	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposer"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/proposerpreferences"
+	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/ptcattester"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/duties/synccommitteeaggregator"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/postconsensus"
 	"github.com/ssvlabs/ssv-spec/ssv/spectest/tests/runner/preconsensus"
@@ -26,6 +27,18 @@ import (
 
 var AllTests = []tests.TestF{
 	runner.FullHappyFlow,
+	runner.GloasProposerLateEnvelopeQuorum,
+	runner.GloasProposerEnvelopeFirstOrder,
+	runner.GloasProposerBadEnvelopeShare,
+	runner.GloasProposerBadBlockShare,
+	runner.GloasProposerBadShares,
+	runner.GloasProposerFailedBlockSubmit,
+	runner.GloasProposerFailedEnvelopeSign,
+	runner.GloasProposerExternalBid,
+	runner.GloasProposerEnvelopeOnlyPacket,
+	runner.GloasProposerJustifiedValueReproposed,
+	runner.GloasProposerNotBuilderOperator,
+	runner.DomainEpoch,
 
 	postconsensus.TooManyRoots,
 	postconsensus.TooFewRoots,
@@ -53,6 +66,7 @@ var AllTests = []tests.TestF{
 	postconsensus.Quorum7Operators,
 	postconsensus.Quorum10Operators,
 	postconsensus.Quorum13Operators,
+	postconsensus.GloasBlockOnlyQuorum,
 	postconsensus.InvalidDecidedValue,
 	postconsensus.InvalidThenQuorum,
 	postconsensus.InvalidQuorumThenValidQuorum,
@@ -127,6 +141,7 @@ var AllTests = []tests.TestF{
 	consensus.ValidMessage,
 	consensus.InvalidSignature,
 	consensus.DecidedSlashableAttestation,
+	consensus.DecidedValueWrongSlot,
 	consensus.NoSigners,
 	consensus.NonUniqueSigners,
 	consensus.ZeroSigner,
@@ -138,11 +153,6 @@ var AllTests = []tests.TestF{
 	synccommitteeaggregator.SomeAggregatorQuorum,
 	synccommitteeaggregator.NoneAggregatorQuorum,
 	synccommitteeaggregator.AllAggregatorQuorum,
-
-	proposer.ProposeBlindedBlockDecidedRegular,
-	proposer.ProposeRegularBlockDecidedBlinded,
-	proposer.BlindedRunnerAcceptsNormalBlock,
-	proposer.NormalProposerAcceptsBlindedBlock,
 
 	preconsensus.NoRunningDuty,
 	preconsensus.TooFewRoots,
@@ -200,8 +210,49 @@ var AllTests = []tests.TestF{
 	valcheckattestations.MinoritySlashable,
 	valcheckattestations.MajoritySlashable,
 	valcheckattestations.ValidNonSlashableSlot,
+	valcheckattestations.InvalidIndex,
+	valcheckattestations.CrossIndexEquivocation,
+	valcheckattestations.SameSlotIndex,
 
-	valcheckproposer.BlindedBlock,
+	ptcattester.Abstain,
+	ptcattester.DivergingObservation,
+	ptcattester.Observation,
+	ptcattester.RetainedPartialsAppliedAtDutyStart,
+	ptcattester.RetainedDivergingPartialDropped,
+	ptcattester.RetainedPartialsOnePerSigner,
+	ptcattester.RetainedPartialReconstructFailureReturned,
+	ptcattester.RetainedPartialsBySlot,
+	ptcattester.MalformedPartialsNotRetained,
+
+	proposerpreferences.ConcurrentLookaheadSlots,
+	proposerpreferences.ReemissionCarriesOverPreferenceShares,
+	proposerpreferences.DivergingDependentRoot,
+	proposerpreferences.BuilderRequestAuthHappyFlow,
+	proposerpreferences.BuilderRequestAuthSharedDataDedup,
+	proposerpreferences.BuilderRequestAuthCapAtMax,
+	proposerpreferences.BuilderRequestAuthWrongRoot,
+	proposerpreferences.BuilderRequestAuthReemissionCarryOver,
+	proposerpreferences.BuilderRequestAuthIndependentOfPreference,
+	proposerpreferences.BuilderRequestAuthExceedsMax,
+	proposerpreferences.BuilderRequestAuthNoAuth,
+	proposerpreferences.BuilderRequestAuthBadShare,
+	proposerpreferences.BuilderRequestAuthURLFallback,
+	proposerpreferences.BuilderRequestAuthData,
+	proposerpreferences.UnexpectedPartialSigType,
+	proposerpreferences.RetainedPartialsAppliedAtDutyStart,
+	proposerpreferences.RetainedAuthPartialsAppliedAtDutyStart,
+	proposerpreferences.RetainedDuplicatePartialsDropped,
+	proposerpreferences.RetainedPartialsCapped,
+	proposerpreferences.RetainedPartialsCapIsolatesSigners,
+	proposerpreferences.RetainedPartialReconstructFailureReturned,
+	proposerpreferences.RetainedDivergingPartialDropped,
+	proposerpreferences.ReemissionAppliesPartialsPriorPreferenceRejected,
+	proposerpreferences.ReemissionAfterSubmitStaysFinished,
+	proposerpreferences.NoPreference,
+	proposerpreferences.RoundFailures,
+	proposerpreferences.MalformedPartialsNotRetained,
+
+	valcheckproposer.GloasBlocks,
 
 	valcheckaggcommittee.NoValidator,
 	valcheckaggcommittee.Valid,

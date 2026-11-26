@@ -1,6 +1,7 @@
 package valcheck
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -14,20 +15,26 @@ import (
 )
 
 type SpecTest struct {
-	Name              string
-	Type              string
-	Documentation     string
-	Network           types.BeaconNetwork
-	RunnerRole        types.RunnerRole
-	DutySlot          phase0.Slot // DutySlot is used only for the RoleCommittee since the BeaconVoteValueCheckF requires the duty's slot
-	Input             []byte
-	ExpectedSource    phase0.Checkpoint        // Specify expected source epoch for beacon vote value check
-	ExpectedTarget    phase0.Checkpoint        // Specify expected target epoch for beacon vote value check
-	SlashableSlots    map[string][]phase0.Slot // map share pk to a list of slashable slots
-	ShareValidatorsPK []types.ShareValidatorPK `json:"ShareValidatorsPK,omitempty"` // Optional. Specify validators shares for beacon vote value check
-	ExpectedErrorCode int
-	AnyError          bool
-	PrivateKeys       *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+	Name           string
+	Type           string
+	Documentation  string
+	Network        types.BeaconNetwork
+	RunnerRole     types.RunnerRole
+	DutySlot       phase0.Slot // Running duty slot: the RoleCommittee vote check's slot, and the RoleProposer running-slot bind (0 skips the proposer bind, so leave it unset unless testing that bind)
+	Input          []byte
+	ExpectedSource phase0.Checkpoint        // Specify expected source epoch for beacon vote value check
+	ExpectedTarget phase0.Checkpoint        // Specify expected target epoch for beacon vote value check
+	SlashableSlots map[string][]phase0.Slot // map share pk to a list of slashable slots
+	// SignedAttestations seeds each share pk's slashing-protection history with attestation data it has already
+	// signed; a differing attestation data for a recorded slot is a double vote.
+	SignedAttestations map[string][]*phase0.AttestationData `json:"SignedAttestations,omitempty"`
+	ShareValidatorsPK  []types.ShareValidatorPK             `json:"ShareValidatorsPK,omitempty"` // Optional. Specify validators shares for beacon vote value check
+	// SameSlotBlockRoots are the roots of the blocks this operator knows to have been proposed at DutySlot, for
+	// the beacon vote value check's same-slot rule (SIP #94 §2). None means it has no such view.
+	SameSlotBlockRoots []phase0.Root `json:"SameSlotBlockRoots,omitempty"`
+	ExpectedErrorCode  int
+	AnyError           bool
+	PrivateKeys        *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
 }
 
 func (test *SpecTest) TestName() string {
@@ -36,7 +43,9 @@ func (test *SpecTest) TestName() string {
 
 func (test *SpecTest) Run(t *testing.T) {
 	signer := testingutils.NewTestingKeyManager()
-	if len(test.SlashableSlots) > 0 {
+	if len(test.SignedAttestations) > 0 {
+		signer = testingutils.NewTestingKeyManagerWithSignedAttestations(test.SlashableSlots, test.SignedAttestations)
+	} else if len(test.SlashableSlots) > 0 {
 		signer = testingutils.NewTestingKeyManagerWithSlashableSlots(test.SlashableSlots)
 	}
 
@@ -63,10 +72,17 @@ func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueChe
 	}
 	switch test.RunnerRole {
 	case types.RoleCommittee:
+		var sameSlotBlock func(phase0.Root) bool
+		if len(test.SameSlotBlockRoots) > 0 {
+			sameSlotBlock = func(blockRoot phase0.Root) bool {
+				return slices.Contains(test.SameSlotBlockRoots, blockRoot)
+			}
+		}
 		return ssv.BeaconVoteValueCheckF(signer, test.DutySlot, shareValidatorsPK, test.ExpectedSource.Epoch,
-			test.ExpectedTarget.Epoch)
+			test.ExpectedTarget.Epoch, sameSlotBlock)
 	case types.RoleProposer:
-		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex, nil)
+		return ssv.ProposerValueCheckF(signer, test.Network, pubKeyBytes, testingutils.TestingValidatorIndex,
+			shareValidatorsPK[0], func() phase0.Slot { return test.DutySlot })
 	case types.RoleAggregatorCommittee:
 		return ssv.AggregatorCommitteeValueCheckF(signer, test.Network)
 	default:

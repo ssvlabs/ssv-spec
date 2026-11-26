@@ -1,7 +1,6 @@
 package ssv
 
 import (
-	"github.com/attestantio/go-eth2-client/api"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -9,6 +8,7 @@ import (
 
 	"github.com/ssvlabs/ssv-spec/p2p"
 	"github.com/ssvlabs/ssv-spec/types"
+	"github.com/ssvlabs/ssv-spec/types/gloas"
 )
 
 // DutyRunners is a map of duty runners mapped by msg id hex.
@@ -36,17 +36,23 @@ type AttesterCalls interface {
 
 // ProposerCalls interface has all block proposer duty specific calls
 type ProposerCalls interface {
-	// GetBeaconBlock returns beacon block by the given slot, graffiti, and randao.
-	GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*api.VersionedProposal, ssz.Marshaler, error)
-	// SubmitBeaconBlock submit the block to the node
-	SubmitBeaconBlock(block *api.VersionedProposal, sig phase0.BLSSignature) error
+	// GetBeaconBlock returns the beacon block for the given slot, graffiti, and randao. A self-build produce also
+	// returns the blinded form of its execution-payload envelope, whose payload_root rides in the §4 decided value
+	// and which the builder operator later reveals (SIP #94 §4/§6); an external bid win returns a nil envelope.
+	GetBeaconBlock(slot phase0.Slot, graffiti, randao []byte) (*gloas.BeaconBlock, *gloas.BlindedExecutionPayloadEnvelope, error)
+	// SubmitBeaconBlock submits the signed block to the node (SIP #94 §4)
+	SubmitBeaconBlock(block *gloas.BeaconBlock, sig phase0.BLSSignature) error
 }
 
 // AggregatorCalls interface has all attestation aggregator duty specific calls
 type AggregatorCalls interface {
 	// IsAggregator returns true if the validator is selected as an aggregator
 	IsAggregator(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, slotSig []byte) bool
-	// GetAggregateAttestation returns the aggregate attestation for the given slot and committee
+	// GetAggregateAttestation returns the aggregate attestation for the given slot and committee.
+	//
+	// The Beacon API serves an aggregate by the root of its attestation data, which at Gloas includes the index
+	// the committee decided for the slot (SIP #94 §2). Computing that root over the full Gloas AttestationData
+	// is this call's to do: a root computed without the decided index matches no aggregate.
 	GetAggregateAttestation(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, error)
 	// SubmitAggregateSelectionProof returns an AggregateAndProof object
 	// Deprecated: Use IsAggregator and GetAggregateAttestation instead. Kept for backward compatibility.
@@ -77,12 +83,6 @@ type SyncCommitteeContributionCalls interface {
 	SubmitSignedContributionAndProof(contribution *altair.SignedContributionAndProof) error
 }
 
-// ValidatorRegistrationCalls interface has all validator registration duty specific calls
-type ValidatorRegistrationCalls interface {
-	// SubmitValidatorRegistration submits a validator registration
-	SubmitValidatorRegistration(registration *api.VersionedSignedValidatorRegistration) error
-}
-
 // VoluntaryExitCalls interface has all validator voluntary exit duty specific calls
 type VoluntaryExitCalls interface {
 	// SubmitVoluntaryExit submits a validator voluntary exit
@@ -90,13 +90,55 @@ type VoluntaryExitCalls interface {
 }
 
 type DomainCalls interface {
+	// DomainData returns the signing domain for the given epoch and domain type.
+	// Application-namespace domains (DomainApplicationBuilder, DomainBuilderRequestAuth) are
+	// computed genesis-style — genesis fork version and zero genesis-validators-root, ignoring
+	// epoch — whereas every other domain is fork-versioned.
 	DomainData(epoch phase0.Epoch, domain phase0.DomainType) (phase0.Domain, error)
 }
 
-type VersionCalls interface {
-	// DataVersion returns a data version for the given epoch.
-	// In practice, for performance, responses can be cached in order not to always trigger an API call.
-	DataVersion(epoch phase0.Epoch) spec.DataVersion
+// ProposerPreferencesCalls interface has all Gloas (ePBS) proposer-preferences duty specific calls (SIP #94 §5)
+type ProposerPreferencesCalls interface {
+	// ProposerDutiesDependentRoot returns the dependent root the epoch's proposer duties were computed
+	// against; the preference pins it so consumers can tell which duty assignment it was emitted for.
+	ProposerDutiesDependentRoot(epoch phase0.Epoch) (phase0.Root, error)
+	// SubmitProposerPreferences submits the reconstructed signed proposer preferences to the node
+	SubmitProposerPreferences(preferences *gloas.SignedProposerPreferences) error
+	// SubmitBuilderRequestAuth holds the reconstructed builder-request-auth signature for the proposal
+	// slot; the node forwards it to the builder as each entry's auth in the §4 produce body and,
+	// optionally, via POST /eth/v1/validator/builder_preferences (SIP #94 §5 builder-request-auth extension).
+	SubmitBuilderRequestAuth(auth *gloas.SignedBuilderRequestAuth) error
+}
+
+// EnvelopeCalls interface has the Gloas (ePBS) execution-payload envelope publish call (SIP #94 §6).
+// Under the post-consensus-fold model the envelope signature rides the §4 proposer post-consensus packet;
+// only publication remains a beacon-node call, made by the builder operator.
+type EnvelopeCalls interface {
+	// SubmitExecutionPayloadEnvelope publishes the reconstructed reveal (SIP #94 §6). The builder operator
+	// — the one whose own produceBlockV4 response holds the decided block and its full envelope — passes
+	// the blinded envelope plus the threshold-reconstructed signature (valid for the full envelope by
+	// root-equivalence); its beacon node forms the full SignedExecutionPayloadEnvelopeContents body and
+	// publishes to each of its nodes.
+	//
+	// The runner calls it once, right after it attempted the block submit. A beacon node ignores an envelope
+	// whose block it has not seen, so publishing to the nodes that have accepted the block, or retrying until
+	// they have (SIP #94 §6), is this call's to do.
+	SubmitExecutionPayloadEnvelope(envelope *gloas.BlindedExecutionPayloadEnvelope, signature phase0.BLSSignature) error
+}
+
+// PTCCalls interface has all Gloas (ePBS) Payload Timeliness Committee duty specific calls (SIP #94 §3)
+type PTCCalls interface {
+	// GetPayloadAttestationData returns the slot's payload attestation data as observed by the local
+	// beacon node; a zero BeaconBlockRoot signals no block was seen for the slot — the abstain trigger.
+	//
+	// It must return the slot's final observation (SIP #94 §3): the runner calls it once, signs what it gets or
+	// abstains, and refuses a second start for the slot. The timing rule is therefore this call's to keep:
+	// payload_present = false not before 50% of the slot and blob_data_available = false not before 75%, as a
+	// beacon node may report a provisional false until then. Starting the duty at 75% of the slot always meets
+	// the rule; an implementation that starts it earlier holds this call until both fields are final.
+	GetPayloadAttestationData(slot phase0.Slot) (*gloas.PayloadAttestationData, error)
+	// SubmitPayloadAttestation submits the reconstructed payload attestation message to the node
+	SubmitPayloadAttestation(msg *gloas.PayloadAttestationMessage) error
 }
 
 type BeaconNode interface {
@@ -107,8 +149,9 @@ type BeaconNode interface {
 	AggregatorCalls
 	SyncCommitteeCalls
 	SyncCommitteeContributionCalls
-	ValidatorRegistrationCalls
 	VoluntaryExitCalls
+	PTCCalls
+	ProposerPreferencesCalls
+	EnvelopeCalls
 	DomainCalls
-	VersionCalls
 }

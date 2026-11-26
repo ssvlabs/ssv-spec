@@ -45,6 +45,28 @@ func ComparePartialSignatureOutputMessages(t *testing.T, expectedMessages []*typ
 	}
 }
 
+// OutputMessageID returns the MessageID a duty's partial-signature messages go out under: the duty's runner role
+// with the validator's public key for a validator duty, or with the committee's ID for a committee duty. It is
+// derived from the duty and the share, not read from the runner, so comparing with it checks the runner's own.
+func OutputMessageID(share *types.Share, duty types.Duty) types.MessageID {
+	if validatorDuty, ok := duty.(*types.ValidatorDuty); ok {
+		return types.NewValidatorMsgID(share.DomainType, types.ValidatorPK(validatorDuty.PubKey), duty.RunnerRole())
+	}
+	operatorIDs := make([]types.OperatorID, 0, len(share.Committee))
+	for _, member := range share.Committee {
+		operatorIDs = append(operatorIDs, member.Signer)
+	}
+	return types.NewCommitteeMsgID(share.DomainType, types.GetCommitteeID(operatorIDs), duty.RunnerRole())
+}
+
+// ComparePartialSignatureOutputMessageIDs checks that every broadcast partial-signature message carries the
+// expected MessageID.
+func ComparePartialSignatureOutputMessageIDs(t *testing.T, expected types.MessageID, broadcastedSignedMsgs []*types.SignedSSVMessage) {
+	for _, msg := range filterPartialSigs(ConvertBroadcastedMessagesToSSVMessages(broadcastedSignedMsgs)) {
+		require.Equal(t, hex.EncodeToString(expected[:]), hex.EncodeToString(msg.MsgID[:]), "output message ID")
+	}
+}
+
 // ComparePartialSignatureOutputMessagesStrictOrder compares output messages with strict ordering
 // Both the order of messages and the order of partial signatures within each message must match
 func ComparePartialSignatureOutputMessagesStrictOrder(t *testing.T, expectedMessages []*types.PartialSignatureMessages, broadcastedSignedMsgs []*types.SignedSSVMessage, committee []*types.Operator) {
@@ -243,6 +265,14 @@ func CompareBroadcastedBeaconMsgs(t *testing.T, expectedRoots []string, broadcas
 			}
 		}
 		require.Truef(t, found, "broadcasted beacon root not found")
+	}
+}
+
+// CompareBroadcastedBeaconMsgsInOrder is CompareBroadcastedBeaconMsgs for a vector that pins submit order.
+func CompareBroadcastedBeaconMsgsInOrder(t *testing.T, expectedRoots []string, broadcastedRoots []phase0.Root) {
+	require.Len(t, broadcastedRoots, len(expectedRoots))
+	for i, r := range expectedRoots {
+		require.Equalf(t, r, hex.EncodeToString(broadcastedRoots[i][:]), "broadcasted beacon root %d out of order", i)
 	}
 }
 

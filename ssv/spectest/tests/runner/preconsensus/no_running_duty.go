@@ -11,7 +11,8 @@ import (
 	"github.com/ssvlabs/ssv-spec/types/testingutils"
 )
 
-// NoRunningDuty tests a valid partial pre consensus msg before duty starts
+// NoRunningDuty tests a valid partial pre consensus msg before duty starts: rejected, except by the PTC and
+// proposer-preferences runners, which retain it for its slot's duty (SIP #94 §3/§5).
 func NoRunningDuty() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
@@ -19,16 +20,6 @@ func NoRunningDuty() tests.SpecTest {
 		"pre consensus no running duty",
 		testdoc.PreConsensusNoRunningDutyDoc,
 		[]*tests.MsgProcessingSpecTest{
-			{
-				Name:   "validator registration",
-				Runner: testingutils.ValidatorRegistrationRunner(ks),
-				Duty:   &testingutils.TestingValidatorRegistrationDuty,
-				Messages: []*types.SignedSSVMessage{
-					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgValidatorRegistration(nil, testingutils.PreConsensusValidatorRegistrationMsg(ks.Shares[1], 1))),
-				},
-				DontStartDuty:     true,
-				ExpectedErrorCode: types.NoRunningDutyErrorCode,
-			},
 			{
 				Name:   "voluntary exit",
 				Runner: testingutils.VoluntaryExitRunner(ks),
@@ -38,6 +29,26 @@ func NoRunningDuty() tests.SpecTest {
 				},
 				DontStartDuty:     true,
 				ExpectedErrorCode: types.NoRunningDutyErrorCode,
+			},
+			{
+				Name:   "ptc attestation",
+				Runner: testingutils.PTCAttesterRunner(ks),
+				Duty:   testingutils.TestingPTCAttesterDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgPTCAttester(nil, testingutils.PreConsensusPTCMsg(ks.Shares[1], 1))),
+				},
+				DontStartDuty: true,
+				// Retained for the slot until its duty starts (SIP #94 §3), so no error.
+			},
+			{
+				Name:   "proposer preferences",
+				Runner: testingutils.ProposerPreferencesRunner(ks),
+				Duty:   testingutils.TestingProposerPreferencesDuty(),
+				Messages: []*types.SignedSSVMessage{
+					testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposerPreferences(nil, testingutils.PreConsensusProposerPreferencesMsg(ks.Shares[1], 1))),
+				},
+				DontStartDuty: true,
+				// Retained for the slot until its duty starts (SIP #94 §5), so no error.
 			},
 		},
 		ks,
@@ -93,22 +104,8 @@ func NoRunningDuty() tests.SpecTest {
 		}
 	}
 
-	// proposerBlindedV creates a test specification for versioned proposer with blinded block.
-	proposerBlindedV := func(version spec.DataVersion) *tests.MsgProcessingSpecTest {
-		return &tests.MsgProcessingSpecTest{
-			Name:   fmt.Sprintf("proposer blinded block (%s)", version.String()),
-			Runner: testingutils.ProposerBlindedBlockRunner(ks),
-			Duty:   testingutils.TestingProposerDutyV(version),
-			Messages: []*types.SignedSSVMessage{
-				testingutils.SignPartialSigSSVMessage(ks, testingutils.SSVMsgProposer(nil, testingutils.PreConsensusRandaoDifferentSignerMsgV(ks.Shares[1], ks.Shares[1], 1, 1, version))),
-			},
-			DontStartDuty:     true,
-			ExpectedErrorCode: types.NoRunningDutyErrorCode,
-		}
-	}
-
 	for _, v := range testingutils.SupportedBlockVersions {
-		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v), proposerBlindedV(v)}...)
+		multiSpecTest.Tests = append(multiSpecTest.Tests, []*tests.MsgProcessingSpecTest{proposerV(v)}...)
 	}
 
 	return multiSpecTest

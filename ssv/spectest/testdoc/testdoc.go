@@ -23,6 +23,7 @@ const SyncCommitteeAggregatorProofSpecTestType = "Sync committee aggregator proo
 
 // Documentation for happy flow tests
 const HappyFlowDoc = "Tests a full runner happy flow"
+const GloasProposerLateEnvelopeQuorumDoc = "Tests that a Gloas (ePBS) self-build proposer publishes the SIP #94 §6 reveal when the envelope root reaches quorum only after the block root: operator 3 signs block-only so the block finishes first, and the builder operator keeps accepting post-consensus packets until operator 4 completes the envelope quorum, then publishes."
 
 // Documentation for aggregator committee
 const AggregatorCommitteeDutyHappyFlowDoc = "Testing aggregator committee runner with complete duty flow for both aggregator and sync committee contribution"
@@ -92,6 +93,7 @@ const ConsensusFutureDecidedNoInstanceDoc = "Tests consensus decided message pro
 const ConsensusFutureMessageDoc = "Tests consensus message processing with future messages"
 const ConsensusInvalidDecidedValueDoc = "Tests consensus message processing with invalid decided values"
 const ConsensusDecidedSlashableAttestationDoc = "Test that attempting to sign a slashable attestation results in an error"
+const ConsensusDecidedValueWrongSlotDoc = "Tests that a decided value for a slot other than the running duty's is rejected by the value check's running-slot bind (SIP #94 §4)"
 const ConsensusFutureDecidedDoc = "Tests consensus decided message processing with future messages"
 
 // Documentation for runner/construction tests
@@ -111,12 +113,6 @@ const NewDutyConsensusNotStartedDoc = "Tests new duty start when consensus has n
 const NewDutyPostDecidedDoc = "Tests new duty start after a previous duty has been decided"
 const NewDutyDuplicateDutyFinishedDoc = "Tests new duty start with duplicate duty that has finished"
 const NewDutyDuplicateDutyNotFinishedDoc = "Tests new duty start with duplicate duty that has not finished"
-
-// Documentation for runner/duties/proposer tests
-const ProposerBlindedReceivingNormalBlockDoc = "Tests full happy flow for a blinded proposer runner that accepts a normal block proposal"
-const ProposerNormalReceivingBlindedBlockDoc = "Tests full happy flow for a normal proposer runner that accepts a blinded block proposal"
-const ProposeBlindedBlockDecidedRegularDoc = "Tests proposing a blinded block but the decided block is a regular block"
-const ProposeRegularBlockDecidedBlindedDoc = "Tests proposing a regular block but the decided block is a blinded block"
 
 // Documentation for runner/duties/synccommitteeaggregator tests
 const SyncCommitteeAggregatorProofAllAggregatorDoc = "Tests sync committee aggregator proof validation when all selection proofs are aggregators"
@@ -165,6 +161,18 @@ const PostConsensusPartialInvalidSignatureQuorumThenValidQuorumDoc = "Tests post
 const PostConsensusPostFinishDoc = "Tests post-consensus message processing after duty is finished"
 const PostConsensusPreDecidedDoc = "Tests post-consensus message processing before duty is decided, expecting error"
 const PostConsensusUnknownSignerDoc = "Tests post-consensus message processing with unknown signer, expecting error"
+const PostConsensusGloasBlockOnlyDoc = "Tests that a Gloas (ePBS) self-build proposer finalizes on a block-only post-consensus packet: the SIP #94 §6 envelope root is optional, so when the envelope partial-sigs miss quorum the block partial-sigs alone still submit the block and finish the duty, broadcasting no envelope reveal."
+const GloasProposerEnvelopeFirstOrderDoc = "Tests that a Gloas self-build proposer submits the block before the SIP #94 §6 reveal whatever the post-consensus packet entry order: entries are matched by root"
+const GloasProposerBadEnvelopeShareDoc = "Tests that a bad SIP #94 §6 envelope share does not strand the block: the block submits while the envelope fails reconstruction and is not published"
+const GloasProposerBadBlockShareDoc = "Tests that a bad block share does not strand the SIP #94 §6 envelope: the envelope quorum is held until the block submit is attempted, then both submit, block first"
+const GloasProposerBadSharesDoc = "Tests that one operator's bad block share and bad SIP #94 §6 envelope share strand neither root: each drops the share, and the envelope, still at quorum without it, reconstructs from the valid shares at once"
+const GloasProposerFailedBlockSubmitDoc = "Tests that the SIP #94 §6 reveal publishes when this operator's own block submit fails: it gates on the submit being attempted, not on it succeeding"
+const GloasProposerFailedEnvelopeSignDoc = "Tests that an operator whose signer fails on the SIP #94 §6 envelope root still broadcasts its block share: the post-consensus packet goes out block-only and the signing error is returned"
+const GloasProposerNotBuilderOperatorDoc = "Tests that only the builder operator publishes the SIP #94 §6 reveal: an operator whose own produce was another self-build block, or an external bid, signs both post-consensus roots and submits the decided block but publishes no envelope"
+const GloasProposerExternalBidDoc = "Tests the SIP #94 §4 external-build path end to end: an external bid win returns a bare block and no envelope, so the proposed value carries a zero payload_root, the post-consensus packet carries the block entry alone, the block is submitted and no reveal is published"
+const DomainEpochDoc = "Tests the epoch the Gloas duties sign for (SIP #94 §3/§5/§6): the epoch of the duty's slot, which is the proposal slot for the proposer-preferences duty, whose dependent root is that epoch's too; each duty runs its happy flow in an epoch whose fork version and dependent root differ from every other epoch's"
+const GloasProposerJustifiedValueReproposedDoc = "Tests that a justified value is re-proposed unchanged, payload_root included, whatever the re-proposing leader's own bid was (SIP #94 §4): an operator whose own produce is an external bid leads the next round and proposes the self-build value its peers prepared"
+const GloasProposerEnvelopeOnlyPacketDoc = "Tests that the block root must be present in a post-consensus packet (SIP #94 §4): a packet carrying the envelope entry alone is rejected whole"
 
 // Documentation for runner/preconsensus tests
 const PreConsensusDuplicateMsgDoc = "Tests pre-consensus message processing with duplicate messages"
@@ -185,7 +193,7 @@ const PreConsensusInvalidSignedMessageDoc = "Tests pre-consensus message process
 const PreConsensusInvalidThenQuorumDoc = "Tests pre-consensus message processing with an invalid message then a valid quorum, expecting error then successful termination"
 const PreConsensusInvalidQuorumDoc = "Tests pre-consensus message processing with a quorum that has as invalid message, and ensures that it does not start consensus"
 const PreConsensusNilMsgDoc = "Tests pre-consensus message processing with nil SignedSSVMessage, expecting error"
-const PreConsensusNoRunningDutyDoc = "Tests pre-consensus message processing when there is no running duty, expecting error"
+const PreConsensusNoRunningDutyDoc = "Tests pre-consensus message processing when there is no running duty: an error, except for the PTC and proposer-preferences runners, which retain the partial for its slot's duty (SIP #94 §3/§5)"
 const PreConsensusPostDecidedDoc = "Tests pre-consensus message processing after duty is decided"
 const PreConsensusPostFinishDoc = "Tests pre-consensus message processing after duty is finished"
 const PreConsensusPostQuorumDoc = "Tests pre-consensus message processing after quorum is reached"
@@ -218,6 +226,9 @@ const ValCheckAttestationValidNonSlashableSlotDoc = "Tests attestation value che
 const ValCheckAttestationValidDoc = "Tests attestation value check with valid attestation"
 const ValCheckAttestationUnmatchedSourceEpochDoc = "Tests attestation value check with unmatched expected source epoch from operator's own view (source epoch differs from expected)"
 const ValCheckAttestationUnmatchedTargetEpochDoc = "Tests attestation value check with unmatched target epoch from operator's own view (target epoch differs from expected)"
+const ValCheckAttestationInvalidIndexDoc = "Tests attestation value check rejecting an attestation data index above 1 (SIP #94 §2)"
+const ValCheckAttestationSameSlotIndexDoc = "Tests the same-slot rule of the attestation value check (SIP #94 §2): an operator whose own view establishes that the voted block was proposed in the duty's slot rejects index 1 for it, and accepts index 0 for it, index 1 for another block, and index 1 when it has no such view"
+const ValCheckAttestationCrossIndexEquivocationDoc = "Tests that the decided attestation index goes into the slashability data (SIP #94 §2): a vote differing from a signed one only in the index is a double vote"
 
 // Documentation for valcheckduty tests
 const ValCheckDutyFarFutureDutySlotDoc = "Tests duty value check with duty slot too far in the future"
@@ -225,8 +236,49 @@ const ValCheckDutyWrongDutyTypeDoc = "Tests duty value check with wrong duty typ
 const ValCheckDutyWrongValidatorIndexDoc = "Tests duty value check with wrong validator index across different roles"
 const ValCheckDutyWrongValidatorPKDoc = "Tests duty value check with wrong validator public key across different roles"
 
+// Documentation for proposerpreferences tests
+const ProposerPreferencesConcurrentLookaheadSlotsDoc = "Tests two concurrently-active proposal slots (SIP #94 §5): each is an independent per-slot flow, so both reach quorum and submit"
+const ProposerPreferencesReemissionCarriesOverPreferenceSharesDoc = "Tests SIP #94 §5 preference-share carry-over across a same-slot re-emission: a byte-identical re-derived preference (unchanged dependent_root) keeps the same signing root, so already-collected shares carry over instead of resetting — two pre-re-emission shares plus one after complete the quorum and submit"
+const ProposerPreferencesDivergingDependentRootDoc = "Tests SIP #94 §5 honest convergence under a dependent-root split: a diverging peer partial is rejected and the matching minority stays below quorum"
+const ProposerPreferencesBuilderRequestAuthHappyFlowDoc = "Tests the SIP #94 §5 builder-request-auth round: two distinct-data entries yield two auth partials alongside the preference, and each root reaches its own quorum and submits"
+const ProposerPreferencesBuilderRequestAuthBadShareDoc = "Tests that a bad builder-request-auth share for one builder does not strand another's (SIP #94 §5)"
+const ProposerPreferencesBuilderRequestAuthURLFallbackDoc = "Tests the SIP #94 §5 builder-request-auth data default: an entry without Data signs the builder URL's lower-cased hostname"
+const ProposerPreferencesBuilderRequestAuthDataDoc = "Tests which bytes a builder entry signs (SIP #94 §5): configured data byte for byte up to 4096 bytes, else the default derived from the builder URL per the upstream get_default_auth_data example table; a configured empty data, oversized data and a URL with no default are skipped while the other entries are still signed"
+const ProposerPreferencesRoundFailuresDoc = "Tests that the proposer-preferences duty's two rounds do not gate each other when one fails at the start (SIP #94 §5): a failed request-auth broadcast, a failed preference broadcast, and a preference round that freezes nothing each leave the other round signed, broadcast and collecting, and the failure is returned"
+const ProposerPreferencesUnexpectedPartialSigTypeDoc = "Tests that the proposer-preferences runner rejects a pre-consensus partial signature type other than its own two (SIP #94 §5)"
+const ProposerPreferencesBuilderRequestAuthSharedDataDedupDoc = "Tests SIP #94 §5 dedup: three entries with two sharing auth data freeze two auths, not three, so the round broadcasts a two-partial container"
+const ProposerPreferencesBuilderRequestAuthCapAtMaxDoc = "Tests SIP #94 §5 MaxBuilderEntries cap: given more distinct entries than the cap, only the first MaxBuilderEntries are frozen and broadcast"
+const ProposerPreferencesBuilderRequestAuthWrongRootDoc = "Tests SIP #94 §5/§7 per-builder isolation on the receive side: a peer whose multi-entry container carries one divergent (non-frozen) auth entry has that entry ignored, not the whole packet rejected, so the entries matching a frozen root still collect and reach quorum"
+
+const ProposerPreferencesBuilderRequestAuthReemissionCarryOverDoc = "Tests SIP #94 §5 auth-share carry-over across a same-slot re-emission: auth roots carry no dependent_root, so already-collected shares carry over instead of restarting from zero (the pair to ReemissionReplacesSlot's preference reset) — two pre-re-emission shares plus one after complete the quorum and submit"
+const ProposerPreferencesBuilderRequestAuthIndependentOfPreferenceDoc = "Tests SIP #94 §5 independence: auth partials arriving after the preference round has finished still reach per-root quorum and submit"
+const ProposerPreferencesBuilderRequestAuthExceedsMaxDoc = "Tests the SIP #94 §7 receive-side bound: a RequestAuthPartialSig container carrying more than MaxBuilderEntries entries is rejected (RequestAuthWrongRootsCountErrorCode), not partially processed"
+const ProposerPreferencesBuilderRequestAuthNoAuthDoc = "Tests SIP #94 §5: an operator with no configured builder entries froze no auth roots, so an incoming RequestAuthPartialSig is rejected (RequestAuthNoAuthErrorCode) rather than collected against an empty set"
+const ProposerPreferencesRetainedPartialsAppliedAtDutyStartDoc = "Tests SIP #94 §5 for a late starter: three peers' preference partials retained before the duty started are replayed when it starts, reaching quorum and submitting the preference"
+const ProposerPreferencesRetainedAuthPartialsAppliedAtDutyStartDoc = "Tests SIP #94 §5 for a late starter: three peers' request-auth partials retained before the duty started are replayed when it starts, so both auth roots reach quorum and submit"
+const ProposerPreferencesRetainedDuplicatePartialsDroppedDoc = "Tests that retained partials (SIP #94 §5) are deduplicated by (signer, signing root): packets delivered twice before the duty starts are retained once"
+const ProposerPreferencesRetainedPartialsCappedDoc = "Tests the per-signer cap on a slot's retained partials (SIP #94 §5/§7): the §7 per-signer root budget, beyond which a signer's partials are not retained"
+const ProposerPreferencesRetainedPartialsCapIsolatesSignersDoc = "Tests that the retention cap counts per signer (SIP #94 §5/§7): a faulty peer's flood of distinct partials does not crowd out the honest peers' retained partials, so the late starter still reaches quorum and submits"
+const ProposerPreferencesRetainedPartialReconstructFailureReturnedDoc = "Tests that replaying retained partials (SIP #94 §5) returns the failure to reconstruct a quorum it completes, as the live path does, and drops the bad share so a later share re-crosses quorum and submits"
+const ProposerPreferencesRetainedDivergingPartialDroppedDoc = "Tests that retained partials (SIP #94 §5) are checked one at a time when the duty starts: a diverging one is skipped without failing the duty, while the matching ones still apply and reach quorum"
+const ProposerPreferencesReemissionAppliesPartialsPriorPreferenceRejectedDoc = "Tests SIP #94 §5 across a dependent-root change: partials the stale incarnation rejected are still retained, and the re-emission replays them, reaching quorum and submitting"
+const ProposerPreferencesNoPreferenceDoc = "Tests a duty whose preference round froze nothing (SIP #94 §5): the dependent-root request fails, so nothing is signed or broadcast, and a peer partial is rejected (ProposerPreferencesNoPreferenceErrorCode) while staying retained"
+const ProposerPreferencesReemissionAfterSubmitStaysFinishedDoc = "Tests a same-slot re-emission after the preference was submitted (SIP #94 §5): the byte-identical re-derived preference carries the prior quorum and its completion over, so nothing is submitted again, the slot stays finished, and a late partial is rejected"
+const ProposerPreferencesMalformedPartialsNotRetainedDoc = "Tests that a malformed packet (SIP #94 §5/§7) is rejected before any of its partials is retained: two preference partials, more request-auth partials than MaxBuilderEntries, and a partial for an unknown validator, each arriving before its slot's duty has started"
+
+// Documentation for ptcattester tests
+const PTCAttesterAbstainDoc = "Tests the SIP #94 §3 abstain rule: no block seen for the slot, so the operator signs nothing and rejects peer partials"
+const PTCAttesterObservationDoc = "Tests the SIP #94 §3 observation lifecycle at duty start: a rejected duplicate duty keeps the running duty's frozen observation, and payload attestation data for another slot is rejected without freezing anything"
+const PTCAttesterRetainedPartialsAppliedAtDutyStartDoc = "Tests SIP #94 §3 retention: three peers' partials that arrive before this operator's duty starts are retained and, once its observation is frozen, replayed, reaching quorum and submitting the payload attestation message"
+const PTCAttesterRetainedDivergingPartialDroppedDoc = "Tests that retained PTC partials (SIP #94 §3) are checked against the observation once it is frozen: a diverging one is skipped without failing the duty, while the matching ones still apply and reach quorum with this operator's own"
+const PTCAttesterRetainedPartialsOnePerSignerDoc = "Tests that a signer has one retained PTC partial per slot (SIP #94 §3/§7): its first is kept and a later one is not, so a diverging partial followed by a matching one leaves the quorum one share short"
+const PTCAttesterRetainedPartialReconstructFailureReturnedDoc = "Tests that replaying retained PTC partials (SIP #94 §3) returns the failure to reconstruct a quorum it completes, as the live path does, and drops the bad share so a later share re-crosses quorum and submits"
+const PTCAttesterRetainedPartialsBySlotDoc = "Tests which duty start uses, keeps or drops a slot's retained PTC partials (SIP #94 §3): an abstaining duty reconstructs nothing from them, a duty for an earlier slot keeps them, and a duty for a later slot drops them"
+const PTCAttesterMalformedPartialsNotRetainedDoc = "Tests that a malformed PTC packet arriving before the duty starts (SIP #94 §3/§7) is rejected and not retained: one with two partials, and one for an unknown validator"
+const PTCAttesterDivergingObservationDoc = "Tests SIP #94 §3 honest convergence under a minority split: a diverging peer partial is rejected and the matching minority stays below quorum"
+
 // Documentation for valcheckproposer tests
-const ValCheckProposerBlindedBlockDoc = "Tests proposer value check with blinded block data"
+const ValCheckProposerGloasBlocksDoc = "Tests the Gloas proposer value check (SIP #94 §4): the Version pin, the block slot and proposer index pins, the bid slot and parent root pins, the running-slot bind, the payload_root presence rule, and slashing protection"
 
 // Documentation for valcheckaggcommittee
 const ValCheckAggCommitteeNoValidatorsDoc = "Tests agg committee value check with no validators"

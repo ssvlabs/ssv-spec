@@ -46,7 +46,8 @@ const MaxEffectiveBalanceInGwei uint64 = 32000000000
 // BLSWithdrawalPrefixByte is the BLS withdrawal prefix
 const BLSWithdrawalPrefixByte = byte(0)
 
-// DefaultGasLimit sets gas limit used in validator registrations.
+// DefaultGasLimit is the target gas limit the proposer-preferences duty signs when none is configured (SIP #94
+// §5). The value predates Gloas; choosing a current one is https://github.com/ssvlabs/ssv-spec/issues/634.
 const DefaultGasLimit = 30_000_000
 
 // BeaconRole type of the validator role for a specific duty
@@ -59,7 +60,7 @@ const (
 	BNRoleSyncCommittee
 	BNRoleSyncCommitteeContribution
 
-	BNRoleValidatorRegistration
+	_ // 5 is reserved: the validator-registration duty, retired at Gloas for §5 proposer preferences
 	BNRoleVoluntaryExit
 
 	// Gloas (ePBS) roles, per SIP #94.
@@ -82,8 +83,6 @@ func (r BeaconRole) String() string {
 		return "SYNC_COMMITTEE"
 	case BNRoleSyncCommitteeContribution:
 		return "SYNC_COMMITTEE_CONTRIBUTION"
-	case BNRoleValidatorRegistration:
-		return "VALIDATOR_REGISTRATION"
 	case BNRoleVoluntaryExit:
 		return "VOLUNTARY_EXIT"
 	case BNRolePTCAttester:
@@ -134,8 +133,6 @@ func MapDutyToRunnerRole(dutyRole BeaconRole) RunnerRole {
 		return RoleProposer
 	case BNRoleAggregator, BNRoleSyncCommitteeContribution:
 		return RoleAggregatorCommittee
-	case BNRoleValidatorRegistration:
-		return RoleValidatorRegistration
 	case BNRoleVoluntaryExit:
 		return RoleVoluntaryExit
 	case BNRolePTCAttester:

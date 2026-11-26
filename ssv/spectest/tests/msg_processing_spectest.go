@@ -28,7 +28,10 @@ type MsgProcessingSpecTest struct {
 	Documentation string
 	Runner        ssv.Runner
 	Duty          types.Duty
-	Messages      []*types.SignedSSVMessage `json:"-"`
+	// PreDutyMessages are processed before the duty starts: what a late-starting operator has already received
+	// from its peers (SIP #94 §3/§5). Messages are processed after it.
+	PreDutyMessages []*types.SignedSSVMessage `json:"-"`
+	Messages        []*types.SignedSSVMessage `json:"-"`
 	// DecidedSlashable makes the decided value slashable. Simulates consensus instances running in parallel.
 	DecidedSlashable        bool
 	PostDutyRunnerStateRoot string
@@ -36,13 +39,20 @@ type MsgProcessingSpecTest struct {
 	// OutputMessages compares pre/ post signed partial sigs to output. We exclude consensus msgs as it's tested in consensus
 	OutputMessages         []*types.PartialSignatureMessages
 	BeaconBroadcastedRoots []string
-	DontStartDuty          bool // if set to true will not start a duty for the runner
-	ExpectedErrorCode      int
-	PrivateKeys            *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
-	QBFTProposals          [][]byte                     `json:"QBFTProposals,omitempty"` // optional consensus data (full data) of QBFT proposal messages expected to be sent.
+	// OrderedBeaconBroadcastedRoots makes BeaconBroadcastedRoots compare in submit order rather than as a set.
+	OrderedBeaconBroadcastedRoots bool
+	DontStartDuty                 bool // if set to true will not start a duty for the runner
+	ExpectedErrorCode             int
+	PrivateKeys                   *testingutils.PrivateKeyInfo `json:"PrivateKeys,omitempty"`
+	QBFTProposals                 [][]byte                     `json:"QBFTProposals,omitempty"` // optional consensus data (full data) of QBFT proposal messages expected to be sent.
 	// Beacon node extra data
 	BeaconAggregators       []phase0.CommitteeIndex `json:"BeaconAggregators,omitempty"`
 	BeaconAggregatorsValues []bool                  `json:"BeaconAggregatorsValues,omitempty"`
+	BeaconNode              *BeaconNodeBehaviour    `json:"BeaconNode,omitempty"`
+	// Signer extra data
+	Signer *SignerBehaviour `json:"Signer,omitempty"`
+	// Network extra data
+	Network *NetworkBehaviour `json:"Network,omitempty"`
 }
 
 func (test *MsgProcessingSpecTest) TestName() string {
@@ -84,9 +94,14 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 
 	// test output message
 	testingutils.ComparePartialSignatureOutputMessages(t, test.OutputMessages, network.BroadcastedMsgs, committee)
+	testingutils.ComparePartialSignatureOutputMessageIDs(t, test.outputMessageID(), network.BroadcastedMsgs)
 
 	// test beacon broadcasted msgs
-	testingutils.CompareBroadcastedBeaconMsgs(t, test.BeaconBroadcastedRoots, beaconNetwork.BroadcastedRoots)
+	if test.OrderedBeaconBroadcastedRoots {
+		testingutils.CompareBroadcastedBeaconMsgsInOrder(t, test.BeaconBroadcastedRoots, beaconNetwork.BroadcastedRoots)
+	} else {
+		testingutils.CompareBroadcastedBeaconMsgs(t, test.BeaconBroadcastedRoots, beaconNetwork.BroadcastedRoots)
+	}
 
 	// If len(test.QBFTProposals) > 0, check for proposals matching
 	if len(test.QBFTProposals) > 0 {
@@ -101,6 +116,14 @@ func (test *MsgProcessingSpecTest) RunAsPartOfMultiTest(t *testing.T) {
 	if test.PostDutyRunnerStateRoot != hex.EncodeToString(postRoot[:]) {
 		t.Errorf("post runner state not equal: %v", cmp.Diff(test.Runner, test.PostDutyRunnerState, cmp.Exporter(func(p reflect.Type) bool { return true })))
 	}
+}
+
+// outputMessageID is the MessageID the duty's partial-signature messages go out under.
+func (test *MsgProcessingSpecTest) outputMessageID() types.MessageID {
+	for _, share := range test.Runner.GetBaseRunner().Share {
+		return testingutils.OutputMessageID(share, test.Duty)
+	}
+	panic("No share in base runner for tests")
 }
 
 // Run as an individual test
@@ -124,6 +147,11 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 	}
 
 	test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode).SetAggregators(test.BeaconAggregatorsMap())
+	test.BeaconNode.Apply(test.Runner.GetBeaconNode().(*testingutils.TestingBeaconNode))
+	if test.Signer != nil {
+		test.Signer.Apply(test.Runner.GetSigner().(*testingutils.TestingKeyManager))
+	}
+	test.Network.Apply(test.Runner.GetNetwork().(*testingutils.TestingNetwork))
 
 	var v *ssv.Validator
 	var c *ssv.Committee
@@ -132,8 +160,15 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 	case *ssv.CommitteeRunner:
 		c = testingutils.BaseCommitteeWithRunner(ketSetMap, test.Runner.(*ssv.CommitteeRunner))
 
+		for _, msg := range test.PreDutyMessages {
+			if err := c.ProcessMessage(msg); err != nil {
+				lastErr = err
+			}
+		}
 		if !test.DontStartDuty {
-			lastErr = c.StartDuty(test.Duty.(*types.CommitteeDuty))
+			if err := c.StartDuty(test.Duty.(*types.CommitteeDuty)); err != nil {
+				lastErr = err
+			}
 		} else {
 			c.CommitteeRunners[test.Duty.DutySlot()] = test.Runner.(*ssv.CommitteeRunner)
 		}
@@ -159,8 +194,15 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 	case *ssv.AggregatorCommitteeRunner:
 		c = testingutils.BaseAggregatorCommitteeWithRunner(ketSetMap, test.Runner.(*ssv.AggregatorCommitteeRunner))
 
+		for _, msg := range test.PreDutyMessages {
+			if err := c.ProcessMessage(msg); err != nil {
+				lastErr = err
+			}
+		}
 		if !test.DontStartDuty {
-			lastErr = c.StartDuty(test.Duty.(*types.AggregatorCommitteeDuty))
+			if err := c.StartDuty(test.Duty.(*types.AggregatorCommitteeDuty)); err != nil {
+				lastErr = err
+			}
 		} else {
 			c.AggregatorCommitteeRunners[test.Duty.DutySlot()] = test.Runner.(*ssv.AggregatorCommitteeRunner)
 		}
@@ -188,8 +230,15 @@ func (test *MsgProcessingSpecTest) runPreTesting() (*ssv.Validator, *ssv.Committ
 		v.DutyRunners[test.Runner.GetBaseRunner().RunnerRoleType] = test.Runner
 		v.Network = test.Runner.GetNetwork()
 
+		for _, msg := range test.PreDutyMessages {
+			if err := v.ProcessMessage(msg); err != nil {
+				lastErr = err
+			}
+		}
 		if !test.DontStartDuty {
-			lastErr = v.StartDuty(test.Duty)
+			if err := v.StartDuty(test.Duty); err != nil {
+				lastErr = err
+			}
 		}
 		for _, msg := range test.Messages {
 			err := v.ProcessMessage(msg)
@@ -236,10 +285,12 @@ func overrideStateComparison(t *testing.T, test *MsgProcessingSpecTest, name str
 		runner = &ssv.ProposerRunner{}
 	case *ssv.AggregatorCommitteeRunner:
 		runner = &ssv.AggregatorCommitteeRunner{}
-	case *ssv.ValidatorRegistrationRunner:
-		runner = &ssv.ValidatorRegistrationRunner{}
 	case *ssv.VoluntaryExitRunner:
 		runner = &ssv.VoluntaryExitRunner{}
+	case *ssv.PTCAttesterRunner:
+		runner = &ssv.PTCAttesterRunner{}
+	case *ssv.ProposerPreferencesRunner:
+		runner = &ssv.ProposerPreferencesRunner{}
 	default:
 		t.Fatalf("unknown runner type")
 	}
@@ -271,35 +322,47 @@ type MsgProcessingSpecTestAlias struct {
 	Name   string
 	Runner ssv.Runner
 	// No duty from type types.Duty
-	Messages                []*types.SignedSSVMessage
-	DecidedSlashable        bool
-	PostDutyRunnerStateRoot string
-	PostDutyRunnerState     types.Root `json:"-"`
-	OutputMessages          []*types.PartialSignatureMessages
-	BeaconBroadcastedRoots  []string
-	DontStartDuty           bool
-	ExpectedErrorCode       int
-	ValidatorDuty           *types.ValidatorDuty           `json:"ValidatorDuty,omitempty"`
-	CommitteeDuty           *types.CommitteeDuty           `json:"CommitteeDuty,omitempty"`
-	AggregatorCommitteeDuty *types.AggregatorCommitteeDuty `json:"AggregatorCommitteeDuty,omitempty"`
-	BeaconAggregators       []phase0.CommitteeIndex        `json:"BeaconAggregators,omitempty"`
-	BeaconAggregatorsValues []bool                         `json:"BeaconAggregatorsValues,omitempty"`
+	PreDutyMessages               []*types.SignedSSVMessage `json:"PreDutyMessages,omitempty"`
+	Messages                      []*types.SignedSSVMessage
+	DecidedSlashable              bool
+	PostDutyRunnerStateRoot       string
+	PostDutyRunnerState           types.Root `json:"-"`
+	OutputMessages                []*types.PartialSignatureMessages
+	BeaconBroadcastedRoots        []string
+	OrderedBeaconBroadcastedRoots bool `json:"OrderedBeaconBroadcastedRoots,omitempty"`
+	DontStartDuty                 bool
+	ExpectedErrorCode             int
+	QBFTProposals                 [][]byte                       `json:"QBFTProposals,omitempty"`
+	ValidatorDuty                 *types.ValidatorDuty           `json:"ValidatorDuty,omitempty"`
+	CommitteeDuty                 *types.CommitteeDuty           `json:"CommitteeDuty,omitempty"`
+	AggregatorCommitteeDuty       *types.AggregatorCommitteeDuty `json:"AggregatorCommitteeDuty,omitempty"`
+	BeaconAggregators             []phase0.CommitteeIndex        `json:"BeaconAggregators,omitempty"`
+	BeaconAggregatorsValues       []bool                         `json:"BeaconAggregatorsValues,omitempty"`
+	BeaconNode                    *BeaconNodeBehaviour           `json:"BeaconNode,omitempty"`
+	Signer                        *SignerBehaviour               `json:"Signer,omitempty"`
+	Network                       *NetworkBehaviour              `json:"Network,omitempty"`
 }
 
 func (t *MsgProcessingSpecTest) MarshalJSON() ([]byte, error) {
 	alias := &MsgProcessingSpecTestAlias{
-		Name:                    t.Name,
-		Runner:                  t.Runner,
-		Messages:                t.Messages,
-		DecidedSlashable:        t.DecidedSlashable,
-		PostDutyRunnerStateRoot: t.PostDutyRunnerStateRoot,
-		PostDutyRunnerState:     t.PostDutyRunnerState,
-		OutputMessages:          t.OutputMessages,
-		BeaconBroadcastedRoots:  t.BeaconBroadcastedRoots,
-		DontStartDuty:           t.DontStartDuty,
-		ExpectedErrorCode:       t.ExpectedErrorCode,
-		BeaconAggregators:       t.BeaconAggregators,
-		BeaconAggregatorsValues: t.BeaconAggregatorsValues,
+		Name:                          t.Name,
+		Runner:                        t.Runner,
+		PreDutyMessages:               t.PreDutyMessages,
+		Messages:                      t.Messages,
+		DecidedSlashable:              t.DecidedSlashable,
+		PostDutyRunnerStateRoot:       t.PostDutyRunnerStateRoot,
+		PostDutyRunnerState:           t.PostDutyRunnerState,
+		OutputMessages:                t.OutputMessages,
+		BeaconBroadcastedRoots:        t.BeaconBroadcastedRoots,
+		OrderedBeaconBroadcastedRoots: t.OrderedBeaconBroadcastedRoots,
+		DontStartDuty:                 t.DontStartDuty,
+		ExpectedErrorCode:             t.ExpectedErrorCode,
+		QBFTProposals:                 t.QBFTProposals,
+		BeaconAggregators:             t.BeaconAggregators,
+		BeaconAggregatorsValues:       t.BeaconAggregatorsValues,
+		BeaconNode:                    t.BeaconNode,
+		Signer:                        t.Signer,
+		Network:                       t.Network,
 	}
 
 	if t.Duty != nil {
@@ -329,15 +392,21 @@ func (t *MsgProcessingSpecTest) UnmarshalJSON(data []byte) error {
 	t.Name = aux.Name
 	t.Runner = aux.Runner
 	t.DecidedSlashable = aux.DecidedSlashable
+	t.PreDutyMessages = aux.PreDutyMessages
 	t.Messages = aux.Messages
 	t.PostDutyRunnerStateRoot = aux.PostDutyRunnerStateRoot
 	t.PostDutyRunnerState = aux.PostDutyRunnerState
 	t.OutputMessages = aux.OutputMessages
 	t.BeaconBroadcastedRoots = aux.BeaconBroadcastedRoots
+	t.OrderedBeaconBroadcastedRoots = aux.OrderedBeaconBroadcastedRoots
 	t.DontStartDuty = aux.DontStartDuty
 	t.ExpectedErrorCode = aux.ExpectedErrorCode
+	t.QBFTProposals = aux.QBFTProposals
 	t.BeaconAggregators = aux.BeaconAggregators
 	t.BeaconAggregatorsValues = aux.BeaconAggregatorsValues
+	t.BeaconNode = aux.BeaconNode
+	t.Signer = aux.Signer
+	t.Network = aux.Network
 
 	// Determine which type of duty was marshaled
 	if aux.ValidatorDuty != nil {
