@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/attestantio/go-eth2-client/spec/electra"
+	eth2gloas "github.com/attestantio/go-eth2-client/spec/gloas"
 	"github.com/ssvlabs/ssv-spec/qbft"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/spectest/testdoc"
@@ -92,7 +92,7 @@ func (t *StructureSizeTest) UnmarshalJSON(data []byte) error {
 		objMap["Contributors"] != nil && objMap["SyncCommitteeContributions"] != nil):
 		correctType = &types.AggregatorCommitteeConsensusData{}
 	case (objMap["aggregation_bits"] != nil && objMap["data"] != nil && objMap["signature"] != nil && objMap["committee_bits"] != nil):
-		correctType = &ElectraAttestationWrapper{Attestation: &electra.Attestation{}}
+		correctType = &GloasAttestationWrapper{Attestation: &eth2gloas.Attestation{}}
 	default:
 		return fmt.Errorf("could not determine object type from JSON")
 	}

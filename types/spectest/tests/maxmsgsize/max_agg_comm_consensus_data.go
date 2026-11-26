@@ -3,7 +3,7 @@ package maxmsgsize
 import (
 	"github.com/OffchainLabs/go-bitfield"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/electra"
+	eth2gloas "github.com/attestantio/go-eth2-client/spec/gloas"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/ssvlabs/ssv-spec/types"
 	"github.com/ssvlabs/ssv-spec/types/gloas"
@@ -12,11 +12,11 @@ import (
 
 const (
 	MaxSizeAggregatorCommitteeConsensusData = 8970524
-	// MaxSizeElectraAttestation over-approximates a single attestation's SSZ size. It bounds the
-	// AggregatedAttestations list element (consensus_data.go's ssz-max:"64,131308"), a root-affecting
-	// limit, so it is deliberately kept at or above the true max — the exact max attestation size is
-	// 16621, asserted by MaxElectraAttestation. Do not "correct" it down.
-	MaxSizeElectraAttestation = 131308
+	// MaxSizeAggregatedAttestation is the bound on one AggregatedAttestations element (consensus_data.go's
+	// ssz-max:"64,131308"), and the largest encoded aggregate the decoder accepts. It is a root-affecting limit,
+	// kept well above the largest attestation the beacon chain produces, which is 16621 bytes
+	// (MaxGloasAttestation). Do not "correct" it down.
+	MaxSizeAggregatedAttestation = 131308
 )
 
 func maxAggregatorCommitteeConsensusData() *types.AggregatorCommitteeConsensusData {
@@ -39,7 +39,7 @@ func maxAggregatorCommitteeConsensusData() *types.AggregatorCommitteeConsensusDa
 	}
 	aggAtt := make([][]byte, 0)
 	for i := 0; i < maxCommIdxs; i++ {
-		att := [MaxSizeElectraAttestation]byte{1}
+		att := [MaxSizeAggregatedAttestation]byte{1}
 		aggAtt = append(aggAtt, att[:])
 	}
 
@@ -79,23 +79,28 @@ func maxAggregatorCommitteeConsensusData() *types.AggregatorCommitteeConsensusDa
 	}
 }
 
-// Wrapper types to allow defining Encode/Decode methods on external types
-type ElectraAttestationWrapper struct {
-	*electra.Attestation
+// GloasAttestationWrapper wraps go-eth2-client's Gloas attestation, the container the spec decodes an aggregate
+// as (SIP #94 §2), to give it Encode/Decode methods.
+type GloasAttestationWrapper struct {
+	*eth2gloas.Attestation
 }
 
-func (w *ElectraAttestationWrapper) Encode() ([]byte, error) {
+func (w *GloasAttestationWrapper) Encode() ([]byte, error) {
 	return w.MarshalSSZ()
 }
 
-func (w *ElectraAttestationWrapper) Decode(data []byte) error {
+func (w *GloasAttestationWrapper) Decode(data []byte) error {
 	return w.UnmarshalSSZ(data)
 }
 
-func maxElectraAttestation() *ElectraAttestationWrapper {
-	return &ElectraAttestationWrapper{
-		Attestation: &electra.Attestation{
-			AggregationBits: bitfield.NewBitlist(131072),
+// maxBeaconChainAggregationBits is the most aggregation bits an attestation has on the beacon chain:
+// MAX_VALIDATORS_PER_COMMITTEE * MAX_COMMITTEES_PER_SLOT.
+const maxBeaconChainAggregationBits = 131072
+
+func maxGloasAttestation() *GloasAttestationWrapper {
+	return &GloasAttestationWrapper{
+		Attestation: &eth2gloas.Attestation{
+			AggregationBits: bitfield.NewBitlist(maxBeaconChainAggregationBits),
 			Data: &phase0.AttestationData{
 				Slot:            1,
 				Index:           0,
@@ -125,14 +130,17 @@ func MaxAggregatorCommitteeConsensusData() *StructureSizeTest {
 	)
 }
 
-func MaxElectraAttestation() *StructureSizeTest {
+// MaxGloasAttestation pins the encoded size of the largest attestation the beacon chain produces: one with
+// aggregation bits for every validator of every committee of a slot. It is the beacon-chain maximum, not a bound
+// of the container: the Gloas aggregation bits are a progressive bitlist, and the spec accepts an aggregate up
+// to MaxSizeAggregatedAttestation bytes.
+func MaxGloasAttestation() *StructureSizeTest {
 	return NewStructureSizeTest(
-		"max ElectraAttestation",
-		testdoc.StructureSizeTestMaxElectraAttestationDoc,
-		maxElectraAttestation(),
-		16621, // exact encoded size of a max electra attestation (full 131072-bit aggregation bitlist)
-		// AggregationBits is a Bitlist: its byte length (16385) can never equal the bit-count ssz-max tag
-		// (131072), so check ≤ rather than ==. ExpectedEncodedLength above pins the true maximum.
+		"max GloasAttestation",
+		testdoc.StructureSizeTestMaxGloasAttestationDoc,
+		maxGloasAttestation(),
+		16621,
+		// The aggregation bits have no ssz-max tag to be equal to, so the tag check has nothing to hold them to.
 		false,
 	)
 }

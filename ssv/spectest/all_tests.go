@@ -257,6 +257,7 @@ var AllTests = []tests.TestF{
 
 	valcheckaggcommittee.NoValidator,
 	valcheckaggcommittee.Valid,
+	valcheckaggcommittee.LongAggregationBits,
 
 	valcheck.WrongDecoding,
 

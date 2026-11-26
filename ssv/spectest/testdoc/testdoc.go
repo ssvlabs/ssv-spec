@@ -283,6 +283,7 @@ const ValCheckProposerGloasBlocksDoc = "Tests the Gloas proposer value check (SI
 
 // Documentation for valcheckaggcommittee
 const ValCheckAggCommitteeNoValidatorsDoc = "Tests agg committee value check with no validators"
+const ValCheckAggCommitteeLongAggregationBitsDoc = "Tests that the aggregator-committee value check decodes the aggregate as the Gloas attestation (SIP #94 §2): aggregation bits one longer than the Electra bound are accepted"
 const ValCheckAggCommitteeValidDoc = "Tests agg committee value valid case"
 
 // Documentation for valcheck
