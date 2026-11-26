@@ -18,6 +18,7 @@ const PayloadAttestationDataEncodingSpecTestType = "Payload attestation data enc
 
 // Documentation for PayloadAttestationDataEncodingSpecTest
 const PayloadAttestationDataEncodingTestDoc = "Test encoding and decoding of PayloadAttestationData (SIP #94 §3) with hash tree root verification"
+const PayloadAttestationDataInvalidBooleanTestDoc = "Test that a PayloadAttestationData whose payload_present byte is neither 0 nor 1 does not decode"
 
 // PayloadAttestationMessageEncodingSpecTest
 const PayloadAttestationMessageEncodingSpecTestType = "Payload attestation message encoding: validation of payload attestation message encoding"

@@ -117,6 +117,7 @@ var AllTests = []SpecTest{
 	beaconvote.BeaconVoteEncoding(),
 	beaconvote.BeaconVotePreGloasEncoding(),
 	payloadattestationdata.PayloadAttestationDataEncoding(),
+	payloadattestationdata.PayloadAttestationDataInvalidBoolean(),
 	payloadattestationmessage.PayloadAttestationMessageEncoding(),
 	signedbeaconblock.SignedBeaconBlockEncoding(),
 	signedbeaconblock.SignedBeaconBlockDevnet6Encoding(),
