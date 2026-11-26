@@ -13,9 +13,8 @@ import (
 )
 
 // TestProposerPostConsensusRootsFollowDecidedValue pins that the proposer derives its post-consensus roots again
-// for each duty's decided value. It keeps what it derived for as long as the decided value and the duty stay the
-// same, and that kept state is not part of the runner's JSON, so no vector can hold one runner to two duties with
-// it: a vector's runner starts without it, and runs a single duty.
+// for each duty's decided value. What it caches between packets is not part of the runner's JSON, and a vector
+// runs a single duty on a runner that starts without it, so no vector can cover a second duty.
 func TestProposerPostConsensusRootsFollowDecidedValue(t *testing.T) {
 	ks := testingutils.Testing4SharesSet()
 	runner := testingutils.ProposerRunner(ks)

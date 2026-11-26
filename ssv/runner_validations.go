@@ -91,8 +91,7 @@ func (b *BaseRunner) ValidatePostConsensusMsg(runner Runner, psigMsgs *types.Par
 
 		return b.validatePartialSigMsgForSlot(psigMsgs, b.State.StartingDuty.DutySlot())
 	default:
-		// The runner derives the roots from its decided value, which rejects a malformed one. That comes first,
-		// as the decode it replaces did.
+		// Deriving the roots decodes the decided value, so a malformed one is rejected before the packet is checked.
 		expectedRoots, err := runner.expectedPostConsensusSigningRoots()
 		if err != nil {
 			return errors.Wrap(err, "failed to derive the post-consensus roots of the decided value")

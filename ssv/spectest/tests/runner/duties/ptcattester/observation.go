@@ -14,8 +14,9 @@ import (
 func Observation() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 
-	// A runner already executing the duty, with its observation frozen. The state is set rather than reached by
-	// starting the duty here, so the runner the JSON holds has broadcast what a run from the JSON has: nothing.
+	// A runner already executing the duty, with its observation frozen. The state is set directly, not by
+	// starting the duty here: that would broadcast while the vector is built, which a run from the JSON cannot
+	// reproduce.
 	running := testingutils.PTCAttesterRunner(ks)
 	running.GetBaseRunner().State = ssv.NewRunnerState(ks.Threshold, testingutils.TestingPTCAttesterDuty())
 	running.(*ssv.PTCAttesterRunner).PayloadAttestationData = testingutils.TestingPayloadAttestationData(testingutils.TestingDutySlotGloas)

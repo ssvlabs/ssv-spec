@@ -32,10 +32,10 @@ type ProposerPreferencesRunner struct {
 	// StartNewDuty replays into the slot's new sub-runner. A peer's partial is delivered once (§7 dedups
 	// repeats), so this is how a late-starting duty gets the partials that arrived before it (SIP #94 §5)
 	// and a re-emission gets those its predecessor rejected under a since-changed preference. Entries are
-	// deduplicated by (signer, signing root) and capped at maxPendingPartialsPerSigner per signer and slot,
-	// which bounds a slot. The slot is the sender's choice and can be ahead of the current one, so pruning
-	// past slots does not bound the map: the §7 message-validation window on the slot does, and it is
-	// outside the spec. Omitted from JSON when empty, so runners holding none keep their state roots.
+	// deduplicated by (signer, signing root) and capped at maxPendingPartialsPerSigner per committee signer
+	// and slot. The slot is the sender's choice, so the number of slots is bounded by the §7
+	// message-validation window, outside the spec. Omitted from JSON when empty, so runners holding none
+	// keep their state roots.
 	PendingPartials map[phase0.Slot][]*types.PartialSignatureMessages `json:"PendingPartials,omitempty"`
 
 	// BuilderEntries is the cluster-configured §5 builder-request-auth entry set (static config; SIP #94
@@ -512,16 +512,13 @@ func (r *ProposerPreferencesSlotRunner) executePreferenceRound(duty *types.Valid
 	return r.broadcastPartialSig(msgs)
 }
 
-// executeRequestAuthRound freezes one BuilderRequestAuth per distinct configured entry data, signs each
-// under DomainBuilderRequestAuth (chain-independent), and broadcasts them together in a single multi-entry
-// RequestAuthPartialSig container (SIP #94 §5/§7: one bounded packet per slot, up to MaxBuilderEntries;
-// per-builder isolation is enforced on the receive side per entry). Entries sharing data share a root;
-// zero-length data is skipped; entries are capped at MaxBuilderEntries. A malformed entry that fails to sign
-// (e.g. oversized Data) is skipped rather than failing the round, and an auth is frozen only once its share is
-// in the outgoing container, so peer shares are never expected for an entry this operator dropped. No
-// configured entries, or none that sign, means no auth broadcast. A failure to broadcast the container is
-// returned: the independent preference round, already broadcast by the caller, is unaffected, and executeDuty
-// reports its error first.
+// executeRequestAuthRound freezes one BuilderRequestAuth per distinct entry data, signs each under
+// DomainBuilderRequestAuth (chain-independent), and broadcasts them in one RequestAuthPartialSig container of
+// up to MaxBuilderEntries entries (SIP #94 §5/§7; receivers match per entry). An entry with nothing to sign
+// (see BuilderEntry.AuthData), or that fails to sign (e.g. oversized Data), is skipped rather than failing the
+// round. An auth is frozen only once its share is in the outgoing container, so peer shares are never expected
+// for an entry this operator dropped. With no entry signed, nothing is broadcast. A broadcast failure is
+// returned and leaves the preference round as it is (executeDuty reports that round's error first).
 func (r *ProposerPreferencesSlotRunner) executeRequestAuthRound(duty *types.ValidatorDuty, proposalSlot phase0.Slot) error {
 	r.BuilderRequestAuths = nil
 	authMsgs := &types.PartialSignatureMessages{

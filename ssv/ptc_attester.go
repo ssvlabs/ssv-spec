@@ -24,13 +24,12 @@ type PTCAttesterRunner struct {
 	// block for the slot) and is sitting the duty out.
 	PayloadAttestationData *gloas.PayloadAttestationData
 
-	// PendingPartials keeps, per slot, the partials received before that slot's duty started here, which is
-	// when this operator's observation is frozen. StartNewDuty replays them (SIP #94 §3): a peer signs as soon
-	// as its own observation is final, which can be earlier than this operator's, and its partial is delivered
-	// once (§7 dedups repeats). A signer has one partial per slot (§7), so its first is the one kept, and a
-	// slot's entry goes when a duty for that slot or a later one starts. The slot is the sender's choice and
-	// can be ahead of the current one: what bounds the map is the §7 message-validation window on the slot,
-	// which is outside the spec. Omitted from JSON when empty, so runners holding none keep their state roots.
+	// PendingPartials keeps, per slot, the partials received before the slot's duty started here, when there is
+	// no frozen observation to check them against yet. StartNewDuty replays them (SIP #94 §3): a peer signs as
+	// soon as its own observation is final, and its partial is delivered once (§7 dedups repeats). One partial
+	// is kept per committee signer and slot, until a duty for that slot or a later one starts. The slot is the
+	// sender's choice, so the number of slots is bounded by the §7 message-validation window, outside the spec.
+	// Omitted from JSON when empty, so runners holding none keep their state roots.
 	PendingPartials map[phase0.Slot][]*types.PartialSignatureMessages `json:"PendingPartials,omitempty"`
 
 	beacon         BeaconNode
@@ -80,7 +79,7 @@ func (r *PTCAttesterRunner) StartNewDuty(duty types.Duty, quorum uint64) error {
 	startErr := r.executeDuty(duty)
 
 	// Replay each retained partial as if it just arrived. One that fails its checks is skipped: a diverging
-	// peer's, or every one when this operator abstained or failed to observe. A failure to reconstruct or
+	// peer's, or all of them when this operator abstained or failed to observe. A failure to reconstruct or
 	// submit a quorum it completes is returned, as on the live path, after the duty's own error.
 	var replayErr error
 	for _, msg := range r.takePendingPartials(duty.DutySlot()) {
@@ -136,14 +135,11 @@ func (r *PTCAttesterRunner) awaitsDuty(slot phase0.Slot) bool {
 	return r.BaseRunner.State == nil || r.BaseRunner.State.StartingDuty.DutySlot() < slot
 }
 
-// validatePartialsPacket applies the checks that need no frozen observation: the partials are valid, from one
-// signer of the committee and for this runner's validator, and the packet carries the one partial of a PTC
-// duty (SIP #94 §7). The running duty applies them too, and checks the root against its observation. With the
-// signer a committee member and one partial kept for each, a slot retains no more partials than the committee
-// has operators.
+// validatePartialsPacket applies the checks that need no frozen observation: the packet is valid, from one
+// committee signer and for this runner's validator, and carries the single partial of a PTC duty (SIP #94 §7).
+// The running duty applies them too, and checks the root against its observation.
 func (r *PTCAttesterRunner) validatePartialsPacket(signedMsg *types.PartialSignatureMessages) error {
-	// Against the message's own slot, this checks all but the slot: no duty has started for it to be compared
-	// with.
+	// Passing the message's own slot skips the slot check: no duty has started to compare it with.
 	if err := r.BaseRunner.validatePartialSigMsgForSlot(signedMsg, signedMsg.Slot); err != nil {
 		return err
 	}
@@ -225,13 +221,12 @@ func (r *PTCAttesterRunner) ProcessPostConsensus(signedMsg *types.PartialSignatu
 }
 
 func (r *PTCAttesterRunner) expectedPreConsensusRootsAndDomain() ([]ssz.HashRoot, phase0.DomainType, error) {
-	// Peer partials validate against the operator's own frozen observation (honest convergence): a
-	// diverging peer's root fails the expected-root check (WrongSigningRootErrorCode). With no observation
-	// — the operator abstained (its beacon node saw no block for the slot) or failed to observe — there is
-	// no reference to judge peers against, and it does not reconstruct from their partials (SIP #94 §3), so
-	// every peer partial gets PTCAttesterNoObservation. That is a divergence of observation ("my beacon node
-	// didn't see the block and theirs did"), not a peer fault, so it is kept distinct from a wrong root:
-	// §7 message validation never reads the local observation, and neither rejects nor ignores such a partial.
+	// Peer partials validate against the operator's own frozen observation (honest convergence): a diverging
+	// peer's root fails the expected-root check (WrongSigningRootErrorCode). With no observation (the operator
+	// abstained, or failed to observe) there is nothing to judge peers against and nothing is reconstructed from
+	// their partials (SIP #94 §3), so each gets PTCAttesterNoObservationErrorCode instead: a difference of
+	// observation ("my beacon node didn't see the block and theirs did"), not a peer fault, and nothing §7
+	// message validation judges, as it never reads the local observation.
 	if r.PayloadAttestationData == nil {
 		return nil, types.DomainError, types.NewError(types.PTCAttesterNoObservationErrorCode, "no frozen payload attestation data")
 	}

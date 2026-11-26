@@ -148,8 +148,8 @@ func (bn *TestingBeaconNode) SubmitBeaconBlock(block *gloas.BeaconBlock, sig pha
 	return nil
 }
 
-// SubmitExecutionPayloadEnvelope records the root of the published §6 reveal, signature included, as
-// SubmitBeaconBlock does for the block: the signed envelope's root (see signedEnvelopeRoot).
+// SubmitExecutionPayloadEnvelope records the root of the published §6 reveal with its signature
+// (signedEnvelopeRoot), as SubmitBeaconBlock does for the block.
 func (bn *TestingBeaconNode) SubmitExecutionPayloadEnvelope(envelope *gloas.BlindedExecutionPayloadEnvelope, signature phase0.BLSSignature) error {
 	r, err := signedEnvelopeRoot(envelope, signature)
 	if err != nil {
@@ -159,9 +159,8 @@ func (bn *TestingBeaconNode) SubmitExecutionPayloadEnvelope(envelope *gloas.Blin
 	return nil
 }
 
-// signedEnvelopeRoot is hash_tree_root(SignedExecutionPayloadEnvelope{message, signature}) of the envelope a
-// blinded one stands for: the blinded envelope hashes to the full envelope's root (SIP #94 §6), so the root of
-// the container holding it and the signature is the full signed envelope's too.
+// signedEnvelopeRoot is hash_tree_root(SignedExecutionPayloadEnvelope{message, signature}) for the full
+// envelope a blinded one stands for: the two hash to the same root (SIP #94 §6), so the signed containers do too.
 func signedEnvelopeRoot(envelope *gloas.BlindedExecutionPayloadEnvelope, signature phase0.BLSSignature) (phase0.Root, error) {
 	messageRoot, err := envelope.HashTreeRoot()
 	if err != nil {

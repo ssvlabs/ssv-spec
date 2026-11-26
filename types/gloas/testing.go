@@ -8,9 +8,9 @@ import (
 	bitfield "github.com/prysmaticlabs/go-bitfield"
 )
 
-// TestingParentRoot and TestingStateRoot are the fixture block's parent and state roots. They are non-zero and
-// differ, so a §6 envelope that takes its parent_beacon_block_root from anything but the block's parent root has
-// another root (SIP #94 §6).
+// TestingParentRoot and TestingStateRoot are the fixture block's parent and state roots: non-zero and distinct,
+// so a §6 envelope whose parent_beacon_block_root is not taken from the block's parent root gets another root
+// (SIP #94 §6).
 var (
 	TestingParentRoot = phase0.Root{0x70, 0x61, 0x72, 0x65, 0x6e, 0x74}
 	TestingStateRoot  = phase0.Root{0x73, 0x74, 0x61, 0x74, 0x65}

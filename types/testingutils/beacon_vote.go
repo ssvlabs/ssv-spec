@@ -29,7 +29,7 @@ var TestBeaconVoteByts, _ = TestBeaconVote.Encode()
 // AttestationDataIndex (SIP #94 §2).
 const PreGloasBeaconVoteSize = 112
 
-// TestPreGloasBeaconVoteByts is TestBeaconVote in its pre-Gloas encoding, which no longer decodes.
+// TestPreGloasBeaconVoteByts is TestBeaconVote in its pre-Gloas encoding, which does not decode as a BeaconVote.
 var TestPreGloasBeaconVoteByts = TestBeaconVoteByts[:PreGloasBeaconVoteSize]
 
 // TestWrongBeaconVote is deliberately invalid (source epoch >= target epoch).

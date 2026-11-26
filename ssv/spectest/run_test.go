@@ -706,9 +706,8 @@ func fixRunnerRoleSpecificState(t *testing.T, runner ssv.Runner, runnerMap map[s
 	}
 }
 
-// pendingPartialsFromMap decodes a runner's retained partials. They are omitted from the JSON when there are
-// none, and the result is then nil, as it is for a runner decoded from that JSON: the constructor's empty map
-// would hide a runner that cannot retain into the nil one.
+// pendingPartialsFromMap decodes a runner's retained partials, nil when the JSON omits them. Nil, and not the
+// constructor's empty map, so that the run retains into a nil map as a runner decoded from JSON does.
 func pendingPartialsFromMap(t *testing.T, runnerMap map[string]interface{}) map[phase0.Slot][]*types.PartialSignatureMessages {
 	raw, ok := runnerMap["PendingPartials"]
 	if !ok || raw == nil {

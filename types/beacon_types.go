@@ -46,9 +46,8 @@ const MaxEffectiveBalanceInGwei uint64 = 32000000000
 // BLSWithdrawalPrefixByte is the BLS withdrawal prefix
 const BLSWithdrawalPrefixByte = byte(0)
 
-// DefaultGasLimit is the target gas limit the proposer-preferences duty signs when the operator configured none
-// (SIP #94 §5). Before Gloas it was the validator-registration duty's. The value is from then too: picking a
-// current one is https://github.com/ssvlabs/ssv-spec/issues/634.
+// DefaultGasLimit is the target gas limit the proposer-preferences duty signs when none is configured (SIP #94
+// §5). The value predates Gloas; choosing a current one is https://github.com/ssvlabs/ssv-spec/issues/634.
 const DefaultGasLimit = 30_000_000
 
 // BeaconRole type of the validator role for a specific duty

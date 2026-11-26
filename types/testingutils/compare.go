@@ -46,9 +46,8 @@ func ComparePartialSignatureOutputMessages(t *testing.T, expectedMessages []*typ
 }
 
 // OutputMessageID returns the MessageID a duty's partial-signature messages go out under: the duty's runner role
-// with the validator's public key for a validator duty (SIP #94 §3/§7 for the PTC and proposer-preferences
-// roles), and with the committee's ID for a committee duty. It is derived from the duty and the share, not from
-// the runner, so that it checks what the runner derives.
+// with the validator's public key for a validator duty, or with the committee's ID for a committee duty. It is
+// derived from the duty and the share, not read from the runner, so comparing with it checks the runner's own.
 func OutputMessageID(share *types.Share, duty types.Duty) types.MessageID {
 	if validatorDuty, ok := duty.(*types.ValidatorDuty); ok {
 		return types.NewValidatorMsgID(share.DomainType, types.ValidatorPK(validatorDuty.PubKey), duty.RunnerRole())

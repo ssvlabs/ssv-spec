@@ -15,9 +15,9 @@ import (
 // the proposer-preferences duty that slot is the proposal slot, however early the duty is emitted, and the
 // dependent root it pins is that epoch's proposer-duties root. The request-auth domain is chain-independent.
 //
-// Each duty runs its happy flow at TestingDutySlotEpochDependent, in an epoch for which the testing beacon node
-// has a fork version and a dependent root unlike any other epoch's: a signing root computed for another epoch
-// matches none of the peers' partials, and reconstructs nothing that is expected here.
+// Each duty runs its happy flow at TestingDutySlotEpochDependent, whose epoch has a fork version and a dependent
+// root of its own on the testing beacon node: a signing root computed for another epoch matches none of the
+// peers' partials, and reconstructs nothing that is expected here.
 func DomainEpoch() tests.SpecTest {
 	ks := testingutils.Testing4SharesSet()
 	slot := phase0.Slot(testingutils.TestingDutySlotEpochDependent)

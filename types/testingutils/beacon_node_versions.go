@@ -22,10 +22,9 @@ const (
 	TestingDutySlotGloasNextEpoch = TestingDutySlotGloas + 32
 	TestingDutySlotGloasInvalid   = TestingDutySlotGloas + 50
 
-	// TestingEpochDependentFrom is the first epoch from which the testing beacon node's answers depend on the
-	// epoch they are asked for: from it on, every epoch has a fork version of its own (TestingForkVersion) and a
-	// proposer-duties dependent root of its own (TestingProposerDutiesDependentRootAt). The epochs before it,
-	// where the other fixtures' slots lie, share one of each.
+	// TestingEpochDependentFrom is the first epoch for which the testing beacon node has a fork version
+	// (TestingForkVersion) and a proposer-duties dependent root (TestingProposerDutiesDependentRootAt) of its
+	// own. The epochs before it, where the other fixtures' slots lie, share one of each.
 	TestingEpochDependentFrom = ForkEpochGloas + 100
 	// TestingDutySlotEpochDependent is a duty slot past TestingEpochDependentFrom. A duty there pins the epoch
 	// its runner asks the beacon node for: the answer for any other epoch gives another signing root.

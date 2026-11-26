@@ -29,8 +29,9 @@ type ProposerRunner struct {
 	// beacon nodes through the other operators (SIP #94 §6). Reset per duty in executeDuty.
 	blockSubmitAttempted bool
 
-	// decided is what the post-consensus round derives from the decided value (see decidedPostConsensus).
-	// Unexported like the fields above: it is derived, so it stays out of the post-state root.
+	// decided caches what the post-consensus round derives from the decided value (see decidedPostConsensus).
+	// Unexported: derived state, kept out of the post-state root. It is keyed by duty slot and value, so it
+	// needs no per-duty reset.
 	decided *decidedProposal
 
 	beacon         BeaconNode
@@ -231,10 +232,9 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 	}
 
 	// The block and the optional §6 envelope reconstruct independently: a failure on one never aborts the other,
-	// and a root the fallback takes below quorum re-crosses it in a later packet (see reconstructPostConsensusSig
-	// for one it leaves at quorum). The block goes first whatever the packet order, since it finalizes the duty
-	// and a beacon node ignores an envelope whose block it has not seen (SIP #94 §4/§6). If both fail, the block
-	// error is returned.
+	// and each recovers from a bad share on its own (see reconstructPostConsensusSig). The block goes first
+	// whatever the packet order, since it finalizes the duty and a beacon node ignores an envelope whose block it
+	// has not seen (SIP #94 §4/§6). If both fail, the block error is returned.
 	var blockErr, envelopeErr error
 	if slices.Contains(roots, decided.blockRoot) {
 		blockErr = r.submitDecidedBlock(decided.proposal, decided.blockRoot)
@@ -253,9 +253,9 @@ func (r *ProposerRunner) ProcessPostConsensus(signedMsg *types.PartialSignatureM
 }
 
 // reconstructPostConsensusSig reconstructs the threshold signature over root from the post-consensus
-// container. On failure it falls back to verifying each partial and removing the invalid ones. If the valid
-// ones left are still a quorum, it reconstructs from them: such a root never drops below quorum, so no later
-// packet would cross it again. Otherwise the root re-crosses quorum in a later packet.
+// container. On failure it verifies each partial and drops the invalid ones. If the valid ones are still a
+// quorum it reconstructs from them, as no later packet would cross that quorum again; otherwise the root
+// re-crosses quorum in a later packet.
 func (r *ProposerRunner) reconstructPostConsensusSig(root [32]byte) (phase0.BLSSignature, error) {
 	container := r.GetState().PostConsensusContainer
 	validatorIndex := r.GetShare().ValidatorIndex
@@ -313,9 +313,9 @@ type decidedProposal struct {
 	blockRoot, envelopeRoot [32]byte
 }
 
-// decidedPostConsensus decodes the decided value and computes the signing roots of its post-consensus roots.
-// This is the one place that does either: validating a packet, acting on a quorum and awaitingEnvelope all read
-// its result, which is kept for as long as the decided value and the duty stay the same.
+// decidedPostConsensus decodes the decided value and computes the signing roots the post-consensus round
+// collects shares for. Packet validation, quorum handling and awaitingEnvelope all read its result, which is
+// cached while the decided value and the duty are unchanged.
 func (r *ProposerRunner) decidedPostConsensus() (*decidedProposal, error) {
 	state := r.GetState()
 	slot := state.StartingDuty.DutySlot()
@@ -438,9 +438,8 @@ func (r *ProposerRunner) expectedPostConsensusSigningRoots() ([]PostConsensusSig
 	return expectedRoots, nil
 }
 
-// PostConsensusRoot is an object the proposer's post-consensus round signs, with the domain to sign it under
-// and whether the round can do without it: the block root under DomainProposer is required, and the §6 envelope
-// root under DomainBeaconBuilder is optional (SIP #94 §4/§6).
+// PostConsensusRoot is an object the proposer's post-consensus round signs, the domain to sign it under, and
+// whether the round can do without it (see postConsensusRoots).
 type PostConsensusRoot struct {
 	Root     ssz.HashRoot
 	Domain   phase0.DomainType

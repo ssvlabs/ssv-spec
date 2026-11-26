@@ -50,10 +50,9 @@ type AggregatorCalls interface {
 	IsAggregator(slot phase0.Slot, committeeIndex phase0.CommitteeIndex, committeeLength uint64, slotSig []byte) bool
 	// GetAggregateAttestation returns the aggregate attestation for the given slot and committee.
 	//
-	// The Beacon API serves an aggregate by the root of its attestation data, and at Gloas that data includes
-	// the index the committee decided for the slot (SIP #94 §2). The spec asks by slot and committee, so
-	// computing that root over the full Gloas AttestationData, decided index included, is this call's to do: a
-	// root computed without the index matches no aggregate.
+	// The Beacon API serves an aggregate by the root of its attestation data, which at Gloas includes the index
+	// the committee decided for the slot (SIP #94 §2). Computing that root over the full Gloas AttestationData
+	// is this call's to do: a root computed without the decided index matches no aggregate.
 	GetAggregateAttestation(slot phase0.Slot, committeeIndex phase0.CommitteeIndex) (ssz.Marshaler, error)
 	// SubmitAggregateSelectionProof returns an AggregateAndProof object
 	// Deprecated: Use IsAggregator and GetAggregateAttestation instead. Kept for backward compatibility.
@@ -121,9 +120,9 @@ type EnvelopeCalls interface {
 	// root-equivalence); its beacon node forms the full SignedExecutionPayloadEnvelopeContents body and
 	// publishes to each of its nodes.
 	//
-	// The runner calls it once, right after it attempted the block submit, and does not call it again. A beacon
-	// node ignores an envelope whose block it has not seen, so publishing to the nodes that have accepted the
-	// block, or retrying until they have (SIP #94 §6), is this call's to do.
+	// The runner calls it once, right after it attempted the block submit. A beacon node ignores an envelope
+	// whose block it has not seen, so publishing to the nodes that have accepted the block, or retrying until
+	// they have (SIP #94 §6), is this call's to do.
 	SubmitExecutionPayloadEnvelope(envelope *gloas.BlindedExecutionPayloadEnvelope, signature phase0.BLSSignature) error
 }
 
@@ -132,12 +131,11 @@ type PTCCalls interface {
 	// GetPayloadAttestationData returns the slot's payload attestation data as observed by the local
 	// beacon node; a zero BeaconBlockRoot signals no block was seen for the slot — the abstain trigger.
 	//
-	// What it returns must be the final observation for the slot (SIP #94 §3). The runner calls it once, signs
-	// what it gets or abstains, and refuses a second start for the slot, so the timing rule is this call's to
-	// keep: payload_present = false not before 50% of the slot and blob_data_available = false not before 75%,
-	// since until then a beacon node may report a provisional false, which is fetched again rather than signed.
-	// Starting the duty at 75% of the slot always meets the rule; an implementation that starts it earlier
-	// holds this call until both fields are final.
+	// It must return the slot's final observation (SIP #94 §3): the runner calls it once, signs what it gets or
+	// abstains, and refuses a second start for the slot. The timing rule is therefore this call's to keep:
+	// payload_present = false not before 50% of the slot and blob_data_available = false not before 75%, as a
+	// beacon node may report a provisional false until then. Starting the duty at 75% of the slot always meets
+	// the rule; an implementation that starts it earlier holds this call until both fields are final.
 	GetPayloadAttestationData(slot phase0.Slot) (*gloas.PayloadAttestationData, error)
 	// SubmitPayloadAttestation submits the reconstructed payload attestation message to the node
 	SubmitPayloadAttestation(msg *gloas.PayloadAttestationMessage) error

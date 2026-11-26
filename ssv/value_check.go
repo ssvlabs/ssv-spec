@@ -43,12 +43,11 @@ func dutyValueCheck(
 // index, so a vote that differs from a signed one only in the index is a double vote.
 //
 // sameSlotBlock reports whether this operator's own view establishes that the block with the given root was
-// proposed at slot, for instance from a head event naming that root and slot. A vote for such a block attests
-// in the block's own slot, where the index must be 0: one with index 1 is rejected, so the round changes
-// instead of the cluster signing an attestation the network rejects (a SHOULD in SIP #94 §2). The view must be
-// the one the operator had when the instance started: QBFT runs this check again on justified re-proposals and
-// on decided values, and an operator that learned the block's slot in between would reject a value it had
-// already prepared. An operator without such a view passes nil, which skips the rule.
+// proposed at slot (e.g. a head event naming that root and slot). A vote for such a block must carry index 0:
+// one with index 1 is rejected, so the round changes instead of the cluster signing an attestation the network
+// rejects (a SHOULD in SIP #94 §2). The view must be fixed when the instance starts: QBFT runs this check again
+// on justified re-proposals and decided values, and a view that changed in between would reject a value the
+// operator already prepared. Nil skips the rule, for an operator with no such view.
 func BeaconVoteValueCheckF(
 	signer types.BeaconSigner,
 	slot phase0.Slot,
@@ -150,9 +149,9 @@ func ProposerValueCheckF(
 		if block.ProposerIndex != cd.Duty.ValidatorIndex {
 			return types.NewError(types.ProposerBlockProposerIndexMismatchErrorCode, "block proposer index does not match duty validator index")
 		}
-		// The bid must be this block's: for its slot and on its parent. The beacon chain rejects a block whose bid
-		// names another slot or parent (process_execution_payload_bid), so, as with the proposer index, signing
-		// such a value would lose the slot at publication instead of changing round.
+		// The bid must be this block's, for its slot and on its parent: the beacon chain rejects a block whose bid
+		// names another slot or parent (process_execution_payload_bid), so signing such a value would lose the
+		// slot at publication instead of changing round.
 		bid := block.Body.SignedExecutionPayloadBid.Message
 		if bid.Slot != block.Slot {
 			return types.NewError(types.ProposerBidSlotMismatchErrorCode, "bid slot does not match block slot")
