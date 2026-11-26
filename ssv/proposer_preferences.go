@@ -175,22 +175,20 @@ func (r *ProposerPreferencesRunner) ProcessPreConsensus(signedMsg *types.Partial
 	return sub.ProcessPreConsensus(signedMsg)
 }
 
-// validatePartialsPacket checks the packet as a whole: the type is one of the duty's two rounds, the partials
-// are valid, from one signer and for this runner's validator, and their number is within the type's bound
-// (SIP #94 §7: one preference partial, up to MaxBuilderEntries request-auth partials). A sub-runner rejects a
-// packet failing any of these whole, so they must hold before the packet is split into PendingPartials, whose
-// partials the replay applies one at a time.
-//
-// What a sub-runner checks beyond these is left to it. Whether its duty is running and the roots are the ones
-// it froze depends on its state. That the signer is a committee member holds or fails for a lone partial as
-// for its packet, and Validator.ProcessMessage settles it before the runner is reached.
+// validatePartialsPacket applies the checks that need no sub-runner state: the type is one of the duty's two
+// rounds, the packet is valid, from one committee signer and for this runner's validator, and it carries no
+// more partials than its type allows (SIP #94 §7: one preference partial, up to MaxBuilderEntries request-auth
+// partials). A sub-runner rejects a packet failing any of these whole, so they must hold before the packet is
+// split into PendingPartials, whose partials the replay applies one at a time. Whether the duty is running and
+// the roots are the frozen ones is the sub-runner's to check.
 func (r *ProposerPreferencesRunner) validatePartialsPacket(signedMsg *types.PartialSignatureMessages) error {
 	if signedMsg.Type != types.ProposerPreferencesPartialSig && signedMsg.Type != types.RequestAuthPartialSig {
 		return types.NewError(types.ProposerPreferencesUnexpectedPartialSigTypeErrorCode,
 			"unexpected pre-consensus partial signature type for proposer-preferences runner")
 	}
-	if err := signedMsg.Validate(); err != nil {
-		return errors.Wrap(err, "PartialSignatureMessages invalid")
+	// Passing the message's own slot skips the slot check: the packet is routed by that slot.
+	if err := r.BaseRunner.validatePartialSigMsgForSlot(signedMsg, signedMsg.Slot); err != nil {
+		return err
 	}
 	if err := r.BaseRunner.validateValidatorIndexInPartialSigMsg(signedMsg); err != nil {
 		return err
